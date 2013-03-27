@@ -296,6 +296,8 @@ Kinetic.Idea.prototype.setStyle = function () {
 			r.attrs.fillLinearGradientColorStops = [0, tintedBackground, 1, background];
 		}
 	});
+	this.rectbg1.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
+	this.rectbg2.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
 	this.setupShadows();
 	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
 };
@@ -303,8 +305,6 @@ Kinetic.Idea.prototype.setMMStyle = function (newMMStyle) {
 	'use strict';
 	this.mmStyle = newMMStyle;
 	this.setStyle();
-	this.rectbg1.setVisible(this.mmStyle.collapsed || false);
-	this.rectbg2.setVisible(this.mmStyle.collapsed || false);
 	this.getLayer().draw();
 };
 Kinetic.Idea.prototype.getIsSelected = function () {
