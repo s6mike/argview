@@ -109,8 +109,8 @@
 				ideaInput,
 				onStageMoved = _.throttle(function () {
 					ideaInput.css({
-						top: canvasPosition.top + self.rect.getAbsolutePosition().y,
-						left: canvasPosition.left + self.rect.getAbsolutePosition().x
+						top: canvasPosition.top + self.getAbsolutePosition().y,
+						left: canvasPosition.left + self.getAbsolutePosition().x
 					});
 				}, 10),
 				updateText = function (newText) {
