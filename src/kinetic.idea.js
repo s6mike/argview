@@ -73,7 +73,11 @@
 		this.link.on('click tap', function () {
 			var url = unformattedText.match(urlPattern);
 			if (url && url[0]) {
-				window.open(url[0], '_blank');
+				url = url[0];
+				if (!/https?:\/\//i.test(url)) {
+					url = 'http://' + url;
+				}
+				window.open(url, '_blank');
 			}
 		});
 		this.text = new Kinetic.Text({
