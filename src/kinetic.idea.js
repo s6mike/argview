@@ -41,6 +41,10 @@
 		rect2.attrs.y = -7;
 		link.add(rect);
 		link.add(rect2);
+		link.setActive = function (isActive) {
+			rect.attrs.stroke = rect2.attrs.stroke = (isActive ? 'black' : '#555555');
+			link.getLayer().draw();
+		};
 		return link;
 	}
 	Kinetic.Idea = function (config) {
@@ -79,6 +83,12 @@
 				}
 				window.open(url, '_blank');
 			}
+		});
+		this.link.on('mouseover', function () {
+			self.link.setActive(true);
+		});
+		this.link.on('mouseout', function () {
+			self.link.setActive(false);
 		});
 		this.text = new Kinetic.Text({
 			fontSize: 12,
