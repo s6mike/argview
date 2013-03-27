@@ -103,8 +103,9 @@
 		this.add(this.text);
 		this.add(this.link);
 		this.setText = function (text) {
+			var replacement = breakWords(text.replace(urlPattern, '')) || (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...');
 			unformattedText = text;
-			self.text.setText(breakWords(text.replace(urlPattern, '')));
+			self.text.setText(replacement);
 			self.link.setVisible(urlPattern.test(text));
 			self.setStyle();
 		};
