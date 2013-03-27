@@ -1,9 +1,10 @@
 /*global MAPJS, Color, _, jQuery, Kinetic*/
-/*jslint nomen: true, newcap: true*/
+/*jslint nomen: true, newcap: true, browser: true*/
 (function () {
 	'use strict';
 	/*shamelessly copied from http://james.padolsey.com/javascript/wordwrap-for-javascript */
-	var COLUMN_WORD_WRAP_LIMIT = 25;
+	var COLUMN_WORD_WRAP_LIMIT = 25,
+		urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i;
 	function wordWrap(str, width, brk, cut) {
 		brk = brk || '\n';
 		width = width || 75;
@@ -20,6 +21,28 @@
 	function breakWords(string) {
 		return wordWrap(joinLines(string), COLUMN_WORD_WRAP_LIMIT, '\n', false);
 	}
+	function createLink() {
+		var link = new Kinetic.Group(),
+			rectProps = {
+				width: 10,
+				height: 20,
+				rotation: 0.6,
+				stroke: '#555555',
+				strokeWidth: 3,
+				cornerRadius: 6,
+				shadowOffset: [2, 2],
+				shadow: '#CCCCCC',
+				shadowBlur: 0.4,
+				shadowOpacity: 0.4,
+			},
+			rect = new Kinetic.Rect(rectProps),
+			rect2 = new Kinetic.Rect(rectProps);
+		rect2.attrs.x = 7;
+		rect2.attrs.y = -7;
+		link.add(rect);
+		link.add(rect2);
+		return link;
+	}
 	Kinetic.Idea = function (config) {
 		var ENTER_KEY_CODE = 13,
 			ESC_KEY_CODE = 27,
@@ -34,7 +57,6 @@
 					visible: false
 				});
 			};
-		config.text = breakWords(config.text);
 		this.level = config.level;
 		this.mmStyle = config.mmStyle;
 		this.isSelected = false;
@@ -47,8 +69,14 @@
 		});
 		this.rectbg1 = bgRect(8);
 		this.rectbg2 = bgRect(4);
+		this.link = createLink();
+		this.link.on('click tap', function () {
+			var url = unformattedText.match(urlPattern);
+			if (url && url[0]) {
+				window.open(url[0], '_blank');
+			}
+		});
 		this.text = new Kinetic.Text({
-			text: config.text,
 			fontSize: 12,
 			fontFamily: 'Helvetica',
 			lineHeight: 1.5,
@@ -59,12 +87,14 @@
 		this.add(this.rectbg2);
 		this.add(this.rect);
 		this.add(this.text);
+		this.add(this.link);
 		this.setText = function (text) {
 			unformattedText = text;
-			self.text.setText(breakWords(text));
+			self.text.setText(breakWords(text.replace(urlPattern, '')));
+			self.link.setVisible(urlPattern.test(text));
 			self.setStyle();
 		};
-		this.setStyle();
+		this.setText(config.text);
 		this.classType = 'Idea';
 		this.getNodeAttrs = function () {
 			return self.attrs;
@@ -232,7 +262,8 @@ Kinetic.Idea.prototype.setStyle = function () {
 	this.attrs.height = this.text.getHeight() + 2 * padding;
 	this.text.attrs.x = padding;
 	this.text.attrs.y = padding;
-
+	this.link.attrs.x = this.text.getWidth() + 10;
+	this.link.attrs.y = this.text.getHeight() + 5;
 	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
 		r.attrs.width = self.text.getWidth() + 2 * padding;
 		r.attrs.height = self.text.getHeight() + 2 * padding;
