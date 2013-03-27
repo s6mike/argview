@@ -24,7 +24,16 @@
 		var ENTER_KEY_CODE = 13,
 			ESC_KEY_CODE = 27,
 			self = this,
-			unformattedText = joinLines(config.text);
+			unformattedText = joinLines(config.text),
+			bgRect = function (offset) {
+				return new Kinetic.Rect({
+					strokeWidth: 1,
+					cornerRadius: 10,
+					x: offset,
+					y: offset,
+					visible: false
+				});
+			};
 		config.text = breakWords(config.text);
 		this.level = config.level;
 		this.mmStyle = config.mmStyle;
@@ -36,6 +45,8 @@
 			strokeWidth: 1,
 			cornerRadius: 10
 		});
+		this.rectbg1 = bgRect(8);
+		this.rectbg2 = bgRect(4);
 		this.text = new Kinetic.Text({
 			text: config.text,
 			fontSize: 14,
@@ -44,6 +55,8 @@
 			fontStyle: 'bold',
 			align: 'center'
 		});
+		this.add(this.rectbg1);
+		this.add(this.rectbg2);
 		this.add(this.rect);
 		this.add(this.text);
 		this.setText = function (text) {
@@ -53,50 +66,8 @@
 		};
 		this.setStyle();
 		this.classType = 'Idea';
-		/*
-		this.oldDrawFunc = this.getDrawFunc();
-		this.setDrawFunc(function (canvas) {
-			if (self.isVisible()) {
-				if (this.mmStyle && this.mmStyle.collapsed) {
-					var context = canvas.getContext(), width = this.getWidth(), height = this.getHeight();
-					this.drawCollapsedBG(canvas, {x: 8, y: 8});
-					this.drawCollapsedBG(canvas, {x: 4, y: 4});
-				}
-				this.oldDrawFunc(canvas);
-			}
-		});
-		oldTransitionTo = this.transitionTo.bind(this);
-		this.transitionTo = function (transition) {
-			if (!self.isVisible()) {
-				transition.duration = 0.01;
-			}
-			oldTransitionTo(transition);
-		};
-		*/
 		this.getNodeAttrs = function () {
 			return self.attrs;
-		};
-		this.drawCollapsedBG = function (canvas, offset) {
-			var context = canvas.getContext(),
-				cornerRadius = this.getCornerRadius(),
-				width = this.getWidth(),
-				height = this.getHeight();
-			context.beginPath();
-			if (cornerRadius === 0) {
-				context.rect(offset.x, offset.y, width, height);
-			} else {
-				context.moveTo(offset.x + cornerRadius, offset.y);
-				context.lineTo(offset.x + width - cornerRadius, offset.y);
-				context.arc(offset.x + width - cornerRadius, offset.y + cornerRadius, cornerRadius, Math.PI * 3 / 2, 0, false);
-				context.lineTo(offset.x + width, offset.y + height - cornerRadius);
-				context.arc(offset.x + width - cornerRadius, offset.y + height - cornerRadius, cornerRadius, 0, Math.PI / 2, false);
-				context.lineTo(offset.x + cornerRadius, offset.y + height);
-				context.arc(offset.x + cornerRadius, offset.y + height - cornerRadius, cornerRadius, Math.PI / 2, Math.PI, false);
-				context.lineTo(offset.x, offset.y + cornerRadius);
-				context.arc(offset.x + cornerRadius, offset.y + cornerRadius, cornerRadius, Math.PI, Math.PI * 3 / 2, false);
-			}
-			context.closePath();
-			canvas.fillStroke(this);
 		};
 		this.isVisible = function (offset) {
 			var stage = self.getStage();
@@ -218,13 +189,12 @@ Kinetic.Idea.prototype.setupShadows = function () {
 			opacity: 1
 		},
 		shadow = isSelected ? selectedShadow : normalShadow;
-	this.rect.setShadowColor(shadow.color);
-	this.rect.setShadowBlur(shadow.blur);
-	this.rect.setShadowOpacity(shadow.opacity);
-	this.rect.setShadowOffset(shadow.offset);
-	//if (this.rect.attrs && this.rect.attrs.shadow) {
-	//this.rect.setShadow(isSelected ? selectedShadow : normalShadow);
-	//}
+	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
+		r.setShadowColor(shadow.color);
+		r.setShadowBlur(shadow.blur);
+		r.setShadowOpacity(shadow.opacity);
+		r.setShadowOffset(shadow.offset);
+	});
 };
 Kinetic.Idea.prototype.getBackground = function () {
 	'use strict';
@@ -243,32 +213,35 @@ Kinetic.Idea.prototype.getBackground = function () {
 Kinetic.Idea.prototype.setStyle = function () {
 	'use strict';
 	/*jslint newcap: true*/
-	var isDroppable = this.isDroppable,
+	var self = this,
+		isDroppable = this.isDroppable,
 		isSelected = this.isSelected,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
 		padding = 8;
-	this.rect.attrs.width = this.text.getWidth() + 2 * padding;
-	this.rect.attrs.height = this.text.getHeight() + 2 * padding;
 	this.attrs.width = this.text.getWidth() + 2 * padding;
 	this.attrs.height = this.text.getHeight() + 2 * padding;
 	this.text.attrs.x = padding;
 	this.text.attrs.y = padding;
 
-	if (isDroppable) {
-		this.rect.attrs.stroke = '#9F4F4F';
-		this.rect.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
-		this.rect.attrs.fillLinearGradientEndPoint = {x: 100, y: 100};
-		this.rect.attrs.fillLinearGradientColorStops = [0, '#EF6F6F', 1, '#CF4F4F'];
-		background = '#EF6F6F';
-	} else if (isSelected) {
-		this.rect.attrs.fill = background;
-	} else {
-		this.rect.attrs.stroke = '#888';
-		this.rect.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
-		this.rect.attrs.fillLinearGradientEndPoint = {x: 100, y: 100};
-		this.rect.attrs.fillLinearGradientColorStops = [0, tintedBackground, 1, background];
-	}
+	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
+		r.attrs.width = self.text.getWidth() + 2 * padding;
+		r.attrs.height = self.text.getHeight() + 2 * padding;
+		if (isDroppable) {
+			r.attrs.stroke = '#9F4F4F';
+			r.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
+			r.attrs.fillLinearGradientEndPoint = {x: 100, y: 100};
+			r.attrs.fillLinearGradientColorStops = [0, '#EF6F6F', 1, '#CF4F4F'];
+			background = '#EF6F6F';
+		} else if (isSelected) {
+			r.attrs.fill = background;
+		} else {
+			r.attrs.stroke = '#888';
+			r.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
+			r.attrs.fillLinearGradientEndPoint = {x: 100, y: 100};
+			r.attrs.fillLinearGradientColorStops = [0, tintedBackground, 1, background];
+		}
+	});
 	this.setupShadows();
 	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
 };
@@ -276,6 +249,8 @@ Kinetic.Idea.prototype.setMMStyle = function (newMMStyle) {
 	'use strict';
 	this.mmStyle = newMMStyle;
 	this.setStyle();
+	this.rectbg1.setVisible(this.mmStyle.collapsed || false);
+	this.rectbg2.setVisible(this.mmStyle.collapsed || false);
 	this.getLayer().draw();
 };
 Kinetic.Idea.prototype.getIsSelected = function () {
