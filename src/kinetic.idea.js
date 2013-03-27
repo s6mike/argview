@@ -29,7 +29,7 @@
 		this.level = config.level;
 		this.mmStyle = config.mmStyle;
 		this.isSelected = false;
-		config.draggable = true;
+		config.draggable = config.level > 1;
 		config.name = 'Idea';
 		Kinetic.Group.call(this, config);
 		this.rect = new Kinetic.Rect({
@@ -38,7 +38,7 @@
 		});
 		this.text = new Kinetic.Text({
 			text: config.text,
-			fontSize: 10,
+			fontSize: 14,
 			fontFamily: 'Helvetica',
 			lineHeight: 1.5,
 			fontStyle: 'bold',
@@ -137,7 +137,7 @@
 					width: (6 + self.getWidth()) * scale,
 					height: (6 + self.getHeight()) * scale,
 					'padding': 3 * scale + 'px',
-					'font-size': self.text.attrs.fontSize * scale + 'pt',
+					'font-size': self.text.attrs.fontSize * scale + 'px',
 					'line-height': 1.2,
 					'background-color': self.getBackground(),
 					'margin': -3 * scale,
