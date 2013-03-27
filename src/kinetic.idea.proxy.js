@@ -1,4 +1,4 @@
-/*global _, Kinetic, MAPJS, Image, setTimeout, jQuery */
+/*global _, Kinetic, MAPJS */
 Kinetic.IdeaProxy = function (idea, stage, layer) {
 	'use strict';
 	var nodeimage,
@@ -92,7 +92,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 			reRender();
 		});
 	});
-	_.each(['setMMStyle', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows'], function (fname) {
+	_.each(['setMMStyle', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows', 'setShadowOffset'], function (fname) {
 		container[fname] = function () {
 			var result = idea && idea[fname] && idea[fname].apply(idea, arguments);
 			reRender();

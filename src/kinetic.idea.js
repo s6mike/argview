@@ -163,6 +163,15 @@
 		};
 	};
 }());
+
+Kinetic.Idea.prototype.setShadowOffset = function (offset) {
+	'use strict';
+	offset = this.getMMScale().x * offset;
+	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
+		r.setShadowOffset([offset, offset]);
+	});
+};
+
 Kinetic.Idea.prototype.getMMScale = function () {
 	'use strict';
 	var stage = this.getStage(),

@@ -36,7 +36,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	'use strict';
 	var layer = new Kinetic.Layer(),
 		nodeByIdeaId = {},
-		connectorByFromIdeaId_ToIdeaId = {},
+		connectorByFromIdeaIdToIdeaId = {},
 		connectorKey = function (fromIdeaId, toIdeaId) {
 			return fromIdeaId + '_' + toIdeaId;
 		},
@@ -51,8 +51,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			if (!stage) {
 				return;
 			}
-			visibleBeforeMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaId_ToIdeaId, 0, 0);
-			visibleAfterMove = atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaId_ToIdeaId, deltaX, deltaY);
+			visibleBeforeMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, 0, 0);
+			visibleAfterMove = atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, deltaX, deltaY);
 			if (visibleAfterMove || (!visibleBeforeMove)) {
 				if (deltaY !== 0) { stage.attrs.y += deltaY; }
 				if (deltaX !== 0) { stage.attrs.x += deltaX; }
@@ -116,10 +116,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			text: n.title,
 			mmStyle: n.style,
 			opacity: 1
-		}),
-			getScale = function () {
-				return (stage && stage.attrs && stage.attrs.scale && stage.attrs.scale.x) || 1;
-			};
+		});
 
 		if (imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
@@ -128,13 +125,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		node.on('click tap', mapModel.selectNode.bind(mapModel, n.id));
 		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false));
 		node.on('dragstart', function () {
-			var scale = getScale();
-
 			node.moveToTop();
-			// node.setShadowOffset({
-			// 	x: 8 * scale,
-			// 	y: 8 * scale
-			// });
+			node.setShadowOffset(8);
 		});
 		node.on('dragmove', function () {
 			mapModel.nodeDragMove(
@@ -144,11 +136,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			);
 		});
 		node.on('dragend', function () {
-			var scale = getScale();
-			// node.getNodeAttrs().shadow.offset = {
-			// 	x: 4 * scale,
-			// 	y: 4 * scale
-			// };
+			node.setShadowOffset(4);
 			mapModel.nodeDragEnd(
 				n.id,
 				node.attrs.x,
@@ -233,7 +221,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			opacity: 0
 		});
 		connector.opacity = 0;
-		connectorByFromIdeaId_ToIdeaId[connectorKey(n.from, n.to)] = connector;
+		connectorByFromIdeaIdToIdeaId[connectorKey(n.from, n.to)] = connector;
 		layer.add(connector);
 		connector.moveToBottom();
 		connector.transitionTo({
@@ -243,8 +231,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	});
 	mapModel.addEventListener('connectorRemoved', function (n) {
 		var key = connectorKey(n.from, n.to),
-			connector = connectorByFromIdeaId_ToIdeaId[key];
-		delete connectorByFromIdeaId_ToIdeaId[key];
+			connector = connectorByFromIdeaIdToIdeaId[key];
+		delete connectorByFromIdeaIdToIdeaId[key];
 		connector.transitionTo({
 			opacity: 0,
 			duration: 0.1,
@@ -283,8 +271,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		stage.on('dragmove', function () {
 			var deltaX = x - stage.attrs.x,
 				deltaY = y - stage.attrs.y,
-				visibleAfterMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaId_ToIdeaId, 0, 0),
-				shouldMoveBack = !visibleAfterMove && !(atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaId_ToIdeaId, deltaX, deltaY));
+				visibleAfterMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, 0, 0),
+				shouldMoveBack = !visibleAfterMove && !(atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, deltaX, deltaY));
 			if (shouldMoveBack) {
 				moveStage(deltaX, deltaY);
 			} else {
