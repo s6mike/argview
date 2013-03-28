@@ -162,10 +162,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 
 		}
 		layer.add(node);
-		node.transitionTo({
-			opacity: 1,
-			duration: 0.4
-		});
 		stage.on(':scaleChangeComplete', function () {
 			node.setupShadows();
 		});

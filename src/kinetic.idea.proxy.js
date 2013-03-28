@@ -4,7 +4,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	var nodeimage,
 		emptyImage,
 		imageRendered,
-		container = new Kinetic.Group({opacity: 0, draggable: true}),
+		container = new Kinetic.Group({opacity: 1, draggable: true}),
 		removeImage = function () {
 			nodeimage.setImage(emptyImage);
 			imageRendered = false;
