@@ -48,6 +48,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	container.attrs.y = idea.attrs.y;
 	idea.attrs.x = 0;
 	idea.attrs.y = 0;
+	idea.link.remove();
 	nodeimage = new Kinetic.Image({
 		x: -1,
 		y: -1,
@@ -61,8 +62,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	});
 
 	container.add(nodeimage);
-
-
+	container.add(idea.link);
 	container.getNodeAttrs = function () {
 		return idea.attrs;
 	};
