@@ -360,7 +360,10 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			analytic('cut', source);
 			if (isInputEnabled) {
 				self.clipBoard = idea.clone(currentlySelectedIdeaId);
-				idea.removeSubIdea(currentlySelectedIdeaId);
+				var parent = idea.findParent(currentlySelectedIdeaId);
+				if (idea.removeSubIdea(currentlySelectedIdeaId)) {
+					self.selectNode(parent.id);
+				}
 			}
 		};
 		self.copy = function (source) {

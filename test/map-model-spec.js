@@ -674,6 +674,11 @@ describe('MapModel', function () {
 			underTest.removeSubIdea('toolbar');
 			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
 		});
+		it('should select parent when a node is cut', function () {
+			underTest.selectNode(6);
+			underTest.cut('toolbar');
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
+		});
 		describe('selectNode', function () {
 			it('should dispatch nodeSelectionChanged when a different node is selected', function () {
 				underTest.selectNode(2);
