@@ -173,7 +173,7 @@ var content = function (contentAggregate, progressCallback) {
 
 	/**** aggregate command processing methods ****/
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste) {
-		var pasteParent = (parentIdeaId === contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
+		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
 			cleanUp = function (json) {
 				var result =  _.omit(json, 'ideas', 'id'), index = 1, childKeys, sortedChildKeys;
 				if (json.ideas) {
