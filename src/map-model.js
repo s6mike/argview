@@ -91,6 +91,10 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				self.selectNode(newIdeaId);
 				self.editNode(false, true);
 			}
+			if (command === 'paste') {
+				newIdeaId = args[2];
+				self.selectNode(newIdeaId);
+			}
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -380,7 +384,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		};
 		self.pasteStyle = function (source) {
 			analytic('pasteStyle', source);
-			if (isInputEnabled) {
+			if (isInputEnabled && self.clipBoard) {
 				var pastingStyle = _.omit(self.clipBoard.style, 'collapsed'),
 					collapsed = currentlySelectedIdea().getStyle('collapsed');
 				if (collapsed) {

@@ -679,6 +679,12 @@ describe('MapModel', function () {
 			underTest.cut('toolbar');
 			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
 		});
+		it('should select pasted node when pasted', function () {
+			underTest.selectNode(6);
+			underTest.copy('toolbar');
+			underTest.paste('toolbar');
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(8, true);
+		});
 		describe('selectNode', function () {
 			it('should dispatch nodeSelectionChanged when a different node is selected', function () {
 				underTest.selectNode(2);
@@ -792,56 +798,59 @@ describe('MapModel', function () {
 		});
 	});
 	describe('analytic events', function () {
-		var underTest, analyticListener;
-		beforeEach(function () {
-			underTest = new MAPJS.MapModel(observable({}), function () {
-				return {
-					nodes: {
-						1: { x: 0 },
-						2: { x: -10 },
-						3: { x: -10 },
-						4: { x: 10 },
-						5: { x: 10 }
-					}
-				};
-			});
-			var anIdea = content({
-				id: 1,
-				title: 'center',
-				ideas: {
-					'-2': {
-						id: 2,
-						title: 'lower left'
-					},
-					'-1': {
-						id: 3,
-						title: 'upper left'
-					},
-					1: {
-						id: 4,
-						title: 'upper right'
-					},
-					2: {
-						id: 5,
-						title: 'lower right',
-						ideas : {
-							1: {
-								id: 6
+		var underTest, analyticListener,
+			reset = function () {
+				underTest = new MAPJS.MapModel(observable({}), function () {
+					return {
+						nodes: {
+							1: { x: 0 },
+							2: { x: -10 },
+							3: { x: -10 },
+							4: { x: 10 },
+							5: { x: 10 }
+						}
+					};
+				});
+				var anIdea = content({
+					id: 1,
+					title: 'center',
+					ideas: {
+						'-2': {
+							id: 2,
+							title: 'lower left'
+						},
+						'-1': {
+							id: 3,
+							title: 'upper left'
+						},
+						1: {
+							id: 4,
+							title: 'upper right'
+						},
+						2: {
+							id: 5,
+							title: 'lower right',
+							ideas : {
+								1: {
+									id: 6
+								}
 							}
 						}
 					}
-				}
-			});
-
-			underTest.setIdea(anIdea);
-			analyticListener = jasmine.createSpy();
-			underTest.addEventListener('analytic', analyticListener);
+				});
+				underTest.setIdea(anIdea);
+				analyticListener = jasmine.createSpy();
+				underTest.addEventListener('analytic', analyticListener);
+			};
+		beforeEach(function () {
+			reset();
 		});
 		it('should dispatch analytic event when methods are invoked', function () {
 			var methods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView'];
 			_.each(methods, function (method) {
+				reset();
 				var spy = jasmine.createSpy(method);
 				underTest.addEventListener('analytic', spy);
 				underTest[method]('source');
