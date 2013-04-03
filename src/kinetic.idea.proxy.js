@@ -72,8 +72,6 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	idea.isVisible = function (offset) {
 		return stage && stage.isRectVisible(new MAPJS.Rectangle(container.attrs.x, container.attrs.y, container.getWidth(), container.getHeight()), offset);
 	};
-
-
 	idea.getLayer = function () {
 		return layer;
 	};
@@ -94,7 +92,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 			reRender();
 		});
 	});
-	_.each(['setMMStyle', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows', 'setShadowOffset'], function (fname) {
+	_.each(['setMMAttr', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows', 'setShadowOffset'], function (fname) {
 		container[fname] = function () {
 			var result = idea && idea[fname] && idea[fname].apply(idea, arguments);
 			reRender();

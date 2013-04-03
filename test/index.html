@@ -86,7 +86,7 @@
 				idea = content(test_tree()),
 				mapRepository = observable({}),
 				isTouch = false,
-				renderImages = false,
+				renderImages = true,
 				mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
 				container.mapWidget(console,mapModel, isTouch, renderImages);
 				jQuery('body').mapToolbarWidget(mapModel);
