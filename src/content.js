@@ -106,7 +106,22 @@ var content = function (contentAggregate, progressCallback) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
 		},
-		cachedId;
+		cachedId,
+		upgrade = function (idea) {
+			if (idea.style) {
+				idea.attr = {};
+				var collapsed = idea.style.collapsed;
+				delete idea.style.collapsed;
+				idea.attr.style = idea.style;
+				if (collapsed) {
+					idea.attr.collapsed = collapsed;
+				}
+				delete idea.style;
+			}
+			if (idea.ideas) {
+				_.each(idea.ideas, upgrade);
+			}
+		};
 	contentAggregate.nextId = function nextId() {
 		if (!cachedId) {
 			cachedId =  contentAggregate.maxId();
@@ -418,6 +433,10 @@ var content = function (contentAggregate, progressCallback) {
 		}
 		return false;
 	};
+	if (contentAggregate.formatVersion != 2) {
+		upgrade(contentAggregate);
+		contentAggregate.formatVersion = 2;
+	}
 	init(contentAggregate);
 	return observable(contentAggregate);
 };

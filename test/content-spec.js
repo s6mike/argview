@@ -998,4 +998,32 @@ describe("content aggregate", function () {
 			expect(spy).not.toHaveBeenCalled();
 		});
 	});
+	describe("support for multiple versions", function () {
+		it("should append current format version", function () {
+			var wrapped = content({title: 'My Idea'});
+			expect(wrapped.formatVersion).toBe(2);
+		});
+		it("should upgrade from version 1 by splitting background and collapsed", function () {
+			var wrapped = content({title: 'My Idea', style: {background: 'black', collapsed: true}});
+
+			expect(wrapped.style).toBeUndefined();
+			expect(wrapped.attr.style.background).toBe('black');
+			expect(wrapped.attr.style.collapsed).toBeUndefined();
+			expect(wrapped.attr.collapsed).toBe(true);
+		});
+		it("should upgrade recursively", function () {
+			var wrapped = content({title: "asdf", ideas: { 1: {title: 'My Idea', style: {background: 'black', collapsed: true}}}});
+
+			expect(wrapped.ideas[1].style).toBeUndefined();
+			expect(wrapped.ideas[1].attr.style.background).toBe('black');
+			expect(wrapped.ideas[1].attr.style.collapsed).toBeUndefined();
+			expect(wrapped.ideas[1].attr.collapsed).toBe(true);
+		});
+		it("should not upgrade if formatVersion is 2", function () {
+			var wrapped = content({title: 'My Idea', attr: { style: {background: 'black'}, collapsed: true }, formatVersion: 2});
+
+			expect(wrapped.attr.style).toEqual({background: 'black'});
+			expect(wrapped.attr.collapsed).toEqual(true);
+		});
+	});
 });
