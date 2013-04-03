@@ -21,5 +21,4 @@ Kinetic.Clip.prototype.drawFunc = function (canvas) {
 };
 Kinetic.Node.addGetterSetter(Kinetic.Clip, 'clipTo', 0);
 Kinetic.Node.addGetterSetter(Kinetic.Clip, 'radius', 0);
-
 Kinetic.Global.extend(Kinetic.Clip, Kinetic.Shape);

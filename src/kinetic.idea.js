@@ -47,6 +47,21 @@
 		};
 		return link;
 	}
+	function createClip() {
+		var group, clip;
+		group = new Kinetic.Group();
+		clip = new Kinetic.Clip({stroke: 'blue', clipTo: 5, width: 5, height: 25, radius: 3, rotation: 0.1 });
+		group.add(clip);
+		group.on('mouseover', function () {
+			clip.attrs.stroke = 'black';
+			group.getLayer().draw();
+		});
+		group.on('mouseout', function () {
+			clip.attrs.stroke = 'blue';
+			group.getLayer().draw();
+		});
+		return group;
+	}
 	Kinetic.Idea = function (config) {
 		var ENTER_KEY_CODE = 13,
 			ESC_KEY_CODE = 27,
@@ -97,13 +112,14 @@
 			fontStyle: 'bold',
 			align: 'center'
 		});
-//		this.clip = new Kinetic.Clip({x : 100, y : 10, stroke: 'blue', clipTo: 10, width: 5, height: 30, radius: 3, rotation: 0.1});
+		this.clip = createClip();
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
 		this.add(this.rect);
 		this.add(this.text);
 		this.add(this.link);
 		this.add(this.clip);
+		this.activeWidgets = [this.link, this.clip];
 		this.setText = function (text) {
 			var replacement = breakWords(text.replace(urlPattern, '')) || (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...');
 			unformattedText = text;
@@ -274,16 +290,23 @@ Kinetic.Idea.prototype.setStyle = function () {
 		isSelected = this.isSelected,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
-		padding = 8;
+		isClipVisible = false,
+		padding = 8,
+		clipMargin = isClipVisible ? 5 : 0,
+		rectOffset = clipMargin,
+		rectIncrement = 4;
+	this.clip.setVisible(isClipVisible);
 	this.attrs.width = this.text.getWidth() + 2 * padding;
-	this.attrs.height = this.text.getHeight() + 2 * padding;
+	this.attrs.height = this.text.getHeight() + 2 * padding + clipMargin;
 	this.text.attrs.x = padding;
-	this.text.attrs.y = padding;
+	this.text.attrs.y = padding + clipMargin;
 	this.link.attrs.x = this.text.getWidth() + 10;
-	this.link.attrs.y = this.text.getHeight() + 5;
-	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
+	this.link.attrs.y = this.text.getHeight() + 5 + clipMargin;
+	_.each([this.rect, this.rectbg2, this.rectbg1], function (r) {
 		r.attrs.width = self.text.getWidth() + 2 * padding;
 		r.attrs.height = self.text.getHeight() + 2 * padding;
+		r.attrs.y = rectOffset;
+		rectOffset += rectIncrement;
 		if (isDroppable) {
 			r.attrs.stroke = '#9F4F4F';
 			r.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
@@ -301,6 +324,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 	});
 	this.rectbg1.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
 	this.rectbg2.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
+	this.clip.attrs.x = this.text.getWidth() + padding;
 	this.setupShadows();
 	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
 };
