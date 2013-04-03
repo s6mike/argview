@@ -49,7 +49,7 @@ describe('MapModel', function () {
 						x: 100,
 						y: 100,
 						title: 'style change',
-						style: {prop: 'old val'}
+						attr: {style: {prop: 'old val'}}
 					}
 				}
 			};
@@ -69,7 +69,7 @@ describe('MapModel', function () {
 						x: 100,
 						y: 100,
 						title: 'style change',
-						style: {prop: 'new val'}
+						attr: {style: {prop: 'new val'}}
 					}
 				}
 			};
@@ -162,11 +162,11 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).toHaveBeenCalledWith(5, true);
 			});
 		});
-		it('should dispatch nodeStyleChanged the style changes is created', function () {
-			var nodeStyleChangedListener = jasmine.createSpy();
-			underTest.addEventListener('nodeStyleChanged', nodeStyleChangedListener);
+		it('should dispatch nodeAttrChanged the style changes is created', function () {
+			var nodeAttrChangedListener = jasmine.createSpy();
+			underTest.addEventListener('nodeAttrChanged', nodeAttrChangedListener);
 			anIdea.dispatchEvent('changed');
-			expect(nodeStyleChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
+			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
 		});
 		it('should dispatch nodeEditRequested when an intermediary is created', function () {
 			anIdea = content({
@@ -178,7 +178,7 @@ describe('MapModel', function () {
 				}
 			});
 			underTest.setIdea(anIdea);
-			var nodeEditRequestedListener = jasmine.createSpy(), newId;
+			var nodeEditRequestedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 			underTest.selectNode(2);
 			underTest.insertIntermediate('toolbar', true);
@@ -229,7 +229,7 @@ describe('MapModel', function () {
 			layoutCalculatorLayout = layoutAfter;
 			underTest.addEventListener('nodeMoved', nodeMovedListener);
 
-			anIdea.dispatchEvent('changed', 'updateStyle', [1]);
+			anIdea.dispatchEvent('changed', 'updateAttr', [1]);
 
 			expect(nodeMovedListener.callCount).toBe(1);
 			expect(nodeMovedListener).toHaveBeenCalledWith({
@@ -254,7 +254,7 @@ describe('MapModel', function () {
 			});
 			underTest = new MAPJS.MapModel(observable({}), function () {
 				return {
-					nodes: {2: {style: {styleprop: 'oldValue'}}}
+					nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
 				};
 			});
 			underTest.setIdea(anIdea);
@@ -291,9 +291,9 @@ describe('MapModel', function () {
 			it('should expand the node when addSubIdea is called', function () {
 				underTest.selectNode(1);
 				underTest.collapse('source', true);
-				spyOn(anIdea, 'updateStyle');
+				spyOn(anIdea, 'updateAttr');
 				underTest.addSubIdea();
-				expect(anIdea.updateStyle).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 			});
 			it('should invoke idea.addSubIdea with randomly selected title when addSubIdea method is invoked', function () {
 				var underTest = new MAPJS.MapModel(
@@ -349,31 +349,21 @@ describe('MapModel', function () {
 		describe('pasteStyle', function () {
 			var toPaste;
 			beforeEach(function () {
-				toPaste = {title: 'c', style: {color: 'red'}};
+				toPaste = {title: 'c', attr: {style: {color: 'red'}}};
 				spyOn(anIdea, 'clone').andReturn(toPaste);
-				spyOn(anIdea, 'setStyleMap');
+				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(11);
 				underTest.copy('keyboard');
 				underTest.selectNode(2);
 			});
 			it('should set root node style from clipboard to currently selected idea', function () {
 				underTest.pasteStyle('keyboard');
-				expect(anIdea.setStyleMap).toHaveBeenCalledWith(2, toPaste.style);
-			});
-			it('should keep the collapsed status of a node when pasting', function () {
-				anIdea.updateStyle(2, 'collapsed', 'true');
-				underTest.pasteStyle('keyboard');
-				expect(anIdea.setStyleMap).toHaveBeenCalledWith(2, _.extend({collapsed: 'true'}, toPaste.style));
-			});
-			it('should keep the uncollapsed status of a node when pasting', function () {
-				toPaste.style.collapsed = 'true';
-				underTest.pasteStyle('keyboard');
-				expect(anIdea.setStyleMap).toHaveBeenCalledWith(2, _.omit(toPaste.style, 'collapsed'));
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', toPaste.attr.style);
 			});
 			it('should not paste when input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.pasteStyle('keyboard');
-				expect(anIdea.setStyleMap).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 		});
 		describe('cut', function () {
@@ -464,25 +454,25 @@ describe('MapModel', function () {
 		});
 		describe('colapse', function () {
 			beforeEach(function () {
-				spyOn(anIdea, 'updateStyle');
+				spyOn(anIdea, 'updateAttr');
 			});
 			it('should update selected node style to collapsed when argument is true', function () {
 				underTest.collapse('source', true);
-				expect(anIdea.updateStyle).toHaveBeenCalledWith(1, 'collapsed', true);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', true);
 			});
 			it('should expand selected node when argument is false', function () {
 				underTest.collapse('source', false);
-				expect(anIdea.updateStyle).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 			});
 			it('should not update styles if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.collapse('source', false);
-				expect(anIdea.updateStyle).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 			it('should not update style on leaf nodes', function () {
 				underTest.selectNode(2);
 				underTest.collapse('source', true);
-				expect(anIdea.updateStyle).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 		});
 		describe("addSiblingIdea", function () {
@@ -500,9 +490,9 @@ describe('MapModel', function () {
 			});
 			it('should expand the root node if it is collapsed', function () {
 				underTest.collapse('source', true);
-				spyOn(anIdea, 'updateStyle');
+				spyOn(anIdea, 'updateAttr');
 				underTest.addSiblingIdea();
-				expect(anIdea.updateStyle).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 			});
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -512,21 +502,26 @@ describe('MapModel', function () {
 		});
 		describe("updateStyle", function () {
 			beforeEach(function () {
-				spyOn(anIdea, 'updateStyle');
+				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(2);
 			});
 			it('should invoke idea.updateStyle with selected ideaId and style argument when updateStyle is called', function () {
 				underTest.updateStyle('source', 'styleprop', 'styleval');
-				expect(anIdea.updateStyle).toHaveBeenCalledWith(2, 'styleprop', 'styleval');
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', { styleprop: 'styleval' });
 			});
 			it('should not invoke idea.updateStyle if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.updateStyle('source', 'styleprop', 'styleval');
-				expect(anIdea.updateStyle).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 			it('should not invoke idea.updateStyle with selected ideaId and style argument when updateStyle is called with same value', function () {
 				underTest.updateStyle('source', 'styleprop', 'oldValue');
-				expect(anIdea.updateStyle).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
+			});
+			it('', function () {
+				anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
+				underTest.updateStyle('source', 'noncolor', 'nonblack');
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color:'black', noncolor:'nonblack'});
 			});
 		});
 
@@ -722,7 +717,7 @@ describe('MapModel', function () {
 				underTest.collapse('source', true);
 				underTest.selectNodeRight();
 				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(4, true);
-				expect(anIdea.getStyle('collapsed')).toBeFalsy();
+				expect(anIdea.getAttr('collapsed')).toBeFalsy();
 			});
 			it('should select parent node when currently selected node left of central node', function () {
 				underTest.selectNode(3);
@@ -739,7 +734,7 @@ describe('MapModel', function () {
 			it('should expand the node and select lowest ranking child when selected node is collapsed and left of central node', function () {
 				underTest.collapse('source', true);
 				underTest.selectNodeLeft();
-				expect(anIdea.getStyle('collapsed')).toBeFalsy();
+				expect(anIdea.getAttr('collapsed')).toBeFalsy();
 				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(3, true);
 			});
 			it('should select parent node currently selected node right of central node', function () {
@@ -886,13 +881,17 @@ describe('MapModel', function () {
 				return {
 					nodes: {
 						1: {
-							style: {
-								'v': 'x'
+							attr: {
+								style: {
+									'v': 'x'
+								}
 							}
 						},
 						2: {
-							style: {
-								'v': 'y'
+							attr: {
+								style: {
+									'v': 'y'
+								}
 							}
 						}
 					}

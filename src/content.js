@@ -37,9 +37,9 @@ var content = function (contentAggregate, progressCallback) {
 				return _.union(result, idea.find(predicate));
 			}, current);
 		};
-		contentIdea.getStyle = function (name) {
-			if (contentIdea.style && contentIdea.style[name]) {
-				return contentIdea.style[name];
+		contentIdea.getAttr = function (name) {
+			if (contentIdea.attr && contentIdea.attr[name]) {
+				return contentIdea.attr[name];
 			}
 			return false;
 		};
@@ -308,45 +308,29 @@ var content = function (contentAggregate, progressCallback) {
 		});
 		return true;
 	};
-	contentAggregate.setStyleMap = function (ideaId, newStyle) {
-		var idea = findIdeaById(ideaId), oldStyle;
-		if (!idea || !_.isObject(newStyle)) {
-			return false;
-		}
-		if (_.isEqual(idea.style, newStyle)) {
-			return false;
-		}
-		oldStyle = _.clone(idea.style);
-		idea.style = _.clone(newStyle);
-		notifyChange('setStyleMap', [ideaId, newStyle], function () {
-			idea.style = oldStyle;
-		});
-		return true;
-	};
-	contentAggregate.updateStyle = function (ideaId, styleName, styleValue) {
-		var idea = findIdeaById(ideaId), oldStyle;
+	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
+		var idea = findIdeaById(ideaId), oldAttr;
 		if (!idea) {
 			return false;
 		}
-		oldStyle = _.extend({}, idea.style);
-		idea.style = _.extend({}, idea.style);
-		if (!styleValue || styleValue === "false") {
-			if (!idea.style[styleName]) {
+		oldAttr = _.extend({}, idea.attr);
+		idea.attr = _.extend({}, idea.attr);
+		if (!attrValue || attrValue === "false") {
+			if (!idea.attr[attrName]) {
 				return false;
 			}
-			delete idea.style[styleName];
+			delete idea.attr[attrName];
 		} else {
-			/* leave ==, if it's a number and someone sends the equal string, it's still the same */
-			if (idea.style[styleName] == styleValue) {
+			if (_.isEqual(idea.attr[attrName], attrValue)) {
 				return false;
 			}
-			idea.style[styleName] = styleValue;
+			idea.attr[attrName] = JSON.parse(JSON.stringify(attrValue));
 		}
-		if (_.size(idea.style) === 0) {
-			delete idea.style;
+		if (_.size(idea.attr) === 0) {
+			delete idea.attr;
 		}
-		notifyChange('updateStyle', [ideaId, styleName, styleValue], function () {
-			idea.style = oldStyle;
+		notifyChange('updateAttr', [ideaId, attrName, attrValue], function () {
+			idea.attr = oldAttr;
 		});
 		return true;
 	};

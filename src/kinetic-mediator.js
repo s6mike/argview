@@ -114,7 +114,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			x: n.x,
 			y: n.y,
 			text: n.title,
-			mmStyle: n.style,
+			mmAttr: n.attr,
 			opacity: 1
 		});
 
@@ -175,9 +175,9 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		}
 		ensureSelectedNodeVisible(node);
 	});
-	mapModel.addEventListener('nodeStyleChanged', function (n) {
+	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		var node = nodeByIdeaId[n.id];
-		node.setMMStyle(n.style);
+		node.setMMAttr(n.attr);
 	});
 	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 		var node = nodeByIdeaId[ideaId];

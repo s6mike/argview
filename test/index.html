@@ -21,7 +21,7 @@
 				background-image:
 				repeating-linear-gradient(45deg, rgba(127, 191, 255, .5), rgba(127, 191, 255, .5) 1px, transparent 2px, transparent 15px),
 				repeating-linear-gradient(-45deg, rgba(255, 182, 193, .5), rgba(255, 182, 193, .5) 1px, transparent 2px, transparent 15px);
-			}				
+			}
 			.ideaInput {
 				position: absolute;
 				border: none;
@@ -86,7 +86,7 @@
 				idea = content(test_tree()),
 				mapRepository = observable({}),
 				isTouch = false,
-				renderImages = true,
+				renderImages = false,
 				mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
 				container.mapWidget(console,mapModel, isTouch, renderImages);
 				jQuery('body').mapToolbarWidget(mapModel);

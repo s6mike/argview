@@ -63,7 +63,7 @@ describe('layout', function () {
 			var contentAggregate = content({
 					id: 7,
 					title: '1',
-					style: { collapsed: true },
+					attr: { collapsed: true },
 					ideas: {
 						1: {
 							id: 8,
@@ -77,7 +77,7 @@ describe('layout', function () {
 				Width: 60,
 				Height: 40,
 				WidthLeft: 0,
-				style: {collapsed: true}
+				attr: {collapsed: true}
 			});
 		});
 		it('', function () {
@@ -308,20 +308,20 @@ describe('layout', function () {
 	it('should copy style to nodes', function () {
 		var contentAggregate = content({
 			title: '123',
-			style: { collapsed: true, background: '#FFFFFF'}
+			attr: { collapsed: true, style: { background: '#FFFFFF'}}
 		}),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
 		expect(result.nodes[1]).toPartiallyMatch({
-			style: {collapsed: true, background: '#FFFFFF'}
+			attr: {collapsed: true, style: { background: '#FFFFFF'}}
 		});
 	});
 	it('should set style using defaults where not defined', function () {
 		var contentAggregate = content({
 			title: '123',
-			style: { collapsed: true}
+			attr: { collapsed: true}
 		}),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[1].style.background).not.toBeUndefined();
+		expect(result.nodes[1].attr.style.background).not.toBeUndefined();
 	});
 
 });

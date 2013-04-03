@@ -23,14 +23,14 @@ describe("content aggregate", function () {
 			expect(wrapped.ideas[3].id).toBe(3);
 			expect(wrapped.ideas[-4].id).toBe(4);
 		});
-		describe("getStyle", function () {
-			it("returns false if the style attribute is not defined", function () {
+		describe("getAttr", function () {
+			it("returns false if the attribute is not defined", function () {
 				var wrapped = content({});
-				expect(wrapped.getStyle('xx')).toBeFalsy();
+				expect(wrapped.getAttr('xx')).toBeFalsy();
 			});
-			it("returns the style attribute if defined", function () {
-				var wrapped = content({style: {xx: 'yellow'}});
-				expect(wrapped.getStyle('xx')).toBe('yellow');
+			it("returns the attribute if defined", function () {
+				var wrapped = content({attr: {xx: 'yellow'}});
+				expect(wrapped.getAttr('xx')).toBe('yellow');
 			});
 		});
 		describe("maxID", function () {
@@ -146,7 +146,7 @@ describe("content aggregate", function () {
 			});
 		});
 		describe("clone", function () {
-			var idea_to_clone = function () {return { id: 2, title: 'copy me', style: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}; };
+			var idea_to_clone = function () {return { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}; };
 			it("returns a deep clone copy of a subidea by id", function () {
 				var idea = content({id: 1, ideas: { '-5': idea_to_clone(), '-10': { id: 3}, '-15' : {id: 4}}});
 				expect(idea.clone(2)).toEqual(idea_to_clone());
@@ -225,153 +225,108 @@ describe("content aggregate", function () {
 				expect(idea.ideas[-10].ideas).toEqual({});
 			});
 		});
-		describe("setStyleMap", function () {
-			it('should change the entire style of an idea', function () {
-				var aggregate = content({id: 71, title: 'My Idea'}),
-					result = aggregate.setStyleMap(71, {'newStyle': 'newValue'});
-				expect(result).toBeTruthy();
-				expect(aggregate.getStyle('newStyle')).toBe('newValue');
-			});
-			it('should allow the entire style to be set on the child', function () {
-				var aggregate = content({id: 1, ideas: { 5: { id: 2}}}),
-					result = aggregate.setStyleMap(2, {'newStyle': 'newValue'});
-				expect(result).toBeTruthy();
-				expect(aggregate.ideas[5].getStyle('newStyle')).toBe('newValue');
-			});
-			it('clones style when setting to a new object to prevent stale references', function () {
-				var oldStyle = {oldProp: 'oldVal'},
-					newStyle = {newProp: 'newVal'},
-					aggregate = content({id: 1, style: oldStyle}),
-					result = aggregate.setStyleMap(1, newStyle);
-				newStyle.newProp = 'anotherVal';
-				expect(oldStyle).toEqual({oldProp: 'oldVal'});
-				expect(aggregate.getStyle('newProp')).toBe('newVal');
-			});
-			it("fires an event matching the method call when the style changes", function () {
-				var listener = jasmine.createSpy('style_listener'),
-					wrapped = content({});
-				wrapped.addEventListener('changed', listener);
-				wrapped.setStyleMap(1, {new: 'yellow'});
-				expect(listener).toHaveBeenCalledWith('setStyleMap', [1, {new: 'yellow'}]);
-			});
-			it('should fail if no such child exists', function () {
-				var listener = jasmine.createSpy('style_listener'),
-					aggregate = content({id: 1, ideas: { 5: { id: 2}}}),
-					result;
-				aggregate.addEventListener('changed', listener);
-				result = aggregate.setStyleMap(100, {'newStyle': 'newValue'});
-				expect(result).toBeFalsy();
-				expect(listener).not.toHaveBeenCalled();
-			});
-			it('should fail if old style equals new one', function () {
-				var listener = jasmine.createSpy('style_listener'),
-					aggregate = content({id: 1, style: {'v': 'x'} }),
-					result;
-				aggregate.addEventListener('changed', listener);
-				result = aggregate.setStyleMap(1, {'v': 'x'});
-				expect(result).toBeFalsy();
-				expect(listener).not.toHaveBeenCalled();
-			});
-			it('should fail if it receives something that is not a property map', function () {
-				var listener = jasmine.createSpy('style_listener'),
-					aggregate = content({id: 1}),
-					result;
-				aggregate.addEventListener('changed', listener);
-				result = aggregate.setStyleMap(1, 'x');
-				expect(result).toBeFalsy();
-				expect(listener).not.toHaveBeenCalled();
-			});
-			it('should push an undo function onto event stack if successful', function () {
-				var aggregate = content({id: 71, style: {'newStyle': 'oldValue'}});
-				aggregate.setStyleMap(71, {'newStyle': 'newValue'});
-				aggregate.undo();
-				expect(aggregate.getStyle('newStyle')).toBe('oldValue');
-			});
-		});
-		describe("updateStyle", function () {
+		describe("updateAttr", function () {
 			it('should allow an attribute to be set on the aggregate', function () {
 				var aggregate = content({id: 71, title: 'My Idea'}),
-					result = aggregate.updateStyle(71, 'newStyle', 'newValue');
+					result = aggregate.updateAttr(71, 'newAttr', 'newValue');
 				expect(result).toBeTruthy();
-				expect(aggregate.getStyle('newStyle')).toBe('newValue');
+				expect(aggregate.getAttr('newAttr')).toBe('newValue');
 			});
-			it('should allow a set style to be set on the child', function () {
+			it('should allow a set attr to be set on the child', function () {
 				var aggregate = content({id: 1, ideas: { 5: { id: 2}}}),
-					result = aggregate.updateStyle(2, 'newStyle', 'newValue');
+					result = aggregate.updateAttr(2, 'newAttr', 'newValue');
 				expect(result).toBeTruthy();
-				expect(aggregate.ideas[5].getStyle('newStyle')).toBe('newValue');
+				expect(aggregate.ideas[5].getAttr('newAttr')).toBe('newValue');
 			});
-			it('clones style when setting to a new object to prevent stale references', function () {
-				var oldStyle = {},
-					aggregate = content({id: 1, style: oldStyle}),
-					result = aggregate.updateStyle(1, 'newStyle', 'newValue');
-				expect(oldStyle).toEqual({});
+			it('clones attr when setting to a new object to prevent stale references', function () {
+				var oldAttr = {},
+					aggregate = content({id: 1, attr: oldAttr}),
+					result = aggregate.updateAttr(1, 'newAttr', 'newValue');
+				expect(oldAttr).toEqual({});
 			});
-			it('should remove styles which have been set to false', function () {
-				var aggregate = content({id: 1, style: {keptStyle: 'oldValue', newStyle: 'value'}}),
-					result = aggregate.updateStyle(1, 'newStyle', false);
+			it('should remove attrs which have been set to false', function () {
+				var aggregate = content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
+					result = aggregate.updateAttr(1, 'newAttr', false);
 				expect(result).toBeTruthy();
-				expect(aggregate.style.newStyle).toBeUndefined();
-				expect(aggregate.style.keptStyle).toBe('oldValue');
+				expect(aggregate.attr.newAttr).toBeUndefined();
+				expect(aggregate.attr.keptAttr).toBe('oldValue');
 			});
-			it('should remove styles which have been set to false - as a string', function () {
-				var aggregate = content({id: 1, style: {keptStyle: 'oldValue', newStyle: 'value'}}),
-					result = aggregate.updateStyle(1, 'newStyle', "false");
+			it('should remove attrs which have been set to false - as a string', function () {
+				var aggregate = content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
+					result = aggregate.updateAttr(1, 'newAttr', "false");
 				expect(result).toBeTruthy();
-				expect(aggregate.style.newStyle).toBeUndefined();
-				expect(aggregate.style.keptStyle).toBe('oldValue');
+				expect(aggregate.attr.newAttr).toBeUndefined();
+				expect(aggregate.attr.keptAttr).toBe('oldValue');
 			});
-			it('should remove style hash when no styles are left in the object', function () {
-				var aggregate = content({id: 1, style: {newStyle: 'value'}}),
-					result = aggregate.updateStyle(1, 'newStyle', false);
+			it('should remove attr hash when no attrs are left in the object', function () {
+				var aggregate = content({id: 1, attr: {newAttr: 'value'}}),
+					result = aggregate.updateAttr(1, 'newAttr', false);
 				expect(result).toBeTruthy();
-				expect(aggregate.style).toBeUndefined();
+				expect(aggregate.attr).toBeUndefined();
 			});
-			it("fires an event matching the method call when the style changes", function () {
-				var listener = jasmine.createSpy('style_listener'),
+			it("fires an event matching the method call when the attr changes", function () {
+				var listener = jasmine.createSpy('attr_listener'),
 					wrapped = content({});
 				wrapped.addEventListener('changed', listener);
-				wrapped.updateStyle(1, 'new', 'yellow');
-				expect(listener).toHaveBeenCalledWith('updateStyle', [1, 'new', 'yellow']);
+				wrapped.updateAttr(1, 'new', 'yellow');
+				expect(listener).toHaveBeenCalledWith('updateAttr', [1, 'new', 'yellow']);
 			});
 			it('should fail if no such child exists', function () {
-				var listener = jasmine.createSpy('style_listener'),
+				var listener = jasmine.createSpy('attr_listener'),
 					aggregate = content({id: 1, ideas: { 5: { id: 2}}}),
 					result;
 				aggregate.addEventListener('changed', listener);
-				result = aggregate.updateStyle(100, 'newStyle', 'newValue');
+				result = aggregate.updateAttr(100, 'newAttr', 'newValue');
 				expect(result).toBeFalsy();
 				expect(listener).not.toHaveBeenCalled();
 			});
-			it('should fail if old style equals new one', function () {
-				var listener = jasmine.createSpy('style_listener'),
-					aggregate = content({id: 1, style: {'v': 'x'} }),
+			it('should fail if old attr equals new one', function () {
+				var listener = jasmine.createSpy('attr_listener'),
+					aggregate = content({id: 1, attr: {'v': 'x'} }),
 					result;
 				aggregate.addEventListener('changed', listener);
-				result = aggregate.updateStyle(1, 'v', 'x');
+				result = aggregate.updateAttr(1, 'v', 'x');
+				expect(result).toBeFalsy();
+				expect(listener).not.toHaveBeenCalled();
+			});
+			it('should fail if old attr equals new one as a complex object', function () {
+				var listener = jasmine.createSpy('attr_listener'),
+					aggregate = content({id: 1, attr: {'v': { sub: 'x'} } }),
+					result;
+				aggregate.addEventListener('changed', listener);
+				result = aggregate.updateAttr(1, 'v', { sub :'x'});
 				expect(result).toBeFalsy();
 				expect(listener).not.toHaveBeenCalled();
 			});
 			it('should fail if removing a non existent property', function () {
-				var listener = jasmine.createSpy('style_listener'),
-					aggregate = content({id: 1, style: {'v': 'x'} }),
+				var listener = jasmine.createSpy('attr_listener'),
+					aggregate = content({id: 1, attr: {'v': 'x'} }),
 					result;
 				aggregate.addEventListener('changed', listener);
-				result = aggregate.updateStyle(1, 'y', false);
+				result = aggregate.updateAttr(1, 'y', false);
 				expect(result).toBeFalsy();
 				expect(listener).not.toHaveBeenCalled();
 			});
 			it('should pop an undo function onto event stack if successful', function () {
-				var aggregate = content({id: 71, style: {'newStyle': 'oldValue'}});
-				aggregate.updateStyle(71, 'newStyle', 'newValue');
+				var aggregate = content({id: 71, attr: {'newAttr': 'oldValue'}});
+				aggregate.updateAttr(71, 'newAttr', 'newValue');
 				aggregate.undo();
-				expect(aggregate.getStyle('newStyle')).toBe('oldValue');
+				expect(aggregate.getAttr('newAttr')).toBe('oldValue');
 			});
-			it('should undo style deletion if successful', function () {
-				var aggregate = content({id: 71, style: {'newStyle': 'oldValue'}});
-				aggregate.updateStyle(71, 'newStyle', false);
+			it('should undo attr deletion if successful', function () {
+				var aggregate = content({id: 71, attr: {'newAttr': 'oldValue'}});
+				aggregate.updateAttr(71, 'newAttr', false);
 				aggregate.undo();
-				expect(aggregate.getStyle('newStyle')).toBe('oldValue');
+				expect(aggregate.getAttr('newAttr')).toBe('oldValue');
+			});
+			it('deep clones complex objects to prevent outside changes', function () {
+				var aggregate = content({id: 71}),
+					attrOb = { background: 'yellow', sub: { subsub: 0 }};
+				aggregate.updateAttr(71, 'new', attrOb);
+				attrOb.background  = 'white';
+				attrOb.sub.subsub = 1;
+				expect(aggregate.getAttr('new').background).toBe('yellow');
+				expect(aggregate.getAttr('new').sub.subsub).toBe(0);
 			});
 		});
 		describe("updateTitle", function () {
@@ -600,7 +555,7 @@ describe("content aggregate", function () {
 			it("should convert types passed as ids for parent and child nodes", function () {
 				expect(idea.changeParent(1,'2')).toBeFalsy();
 				expect(idea.changeParent('1',2)).toBeFalsy();
-			});			
+			});
 			it("fails if asked to put an idea in it's current parent", function () {
 				expect(idea.changeParent(1,5)).toBeFalsy();
 			});
@@ -1042,6 +997,5 @@ describe("content aggregate", function () {
 			expect(wrapped.undo()).toBeFalsy();
 			expect(spy).not.toHaveBeenCalled();
 		});
-
 	});
 });

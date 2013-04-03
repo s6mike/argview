@@ -63,8 +63,8 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 					if (newNode.title !== oldNode.title) {
 						self.dispatchEvent('nodeTitleChanged', newNode);
 					}
-					if (!_.isEqual(newNode.style || {}, oldNode.style || {})) {
-						self.dispatchEvent('nodeStyleChanged', newNode);
+					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
+						self.dispatchEvent('nodeAttrChanged', newNode);
 					}
 				}
 			}
@@ -79,7 +79,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		},
 		onIdeaChanged = function (command, args) {
 			var newIdeaId, contextNodeId;
-			contextNodeId = command === 'updateStyle' ? args[0] : undefined;
+			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
 			updateCurrentLayout(layoutCalculator(idea), contextNodeId);
 			if (command === 'addSubIdea') {
 				newIdeaId = args[2];
@@ -101,8 +101,8 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		},
 		ensureNodeIsExpanded = function (source, nodeId) {
 			var node = idea.findSubIdeaById(nodeId) || idea;
-			if (node.getStyle('collapsed')) {
-				idea.updateStyle(nodeId, 'collapsed', false);
+			if (node.getAttr('collapsed')) {
+				idea.updateAttr(nodeId, 'collapsed', false);
 			}
 		};
 	observable(this);
@@ -135,10 +135,10 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 	};
 	this.getSelectedStyle = function (prop) {
 		var node = currentLayout.nodes[currentlySelectedIdeaId];
-		return node && node.style && node.style[prop];
+		return node && node.attr && node.attr.style && node.attr.style[prop];
 	};
 	this.toggleCollapse = function (source) {
-		var isCollapsed = currentlySelectedIdea().getStyle('collapsed');
+		var isCollapsed = currentlySelectedIdea().getAttr('collapsed');
 		this.collapse(source, !isCollapsed);
 	};
 	this.collapse = function (source, doCollapse) {
@@ -146,7 +146,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		if (isInputEnabled) {
 			var node = currentlySelectedIdea();
 			if (node.ideas && _.size(node.ideas) > 0) {
-				idea.updateStyle(currentlySelectedIdeaId, 'collapsed', doCollapse);
+				idea.updateAttr(currentlySelectedIdeaId, 'collapsed', doCollapse);
 			}
 		}
 	};
@@ -154,7 +154,9 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		/*jslint eqeq:true */
 		if (isInputEnabled && this.getSelectedStyle(prop) != value) {
 			analytic('updateStyle:' + prop, source);
-			idea.updateStyle(currentlySelectedIdeaId, prop, value);
+			var merged = _.extend({}, currentlySelectedIdea().getAttr('style'));
+			merged[prop] = value;
+			idea.updateAttr(currentlySelectedIdeaId, 'style', merged);
 		}
 	};
 	this.addSubIdea = function (source) {
@@ -385,12 +387,8 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		self.pasteStyle = function (source) {
 			analytic('pasteStyle', source);
 			if (isInputEnabled && self.clipBoard) {
-				var pastingStyle = _.omit(self.clipBoard.style, 'collapsed'),
-					collapsed = currentlySelectedIdea().getStyle('collapsed');
-				if (collapsed) {
-					pastingStyle.collapsed = collapsed;
-				}
-				idea.setStyleMap(currentlySelectedIdeaId, pastingStyle);
+				var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
+				idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
 			}
 		};
 		self.moveUp = function (source) { self.moveRelative(source, -1); };

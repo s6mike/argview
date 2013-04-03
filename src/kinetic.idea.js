@@ -77,7 +77,7 @@
 				});
 			};
 		this.level = config.level;
-		this.mmStyle = config.mmStyle;
+		this.mmAttr = config.mmAttr;
 		this.isSelected = false;
 		config.draggable = config.level > 1;
 		config.name = 'Idea';
@@ -247,7 +247,7 @@ Kinetic.Idea.prototype.setupShadows = function () {
 	'use strict';
 	var scale = this.getMMScale().x,
 		isSelected = this.isSelected,
-		offset =  (this.mmStyle && this.mmStyle.collapsed) ? 3 * scale : 4 * scale,
+		offset = this.isCollapsed() ? 3 * scale : 4 * scale,
 		normalShadow = {
 			color: 'black',
 			blur: 10 * scale,
@@ -280,7 +280,7 @@ Kinetic.Idea.prototype.getBackground = function () {
 			var parsed = Color(color).hexString();
 			return color.toUpperCase() === parsed.toUpperCase() ? color : defaultColor;
 		};
-	return validColor(this.mmStyle && this.mmStyle.background, defaultBg);
+	return validColor(this.mmAttr && this.mmAttr.style && this.mmAttr.style.background, defaultBg);
 };
 Kinetic.Idea.prototype.setStyle = function () {
 	'use strict';
@@ -322,21 +322,25 @@ Kinetic.Idea.prototype.setStyle = function () {
 			r.attrs.fillLinearGradientColorStops = [0, tintedBackground, 1, background];
 		}
 	});
-	this.rectbg1.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
-	this.rectbg2.setVisible((this.mmStyle && this.mmStyle.collapsed) || false);
+	this.rectbg1.setVisible(this.isCollapsed());
+	this.rectbg2.setVisible(this.isCollapsed());
 	this.clip.attrs.x = this.text.getWidth() + padding;
 	this.setupShadows();
 	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
 };
-Kinetic.Idea.prototype.setMMStyle = function (newMMStyle) {
+Kinetic.Idea.prototype.setMMAttr = function (newMMAttr) {
 	'use strict';
-	this.mmStyle = newMMStyle;
+	this.mmAttr = newMMAttr;
 	this.setStyle();
 	this.getLayer().draw();
 };
 Kinetic.Idea.prototype.getIsSelected = function () {
 	'use strict';
 	return this.isSelected;
+};
+Kinetic.Idea.prototype.isCollapsed = function () {
+	'use strict';
+	return this.mmAttr && this.mmAttr.collapsed || false;
 };
 
 Kinetic.Idea.prototype.setIsSelected = function (isSelected) {

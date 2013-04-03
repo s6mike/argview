@@ -5,7 +5,7 @@ var MAPJS = MAPJS || {};
 	'use strict';
 	MAPJS.calculateDimensions = function calculateDimensions(idea, dimensionProvider, margin) {
 		var dimensions = dimensionProvider(idea.title),
-			result = _.extend(_.pick(idea, ['id', 'title', 'style']), {
+			result = _.extend(_.pick(idea, ['id', 'title', 'attr']), {
 				width: dimensions.width + 2 * margin,
 				height: dimensions.height + 2 * margin
 			}),
@@ -15,7 +15,7 @@ var MAPJS = MAPJS || {};
 			subIdeaRank,
 			subIdea,
 			subIdeaDimensions;
-		if (idea.ideas && !idea.getStyle('collapsed')) {
+		if (idea.ideas && !idea.getAttr('collapsed')) {
 			result.ideas = {};
 			for (subIdeaRank in idea.ideas) {
 				subIdea = idea.ideas[subIdeaRank];
@@ -91,13 +91,15 @@ var MAPJS = MAPJS || {};
 			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
 			calculateLayoutInner = function (positions, level) {
 				var subIdeaRank, from, to, isRoot = level === 1,
-					defaultStyle = MAPJS.defaultStyles[isRoot ? 'root' : 'nonRoot'];
-				result.nodes[positions.id] = _.extend(_.pick(positions, ['id', 'width', 'height', 'title']), {
-					x: positions.x - root.x - 0.5 * root.width + margin,
-					y: positions.y - root.y - 0.5 * root.height + margin,
-					level: level,
-					style: _.extend({}, defaultStyle, positions.style)
-				});
+					defaultStyle = MAPJS.defaultStyles[isRoot ? 'root' : 'nonRoot'],
+					node = _.extend(_.pick(positions, ['id', 'width', 'height', 'title', 'attr']), {
+						x: positions.x - root.x - 0.5 * root.width + margin,
+						y: positions.y - root.y - 0.5 * root.height + margin,
+						level: level
+					});
+				node.attr = node.attr || {};
+				node.attr.style = _.extend({}, defaultStyle, node.attr.style);
+				result.nodes[positions.id] = node;
 				if (positions.ideas) {
 					for (subIdeaRank in positions.ideas) {
 						calculateLayoutInner(positions.ideas[subIdeaRank], level + 1);
