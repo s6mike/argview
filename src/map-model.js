@@ -231,6 +231,21 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			analytic('resetView', source);
 		}
 	};
+	this.openAttachment = function (source, nodeId) {
+		analytic('openAttachment', source);
+		nodeId = nodeId || currentlySelectedIdeaId;
+		var node = currentLayout.nodes[nodeId],
+			attachment = node && node.attr && node.attr.attachment;
+		if (node) {
+			self.dispatchEvent('attachmentOpened', nodeId, attachment);
+		}
+	};
+	this.setAttachment = function (source, nodeId, attachment) {
+		analytic('setAttachment', source);
+		if (isInputEnabled) {
+			idea.updateAttr(nodeId, 'attachment', attachment);
+		}
+	};
 	(function () {
 		var isRootOrRightHalf = function (id) {
 				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;

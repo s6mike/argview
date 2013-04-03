@@ -63,7 +63,10 @@ describe('MapModel', function () {
 					3: {
 						x: 100,
 						y: 200,
-						title: 'This node will be created'
+						title: 'This node will be created',
+						attr: {
+							attachment: 'hello'
+						}
 					},
 					9: {
 						x: 100,
@@ -115,6 +118,27 @@ describe('MapModel', function () {
 			anIdea.dispatchEvent('changed');
 
 			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1]);
+		});
+		describe('openAttachment', function () {
+			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
+				var attachmentOpenedListener = jasmine.createSpy();
+				underTest.addEventListener('attachmentOpened', attachmentOpenedListener);
+				anIdea.dispatchEvent('changed');
+
+				underTest.openAttachment('source', 3);
+
+				expect(attachmentOpenedListener).toHaveBeenCalledWith(3, 'hello');
+			});
+			it('should use currently selected node if no node id specified', function () {
+				var attachmentOpenedListener = jasmine.createSpy();
+				underTest.addEventListener('attachmentOpened', attachmentOpenedListener);
+				underTest.selectNode(3);
+				anIdea.dispatchEvent('changed');
+
+				underTest.openAttachment('source');
+
+				expect(attachmentOpenedListener).toHaveBeenCalledWith(3, 'hello');
+			});
 		});
 		describe('editNode', function () {
 			it('should dispatch nodeEditRequested when a request to edit node is made', function () {
@@ -505,26 +529,45 @@ describe('MapModel', function () {
 				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(2);
 			});
-			it('should invoke idea.updateStyle with selected ideaId and style argument when updateStyle is called', function () {
+			it('should invoke idea.setAttr with selected ideaId and style argument when updateStyle is called', function () {
 				underTest.updateStyle('source', 'styleprop', 'styleval');
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', { styleprop: 'styleval' });
 			});
-			it('should not invoke idea.updateStyle if input is disabled', function () {
+			it('should not invoke idea.setAttr if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.updateStyle('source', 'styleprop', 'styleval');
 				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
-			it('should not invoke idea.updateStyle with selected ideaId and style argument when updateStyle is called with same value', function () {
+			it('should not invoke idea.setAttr with selected ideaId and style argument when updateStyle is called with same value', function () {
 				underTest.updateStyle('source', 'styleprop', 'oldValue');
 				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
-			it('', function () {
+			it('should merge argument with previous style', function () {
 				anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
 				underTest.updateStyle('source', 'noncolor', 'nonblack');
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color:'black', noncolor:'nonblack'});
 			});
 		});
+		describe("setAttachment", function () {
+			var attachment;
+			beforeEach(function () {
+				spyOn(anIdea, 'updateAttr');
+				underTest.selectNode(2);
+				attachment = { contentType: 'text/html', content: 'Hello' };
+			});
+			it('should invoke idea.setAttr with specified ideaId and attachment argument when setAttachment is called', function () {
+				underTest.setAttachment('source', 2, attachment);
 
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'attachment', attachment);
+			});
+			it('should not invoke idea.setAttr if input is disabled', function () {
+				underTest.setInputEnabled(false);
+
+				underTest.setAttachment('source', 2, attachment);
+
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
+			});
+		});
 		describe("insertIntermediate", function () {
 			var init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(
@@ -843,7 +886,7 @@ describe('MapModel', function () {
 		it('should dispatch analytic event when methods are invoked', function () {
 			var methods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
-				'resetView'];
+				'resetView', 'openAttachment', 'setAttachment'];
 			_.each(methods, function (method) {
 				reset();
 				var spy = jasmine.createSpy(method);

@@ -113,6 +113,9 @@
 			align: 'center'
 		});
 		this.clip = createClip();
+		this.clip.on('click tap', function () {
+			self.fire(':openAttachmentRequested');
+		});
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
 		this.add(this.rect);
@@ -290,7 +293,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 		isSelected = this.isSelected,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
-		isClipVisible = false,
+		isClipVisible = this.mmAttr && this.mmAttr.attachment || false,
 		padding = 8,
 		clipMargin = isClipVisible ? 5 : 0,
 		rectOffset = clipMargin,

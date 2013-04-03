@@ -80,16 +80,32 @@
 		<script type="text/javascript" src="../src/map-widget.js"></script>
 		<script type="text/javascript" src="testtree.js"></script>
 		<script>
+			jQuery.fn.attachmentEditorWidget = function (mapModel) {
+				'use strict';
+				return this.each(function () {
+					var element = jQuery(this);
+					mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+						mapModel.setAttachment(
+							'attachmentEditorWidget',
+							nodeId, {
+								contentType: 'text/html',
+								content: prompt('attachment', attachment && attachment.content)
+							}
+						);
+					});
+				});
+			};
 			(function () {
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = content(test_tree()),
 				mapRepository = observable({}),
 				isTouch = false,
-				renderImages = true,
+				renderImages = false,
 				mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
 				container.mapWidget(console,mapModel, isTouch, renderImages);
 				jQuery('body').mapToolbarWidget(mapModel);
+				jQuery('body').attachmentEditorWidget(mapModel);
 				var pngExporter = new MAPJS.PNGExporter(mapRepository);
 				$("[data-mm-action='export-image']").click(pngExporter.exportMap);
 				pngExporter.addEventListener('mapExported', function (url) {

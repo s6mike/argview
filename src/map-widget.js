@@ -31,6 +31,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				return !result;
 			},
 			keyboardEventHandlers = {
+				'a': 'openAttachment',
 				'return': 'addSiblingIdea',
 				'del backspace': 'removeSubIdea',
 				'tab': 'addSubIdea',

@@ -154,12 +154,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		node.on(':editing', function () {
 			mapModel.setInputEnabled(false);
 		});
-
-
+		node.on(':openAttachmentRequested', function () {
+			mapModel.openAttachment('mouse', n.id);
+		});
 		if (n.level > 1) {
 			node.on('mouseover touchstart', stage.setDraggable.bind(stage, false));
 			node.on('mouseout touchend', stage.setDraggable.bind(stage, true));
-
 		}
 		layer.add(node);
 		stage.on(':scaleChangeComplete', function () {
