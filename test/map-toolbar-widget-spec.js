@@ -21,6 +21,7 @@ describe('mapToolbarWidget', function () {
 			<input type="button" class="cut" value="cut"></input>\
 			<input type="button" class="copy" value="copy"></input>\
 			<input type="button" class="paste" value="paste"></input>\
+			<input type="button" class="openAttachment" value="open attachment"></input>\
 			<input data-mm-target-property="color" type="text" class="updateStyle" value=""></input>\
 			</div>'
 		);
@@ -34,7 +35,7 @@ describe('mapToolbarWidget', function () {
 		expect(result).toBe(element);
 	});
 	it('should invoke underlying method on map model when button is clicked', function () {
-		var methods = ['scaleUp', 'scaleDown', 'removeSubIdea', 'editNode', 'addSubIdea', 'insertIntermediate', 'addSiblingIdea', 'undo', 'redo', 'cut', 'copy', 'paste', 'resetView'];
+		var methods = ['scaleUp', 'scaleDown', 'removeSubIdea', 'editNode', 'addSubIdea', 'insertIntermediate', 'addSiblingIdea', 'undo', 'redo', 'cut', 'copy', 'paste', 'openAttachment', 'resetView'];
 		_.each(methods, function (method) {
 			spyOn(mapModel, method);
 			element.mapToolbarWidget(mapModel);
