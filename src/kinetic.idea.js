@@ -97,11 +97,13 @@
 			fontStyle: 'bold',
 			align: 'center'
 		});
+//		this.clip = new Kinetic.Clip({x : 100, y : 10, stroke: 'blue', clipTo: 10, width: 5, height: 30, radius: 3, rotation: 0.1});
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
 		this.add(this.rect);
 		this.add(this.text);
 		this.add(this.link);
+		this.add(this.clip);
 		this.setText = function (text) {
 			var replacement = breakWords(text.replace(urlPattern, '')) || (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...');
 			unformattedText = text;
