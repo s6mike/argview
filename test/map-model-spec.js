@@ -567,6 +567,17 @@ describe('MapModel', function () {
 
 				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
+			it('should remove attachment if no content', function () {
+				underTest.setAttachment(
+					'source',
+					2, {
+						contentType: 'text/html',
+						content: ''
+					}
+				);
+
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'attachment', false);
+			});
 		});
 		describe("insertIntermediate", function () {
 			var init = function (intermediaryArray) {

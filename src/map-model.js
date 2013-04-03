@@ -242,8 +242,9 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 	};
 	this.setAttachment = function (source, nodeId, attachment) {
 		analytic('setAttachment', source);
+		var hasAttachment = !!(attachment && attachment.content);
 		if (isInputEnabled) {
-			idea.updateAttr(nodeId, 'attachment', attachment);
+			idea.updateAttr(nodeId, 'attachment', hasAttachment && attachment);
 		}
 	};
 	(function () {
