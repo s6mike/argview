@@ -560,13 +560,6 @@ describe('MapModel', function () {
 
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'attachment', attachment);
 			});
-			it('should not invoke idea.setAttr if input is disabled', function () {
-				underTest.setInputEnabled(false);
-
-				underTest.setAttachment('source', 2, attachment);
-
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
-			});
 			it('should remove attachment if no content', function () {
 				underTest.setAttachment(
 					'source',
