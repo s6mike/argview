@@ -16,7 +16,7 @@ Kinetic.Clip.prototype.drawFunc = function (canvas) {
 	context.arcTo(this.getWidth() * 2, 0, this.getWidth() * 2, this.getHeight(),  this.getWidth());
 	context.arcTo(this.getWidth() * 2, this.getHeight(), 0, this.getHeight(), this.getRadius());
 	context.arcTo(xClip, this.getHeight(), xClip, 0, this.getRadius());
-	context.lineTo(xClip, this.getClipTo());
+	context.lineTo(xClip, this.getClipTo() * 0.5);
 	canvas.fillStroke(this);
 };
 Kinetic.Node.addGetterSetter(Kinetic.Clip, 'clipTo', 0);

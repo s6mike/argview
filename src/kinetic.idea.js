@@ -48,18 +48,23 @@
 		return link;
 	}
 	function createClip() {
-		var group, clip;
+		var group, clip, props = {width: 5, height: 25, radius: 3, rotation: 0.1, strokeWidth: 2, clipTo: 10};
 		group = new Kinetic.Group();
-		clip = new Kinetic.Clip({stroke: 'blue', clipTo: 5, width: 5, height: 25, radius: 3, rotation: 0.1 });
+		group.getClipMargin = function () {
+			return props.clipTo;
+		};
+		group.add(new Kinetic.Clip(_.extend({stroke: 'darkslategrey', x: 1, y: 1}, props)));
+		clip = new Kinetic.Clip(_.extend({stroke: 'skyblue'}, props));
 		group.add(clip);
 		group.on('mouseover', function () {
 			clip.attrs.stroke = 'black';
 			group.getLayer().draw();
 		});
 		group.on('mouseout', function () {
-			clip.attrs.stroke = 'blue';
+			clip.attrs.stroke = 'skyblue';
 			group.getLayer().draw();
 		});
+
 		return group;
 	}
 	Kinetic.Idea = function (config) {
@@ -295,7 +300,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
 		isClipVisible = this.mmAttr && this.mmAttr.attachment || false,
 		padding = 8,
-		clipMargin = isClipVisible ? 5 : 0,
+		clipMargin = isClipVisible ? this.clip.getClipMargin() : 0,
 		rectOffset = clipMargin,
 		rectIncrement = 4;
 	this.clip.setVisible(isClipVisible);
