@@ -1,6 +1,5 @@
 /*jslint forin: true, nomen: true*/
-/*global _, observable*/
-var MAPJS = MAPJS || {};
+/*global _, MAPJS, observable*/
 MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChooseFrom, intermediaryTitlesToRandomlyChooseFrom) {
 	'use strict';
 	titlesToRandomlyChooseFrom = titlesToRandomlyChooseFrom || ['double click to edit'];
@@ -14,7 +13,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		idea,
 		isInputEnabled = true,
 		currentlySelectedIdeaId,
-		markedIdeaId,
 		getRandomTitle = function (titles) {
 			return titles[Math.floor(titles.length * Math.random())];
 		},
@@ -262,8 +260,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			var node,
 				rank,
 				isRoot = currentlySelectedIdeaId === idea.id,
-				targetRank = isRoot ? -Infinity : Infinity,
-				targetNode;
+				targetRank = isRoot ? -Infinity : Infinity;
 			if (!isInputEnabled) {
 				return;
 			}
@@ -356,7 +353,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				});
 				self.selectNode(closestNode.id);
 			}
-
 		};
 		self.undo = function (source) {
 			analytic('undo', source);
@@ -407,7 +403,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		};
 		self.moveUp = function (source) { self.moveRelative(source, -1); };
 		self.moveDown = function (source) { self.moveRelative(source, 1); };
-
 	}());
 	//Todo - clean up this shit below
 	(function () {
@@ -424,11 +419,11 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				}
 			},
 			canDropOnNode = function (id, x, y, node) {
-				return id !== node.id
-					&& x >= node.x
-					&& y >= node.y
-					&& x <= node.x + node.width - 2 * 10
-					&& y <= node.y + node.height - 2 * 10;
+				return id !== node.id &&
+					x >= node.x &&
+					y >= node.y &&
+					x <= node.x + node.width - 2 * 10 &&
+					y <= node.y + node.height - 2 * 10;
 			},
 			tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
 				var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,

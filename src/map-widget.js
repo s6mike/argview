@@ -13,17 +13,6 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				stage.setHeight(element.height());
 				stage.draw();
 			},
-			simulateTouch = function (touchType, hammerEvent) {
-				var center;
-				if (!hammerEvent.gesture) {
-					return; // not a hammer event, instead simulated doubleclick
-				}
-				center = hammerEvent.gesture.center;
-				stage.simulate(touchType, {
-					offsetX: center.pageX - element.offset().left,
-					offsetY: center.pageY - element.offset().top
-				});
-			},
 			lastGesture,
 			discrete = function (gesture) {
 				var result = (lastGesture && lastGesture.type !== gesture.type && (gesture.timeStamp - lastGesture.timeStamp < 250));
@@ -86,20 +75,20 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		if (!touchEnabled) {
 			jQuery(window).mousewheel(onScroll);
 		} else {
-			element.find('canvas').hammer().on("pinch", function (event) {
+			element.find('canvas').hammer().on('pinch', function (event) {
 				if (discrete(event)) {
 					mapModel.scale('touch', event.gesture.scale, {
 						x: event.gesture.center.pageX - element.offset().left,
 						y: event.gesture.center.pageY - element.offset().top
 					});
 				}
-			}).on("swipe", function (event) {
+			}).on('swipe', function (event) {
 				if (discrete(event)) {
 					mapModel.move('touch', event.gesture.deltaX, event.gesture.deltaY);
 				}
-			}).on("doubletap", function (event) {
+			}).on('doubletap', function () {
 				mapModel.resetView();
-			}).on("touch", function (evt) {
+			}).on('touch', function () {
 				jQuery('.topbar-color-picker:visible').hide();
 				jQuery('.ideaInput:visible').blur();
 			});

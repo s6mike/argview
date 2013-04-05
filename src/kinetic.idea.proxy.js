@@ -30,7 +30,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 				x: x,
 				y: y,
 				width: width,
-				height: height ,
+				height: height,
 				callback: function (img) {
 					nodeimage.setImage(img);
 					nodeimage.attrs.width = unscaledWidth;
@@ -48,7 +48,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	container.attrs.y = idea.attrs.y;
 	idea.attrs.x = 0;
 	idea.attrs.y = 0;
-	_.each(idea.activeWidgets, function (widget){ widget.remove() });
+	_.each(idea.activeWidgets, function (widget) { widget.remove(); });
 	nodeimage = new Kinetic.Image({
 		x: -1,
 		y: -1,
@@ -60,9 +60,8 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 		cacheImage();
 		nodeImageDrawFunc(canvas);
 	});
-
 	container.add(nodeimage);
-	_.each(idea.activeWidgets, function (widget){ container.add(widget); });
+	_.each(idea.activeWidgets, function (widget) { container.add(widget); });
 	container.getNodeAttrs = function () {
 		return idea.attrs;
 	};
