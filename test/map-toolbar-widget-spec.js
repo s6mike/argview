@@ -1,4 +1,4 @@
-/*global _, jasmine,beforeEach, describe, expect, it, jQuery, observable, spyOn, MAPJS, content*/
+/*global _, jasmine,beforeEach, describe, expect, it, jQuery, observable, spyOn, MAPJS*/
 /*jslint es5: true*/
 describe('mapToolbarWidget', function () {
 	'use strict';
@@ -57,7 +57,7 @@ describe('mapToolbarWidget', function () {
 		element.mapToolbarWidget(mapModel);
 		input.change(spy);
 		mapModel.getSelectedStyle = function (v) { if (v === 'color') { return 'x'; } };
-		mapModel.setIdea(content({}));
+		mapModel.setIdea(MAPJS.content({}));
 		mapModel.dispatchEvent('nodeSelectionChanged');
 		expect(input.val()).toBe('x');
 		expect(spy).toHaveBeenCalled();

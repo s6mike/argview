@@ -1,4 +1,4 @@
-/*global _, beforeEach, content, describe, expect, it, MAPJS*/
+/*global describe, expect, it, MAPJS*/
 describe('layout', function () {
 	'use strict';
 	var dimensionProvider = function (text) {
@@ -7,11 +7,10 @@ describe('layout', function () {
 			width: length * 20,
 			height: length * 10
 		};
-	},
-		viewportCenter;
+	};
 	describe('Calculating dimensions', function () {
 		it('should return two margins plus text width/height as dimensions of a single idea', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '1'
 				}),
@@ -27,7 +26,7 @@ describe('layout', function () {
 			});
 		});
 		it('should return (width1 + width2 + 4 * margin, max(height1, height2) + 2 * margin)', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '1',
 					ideas: {
@@ -60,7 +59,7 @@ describe('layout', function () {
 			});
 		});
 		it('should disregard children of collapsed nodes', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '1',
 					attr: { collapsed: true },
@@ -81,7 +80,7 @@ describe('layout', function () {
 			});
 		});
 		it('', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '7',
 					ideas: {
@@ -101,7 +100,7 @@ describe('layout', function () {
 	});
 	describe('Calculating positions', function () {
 		it('', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '1'
 				}),
@@ -119,7 +118,7 @@ describe('layout', function () {
 			});
 		});
 		it('', function () {
-			var contentAggregate = content({
+			var contentAggregate = MAPJS.content({
 					id: 7,
 					title: '1',
 					ideas: {
@@ -157,12 +156,12 @@ describe('layout', function () {
 		});
 	});
 	it('should assign root node level 1', function () {
-		var contentAggregate = content({ id: 7 }),
+		var contentAggregate = MAPJS.content({ id: 7 }),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
 		expect(result.nodes[7].level).toEqual(1);
 	});
 	it('should assign child node levels recursively', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				ideas: {
 					1: {
@@ -185,7 +184,7 @@ describe('layout', function () {
 		expect(result.nodes[3].level).toEqual(2);
 	});
 	it('should place a root node on (margin, margin)', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				title: 'Hello'
 			}),
@@ -202,7 +201,7 @@ describe('layout', function () {
 		});
 	});
 	it('should place root node left of its only right child', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				title: '1',
 				ideas: {
@@ -224,7 +223,7 @@ describe('layout', function () {
 		});
 	});
 	it('should place root node right of its only left child', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				title: '1',
 				ideas: {
@@ -246,7 +245,7 @@ describe('layout', function () {
 		});
 	});
 	it('should work recursively', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				title: '1',
 				ideas: {
@@ -271,7 +270,7 @@ describe('layout', function () {
 		expect(result.nodes[10].x).toBe(-240);
 	});
 	it('should place child nodes below each other', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 7,
 				title: '1',
 				ideas: {
@@ -291,7 +290,7 @@ describe('layout', function () {
 		expect(result.nodes[8].y).toBe(15);
 	});
 	it('should center children vertically', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 				id: 10,
 				title: '123',
 				ideas: {
@@ -306,7 +305,7 @@ describe('layout', function () {
 		expect(result.nodes[11].y).toBe(-5);
 	});
 	it('should copy style to nodes', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 			title: '123',
 			attr: { collapsed: true, style: { background: '#FFFFFF'}}
 		}),
@@ -316,7 +315,7 @@ describe('layout', function () {
 		});
 	});
 	it('should set style using defaults where not defined', function () {
-		var contentAggregate = content({
+		var contentAggregate = MAPJS.content({
 			title: '123',
 			attr: { collapsed: true}
 		}),

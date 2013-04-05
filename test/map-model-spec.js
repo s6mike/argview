@@ -1,4 +1,4 @@
-/*global _, observable, beforeEach, content, describe, expect, it, jasmine, spyOn, MAPJS*/
+/*global _, observable, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
 describe('MapModel', function () {
 	'use strict';
 	it('should be able to instantiate MapModel', function () {
@@ -78,7 +78,7 @@ describe('MapModel', function () {
 			};
 			underTest = new MAPJS.MapModel(observable({}), layoutCalculator, ['this will have all text selected'], ['this will too']);
 			layoutCalculatorLayout = layoutBefore;
-			anIdea = content({
+			anIdea = MAPJS.content({
 				id: 4,
 				title: 'this will have all text selected',
 				ideas: {
@@ -193,7 +193,7 @@ describe('MapModel', function () {
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
 		});
 		it('should dispatch nodeEditRequested when an intermediary is created', function () {
-			anIdea = content({
+			anIdea = MAPJS.content({
 				id: 1,
 				ideas: {
 					7: {
@@ -266,7 +266,7 @@ describe('MapModel', function () {
 	describe('methods delegating to idea', function () {
 		var anIdea, underTest;
 		beforeEach(function () {
-			anIdea = content({
+			anIdea = MAPJS.content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -499,7 +499,7 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 		});
-		describe("addSiblingIdea", function () {
+		describe('addSiblingIdea', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'addSubIdea');
 			});
@@ -524,7 +524,7 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
 			});
 		});
-		describe("updateStyle", function () {
+		describe('updateStyle', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(2);
@@ -545,10 +545,10 @@ describe('MapModel', function () {
 			it('should merge argument with previous style', function () {
 				anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
 				underTest.updateStyle('source', 'noncolor', 'nonblack');
-				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color:'black', noncolor:'nonblack'});
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
 			});
 		});
-		describe("setAttachment", function () {
+		describe('setAttachment', function () {
 			var attachment;
 			beforeEach(function () {
 				spyOn(anIdea, 'updateAttr');
@@ -572,7 +572,7 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'attachment', false);
 			});
 		});
-		describe("insertIntermediate", function () {
+		describe('insertIntermediate', function () {
 			var init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(
 					observable({}),
@@ -654,7 +654,7 @@ describe('MapModel', function () {
 	describe('Selection', function () {
 		var nodeSelectionChangedListener, anIdea, underTest;
 		beforeEach(function () {
-			anIdea = content({
+			anIdea = MAPJS.content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -773,7 +773,7 @@ describe('MapModel', function () {
 				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
 			});
 		});
-		describe("selectNodeLeft", function () {
+		describe('selectNodeLeft', function () {
 			it('should select lowest ranking child when currently selected node is left of central node', function () {
 				underTest.selectNodeLeft();
 				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(3, true);
@@ -796,7 +796,7 @@ describe('MapModel', function () {
 				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
 			});
 		});
-		describe("selectNodeUp", function () {
+		describe('selectNodeUp', function () {
 			it('should select sibling above', function () {
 				underTest.selectNode(5);
 				nodeSelectionChangedListener.reset();
@@ -817,7 +817,7 @@ describe('MapModel', function () {
 				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
 			});
 		});
-		describe("selectNodeDown", function () {
+		describe('selectNodeDown', function () {
 			it('should select sibling below when selectNodeDown invoked', function () {
 				underTest.selectNode(4);
 				nodeSelectionChangedListener.reset();
@@ -853,7 +853,7 @@ describe('MapModel', function () {
 						}
 					};
 				});
-				var anIdea = content({
+				var anIdea = MAPJS.content({
 					id: 1,
 					title: 'center',
 					ideas: {
@@ -922,8 +922,8 @@ describe('MapModel', function () {
 			expect(analyticListener).not.toHaveBeenCalledWith();
 		});
 	});
-	describe("getSelectedStyle", function () {
-		var anIdea = content({ id: 1, style: {'v': 'x'}, ideas : {7: {id: 2, style: {'v': 'y'}}}}),
+	describe('getSelectedStyle', function () {
+		var anIdea = MAPJS.content({ id: 1, style: {'v': 'x'}, ideas : {7: {id: 2, style: {'v': 'y'}}}}),
 			layoutCalculator = function () {
 				return {
 					nodes: {
@@ -949,10 +949,10 @@ describe('MapModel', function () {
 			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
 			underTest.setIdea(anIdea);
 		});
-		it("retrieves root node style by default", function () {
+		it('retrieves root node style by default', function () {
 			expect(underTest.getSelectedStyle('v')).toEqual('x');
 		});
-		it("retrieves root node style by default", function () {
+		it('retrieves root node style by default', function () {
 			underTest.selectNode(2);
 			expect(underTest.getSelectedStyle('v')).toEqual('y');
 		});
