@@ -14,6 +14,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				stage.draw();
 			},
 			lastGesture,
+			actOnKeys = true,
 			discrete = function (gesture) {
 				var result = (lastGesture && lastGesture.type !== gesture.type && (gesture.timeStamp - lastGesture.timeStamp < 250));
 				lastGesture = gesture;
@@ -55,7 +56,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		jQuery.hotkeys.specialKeys[189] = 'minus';
 		_.each(keyboardEventHandlers, function (mappedFunction, keysPressed) {
 			jQuery(document).keydown(keysPressed, function (event) {
-				if (jQuery.find('.modal:visible').length === 0) {
+				if (actOnKeys) {
 					event.preventDefault();
 					mapModel[mappedFunction]('keyboard');
 				}
@@ -63,6 +64,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		});
 		mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 			stage.setDraggable(!canInput);
+			actOnKeys = canInput;
 		});
 		activityLog.log('Creating canvas Size ' + element.width() + ' ' + element.height());
 		setStageDimensions();
