@@ -66,8 +66,10 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		jQuery.hotkeys.specialKeys[189] = 'minus';
 		_.each(keyboardEventHandlers, function (mappedFunction, keysPressed) {
 			jQuery(document).keydown(keysPressed, function (event) {
-				event.preventDefault();
-				mapModel[mappedFunction]('keyboard');
+				if (jQuery.find('.modal:visible').length === 0) {
+					event.preventDefault();
+					mapModel[mappedFunction]('keyboard');
+				}
 			});
 		});
 		mapModel.addEventListener('inputEnabledChanged', function (canInput) {
