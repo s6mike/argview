@@ -998,6 +998,136 @@ describe("content aggregate", function () {
 			expect(spy).not.toHaveBeenCalled();
 		});
 	});
+	describe('links', function () {
+		var idea;
+		beforeEach(function () {
+			idea = MAPJS.content({
+				id: 1,
+				title: 'Node 1',
+				ideas: {
+					1: {
+						id: 2,
+						title: 'Node 2'
+					},
+					2: {
+						id: 3,
+						title: 'Node 3'
+					}
+				}
+			});
+		});
+		it('should add a link between two ideas when addLink method is called', function () {
+			var result = idea.addLink(2, 3);
+
+			expect(result).toBe(true);
+		});
+		it('should store a link when addLink method is called', function () {
+			idea.addLink(2, 3);
+
+			expect(idea.links).toEqual([{
+				ideaIdFrom: 2,
+				ideaIdTo: 3
+			}]);
+		});
+		it('should dispatch a changed event when addLink method is called', function () {
+			var changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
+
+			idea.addLink(2, 3);
+
+			expect(changedListener).toHaveBeenCalledWith('addLink', 2, 3);
+		});
+		it('should not be able to add link if both nodes don\'t exist', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.addLink(1, 22);
+
+			expect(result).toBe(false);
+			expect(idea.links).not.toBeDefined();
+			expect(changedListener).not.toHaveBeenCalled();
+		});
+		it('should not be able to create a link between same two nodes', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.addLink(2, 2);
+
+			expect(result).toBe(false);
+			expect(idea.links).not.toBeDefined();
+			expect(changedListener).not.toHaveBeenCalledWith('addLink', 2, 2);
+		});
+		it('should not be able to create a link between a parent and a child', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.addLink(1, 2);
+
+			expect(result).toBe(false);
+			expect(idea.links).not.toBeDefined();
+			expect(changedListener).not.toHaveBeenCalledWith('addLink', 1, 2);
+		});
+		it('should not be able to add the same link twice', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.addLink(2, 3);
+
+			expect(result).toBe(false);
+			expect(idea.links).toEqual([{
+				ideaIdFrom: 2,
+				ideaIdTo: 3
+			}]);
+			expect(changedListener).not.toHaveBeenCalled();
+		});
+		it('should remove a link when removeLink method is invoked', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.removeLink(2, 3);
+
+			expect(result).toBe(true);
+			expect(idea.links).toEqual([]);
+			expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
+		});
+		it('should not take order of nodes into account when removeLink method is invoked', function () {
+			//todo/maybe?
+			// var result, changedListener = jasmine.createSpy();
+			// idea.addLink(2, 3);
+			// idea.addEventListener('changed', changedListener);
+
+			// result = idea.removeLink(3, 2);
+
+			// expect(result).toBe(true);
+			// expect(idea.links).toEqual([]);
+			// expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
+		});
+		it('should not be able to remove link that does not exist', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.removeLink(1, 1);
+
+			expect(result).toBe(false);
+			expect(idea.links).toEqual([{
+				ideaIdFrom: 2,
+				ideaIdTo: 3
+			}]);
+			expect(changedListener).not.toHaveBeenCalled();
+		});
+		it('should check link validity (and remove invalid links) after any change in content', function () {
+			var changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			idea.changeParent(3, 2);
+
+			expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
+		});
+	});
 	describe("support for multiple versions", function () {
 		it("should append current format version", function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
