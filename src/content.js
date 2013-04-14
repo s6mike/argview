@@ -43,6 +43,18 @@ MAPJS.content = function (contentAggregate, progressCallback) {
 			}
 			return false;
 		};
+		contentIdea.sortedSubIdeas = function () {
+			if (!contentIdea.ideas) {
+				return [];
+			}
+			var result = [],
+				childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) { return key > 0; }),
+				sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
+			_.each(sortedChildKeys, function (key) {
+				result.push(contentIdea.ideas[key]);
+			});
+			return result;
+		};
 		if (progressCallback) {
 			progressCallback();
 		}

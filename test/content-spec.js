@@ -161,6 +161,13 @@ describe("content aggregate", function () {
 				expect(idea.clone(1).id).toBe(1);
 			});
 		});
+		describe("sortedSubIdeas", function () {
+			it("sorts children by key, positive first then negative, by absolute value", function () {
+				var aggregate = MAPJS.content({id: 1, title: 'root', ideas: {'-100': {title: '-100'}, '-1': {title: '-1'}, '1': {title: '1'}, '100': {title: '100'}}}),
+					result = _.map(aggregate.sortedSubIdeas(), function (subidea) { return subidea.title; });
+				expect(result).toEqual(['1', '100', '-1', '-100']);
+			});
+		});
 	});
 	describe("command processing", function () {
 		describe("paste", function () {
