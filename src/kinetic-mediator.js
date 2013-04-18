@@ -99,12 +99,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			});
 		};
 	stage.add(layer);
-	document.body.style.cursor = 'pointer';
+	document.body.style.cursor = 'move';
 	layer.on('mouseover', function () {
-		document.body.style.cursor = 'default';
+		document.body.style.cursor = 'pointer';
 	});
 	layer.on('mouseout', function () {
-		document.body.style.cursor = 'pointer';
+		document.body.style.cursor = 'move';
 	});
 	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll) {
 		var node = nodeByIdeaId[nodeId];
