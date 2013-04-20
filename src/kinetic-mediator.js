@@ -188,12 +188,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	mapModel.addEventListener('nodeRemoved', function (n) {
 		var node = nodeByIdeaId[n.id];
 		delete nodeByIdeaId[n.id];
+		node.off('click dblclick tap dbltap dragstart dragmove dragend mouseover mouseout touchstart touchend :openAttachmentRequested :editing :textChanged ');
 		node.transitionTo({
 			opacity: 0.25,
 			duration: 0.4,
-			callback: node.remove.bind(node)
+			callback: node.destroy.bind(node)
 		});
-		node.off('click dblclick tap dragstart dragmove dragend mouseover mouseout :textChanged');
 	});
 	mapModel.addEventListener('nodeMoved', function (n, reason) {
 		var node = nodeByIdeaId[n.id];
@@ -234,7 +234,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		connector.transitionTo({
 			opacity: 0,
 			duration: 0.1,
-			callback: connector.remove.bind(connector)
+			callback: connector.destroy.bind(connector)
 		});
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
