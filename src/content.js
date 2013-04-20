@@ -8,6 +8,9 @@ MAPJS.content = function (contentAggregate, progressCallback) {
 				contentIdea.ideas[parseFloat(key)] = init(value);
 			});
 		}
+		if (!contentIdea.title) {
+			contentIdea.title = '';
+		}
 		contentIdea.id = contentIdea.id || contentAggregate.nextId();
 		contentIdea.containsDirectChild = contentIdea.findChildRankById = function (childIdeaId) {
 			return parseFloat(

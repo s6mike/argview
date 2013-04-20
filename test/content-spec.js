@@ -5,6 +5,11 @@ describe("content aggregate", function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
 			expect(wrapped.id).toBe(1);
 		});
+		it("initialises missing titles with a blank string - so the rest of the code can always expect a string", function () {
+			var wrapped = MAPJS.content({});
+			expect(wrapped.title).not.toBeUndefined();
+			expect(wrapped.title).toBe('');
+		});
 		it("does not touch any IDs already assigned", function () {
 			var wrapped = MAPJS.content({id: 22, title: 'My Idea', ideas: { 1: {id: 23, title: 'My First Subidea'}}});
 			expect(wrapped.ideas[1].id).toBe(23);
