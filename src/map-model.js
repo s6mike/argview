@@ -108,12 +108,14 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
+			self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			currentlySelectedIdeaId = undefined;
 		}
 		idea = anIdea;
 		idea.addEventListener('changed', onIdeaChanged);
 		onIdeaChanged();
 		self.selectNode(idea.id);
+		self.dispatchEvent('mapViewResetRequested');
 	};
 	mapRepository.addEventListener('mapLoaded', this.setIdea);
 	this.setInputEnabled = function (value) {
