@@ -140,7 +140,7 @@
 			var stage = self.getStage();
 			return stage && stage.isRectVisible(new MAPJS.Rectangle(self.attrs.x, self.attrs.y, self.getWidth(), self.getHeight()), offset);
 		};
-		this.editNode = function (shouldSelectAll) {
+		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
 			self.getLayer().draw();
 			var canvasPosition = jQuery(self.getLayer().getCanvas().getElement()).offset(),
@@ -166,6 +166,9 @@
 				},
 				onCancelEdit = function () {
 					updateText(unformattedText);
+					if (deleteOnCancel) {
+						self.fire(':request',{type: 'removeSubIdea', source: 'internal'});
+					}
 				},
 				scale = self.getStage().getScale().x || 1;
 			ideaInput = jQuery('<textarea type="text" wrap="soft" class="ideaInput"></textarea>')

@@ -474,6 +474,10 @@ describe('MapModel', function () {
 				underTest.removeSubIdea('toolbar');
 				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(321);
 			});
+			it('should invoke idea.removeSubIdea with argument idea if given', function () {
+				underTest.removeSubIdea('toolbar', 9999);
+				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(9999);
+			});
 			it('should not invoke idea.removeSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.removeSubIdea('toolbar');
