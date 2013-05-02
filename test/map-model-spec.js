@@ -148,7 +148,7 @@ describe('MapModel', function () {
 
 				underTest.editNode('toolbar', true);
 
-				expect(nodeEditRequestedListener).toHaveBeenCalledWith(1, true);
+				expect(nodeEditRequestedListener).toHaveBeenCalledWith(1, true, false);
 			});
 			it('should not dispatch nodeEditRequested when input is disabled', function () {
 				var nodeEditRequestedListener = jasmine.createSpy();
@@ -165,7 +165,7 @@ describe('MapModel', function () {
 
 				underTest.editNode('toolbar', false);
 
-				expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true);
+				expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true, false);
 			});
 			it('should select all text when the current text of child node is one of our defaults', function () {
 				var nodeEditRequestedListener = jasmine.createSpy();
@@ -174,7 +174,7 @@ describe('MapModel', function () {
 
 				underTest.editNode('toolbar', false);
 
-				expect(nodeEditRequestedListener).toHaveBeenCalledWith(6, true);
+				expect(nodeEditRequestedListener).toHaveBeenCalledWith(6, true, false);
 			});
 			it('should select all text when the current text of child node is one of our intermediate defaults', function () {
 				var nodeEditRequestedListener = jasmine.createSpy();
@@ -183,7 +183,7 @@ describe('MapModel', function () {
 
 				underTest.editNode('toolbar', false);
 
-				expect(nodeEditRequestedListener).toHaveBeenCalledWith(5, true);
+				expect(nodeEditRequestedListener).toHaveBeenCalledWith(5, true, false);
 			});
 		});
 		it('should dispatch nodeAttrChanged the style changes is created', function () {
@@ -206,7 +206,23 @@ describe('MapModel', function () {
 			underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 			underTest.selectNode(2);
 			underTest.insertIntermediate('toolbar', true);
-			expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true);
+			expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+		});
+		it('should dispatch nodeEditRequested when a new node is created', function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				ideas: {
+					7: {
+						id: 2
+					}
+				}
+			});
+			underTest.setIdea(anIdea);
+			var nodeEditRequestedListener = jasmine.createSpy();
+			underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+			underTest.selectNode(2);
+			underTest.addSubIdea('toolbar');
+			expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 		});
 		it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
 			var layoutCalculatorLayout,
