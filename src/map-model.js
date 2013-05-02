@@ -82,12 +82,12 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			if (command === 'addSubIdea') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
-				self.editNode(false, true);
+				self.editNode(false, true, true);
 			}
 			if (command === 'insertIntermediate') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
-				self.editNode(false, true);
+				self.editNode(false, true, true);
 			}
 			if (command === 'paste') {
 				newIdeaId = args[2];
@@ -162,11 +162,12 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			idea.updateAttr(currentlySelectedIdeaId, 'style', merged);
 		}
 	};
-	this.addSubIdea = function (source) {
+	this.addSubIdea = function (source, parentId) {
+		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
-			ensureNodeIsExpanded(source, currentlySelectedIdeaId);
-			idea.addSubIdea(currentlySelectedIdeaId, getRandomTitle(titlesToRandomlyChooseFrom));
+			ensureNodeIsExpanded(source, target);
+			idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
 		}
 	};
 	this.insertIntermediate = function (source) {
@@ -184,11 +185,12 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
 		}
 	};
-	this.removeSubIdea = function (source) {
+	this.removeSubIdea = function (source, targetId) {
 		analytic('removeSubIdea', source);
 		if (isInputEnabled) {
-			var parent = idea.findParent(currentlySelectedIdeaId);
-			if (idea.removeSubIdea(currentlySelectedIdeaId)) {
+			var target = targetId || currentlySelectedIdeaId,
+				parent = idea.findParent(target);
+			if (idea.removeSubIdea(target)) {
 				self.selectNode(parent.id);
 			}
 		}
@@ -196,7 +198,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 	this.updateTitle = function (ideaId, title) {
 		idea.updateTitle(ideaId, title);
 	};
-	this.editNode = function (source, shouldSelectAll) {
+	this.editNode = function (source, shouldSelectAll, editingNew) {
 		if (source) {
 			analytic('editNode', source);
 		}
@@ -208,7 +210,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				 titlesToRandomlyChooseFrom.indexOf(title) !== -1) {
 			shouldSelectAll = true;
 		}
-		self.dispatchEvent('nodeEditRequested', currentlySelectedIdeaId, shouldSelectAll);
+		self.dispatchEvent('nodeEditRequested', currentlySelectedIdeaId, shouldSelectAll, !!editingNew);
 	};
 	this.scaleUp = function (source) {
 		self.scale(source, 1.25);

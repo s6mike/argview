@@ -114,7 +114,7 @@
 		});
 		this.clip = createClip();
 		this.clip.on('click tap', function () {
-			self.fire(':openAttachmentRequested');
+			self.fire(':request', {type: 'openAttachment', source: 'mouse'});
 		});
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
@@ -140,7 +140,7 @@
 			var stage = self.getStage();
 			return stage && stage.isRectVisible(new MAPJS.Rectangle(self.attrs.x, self.attrs.y, self.getWidth(), self.getHeight()), offset);
 		};
-		this.editNode = function (shouldSelectAll) {
+		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
 			self.getLayer().draw();
 			var canvasPosition = jQuery(self.getLayer().getCanvas().getElement()).offset(),
@@ -166,6 +166,9 @@
 				},
 				onCancelEdit = function () {
 					updateText(unformattedText);
+					if (deleteOnCancel) {
+						self.fire(':request',{type: 'removeSubIdea', source: 'internal'});
+					}
 				},
 				scale = self.getStage().getScale().x || 1;
 			ideaInput = jQuery('<textarea type="text" wrap="soft" class="ideaInput"></textarea>')
@@ -191,7 +194,10 @@
 					} else if (e.which === ESC_KEY_CODE) {
 						onCancelEdit();
 					} else if (e.which === 9) {
+						onCommit();
 						e.preventDefault();
+						self.fire(':request', {type: 'addSubIdea', source: 'keyboard'});
+						return;
 					} else if (e.which === 83 && (e.metaKey || e.ctrlKey)) {
 						e.preventDefault();
 						onCommit();

@@ -106,10 +106,10 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	layer.on('mouseout', function () {
 		document.body.style.cursor = 'move';
 	});
-	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll) {
+	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 		var node = nodeByIdeaId[nodeId];
 		if (node) {
-			node.editNode(shouldSelectAll);
+			node.editNode(shouldSelectAll, editingNew);
 		}
 	});
 	mapModel.addEventListener('nodeCreated', function (n) {
@@ -124,6 +124,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		if (imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
 		}
+
 		node.on('click tap', mapModel.selectNode.bind(mapModel, n.id));
 		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false));
 		node.on('dragstart', function () {
@@ -156,8 +157,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		node.on(':editing', function () {
 			mapModel.setInputEnabled(false);
 		});
-		node.on(':openAttachmentRequested', function () {
-			mapModel.openAttachment('mouse', n.id);
+		node.on(':request', function (event) {
+			mapModel[event.type](event.source, n.id);
 		});
 		if (n.level > 1) {
 			node.on('mouseover touchstart', stage.setDraggable.bind(stage, false));
@@ -171,6 +172,9 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	});
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = nodeByIdeaId[ideaId];
+		if (!node) {
+			return;
+		}
 		node.setIsSelected(isSelected);
 		if (!isSelected) {
 			return;
