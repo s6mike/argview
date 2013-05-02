@@ -162,11 +162,12 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			idea.updateAttr(currentlySelectedIdeaId, 'style', merged);
 		}
 	};
-	this.addSubIdea = function (source) {
+	this.addSubIdea = function (source, parentId) {
+		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
-			ensureNodeIsExpanded(source, currentlySelectedIdeaId);
-			idea.addSubIdea(currentlySelectedIdeaId, getRandomTitle(titlesToRandomlyChooseFrom));
+			ensureNodeIsExpanded(source, target);
+			idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
 		}
 	};
 	this.insertIntermediate = function (source) {

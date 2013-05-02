@@ -307,6 +307,10 @@ describe('MapModel', function () {
 				underTest.addSubIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(123, 'double click to edit');
 			});
+			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
+				underTest.addSubIdea('source', 555);
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(555, 'double click to edit');
+			});
 			it('should not invoke idea.addSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.addSubIdea();
