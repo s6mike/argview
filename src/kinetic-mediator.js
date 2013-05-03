@@ -1,5 +1,4 @@
-/*global _, document, Kinetic*/
-var MAPJS = MAPJS || {};
+/*global _, document, Kinetic, MAPJS*/
 if (Kinetic.Stage.prototype.isRectVisible) {
 	throw ('isRectVisible already exists, should not mix in our methods');
 }
