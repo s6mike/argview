@@ -1,6 +1,6 @@
 /*jslint eqeq: true, forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.content = function (contentAggregate, progressCallback) {
+MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
 	var init = function (contentIdea) {
 		if (contentIdea.ideas) {
@@ -58,9 +58,6 @@ MAPJS.content = function (contentAggregate, progressCallback) {
 			});
 			return result;
 		};
-		if (progressCallback) {
-			progressCallback();
-		}
 		return contentIdea;
 	},
 		maxKey = function (kvMap, sign) {
@@ -142,19 +139,22 @@ MAPJS.content = function (contentAggregate, progressCallback) {
 			cachedId =  contentAggregate.maxId();
 		}
 		cachedId += 1;
+		if (sessionKey) {
+			return cachedId + '.' + sessionKey;
+		}
 		return cachedId;
 	};
 	contentAggregate.maxId = function maxId(idea) {
 		idea = idea || contentAggregate;
 		if (!idea.ideas) {
-			return idea.id || 0;
+			return parseInt(idea.id, 10) || 0;
 		}
 		return _.reduce(
 			idea.ideas,
 			function (result, subidea) {
 				return Math.max(result, maxId(subidea));
 			},
-			idea.id || 0
+			parseInt(idea.id, 10) || 0
 		);
 	};
 	contentAggregate.nextSiblingId = function (subIdeaId) {

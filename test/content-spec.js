@@ -5,6 +5,10 @@ describe("content aggregate", function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
 			expect(wrapped.id).toBe(1);
 		});
+		it("appends session ID after ID when generating", function () {
+			var wrapped = MAPJS.content({title: 'My Idea'}, 'sessionkey');
+			expect(wrapped.id).toBe('1.sessionkey');
+		});
 		it("initialises missing titles with a blank string - so the rest of the code can always expect a string", function () {
 			var wrapped = MAPJS.content({});
 			expect(wrapped.title).not.toBeUndefined();
@@ -43,6 +47,12 @@ describe("content aggregate", function () {
 				var ideas = MAPJS.content({id: 22, title: 'My Idea', ideas: { 1: {id: 23, title: 'My First Subidea'}, '-1': {id: 54, title: 'Max'}}});
 				expect(ideas.maxId()).toBe(54);
 			});
+			it("survives pseudo-numerical IDs with session after decimal", function () {
+				var ideas = MAPJS.content({id: '22.a', ideas: { 1: {id: '23.b'}, '-1': {id: '54.c'}}});
+				expect(ideas.maxId()).toBe(54);
+			});
+
+
 		});
 		describe("findChildRankById", function () {
 			var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15: {id: 4, title: 'I4'}}});
@@ -76,6 +86,10 @@ describe("content aggregate", function () {
 			it("returns the idea reference for any indirect child matching the ID", function () {
 				var idea = MAPJS.content({id: 5, title: 'I0', ideas: {9: {id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id: 3, title: 'I3'}, '-15': {id: 4, title: 'I4'}}}}});
 				expect(idea.findSubIdeaById(2).id).toBe(2);
+			});
+			it("works with number.session keys", function () {
+				var idea = MAPJS.content({id: 5, ideas: {9: {id: 1, ideas: { '-5': { id: '2.b'}, '-10': { id: 3}, '-15': {id: 4}}}}});
+				expect(idea.findSubIdeaById('2.b').id).toBe('2.b');
 			});
 			it("returns undefined if it matches the ID itself - to avoid false positives in parent search", function () {
 				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15 : {id: 4, title: 'I4'}}});
@@ -190,6 +204,12 @@ describe("content aggregate", function () {
 				var result = idea.paste(3, toPaste);
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-10].ideas[1].id).toBe(5);
+			});
+			it("should append session key if given when re-assigning", function () {
+				idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
+				var result = idea.paste(3, toPaste);
+				expect(result).toBeTruthy();
+				expect(idea.ideas[-10].ideas[1].id).toBe('5.sess');
 			});
 			it("should reassign IDs recursively based on next available ID in the aggregate", function () {
 				var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
@@ -454,6 +474,11 @@ describe("content aggregate", function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'});
 				idea.addSubIdea(71);
 				expect(_.toArray(idea.ideas)[0].id).toBe(72);
+			});
+			it('appends the session key if given', function () {
+				var idea = MAPJS.content({id:71,title:'My Idea'},'session');
+				idea.addSubIdea(71);
+				expect(_.toArray(idea.ideas)[0].id).toBe('72.session');
 			});
 			it('assigns the first subidea the rank of 1', function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'});
