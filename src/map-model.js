@@ -73,6 +73,28 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
 			}
+			if (newLayout.links) {
+				var join = function (link) {
+					return link.ideaIdFrom + '_' + link.ideaIdTo;
+				},
+					split = function (link) {
+						var split = link.split('_');
+						return {
+							ideaIdFrom: parseInt(split[0], 10),
+							ideaIdTo: parseInt(split[1], 10)
+						};
+					},
+					dispatchFunc = function (type) {
+						return function (link) {
+							self.dispatchEvent(type, link);
+						};
+					},
+					newLinks = _.map(newLayout.links || [], join),
+					oldLinks = _.map(currentLayout.links || [], join);
+				console.log(JSON.stringify(newLinks), JSON.stringify(oldLinks));
+				_.map(_.difference(newLinks, oldLinks), split).forEach(dispatchFunc('linkCreated'));
+				_.map(_.difference(oldLinks, newLinks), split).forEach(dispatchFunc('linkRemoved'));
+			}
 			currentLayout = newLayout;
 		},
 		onIdeaChanged = function (command, args) {
@@ -249,6 +271,12 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		analytic('setAttachment', source);
 		var hasAttachment = !!(attachment && attachment.content);
 		idea.updateAttr(nodeId, 'attachment', hasAttachment && attachment);
+	};
+	this.addLink = function (nodeIdTo) {
+		idea.addLink(currentlySelectedIdeaId, nodeIdTo);
+	};
+	this.removeLink = function (nodeIdFrom, nodeIdTo) {
+		idea.removeLink(nodeIdFrom, nodeIdTo);
 	};
 	(function () {
 		var isRootOrRightHalf = function (id) {

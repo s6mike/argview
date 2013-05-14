@@ -85,7 +85,8 @@
 		margin = margin || 10;
 		var result = {
 			nodes: {},
-			connectors: {}
+			connectors: {},
+			links: idea.links || []
 		},
 			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
 			calculateLayoutInner = function (positions, level) {

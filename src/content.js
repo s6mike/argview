@@ -456,8 +456,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			return true;
 		};
-		contentAggregate.addLink = function (ideaIdFrom, ideaIdTo) {
-			var alreadyExists;
+		contentAggregate.addLink = function (ideaIdFrom, ideaIdTo, linkType) {
+			var alreadyExists, link;
 			if (!isLinkValid(ideaIdFrom, ideaIdTo)) {
 				return false;
 			}
@@ -471,10 +471,14 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return false;
 			}
 			contentAggregate.links = contentAggregate.links || [];
-			contentAggregate.links.push({
+			link = {
 				ideaIdFrom: ideaIdFrom,
 				ideaIdTo: ideaIdTo
-			});
+			};
+			if (linkType) {
+				link.type = linkType;
+			}
+			contentAggregate.links.push(link);
 			contentAggregate.dispatchEvent('changed', 'addLink', ideaIdFrom, ideaIdTo);
 			return true;
 		};

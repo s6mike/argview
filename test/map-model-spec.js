@@ -714,8 +714,8 @@ describe('MapModel', function () {
 						3: { x: -10, y: -10 },
 						4: { x: 10, y: 10 },
 						5: { x: 10, y: 30 },
-					    6: { x:	50, y: 10 },
-					    7: { x:	50, y: -10 }
+						6: { x:	50, y: 10 },
+						7: { x:	50, y: -10 }
 					}
 				};
 			});
@@ -979,6 +979,100 @@ describe('MapModel', function () {
 		it('retrieves root node style by default', function () {
 			underTest.selectNode(2);
 			expect(underTest.getSelectedStyle('v')).toEqual('y');
+		});
+	});
+	describe('Links', function () {
+		var anIdea = MAPJS.content({
+				id: 1,
+				title: '1',
+				ideas : {
+					7: {
+						id: 2,
+						title: '2',
+						ideas: {
+							77: {
+								id: 3,
+								title: '3'
+							},
+							88: {
+								id: 4,
+								title: '4'
+							}
+						}
+					}
+				},
+				links: [{
+					ideaIdFrom: 1,
+					ideaIdTo: 4
+				}]
+			}),
+			layoutCalculator,
+			underTest;
+		beforeEach(function () {
+			layoutCalculator = jasmine.createSpy();
+			layoutCalculator.andReturn({
+				nodes: {},
+				links: [{
+					ideaIdFrom: 1,
+					ideaIdTo: 4
+				}]
+			});
+			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+			underTest.setIdea(anIdea);
+		});
+		it('should invoke content.addLink when addLink method is invoked', function () {
+			spyOn(anIdea, 'addLink');
+
+			underTest.addLink(2);
+
+			expect(anIdea.addLink).toHaveBeenCalledWith(1, 2);
+		});
+		it('should dispatch linkCreated event when a new link is created', function () {
+			var linkCreatedListener = jasmine.createSpy('linkCreated');
+			underTest.addEventListener('linkCreated', linkCreatedListener);
+			layoutCalculator.andReturn({
+				nodes: {},
+				links: [
+					{
+						ideaIdFrom: 1,
+						ideaIdTo: 4
+					}, {
+						ideaIdFrom: 1,
+						ideaIdTo: 3
+					}
+				]
+			});
+
+			underTest.addLink(3);
+
+			expect(linkCreatedListener).toHaveBeenCalledWith({
+				ideaIdFrom: 1,
+				ideaIdTo: 3
+			});
+			expect(linkCreatedListener).not.toHaveBeenCalledWith({
+				ideaIdFrom: 1,
+				ideaIdTo: 4
+			});
+		});
+		it('should dispatch linkRemoved event when a link is removed', function () {
+			var linkRemovedListener = jasmine.createSpy('linkRemovedListener');
+			underTest.addEventListener('linkRemoved', linkRemovedListener);
+			layoutCalculator.andReturn({
+				nodes: {},
+				links: [
+					{
+						ideaIdFrom: 1,
+						ideaIdTo: 3
+					}
+				]
+			});
+
+			underTest.removeLink(1, 4);
+
+			expect(linkRemovedListener).toHaveBeenCalledWith({
+				ideaIdFrom: 1,
+				ideaIdTo: 4
+			});
 		});
 	});
 });

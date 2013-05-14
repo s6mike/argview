@@ -123,7 +123,11 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		if (imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
 		}
-
+		node.on('click', function (event) {
+			if (event.altKey) {
+				mapModel.addLink(n.id);
+			}
+		});
 		node.on('click tap', mapModel.selectNode.bind(mapModel, n.id));
 		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false));
 		node.on('dragstart', function () {
@@ -239,6 +243,19 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			duration: 0.1,
 			callback: connector.destroy.bind(connector)
 		});
+	});
+	mapModel.addEventListener('linkCreated', function (l) {
+		var connector = new Kinetic.Connector({
+			shapeFrom: nodeByIdeaId[l.ideaIdFrom],
+			shapeTo: nodeByIdeaId[l.ideaIdTo],
+			stroke: '#800',
+			strokeWidth: 1,
+			opacity: 1
+		});
+		layer.add(connector);
+		connector.moveToBottom();
+	});
+	mapModel.addEventListener('linkRemoved', function () {
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 		var currentScale = stage.getScale().x || 1,
