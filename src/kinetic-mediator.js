@@ -245,21 +245,25 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var connector = new Kinetic.Link({
+		var link = new Kinetic.Link({
 			shapeFrom: nodeByIdeaId[l.ideaIdFrom],
 			shapeTo: nodeByIdeaId[l.ideaIdTo],
 			dashArray: [8, 8],
 			stroke: '#800',
 			strokeWidth: 3,
-			opacity: 1
+			opacity: 1,
+			id: 'link_' + l.ideaIdFrom + '_' + l.ideaIdTo
 		});
-		connector.on('click', function (event) {
-			mapModel.selectLink(l, event.screenX, event.screenY);
+		link.on('click', function (event) {
+			mapModel.selectLink(l, { x: event.x, y: event.y });
 		});
-		layer.add(connector);
-		connector.moveToBottom();
+		layer.add(link);
+		link.moveToBottom();
 	});
-	mapModel.addEventListener('linkRemoved', function () {
+	mapModel.addEventListener('linkRemoved', function (l) {
+		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
+		link.destroy();
+		layer.draw();
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 		var currentScale = stage.getScale().x || 1,
