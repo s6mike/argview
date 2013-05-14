@@ -997,6 +997,10 @@ describe('MapModel', function () {
 							88: {
 								id: 4,
 								title: '4'
+							},
+							99: {
+								id: 5,
+								title: '5'
 							}
 						}
 					}
@@ -1072,6 +1076,45 @@ describe('MapModel', function () {
 			expect(linkRemovedListener).toHaveBeenCalledWith({
 				ideaIdFrom: 1,
 				ideaIdTo: 4
+			});
+		});
+		it('should be able to add two links', function () {
+			var linkCreatedListener = jasmine.createSpy('linkCreated');
+			underTest.addEventListener('linkCreated', linkCreatedListener);
+			layoutCalculator.andReturn({
+				nodes: {},
+				links: [
+					{
+						ideaIdFrom: 1,
+						ideaIdTo: 4
+					}, {
+						ideaIdFrom: 1,
+						ideaIdTo: 3
+					}
+				]
+			});
+			underTest.addLink(3);
+			layoutCalculator.andReturn({
+				nodes: {},
+				links: [
+					{
+						ideaIdFrom: 1,
+						ideaIdTo: 4
+					}, {
+						ideaIdFrom: 1,
+						ideaIdTo: 3
+					}, {
+						ideaIdFrom: 1,
+						ideaIdTo: 5
+					}
+				]
+			});
+
+			underTest.addLink(5);
+
+			expect(linkCreatedListener).toHaveBeenCalledWith({
+				ideaIdFrom: 1,
+				ideaIdTo: 5
 			});
 		});
 	});

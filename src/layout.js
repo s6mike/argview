@@ -86,7 +86,7 @@
 		var result = {
 			nodes: {},
 			connectors: {},
-			links: idea.links || []
+			links: _.clone(idea.links) || []
 		},
 			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
 			calculateLayoutInner = function (positions, level) {
