@@ -91,7 +91,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 					},
 					newLinks = _.map(newLayout.links || [], join),
 					oldLinks = _.map(currentLayout.links || [], join);
-				console.log(JSON.stringify(newLinks), JSON.stringify(oldLinks));
 				_.map(_.difference(newLinks, oldLinks), split).forEach(dispatchFunc('linkCreated'));
 				_.map(_.difference(oldLinks, newLinks), split).forEach(dispatchFunc('linkRemoved'));
 			}
@@ -274,6 +273,9 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 	};
 	this.addLink = function (nodeIdTo) {
 		idea.addLink(currentlySelectedIdeaId, nodeIdTo);
+	};
+	this.selectLink = function (link, selectionPoint) {
+		self.dispatchEvent('linkSelected', link, selectionPoint);
 	};
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
 		idea.removeLink(nodeIdFrom, nodeIdTo);

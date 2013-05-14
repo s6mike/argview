@@ -253,6 +253,9 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			strokeWidth: 3,
 			opacity: 1
 		});
+		connector.on('click', function (event) {
+			mapModel.selectLink(l, event.screenX, event.screenY);
+		});
 		layer.add(connector);
 		connector.moveToBottom();
 	});

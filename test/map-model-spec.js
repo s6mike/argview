@@ -1117,5 +1117,13 @@ describe('MapModel', function () {
 				ideaIdTo: 5
 			});
 		});
+		it('should dispatch linkSelected event when selectLink method is invoked', function () {
+			var linkSelectedListener = jasmine.createSpy('linkSelectedListener');
+			underTest.addEventListener('linkSelected', linkSelectedListener);
+
+			underTest.selectLink({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
+
+			expect(linkSelectedListener).toHaveBeenCalledWith({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
+		});
 	});
 });
