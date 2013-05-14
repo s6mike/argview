@@ -245,11 +245,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var connector = new Kinetic.Connector({
+		var connector = new Kinetic.Link({
 			shapeFrom: nodeByIdeaId[l.ideaIdFrom],
 			shapeTo: nodeByIdeaId[l.ideaIdTo],
+			dashArray: [8, 8],
 			stroke: '#800',
-			strokeWidth: 1,
+			strokeWidth: 3,
 			opacity: 1
 		});
 		layer.add(connector);
