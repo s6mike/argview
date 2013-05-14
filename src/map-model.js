@@ -39,11 +39,10 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				}
 			}
 			for (nodeId in currentLayout.nodes) {
-				nodeId = parseFloat(nodeId);
 				oldNode = currentLayout.nodes[nodeId];
 				newNode = newLayout.nodes[nodeId];
 				if (!newNode) {
-					if (nodeId === currentlySelectedIdeaId) {
+					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
 					self.dispatchEvent('nodeRemoved', oldNode);
@@ -426,7 +425,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				}
 			},
 			canDropOnNode = function (id, x, y, node) {
-				return id !== node.id &&
+				return id != node.id &&
 					x >= node.x &&
 					y >= node.y &&
 					x <= node.x + node.width - 2 * 10 &&
@@ -443,7 +442,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		self.nodeDragMove = function (id, x, y) {
 			var nodeId, node;
 			for (nodeId in currentLayout.nodes) {
-				nodeId = parseFloat(nodeId);
 				node = currentLayout.nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
 					updateCurrentDroppable(nodeId);

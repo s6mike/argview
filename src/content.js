@@ -92,7 +92,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return rank;
 		},
 		findIdeaById = function (ideaId) {
-			ideaId = parseFloat(ideaId);
 			return contentAggregate.id == ideaId ? contentAggregate : contentAggregate.findSubIdeaById(ideaId);
 		},
 		sameSideSiblingRanks = function (parentIdea, ideaRank) {
