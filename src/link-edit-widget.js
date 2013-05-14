@@ -5,10 +5,10 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		var element = jQuery(this), currentLink;
 		mapModel.addEventListener('linkSelected', function (link, selectionPoint) {
 			currentLink = link;
-			element.show().css({
-				position: 'absolute',
-				top: selectionPoint.y + 'px',
-				left: selectionPoint.x + 'px'
+			element.show();
+			element.css({
+				top: (selectionPoint.y - 0.5 * element.height()) + 'px',
+				left: (selectionPoint.x - 0.5 * element.width()) + 'px'
 			});
 		});
 		element.find('.delete').click(function () {
