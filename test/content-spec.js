@@ -431,6 +431,16 @@ describe("content aggregate", function () {
 				expect(result).toBeTruthy();
 				expect(idea.ideas[77].id).not.toBeNull();
 			});
+			it('assigns the provided ID if argument given', function () {
+				var result=idea.insertIntermediate(2,'Steve', 777);
+				expect(result).toBeTruthy();
+				expect(idea.ideas[77].id).toBe(777);
+			});
+			it('fails if the ID is provided and it already exists', function () {
+				var result=idea.insertIntermediate(2,'Steve', 2);
+				expect(result).toBeFalsy();
+				expect(idea.ideas[77].id).toBe(2);
+			});
 			it('fires an event matching the method call when the operation succeeds', function () {
 				var result=idea.insertIntermediate(2,'Steve');
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2,'Steve',3]);
@@ -479,6 +489,17 @@ describe("content aggregate", function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'},'session');
 				idea.addSubIdea(71);
 				expect(_.toArray(idea.ideas)[0].id).toBe('72.session');
+			});
+			it('uses the provided ID if one is provided', function () {
+				var idea = MAPJS.content({id:71,title:'My Idea'});
+				idea.addSubIdea(71,'T', 555);
+				expect(_.toArray(idea.ideas)[0].id).toBe(555);
+			});
+			it('fails if provided ID clashes with an existing ID', function () {
+				var idea = MAPJS.content({id:71,title:'My Idea'}),
+					result = idea.addSubIdea(71,'X',71);
+				expect(result).toBeFalsy();
+				expect(_.size(idea.ideas)).toBe(0);
 			});
 			it('assigns the first subidea the rank of 1', function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'});

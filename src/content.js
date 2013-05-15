@@ -254,13 +254,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		});
 		return true;
 	};
-	contentAggregate.addSubIdea = function (parentId, ideaTitle) {
+	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
 		var idea, parent = findIdeaById(parentId), newRank;
 		if (!parent) {
 			return false;
 		}
+		if (optionalNewId && findIdeaById(optionalNewId)) {
+			return false;
+		}
 		idea = init({
-			title: ideaTitle
+			title: ideaTitle,
+			id: optionalNewId
 		});
 		newRank = appendSubIdea(parent, idea);
 		notifyChange('addSubIdea', [parentId, ideaTitle, idea.id], function () {
@@ -281,12 +285,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return false;
 	};
-	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title) {
+	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
 		var childRank, oldIdea, newIdea, parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
 		if (!parentIdea) {
+			return false;
+		}
+		if (optionalNewId && findIdeaById(optionalNewId)) {
 			return false;
 		}
 		childRank = parentIdea.findChildRankById(inFrontOfIdeaId);
@@ -295,7 +302,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		oldIdea = parentIdea.ideas[childRank];
 		newIdea = init({
-			title: title
+			title: title,
+			id: optionalNewId
 		});
 		parentIdea.ideas[childRank] = newIdea;
 		newIdea.ideas = {
