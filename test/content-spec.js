@@ -180,9 +180,31 @@ describe("content aggregate", function () {
 	describe("command processing", function () {
 		describe("execCommand", function () {
 			it("executes updateTitle", function () {
-				var idea = MAPJS.content({title: 'abc'});
+				var idea = MAPJS.content({id: 1, title: 'abc'}),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
 				idea.execCommand({cmd: 'updateTitle', args: [1, 'new']});
-				expect(idea.title).toBe('new');
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new']);
+			});
+			it("attaches a default session ID if provided during construction", function () {
+				var idea = MAPJS.content({id: 1, title: 'abc'}, 'session'),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
+				idea.execCommand({cmd: 'updateTitle', args: [1, 'new']});
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'session');
+			});
+			it("attaches the provided session ID if provided in command", function () {
+				var idea = MAPJS.content({id: 1, title: 'abc'}, 'session'),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
+				idea.execCommand({cmd: 'updateTitle', args: [1, 'new'], s: 'other'});
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'other');
 			});
 		});
 		describe("paste", function () {

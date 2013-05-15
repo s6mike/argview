@@ -3,7 +3,6 @@
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
 	var cachedId,
-		contentSessionKey = sessionKey,
 		invalidateIdCache = function () {
 			cachedId = undefined;
 		},
@@ -20,25 +19,26 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				parseInt(idea.id, 10) || 0
 			);
 		},
-		nextId = function nextId() {
+		nextId = function nextId(originSession) {
+			originSession = originSession || sessionKey;
 			if (!cachedId) {
 				cachedId =  maxId();
 			}
 			cachedId += 1;
-			if (contentSessionKey) {
-				return cachedId + '.' + contentSessionKey;
+			if (originSession) {
+				return cachedId + '.' + originSession;
 			}
 			return cachedId;
 		},
-		init = function (contentIdea) {
+		init = function (contentIdea, originSession) {
 			if (!contentIdea.id) {
-				contentIdea.id = nextId();
+				contentIdea.id = nextId(originSession);
 			} else {
 				invalidateIdCache();
 			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
-					contentIdea.ideas[parseFloat(key)] = init(value);
+					contentIdea.ideas[parseFloat(key)] = init(value, originSession);
 				});
 			}
 			if (!contentIdea.title) {
@@ -136,12 +136,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		eventStack = [],
 		redoStack = [],
 		isRedoInProgress = false,
-		notifyChange = function (method, args, undofunc) {
+		notifyChange = function (method, args, undofunc, originSession) {
 			eventStack.push({eventMethod: method, eventArgs: args, undoFunction: undofunc});
 			if (isRedoInProgress) {
 				contentAggregate.dispatchEvent('changed', 'redo');
 			} else {
-				contentAggregate.dispatchEvent('changed', method, args);
+				if (originSession) {
+					contentAggregate.dispatchEvent('changed', method, args, originSession);
+				} else {
+					contentAggregate.dispatchEvent('changed', method, args);
+				}
 				redoStack = [];
 			}
 		},
@@ -163,6 +167,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			if (idea.ideas) {
 				_.each(idea.ideas, upgrade);
 			}
+		},
+		sessionFromId = function (id) {
+			var dotIndex = String(id).indexOf('.');
+			return dotIndex > 0 && id.substr(dotIndex + 1);
 		},
 		commandProcessors = {};
 
@@ -215,12 +223,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (!commandProcessors[command.cmd]) {
 			return false;
 		}
-		return commandProcessors[command.cmd].apply(contentAggregate, command.args);
+		return commandProcessors[command.cmd].apply(contentAggregate, [command.s || sessionKey].concat(_.toArray(command.args)));
 	};
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		return contentAggregate.execCommand({cmd: 'paste', args: arguments });
 	};
-	commandProcessors.paste = function (parentIdeaId, jsonToPaste, initialId) {
+	commandProcessors.paste = function (originSession, parentIdeaId, jsonToPaste, initialId) {
 		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
 			cleanUp = function (json) {
 				var result =  _.omit(json, 'ideas', 'id'), index = 1, childKeys, sortedChildKeys;
@@ -235,31 +243,27 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return result;
 			},
 			newIdea,
-			newRank,
-			oldSessionKey;
+			newRank;
 		if (initialId) {
-			oldSessionKey = contentSessionKey;
 			cachedId = parseInt(initialId, 10) - 1;
-			contentSessionKey = String(initialId).split('.')[1];
 		}
-		newIdea =  jsonToPaste && jsonToPaste.title && init(cleanUp(jsonToPaste));
+		newIdea =  jsonToPaste && jsonToPaste.title && init(cleanUp(jsonToPaste), sessionFromId(initialId));
 		if (!pasteParent || !newIdea) {
 			return false;
 		}
 		newRank = appendSubIdea(pasteParent, newIdea);
 		if (initialId) {
 			invalidateIdCache();
-			contentSessionKey = oldSessionKey;
 		}
 		notifyChange('paste', [parentIdeaId, jsonToPaste, newIdea.id], function () {
 			delete pasteParent.ideas[newRank];
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.flip = function (ideaId) {
 		return contentAggregate.execCommand({cmd: 'flip', args: arguments});
 	};
-	commandProcessors.flip = function (ideaId) {
+	commandProcessors.flip = function (originSession, ideaId) {
 		var newRank, maxRank, currentRank = contentAggregate.findChildRankById(ideaId);
 		if (!currentRank) {
 			return false;
@@ -269,13 +273,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		reorderChild(contentAggregate, newRank, currentRank);
 		notifyChange('flip', [ideaId], function () {
 			reorderChild(contentAggregate, currentRank, newRank);
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.updateTitle = function (ideaId, title) {
 		return contentAggregate.execCommand({cmd: 'updateTitle', args: arguments});
 	};
-	commandProcessors.updateTitle = function (ideaId, title) {
+	commandProcessors.updateTitle = function (originSession, ideaId, title) {
 		var idea = findIdeaById(ideaId), originalTitle;
 		if (!idea) {
 			return false;
@@ -287,13 +291,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		idea.title = title;
 		notifyChange('updateTitle', [ideaId, title], function () {
 			idea.title = originalTitle;
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
 		return contentAggregate.execCommand({cmd: 'addSubIdea', args: arguments});
 	};
-	commandProcessors.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
+	commandProcessors.addSubIdea = function (originSession, parentId, ideaTitle, optionalNewId) {
 		var idea, parent = findIdeaById(parentId), newRank;
 		if (!parent) {
 			return false;
@@ -308,13 +312,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		newRank = appendSubIdea(parent, idea);
 		notifyChange('addSubIdea', [parentId, ideaTitle, idea.id], function () {
 			delete parent.ideas[newRank];
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.removeSubIdea = function (subIdeaId) {
 		return contentAggregate.execCommand({cmd: 'removeSubIdea', args: arguments});
 	};
-	commandProcessors.removeSubIdea = function (subIdeaId) {
+	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
 		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea;
 		if (parent) {
 			oldRank = parent.findChildRankById(subIdeaId);
@@ -322,7 +326,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			delete parent.ideas[oldRank];
 			notifyChange('removeSubIdea', [subIdeaId], function () {
 				parent.ideas[oldRank] = oldIdea;
-			});
+			}, originSession);
 			return true;
 		}
 		return false;
@@ -330,7 +334,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
 		return contentAggregate.execCommand({cmd: 'insertIntermediate', args: arguments});
 	};
-	commandProcessors.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
+	commandProcessors.insertIntermediate = function (originSession, inFrontOfIdeaId, title, optionalNewId) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
@@ -356,13 +360,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		};
 		notifyChange('insertIntermediate', [inFrontOfIdeaId, title, newIdea.id], function () {
 			parentIdea.ideas[childRank] = oldIdea;
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.changeParent = function (ideaId, newParentId) {
 		return contentAggregate.execCommand({cmd: 'changeParent', args: arguments});
 	};
-	commandProcessors.changeParent = function (ideaId, newParentId) {
+	commandProcessors.changeParent = function (originSession, ideaId, newParentId) {
 		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId);
 		if (ideaId == newParentId) {
 			return false;
@@ -390,13 +394,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		notifyChange('changeParent', [ideaId, newParentId], function () {
 			oldParent.ideas[oldRank] = idea;
 			delete parent.ideas[newRank];
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
 		return contentAggregate.execCommand({cmd: 'updateAttr', args: arguments});
 	};
-	commandProcessors.updateAttr = function (ideaId, attrName, attrValue) {
+	commandProcessors.updateAttr = function (originSession, ideaId, attrName, attrValue) {
 		var idea = findIdeaById(ideaId), oldAttr;
 		if (!idea) {
 			return false;
@@ -419,13 +423,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		notifyChange('updateAttr', [ideaId, attrName, attrValue], function () {
 			idea.attr = oldAttr;
-		});
+		}, originSession);
 		return true;
 	};
 	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
-		return contentAggregate.execCommand({cmd: 'moveRelative', args: arguments});
-	};
-	commandProcessors.moveRelative = function (ideaId, relativeMovement) {
 		var parentIdea = contentAggregate.findParent(ideaId),
 			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
 			siblingRanks = currentRank && _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs),
@@ -441,7 +442,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	contentAggregate.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
 		return contentAggregate.execCommand({cmd: 'positionBefore', args: arguments});
 	};
-	commandProcessors.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
+	commandProcessors.positionBefore = function (originSession, ideaId, positionBeforeIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		var newRank, afterRank, siblingRanks, candidateSiblings, beforeRank, maxRank, currentRank;
 		currentRank = parentIdea.findChildRankById(ideaId);
@@ -486,7 +487,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 
 		notifyChange('positionBefore', [ideaId, positionBeforeIdeaId], function () {
 			reorderChild(parentIdea, currentRank, newRank);
-		});
+		}, originSession);
 		return true;
 	};
 	observable(contentAggregate);
