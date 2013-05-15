@@ -2,64 +2,95 @@
 /*global _, MAPJS, observable*/
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
-	var init = function (contentIdea) {
-		if (contentIdea.ideas) {
-			_.each(contentIdea.ideas, function (value, key) {
-				contentIdea.ideas[parseFloat(key)] = init(value);
-			});
-		}
-		if (!contentIdea.title) {
-			contentIdea.title = '';
-		}
-		contentIdea.id = contentIdea.id || contentAggregate.nextId();
-		contentIdea.containsDirectChild = contentIdea.findChildRankById = function (childIdeaId) {
-			return parseFloat(
-				_.reduce(
-					contentIdea.ideas,
-					function (res, value, key) {
-						return value.id == childIdeaId ? key : res;
-					},
-					undefined
-				)
+	var cachedId,
+		invalidateIdCache = function () {
+			cachedId = undefined;
+		},
+		maxId = function maxId(idea) {
+			idea = idea || contentAggregate;
+			if (!idea.ideas) {
+				return parseInt(idea.id, 10) || 0;
+			}
+			return _.reduce(
+				idea.ideas,
+				function (result, subidea) {
+					return Math.max(result, maxId(subidea));
+				},
+				parseInt(idea.id, 10) || 0
 			);
-		};
-		contentIdea.findSubIdeaById = function (childIdeaId) {
-			var myChild = _.find(contentIdea.ideas, function (idea) {
-				return idea.id == childIdeaId;
-			});
-			return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
-				return result || idea.findSubIdeaById(childIdeaId);
-			}, undefined);
-		};
-		contentIdea.find = function (predicate) {
-			var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
-			if (_.size(contentIdea.ideas) === 0) {
-				return current;
+		},
+		nextId = function nextId() {
+			if (!cachedId) {
+				cachedId =  maxId();
 			}
-			return _.reduce(contentIdea.ideas, function (result, idea) {
-				return _.union(result, idea.find(predicate));
-			}, current);
-		};
-		contentIdea.getAttr = function (name) {
-			if (contentIdea.attr && contentIdea.attr[name]) {
-				return contentIdea.attr[name];
+			cachedId += 1;
+			if (sessionKey) {
+				return cachedId + '.' + sessionKey;
 			}
-			return false;
-		};
-		contentIdea.sortedSubIdeas = function () {
-			if (!contentIdea.ideas) {
-				return [];
+			return cachedId;
+		},
+		init = function (contentIdea) {
+			if (contentIdea.ideas) {
+				_.each(contentIdea.ideas, function (value, key) {
+					contentIdea.ideas[parseFloat(key)] = init(value);
+				});
 			}
-			var result = [],
-				childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) { return key > 0; }),
-				sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
-			_.each(sortedChildKeys, function (key) {
-				result.push(contentIdea.ideas[key]);
-			});
-			return result;
-		};
-		return contentIdea;
-	},
+			if (!contentIdea.title) {
+				contentIdea.title = '';
+			}
+			if (!contentIdea.id) {
+				contentIdea.id = nextId();
+			} else {
+				invalidateIdCache();
+			}
+			contentIdea.containsDirectChild = contentIdea.findChildRankById = function (childIdeaId) {
+				return parseFloat(
+					_.reduce(
+						contentIdea.ideas,
+						function (res, value, key) {
+							return value.id == childIdeaId ? key : res;
+						},
+						undefined
+					)
+				);
+			};
+			contentIdea.findSubIdeaById = function (childIdeaId) {
+				var myChild = _.find(contentIdea.ideas, function (idea) {
+					return idea.id == childIdeaId;
+				});
+				return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
+					return result || idea.findSubIdeaById(childIdeaId);
+				}, undefined);
+			};
+			contentIdea.find = function (predicate) {
+				var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
+				if (_.size(contentIdea.ideas) === 0) {
+					return current;
+				}
+				return _.reduce(contentIdea.ideas, function (result, idea) {
+					return _.union(result, idea.find(predicate));
+				}, current);
+			};
+			contentIdea.getAttr = function (name) {
+				if (contentIdea.attr && contentIdea.attr[name]) {
+					return contentIdea.attr[name];
+				}
+				return false;
+			};
+			contentIdea.sortedSubIdeas = function () {
+				if (!contentIdea.ideas) {
+					return [];
+				}
+				var result = [],
+					childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) { return key > 0; }),
+					sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
+				_.each(sortedChildKeys, function (key) {
+					result.push(contentIdea.ideas[key]);
+				});
+				return result;
+			};
+			return contentIdea;
+		},
 		maxKey = function (kvMap, sign) {
 			sign = sign || 1;
 			if (_.size(kvMap) === 0) {
@@ -117,7 +148,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
 		},
-		cachedId,
+
 		upgrade = function (idea) {
 			if (idea.style) {
 				idea.attr = {};
@@ -133,29 +164,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				_.each(idea.ideas, upgrade);
 			}
 		};
-	contentAggregate.nextId = function nextId() {
-		if (!cachedId) {
-			cachedId =  contentAggregate.maxId();
-		}
-		cachedId += 1;
-		if (sessionKey) {
-			return cachedId + '.' + sessionKey;
-		}
-		return cachedId;
-	};
-	contentAggregate.maxId = function maxId(idea) {
-		idea = idea || contentAggregate;
-		if (!idea.ideas) {
-			return parseInt(idea.id, 10) || 0;
-		}
-		return _.reduce(
-			idea.ideas,
-			function (result, subidea) {
-				return Math.max(result, maxId(subidea));
-			},
-			parseInt(idea.id, 10) || 0
-		);
-	};
+
+
+
+
 	contentAggregate.nextSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,

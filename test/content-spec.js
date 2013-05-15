@@ -42,18 +42,6 @@ describe("content aggregate", function () {
 				expect(wrapped.getAttr('xx')).toBe('yellow');
 			});
 		});
-		describe("maxID", function () {
-			it("calculates the maximum assigned ID already in the idea hierarchy", function () {
-				var ideas = MAPJS.content({id: 22, title: 'My Idea', ideas: { 1: {id: 23, title: 'My First Subidea'}, '-1': {id: 54, title: 'Max'}}});
-				expect(ideas.maxId()).toBe(54);
-			});
-			it("survives pseudo-numerical IDs with session after decimal", function () {
-				var ideas = MAPJS.content({id: '22.a', ideas: { 1: {id: '23.b'}, '-1': {id: '54.c'}}});
-				expect(ideas.maxId()).toBe(54);
-			});
-
-
-		});
 		describe("findChildRankById", function () {
 			var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15: {id: 4, title: 'I4'}}});
 			it('returns the key in the parent idea list of an idea by its id', function () {
@@ -436,6 +424,12 @@ describe("content aggregate", function () {
 				expect(result).toBeTruthy();
 				expect(idea.ideas[77].id).toBe(777);
 			});
+			it('does not mess up automatic ID for nodes after operation when ID is provided', function () {
+				idea.addSubIdea(2, 'x');
+				idea.insertIntermediate(2,'Steve', 777);
+				idea.addSubIdea(2, 'y');
+				expect(idea.findSubIdeaById(2).ideas[2].id).toBe(778);
+			});
 			it('fails if the ID is provided and it already exists', function () {
 				var result=idea.insertIntermediate(2,'Steve', 2);
 				expect(result).toBeFalsy();
@@ -494,6 +488,13 @@ describe("content aggregate", function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'});
 				idea.addSubIdea(71,'T', 555);
 				expect(_.toArray(idea.ideas)[0].id).toBe(555);
+			});
+			it('does not mess up automatic ID for nodes after operation when ID is provided', function () {
+				var idea = MAPJS.content({id:71,title:'My Idea'});
+				idea.addSubIdea(71, 'x');
+				idea.addSubIdea(72,'T', 555);
+				idea.addSubIdea(555, 'y');
+				expect(idea.findSubIdeaById(555).ideas[1].id).toBe(556);
 			});
 			it('fails if provided ID clashes with an existing ID', function () {
 				var idea = MAPJS.content({id:71,title:'My Idea'}),
