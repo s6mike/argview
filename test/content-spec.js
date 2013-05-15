@@ -189,22 +189,49 @@ describe("content aggregate", function () {
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-10].ideas[1]).toPartiallyMatch({title: 'pasted'});
 			});
-			it("should reassign IDs based on next available ID in the aggregate", function () {
-				var result = idea.paste(3, toPaste);
-				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].ideas[1].id).toBe(5);
+			describe("when no ID provided", function () {
+				it("should reassign IDs based on next available ID in the aggregate", function () {
+					var result = idea.paste(3, toPaste);
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe(5);
+				});
+				it("should append session key if given when re-assigning", function () {
+					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
+					var result = idea.paste(3, toPaste);
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe('5.sess');
+				});
+				it("should reassign IDs recursively based on next available ID in the aggregate", function () {
+					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe(5);
+					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(6);
+				});
 			});
-			it("should append session key if given when re-assigning", function () {
-				idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
-				var result = idea.paste(3, toPaste);
-				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].ideas[1].id).toBe('5.sess');
-			});
-			it("should reassign IDs recursively based on next available ID in the aggregate", function () {
-				var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
-				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].ideas[1].id).toBe(6);
-				expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(5);
+			describe("when ID is provided", function () {
+				it("should reassign IDs based on provided ID for the root of the pasted hierarchy", function () {
+					var result = idea.paste(3, toPaste, 777);
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe(777);
+				});
+				it("should use session key from provided ID", function () {
+					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
+					var result = idea.paste(3, toPaste, '778.sess2');
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe('778.sess2');
+				});
+				it("should reassign IDs recursively based", function () {
+					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), 779);
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe(779);
+					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(780);
+				});
+				it("should keep session ID when reassigning recursively", function () {
+					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), '781.abc');
+					expect(result).toBeTruthy();
+					expect(idea.ideas[-10].ideas[1].id).toBe('781.abc');
+					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe('782.abc');
+				});
 			});
 			it("should reorder children by absolute rank, positive first then negative", function () {
 				var result = idea.paste(3, _.extend(toPaste, {ideas: {

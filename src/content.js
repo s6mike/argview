@@ -3,6 +3,7 @@
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
 	var cachedId,
+		contentSessionKey = sessionKey,
 		invalidateIdCache = function () {
 			cachedId = undefined;
 		},
@@ -24,12 +25,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				cachedId =  maxId();
 			}
 			cachedId += 1;
-			if (sessionKey) {
-				return cachedId + '.' + sessionKey;
+			if (contentSessionKey) {
+				return cachedId + '.' + contentSessionKey;
 			}
 			return cachedId;
 		},
 		init = function (contentIdea) {
+			if (!contentIdea.id) {
+				contentIdea.id = nextId();
+			} else {
+				invalidateIdCache();
+			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
 					contentIdea.ideas[parseFloat(key)] = init(value);
@@ -37,11 +43,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			if (!contentIdea.title) {
 				contentIdea.title = '';
-			}
-			if (!contentIdea.id) {
-				contentIdea.id = nextId();
-			} else {
-				invalidateIdCache();
 			}
 			contentIdea.containsDirectChild = contentIdea.findChildRankById = function (childIdeaId) {
 				return parseFloat(
@@ -213,7 +214,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 
 	/**** aggregate command processing methods ****/
-	contentAggregate.paste = function (parentIdeaId, jsonToPaste) {
+	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
 			cleanUp = function (json) {
 				var result =  _.omit(json, 'ideas', 'id'), index = 1, childKeys, sortedChildKeys;
@@ -227,12 +228,23 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}
 				return result;
 			},
-			newIdea = jsonToPaste && jsonToPaste.title && init(cleanUp(jsonToPaste)),
-			newRank;
+			newIdea,
+			newRank,
+			oldSessionKey;
+		if (initialId) {
+			oldSessionKey = contentSessionKey;
+			cachedId = parseInt(initialId, 10) - 1;
+			contentSessionKey = String(initialId).split('.')[1];
+		}
+		newIdea =  jsonToPaste && jsonToPaste.title && init(cleanUp(jsonToPaste));
 		if (!pasteParent || !newIdea) {
 			return false;
 		}
 		newRank = appendSubIdea(pasteParent, newIdea);
+		if (initialId) {
+			invalidateIdCache();
+			contentSessionKey = oldSessionKey;
+		}
 		notifyChange('paste', [parentIdeaId, jsonToPaste, newIdea.id], function () {
 			delete pasteParent.ideas[newRank];
 		});
