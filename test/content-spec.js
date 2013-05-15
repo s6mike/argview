@@ -178,6 +178,13 @@ describe("content aggregate", function () {
 		});
 	});
 	describe("command processing", function () {
+		describe("execCommand", function () {
+			it("executes updateTitle", function () {
+				var idea = MAPJS.content({title: 'abc'});
+				idea.execCommand({cmd: 'updateTitle', args: [1, 'new']});
+				expect(idea.title).toBe('new');
+			});
+		});
 		describe("paste", function () {
 			var idea, toPaste;
 			beforeEach(function () {

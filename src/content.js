@@ -149,7 +149,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
 		},
-
 		upgrade = function (idea) {
 			if (idea.style) {
 				idea.attr = {};
@@ -164,10 +163,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			if (idea.ideas) {
 				_.each(idea.ideas, upgrade);
 			}
-		};
-
-
-
+		},
+		commandProcessors = {};
 
 	contentAggregate.nextSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
@@ -214,7 +211,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 
 	/**** aggregate command processing methods ****/
+	contentAggregate.execCommand = function (command) {
+		if (!commandProcessors[command.cmd]) {
+			return false;
+		}
+		return commandProcessors[command.cmd].apply(contentAggregate, command.args);
+	};
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
+		return contentAggregate.execCommand({cmd: 'paste', args: arguments });
+	};
+	commandProcessors.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
 			cleanUp = function (json) {
 				var result =  _.omit(json, 'ideas', 'id'), index = 1, childKeys, sortedChildKeys;
@@ -251,6 +257,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.flip = function (ideaId) {
+		return contentAggregate.execCommand({cmd: 'flip', args: arguments});
+	};
+	commandProcessors.flip = function (ideaId) {
 		var newRank, maxRank, currentRank = contentAggregate.findChildRankById(ideaId);
 		if (!currentRank) {
 			return false;
@@ -264,6 +273,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.updateTitle = function (ideaId, title) {
+		return contentAggregate.execCommand({cmd: 'updateTitle', args: arguments});
+	};
+	commandProcessors.updateTitle = function (ideaId, title) {
 		var idea = findIdeaById(ideaId), originalTitle;
 		if (!idea) {
 			return false;
@@ -279,6 +291,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
+		return contentAggregate.execCommand({cmd: 'addSubIdea', args: arguments});
+	};
+	commandProcessors.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
 		var idea, parent = findIdeaById(parentId), newRank;
 		if (!parent) {
 			return false;
@@ -297,6 +312,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.removeSubIdea = function (subIdeaId) {
+		return contentAggregate.execCommand({cmd: 'removeSubIdea', args: arguments});
+	};
+	commandProcessors.removeSubIdea = function (subIdeaId) {
 		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea;
 		if (parent) {
 			oldRank = parent.findChildRankById(subIdeaId);
@@ -310,6 +328,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return false;
 	};
 	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
+		return contentAggregate.execCommand({cmd: 'insertIntermediate', args: arguments});
+	};
+	commandProcessors.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
@@ -339,6 +360,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.changeParent = function (ideaId, newParentId) {
+		return contentAggregate.execCommand({cmd: 'changeParent', args: arguments});
+	};
+	commandProcessors.changeParent = function (ideaId, newParentId) {
 		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId);
 		if (ideaId == newParentId) {
 			return false;
@@ -370,6 +394,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
+		return contentAggregate.execCommand({cmd: 'updateAttr', args: arguments});
+	};
+	commandProcessors.updateAttr = function (ideaId, attrName, attrValue) {
 		var idea = findIdeaById(ideaId), oldAttr;
 		if (!idea) {
 			return false;
@@ -396,6 +423,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
+		return contentAggregate.execCommand({cmd: 'moveRelative', args: arguments});
+	};
+	commandProcessors.moveRelative = function (ideaId, relativeMovement) {
 		var parentIdea = contentAggregate.findParent(ideaId),
 			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
 			siblingRanks = currentRank && _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs),
@@ -409,6 +439,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
 	};
 	contentAggregate.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
+		return contentAggregate.execCommand({cmd: 'positionBefore', args: arguments});
+	};
+	commandProcessors.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		var newRank, afterRank, siblingRanks, candidateSiblings, beforeRank, maxRank, currentRank;
 		currentRank = parentIdea.findChildRankById(ideaId);
