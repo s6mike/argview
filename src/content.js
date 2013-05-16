@@ -219,14 +219,14 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 
 	/**** aggregate command processing methods ****/
-	contentAggregate.execCommand = function (command) {
-		if (!commandProcessors[command.cmd]) {
+	contentAggregate.execCommand = function (cmd, args, originSession) {
+		if (!commandProcessors[cmd]) {
 			return false;
 		}
-		return commandProcessors[command.cmd].apply(contentAggregate, [command.s || sessionKey].concat(_.toArray(command.args)));
+		return commandProcessors[cmd].apply(contentAggregate, [originSession || sessionKey].concat(_.toArray(args)));
 	};
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
-		return contentAggregate.execCommand({cmd: 'paste', args: arguments });
+		return contentAggregate.execCommand('paste', arguments);
 	};
 	commandProcessors.paste = function (originSession, parentIdeaId, jsonToPaste, initialId) {
 		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
@@ -261,7 +261,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.flip = function (ideaId) {
-		return contentAggregate.execCommand({cmd: 'flip', args: arguments});
+		return contentAggregate.execCommand('flip', arguments);
 	};
 	commandProcessors.flip = function (originSession, ideaId) {
 		var newRank, maxRank, currentRank = contentAggregate.findChildRankById(ideaId);
@@ -277,7 +277,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.updateTitle = function (ideaId, title) {
-		return contentAggregate.execCommand({cmd: 'updateTitle', args: arguments});
+		return contentAggregate.execCommand('updateTitle', arguments);
 	};
 	commandProcessors.updateTitle = function (originSession, ideaId, title) {
 		var idea = findIdeaById(ideaId), originalTitle;
@@ -295,7 +295,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
-		return contentAggregate.execCommand({cmd: 'addSubIdea', args: arguments});
+		return contentAggregate.execCommand('addSubIdea', arguments);
 	};
 	commandProcessors.addSubIdea = function (originSession, parentId, ideaTitle, optionalNewId) {
 		var idea, parent = findIdeaById(parentId), newRank;
@@ -316,7 +316,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.removeSubIdea = function (subIdeaId) {
-		return contentAggregate.execCommand({cmd: 'removeSubIdea', args: arguments});
+		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
 		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea;
@@ -332,7 +332,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return false;
 	};
 	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
-		return contentAggregate.execCommand({cmd: 'insertIntermediate', args: arguments});
+		return contentAggregate.execCommand('insertIntermediate', arguments);
 	};
 	commandProcessors.insertIntermediate = function (originSession, inFrontOfIdeaId, title, optionalNewId) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
@@ -364,7 +364,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.changeParent = function (ideaId, newParentId) {
-		return contentAggregate.execCommand({cmd: 'changeParent', args: arguments});
+		return contentAggregate.execCommand('changeParent', arguments);
 	};
 	commandProcessors.changeParent = function (originSession, ideaId, newParentId) {
 		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId);
@@ -398,7 +398,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return true;
 	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
-		return contentAggregate.execCommand({cmd: 'updateAttr', args: arguments});
+		return contentAggregate.execCommand('updateAttr', arguments);
 	};
 	commandProcessors.updateAttr = function (originSession, ideaId, attrName, attrValue) {
 		var idea = findIdeaById(ideaId), oldAttr;
@@ -440,7 +440,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
 	};
 	contentAggregate.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
-		return contentAggregate.execCommand({cmd: 'positionBefore', args: arguments});
+		return contentAggregate.execCommand('positionBefore', arguments);
 	};
 	commandProcessors.positionBefore = function (originSession, ideaId, positionBeforeIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;

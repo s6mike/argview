@@ -184,7 +184,7 @@ describe("content aggregate", function () {
 					listener = jasmine.createSpy();
 				idea.addEventListener('changed', listener);
 
-				idea.execCommand({cmd: 'updateTitle', args: [1, 'new']});
+				idea.execCommand('updateTitle', [1, 'new']);
 
 				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new']);
 			});
@@ -193,7 +193,7 @@ describe("content aggregate", function () {
 					listener = jasmine.createSpy();
 				idea.addEventListener('changed', listener);
 
-				idea.execCommand({cmd: 'updateTitle', args: [1, 'new']});
+				idea.execCommand('updateTitle', [1, 'new']);
 
 				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'session');
 			});
@@ -202,7 +202,7 @@ describe("content aggregate", function () {
 					listener = jasmine.createSpy();
 				idea.addEventListener('changed', listener);
 
-				idea.execCommand({cmd: 'updateTitle', args: [1, 'new'], s: 'other'});
+				idea.execCommand('updateTitle', [1, 'new'], 'other');
 
 				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'other');
 			});
