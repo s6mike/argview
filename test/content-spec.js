@@ -1099,7 +1099,7 @@ describe("content aggregate", function () {
 			wrapped.updateTitle(1, 'First');
 			wrapped.addEventListener('changed', spy);
 			wrapped.undo();
-			expect(spy).toHaveBeenCalledWith('undo',[]);
+			expect(spy).toHaveBeenCalledWith('undo',[], undefined);
 		});
 		it("fails if there is nothing to undo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),

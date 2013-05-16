@@ -173,7 +173,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return dotIndex > 0 && id.substr(dotIndex + 1);
 		},
 		commandProcessors = {};
-
+	contentAggregate.getSessionKey = function () {
+		return sessionKey;
+	};
 	contentAggregate.nextSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,
@@ -567,23 +569,30 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		});
 	}());
 	/* undo/redo */
+
 	contentAggregate.undo = function () {
+		return contentAggregate.execCommand('undo', arguments);
+	};
+	commandProcessors.undo = function (originSession) {
 		var topEvent;
 		topEvent = eventStack.pop();
 		if (topEvent && topEvent.undoFunction) {
 			topEvent.undoFunction();
 			redoStack.push(topEvent);
-			contentAggregate.dispatchEvent('changed', 'undo', []);
+			contentAggregate.dispatchEvent('changed', 'undo', [], originSession);
 			return true;
 		}
 		return false;
 	};
 	contentAggregate.redo = function () {
+		return contentAggregate.execCommand('redo', arguments);
+	};
+	commandProcessors.redo = function (originSession) {
 		var topEvent;
 		topEvent = redoStack.pop();
 		if (topEvent) {
 			isRedoInProgress = true;
-			contentAggregate[topEvent.eventMethod].apply(contentAggregate, topEvent.eventArgs);
+			contentAggregate.execCommand(topEvent.eventMethod, topEvent.eventArgs, originSession);
 			isRedoInProgress = false;
 			return true;
 		}
