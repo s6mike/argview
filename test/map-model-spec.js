@@ -192,90 +192,142 @@ describe('MapModel', function () {
 			anIdea.dispatchEvent('changed');
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
 		});
-		it('should dispatch nodeEditRequested when an intermediary is created', function () {
-			anIdea = MAPJS.content({
-				id: 1,
-				ideas: {
-					7: {
-						id: 2
-					}
-				}
-			});
-			underTest.setIdea(anIdea);
-			var nodeEditRequestedListener = jasmine.createSpy();
-			underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-			underTest.selectNode(2);
-			underTest.insertIntermediate('toolbar', true);
-			expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-		});
-		it('should dispatch nodeEditRequested when a new node is created', function () {
-			anIdea = MAPJS.content({
-				id: 1,
-				ideas: {
-					7: {
-						id: 2
-					}
-				}
-			});
-			underTest.setIdea(anIdea);
-			var nodeEditRequestedListener = jasmine.createSpy();
-			underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-			underTest.selectNode(2);
-			underTest.addSubIdea('toolbar');
-			expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-		});
-		it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
-			var layoutCalculatorLayout,
-				layoutCalculator = function () {
-					return layoutCalculatorLayout;
+		describe("focus/edit automatic control", function () {
+
+			var nodeEditRequestedListener,
+				nodeMovedListener,
+				insertIntermediate = function (contentSession, commandSession) {
+					anIdea = MAPJS.content({
+						id: 1,
+						ideas: {
+							7: {
+								id: 2
+							}
+						}
+					}, contentSession);
+					underTest.setIdea(anIdea);
+					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+					anIdea.execCommand('insertIntermediate', [2, 'ttl', 3], commandSession);
 				},
-				underTest,
-				anIdea,
-				layoutBefore,
-				layoutAfter,
+				addSubIdea = function (originalSession, commandSession) {
+					anIdea = MAPJS.content({
+						id: 1,
+						ideas: {
+							7: {
+								id: 2
+							}
+						}
+					}, originalSession);
+					underTest.setIdea(anIdea);
+					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+					anIdea.execCommand('addSubIdea', [2, 'ttt', 3], commandSession);
+				},
+				updateAttrs = function (originalSession, commandSession) {
+					var layoutCalculatorLayout,
+						layoutCalculator = function () {
+							return layoutCalculatorLayout;
+						},
+						underTest,
+						anIdea,
+						layoutBefore,
+						layoutAfter;
+
+					layoutBefore = {
+						nodes: {
+							1: {
+								x: 100,
+								y: 200,
+								title: 'First'
+							},
+							2: {
+								x: 0,
+								y: 0,
+								title: 'Second'
+							}
+						}
+					};
+					layoutAfter = {
+						nodes: {
+							1: {
+								x: 110,
+								y: 220,
+								title: 'First'
+							},
+							2: {
+								x: 0,
+								y: 0,
+								title: 'Second'
+							}
+						}
+					};
+					layoutCalculatorLayout = layoutBefore;
+					anIdea = MAPJS.content({title: 'ttt'}, originalSession);
+					underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+					underTest.setIdea(anIdea);
+					layoutCalculatorLayout = layoutAfter;
+					underTest.addEventListener('nodeMoved', nodeMovedListener);
+
+					anIdea.dispatchEvent('changed', 'updateAttr', [1], commandSession);
+				};
+			beforeEach(function () {
 				nodeMovedListener = jasmine.createSpy();
-			layoutBefore = {
-				nodes: {
-					1: {
-						x: 100,
-						y: 200,
-						title: 'First'
-					},
-					2: {
-						x: 0,
-						y: 0,
+				nodeEditRequestedListener = jasmine.createSpy();
+			});
+			describe("when no session is defined", function () {
+				it('should dispatch edit when intermediate is created', function () {
+					insertIntermediate();
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+				});
+				it('should dispatch edit when a new idea is added', function () {
+					addSubIdea();
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+				});
+				it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
+					updateAttrs();
+					expect(nodeMovedListener.callCount).toBe(1);
+					expect(nodeMovedListener).toHaveBeenCalledWith({
+						x: -10,
+						y: -20,
 						title: 'Second'
-					}
-				}
-			};
-			layoutAfter = {
-				nodes: {
-					1: {
+					});
+				});
+			});
+			describe("when session is defined and matches local session", function () {
+				it('should dispatch edit when intermediate is created', function () {
+					insertIntermediate('originSession', 'originSession');
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+				});
+				it('should dispatch edit when a new idea is added', function () {
+					addSubIdea('originSession', 'originSession');
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+				});
+				it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
+					updateAttrs('originSession', 'originSession');
+					expect(nodeMovedListener.callCount).toBe(1);
+					expect(nodeMovedListener).toHaveBeenCalledWith({
+						x: -10,
+						y: -20,
+						title: 'Second'
+					});
+				});
+			});
+			describe("when session is defined but command session does not match local session", function () {
+				it('should not dispatch edit when intermediate is created', function () {
+					insertIntermediate('originSession', 'differentSession');
+					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				});
+				it('should not dispatch edit when a new idea is added', function () {
+					addSubIdea('originSession', 'differentSession');
+					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				});
+				it('should not compensate movements of the context node', function () {
+					updateAttrs('originSession', 'otherSession');
+					expect(nodeMovedListener).toHaveBeenCalledWith({
 						x: 110,
 						y: 220,
 						title: 'First'
-					},
-					2: {
-						x: 0,
-						y: 0,
-						title: 'Second'
-					}
-				}
-			};
-			layoutCalculatorLayout = layoutBefore;
-			anIdea = observable({});
-			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
-			underTest.setIdea(anIdea);
-			layoutCalculatorLayout = layoutAfter;
-			underTest.addEventListener('nodeMoved', nodeMovedListener);
-
-			anIdea.dispatchEvent('changed', 'updateAttr', [1]);
-
-			expect(nodeMovedListener.callCount).toBe(1);
-			expect(nodeMovedListener).toHaveBeenCalledWith({
-				x: -10,
-				y: -20,
-				title: 'Second'
+					});
+				});
 			});
 		});
 	});
