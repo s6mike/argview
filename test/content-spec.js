@@ -178,6 +178,35 @@ describe("content aggregate", function () {
 		});
 	});
 	describe("command processing", function () {
+		describe("execCommand", function () {
+			it("executes updateTitle", function () {
+				var idea = MAPJS.content({id: 1, title: 'abc'}),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
+				idea.execCommand('updateTitle', [1, 'new']);
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new']);
+			});
+			it("attaches a default session ID if provided during construction", function () {
+				var idea = MAPJS.content({id: 1, title: 'abc'}, 'session'),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
+				idea.execCommand('updateTitle', [1, 'new']);
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'session');
+			});
+			it("attaches the provided session ID if provided in command", function () {
+				var idea = MAPJS.content({id: 1, title: 'abc'}, 'session'),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+
+				idea.execCommand('updateTitle', [1, 'new'], 'other');
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'new'], 'other');
+			});
+		});
 		describe("paste", function () {
 			var idea, toPaste;
 			beforeEach(function () {
@@ -1032,7 +1061,7 @@ describe("content aggregate", function () {
 			wrapped.undo();
 			wrapped.addEventListener('changed', spy);
 			wrapped.redo();
-			expect(spy).toHaveBeenCalledWith('redo');
+			expect(spy).toHaveBeenCalledWith('redo', undefined, undefined);
 		});
 		it("does not leave trailing redos if the last action was not caused by an undo/redo", function() {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
@@ -1070,7 +1099,7 @@ describe("content aggregate", function () {
 			wrapped.updateTitle(1, 'First');
 			wrapped.addEventListener('changed', spy);
 			wrapped.undo();
-			expect(spy).toHaveBeenCalledWith('undo',[]);
+			expect(spy).toHaveBeenCalledWith('undo',[], undefined);
 		});
 		it("fails if there is nothing to undo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),

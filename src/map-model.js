@@ -42,6 +42,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				oldNode = currentLayout.nodes[nodeId];
 				newNode = newLayout.nodes[nodeId];
 				if (!newNode) {
+					/*jslint eqeq: true*/
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
@@ -95,10 +96,14 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			}
 			currentLayout = newLayout;
 		},
-		onIdeaChanged = function (command, args) {
-			var newIdeaId, contextNodeId;
+		onIdeaChanged = function (command, args, originSession) {
+			var newIdeaId, contextNodeId, localCommand;
+			localCommand = (!originSession) || originSession === idea.getSessionKey();
 			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
-			updateCurrentLayout(layoutCalculator(idea), contextNodeId);
+			updateCurrentLayout(layoutCalculator(idea), localCommand && contextNodeId);
+			if (!localCommand) {
+				return;
+			}
 			if (command === 'addSubIdea') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
