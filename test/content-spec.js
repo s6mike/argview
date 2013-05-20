@@ -1184,6 +1184,20 @@ describe("content aggregate", function () {
 			}]);
 			expect(changedListener).not.toHaveBeenCalled();
 		});
+		it('should not be able to add the link in the opposite direction of an already existing link', function () {
+			var result, changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			result = idea.addLink(3, 2);
+
+			expect(result).toBe(false);
+			expect(idea.links).toEqual([{
+				ideaIdFrom: 2,
+				ideaIdTo: 3
+			}]);
+			expect(changedListener).not.toHaveBeenCalled();
+		});
 		it('should remove a link when removeLink method is invoked', function () {
 			var result, changedListener = jasmine.createSpy();
 			idea.addLink(2, 3);

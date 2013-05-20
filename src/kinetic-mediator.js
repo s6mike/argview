@@ -259,6 +259,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 		layer.add(link);
 		link.moveToBottom();
+		layer.draw();
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
