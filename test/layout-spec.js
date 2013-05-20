@@ -322,7 +322,32 @@ describe('layout', function () {
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
 		expect(result.nodes[1].attr.style.background).not.toBeUndefined();
 	});
+	it('should not include links between collapsed nodes', function () {
+		var contentAggregate = MAPJS.content({
+			id: 1,
+			title: 'first',
+			attr: { collapsed: true },
+			ideas: {
+				100: {
+					id: 2,
+					title: 'second'
+				},
+				200: {
+					id: 3,
+					title: 'third'
+				}
+			},
+			links: [{
+				ideaIdFrom: 2,
+				ideaIdTo: 3
+			}]
+		}),
+			result;
 
+		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
+
+		expect(result.links).toEqual([]);
+	});
 });
 describe('MAPJS.frame', function () {
 	'use strict';

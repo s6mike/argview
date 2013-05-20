@@ -114,6 +114,12 @@
 			};
 		MAPJS.LayoutCompressor.compress(root);
 		calculateLayoutInner(root, 1);
+		result.links = _.filter(
+			result.links,
+			function (link) {
+				return result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo];
+			}
+		);
 		return result;
 	};
 	MAPJS.calculateFrame = function (nodes, margin) {
