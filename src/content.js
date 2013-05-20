@@ -139,7 +139,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		notifyChange = function (method, args, undofunc, originSession) {
 			eventStack.push({eventMethod: method, eventArgs: args, undoFunction: undofunc});
 			if (isRedoInProgress) {
-				contentAggregate.dispatchEvent('changed', 'redo');
+				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
 			} else {
 				if (originSession) {
 					contentAggregate.dispatchEvent('changed', method, args, originSession);
