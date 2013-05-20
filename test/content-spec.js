@@ -1118,7 +1118,7 @@ describe("content aggregate", function () {
 
 			idea.addLink(2, 3);
 
-			expect(changedListener).toHaveBeenCalledWith('addLink', 2, 3);
+			expect(changedListener).toHaveBeenCalledWith('addLink', [2, 3]);
 		});
 		it('should not be able to add link if both nodes don\'t exist', function () {
 			var result, changedListener = jasmine.createSpy();
@@ -1173,7 +1173,7 @@ describe("content aggregate", function () {
 
 			expect(result).toBe(true);
 			expect(idea.links).toEqual([]);
-			expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
+			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
 		});
 		it('should not take order of nodes into account when removeLink method is invoked', function () {
 			//todo/maybe?
@@ -1208,7 +1208,7 @@ describe("content aggregate", function () {
 
 			idea.changeParent(3, 2);
 
-			expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
+			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
 		});
 	});
 	describe("support for multiple versions", function () {

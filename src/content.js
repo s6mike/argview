@@ -149,7 +149,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
 		},
-
 		upgrade = function (idea) {
 			if (idea.style) {
 				idea.attr = {};
@@ -165,9 +164,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				_.each(idea.ideas, upgrade);
 			}
 		};
-
-
-
 
 	contentAggregate.nextSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
@@ -510,7 +506,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				link.type = linkType;
 			}
 			contentAggregate.links.push(link);
-			contentAggregate.dispatchEvent('changed', 'addLink', ideaIdFrom, ideaIdTo);
+			notifyChange('addLink', [ideaIdFrom, ideaIdTo], function () {
+				contentAggregate.links.pop();
+			});
 			return true;
 		};
 		contentAggregate.removeLink = function (ideaIdOne, ideaIdTwo) {
@@ -519,10 +517,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				link = contentAggregate.links[i];
 				if (link.ideaIdFrom === ideaIdOne && link.ideaIdTo === ideaIdTwo) {
 					contentAggregate.links.splice(i, 1);
-					contentAggregate.dispatchEvent('changed', 'removeLink', link.ideaIdFrom, link.ideaIdTo);
+					notifyChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
+						contentAggregate.links.push({
+							ideaIdFrom: ideaIdOne,
+							ideaIdTo: ideaIdTwo
+						});
+					});
 					return true;
 				}
-				i++;
+				i += 1;
 			}
 			return false;
 		};
