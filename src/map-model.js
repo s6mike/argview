@@ -80,8 +80,8 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 					split = function (link) {
 						var split = link.split('_');
 						return {
-							ideaIdFrom: parseInt(split[0], 10),
-							ideaIdTo: parseInt(split[1], 10)
+							ideaIdFrom: split[0],
+							ideaIdTo: split[1]
 						};
 					},
 					dispatchFunc = function (type) {

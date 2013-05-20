@@ -1102,12 +1102,12 @@ describe('MapModel', function () {
 			underTest.addLink(3);
 
 			expect(linkCreatedListener).toHaveBeenCalledWith({
-				ideaIdFrom: 1,
-				ideaIdTo: 3
+				ideaIdFrom: '1',
+				ideaIdTo: '3'
 			});
 			expect(linkCreatedListener).not.toHaveBeenCalledWith({
-				ideaIdFrom: 1,
-				ideaIdTo: 4
+				ideaIdFrom: '1',
+				ideaIdTo: '4'
 			});
 		});
 		it('should dispatch linkRemoved event when a link is removed', function () {
@@ -1126,8 +1126,8 @@ describe('MapModel', function () {
 			underTest.removeLink(1, 4);
 
 			expect(linkRemovedListener).toHaveBeenCalledWith({
-				ideaIdFrom: 1,
-				ideaIdTo: 4
+				ideaIdFrom: '1',
+				ideaIdTo: '4'
 			});
 		});
 		it('should be able to add two links', function () {
@@ -1165,8 +1165,8 @@ describe('MapModel', function () {
 			underTest.addLink(5);
 
 			expect(linkCreatedListener).toHaveBeenCalledWith({
-				ideaIdFrom: 1,
-				ideaIdTo: 5
+				ideaIdFrom: '1',
+				ideaIdTo: '5'
 			});
 		});
 		it('should dispatch linkSelected event when selectLink method is invoked', function () {
