@@ -1103,15 +1103,6 @@ describe("content aggregate", function () {
 
 			expect(result).toBe(true);
 		});
-		it('should store a link when addLink method is called', function () {
-			idea.addLink(2, 3, 'link type');
-
-			expect(idea.links).toEqual([{
-				ideaIdFrom: 2,
-				ideaIdTo: 3,
-				type: 'link type'
-			}]);
-		});
 		it('should dispatch a changed event when addLink method is called', function () {
 			var changedListener = jasmine.createSpy();
 			idea.addEventListener('changed', changedListener);

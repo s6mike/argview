@@ -483,7 +483,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			return true;
 		};
-		contentAggregate.addLink = function (ideaIdFrom, ideaIdTo, linkType) {
+		contentAggregate.addLink = function (ideaIdFrom, ideaIdTo) {
 			var alreadyExists, link;
 			if (!isLinkValid(ideaIdFrom, ideaIdTo)) {
 				return false;
@@ -502,9 +502,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				ideaIdFrom: ideaIdFrom,
 				ideaIdTo: ideaIdTo
 			};
-			if (linkType) {
-				link.type = linkType;
-			}
 			contentAggregate.links.push(link);
 			notifyChange('addLink', [ideaIdFrom, ideaIdTo], function () {
 				contentAggregate.links.pop();
