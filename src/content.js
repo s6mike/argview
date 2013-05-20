@@ -524,6 +524,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return true;
 		};
 		contentAggregate.addLink = function (ideaIdFrom, ideaIdTo) {
+			return contentAggregate.execCommand('addLink', arguments);
+		};
+		commandProcessors.addLink = function (originSession, ideaIdFrom, ideaIdTo) {
 			var alreadyExists, link;
 			if (!isLinkValid(ideaIdFrom, ideaIdTo)) {
 				return false;
@@ -545,21 +548,24 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			contentAggregate.links.push(link);
 			notifyChange('addLink', [ideaIdFrom, ideaIdTo], function () {
 				contentAggregate.links.pop();
-			});
+			}, originSession);
 			return true;
 		};
 		contentAggregate.removeLink = function (ideaIdOne, ideaIdTwo) {
+			return contentAggregate.execCommand('removeLink', arguments);
+		};
+		commandProcessors.removeLink = function (originSession, ideaIdOne, ideaIdTwo) {
 			var i = 0, link;
 			while (contentAggregate.links && i < contentAggregate.links.length) {
 				link = contentAggregate.links[i];
-				if (link.ideaIdFrom === ideaIdOne && link.ideaIdTo === ideaIdTwo) {
+				if (String(link.ideaIdFrom) === String(ideaIdOne) && String(link.ideaIdTo) === String(ideaIdTwo)) {
 					contentAggregate.links.splice(i, 1);
 					notifyChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
 						contentAggregate.links.push({
 							ideaIdFrom: ideaIdOne,
 							ideaIdTo: ideaIdTwo
 						});
-					});
+					}, originSession);
 					return true;
 				}
 				i += 1;
