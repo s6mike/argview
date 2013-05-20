@@ -254,8 +254,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			opacity: 1,
 			id: 'link_' + l.ideaIdFrom + '_' + l.ideaIdTo
 		});
-		link.on('click', function (event) {
-			mapModel.selectLink(l, { x: event.x, y: event.y });
+		link.on('click mouseover', function (event) {
+			mapModel.selectLink(l, { x: event.layerX, y: event.layerY });
 		});
 		layer.add(link);
 		link.moveToBottom();
