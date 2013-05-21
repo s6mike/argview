@@ -288,13 +288,23 @@ describe("content aggregate", function () {
 				expect(result).toBeFalsy();
 			});
 			it("should fail if nothing pasted", function () {
+				var spy = jasmine.createSpy('paste');
+				idea.addEventListener('changed', spy);
 				expect(idea.paste(1)).toBeFalsy();
+				expect(spy).not.toHaveBeenCalled();
 			});
 			it("should fire a paste event when it succeeds, appending the new ID as the last", function () {
 				var spy = jasmine.createSpy('paste');
 				idea.addEventListener('changed', spy);
 				idea.paste(3, toPaste);
 				expect(spy).toHaveBeenCalledWith('paste', [3, toPaste, 5]);
+			});
+			it("event should contain session ID if provided", function () {
+				var idea = MAPJS.content({id: 3}, 'sess'),
+					spy = jasmine.createSpy('paste');
+				idea.addEventListener('changed', spy);
+				idea.paste(3, toPaste);
+				expect(spy).toHaveBeenCalledWith('paste', [3, toPaste, '4.sess'], 'sess');
 			});
 			it('pushes an event on the undo stack if successful', function () {
 				idea.paste(3, toPaste);
@@ -347,6 +357,13 @@ describe("content aggregate", function () {
 				wrapped.addEventListener('changed', listener);
 				wrapped.updateAttr(1, 'new', 'yellow');
 				expect(listener).toHaveBeenCalledWith('updateAttr', [1, 'new', 'yellow']);
+			});
+			it("fires an event with session if defined", function () {
+				var listener = jasmine.createSpy('attr_listener'),
+					wrapped = MAPJS.content({id: 1}, 'sess');
+				wrapped.addEventListener('changed', listener);
+				wrapped.updateAttr(1, 'new', 'yellow');
+				expect(listener).toHaveBeenCalledWith('updateAttr', [1, 'new', 'yellow'], 'sess');
 			});
 			it('should fail if no such child exists', function () {
 				var listener = jasmine.createSpy('attr_listener'),
@@ -449,6 +466,13 @@ describe("content aggregate", function () {
 				wrapped.updateTitle(1, 'New Title');
 				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'New Title']);
 			});
+			it("fires an event with session ID if defined", function () {
+				var listener = jasmine.createSpy('title_listener'),
+					wrapped = MAPJS.content({id: 1}, 'sess');
+				wrapped.addEventListener('changed', listener);
+				wrapped.updateTitle(1, 'New Title');
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'New Title'], 'sess');
+			});
 			it("puts a undo method on the stack when successful", function () {
 				var wrapped = MAPJS.content({id: 71, title: 'My Idea'});
 				wrapped.updateTitle(71, 'Updated');
@@ -493,8 +517,15 @@ describe("content aggregate", function () {
 				expect(idea.ideas[77].id).toBe(2);
 			});
 			it('fires an event matching the method call when the operation succeeds', function () {
-				var result = idea.insertIntermediate(2, 'Steve');
+				idea.insertIntermediate(2, 'Steve');
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', 3]);
+			});
+			it('fires an event with session ID if defined', function () {
+				var idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}}}, 'sess');
+				listener = jasmine.createSpy('insert_listener');
+				idea.addEventListener('changed', listener);
+				idea.insertIntermediate(2, 'Steve');
+				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', '3.sess'], 'sess');
 			});
 			it('fires the generated ID in the event if the ID was not supplied', function () {
 				var result = idea.insertIntermediate(2, 'Steve'),
@@ -587,6 +618,13 @@ describe("content aggregate", function () {
 				idea.addSubIdea(71, 'New Title');
 				expect(addedListener).toHaveBeenCalledWith('addSubIdea', [71, 'New Title', 72]);
 			});
+			it('fires an event with session ID if provided', function () {
+				var idea = MAPJS.content({id: 71, title: 'My Idea'}, 'sess'),
+					addedListener = jasmine.createSpy();
+				idea.addEventListener('changed', addedListener);
+				idea.addSubIdea(71, 'New Title');
+				expect(addedListener).toHaveBeenCalledWith('addSubIdea', [71, 'New Title', '72.sess'], 'sess');
+			});
 			it('pops an event on the undo stack if successful', function () {
 				var idea = MAPJS.content({id: 4, ideas: {1: {id: 5, title: 'My Idea'}}});
 				idea.addSubIdea(4, 'New');
@@ -636,42 +674,49 @@ describe("content aggregate", function () {
 		describe("changeParent", function () {
 			var idea;
 			beforeEach(function () {
-				idea = MAPJS.content({id:5, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}});
+				idea = MAPJS.content({id: 5, ideas: {9: {id: 1, ideas: { '-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
 			});
 			it("removes an idea from it's parent and reassings to another parent", function () {
-				var result = idea.changeParent(4,5);
+				var result = idea.changeParent(4, 5);
 				expect(result).toBeTruthy();
 				expect(idea.containsDirectChild(4)).toBeTruthy();
 				expect(idea.ideas[9].containsDirectChild(4)).toBeFalsy();
 			});
 			it("fails if no such idea exists to remove", function () {
-				expect(idea.changeParent(14,5)).toBeFalsy();
+				expect(idea.changeParent(14, 5)).toBeFalsy();
 			});
 			it("fails if no such new parent exists", function () {
-				expect(idea.changeParent(4,11)).toBeFalsy();
+				expect(idea.changeParent(4, 11)).toBeFalsy();
 				expect(idea.ideas[9].ideas[-15].id).toBe(4);
 			});
 			it("fires an event matching the method call when a parent is changed", function () {
 				var listener = jasmine.createSpy('changeParent');
-				idea.addEventListener('changed',listener);
-				var result = idea.changeParent(4,5);
-				expect(listener).toHaveBeenCalledWith('changeParent', [4,5]);
+				idea.addEventListener('changed', listener);
+				idea.changeParent(4, 5);
+				expect(listener).toHaveBeenCalledWith('changeParent', [4, 5]);
+			});
+			it("fires an event with session ID if provided", function () {
+				var idea = MAPJS.content({id: 5, ideas: {9: {id: 1, ideas: { '-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}, 'sess'),
+					listener = jasmine.createSpy('changeParent');
+				idea.addEventListener('changed', listener);
+				idea.changeParent(4, 5);
+				expect(listener).toHaveBeenCalledWith('changeParent', [4, 5], 'sess');
 			});
 			it("fails if asked to make a idea it's own parent", function () {
-				expect(idea.changeParent(2,2)).toBeFalsy();
+				expect(idea.changeParent(2, 2)).toBeFalsy();
 			});
 			it("fails if asked to make a cycle (make a idea a child of it's own child)", function () {
-				expect(idea.changeParent(1,2)).toBeFalsy();
+				expect(idea.changeParent(1, 2)).toBeFalsy();
 			});
 			it("should convert types passed as ids for parent and child nodes", function () {
 				expect(idea.changeParent(1, '2')).toBeFalsy();
-				expect(idea.changeParent('1',2)).toBeFalsy();
+				expect(idea.changeParent('1', 2)).toBeFalsy();
 			});
 			it("fails if asked to put an idea in it's current parent", function () {
-				expect(idea.changeParent(1,5)).toBeFalsy();
+				expect(idea.changeParent(1, 5)).toBeFalsy();
 			});
-			it("pops an operation to the undo stack if it succeeds", function () {
-				idea.changeParent(4,5);
+			it("pushes an operation to the undo stack if it succeeds", function () {
+				idea.changeParent(4, 5);
 				idea.undo();
 				expect(idea.containsDirectChild(4)).toBeFalsy();
 				expect(idea.ideas[9].containsDirectChild(4)).toBeTruthy();
@@ -679,171 +724,191 @@ describe("content aggregate", function () {
 		});
 		describe("removeSubIdea", function () {
 			it('removes a child idea matching the provided id', function () {
-				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id:3, title: 'I3'}, 15 : {id:4, title: 'I4'}}});
+				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				expect(idea.removeSubIdea(2)).toBeTruthy();
 				expect(_.size(idea.ideas)).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
 				expect(idea.ideas[15].id).toBe(4);
 			});
 			it('delegates to children if no immediate child matches id', function () {
-				var idea = MAPJS.content({id:0, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}});
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
 				expect(idea.removeSubIdea(3)).toBeTruthy();
 				expect(_.size(idea.ideas[9].ideas)).toBe(2);
 				expect(idea.ideas[9].ideas[-5].id).toBe(2);
 				expect(idea.ideas[9].ideas[-15].id).toBe(4);
 			});
 			it('fails if no immediate child matches id', function () {
-				var idea = MAPJS.content({id:0, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}});
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
 				expect(idea.removeSubIdea(13)).toBeFalsy();
+				expect(listener).not.toHaveBeenCalled();
 			});
 			it('fires an event matching the method call if successful', function () {
-				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id:3, title: 'I3'}, 15 : {id:4, title: 'I4'}}});
-				var addedListener=jasmine.createSpy('Idea_Added');
-				idea.addEventListener('changed', addedListener);
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
 				idea.removeSubIdea(3);
-				expect(addedListener).toHaveBeenCalledWith('removeSubIdea',[3]);
+				expect(listener).toHaveBeenCalledWith('removeSubIdea', [3]);
 			});
-			it('pops an event to undo stack if successful', function () {
-				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id:3, title: 'I3'}, 15 : {id:4, title: 'I4'}}});
+			it('fires an event with session ID if provided', function () {
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}, 'sess'),
+					listener = jasmine.createSpy();
+				idea.addEventListener('changed', listener);
+				idea.removeSubIdea(3);
+				expect(listener).toHaveBeenCalledWith('removeSubIdea', [3], 'sess');
+			});
+			it('pushes an event to undo stack if successful', function () {
+				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				idea.removeSubIdea(2);
 				idea.undo();
-				expect(idea.ideas[5]).toPartiallyMatch({id: 2, title: 'I2' });
+				expect(idea.ideas[5]).toPartiallyMatch({id: 2});
 			});
 		});
 		describe("flip", function () {
 			it('assigns the idea the largest positive rank if the current rank was negative', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.flip(2);
+				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}}),
+					result = idea.flip(2);
 				expect(result).toBeTruthy();
 				expect(idea.ideas[10].id).toBe(3);
 				expect(idea.ideas[15].id).toBe(4);
-				var new_key=idea.findChildRankById(2);
-				expect(new_key).not.toBeLessThan(15);
+				expect(idea.findChildRankById(2)).not.toBeLessThan(15);
 			});
 			it('assigns the idea the smallest negative rank if the current rank was positive', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.flip(3);
+				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}}),
+					result = idea.flip(3);
 				expect(result).toBeTruthy();
 				expect(idea.ideas['-5'].id).toBe(2);
 				expect(idea.ideas[15].id).toBe(4);
-				var new_key=idea.findChildRankById(3);
-				expect(new_key).toBeLessThan(-5);
+				expect(idea.findChildRankById(3)).toBeLessThan(-5);
 			});
 			it('fails if called on idea that was not a child of the aggregate root', function () {
-				var idea = MAPJS.content({id:0,ideas:{9:{id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}}});
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
 				spyOn(idea, 'dispatchEvent');
 				expect(idea.flip(2)).toBeFalsy();
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if called on non-existing idea that was not a child of the aggregate root', function () {
-				var idea = MAPJS.content({id:0,ideas:{9:{id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}}});
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15' : {id: 4}}}}});
 				spyOn(idea, 'dispatchEvent');
 				expect(idea.flip(99)).toBeFalsy();
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fires a flip event with arguments matching function call if successful', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				spyOn(idea, 'dispatchEvent');
 				idea.flip(2);
-				expect(idea.dispatchEvent).toHaveBeenCalledWith('changed', 'flip',[2]);
+				expect(idea.dispatchEvent).toHaveBeenCalledWith('changed', 'flip', [2]);
 			});
-			it('stores an undo function on the event stack', function () {
+			it('fires an event with session ID if provided', function () {
+				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}}, 'sess');
+				spyOn(idea, 'dispatchEvent');
+				idea.flip(2);
+				expect(idea.dispatchEvent).toHaveBeenCalledWith('changed', 'flip', [2], 'sess');
+			});
+			it('pushes an undo function on the event stack', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}}}), newRank;
 				idea.flip(2);
-				newRank=idea.findChildRankById(2);
+				newRank = idea.findChildRankById(2);
 				idea.undo();
 				expect(idea.findChildRankById(2)).toBe(-5);
 				expect(idea.ideas[newRank]).toBeUndefined();
 			});
 		});
 		describe("moveRelative", function () {
-			it ("if movement is negative, moves an idea relative to its immediate previous siblings", function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.moveRelative(4,-1);
+			it("if movement is negative, moves an idea relative to its immediate previous siblings", function () {
+				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15 : {id: 4}}}),
+					result = idea.moveRelative(4, -1),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).toBeLessThan(10);
 				expect(new_key).not.toBeLessThan(5);
 			});
-			it ("moves an idea before it's immediate previous sibling for negative nodes", function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
-				var result = idea.moveRelative(4,-1);
+			it("moves an idea before it's immediate previous sibling for negative nodes", function () {
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result = idea.moveRelative(4, -1),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).toBeLessThan(-5);
 				expect(new_key).not.toBeLessThan(-10);
 			});
-			it ("if movement is positive, moves an idea relative to its immediate following siblings", function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.moveRelative(2,1);
+			it("if movement is positive, moves an idea relative to its immediate following siblings", function () {
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result = idea.moveRelative(2, 1),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[15].id).toBe(4);
 				expect(idea.ideas[10].id).toBe(3);
-				var new_key=idea.findChildRankById(2);
+				new_key = idea.findChildRankById(2);
 				expect(new_key).toBeLessThan(15);
 				expect(new_key).not.toBeLessThan(10);
 			});
-			it ("moves an idea before it's immediate following sibling for negative nodes", function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
-				var result = idea.moveRelative(2,1);
+			it("moves an idea before it's immediate following sibling for negative nodes", function () {
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result = idea.moveRelative(2, 1),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-15].id).toBe(4);
 				expect(idea.ideas[-10].id).toBe(3);
-				var new_key=idea.findChildRankById(2);
+				new_key = idea.findChildRankById(2);
 				expect(new_key).toBeLessThan(-10);
 				expect(new_key).not.toBeLessThan(-15);
 			});
-			it ("moves to top", function () {
+			it("moves to top", function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(3,-1)).toBeTruthy();
+				expect(idea.moveRelative(3, -1)).toBeTruthy();
 				expect(idea.findChildRankById(3)).toBeLessThan(5);
 			});
 
-			it ("does nothing if already on top and movement negative", function () {
+			it("does nothing if already on top and movement negative", function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(2,-1)).toBeFalsy();
+				expect(idea.moveRelative(2, -1)).toBeFalsy();
 				expect(idea.findChildRankById(2)).toBe(5);
 			});
-			it ("fails if no idea", function () {
+			it("fails if no idea", function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(10,1)).toBeFalsy();
+				expect(idea.moveRelative(10, 1)).toBeFalsy();
 			});
-			it ("moves to bottom", function () {
+			it("moves to bottom", function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(3,1)).toBeTruthy();
+				expect(idea.moveRelative(3, 1)).toBeTruthy();
 				expect(idea.findChildRankById(3)).toBeGreaterThan(15);
 			});
 		});
 		describe("positionBefore", function () {
 			it('prevents a node to be reordered into itself, if is it already in the right position (production bugcheck)', function () {
-				var idea = MAPJS.content({id: 1,ideas:{"1":{id:2},"2":{id: 4},"3":{id:6},"4":{id:8},"-1":{id: 3},"-2":{id:5},"-3":{id:7},"-4":{id:9}}});
-				expect(idea.positionBefore(5,7)).toBeFalsy();
+				var idea = MAPJS.content({id: 1, ideas: {1: {id: 2}, 2: {id: 4}, 3: {id: 6}, 4: {id: 8}, "-1": {id: 3}, "-2": {id: 5}, "-3": {id: 7}, "-4": {id: 9}}});
+				expect(idea.positionBefore(5, 7)).toBeFalsy();
 				expect(_.size(idea.ideas)).toBe(8);
 			});
 			it('ignores different sign ranks when ordering', function () {
-				var idea = MAPJS.content({id: 1, ideas:{'-0.25':{id:24}, '-10.25':{id:32}, '0.0625':{id:5}, '0.03125':{id:6}, '1.0625':{id:7}}})
+				var idea = MAPJS.content({id: 1, ideas: {'-0.25': {id: 24}, '-10.25': {id: 32}, '0.0625': {id: 5}, '0.03125': {id: 6}, '1.0625': {id: 7}}});
 				spyOn(idea, 'dispatchEvent');
-			expect(idea.positionBefore(24,32)).toBeFalsy();
-			expect(idea.dispatchEvent).not.toHaveBeenCalled();
+				expect(idea.positionBefore(24, 32)).toBeFalsy();
+				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('reorders immediate children by changing the rank of an idea to be immediately before the provided idea', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.positionBefore(4,3);
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result = idea.positionBefore(4, 3),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).toBeLessThan(10);
 				expect(new_key).not.toBeLessThan(5);
 			});
 			it('fails if the idea should be ordered before itself', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 12: { id: 3}, 15 : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 12: { id: 3}, 15 : {id: 4}}}),
+					result;
 				spyOn(idea, 'dispatchEvent');
-				var result = idea.positionBefore(3,3);
+				result = idea.positionBefore(3, 3);
 				expect(result).toBeFalsy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[12].id).toBe(3);
@@ -851,9 +916,10 @@ describe("content aggregate", function () {
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if the idea should be ordered in the same place', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 12: { id: 3}, 15 : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 12: { id: 3}, 15 : {id: 4}}}),
+					result;
 				spyOn(idea, 'dispatchEvent');
-				var result = idea.positionBefore(3,4);
+				result = idea.positionBefore(3, 4);
 				expect(result).toBeFalsy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[12].id).toBe(3);
@@ -861,11 +927,11 @@ describe("content aggregate", function () {
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if it cannot find appropriate idea to reorder', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.positionBefore(12,3);
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result = idea.positionBefore(12, 3);
 				expect(result).toBeFalsy();
 			});
-			it('fails if idea should be ordered before non-sibling', function() {
+			it('fails if idea should be ordered before non-sibling', function () {
 				var idea = MAPJS.content({
 					id: 1,
 					ideas: {
@@ -892,45 +958,50 @@ describe("content aggregate", function () {
 							}
 						}
 					}
-				});
+				}),
+					result;
 				spyOn(idea, 'dispatchEvent');
-				var result = idea.positionBefore(6, 3);
+				result = idea.positionBefore(6, 3);
 				expect(result).toBe(false);
 				expect(idea.ideas[10].ideas.NaN).not.toBeDefined();
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('orders negative ideas as negative ranks', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
-				var result = idea.positionBefore(4,3);
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result = idea.positionBefore(4, 3),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).not.toBeLessThan(-10);
 				expect(new_key).toBeLessThan(-5);
 			});
 			it('puts the child in the first rank if the boundary idea was the first', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.positionBefore(4,2);
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result = idea.positionBefore(4, 2),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).toBeLessThan(5);
 			});
 			it('gives the idea the largest positive rank if the boundary idea was not defined and current rank was positive', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				var result = idea.positionBefore(2);
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result = idea.positionBefore(2),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[10].id).toBe(3);
 				expect(idea.ideas[15].id).toBe(4);
-				var new_key=idea.findChildRankById(2);
+				new_key = idea.findChildRankById(2);
 				expect(new_key).not.toBeLessThan(15);
 			});
 			it('fails if the boundary idea was not defined and child was already last', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
+					result;
 				spyOn(idea, 'dispatchEvent');
-				var result = idea.positionBefore(4);
+				result = idea.positionBefore(4);
 				expect(result).toBeFalsy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
@@ -938,28 +1009,31 @@ describe("content aggregate", function () {
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('puts the child closest to zero from the - side if the boundary idea was the smallest negative', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
-				var result = idea.positionBefore(4,2);
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result = idea.positionBefore(4, 2),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				var new_key=idea.findChildRankById(4);
+				new_key = idea.findChildRankById(4);
 				expect(new_key).not.toBeLessThan(-5);
 				expect(new_key).toBeLessThan(0);
 			});
 			it('puts the child in the last negative rank if the boundary idea was not defined but current rank is negative', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
-				var result = idea.positionBefore(2);
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result = idea.positionBefore(2),
+					new_key;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-10].id).toBe(3);
 				expect(idea.ideas[-15].id).toBe(4);
-				var new_key=idea.findChildRankById(2);
+				new_key = idea.findChildRankById(2);
 				expect(new_key).toBeLessThan(-15);
 			});
 			it('fails if the boundary idea was not defined and child was already last with negative ranks', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
+					result;
 				spyOn(idea, 'dispatchEvent');
-				var result = idea.positionBefore(4);
+				result = idea.positionBefore(4);
 				expect(result).toBeFalsy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
@@ -967,35 +1041,44 @@ describe("content aggregate", function () {
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if the boundary idea was not defined and child was already last in its group (positive/negative)', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 8:{id:5}, '-10': { id: 3}, '-15' : {id: 4}}});
+				var idea = MAPJS.content({id: 1, ideas: {5: { id: 2}, 8: {id: 5}, '-10': {id: 3}, '-15': {id: 4}}});
 				spyOn(idea, 'dispatchEvent');
 				expect(idea.positionBefore(4)).toBeFalsy();
 				expect(idea.positionBefore(5)).toBeFalsy();
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('delegates to children if it does not contain the requested idea, succeeding if any child does', function () {
-				var idea = MAPJS.content({id:0, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}});
-				var result = idea.positionBefore(4,2);
+				var idea = MAPJS.content({id: 0, title: 'I0', ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
+					result = idea.positionBefore(4, 2),
+					child,
+					new_key;
 				expect(result).toBeTruthy();
-				var child=idea.ideas[9];
+				child = idea.ideas[9];
 				expect(child.ideas[-5].id).toBe(2);
 				expect(child.ideas[-10].id).toBe(3);
-				var new_key=child.findChildRankById(4);
+				new_key = child.findChildRankById(4);
 				expect(new_key).toBeLessThan(10);
 				expect(new_key).not.toBeLessThan(-5);
 				expect(new_key).toBeLessThan(0);
 			});
 			it('fails if none of the children contain the requested idea either', function () {
-				var idea = MAPJS.content({id:0, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}});
-				var result = idea.positionBefore(-4, 2);
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
+					result = idea.positionBefore(-4, 2);
 				expect(result).toBeFalsy();
 			});
 			it('fires an event matching the method call if it succeeds', function () {
-				var idea = MAPJS.content({id:0, title: 'I0',ideas:{9:{id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id:3, title: 'I3'}, '-15' : {id:4, title: 'I4'}}}}}),
-					childRankSpy=jasmine.createSpy('ChildRankListener');
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
+					childRankSpy = jasmine.createSpy();
 				idea.addEventListener('changed', childRankSpy);
-				var result = idea.positionBefore(4,2);
-				expect(childRankSpy).toHaveBeenCalledWith('positionBefore',[4,2]);
+				idea.positionBefore(4, 2);
+				expect(childRankSpy).toHaveBeenCalledWith('positionBefore', [4, 2]);
+			});
+			it('fires an event with session ID if defined', function () {
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}, 'sess'),
+					childRankSpy = jasmine.createSpy();
+				idea.addEventListener('changed', childRankSpy);
+				idea.positionBefore(4, 2);
+				expect(childRankSpy).toHaveBeenCalledWith('positionBefore', [4, 2], 'sess');
 			});
 			it('should work for negative ranks', function () {
 				var idea = MAPJS.content({
@@ -1018,11 +1101,11 @@ describe("content aggregate", function () {
 				});
 				expect(idea.positionBefore(2, 4)).toBe(true);
 			});
-			it('pops an undo function onto the event stack if successful', function () {
+			it('pushes an undo function onto the event stack if successful', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
 					newKey;
-				idea.positionBefore(4,3);
-				newKey=idea.findChildRankById(4);
+				idea.positionBefore(4, 3);
+				newKey = idea.findChildRankById(4);
 				idea.undo();
 				expect(idea.ideas[15].id).toBe(4);
 				expect(idea.ideas[newKey]).toBeUndefined();
@@ -1030,7 +1113,7 @@ describe("content aggregate", function () {
 			});
 		});
 	});
-	describe ("redo", function () {
+	describe("redo", function () {
 		it("succeeds if there is something to redo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}), result;
 			wrapped.updateTitle(1, 'First');
@@ -1063,7 +1146,16 @@ describe("content aggregate", function () {
 			wrapped.redo();
 			expect(spy).toHaveBeenCalledWith('redo', undefined, undefined);
 		});
-		it("does not leave trailing redos if the last action was not caused by an undo/redo", function() {
+		it("fires an event with session ID if dedined", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'sess'),
+				spy = jasmine.createSpy('change');
+			wrapped.updateTitle(1, 'First');
+			wrapped.undo();
+			wrapped.addEventListener('changed', spy);
+			wrapped.redo();
+			expect(spy).toHaveBeenCalledWith('redo', undefined, 'sess');
+		});
+		it("does not leave trailing redos if the last action was not caused by an undo/redo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
 			wrapped.undo();
@@ -1072,7 +1164,7 @@ describe("content aggregate", function () {
 			expect(wrapped.title).toBe('Second');
 		});
 	});
-	describe ("undo", function () {
+	describe("undo", function () {
 		it("succeeds if there is something to undo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
@@ -1099,7 +1191,15 @@ describe("content aggregate", function () {
 			wrapped.updateTitle(1, 'First');
 			wrapped.addEventListener('changed', spy);
 			wrapped.undo();
-			expect(spy).toHaveBeenCalledWith('undo',[], undefined);
+			expect(spy).toHaveBeenCalledWith('undo', [], undefined);
+		});
+		it("fires an event with session ID if defined", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'sess'),
+				spy = jasmine.createSpy('change');
+			wrapped.updateTitle(1, 'First');
+			wrapped.addEventListener('changed', spy);
+			wrapped.undo();
+			expect(spy).toHaveBeenCalledWith('undo', [], 'sess');
 		});
 		it("fails if there is nothing to undo", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),
@@ -1139,6 +1239,15 @@ describe("content aggregate", function () {
 			idea.addLink(2, 3);
 
 			expect(changedListener).toHaveBeenCalledWith('addLink', [2, 3]);
+		});
+		it('should dispatch a changed event with session ID if dedined', function () {
+			var idea = MAPJS.content({id: 1, ideas: {1: {id: 2}, 2: { id: 3}}}, 'sess'),
+				changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
+
+			idea.addLink(2, 3);
+
+			expect(changedListener).toHaveBeenCalledWith('addLink', [2, 3], 'sess');
 		});
 		it('should not be able to add link if both nodes don\'t exist', function () {
 			var result, changedListener = jasmine.createSpy();
@@ -1208,6 +1317,17 @@ describe("content aggregate", function () {
 			expect(result).toBe(true);
 			expect(idea.links).toEqual([]);
 			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
+		});
+		it('should fire an event with session ID if provided when remove link is invoked', function () {
+			var idea = MAPJS.content({id: 1, ideas: {1: {id: 2}, 2: { id: 3}}}, 'sess'),
+				result,
+				changedListener = jasmine.createSpy();
+			idea.addLink(2, 3);
+			idea.addEventListener('changed', changedListener);
+
+			idea.removeLink(2, 3);
+
+			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3], 'sess');
 		});
 		it('should not take order of nodes into account when removeLink method is invoked', function () {
 			//todo/maybe?
