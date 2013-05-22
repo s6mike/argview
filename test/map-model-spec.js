@@ -3,11 +3,11 @@ describe('MapModel', function () {
 	'use strict';
 	it('should be able to instantiate MapModel', function () {
 		var layoutCalculator,
-			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+			underTest = new MAPJS.MapModel(layoutCalculator);
 		expect(underTest).not.toBeUndefined();
 	});
 	it('should dispatch inputEnabledChanged event when input is disabled', function () {
-		var underTest = new MAPJS.MapModel(observable({})),
+		var underTest = new MAPJS.MapModel(),
 			inputEnabledChangedListener = jasmine.createSpy();
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
 
@@ -16,7 +16,7 @@ describe('MapModel', function () {
 		expect(inputEnabledChangedListener).toHaveBeenCalledWith(false);
 	});
 	it('should dispatch inputEnabledChanged event when input is re-enabled', function () {
-		var underTest = new MAPJS.MapModel(observable({})),
+		var underTest = new MAPJS.MapModel(),
 			inputEnabledChangedListener = jasmine.createSpy();
 		underTest.setInputEnabled(false);
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
@@ -76,7 +76,7 @@ describe('MapModel', function () {
 					}
 				}
 			};
-			underTest = new MAPJS.MapModel(observable({}), layoutCalculator, ['this will have all text selected'], ['this will too']);
+			underTest = new MAPJS.MapModel(layoutCalculator, ['this will have all text selected'], ['this will too']);
 			layoutCalculatorLayout = layoutBefore;
 			anIdea = MAPJS.content({
 				id: 4,
@@ -262,7 +262,7 @@ describe('MapModel', function () {
 					};
 					layoutCalculatorLayout = layoutBefore;
 					anIdea = MAPJS.content({title: 'ttt'}, originalSession);
-					underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+					underTest = new MAPJS.MapModel(layoutCalculator);
 					underTest.setIdea(anIdea);
 					layoutCalculatorLayout = layoutAfter;
 					underTest.addEventListener('nodeMoved', nodeMovedListener);
@@ -344,7 +344,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(observable({}), function () {
+			underTest = new MAPJS.MapModel(function () {
 				return {
 					nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
 				};
@@ -393,7 +393,6 @@ describe('MapModel', function () {
 			});
 			it('should invoke idea.addSubIdea with randomly selected title when addSubIdea method is invoked', function () {
 				var underTest = new MAPJS.MapModel(
-					observable({}),
 					function () {
 						return {};
 					},
@@ -651,7 +650,6 @@ describe('MapModel', function () {
 		describe('insertIntermediate', function () {
 			var init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(
-					observable({}),
 					function () {
 						return {};
 					},
@@ -689,7 +687,7 @@ describe('MapModel', function () {
 	describe('map scaling and movement', function () {
 		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(observable({}));
+			underTest = new MAPJS.MapModel();
 			mapScaleChangedListener = jasmine.createSpy('mapScaleChanged');
 			mapViewResetRequestedListener = jasmine.createSpy('mapViewReset');
 			mapMoveRequestedListener = jasmine.createSpy('mapMoveRequested');
@@ -758,7 +756,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(observable({}), function () {
+			underTest = new MAPJS.MapModel(function () {
 				return {
 					nodes: {
 						1: { x: 0, y: 10 },
@@ -918,7 +916,7 @@ describe('MapModel', function () {
 	describe('analytic events', function () {
 		var underTest, analyticListener,
 			reset = function () {
-				underTest = new MAPJS.MapModel(observable({}), function () {
+				underTest = new MAPJS.MapModel(function () {
 					return {
 						nodes: {
 							1: { x: 0 },
@@ -1022,7 +1020,7 @@ describe('MapModel', function () {
 			},
 			underTest;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+			underTest = new MAPJS.MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
 		});
 		it('retrieves root node style by default', function () {
@@ -1073,7 +1071,7 @@ describe('MapModel', function () {
 					ideaIdTo: 4
 				}]
 			});
-			underTest = new MAPJS.MapModel(observable({}), layoutCalculator);
+			underTest = new MAPJS.MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
 		});
 		it('should invoke content.addLink when addLink method is invoked', function () {

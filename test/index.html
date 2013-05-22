@@ -113,20 +113,19 @@
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),
-				mapRepository = observable({}),
 				isTouch = false,
 				renderImages = false,
-				mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
+				mapModel = new MAPJS.MapModel(MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
 				container.mapWidget(console,mapModel, isTouch, renderImages);
 				jQuery('body').mapToolbarWidget(mapModel);
 				jQuery('body').attachmentEditorWidget(mapModel);
-				var pngExporter = new MAPJS.PNGExporter(mapRepository);
-				$("[data-mm-action='export-image']").click(pngExporter.exportMap);
-				pngExporter.addEventListener('mapExported', function (url) {
-					$("<img/>").attr('src',url).appendTo('body');
+				$("[data-mm-action='export-image']").click(function () {
+					MAPJS.pngExport(idea).then(function (url) {
+						window.open(url, '_blank');
+					});
 				});
 				mapModel.addEventListener('analytic', console.log.bind(console));
-				mapRepository.dispatchEvent('mapLoaded', idea);
+				mapModel.setIdea(idea);
 				jQuery('#linkEditWidget').linkEditWidget(mapModel);
 				window.mapModel = mapModel;
 			}());

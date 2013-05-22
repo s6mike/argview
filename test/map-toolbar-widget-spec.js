@@ -4,7 +4,7 @@ describe('mapToolbarWidget', function () {
 	'use strict';
 	var mapModel, element;
 	beforeEach(function () {
-		mapModel = new MAPJS.MapModel(observable({}), function () { return []; });
+		mapModel = new MAPJS.MapModel(function () { return []; });
 		element = jQuery(
 			'<div>\
 			<input type="button" class="resetView" value="0"></input>\

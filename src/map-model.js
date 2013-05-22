@@ -1,6 +1,6 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChooseFrom, intermediaryTitlesToRandomlyChooseFrom) {
+MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, intermediaryTitlesToRandomlyChooseFrom) {
 	'use strict';
 	titlesToRandomlyChooseFrom = titlesToRandomlyChooseFrom || ['double click to edit'];
 	intermediaryTitlesToRandomlyChooseFrom = intermediaryTitlesToRandomlyChooseFrom || titlesToRandomlyChooseFrom;
@@ -142,7 +142,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		self.selectNode(idea.id);
 		self.dispatchEvent('mapViewResetRequested');
 	};
-	mapRepository.addEventListener('mapLoaded', this.setIdea);
 	this.setInputEnabled = function (value) {
 		if (isInputEnabled !== value) {
 			isInputEnabled = value;
