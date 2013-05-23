@@ -188,6 +188,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (siblingsAfter.length === 0) { return false; }
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
+	contentAggregate.getAttrById = function(ideaId, attrName) {
+		var idea = findIdeaById(ideaId);
+		return idea && idea.getAttr(attrName);
+	};
+	
 	contentAggregate.previousSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,
@@ -205,10 +210,27 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return JSON.parse(JSON.stringify(toClone));
 	};
 	/*** private utility methods ***/
+	contentAggregate.calculatePath = function (ideaId, currentPath, potentialParent) {
+		var result;
+		if (contentAggregate.id == ideaId) {
+			return [];
+		}
+		currentPath = currentPath || [contentAggregate];
+		potentialParent = potentialParent || contentAggregate;
+		if (potentialParent.containsDirectChild(ideaId)){
+			return currentPath;
+		}
+		return _.reduce(
+			potentialParent.ideas,
+			function (result, child) {
+				return result || contentAggregate.calculatePath(ideaId, [child].concat(currentPath), child);
+			},
+			false
+		);
+	}
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
-		var childRank = parentIdea.findChildRankById(subIdeaId);
-		if (childRank) {
+		if (parentIdea.containsDirectChild(subIdeaId)) {
 			return parentIdea;
 		}
 		return _.reduce(
