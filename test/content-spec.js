@@ -33,6 +33,46 @@ describe("content aggregate", function () {
 			expect(wrapped.ideas[3].id).toBe(3);
 			expect(wrapped.ideas[-4].id).toBe(4);
 		});
+		describe('getPath', function () {
+			var wrapped, i111, i11;
+			beforeEach(function () {
+				i111 = {
+					id: 111,
+					ideas: {
+						1: {
+							id: 1111
+						}
+					}
+				};
+				i11 = {
+					id: 11,
+					ideas: {
+						1: i111
+					}					
+				};
+				wrapped = MAPJS.content({
+					id: 1,
+					ideas: {
+						1: i11,
+						2: {
+							id: 12
+						}
+					}
+				});
+			});
+			it('should return single item for root node', function () {
+				expect(wrapped.calculatePath(1)).toEqual([]);
+			});
+			it('should path to the root node', function () {
+				expect(wrapped.calculatePath(11)).toEqual([wrapped]);
+				expect(wrapped.calculatePath(111)).toEqual([i11, wrapped]);
+				expect(wrapped.calculatePath(1111)).toEqual([i111, i11, wrapped]);
+			});
+			it('should return false if the node does not exist', function () {
+				expect(wrapped.calculatePath(123)).toBeFalsy();
+			});
+
+		});
 		describe("getAttr", function () {
 			it("returns false if the attribute is not defined", function () {
 				var wrapped = MAPJS.content({});
@@ -174,6 +214,28 @@ describe("content aggregate", function () {
 				var aggregate = MAPJS.content({id: 1, title: 'root', ideas: {'-100': {title: '-100'}, '-1': {title: '-1'}, '1': {title: '1'}, '100': {title: '100'}}}),
 					result = _.map(aggregate.sortedSubIdeas(), function (subidea) { return subidea.title; });
 				expect(result).toEqual(['1', '100', '-1', '-100']);
+			});
+		});
+		describe('getAttrById', function () {
+			var wrapped;
+			beforeEach(function () {
+				wrapped = MAPJS.content({
+					attr: {
+						style: {
+							background: 'red'
+						}
+					},
+					id: 12
+				});
+			});
+			it('returns false if the there is no idea for the id', function () {
+				expect(wrapped.getAttrById(31412, 'style')).toBeFalsy();
+			});
+			it('returns false if the there is no attr matching', function () {
+				expect(wrapped.getAttrById(12, 'xx')).toBeFalsy();
+			});
+			it('should return the attr from the matching node', function () {
+				expect(wrapped.getAttrById(12, 'style')).toEqual({background: 'red'});
 			});
 		});
 	});
