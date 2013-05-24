@@ -485,33 +485,6 @@ describe("content aggregate", function () {
 				expect(aggregate.getAttr('new').sub.subsub).toBe(0);
 			});
 		});
-		describe("updateLinkAttr", function () {
-			it('should allow a link attribute to be set on the aggregate', function () {
-				var aggregate = MAPJS.content({
-					id: 71,
-					title: 'My Idea',
-					ideas: {
-						100: {
-							id: 72,
-							title: 'Idea 72'
-						},
-						200: {
-							id: 73,
-							title: 'Idea 73'
-						}
-					},
-					links: [{
-						ideaIdFrom: 72,
-						ideaIdTo: 73
-					}]
-				}), result;
-
-				result = aggregate.updateLinkAttr(72, 73, 'newAttr', 'newValue');
-
-				expect(result).toBe(true);
-				expect(aggregate.getLinkAttr(72, 73, 'newAttr')).toBe('newValue');
-			});
-		});
 		describe("updateTitle", function () {
 			it('changes the title of the current idea only if it matches ID in command', function () {
 				var first = MAPJS.content({id: 71, title: 'My Idea'}),
@@ -1452,6 +1425,15 @@ describe("content aggregate", function () {
 			idea.changeParent(3, 2);
 
 			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
+		});
+		it('should allow a link attribute to be set on the aggregate', function () {
+			var result;
+			idea.addLink(2, 3);
+
+			result = idea.updateLinkAttr(2, 3, 'newAttr', 'newValue');
+
+			expect(result).toBe(true);
+			expect(idea.getLinkAttr(2, 3, 'newAttr')).toBe('newValue');
 		});
 	});
 	describe("support for multiple versions", function () {

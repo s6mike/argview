@@ -188,11 +188,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (siblingsAfter.length === 0) { return false; }
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
-	contentAggregate.getAttrById = function(ideaId, attrName) {
+	contentAggregate.getAttrById = function (ideaId, attrName) {
 		var idea = findIdeaById(ideaId);
 		return idea && idea.getAttr(attrName);
 	};
-
 	contentAggregate.previousSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,
@@ -209,15 +208,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		var toClone = (subIdeaId && subIdeaId != contentAggregate.id && contentAggregate.findSubIdeaById(subIdeaId)) || contentAggregate;
 		return JSON.parse(JSON.stringify(toClone));
 	};
-	/*** private utility methods ***/
 	contentAggregate.calculatePath = function (ideaId, currentPath, potentialParent) {
-		var result;
 		if (contentAggregate.id == ideaId) {
 			return [];
 		}
 		currentPath = currentPath || [contentAggregate];
 		potentialParent = potentialParent || contentAggregate;
-		if (potentialParent.containsDirectChild(ideaId)){
+		if (potentialParent.containsDirectChild(ideaId)) {
 			return currentPath;
 		}
 		return _.reduce(
@@ -227,7 +224,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			},
 			false
 		);
-	}
+	};
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		if (parentIdea.containsDirectChild(subIdeaId)) {
@@ -457,34 +454,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return !!undoAction;
 	};
-	contentAggregate.updateLinkAttr = function (ideaIdFrom, ideaIdTo, attrName, attrValue) {
-		return contentAggregate.execCommand('updateLinkAttr', arguments);
-	};
-	commandProcessors.updateLinkAttr = function (originSession, ideaIdFrom, ideaIdTo, attrName, attrValue) {
-		var link = _.find(
-			contentAggregate.links,
-			function (link) {
-				return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
-			}
-		), undoAction;
-		undoAction = updateAttr(link, attrName, attrValue);
-		if (undoAction) {
-			notifyChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
-		}
-		return !!undoAction;
-	};
-	contentAggregate.getLinkAttr = function (ideaIdFrom, ideaIdTo, name) {
-		var link = _.find(
-			contentAggregate.links,
-			function (link) {
-				return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
-			}
-		);
-		if (link && link.attr && link.attr[name]) {
-			return link.attr[name];
-		}
-		return false;
-	};
 	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
 		var parentIdea = contentAggregate.findParent(ideaId),
 			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
@@ -629,6 +598,18 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			return false;
 		};
+		contentAggregate.getLinkAttr = function (ideaIdFrom, ideaIdTo, name) {
+			var link = _.find(
+				contentAggregate.links,
+				function (link) {
+					return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
+				}
+			);
+			if (link && link.attr && link.attr[name]) {
+				return link.attr[name];
+			}
+			return false;
+		};
 		contentAggregate.addEventListener('changed', function () {
 			if (contentAggregate.links) {
 				contentAggregate.links.forEach(function (link) {
@@ -638,9 +619,24 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				});
 			}
 		});
+		contentAggregate.updateLinkAttr = function (ideaIdFrom, ideaIdTo, attrName, attrValue) {
+			return contentAggregate.execCommand('updateLinkAttr', arguments);
+		};
+		commandProcessors.updateLinkAttr = function (originSession, ideaIdFrom, ideaIdTo, attrName, attrValue) {
+			var link = _.find(
+				contentAggregate.links,
+				function (link) {
+					return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
+				}
+			), undoAction;
+			undoAction = updateAttr(link, attrName, attrValue);
+			if (undoAction) {
+				notifyChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
+			}
+			return !!undoAction;
+		};
 	}());
 	/* undo/redo */
-
 	contentAggregate.undo = function () {
 		return contentAggregate.execCommand('undo', arguments);
 	};
