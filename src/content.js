@@ -399,34 +399,57 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}, originSession);
 		return true;
 	};
+	var updateAttr = function (object, attrName, attrValue) {
+		var oldAttr;
+		if (!object) {
+			return false;
+		}
+		oldAttr = _.extend({}, object.attr);
+		object.attr = _.extend({}, object.attr);
+		if (!attrValue || attrValue === 'false') {
+			if (!object.attr[attrName]) {
+				return false;
+			}
+			delete object.attr[attrName];
+		} else {
+			if (_.isEqual(object.attr[attrName], attrValue)) {
+				return false;
+			}
+			object.attr[attrName] = JSON.parse(JSON.stringify(attrValue));
+		}
+		if (_.size(object.attr) === 0) {
+			delete object.attr;
+		}
+		return function () {
+			object.attr = oldAttr;
+		};
+	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
 		return contentAggregate.execCommand('updateAttr', arguments);
 	};
 	commandProcessors.updateAttr = function (originSession, ideaId, attrName, attrValue) {
-		var idea = findIdeaById(ideaId), oldAttr;
-		if (!idea) {
-			return false;
+		var idea = findIdeaById(ideaId), undoAction;
+		undoAction = updateAttr(idea, attrName, attrValue);
+		if (undoAction) {
+			notifyChange('updateAttr', [ideaId, attrName, attrValue], undoAction, originSession);
 		}
-		oldAttr = _.extend({}, idea.attr);
-		idea.attr = _.extend({}, idea.attr);
-		if (!attrValue || attrValue === 'false') {
-			if (!idea.attr[attrName]) {
-				return false;
+		return !!undoAction;
+	};
+	contentAggregate.updateLinkAttr = function (ideaIdFrom, ideaIdTo, attrName, attrValue) {
+		return contentAggregate.execCommand('updateAttr', arguments);
+	};
+	commandProcessors.updateLinkAttr = function (originSession, ideaIdFrom, ideaIdTo, attrName, attrValue) {
+		var link = _.find(
+			contentAggregate.links,
+			function (link) {
+				return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
 			}
-			delete idea.attr[attrName];
-		} else {
-			if (_.isEqual(idea.attr[attrName], attrValue)) {
-				return false;
-			}
-			idea.attr[attrName] = JSON.parse(JSON.stringify(attrValue));
+		), undoAction;
+		undoAction = updateAttr(link, attrName, attrValue);
+		if (undoAction) {
+			notifyChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
 		}
-		if (_.size(idea.attr) === 0) {
-			delete idea.attr;
-		}
-		notifyChange('updateAttr', [ideaId, attrName, attrValue], function () {
-			idea.attr = oldAttr;
-		}, originSession);
-		return true;
+		return !!undoAction;
 	};
 	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
 		var parentIdea = contentAggregate.findParent(ideaId),

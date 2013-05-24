@@ -2,7 +2,7 @@
 jQuery.fn.mapToolbarWidget = function (mapModel) {
 	'use strict';
 	var clickMethodNames = ['insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo',
-			'copy', 'cut', 'paste', 'resetView', 'openAttachment'],
+			'copy', 'cut', 'paste', 'resetView', 'openAttachment', 'toggleAddLinkMode'],
 		changeMethodNames = ['updateStyle'];
 	return this.each(function () {
 		var element = jQuery(this);
@@ -10,6 +10,9 @@ jQuery.fn.mapToolbarWidget = function (mapModel) {
 			element.find('.updateStyle[data-mm-target-property]').val(function () {
 				return mapModel.getSelectedStyle(jQuery(this).data('mm-target-property'));
 			}).change();
+		});
+		mapModel.addEventListener('addLinkModeToggled', function (isAddLinkMode) {
+			var button = element.find('.toggleAddLinkMode').toggleClass('active');
 		});
 		clickMethodNames.forEach(function (methodName) {
 			element.find('.' + methodName).click(function () {

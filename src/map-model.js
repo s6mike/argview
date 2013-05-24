@@ -160,6 +160,14 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
+	this.clickNode = function (id) {
+		if (isAddLinkMode) {
+			this.addLink(id);
+			this.toggleAddLinkMode();
+		} else {
+			this.selectNode(id);
+		}
+	};
 	this.getSelectedStyle = function (prop) {
 		var node = currentLayout.nodes[currentlySelectedIdeaId];
 		return node && node.attr && node.attr.style && node.attr.style[prop];
@@ -283,6 +291,60 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
 		idea.removeLink(nodeIdFrom, nodeIdTo);
 	};
+	var isAddLinkMode = false;
+	this.toggleAddLinkMode = function () {
+		isAddLinkMode = !isAddLinkMode;
+		self.dispatchEvent('addLinkModeToggled', isAddLinkMode);
+	};
+	self.undo = function (source) {
+		analytic('undo', source);
+		if (isInputEnabled) {
+			idea.undo();
+		}
+	};
+	self.redo = function (source) {
+		analytic('redo', source);
+		if (isInputEnabled) {
+			idea.redo();
+		}
+	};
+	self.moveRelative = function (source, relativeMovement) {
+		analytic('moveRelative', source);
+		if (isInputEnabled) {
+			idea.moveRelative(currentlySelectedIdeaId, relativeMovement);
+		}
+	};
+	self.cut = function (source) {
+		analytic('cut', source);
+		if (isInputEnabled) {
+			self.clipBoard = idea.clone(currentlySelectedIdeaId);
+			var parent = idea.findParent(currentlySelectedIdeaId);
+			if (idea.removeSubIdea(currentlySelectedIdeaId)) {
+				self.selectNode(parent.id);
+			}
+		}
+	};
+	self.copy = function (source) {
+		analytic('copy', source);
+		if (isInputEnabled) {
+			self.clipBoard = idea.clone(currentlySelectedIdeaId);
+		}
+	};
+	self.paste = function (source) {
+		analytic('paste', source);
+		if (isInputEnabled) {
+			idea.paste(currentlySelectedIdeaId, self.clipBoard);
+		}
+	};
+	self.pasteStyle = function (source) {
+		analytic('pasteStyle', source);
+		if (isInputEnabled && self.clipBoard) {
+			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
+			idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
+		}
+	};
+	self.moveUp = function (source) { self.moveRelative(source, -1); };
+	self.moveDown = function (source) { self.moveRelative(source, 1); };
 	(function () {
 		var isRootOrRightHalf = function (id) {
 				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
@@ -343,7 +405,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.selectNode(idea.findParent(currentlySelectedIdeaId).id);
 			}
 		};
-
 		self.selectNodeUp = function (source) {
 			var previousSibling = idea.previousSiblingId(currentlySelectedIdeaId),
 				nodesAbove,
@@ -394,55 +455,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.selectNode(closestNode.id);
 			}
 		};
-		self.undo = function (source) {
-			analytic('undo', source);
-			if (isInputEnabled) {
-				idea.undo();
-			}
-		};
-		self.redo = function (source) {
-			analytic('redo', source);
-			if (isInputEnabled) {
-				idea.redo();
-			}
-		};
-		self.moveRelative = function (source, relativeMovement) {
-			analytic('moveRelative', source);
-			if (isInputEnabled) {
-				idea.moveRelative(currentlySelectedIdeaId, relativeMovement);
-			}
-		};
-		self.cut = function (source) {
-			analytic('cut', source);
-			if (isInputEnabled) {
-				self.clipBoard = idea.clone(currentlySelectedIdeaId);
-				var parent = idea.findParent(currentlySelectedIdeaId);
-				if (idea.removeSubIdea(currentlySelectedIdeaId)) {
-					self.selectNode(parent.id);
-				}
-			}
-		};
-		self.copy = function (source) {
-			analytic('copy', source);
-			if (isInputEnabled) {
-				self.clipBoard = idea.clone(currentlySelectedIdeaId);
-			}
-		};
-		self.paste = function (source) {
-			analytic('paste', source);
-			if (isInputEnabled) {
-				idea.paste(currentlySelectedIdeaId, self.clipBoard);
-			}
-		};
-		self.pasteStyle = function (source) {
-			analytic('pasteStyle', source);
-			if (isInputEnabled && self.clipBoard) {
-				var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
-				idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
-			}
-		};
-		self.moveUp = function (source) { self.moveRelative(source, -1); };
-		self.moveDown = function (source) { self.moveRelative(source, 1); };
 	}());
 	//Todo - clean up this shit below
 	(function () {

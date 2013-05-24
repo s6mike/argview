@@ -128,7 +128,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 				mapModel.addLink(n.id);
 			}
 		});
-		node.on('click tap', mapModel.selectNode.bind(mapModel, n.id));
+		node.on('click tap', mapModel.clickNode.bind(mapModel, n.id));
 		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false, false));
 		node.on('dragstart', function () {
 			node.moveToTop();

@@ -423,6 +423,28 @@ describe("content aggregate", function () {
 				expect(aggregate.getAttr('new').sub.subsub).toBe(0);
 			});
 		});
+		describe("updateLinkAttr", function () {
+			it('should allow a link attribute to be set on the aggregate', function () {
+				var aggregate = MAPJS.content({
+					id: 71,
+					title: 'My Idea',
+					ideas: {
+						100: {
+							id: 72,
+							title: 'Idea 72'
+						},
+						200: {
+							id: 73,
+							title: 'Idea 73'
+						}
+					}
+				}), result;
+
+				result = aggregate.updateLinkAttr(72, 73, 'newAttr', 'newValue');
+
+				expect(result).toBe(true);
+			});
+		});
 		describe("updateTitle", function () {
 			it('changes the title of the current idea only if it matches ID in command', function () {
 				var first = MAPJS.content({id: 71, title: 'My Idea'}),
