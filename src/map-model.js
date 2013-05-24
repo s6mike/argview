@@ -194,6 +194,14 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			idea.updateAttr(currentlySelectedIdeaId, 'style', merged);
 		}
 	};
+	this.updateLinkStyle = function (source, ideaIdFrom, ideaIdTo, prop, value) {
+		if (isInputEnabled) {
+			analytic('updateLinkStyle:' + prop, source);
+			var merged = _.extend({}, idea.getLinkAttr(ideaIdFrom, ideaIdTo, 'style'));
+			merged[prop] = value;
+			idea.updateLinkAttr(ideaIdFrom, ideaIdTo, 'style', merged);
+		}
+	};
 	this.addSubIdea = function (source, parentId) {
 		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);

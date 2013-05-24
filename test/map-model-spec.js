@@ -623,6 +623,55 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
 			});
 		});
+		describe('updateLinkStyle', function () {
+			var anIdea, underTest;
+			beforeEach(function () {
+				anIdea = MAPJS.content({
+					id: 1,
+					title: 'root',
+					ideas: {
+						10: {
+							id: 2,
+							title: 'child 2'
+						},
+						11: {
+							id: 3,
+							title: 'child 3'
+						}
+					},
+					links: [{
+						ideaIdFrom: 2,
+						ideaIdTo: 3
+					}]
+				});
+				underTest = new MAPJS.MapModel(function () {
+					return {
+						nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
+					};
+				});
+				spyOn(anIdea, 'updateLinkAttr').andCallThrough();
+				underTest.setIdea(anIdea);
+			});
+			it('should invoke idea.updateLinkAttr when updateLinkStyle is invoked', function () {
+				underTest.updateLinkStyle('source', 2, 3, 'color', 'black');
+
+				expect(anIdea.updateLinkAttr).toHaveBeenCalledWith(2, 3, 'style', { color: 'black' });
+			});
+			it('should not invoke idea.updateLinkAttr if input is disabled', function () {
+				underTest.setInputEnabled(false);
+
+				underTest.updateLinkStyle('source', 2, 3, 'color', 'black');
+
+				expect(anIdea.updateLinkAttr).not.toHaveBeenCalled();
+			});
+			it('should merge argument with previous style', function () {
+				underTest.updateLinkStyle('source', 2, 3, 'color', 'black');
+
+				underTest.updateLinkStyle('source', 2, 3, 'style', 'dashed');
+
+				expect(anIdea.updateLinkAttr).toHaveBeenCalledWith(2, 3, 'style', {color: 'black', style: 'dashed'});
+			});
+		});
 		describe('setAttachment', function () {
 			var attachment;
 			beforeEach(function () {
