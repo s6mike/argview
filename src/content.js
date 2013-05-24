@@ -192,7 +192,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		var idea = findIdeaById(ideaId);
 		return idea && idea.getAttr(attrName);
 	};
-	
+
 	contentAggregate.previousSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,
@@ -458,7 +458,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return !!undoAction;
 	};
 	contentAggregate.updateLinkAttr = function (ideaIdFrom, ideaIdTo, attrName, attrValue) {
-		return contentAggregate.execCommand('updateAttr', arguments);
+		return contentAggregate.execCommand('updateLinkAttr', arguments);
 	};
 	commandProcessors.updateLinkAttr = function (originSession, ideaIdFrom, ideaIdTo, attrName, attrValue) {
 		var link = _.find(
@@ -472,6 +472,18 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			notifyChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
 		}
 		return !!undoAction;
+	};
+	contentAggregate.getLinkAttr = function (ideaIdFrom, ideaIdTo, name) {
+		var link = _.find(
+			contentAggregate.links,
+			function (link) {
+				return link.ideaIdFrom == ideaIdFrom && link.ideaIdTo == ideaIdTo;
+			}
+		);
+		if (link && link.attr && link.attr[name]) {
+			return link.attr[name];
+		}
+		return false;
 	};
 	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
 		var parentIdea = contentAggregate.findParent(ideaId),

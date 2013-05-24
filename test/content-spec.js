@@ -48,7 +48,7 @@ describe("content aggregate", function () {
 					id: 11,
 					ideas: {
 						1: i111
-					}					
+					}
 				};
 				wrapped = MAPJS.content({
 					id: 1,
@@ -499,12 +499,17 @@ describe("content aggregate", function () {
 							id: 73,
 							title: 'Idea 73'
 						}
-					}
+					},
+					links: [{
+						ideaIdFrom: 72,
+						ideaIdTo: 73
+					}]
 				}), result;
 
 				result = aggregate.updateLinkAttr(72, 73, 'newAttr', 'newValue');
 
 				expect(result).toBe(true);
+				expect(aggregate.getLinkAttr(72, 73, 'newAttr')).toBe('newValue');
 			});
 		});
 		describe("updateTitle", function () {
