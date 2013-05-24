@@ -1115,10 +1115,12 @@ describe('MapModel', function () {
 			layoutCalculator = jasmine.createSpy();
 			layoutCalculator.andReturn({
 				nodes: {},
-				links: [{
-					ideaIdFrom: 1,
-					ideaIdTo: 4
-				}]
+				links: {
+					'1_4': {
+						ideaIdFrom: 1,
+						ideaIdTo: 4
+					}
+				}
 			});
 			underTest = new MAPJS.MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
@@ -1135,15 +1137,16 @@ describe('MapModel', function () {
 			underTest.addEventListener('linkCreated', linkCreatedListener);
 			layoutCalculator.andReturn({
 				nodes: {},
-				links: [
-					{
+				links: {
+					'1_4': {
 						ideaIdFrom: 1,
 						ideaIdTo: 4
-					}, {
+					},
+					'1_3': {
 						ideaIdFrom: 1,
 						ideaIdTo: 3
 					}
-				]
+				}
 			});
 
 			underTest.addLink(3);
@@ -1162,12 +1165,12 @@ describe('MapModel', function () {
 			underTest.addEventListener('linkRemoved', linkRemovedListener);
 			layoutCalculator.andReturn({
 				nodes: {},
-				links: [
-					{
+				links: {
+					'1_3': {
 						ideaIdFrom: 1,
 						ideaIdTo: 3
 					}
-				]
+				}
 			});
 
 			underTest.removeLink(1, 4);
@@ -1182,31 +1185,34 @@ describe('MapModel', function () {
 			underTest.addEventListener('linkCreated', linkCreatedListener);
 			layoutCalculator.andReturn({
 				nodes: {},
-				links: [
-					{
+				links: {
+					'1_4': {
 						ideaIdFrom: 1,
 						ideaIdTo: 4
-					}, {
+					},
+					'1_3': {
 						ideaIdFrom: 1,
 						ideaIdTo: 3
 					}
-				]
+				}
 			});
 			underTest.addLink(3);
 			layoutCalculator.andReturn({
 				nodes: {},
-				links: [
-					{
+				links: {
+					'1_4': {
 						ideaIdFrom: 1,
 						ideaIdTo: 4
-					}, {
+					},
+					'1_3': {
 						ideaIdFrom: 1,
 						ideaIdTo: 3
-					}, {
+					},
+					'1_5': {
 						ideaIdFrom: 1,
 						ideaIdTo: 5
 					}
-				]
+				}
 			});
 
 			underTest.addLink(5);

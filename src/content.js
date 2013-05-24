@@ -512,7 +512,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return false;
 		}
 		reorderChild(parentIdea, newRank, currentRank);
-
 		notifyChange('positionBefore', [ideaId, positionBeforeIdeaId], function () {
 			reorderChild(parentIdea, currentRank, newRank);
 		}, originSession);

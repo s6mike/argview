@@ -20,6 +20,9 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			mapModel.removeLink(currentLink.ideaIdFrom, currentLink.ideaIdTo);
 			element.hide();
 		});
+		element.find('.color').change(function () {
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'color', jQuery(this).val());
+		});
 		element.mouseleave(function () {
 			element.hide();
 		});

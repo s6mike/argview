@@ -85,8 +85,7 @@
 		margin = margin || 10;
 		var result = {
 			nodes: {},
-			connectors: {},
-			links: _.clone(idea.links) || []
+			connectors: {}
 		},
 			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
 			calculateLayoutInner = function (positions, level) {
@@ -114,12 +113,13 @@
 			};
 		MAPJS.LayoutCompressor.compress(root);
 		calculateLayoutInner(root, 1);
-		result.links = _.filter(
-			result.links,
-			function (link) {
-				return result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo];
+		result.links = {};
+		_.each(idea.links, function (link) {
+			if (result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo]) {
+				result.links[link.ideaIdFrom + '_' + link.ideaIdTo] = link;
+				//todo - clone
 			}
-		);
+		});
 		return result;
 	};
 	MAPJS.calculateFrame = function (nodes, margin) {
