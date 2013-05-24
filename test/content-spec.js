@@ -1427,13 +1427,22 @@ describe("content aggregate", function () {
 			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
 		});
 		it('should allow a link attribute to be set on the aggregate', function () {
-			var result;
+			var result, changedListener = jasmine.createSpy();
+			idea.addEventListener('changed', changedListener);
 			idea.addLink(2, 3);
 
 			result = idea.updateLinkAttr(2, 3, 'newAttr', 'newValue');
 
 			expect(result).toBe(true);
 			expect(idea.getLinkAttr(2, 3, 'newAttr')).toBe('newValue');
+			expect(changedListener).toHaveBeenCalledWith('updateLinkAttr', [2, 3, 'newAttr', 'newValue']);
+		});
+		it('should return false when trying to set the attribute of a non-existing link', function () {
+			var result;
+
+			result = idea.updateLinkAttr(2, 3, 'newAttr', 'newValue');
+
+			expect(result).toBe(false);
 		});
 	});
 	describe("support for multiple versions", function () {
