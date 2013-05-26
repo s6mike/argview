@@ -133,11 +133,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			/* intentionally not returning 0 case, to help with split sorting into 2 groups */
 			return number < 0 ? -1 : 1;
 		},
-		eventStack = [],
-		redoStack = [],
+		eventStacks = {},
+		redoStacks = {},
 		isRedoInProgress = false,
 		notifyChange = function (method, args, undofunc, originSession) {
-			eventStack.push({eventMethod: method, eventArgs: args, undoFunction: undofunc});
+			if (!eventStacks[originSession]) {
+				eventStacks[originSession] = [];
+			}
+			eventStacks[originSession].push({eventMethod: method, eventArgs: args, undoFunction: undofunc});
+
 			if (isRedoInProgress) {
 				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
 			} else {
@@ -146,7 +150,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				} else {
 					contentAggregate.dispatchEvent('changed', method, args);
 				}
-				redoStack = [];
+				redoStacks[originSession] = [];
 			}
 		},
 		reorderChild = function (parentIdea, newRank, oldRank) {
@@ -188,11 +192,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (siblingsAfter.length === 0) { return false; }
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
-	contentAggregate.getAttrById = function(ideaId, attrName) {
+	contentAggregate.getAttrById = function (ideaId, attrName) {
 		var idea = findIdeaById(ideaId);
 		return idea && idea.getAttr(attrName);
 	};
-	
 	contentAggregate.previousSiblingId = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank,
@@ -217,7 +220,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		currentPath = currentPath || [contentAggregate];
 		potentialParent = potentialParent || contentAggregate;
-		if (potentialParent.containsDirectChild(ideaId)){
+		if (potentialParent.containsDirectChild(ideaId)) {
 			return currentPath;
 		}
 		return _.reduce(
@@ -227,7 +230,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			},
 			false
 		);
-	}
+	};
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		if (parentIdea.containsDirectChild(subIdeaId)) {
@@ -556,7 +559,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			alreadyExists = _.find(
 				contentAggregate.links,
 				function (link) {
-					return link.ideaIdFrom === ideaIdFrom && link.ideaIdTo === ideaIdTo || link.ideaIdFrom === ideaIdTo && link.ideaIdTo === ideaIdFrom;
+					return (link.ideaIdFrom === ideaIdFrom && link.ideaIdTo === ideaIdTo) || (link.ideaIdFrom === ideaIdTo && link.ideaIdTo === ideaIdFrom);
 				}
 			);
 			if (alreadyExists) {
@@ -611,10 +614,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	commandProcessors.undo = function (originSession) {
 		var topEvent;
-		topEvent = eventStack.pop();
+		topEvent = eventStacks[originSession] && eventStacks[originSession].pop();
 		if (topEvent && topEvent.undoFunction) {
 			topEvent.undoFunction();
-			redoStack.push(topEvent);
+			if (!redoStacks[originSession]) {
+				redoStacks[originSession] = [];
+			}
+			redoStacks[originSession].push(topEvent);
 			contentAggregate.dispatchEvent('changed', 'undo', [], originSession);
 			return true;
 		}
@@ -625,7 +631,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	commandProcessors.redo = function (originSession) {
 		var topEvent;
-		topEvent = redoStack.pop();
+		topEvent = redoStacks[originSession] && redoStacks[originSession].pop();
 		if (topEvent) {
 			isRedoInProgress = true;
 			contentAggregate.execCommand(topEvent.eventMethod, topEvent.eventArgs, originSession);

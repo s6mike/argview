@@ -1225,6 +1225,26 @@ describe("content aggregate", function () {
 			wrapped.redo();
 			expect(wrapped.title).toBe('Second');
 		});
+		it("shortcut method only redos undos from current session", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+			wrapped.updateTitle(1, 'First');
+			wrapped.execCommand('addSubIdea', [1], 'session2');
+			wrapped.undo();
+			wrapped.execCommand('undo', [1], 'session2');
+			wrapped.redo();
+			expect(wrapped.title).toBe('First');
+			expect(_.size(wrapped.ideas)).toBe(0);
+		});
+		it("command processor redos undos from the given session", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+			wrapped.updateTitle(1, 'First');
+			wrapped.execCommand('addSubIdea', [1], 'session2');
+			wrapped.execCommand('undo', [1], 'session2');
+			wrapped.undo();
+			wrapped.execCommand('redo', [], 'session2');
+			expect(wrapped.title).toBe('Original');
+			expect(_.size(wrapped.ideas)).toBe(1);
+		});
 	});
 	describe("undo", function () {
 		it("succeeds if there is something to undo", function () {
@@ -1269,6 +1289,23 @@ describe("content aggregate", function () {
 			wrapped.addEventListener('changed', spy);
 			expect(wrapped.undo()).toBeFalsy();
 			expect(spy).not.toHaveBeenCalled();
+		});
+		it("shortcut method only undos events caused by the default session", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+			wrapped.updateTitle(1, 'First');
+			wrapped.execCommand('addSubIdea', [1], 'session2');
+			wrapped.undo();
+			expect(wrapped.title).toBe('Original');
+			expect(_.size(wrapped.ideas)).toBe(1);
+		});
+		it("command processor undos events caused by the provided session", function () {
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+			wrapped.execCommand('addSubIdea', [1], 'session2');
+			wrapped.updateTitle(1, 'First');
+			wrapped.execCommand('undo', [1], 'session2');
+			wrapped.undo();
+			expect(wrapped.title).toBe('Original');
+			expect(_.size(wrapped.ideas)).toBe(0);
 		});
 	});
 	describe('links', function () {
