@@ -118,7 +118,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			y: n.y,
 			text: n.title,
 			mmAttr: n.attr,
-			opacity: 1
+			opacity: 1,
+			id: 'node_' + n.id
 		});
 		if (imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
