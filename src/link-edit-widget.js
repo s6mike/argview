@@ -14,7 +14,7 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 				top: (selectionPoint.y - 0.5 * height) + 'px',
 				left: (selectionPoint.x - 0.5 * width) + 'px'
 			});
-			colorElement.val(linkStyle.color || 'red');
+			colorElement.val(linkStyle.color || '#FF0000').change();
 			lineStyleElement.val(linkStyle.lineStyle || 'dashed');
 		});
 		mapModel.addEventListener('mapMoveRequested', function () {
@@ -27,8 +27,9 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		colorElement.change(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'color', jQuery(this).val());
 		});
-		lineStyleElement.change(function () {
-			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).val());
+		lineStyleElement.find('a').click(function () {
+			console.log(jQuery(this).text());
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).text());
 		});
 		element.mouseleave(element.hide.bind(element));
 	});
