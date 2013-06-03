@@ -85,7 +85,8 @@
 		margin = margin || 10;
 		var result = {
 			nodes: {},
-			connectors: {}
+			connectors: {},
+			links: {}
 		},
 			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
 			calculateLayoutInner = function (positions, level) {
@@ -113,10 +114,13 @@
 			};
 		MAPJS.LayoutCompressor.compress(root);
 		calculateLayoutInner(root, 1);
-		result.links = {};
 		_.each(idea.links, function (link) {
 			if (result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo]) {
-				result.links[link.ideaIdFrom + '_' + link.ideaIdTo] = link;
+				result.links[link.ideaIdFrom + '_' + link.ideaIdTo] = {
+					ideaIdFrom: link.ideaIdFrom,
+					ideaIdTo: link.ideaIdTo,
+					attr: _.clone(link.attr)
+				};
 				//todo - clone
 			}
 		});

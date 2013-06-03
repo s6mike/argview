@@ -51,6 +51,17 @@ describe('MapModel', function () {
 						title: 'style change',
 						attr: {style: {prop: 'old val'}}
 					}
+				},
+				links: {
+					'2_9': {
+						ideaIdFrom: 2,
+						ideaIdTo: 9,
+						attr: {
+							style: {
+								prop: 'old val'
+							}
+						}
+					}
 				}
 			};
 			layoutAfter = {
@@ -73,6 +84,17 @@ describe('MapModel', function () {
 						y: 100,
 						title: 'style change',
 						attr: {style: {prop: 'new val'}}
+					}
+				},
+				links: {
+					'2_9': {
+						ideaIdFrom: 2,
+						ideaIdTo: 9,
+						attr: {
+							style: {
+								prop: 'new val'
+							}
+						}
 					}
 				}
 			};
@@ -191,6 +213,14 @@ describe('MapModel', function () {
 			underTest.addEventListener('nodeAttrChanged', nodeAttrChangedListener);
 			anIdea.dispatchEvent('changed');
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
+		});
+		it('should dispatch linkAttrChanged the style changes is created', function () {
+			var linkAttrChangedListener = jasmine.createSpy();
+			underTest.addEventListener('linkAttrChanged', linkAttrChangedListener);
+
+			anIdea.dispatchEvent('changed');
+
+			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9']);
 		});
 		describe("focus/edit automatic control", function () {
 

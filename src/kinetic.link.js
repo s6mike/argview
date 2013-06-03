@@ -45,3 +45,12 @@
 	};
 	Kinetic.Global.extend(Kinetic.Link, Kinetic.Shape);
 }());
+Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
+	'use strict';
+	this.attrs.stroke = newMMAttr.style.color || 'red';
+	this.attrs.dashArray = {
+		solid: [],
+		dashed: [8, 8]
+	}[newMMAttr.style.lineStyle || 'dashed'];
+	this.getLayer().draw();
+};

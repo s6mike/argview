@@ -74,6 +74,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			}
 			if (newLayout.links) {
+				//todo make this simpler now that links is no longer an array
 				var join = function (link) {
 					return link.ideaIdFrom + '_' + link.ideaIdTo;
 				},
@@ -90,9 +91,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 						};
 					},
 					newLinks = _.map(newLayout.links || [], join),
-					oldLinks = _.map(currentLayout.links || [], join);
+					oldLinks = _.map(currentLayout.links || [], join),
+					linkId, newLink, oldLink;
 				_.map(_.difference(newLinks, oldLinks), split).forEach(dispatchFunc('linkCreated'));
 				_.map(_.difference(oldLinks, newLinks), split).forEach(dispatchFunc('linkRemoved'));
+				for (linkId in newLayout.links) {
+					newLink = newLayout.links[linkId];
+					oldLink = currentLayout.links && currentLayout.links[linkId];
+					if (oldLink && !_.isEqual(newLink.attr || {}, oldLink.attr || {})) {
+						self.dispatchEvent('linkAttrChanged', newLink);
+					}
+				}
 			}
 			currentLayout = newLayout;
 		},
@@ -294,7 +303,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		idea.addLink(currentlySelectedIdeaId, nodeIdTo);
 	};
 	this.selectLink = function (link, selectionPoint) {
-		self.dispatchEvent('linkSelected', link, selectionPoint);
+		self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));
 	};
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
 		idea.removeLink(nodeIdFrom, nodeIdTo);

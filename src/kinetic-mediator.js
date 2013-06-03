@@ -246,13 +246,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
 		var link = new Kinetic.Link({
+			id: 'link_' + l.ideaIdFrom + '_' + l.ideaIdTo,
 			shapeFrom: nodeByIdeaId[l.ideaIdFrom],
 			shapeTo: nodeByIdeaId[l.ideaIdTo],
 			dashArray: [8, 8],
 			stroke: '#800',
-			strokeWidth: 3,
-			opacity: 1,
-			id: 'link_' + l.ideaIdFrom + '_' + l.ideaIdTo
+			strokeWidth: 3
 		});
 		link.on('click mouseover', function (event) {
 			mapModel.selectLink(l, { x: event.layerX, y: event.layerY });
@@ -265,6 +264,10 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
 		link.destroy();
 		layer.draw();
+	});
+	mapModel.addEventListener('linkAttrChanged', function (l) {
+		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
+		link.setMMAttr(l.attr);
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 		var currentScale = stage.getScale().x || 1,
