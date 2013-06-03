@@ -73,34 +73,23 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
 			}
-			if (newLayout.links) {
-				//todo make this simpler now that links is no longer an array
-				var join = function (link) {
-					return link.ideaIdFrom + '_' + link.ideaIdTo;
-				},
-					split = function (link) {
-						var split = link.split('_');
-						return {
-							ideaIdFrom: split[0],
-							ideaIdTo: split[1]
-						};
-					},
-					dispatchFunc = function (type) {
-						return function (link) {
-							self.dispatchEvent(type, link);
-						};
-					},
-					newLinks = _.map(newLayout.links || [], join),
-					oldLinks = _.map(currentLayout.links || [], join),
-					linkId, newLink, oldLink;
-				_.map(_.difference(newLinks, oldLinks), split).forEach(dispatchFunc('linkCreated'));
-				_.map(_.difference(oldLinks, newLinks), split).forEach(dispatchFunc('linkRemoved'));
-				for (linkId in newLayout.links) {
-					newLink = newLayout.links[linkId];
-					oldLink = currentLayout.links && currentLayout.links[linkId];
-					if (oldLink && !_.isEqual(newLink.attr || {}, oldLink.attr || {})) {
+			var linkId, newLink, oldLink;
+			for (linkId in newLayout.links) {
+				newLink = newLayout.links[linkId];
+				oldLink = currentLayout.links && currentLayout.links[linkId];
+				if (oldLink) {
+					if (!_.isEqual(newLink.attr || {}, oldLink && oldLink.attr || {})) {
 						self.dispatchEvent('linkAttrChanged', newLink);
 					}
+				} else {
+					self.dispatchEvent('linkCreated', newLink);
+				}
+			}
+			for (linkId in currentLayout.links) {
+				oldLink = currentLayout.links[linkId];
+				newLink = newLayout.links && newLayout.links[linkId];
+				if (!newLink) {
+					self.dispatchEvent('linkRemoved', oldLink);
 				}
 			}
 			currentLayout = newLayout;

@@ -1,4 +1,4 @@
-/*global _, document, Kinetic, MAPJS*/
+/*global _, Kinetic, MAPJS*/
 if (Kinetic.Stage.prototype.isRectVisible) {
 	throw ('isRectVisible already exists, should not mix in our methods');
 }
@@ -259,7 +259,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 		layer.add(link);
 		link.moveToBottom();
-		layer.draw();
+		link.setMMAttr(l.attr);
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];

@@ -47,10 +47,11 @@
 }());
 Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 	'use strict';
-	this.attrs.stroke = newMMAttr.style.color || 'red';
+	var style = newMMAttr && newMMAttr.style;
+	this.attrs.stroke = style && style.color || 'red';
 	this.attrs.dashArray = {
 		solid: [],
 		dashed: [8, 8]
-	}[newMMAttr.style.lineStyle || 'dashed'];
+	}[style && style.lineStyle || 'dashed'];
 	this.getLayer().draw();
 };

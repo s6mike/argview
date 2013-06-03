@@ -653,6 +653,25 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
 			});
 		});
+		describe('clickNode', function () {
+			it('should select node when not in link mode', function () {
+				spyOn(underTest, 'selectNode');
+
+				underTest.clickNode(1);
+
+				expect(underTest.selectNode).toHaveBeenCalledWith(1);
+			});
+			it('should add link when in link mode', function () {
+				spyOn(underTest, 'selectNode');
+				spyOn(underTest, 'addLink');
+				underTest.toggleAddLinkMode();
+
+				underTest.clickNode(2);
+
+				expect(underTest.addLink).toHaveBeenCalledWith(2);
+				expect(underTest.selectNode).not.toHaveBeenCalled();
+			});
+		});
 		describe('updateLinkStyle', function () {
 			var anIdea, underTest;
 			beforeEach(function () {
@@ -1147,8 +1166,8 @@ describe('MapModel', function () {
 				nodes: {},
 				links: {
 					'1_4': {
-						ideaIdFrom: 1,
-						ideaIdTo: 4
+						ideaIdFrom: '1',
+						ideaIdTo: '4'
 					}
 				}
 			});
@@ -1169,12 +1188,12 @@ describe('MapModel', function () {
 				nodes: {},
 				links: {
 					'1_4': {
-						ideaIdFrom: 1,
-						ideaIdTo: 4
+						ideaIdFrom: '1',
+						ideaIdTo: '4'
 					},
 					'1_3': {
-						ideaIdFrom: 1,
-						ideaIdTo: 3
+						ideaIdFrom: '1',
+						ideaIdTo: '3'
 					}
 				}
 			});
@@ -1197,8 +1216,8 @@ describe('MapModel', function () {
 				nodes: {},
 				links: {
 					'1_3': {
-						ideaIdFrom: 1,
-						ideaIdTo: 3
+						ideaIdFrom: '1',
+						ideaIdTo: '3'
 					}
 				}
 			});
@@ -1217,12 +1236,12 @@ describe('MapModel', function () {
 				nodes: {},
 				links: {
 					'1_4': {
-						ideaIdFrom: 1,
-						ideaIdTo: 4
+						ideaIdFrom: '1',
+						ideaIdTo: '4'
 					},
 					'1_3': {
-						ideaIdFrom: 1,
-						ideaIdTo: 3
+						ideaIdFrom: '1',
+						ideaIdTo: '3'
 					}
 				}
 			});
@@ -1231,16 +1250,16 @@ describe('MapModel', function () {
 				nodes: {},
 				links: {
 					'1_4': {
-						ideaIdFrom: 1,
-						ideaIdTo: 4
+						ideaIdFrom: '1',
+						ideaIdTo: '4'
 					},
 					'1_3': {
-						ideaIdFrom: 1,
-						ideaIdTo: 3
+						ideaIdFrom: '1',
+						ideaIdTo: '3'
 					},
 					'1_5': {
-						ideaIdFrom: 1,
-						ideaIdTo: 5
+						ideaIdFrom: '1',
+						ideaIdTo: '5'
 					}
 				}
 			});
@@ -1258,7 +1277,7 @@ describe('MapModel', function () {
 
 			underTest.selectLink({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
 
-			expect(linkSelectedListener).toHaveBeenCalledWith({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
+			expect(linkSelectedListener).toHaveBeenCalledWith({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 }, false);
 		});
 	});
 });
