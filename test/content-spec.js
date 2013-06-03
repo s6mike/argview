@@ -1386,10 +1386,11 @@ describe("content aggregate", function () {
 			result = idea.addLink(2, 3);
 
 			expect(result).toBe(false);
-			expect(idea.links).toEqual([{
+			expect(idea.links.length).toBe(1);
+			expect(idea.links[0]).toPartiallyMatch({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			}]);
+			});
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should not be able to add the link in the opposite direction of an already existing link', function () {
@@ -1400,10 +1401,11 @@ describe("content aggregate", function () {
 			result = idea.addLink(3, 2);
 
 			expect(result).toBe(false);
-			expect(idea.links).toEqual([{
+			expect(idea.links.length).toBe(1)
+			expect(idea.links[0]).toPartiallyMatch({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			}]);
+			});
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should remove a link when removeLink method is invoked', function () {
@@ -1448,10 +1450,11 @@ describe("content aggregate", function () {
 			result = idea.removeLink(1, 1);
 
 			expect(result).toBe(false);
-			expect(idea.links).toEqual([{
+			expect(idea.links.length).toBe(1);
+			expect(idea.links[0]).toPartiallyMatch({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			}]);
+			});
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should check link validity (and remove invalid links) after any change in content', function () {
