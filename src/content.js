@@ -590,10 +590,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				if (String(link.ideaIdFrom) === String(ideaIdOne) && String(link.ideaIdTo) === String(ideaIdTwo)) {
 					contentAggregate.links.splice(i, 1);
 					notifyChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
-						contentAggregate.links.push({
-							ideaIdFrom: ideaIdOne,
-							ideaIdTo: ideaIdTwo
-						});
+						contentAggregate.links.push(_.clone(link));
 					}, originSession);
 					return true;
 				}
