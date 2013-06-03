@@ -98,12 +98,12 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			});
 		};
 	stage.add(layer);
-	document.body.style.cursor = 'move';
+	stage.getContainer().style.cursor = 'move';
 	layer.on('mouseover', function () {
-		document.body.style.cursor = 'pointer';
+		stage.getContainer().style.cursor = 'pointer';
 	});
 	layer.on('mouseout', function () {
-		document.body.style.cursor = 'move';
+		stage.getContainer().style.cursor = 'move';
 	});
 	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 		var node = nodeByIdeaId[nodeId];
@@ -118,7 +118,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			y: n.y,
 			text: n.title,
 			mmAttr: n.attr,
-			opacity: 1
+			opacity: 1,
+			id: 'node_' + n.id
 		});
 		if (imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);

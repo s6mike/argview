@@ -167,7 +167,7 @@
 				onCancelEdit = function () {
 					updateText(unformattedText);
 					if (deleteOnCancel) {
-						self.fire(':request', {type: 'removeSubIdea', source: 'internal'});
+						self.fire(':request', {type: 'undo', source: 'internal'});
 					}
 				},
 				scale = self.getStage().getScale().x || 1;
