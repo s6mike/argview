@@ -11,8 +11,8 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			width = width || element.width();
 			height = height || element.height();
 			element.css({
-				top: (selectionPoint.y - 0.5 * height) + 'px',
-				left: (selectionPoint.x - 0.5 * width) + 'px'
+				top: (selectionPoint.y - 0.5 * height - 15) + 'px',
+				left: (selectionPoint.x - 0.5 * width - 15) + 'px'
 			});
 			colorElement.val(linkStyle.color || '#FF0000').change();
 			lineStyleElement.val(linkStyle.lineStyle || 'dashed');
