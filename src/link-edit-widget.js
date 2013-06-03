@@ -14,8 +14,8 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 				top: (selectionPoint.y - 0.5 * height - 15) + 'px',
 				left: (selectionPoint.x - 0.5 * width - 15) + 'px'
 			});
-			colorElement.val(linkStyle.color || '#FF0000').change();
-			lineStyleElement.val(linkStyle.lineStyle || 'dashed');
+			colorElement.val(linkStyle.color).change();
+			lineStyleElement.val(linkStyle.lineStyle);
 		});
 		mapModel.addEventListener('mapMoveRequested', function () {
 			element.hide();

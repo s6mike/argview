@@ -572,7 +572,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			contentAggregate.links = contentAggregate.links || [];
 			link = {
 				ideaIdFrom: ideaIdFrom,
-				ideaIdTo: ideaIdTo
+				ideaIdTo: ideaIdTo,
+				attr: {
+					style: {
+						color: '#FF0000',
+						lineStyle: 'dashed'
+					}
+				}
 			};
 			contentAggregate.links.push(link);
 			notifyChange('addLink', [ideaIdFrom, ideaIdTo], function () {
