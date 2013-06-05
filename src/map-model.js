@@ -382,7 +382,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		analytic('pasteStyle', source);
 		if (isInputEnabled && self.clipBoard) {
 			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
-			idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
+			var ids = self.currentlyActivatedNodes();
+			_.each(ids, function (id) {
+				idea.updateAttr(id, 'style', pastingStyle);
+			});
 		}
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
