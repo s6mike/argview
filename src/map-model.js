@@ -218,9 +218,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			_.each(ids, function (id) {
 				if (self.getStyleForId(id, prop) != value) {
 					var node = self.findIdeaById(id),
+						merged;
+					if (node) {
 						merged = _.extend({}, node.getAttr('style'));
-					merged[prop] = value;
-					idea.updateAttr(id, 'style', merged);
+						merged[prop] = value;
+						idea.updateAttr(id, 'style', merged);
+					}
 				}
 			});
 		}
