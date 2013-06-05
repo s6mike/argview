@@ -171,16 +171,26 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		return node && node.attr && node.attr.style && node.attr.style[prop];
 	};
 	this.toggleCollapse = function (source) {
-		var isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+
+		var selectedIdea = currentlySelectedIdea(),
+			isCollapsed;
+		if (_.size(selectedIdea.ideas) > 0) {
+			isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+		} else {
+			isCollapsed = self.allActivatedNodesHaveAttr('collapsed');
+		}
 		this.collapse(source, !isCollapsed);
 	};
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
 		if (isInputEnabled) {
-			var node = currentlySelectedIdea();
-			if (node.ideas && _.size(node.ideas) > 0) {
-				idea.updateAttr(currentlySelectedIdeaId, 'collapsed', doCollapse);
-			}
+			var ids = self.currentlyActivatedNodes();
+			_.each(ids, function (id) {
+				var node = idea.findSubIdeaById(id) || idea;
+				if (node && (!doCollapse || (node.ideas && _.size(node.ideas) > 0))) {
+					idea.updateAttr(id, 'collapsed', doCollapse);
+				}
+			});
 		}
 	};
 	this.updateStyle = function (source, prop, value) {
@@ -351,6 +361,47 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
 	self.moveDown = function (source) { self.moveRelative(source, 1); };
+
+	//node activation
+	(function () {
+		var activatedNodes = [],
+			setActiveNodes = function (activated) {
+				var wasActivated = _.clone(activatedNodes);
+				activatedNodes = activated;
+
+				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
+			};
+
+		self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
+			if (!isSelected) {
+				return;
+			}
+			setActiveNodes([id]);
+		});
+		self.activateNodesForSameLevel = function () {
+			var parent = idea.findParent(currentlySelectedIdeaId),
+				siblingIds;
+			if (!parent || !parent.ideas) {
+				return;
+			}
+			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
+			setActiveNodes(siblingIds);
+		};
+		self.currentlyActivatedNodes = function () {
+			return activatedNodes;
+		};
+		self.allActivatedNodesHaveAttr = function (attr) {
+			var noAttribute =  _.find(activatedNodes, function (id) {
+				var node = idea.findSubIdeaById(id) || idea;
+				if (node) {
+					return !node.getAttr(attr);
+				}
+			});
+			return !noAttribute;
+		};
+	}());
+
+
 	(function () {
 		var isRootOrRightHalf = function (id) {
 				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
@@ -477,6 +528,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			},
 			canDropOnNode = function (id, x, y, node) {
+				/*jslint eqeq: true*/
 				return id != node.id &&
 					x >= node.x &&
 					y >= node.y &&
