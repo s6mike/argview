@@ -1401,7 +1401,7 @@ describe("content aggregate", function () {
 			result = idea.addLink(3, 2);
 
 			expect(result).toBe(false);
-			expect(idea.links.length).toBe(1)
+			expect(idea.links.length).toBe(1);
 			expect(idea.links[0]).toPartiallyMatch({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
