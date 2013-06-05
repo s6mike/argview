@@ -606,30 +606,6 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
 			});
 		});
-		describe('updateStyle', function () {
-			beforeEach(function () {
-				spyOn(anIdea, 'updateAttr');
-				underTest.selectNode(2);
-			});
-			it('should invoke idea.setAttr with selected ideaId and style argument when updateStyle is called', function () {
-				underTest.updateStyle('source', 'styleprop', 'styleval');
-				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', { styleprop: 'styleval' });
-			});
-			it('should not invoke idea.setAttr if input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.updateStyle('source', 'styleprop', 'styleval');
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
-			});
-			it('should not invoke idea.setAttr with selected ideaId and style argument when updateStyle is called with same value', function () {
-				underTest.updateStyle('source', 'styleprop', 'oldValue');
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
-			});
-			it('should merge argument with previous style', function () {
-				anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
-				underTest.updateStyle('source', 'noncolor', 'nonblack');
-				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
-			});
-		});
 		describe('clickNode', function () {
 			it('should select node when not in link mode', function () {
 				spyOn(underTest, 'selectNode');
@@ -835,7 +811,7 @@ describe('MapModel', function () {
 				return {
 					nodes: {
 						1: { x: 0, y: 10 },
-						2: { x: -10, y: 10},
+						2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
 						3: { x: -10, y: -10 },
 						4: { x: 10, y: 10 },
 						5: { x: 10, y: 30 },
@@ -1035,6 +1011,39 @@ describe('MapModel', function () {
 						underTest.selectNode(2);
 						underTest.collapse('source', true);
 						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+					});
+				});
+				describe('updateStyle', function () {
+					beforeEach(function () {
+						underTest.selectNode(2);
+					});
+					it('should invoke idea.setAttr for all activated nodes when toggleCollapse is called', function () {
+						var i;
+						underTest.selectNode(3);
+						underTest.activateNodesForSameLevel();
+						underTest.updateStyle('source', 'styleprop', 'styleval');
+						for (i = 2; i <= 5; i++) {
+							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', { styleprop: 'styleval' });
+						}
+					});
+
+					it('should invoke idea.setAttr with selected ideaId and style argument when updateStyle is called', function () {
+						underTest.updateStyle('source', 'styleprop', 'styleval');
+						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', { styleprop: 'styleval' });
+					});
+					it('should not invoke idea.setAttr if input is disabled', function () {
+						underTest.setInputEnabled(false);
+						underTest.updateStyle('source', 'styleprop', 'styleval');
+						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+					});
+					it('should not invoke idea.setAttr with selected ideaId and style argument when updateStyle is called with same value', function () {
+						underTest.updateStyle('source', 'styleprop', 'oldValue');
+						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+					});
+					it('should merge argument with previous style', function () {
+						anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
+						underTest.updateStyle('source', 'noncolor', 'nonblack');
+						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
 					});
 				});
 
