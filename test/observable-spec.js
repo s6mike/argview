@@ -49,4 +49,13 @@ describe("Observable", function () {
 		obs.dispatchEvent('UnrelatedEvt', 'some', 'args');
 		expect(listener).not.toHaveBeenCalled();
 	});
+	it("supports listener priorities", function () {
+		var result = '';
+		obs.addEventListener('TestEvt', function () { result += 'first'; }, 1);
+		obs.addEventListener('TestEvt', function () { result += 'second'; }, 3);
+		obs.addEventListener('TestEvt', function () { result += 'third'; }, 2);
+		obs.dispatchEvent('TestEvt');
+
+		expect(result).toBe('secondthirdfirst');
+	});
 });
