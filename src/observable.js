@@ -1,39 +1,41 @@
 var observable = function (base) {
 	'use strict';
-	var eventListenersByType = {};
-	base.addEventListener = function (types, listener) {
+	var listeners = [];
+	base.addEventListener = function (types, listener, priority) {
 		types.split(' ').forEach(function (type) {
 			if (type) {
-				eventListenersByType[type] = eventListenersByType[type] || [];
-				eventListenersByType[type].push(listener);
+				listeners.push({
+					type: type,
+					listener: listener,
+					priority: priority || 0
+				});
 			}
 		});
 	};
 	base.listeners = function (type) {
-		var listenersByType = eventListenersByType[type] || [], result = [], i;
-		for (i = listenersByType.length - 1; i >= 0; i -= 1) {
-			result.push(listenersByType[i]);
-		}
-		return result;
+		return listeners.filter(function (listenerDetails) {
+			return listenerDetails.type === type;
+		}).map(function (listenerDetails) {
+			return listenerDetails.listener;
+		});
 	};
 	base.removeEventListener = function (type, listener) {
-		if (eventListenersByType[type]) {
-			eventListenersByType[type] = eventListenersByType[type].filter(
-				function (currentListener) {
-					return currentListener !== listener;
-				}
-			);
-		}
+		listeners = listeners.filter(function (details) {
+			return details.listener !== listener;
+		});
 	};
-	base.dispatchEvent = function (eventType) {
-		var eventArguments, listeners, i;
-		eventArguments = Array.prototype.slice.call(arguments, 1);
-		listeners = base.listeners(eventType);
-		for (i = 0; i < listeners.length; i += 1) {
-			if (listeners[i].apply(base, eventArguments) === false) {
-				break;
-			}
-		}
+	base.dispatchEvent = function (type) {
+		var args = Array.prototype.slice.call(arguments, 1);
+		listeners
+			.filter(function (listenerDetails) {
+				return listenerDetails.type === type;
+			})
+			.sort(function (firstListenerDetails, secondListenerDetails) {
+				return secondListenerDetails.priority - firstListenerDetails.priority;
+			})
+			.some(function (listenerDetails) {
+				return listenerDetails.listener.apply(undefined, args) === false;
+			});
 	};
 	return base;
 };
