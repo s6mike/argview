@@ -1385,6 +1385,15 @@ describe("content aggregate", function () {
 				expect(listener.calls[0].args[0]).toBe('batch');
 				expect(listener.calls[1].args[0]).toBe('addSubIdea');
 			});
+			it("does not confuse non batched commands after an empty batch", function () {
+				wrapped.endBatch();
+				wrapped.startBatch();
+				wrapped.endBatch();
+				wrapped.addSubIdea(1);
+				expect(listener.callCount).toBe(2);
+				expect(listener.calls[0].args[0]).toBe('batch');
+				expect(listener.calls[1].args[0]).toBe('addSubIdea');
+			});
 			it("undos an entire batch", function () {
 				wrapped.endBatch();
 

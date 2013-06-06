@@ -265,6 +265,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			batchUndoFunctions,
 			undo;
 		if (_.isEmpty(inBatch)) {
+			batches[activeSession] = undefined;
 			return;
 		}
 		batchArgs = _.map(inBatch, function (event) {
@@ -288,6 +289,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return commandProcessors[cmd].apply(contentAggregate, [originSession || sessionKey].concat(_.toArray(args)));
 	};
+
 	contentAggregate.batch = function (batchOp) {
 		contentAggregate.startBatch();
 		try {
@@ -297,6 +299,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			contentAggregate.endBatch();
 		}
 	};
+
 	commandProcessors.batch = function (originSession) {
 		contentAggregate.startBatch(originSession);
 		try {

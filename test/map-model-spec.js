@@ -542,25 +542,6 @@ describe('MapModel', function () {
 				expect(anIdea.redo).not.toHaveBeenCalled();
 			});
 		});
-		describe('removeSubIdea', function () {
-			beforeEach(function () {
-				spyOn(anIdea, 'removeSubIdea');
-				underTest.selectNode(321);
-			});
-			it('should invoke idea.removeSubIdea with currently selected idea', function () {
-				underTest.removeSubIdea('toolbar');
-				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(321);
-			});
-			it('should invoke idea.removeSubIdea with argument idea if given', function () {
-				underTest.removeSubIdea('toolbar', 9999);
-				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(9999);
-			});
-			it('should not invoke idea.removeSubIdea when input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.removeSubIdea('toolbar');
-				expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
-			});
-		});
 		describe('addSiblingIdea', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'addSubIdea');
@@ -818,6 +799,7 @@ describe('MapModel', function () {
 		});
 		it('should select parent when a node is deleted', function () {
 			underTest.selectNode(6);
+			nodeSelectionChangedListener.reset();
 			underTest.removeSubIdea('toolbar');
 			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
 		});
@@ -1062,6 +1044,34 @@ describe('MapModel', function () {
 						expect(anIdea.updateAttr).not.toHaveBeenCalled();
 					});
 				});
+				describe('removeSubIdea', function () {
+					beforeEach(function () {
+						spyOn(anIdea, 'removeSubIdea');
+						underTest.selectNode(321);
+					});
+					it('should invoke idea.removeSubIdea on all activated nodes as one batch', function () {
+						var i;
+						underTest.selectNode(3);
+						underTest.activateNodesForSameLevel();
+						changedListener.reset();
+
+						underTest.removeSubIdea('toolbar');
+
+						for (i = 2; i <= 5; i++) {
+							expect(anIdea.removeSubIdea).toHaveBeenCalledWith(i);
+						}
+					});
+					it('should invoke idea.removeSubIdea with currently selected idea', function () {
+						underTest.removeSubIdea('toolbar');
+						expect(anIdea.removeSubIdea).toHaveBeenCalledWith(321);
+					});
+					it('should not invoke idea.removeSubIdea when input is disabled', function () {
+						underTest.setInputEnabled(false);
+						underTest.removeSubIdea('toolbar');
+						expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
+					});
+				});
+
 			});
 		});
 	});
