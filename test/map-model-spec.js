@@ -296,7 +296,7 @@ describe('MapModel', function () {
 					underTest.setIdea(anIdea);
 					layoutCalculatorLayout = layoutAfter;
 					underTest.addEventListener('nodeMoved', nodeMovedListener);
-
+					underTest.selectNode(1);
 					anIdea.dispatchEvent('changed', 'updateAttr', [1], commandSession);
 				};
 			beforeEach(function () {
@@ -312,7 +312,7 @@ describe('MapModel', function () {
 					addSubIdea();
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 				});
-				it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
+				it('moves the map to keep selected node in the same position on the screen', function () {
 					updateAttrs();
 					expect(nodeMovedListener.callCount).toBe(1);
 					expect(nodeMovedListener).toHaveBeenCalledWith({
@@ -331,7 +331,7 @@ describe('MapModel', function () {
 					addSubIdea('originSession', 'originSession');
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 				});
-				it('should move map to keep the currently selected node in the same place while updating style (expand/collapse)', function () {
+				it('moves the map to keep selected node in the same position on the screen', function () {
 					updateAttrs('originSession', 'originSession');
 					expect(nodeMovedListener.callCount).toBe(1);
 					expect(nodeMovedListener).toHaveBeenCalledWith({
@@ -350,12 +350,13 @@ describe('MapModel', function () {
 					addSubIdea('originSession', 'differentSession');
 					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 				});
-				it('should not compensate movements of the context node', function () {
+				it('moves the map to keep selected node in the same position on the screen', function () {
 					updateAttrs('originSession', 'otherSession');
+					expect(nodeMovedListener.callCount).toBe(1);
 					expect(nodeMovedListener).toHaveBeenCalledWith({
-						x: 110,
-						y: 220,
-						title: 'First'
+						x: -10,
+						y: -20,
+						title: 'Second'
 					});
 				});
 			});

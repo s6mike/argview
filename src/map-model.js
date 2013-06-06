@@ -95,10 +95,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			currentLayout = newLayout;
 		},
 		onIdeaChanged = function (command, args, originSession) {
-			var newIdeaId, contextNodeId, localCommand;
+			var newIdeaId, localCommand;
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
-			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
-			updateCurrentLayout(layoutCalculator(idea), localCommand && contextNodeId);
+
+			updateCurrentLayout(layoutCalculator(idea), command && (currentlySelectedIdeaId || idea.id));
 			if (!localCommand) {
 				return;
 			}
