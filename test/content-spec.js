@@ -628,6 +628,11 @@ describe("content aggregate", function () {
 				idea.addSubIdea(71);
 				expect(_.toArray(idea.ideas)[0].id).toBe(72);
 			});
+			it('returns the assigned ID if successful', function () {
+				var idea = MAPJS.content({id: 71, title: 'My Idea'}),
+					newId = idea.addSubIdea(71);
+				expect(newId).toBe(72);
+			});
 			it('appends the session key if given', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'}, 'session');
 				idea.addSubIdea(71);
@@ -1251,6 +1256,7 @@ describe("content aggregate", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
 			expect(wrapped.undo()).toBeTruthy();
+			expect(wrapped.title).toBe('Original');
 		});
 		it("undos the top event from the stack", function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
@@ -1306,6 +1312,162 @@ describe("content aggregate", function () {
 			wrapped.undo();
 			expect(wrapped.title).toBe('Original');
 			expect(_.size(wrapped.ideas)).toBe(0);
+		});
+	});
+	describe('command batching', function () {
+		describe('in local session', function () {
+			var wrapped, listener;
+			beforeEach(function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'});
+				listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.startBatch();
+				wrapped.updateTitle(1, 'Mix');
+				wrapped.updateTitle(1, 'Max');
+			});
+			it("sends out a single event for the entire batch", function () {
+				wrapped.endBatch();
+				expect(listener.callCount).toBe(1);
+				expect(listener).toHaveBeenCalledWith('batch', [
+					['updateTitle', 1, 'Mix' ],
+					['updateTitle', 1, 'Max' ]
+				]);
+			});
+			it("will open a new batch if starting and there is an open one", function () {
+				wrapped.startBatch();
+				wrapped.updateTitle(1, 'Nox');
+				wrapped.endBatch();
+
+				expect(listener.callCount).toBe(2);
+				expect(listener).toHaveBeenCalledWith('batch', [
+					['updateTitle', 1, 'Mix'],
+					['updateTitle', 1, 'Max']
+				]);
+				expect(listener).toHaveBeenCalledWith('batch', [
+					['updateTitle', 1, 'Nox']
+				]);
+			});
+			it("will not send out an empty batch", function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'});
+				listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.startBatch();
+				wrapped.endBatch();
+
+				expect(listener).not.toHaveBeenCalled();
+			});
+			it("will not send out an undefined batch", function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'});
+				listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.endBatch();
+
+				expect(listener).not.toHaveBeenCalled();
+			});
+			it("supports mixing batched and non batched commands", function () {
+				wrapped.endBatch();
+				wrapped.addSubIdea(1);
+				expect(listener.callCount).toBe(2);
+				expect(listener.calls[0].args[0]).toBe('batch');
+				expect(listener.calls[1].args[0]).toBe('addSubIdea');
+			});
+			it("undos an entire batch", function () {
+				wrapped.endBatch();
+
+				wrapped.undo();
+
+				expect(wrapped.title).toBe('Original');
+				expect(listener.callCount).toBe(2);
+			});
+			it("undos an open batch as a separate event", function () {
+				wrapped.undo();
+
+				expect(wrapped.title).toBe('Original');
+				expect(listener.callCount).toBe(2);
+			});
+			it("redos an entire batch", function () {
+				wrapped.endBatch();
+				wrapped.undo();
+
+				wrapped.redo();
+
+				expect(wrapped.title).toBe('Max');
+			});
+			it("redos an open batch", function () {
+				wrapped.undo();
+
+				wrapped.redo();
+
+				expect(wrapped.title).toBe('Max');
+			});
+			it("redos in correct order", function () {
+				var newId = wrapped.addSubIdea(1, 'Hello World');
+				wrapped.updateTitle(newId, 'Yello World');
+				wrapped.endBatch();
+				wrapped.undo();
+				wrapped.redo();
+
+				expect(wrapped.findSubIdeaById(newId).title).toBe('Yello World');
+			});
+		});
+		describe('with sessions', function () {
+			var wrapped, listener;
+			beforeEach(function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+				listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.execCommand('batch', [
+					['updateTitle', 1, 'Mix' ],
+					['updateTitle', 1, 'Max' ]
+				], 'session2');
+			});
+			it("sends out a single event for the entire batch", function () {
+				expect(listener.callCount).toBe(1);
+				expect(listener).toHaveBeenCalledWith('batch', [
+					['updateTitle', 1, 'Mix' ],
+					['updateTitle', 1, 'Max' ]
+				], 'session2');
+			});
+			it("undos an entire batch as a single event", function () {
+				wrapped.execCommand('undo', [], 'session2');
+
+				expect(wrapped.title).toBe('Original');
+				expect(listener.callCount).toBe(2);
+			});
+			it("redos an entire batch as a single event", function () {
+				wrapped.execCommand('undo', [], 'session2');
+
+				wrapped.execCommand('redo', [], 'session2');
+
+				expect(wrapped.title).toBe('Max');
+				expect(listener.callCount).toBe(3);
+			});
+		});
+		describe('across sessions', function () {
+			var wrapped;
+			beforeEach(function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+				wrapped.startBatch();
+				wrapped.addSubIdea(1);
+				wrapped.execCommand('batch', [
+					['updateTitle', 1, 'Mix' ],
+					['updateTitle', 1, 'Max' ]
+				], 'session2');
+				wrapped.addSubIdea(1);
+				wrapped.endBatch();
+			});
+			describe("tracks batches for each session separately", function () {
+				it("undos local batches without messing up remote batches", function () {
+					wrapped.undo();
+					expect(_.size(wrapped.ideas)).toBe(0);
+					expect(wrapped.title).toBe('Max');
+				});
+				it("undos remote batches without messing up local batches", function () {
+					wrapped.execCommand('undo', [], 'session2');
+					expect(_.size(wrapped.ideas)).toBe(2);
+					expect(wrapped.title).toBe('Original');
+				});
+			});
 		});
 	});
 	describe('links', function () {

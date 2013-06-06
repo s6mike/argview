@@ -136,20 +136,29 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		eventStacks = {},
 		redoStacks = {},
 		isRedoInProgress = false,
-		notifyChange = function (method, args, undofunc, originSession) {
+		batches = {},
+		notifyChange = function (method, args, originSession) {
+			if (originSession) {
+				contentAggregate.dispatchEvent('changed', method, args, originSession);
+			} else {
+				contentAggregate.dispatchEvent('changed', method, args);
+			}
+		},
+		logChange = function (method, args, undofunc, originSession) {
+			var event = {eventMethod: method, eventArgs: args, undoFunction: undofunc};
+			if (batches[originSession]) {
+				batches[originSession].push(event);
+				return;
+			}
 			if (!eventStacks[originSession]) {
 				eventStacks[originSession] = [];
 			}
-			eventStacks[originSession].push({eventMethod: method, eventArgs: args, undoFunction: undofunc});
+			eventStacks[originSession].push(event);
 
 			if (isRedoInProgress) {
 				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
 			} else {
-				if (originSession) {
-					contentAggregate.dispatchEvent('changed', method, args, originSession);
-				} else {
-					contentAggregate.dispatchEvent('changed', method, args);
-				}
+				notifyChange(method, args, originSession);
 				redoStacks[originSession] = [];
 			}
 		},
@@ -244,11 +253,47 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 
 	/**** aggregate command processing methods ****/
+	contentAggregate.startBatch = function (originSession) {
+		var activeSession = originSession || sessionKey;
+		contentAggregate.endBatch(originSession);
+		batches[activeSession] = [];
+	};
+	contentAggregate.endBatch = function (originSession) {
+		var activeSession = originSession || sessionKey,
+			inBatch = batches[activeSession],
+			batchArgs,
+			batchUndoFunctions,
+			undo;
+		if (_.isEmpty(inBatch)) {
+			return;
+		}
+		batchArgs = _.map(inBatch, function (event) {
+			return [event.eventMethod].concat(event.eventArgs);
+		});
+		batchUndoFunctions = _.sortBy(
+			_.map(inBatch, function (event) { return event.undoFunction; }),
+			function (f, idx) { return -1 * idx; }
+		);
+		undo = function () {
+			_.each(batchUndoFunctions, function (eventUndo) {
+				eventUndo();
+			});
+		};
+		batches[activeSession] = undefined;
+		logChange('batch', batchArgs, undo, activeSession);
+	};
 	contentAggregate.execCommand = function (cmd, args, originSession) {
 		if (!commandProcessors[cmd]) {
 			return false;
 		}
 		return commandProcessors[cmd].apply(contentAggregate, [originSession || sessionKey].concat(_.toArray(args)));
+	};
+	commandProcessors.batch = function (originSession) {
+		contentAggregate.startBatch(originSession);
+		_.each(_.toArray(arguments).slice(1), function (event) {
+			contentAggregate.execCommand(event[0], event.slice(1), originSession);
+		});
+		contentAggregate.endBatch(originSession);
 	};
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		return contentAggregate.execCommand('paste', arguments);
@@ -280,7 +325,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (initialId) {
 			invalidateIdCache();
 		}
-		notifyChange('paste', [parentIdeaId, jsonToPaste, newIdea.id], function () {
+		logChange('paste', [parentIdeaId, jsonToPaste, newIdea.id], function () {
 			delete pasteParent.ideas[newRank];
 		}, originSession);
 		return true;
@@ -296,7 +341,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		maxRank = maxKey(contentAggregate.ideas, -1 * sign(currentRank));
 		newRank = maxRank - 10 * sign(currentRank);
 		reorderChild(contentAggregate, newRank, currentRank);
-		notifyChange('flip', [ideaId], function () {
+		logChange('flip', [ideaId], function () {
 			reorderChild(contentAggregate, currentRank, newRank);
 		}, originSession);
 		return true;
@@ -314,7 +359,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return false;
 		}
 		idea.title = title;
-		notifyChange('updateTitle', [ideaId, title], function () {
+		logChange('updateTitle', [ideaId, title], function () {
 			idea.title = originalTitle;
 		}, originSession);
 		return true;
@@ -335,10 +380,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			id: optionalNewId
 		});
 		newRank = appendSubIdea(parent, idea);
-		notifyChange('addSubIdea', [parentId, ideaTitle, idea.id], function () {
+		logChange('addSubIdea', [parentId, ideaTitle, idea.id], function () {
 			delete parent.ideas[newRank];
 		}, originSession);
-		return true;
+		return idea.id;
 	};
 	contentAggregate.removeSubIdea = function (subIdeaId) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
@@ -349,7 +394,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			oldRank = parent.findChildRankById(subIdeaId);
 			oldIdea = parent.ideas[oldRank];
 			delete parent.ideas[oldRank];
-			notifyChange('removeSubIdea', [subIdeaId], function () {
+			logChange('removeSubIdea', [subIdeaId], function () {
 				parent.ideas[oldRank] = oldIdea;
 			}, originSession);
 			return true;
@@ -383,7 +428,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		newIdea.ideas = {
 			1: oldIdea
 		};
-		notifyChange('insertIntermediate', [inFrontOfIdeaId, title, newIdea.id], function () {
+		logChange('insertIntermediate', [inFrontOfIdeaId, title, newIdea.id], function () {
 			parentIdea.ideas[childRank] = oldIdea;
 		}, originSession);
 		return true;
@@ -416,7 +461,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		oldRank = oldParent.findChildRankById(ideaId);
 		newRank = appendSubIdea(parent, idea);
 		delete oldParent.ideas[oldRank];
-		notifyChange('changeParent', [ideaId, newParentId], function () {
+		logChange('changeParent', [ideaId, newParentId], function () {
 			oldParent.ideas[oldRank] = idea;
 			delete parent.ideas[newRank];
 		}, originSession);
@@ -454,7 +499,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		var idea = findIdeaById(ideaId), undoAction;
 		undoAction = updateAttr(idea, attrName, attrValue);
 		if (undoAction) {
-			notifyChange('updateAttr', [ideaId, attrName, attrValue], undoAction, originSession);
+			logChange('updateAttr', [ideaId, attrName, attrValue], undoAction, originSession);
 		}
 		return !!undoAction;
 	};
@@ -516,7 +561,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return false;
 		}
 		reorderChild(parentIdea, newRank, currentRank);
-		notifyChange('positionBefore', [ideaId, positionBeforeIdeaId], function () {
+		logChange('positionBefore', [ideaId, positionBeforeIdeaId], function () {
 			reorderChild(parentIdea, currentRank, newRank);
 		}, originSession);
 		return true;
@@ -581,7 +626,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}
 			};
 			contentAggregate.links.push(link);
-			notifyChange('addLink', [ideaIdFrom, ideaIdTo], function () {
+			logChange('addLink', [ideaIdFrom, ideaIdTo], function () {
 				contentAggregate.links.pop();
 			}, originSession);
 			return true;
@@ -595,7 +640,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				link = contentAggregate.links[i];
 				if (String(link.ideaIdFrom) === String(ideaIdOne) && String(link.ideaIdTo) === String(ideaIdTwo)) {
 					contentAggregate.links.splice(i, 1);
-					notifyChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
+					logChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
 						contentAggregate.links.push(_.clone(link));
 					}, originSession);
 					return true;
@@ -637,7 +682,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			), undoAction;
 			undoAction = updateAttr(link, attrName, attrValue);
 			if (undoAction) {
-				notifyChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
+				logChange('updateLinkAttr', [ideaIdFrom, ideaIdTo, attrName, attrValue], undoAction, originSession);
 			}
 			return !!undoAction;
 		};
@@ -647,6 +692,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('undo', arguments);
 	};
 	commandProcessors.undo = function (originSession) {
+		contentAggregate.endBatch();
 		var topEvent;
 		topEvent = eventStacks[originSession] && eventStacks[originSession].pop();
 		if (topEvent && topEvent.undoFunction) {
@@ -664,6 +710,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('redo', arguments);
 	};
 	commandProcessors.redo = function (originSession) {
+		contentAggregate.endBatch();
 		var topEvent;
 		topEvent = redoStacks[originSession] && redoStacks[originSession].pop();
 		if (topEvent) {
