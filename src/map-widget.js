@@ -47,6 +47,12 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 			},
 			onScroll = function (event, delta, deltaX, deltaY) {
 				if (event.target === jQuery(stage.getContainer()).find('canvas')[0]) {
+					if (Math.abs(deltaX) < 5) {
+						deltaX = deltaX * 5;
+					}
+					if (Math.abs(deltaY) < 5) {
+						deltaY = deltaY * 5;
+					}
 					mapModel.move('mousewheel', -1 * deltaX, deltaY);
 					if (event.preventDefault) { // stop the back button
 						event.preventDefault();
