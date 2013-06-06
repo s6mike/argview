@@ -407,9 +407,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			setActiveNodes(siblingIds);
 		};
 		self.applyToActivated = function (toApply) {
-			idea.startBatch();
-			_.each(activatedNodes, toApply);
-			idea.endBatch();
+			idea.batch(function () {_.each(activatedNodes, toApply); });
 		};
 		self.everyActivatedIs = function (predicate) {
 			return _.every(activatedNodes, predicate);

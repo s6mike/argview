@@ -1315,6 +1315,20 @@ describe("content aggregate", function () {
 		});
 	});
 	describe('command batching', function () {
+		it('executes a batch as a shortcut method', function () {
+				var wrapped = MAPJS.content({id: 1, title: 'Original'}),
+					listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.batch (function () {
+					wrapped.updateTitle(1, 'Mix');
+					wrapped.updateTitle(1, 'Max');
+				});
+				expect(listener.callCount).toBe(1);
+				expect(listener).toHaveBeenCalledWith('batch', [
+					['updateTitle', 1, 'Mix' ],
+					['updateTitle', 1, 'Max' ]
+				]);
+		});
 		describe('in local session', function () {
 			var wrapped, listener;
 			beforeEach(function () {
