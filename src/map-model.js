@@ -46,7 +46,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
-					self.dispatchEvent('nodeRemoved', oldNode);
+					self.dispatchEvent('nodeRemoved', oldNode, nodeId);
 				}
 			}
 			for (nodeId in newLayout.nodes) {
@@ -186,8 +186,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.toggleCollapse = function (source) {
 		var selectedIdea = currentlySelectedIdea(),
 			isCollapsed;
-		if (_.size(selectedIdea.ideas) > 0) {
-			isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+		if (self.isActivated(selectedIdea.id) && _.size(selectedIdea.ideas) > 0) {
+			isCollapsed = selectedIdea.getAttr('collapsed');
 		} else {
 			isCollapsed = self.everyActivatedIs(function (id) {
 				var node = self.findIdeaById(id);
@@ -420,6 +420,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
 			setActiveNodes(siblingIds);
 		};
+		self.isActivated = function (id) {
+			return _.contains(activatedNodes, id);
+		};
 		self.activateNodeAndChildren = function () {
 			var contextId = getCurrentlySelectedIdeaId(),
 				subtree = idea.getSubTreeIds(contextId);
@@ -437,9 +440,16 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		};
 		self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
 			if (!isSelected) {
+				setActiveNodes([]);
 				return;
 			}
 			setActiveNodes([id]);
+		}, 1);
+		self.addEventListener('nodeRemoved', function (oldNode, oldId) {
+			setActiveNodes(_.reject(activatedNodes,
+				/*jslint eqeq:true */
+				function (id) { return oldId == id; })
+			);
 		}, 1);
 	}());
 

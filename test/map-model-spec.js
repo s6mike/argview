@@ -139,7 +139,7 @@ describe('MapModel', function () {
 
 			anIdea.dispatchEvent('changed');
 
-			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1]);
+			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], '1');
 		});
 		describe('openAttachment', function () {
 			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
@@ -743,7 +743,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('Selection', function () {
-		var nodeSelectionChangedListener, anIdea, underTest;
+		var nodeSelectionChangedListener, anIdea, underTest, layout;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -774,9 +774,8 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(function () {
-				return {
-					nodes: {
+			layout = {
+				nodes: {
 						1: { x: 0, y: 10 },
 						2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
 						3: { x: -10, y: -10 },
@@ -785,7 +784,9 @@ describe('MapModel', function () {
 						6: { x:	50, y: 10 },
 						7: { x:	50, y: -10 }
 					}
-				};
+			};
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
 			underTest.setIdea(anIdea);
 			nodeSelectionChangedListener = jasmine.createSpy();
@@ -940,10 +941,21 @@ describe('MapModel', function () {
 
 			});
 			describe('activating groups of nodes', function () {
+				it('should remvoe node from activated list when it is removed', function () {
+					underTest.selectNode(3);
+					underTest.activateSiblingNodes();
+					activatedNodesChangedListener.reset();
+					//underTest.dispatchEvent('nodeRemoved', 2);
+					delete layout.nodes[2];
+					anIdea.removeSubIdea(2);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [2]);
+
+				});
 				it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
 					underTest.selectNode(7);
 					underTest.selectNode(3);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], [7]);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [7]);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
 				it('should send event showing nodes activated and nodes deactivated when the sibling nodes are activated', function () {
 					underTest.selectNode(3);
@@ -980,6 +992,14 @@ describe('MapModel', function () {
 						underTest.activateSiblingNodes();
 						underTest.collapse('source', true);
 						expect(anIdea.updateAttr).toHaveBeenCalledWith(5, 'collapsed', true);
+					});
+					it('should expand child nodes when only child nodes activated and selected node is not collapsed', function () {
+						anIdea.updateAttr(7, 'collapsed', true);
+						underTest.selectNode(5);
+						underTest.activateChildren();
+						anIdea.updateAttr.reset();
+						underTest.toggleCollapse();
+						expect(anIdea.updateAttr).toHaveBeenCalledWith(7, 'collapsed', false);
 					});
 
 					it('should update selected node style to collapsed when argument is true', function () {
