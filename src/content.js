@@ -238,6 +238,20 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			false
 		);
 	};
+	contentAggregate.getSubTreeIds = function (rootIdeaId) {
+		var result = [],
+			collectIds = function (idea) {
+				if (_.isEmpty(idea.ideas)) {
+					return [];
+				}
+				_.each(idea.sortedSubIdeas(), function (child) {
+					collectIds(child);
+					result.push(child.id);
+				});
+			};
+		collectIds(contentAggregate.findSubIdeaById(rootIdeaId) || contentAggregate);
+		return result;
+	};
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		if (parentIdea.containsDirectChild(subIdeaId)) {

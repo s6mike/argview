@@ -20,18 +20,16 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				lastGesture = gesture;
 				return !result;
 			},
-			keyboardEventHandlers = {
-				'a': 'openAttachment',
+			hotkeyEventHandlers = {
 				'return': 'addSiblingIdea',
 				'del backspace': 'removeSubIdea',
 				'tab': 'addSubIdea',
 				'left': 'selectNodeLeft',
-				'meta+1 ctrl+1': 'activateSiblingNodes',
 				'up': 'selectNodeUp',
 				'right': 'selectNodeRight',
 				'down': 'selectNodeDown',
 				'space': 'editNode',
-				'/ shift+up': 'toggleCollapse',
+				'shift+up': 'toggleCollapse',
 				'c meta+x ctrl+x': 'cut',
 				'p meta+v ctrl+v': 'paste',
 				'y meta+c ctrl+c': 'copy',
@@ -44,6 +42,13 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'meta+up ctrl+up': 'moveUp',
 				'meta+down ctrl+down': 'moveDown',
 				'ctrl+shift+v meta+shift+v': 'pasteStyle'
+			},
+			charEventHandlers = {
+				'[' : 'activateChildren',
+				'{'	: 'activateNodeAndChildren',
+				'='	: 'activateSiblingNodes',
+				'/' : 'toggleCollapse',
+				'a': 'openAttachment'
 			},
 			onScroll = function (event, delta, deltaX, deltaY) {
 				if (event.target === jQuery(stage.getContainer()).find('canvas')[0]) {
@@ -59,9 +64,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 					}
 				}
 			};
-		jQuery.hotkeys.specialKeys[187] = 'plus';
-		jQuery.hotkeys.specialKeys[189] = 'minus';
-		_.each(keyboardEventHandlers, function (mappedFunction, keysPressed) {
+		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			jQuery(document).keydown(keysPressed, function (event) {
 				if (actOnKeys) {
 					event.preventDefault();
@@ -69,6 +72,18 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				}
 			});
 		});
+		$(document).on('keypress', function (evt) {
+			if (!actOnKeys) {
+				return;
+			}
+			var unicode=evt.charCode? evt.charCode : evt.keyCode,
+				actualkey=String.fromCharCode(unicode),
+				mappedFunction = charEventHandlers[actualkey];
+			if (mappedFunction) {
+				event.preventDefault();
+				mapModel[mappedFunction]('keyboard');
+			}
+		})
 		element.data('mm-stage', stage);
 		mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 			stage.setDraggable(!canInput);

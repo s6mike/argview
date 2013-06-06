@@ -98,7 +98,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			var newIdeaId, localCommand;
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
 
-			updateCurrentLayout(layoutCalculator(idea), command && (currentlySelectedIdeaId || idea.id));
+			updateCurrentLayout(layoutCalculator(idea), command && getCurrentlySelectedIdeaId());
 			if (!localCommand) {
 				return;
 			}
@@ -116,6 +116,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
 			}
+		},
+		getCurrentlySelectedIdeaId = function () {
+			return currentlySelectedIdeaId || idea.id;
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -263,7 +266,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		analytic('removeSubIdea', source);
 		if (isInputEnabled) {
 			var shouldSelectParent,
-				previousSelectionId = currentlySelectedIdeaId || idea.id,
+				previousSelectionId = getCurrentlySelectedIdeaId(),
 				parent = idea.findParent(previousSelectionId);
 			self.applyToActivated(function (id) {
 				var removed  = idea.removeSubIdea(id);
@@ -408,7 +411,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 			};
-
 		self.activateSiblingNodes = function () {
 			var parent = idea.findParent(currentlySelectedIdeaId),
 				siblingIds;
@@ -417,6 +419,15 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
 			setActiveNodes(siblingIds);
+		};
+		self.activateNodeAndChildren = function () {
+			var contextId = getCurrentlySelectedIdeaId(),
+				subtree = idea.getSubTreeIds(contextId);
+			subtree.push(contextId);
+			setActiveNodes(subtree);
+		};
+		self.activateChildren = function () {
+			setActiveNodes(idea.getSubTreeIds(getCurrentlySelectedIdeaId()));
 		};
 		self.applyToActivated = function (toApply) {
 			idea.batch(function () {_.each(activatedNodes, toApply); });

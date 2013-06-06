@@ -768,7 +768,8 @@ describe('MapModel', function () {
 						id: 5,
 						title: 'lower right',
 						ideas : {
-							1: { id: 6, title: 'cousin below' }
+							1: { id: 6, title: 'cousin below' },
+							2: { id: 7, title: 'cousin benson', ideas: {1: {id: 8, title: 'child of cousin benson'}}}
 						}
 					}
 				}
@@ -817,7 +818,7 @@ describe('MapModel', function () {
 			underTest.selectNode(6);
 			underTest.copy('toolbar');
 			underTest.paste('toolbar');
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(8, true);
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(9, true);
 		});
 		describe('selectNode', function () {
 			it('should dispatch nodeSelectionChanged when a different node is selected', function () {
@@ -938,16 +939,32 @@ describe('MapModel', function () {
 				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
 
 			});
-			it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
-				underTest.selectNode(7);
-				underTest.selectNode(3);
-				expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], [7]);
-			});
-			it('should send event showing nodes activated and nodes deactivated when the nodes at the same level are activated', function () {
-				underTest.selectNode(3);
-				underTest.activateSiblingNodes();
-				expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([2, 4, 5]);
-				expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([]);
+			describe('activating groups of nodes', function () {
+				it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
+					underTest.selectNode(7);
+					underTest.selectNode(3);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], [7]);
+				});
+				it('should send event showing nodes activated and nodes deactivated when the sibling nodes are activated', function () {
+					underTest.selectNode(3);
+					underTest.activateSiblingNodes();
+					expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([2, 4, 5]);
+					expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([]);
+				});
+				it('should send event showing nodes activated and nodes deactivated when the selected node and all its children are activated', function () {
+					underTest.selectNode(5);
+					activatedNodesChangedListener.reset();
+					underTest.activateNodeAndChildren();
+					expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([6, 7, 8]);
+					expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([]);
+				});
+				it('should send event showing nodes activated and nodes deactivated when the children of the selected node are activated', function () {
+					underTest.selectNode(5);
+					activatedNodesChangedListener.reset();
+					underTest.activateChildren();
+					expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([6, 7, 8]);
+					expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([5]);
+				});
 			});
 			describe('actions on activated nodes', function () {
 				var changedListener;
