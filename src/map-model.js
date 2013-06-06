@@ -236,8 +236,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
-			ensureNodeIsExpanded(source, target);
-			idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, target);
+				idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+			});
 		}
 	};
 	this.insertIntermediate = function (source) {
@@ -251,8 +253,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
 			var parent = idea.findParent(currentlySelectedIdeaId) || idea;
-			ensureNodeIsExpanded(source, parent.id);
-			idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, parent.id);
+				idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			});
 		}
 	};
 	this.removeSubIdea = function (source) {

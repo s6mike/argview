@@ -399,12 +399,12 @@ describe('MapModel', function () {
 		});
 		describe('addSubIdea', function () {
 			beforeEach(function () {
-				spyOn(anIdea, 'addSubIdea');
-				underTest.selectNode(123);
+				spyOn(anIdea, 'addSubIdea').andCallThrough();
+				underTest.selectNode(1);
 			});
 			it('should invoke idea.addSubIdea with currently selected idea as parentId', function () {
 				underTest.addSubIdea();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(123, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
 			});
 			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
 				underTest.addSubIdea('source', 555);
@@ -415,12 +415,14 @@ describe('MapModel', function () {
 				underTest.addSubIdea();
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
 			});
-			it('should expand the node when addSubIdea is called', function () {
+			it('should expand the node when addSubIdea is called, as a batched event', function () {
 				underTest.selectNode(1);
 				underTest.collapse('source', true);
-				spyOn(anIdea, 'updateAttr');
+				spyOn(anIdea, 'updateAttr').andCallThrough();
+				spyOn(anIdea, 'dispatchEvent');
 				underTest.addSubIdea();
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.dispatchEvent.callCount).toBe(1);
 			});
 			it('should invoke idea.addSubIdea with randomly selected title when addSubIdea method is invoked', function () {
 				var underTest = new MAPJS.MapModel(
@@ -545,7 +547,7 @@ describe('MapModel', function () {
 		});
 		describe('addSiblingIdea', function () {
 			beforeEach(function () {
-				spyOn(anIdea, 'addSubIdea');
+				spyOn(anIdea, 'addSubIdea').andCallThrough();
 			});
 			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
 				underTest.selectNode(2);
@@ -556,11 +558,13 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
 			});
-			it('should expand the root node if it is collapsed', function () {
+			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);
-				spyOn(anIdea, 'updateAttr');
+				spyOn(anIdea, 'updateAttr').andCallThrough();
+				spyOn(anIdea, 'dispatchEvent');
 				underTest.addSiblingIdea();
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.dispatchEvent.callCount).toBe(1);
 			});
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
