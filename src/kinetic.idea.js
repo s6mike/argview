@@ -338,8 +338,8 @@ Kinetic.Idea.prototype.setStyle = function () {
 	if (isActivated) {
 		this.rect.attrs.stroke = '#2E9AFE';
 	}
-	this.rect.attrs.dashArray = this.isActivated ? [4, 1] : [];
-	this.rect.attrs.strokeWidth = this.isActivated ? 2 : self.rectAttrs.strokeWidth;
+	this.rect.attrs.dashArray = this.isActivated ? [5, 3] : [];
+	this.rect.attrs.strokeWidth = this.isActivated ? 3 : self.rectAttrs.strokeWidth;
 
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());

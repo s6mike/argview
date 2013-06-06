@@ -186,7 +186,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (_.size(selectedIdea.ideas) > 0) {
 			isCollapsed = currentlySelectedIdea().getAttr('collapsed');
 		} else {
-			isCollapsed = _.every(self.currentlyActivatedNodes(), function (id) {
+			isCollapsed = self.everyActivatedIs(function (id) {
 				var node = self.findIdeaById(id);
 				if (node && _.size(node.ideas) > 0) {
 					return node.getAttr('collapsed');
@@ -199,8 +199,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
 		if (isInputEnabled) {
-			var ids = self.currentlyActivatedNodes();
-			_.each(ids, function (id) {
+			self.applyToActivated(function (id) {
 				var node = self.findIdeaById(id);
 				if (node && (!doCollapse || (node.ideas && _.size(node.ideas) > 0))) {
 					idea.updateAttr(id, 'collapsed', doCollapse);
@@ -212,8 +211,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		/*jslint eqeq:true */
 		if (isInputEnabled) {
 			analytic('updateStyle:' + prop, source);
-			var ids = self.currentlyActivatedNodes();
-			_.each(ids, function (id) {
+			self.applyToActivated(function (id) {
 				if (self.getStyleForId(id, prop) != value) {
 					var node = self.findIdeaById(id),
 						merged;
@@ -379,9 +377,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	self.pasteStyle = function (source) {
 		analytic('pasteStyle', source);
 		if (isInputEnabled && self.clipBoard) {
+
 			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
-			var ids = self.currentlyActivatedNodes();
-			_.each(ids, function (id) {
+			self.applyToActivated(function (id) {
 				idea.updateAttr(id, 'style', pastingStyle);
 			});
 		}
@@ -408,10 +406,14 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
 			setActiveNodes(siblingIds);
 		};
-		self.currentlyActivatedNodes = function () {
-			return activatedNodes;
+		self.applyToActivated = function (toApply) {
+			idea.startBatch();
+			_.each(activatedNodes, toApply);
+			idea.endBatch();
 		};
-
+		self.everyActivatedIs = function (predicate) {
+			return _.every(activatedNodes, predicate);
+		};
 		self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
 			if (!isSelected) {
 				return;
