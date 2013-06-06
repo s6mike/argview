@@ -409,7 +409,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 			};
 
-		self.activateNodesForSameLevel = function () {
+		self.activateSiblingNodes = function () {
 			var parent = idea.findParent(currentlySelectedIdeaId),
 				siblingIds;
 			if (!parent || !parent.ideas) {

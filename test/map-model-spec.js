@@ -945,7 +945,7 @@ describe('MapModel', function () {
 			});
 			it('should send event showing nodes activated and nodes deactivated when the nodes at the same level are activated', function () {
 				underTest.selectNode(3);
-				underTest.activateNodesForSameLevel();
+				underTest.activateSiblingNodes();
 				expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([2, 4, 5]);
 				expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([]);
 			});
@@ -960,7 +960,7 @@ describe('MapModel', function () {
 				describe('collapse', function () {
 					it('should collapse all activated nodes that have child nodes when toggleCollapse is called', function () {
 						underTest.selectNode(3);
-						underTest.activateNodesForSameLevel();
+						underTest.activateSiblingNodes();
 						underTest.collapse('source', true);
 						expect(anIdea.updateAttr).toHaveBeenCalledWith(5, 'collapsed', true);
 					});
@@ -991,7 +991,7 @@ describe('MapModel', function () {
 					it('should invoke idea.setAttr for all activated nodes when toggleCollapse is called as a batch', function () {
 						var i;
 						underTest.selectNode(3);
-						underTest.activateNodesForSameLevel();
+						underTest.activateSiblingNodes();
 						changedListener.reset();
 						underTest.updateStyle('source', 'styleprop', 'styleval');
 						for (i = 2; i <= 5; i++) {
@@ -1031,7 +1031,7 @@ describe('MapModel', function () {
 					it('should invoke paste style on all activated nodes', function () {
 						var i;
 						underTest.selectNode(3);
-						underTest.activateNodesForSameLevel();
+						underTest.activateSiblingNodes();
 						changedListener.reset();
 						underTest.pasteStyle('keyboard');
 						for (i = 2; i <= 5; i++) {
@@ -1057,7 +1057,7 @@ describe('MapModel', function () {
 					it('should invoke idea.removeSubIdea on all activated nodes as one batch', function () {
 						var i;
 						underTest.selectNode(3);
-						underTest.activateNodesForSameLevel();
+						underTest.activateSiblingNodes();
 						changedListener.reset();
 
 						underTest.removeSubIdea('toolbar');

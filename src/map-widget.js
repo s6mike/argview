@@ -26,7 +26,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'del backspace': 'removeSubIdea',
 				'tab': 'addSubIdea',
 				'left': 'selectNodeLeft',
-				'meta+1 ctrl+1': 'activateNodesForSameLevel',
+				'meta+1 ctrl+1': 'activateSiblingNodes',
 				'up': 'selectNodeUp',
 				'right': 'selectNodeRight',
 				'down': 'selectNodeDown',
