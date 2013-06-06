@@ -471,26 +471,6 @@ describe('MapModel', function () {
 				expect(anIdea.paste).not.toHaveBeenCalled();
 			});
 		});
-		describe('pasteStyle', function () {
-			var toPaste;
-			beforeEach(function () {
-				toPaste = {title: 'c', attr: {style: {color: 'red'}}};
-				spyOn(anIdea, 'clone').andReturn(toPaste);
-				spyOn(anIdea, 'updateAttr');
-				underTest.selectNode(11);
-				underTest.copy('keyboard');
-				underTest.selectNode(2);
-			});
-			it('should set root node style from clipboard to currently selected idea', function () {
-				underTest.pasteStyle('keyboard');
-				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', toPaste.attr.style);
-			});
-			it('should not paste when input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.pasteStyle('keyboard');
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
-			});
-		});
 		describe('cut', function () {
 			var toPaste;
 			beforeEach(function () {
@@ -965,6 +945,7 @@ describe('MapModel', function () {
 		});
 		describe('multiple node activation', function () {
 			var activatedNodesChangedListener;
+
 			beforeEach(function () {
 				activatedNodesChangedListener = jasmine.createSpy();
 				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
@@ -982,9 +963,12 @@ describe('MapModel', function () {
 				expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([]);
 			});
 			describe('actions on activated nodes', function () {
+				var changedListener;
 				beforeEach(function () {
 					underTest.selectNode(1);
-					spyOn(anIdea, 'updateAttr');
+					spyOn(anIdea, 'updateAttr').andCallThrough();
+					changedListener = jasmine.createSpy();
+					anIdea.addEventListener('changed', changedListener);
 				});
 				describe('collapse', function () {
 					it('should collapse all activated nodes that have child nodes when toggleCollapse is called', function () {
@@ -1017,14 +1001,16 @@ describe('MapModel', function () {
 					beforeEach(function () {
 						underTest.selectNode(2);
 					});
-					it('should invoke idea.setAttr for all activated nodes when toggleCollapse is called', function () {
+					it('should invoke idea.setAttr for all activated nodes when toggleCollapse is called as a batch', function () {
 						var i;
 						underTest.selectNode(3);
 						underTest.activateNodesForSameLevel();
+						changedListener.reset();
 						underTest.updateStyle('source', 'styleprop', 'styleval');
 						for (i = 2; i <= 5; i++) {
 							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', { styleprop: 'styleval' });
 						}
+						expect(changedListener.callCount).toBe(1);
 					});
 
 					it('should invoke idea.setAttr with selected ideaId and style argument when updateStyle is called', function () {
@@ -1046,7 +1032,36 @@ describe('MapModel', function () {
 						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
 					});
 				});
-
+				describe('pasteStyle', function () {
+					var toPaste;
+					beforeEach(function () {
+						toPaste = {title: 'c', attr: {style: {color: 'red'}}};
+						spyOn(anIdea, 'clone').andReturn(toPaste);
+						underTest.selectNode(11);
+						underTest.copy('keyboard');
+						underTest.selectNode(2);
+					});
+					it('should invoke paste style on all activated nodes', function () {
+						var i;
+						underTest.selectNode(3);
+						underTest.activateNodesForSameLevel();
+						changedListener.reset();
+						underTest.pasteStyle('keyboard');
+						for (i = 2; i <= 5; i++) {
+							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', toPaste.attr.style);
+						}
+						expect(changedListener.callCount).toBe(1);
+					});
+					it('should set root node style from clipboard to currently selected idea', function () {
+						underTest.pasteStyle('keyboard');
+						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', toPaste.attr.style);
+					});
+					it('should not paste when input is disabled', function () {
+						underTest.setInputEnabled(false);
+						underTest.pasteStyle('keyboard');
+						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+					});
+				});
 			});
 		});
 	});
