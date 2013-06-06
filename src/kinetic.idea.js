@@ -83,9 +83,11 @@
 		this.level = config.level;
 		this.mmAttr = config.mmAttr;
 		this.isSelected = false;
+		this.isActivated = false;
 		config.draggable = config.level > 1;
 		config.name = 'Idea';
 		Kinetic.Group.call(this, config);
+		this.rectAttrs = {stroke: '#888', strokeWidth: 1};
 		this.rect = new Kinetic.Rect({
 			strokeWidth: 1,
 			cornerRadius: 10
@@ -183,7 +185,7 @@
 					'background-color': self.getBackground(),
 					'margin': -3 * scale,
 					'border-radius': self.rect.attrs.cornerRadius * scale + 'px',
-					'border': self.rect.attrs.strokeWidth * (2 * scale) + 'px dashed ' + self.rect.attrs.stroke,
+					'border': self.rectAttrs.strokeWidth * (2 * scale) + 'px dashed ' + self.rectAttrs.stroke,
 					'color': self.text.attrs.fill
 				})
 				.val(unformattedText)
@@ -298,6 +300,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 	var self = this,
 		isDroppable = this.isDroppable,
 		isSelected = this.isSelected,
+		isActivated = this.isActivated,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
 		isClipVisible = this.mmAttr && this.mmAttr.attachment || false,
@@ -326,12 +329,18 @@ Kinetic.Idea.prototype.setStyle = function () {
 		} else if (isSelected) {
 			r.attrs.fillLinearGradientColorStops = [0, background, 1, background];
 		} else {
-			r.attrs.stroke = '#888';
+			r.attrs.stroke = self.rectAttrs.stroke;
 			r.attrs.fillLinearGradientStartPoint = {x: 0, y: 0};
 			r.attrs.fillLinearGradientEndPoint = {x: 100, y: 100};
 			r.attrs.fillLinearGradientColorStops = [0, tintedBackground, 1, background];
 		}
 	});
+	if (isActivated) {
+		this.rect.attrs.stroke = '#2E9AFE';
+	}
+	this.rect.attrs.dashArray = this.isActivated ? [4, 1] : [];
+	this.rect.attrs.strokeWidth = this.isActivated ? 2 : self.rectAttrs.strokeWidth;
+
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());
 	this.clip.attrs.x = this.text.getWidth() + padding;
@@ -362,6 +371,14 @@ Kinetic.Idea.prototype.setIsSelected = function (isSelected) {
 		this.stopEditing();
 	}
 };
+
+Kinetic.Idea.prototype.setIsActivated = function (isActivated) {
+	'use strict';
+	this.isActivated = isActivated;
+	this.setStyle();
+	this.getLayer().draw();
+};
+
 Kinetic.Idea.prototype.setIsDroppable = function (isDroppable) {
 	'use strict';
 	this.isDroppable = isDroppable;

@@ -25,7 +25,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		updateCurrentLayout = function (newLayout, contextNodeId) {
 			var nodeId, newNode, oldNode, newConnector, oldConnector;
-			if (contextNodeId && currentLayout.nodes[contextNodeId] && newLayout.nodes[contextNodeId]) {
+			if (contextNodeId && currentLayout.nodes && currentLayout.nodes[contextNodeId] && newLayout.nodes[contextNodeId]) {
 				moveNodes(newLayout.nodes,
 					currentLayout.nodes[contextNodeId].x - newLayout.nodes[contextNodeId].x,
 					currentLayout.nodes[contextNodeId].y - newLayout.nodes[contextNodeId].y
@@ -131,6 +131,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
+			self.setActiveNodes([anIdea.id]);
 			self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			currentlySelectedIdeaId = undefined;
 		}
@@ -155,6 +156,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
 			currentlySelectedIdeaId = id;
+			self.setActiveNodes([id]);
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
@@ -166,30 +168,64 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			this.selectNode(id);
 		}
 	};
+	this.findIdeaById = function (id) {
+		/*jslint eqeq:true */
+		if (idea.id == id) {
+			return idea;
+		}
+		return idea.findSubIdeaById(id);
+	};
 	this.getSelectedStyle = function (prop) {
-		var node = currentLayout.nodes[currentlySelectedIdeaId];
+		return this.getStyleForId(currentlySelectedIdeaId, prop);
+	};
+	this.getStyleForId = function (id, prop) {
+		var node = currentLayout.nodes && currentLayout.nodes[id];
 		return node && node.attr && node.attr.style && node.attr.style[prop];
 	};
 	this.toggleCollapse = function (source) {
-		var isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+		var selectedIdea = currentlySelectedIdea(),
+			isCollapsed;
+		if (_.size(selectedIdea.ideas) > 0) {
+			isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+		} else {
+			isCollapsed = _.every(self.currentlyActivatedNodes(), function (id) {
+				var node = self.findIdeaById(id);
+				if (node && _.size(node.ideas) > 0) {
+					return node.getAttr('collapsed');
+				}
+				return true;
+			});
+		}
 		this.collapse(source, !isCollapsed);
 	};
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
 		if (isInputEnabled) {
-			var node = currentlySelectedIdea();
-			if (node.ideas && _.size(node.ideas) > 0) {
-				idea.updateAttr(currentlySelectedIdeaId, 'collapsed', doCollapse);
-			}
+			var ids = self.currentlyActivatedNodes();
+			_.each(ids, function (id) {
+				var node = self.findIdeaById(id);
+				if (node && (!doCollapse || (node.ideas && _.size(node.ideas) > 0))) {
+					idea.updateAttr(id, 'collapsed', doCollapse);
+				}
+			});
 		}
 	};
 	this.updateStyle = function (source, prop, value) {
 		/*jslint eqeq:true */
-		if (isInputEnabled && this.getSelectedStyle(prop) != value) {
+		if (isInputEnabled) {
 			analytic('updateStyle:' + prop, source);
-			var merged = _.extend({}, currentlySelectedIdea().getAttr('style'));
-			merged[prop] = value;
-			idea.updateAttr(currentlySelectedIdeaId, 'style', merged);
+			var ids = self.currentlyActivatedNodes();
+			_.each(ids, function (id) {
+				if (self.getStyleForId(id, prop) != value) {
+					var node = self.findIdeaById(id),
+						merged;
+					if (node) {
+						merged = _.extend({}, node.getAttr('style'));
+						merged[prop] = value;
+						idea.updateAttr(id, 'style', merged);
+					}
+				}
+			});
 		}
 	};
 	this.updateLinkStyle = function (source, ideaIdFrom, ideaIdTo, prop, value) {
@@ -346,11 +382,40 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		analytic('pasteStyle', source);
 		if (isInputEnabled && self.clipBoard) {
 			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
-			idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
+			var ids = self.currentlyActivatedNodes();
+			_.each(ids, function (id) {
+				idea.updateAttr(id, 'style', pastingStyle);
+			});
 		}
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
 	self.moveDown = function (source) { self.moveRelative(source, 1); };
+
+	//node activation
+	(function () {
+		var activatedNodes = [];
+		self.setActiveNodes = function (activated) {
+				var wasActivated = _.clone(activatedNodes);
+				activatedNodes = activated;
+
+				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
+			};
+
+		self.activateNodesForSameLevel = function () {
+			var parent = idea.findParent(currentlySelectedIdeaId),
+				siblingIds;
+			if (!parent || !parent.ideas) {
+				return;
+			}
+			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
+			self.setActiveNodes(siblingIds);
+		};
+		self.currentlyActivatedNodes = function () {
+			return activatedNodes;
+		};
+	}());
+
+
 	(function () {
 		var isRootOrRightHalf = function (id) {
 				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
@@ -477,6 +542,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			},
 			canDropOnNode = function (id, x, y, node) {
+				/*jslint eqeq: true*/
 				return id != node.id &&
 					x >= node.x &&
 					y >= node.y &&

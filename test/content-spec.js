@@ -1430,18 +1430,6 @@ describe("content aggregate", function () {
 
 			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3], 'sess');
 		});
-		it('should not take order of nodes into account when removeLink method is invoked', function () {
-			//todo/maybe?
-			// var result, changedListener = jasmine.createSpy();
-			// idea.addLink(2, 3);
-			// idea.addEventListener('changed', changedListener);
-
-			// result = idea.removeLink(3, 2);
-
-			// expect(result).toBe(true);
-			// expect(idea.links).toEqual([]);
-			// expect(changedListener).toHaveBeenCalledWith('removeLink', 2, 3);
-		});
 		it('should not be able to remove link that does not exist', function () {
 			var result, changedListener = jasmine.createSpy();
 			idea.addLink(2, 3);

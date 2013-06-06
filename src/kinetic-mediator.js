@@ -297,6 +297,17 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
 		moveStage(deltaX, deltaY);
 	});
+	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
+		var setActivated = function (active, id) {
+			var node = nodeByIdeaId[id];
+			if (!node) {
+				return;
+			}
+			node.setIsActivated(active);
+		};
+		_.each(activatedNodes, setActivated.bind(undefined, true));
+		_.each(deactivatedNodes, setActivated.bind(undefined, false));
+	});
 	(function () {
 		var x, y;
 		stage.on('dragmove', function () {
