@@ -113,10 +113,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 
 		},
 		onIdeaChanged = function (command, args, originSession) {
-			var localCommand;
+			var localCommand, contextNodeId = command && command !== 'updateTitle'  && getCurrentlySelectedIdeaId();
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
-
-			updateCurrentLayout(layoutCalculator(idea), command && getCurrentlySelectedIdeaId());
+			
+			updateCurrentLayout(layoutCalculator(idea), contextNodeId);
 			if (!localCommand) {
 				return;
 			}
