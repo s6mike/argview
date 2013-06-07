@@ -941,16 +941,6 @@ describe('MapModel', function () {
 
 			});
 			describe('activating groups of nodes', function () {
-				it('should remvoe node from activated list when it is removed', function () {
-					underTest.selectNode(3);
-					underTest.activateSiblingNodes();
-					activatedNodesChangedListener.reset();
-					//underTest.dispatchEvent('nodeRemoved', 2);
-					delete layout.nodes[2];
-					anIdea.removeSubIdea(2);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [2]);
-
-				});
 				it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
 					underTest.selectNode(7);
 					underTest.selectNode(3);
