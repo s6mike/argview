@@ -81,11 +81,11 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				actualkey = String.fromCharCode(unicode),
 				mappedFunction = charEventHandlers[actualkey];
 			if (mappedFunction) {
-				event.preventDefault();
+				evt.preventDefault();
 				mapModel[mappedFunction]('keyboard');
 			}
 			else if (Number(actualkey) <= 9 && Number(actualkey) >= 1) {
-				event.preventDefault();
+				evt.preventDefault();
 				mapModel.activateLevel('keyboard', Number(actualkey) + 1);
 			}
 		});
