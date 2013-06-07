@@ -83,7 +83,7 @@
 		this.level = config.level;
 		this.mmAttr = config.mmAttr;
 		this.isSelected = false;
-		this.isActivated = false;
+		this.isActivated = !!config.activated;
 		config.draggable = config.level > 1;
 		config.name = 'Idea';
 		Kinetic.Group.call(this, config);
