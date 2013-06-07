@@ -457,6 +457,22 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		self.everyActivatedIs = function (predicate) {
 			return _.every(activatedNodes, predicate);
 		};
+		self.activateLevel = function (source, level) {
+			analytic('activateLevel', source);
+			var toActivate = _.map(
+				_.filter(
+							currentLayout.nodes,
+							function (node) {
+								/*jslint eqeq:true*/
+								return node.level == level;
+							}
+					),
+				function (node) {return node.id; }
+			);
+			if (!_.isEmpty(toActivate)) {
+				setActiveNodes(toActivate);
+			}
+		};
 		self.reactivate = function (layout) {
 			_.each(layout.nodes, function (node) {
 				if (_.contains(activatedNodes, node.id)) {
@@ -472,6 +488,13 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 			setActiveNodes([id]);
 		}, 1);
+		self.addEventListener('nodeRemoved', function () {
+			var selectedId = getCurrentlySelectedIdeaId();
+			if (!_.contains(activatedNodes, selectedId)) {
+				setActiveNodes(activatedNodes.concat([selectedId]));
+			}
+
+		});
 	}());
 
 

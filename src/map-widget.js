@@ -1,4 +1,4 @@
-/*global _, jQuery, Kinetic, MAPJS, window, document*/
+/*global _, jQuery, Kinetic, MAPJS, window, document, $*/
 jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRendering) {
 	'use strict';
 	return this.each(function () {
@@ -77,14 +77,18 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 			if (!actOnKeys) {
 				return;
 			}
-			var unicode=evt.charCode? evt.charCode : evt.keyCode,
-				actualkey=String.fromCharCode(unicode),
+			var unicode = evt.charCode ? evt.charCode : evt.keyCode,
+				actualkey = String.fromCharCode(unicode),
 				mappedFunction = charEventHandlers[actualkey];
 			if (mappedFunction) {
 				event.preventDefault();
 				mapModel[mappedFunction]('keyboard');
 			}
-		})
+			else if (Number(actualkey) <= 9 && Number(actualkey) >= 1) {
+				event.preventDefault();
+				mapModel.activateLevel('keyboard', Number(actualkey) + 1);
+			}
+		});
 		element.data('mm-stage', stage);
 		mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 			stage.setDraggable(!canInput);
