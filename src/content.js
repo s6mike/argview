@@ -563,7 +563,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return _.reduce(
 				parentIdea.ideas,
 				function (result, idea) {
-					return result || contentAggregate.positionBefore(ideaId, positionBeforeIdeaId, idea);
+					return result || commandProcessors.positionBefore(originSession, ideaId, positionBeforeIdeaId, idea);
 				},
 				false
 			);

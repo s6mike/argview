@@ -1160,6 +1160,13 @@ describe('content aggregate', function () {
 				idea.positionBefore(4, 2);
 				expect(childRankSpy).toHaveBeenCalledWith('positionBefore', [4, 2], 'sess');
 			});
+			it('triggers correct session in a multi-session scenario when reordering children - bug resurrection check', function () {
+				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}, 'sess'),
+					childRankSpy = jasmine.createSpy();
+				idea.addEventListener('changed', childRankSpy);
+				idea.execCommand('positionBefore', [4, 2], 'second');
+				expect(childRankSpy).toHaveBeenCalledWith('positionBefore', [4, 2], 'second');
+			});
 			it('should work for negative ranks', function () {
 				var idea = MAPJS.content({
 					'title': '1',
