@@ -1644,15 +1644,6 @@ describe('content aggregate', function () {
 			});
 			expect(changedListener).not.toHaveBeenCalled();
 		});
-		it('should check link validity (and remove invalid links) after any change in content', function () {
-			var changedListener = jasmine.createSpy();
-			idea.addLink(2, 3);
-			idea.addEventListener('changed', changedListener);
-
-			idea.changeParent(3, 2);
-
-			expect(changedListener).toHaveBeenCalledWith('removeLink', [2, 3]);
-		});
 		it('should allow a link attribute to be set on the aggregate', function () {
 			var result, changedListener = jasmine.createSpy();
 			idea.addEventListener('changed', changedListener);

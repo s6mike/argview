@@ -420,7 +420,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			setActiveNodes = function (activated) {
 				var wasActivated = _.clone(activatedNodes);
 				activatedNodes = activated;
-
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 			};
 		self.activateSiblingNodes = function () {
@@ -449,7 +448,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			setActiveNodes([getCurrentlySelectedIdeaId()]);
 		};
 		self.isActivated = function (id) {
-			return _.contains(activatedNodes, id);
+			/*jslint eqeq:true*/
+			return _.find(activatedNodes, function (activeId) { return id == activeId; });
 		};
 		self.applyToActivated = function (toApply) {
 			idea.batch(function () {_.each(activatedNodes, toApply); });
@@ -488,12 +488,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 			setActiveNodes([id]);
 		}, 1);
-		self.addEventListener('nodeRemoved', function () {
+		self.addEventListener('nodeRemoved', function (node, id) {
 			var selectedId = getCurrentlySelectedIdeaId();
-			if (!_.contains(activatedNodes, selectedId)) {
+			if (self.isActivated(id) && !self.isActivated(selectedId)) {
 				setActiveNodes(activatedNodes.concat([selectedId]));
 			}
-
 		});
 	}());
 

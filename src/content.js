@@ -419,13 +419,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
-		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea;
+		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea, oldLinks;
 		if (parent) {
 			oldRank = parent.findChildRankById(subIdeaId);
 			oldIdea = parent.ideas[oldRank];
 			delete parent.ideas[oldRank];
+			oldLinks = contentAggregate.links;
+			contentAggregate.links = _.reject(contentAggregate.links, function (link) { return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId; });
 			logChange('removeSubIdea', [subIdeaId], function () {
 				parent.ideas[oldRank] = oldIdea;
+				contentAggregate.links = oldLinks;
 			}, originSession);
 			return true;
 		}
@@ -691,15 +694,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			return false;
 		};
-		contentAggregate.addEventListener('changed', function () {
-			if (contentAggregate.links) {
-				contentAggregate.links.forEach(function (link) {
-					if (!isLinkValid(link.ideaIdFrom, link.ideaIdTo)) {
-						contentAggregate.removeLink(link.ideaIdFrom, link.ideaIdTo);
-					}
-				});
-			}
-		});
 		contentAggregate.updateLinkAttr = function (ideaIdFrom, ideaIdTo, attrName, attrValue) {
 			return contentAggregate.execCommand('updateLinkAttr', arguments);
 		};
