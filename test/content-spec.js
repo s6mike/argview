@@ -1330,18 +1330,18 @@ describe('content aggregate', function () {
 	});
 	describe('command batching', function () {
 		it('executes a batch as a shortcut method', function () {
-				var wrapped = MAPJS.content({id: 1, title: 'Original'}),
-					listener = jasmine.createSpy();
-				wrapped.addEventListener('changed', listener);
-				wrapped.batch (function () {
-					wrapped.updateTitle(1, 'Mix');
-					wrapped.updateTitle(1, 'Max');
-				});
-				expect(listener.callCount).toBe(1);
-				expect(listener).toHaveBeenCalledWith('batch', [
-					['updateTitle', 1, 'Mix' ],
-					['updateTitle', 1, 'Max' ]
-				]);
+			var wrapped = MAPJS.content({id: 1, title: 'Original'}),
+				listener = jasmine.createSpy();
+			wrapped.addEventListener('changed', listener);
+			wrapped.batch(function () {
+				wrapped.updateTitle(1, 'Mix');
+				wrapped.updateTitle(1, 'Max');
+			});
+			expect(listener.callCount).toBe(1);
+			expect(listener).toHaveBeenCalledWith('batch', [
+				['updateTitle', 1, 'Mix' ],
+				['updateTitle', 1, 'Max' ]
+			]);
 		});
 		describe('in local session', function () {
 			var wrapped, listener;
@@ -1364,6 +1364,7 @@ describe('content aggregate', function () {
 			it('will open a new batch if starting and there is an open one', function () {
 				wrapped.startBatch();
 				wrapped.updateTitle(1, 'Nox');
+				wrapped.updateTitle(1, 'Vox');
 				wrapped.endBatch();
 
 				expect(listener.callCount).toBe(2);
@@ -1372,7 +1373,8 @@ describe('content aggregate', function () {
 					['updateTitle', 1, 'Max']
 				]);
 				expect(listener).toHaveBeenCalledWith('batch', [
-					['updateTitle', 1, 'Nox']
+					['updateTitle', 1, 'Nox'],
+					['updateTitle', 1, 'Vox']
 				]);
 			});
 			it('will not send out an empty batch', function () {
@@ -1407,6 +1409,16 @@ describe('content aggregate', function () {
 				expect(listener.callCount).toBe(2);
 				expect(listener.calls[0].args[0]).toBe('batch');
 				expect(listener.calls[1].args[0]).toBe('addSubIdea');
+			});
+			it('will send the event directly instead of a batch with a single event', function () {
+				wrapped = MAPJS.content({id: 1, title: 'Original'});
+				listener = jasmine.createSpy();
+				wrapped.addEventListener('changed', listener);
+				wrapped.startBatch();
+				wrapped.updateTitle(1, 'New');
+				wrapped.endBatch();
+
+				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'New']);
 			});
 			it('undos an entire batch', function () {
 				wrapped.endBatch();

@@ -278,24 +278,27 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			batchArgs,
 			batchUndoFunctions,
 			undo;
+		batches[activeSession] = undefined;
 		if (_.isEmpty(inBatch)) {
-			batches[activeSession] = undefined;
 			return;
 		}
-		batchArgs = _.map(inBatch, function (event) {
-			return [event.eventMethod].concat(event.eventArgs);
-		});
-		batchUndoFunctions = _.sortBy(
-			_.map(inBatch, function (event) { return event.undoFunction; }),
-			function (f, idx) { return -1 * idx; }
-		);
-		undo = function () {
-			_.each(batchUndoFunctions, function (eventUndo) {
-				eventUndo();
+		if (_.size(inBatch) === 1) {
+			logChange(inBatch[0].eventMethod, inBatch[0].eventArgs, inBatch[0].undoFunction, activeSession);
+		} else {
+			batchArgs = _.map(inBatch, function (event) {
+				return [event.eventMethod].concat(event.eventArgs);
 			});
-		};
-		batches[activeSession] = undefined;
-		logChange('batch', batchArgs, undo, activeSession);
+			batchUndoFunctions = _.sortBy(
+				_.map(inBatch, function (event) { return event.undoFunction; }),
+				function (f, idx) { return -1 * idx; }
+			);
+			undo = function () {
+				_.each(batchUndoFunctions, function (eventUndo) {
+					eventUndo();
+				});
+			};
+			logChange('batch', batchArgs, undo, activeSession);
+		}
 	};
 	contentAggregate.execCommand = function (cmd, args, originSession) {
 		if (!commandProcessors[cmd]) {
