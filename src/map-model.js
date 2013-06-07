@@ -432,9 +432,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
 			setActiveNodes(siblingIds);
 		};
-		self.isActivated = function (id) {
-			return _.contains(activatedNodes, id);
-		};
 		self.activateNodeAndChildren = function () {
 			var contextId = getCurrentlySelectedIdeaId(),
 				subtree = idea.getSubTreeIds(contextId);
@@ -442,7 +439,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			setActiveNodes(subtree);
 		};
 		self.activateChildren = function () {
-			setActiveNodes(idea.getSubTreeIds(getCurrentlySelectedIdeaId()));
+			var context = currentlySelectedIdea();
+			if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
+				return;
+			}
+			setActiveNodes(idea.getSubTreeIds(context.id));
+		};
+		self.activateSelectedNode = function () {
+			setActiveNodes([getCurrentlySelectedIdeaId()]);
+		};
+		self.isActivated = function (id) {
+			return _.contains(activatedNodes, id);
 		};
 		self.applyToActivated = function (toApply) {
 			idea.batch(function () {_.each(activatedNodes, toApply); });

@@ -47,6 +47,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'[' : 'activateChildren',
 				'{'	: 'activateNodeAndChildren',
 				'='	: 'activateSiblingNodes',
+				'.'	: 'activateSelectedNode',
 				'/' : 'toggleCollapse',
 				'a': 'openAttachment'
 			},
