@@ -968,6 +968,18 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([5]);
 				});
 			});
+			describe('single activation', function () {
+				it('activates a node if not already active', function () {
+					underTest.activateNode(7);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([7], []);
+				});
+				it('does nothing if node is already active', function () {
+					underTest.activateNode(7);
+					activatedNodesChangedListener.reset();
+					underTest.activateNode(7);
+					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+				});
+			});
 			describe('actions on activated nodes', function () {
 				var changedListener;
 				beforeEach(function () {

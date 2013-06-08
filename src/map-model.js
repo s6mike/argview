@@ -23,8 +23,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				node.y += deltaY;
 			});
 		},
+		isAddLinkMode,
 		updateCurrentLayout = function (newLayout, contextNodeId) {
-			var nodeId, newNode, oldNode, newConnector, oldConnector;
+			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink;
 			if (contextNodeId && currentLayout.nodes && currentLayout.nodes[contextNodeId] && newLayout.nodes[contextNodeId]) {
 				moveNodes(newLayout.nodes,
 					currentLayout.nodes[contextNodeId].x - newLayout.nodes[contextNodeId].x,
@@ -73,12 +74,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
 			}
-			var linkId, newLink, oldLink;
 			for (linkId in newLayout.links) {
 				newLink = newLayout.links[linkId];
 				oldLink = currentLayout.links && currentLayout.links[linkId];
 				if (oldLink) {
-					if (!_.isEqual(newLink.attr || {}, oldLink && oldLink.attr || {})) {
+					if (!_.isEqual(newLink.attr || {}, (oldLink && oldLink.attr) || {})) {
 						self.dispatchEvent('linkAttrChanged', newLink);
 					}
 				} else {
@@ -112,6 +112,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 
 		},
+		getCurrentlySelectedIdeaId = function () {
+			return currentlySelectedIdeaId || idea.id;
+		},
 		onIdeaChanged = function (command, args, originSession) {
 			var localCommand, contextNodeId = command && command !== 'updateTitle'  && getCurrentlySelectedIdeaId();
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
@@ -124,13 +127,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				_.each(args, function (singleCmd) {
 					checkDefaultUIActions(singleCmd[0], singleCmd.slice(1));
 				});
-			}
-			else {
+			} else {
 				checkDefaultUIActions(command, args);
 			}
-		},
-		getCurrentlySelectedIdeaId = function () {
-			return currentlySelectedIdeaId || idea.id;
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -173,8 +172,16 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
-	this.clickNode = function (id) {
-		if (isAddLinkMode) {
+	this.clickNode = function (id, event) {
+		if (event && (event.altKey || event.ctrlKey || event.metaKey)) {
+			self.addLink(id);
+			event.preventDefault();
+			event.stopPropagation();
+		} else if (event && event.shiftKey) {
+			self.activateNode(id);
+			event.preventDefault();
+			event.stopPropagation();
+		} else if (isAddLinkMode) {
 			this.addLink(id);
 			this.toggleAddLinkMode();
 		} else {
@@ -356,7 +363,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
 		idea.removeLink(nodeIdFrom, nodeIdTo);
 	};
-	var isAddLinkMode = false;
+
 	this.toggleAddLinkMode = function () {
 		isAddLinkMode = !isAddLinkMode;
 		self.dispatchEvent('addLinkModeToggled', isAddLinkMode);
@@ -437,6 +444,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			subtree.push(contextId);
 			setActiveNodes(subtree);
 		};
+		self.activateNode = function (nodeId) {
+			if (!self.isActivated(nodeId)) {
+				setActiveNodes([nodeId].concat(activatedNodes));
+			}
+		};
 		self.activateChildren = function () {
 			var context = currentlySelectedIdea();
 			if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
@@ -461,12 +473,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			analytic('activateLevel', source);
 			var toActivate = _.map(
 				_.filter(
-							currentLayout.nodes,
-							function (node) {
-								/*jslint eqeq:true*/
-								return node.level == level;
-							}
-					),
+					currentLayout.nodes,
+					function (node) {
+						/*jslint eqeq:true*/
+						return node.level == level;
+					}
+				),
 				function (node) {return node.id; }
 			);
 			if (!_.isEmpty(toActivate)) {
