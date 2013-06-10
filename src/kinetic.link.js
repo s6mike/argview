@@ -83,7 +83,7 @@
 			context.moveTo(conn.from.x, conn.from.y);
 			context.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
-			if (true) {
+			if (this.attrs.arrow) {
 				var len = 14;
 				if (conn.from.x < conn.to.x) {
 					len = -len;
@@ -112,5 +112,6 @@ Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 		solid: [],
 		dashed: [8, 8]
 	}[style && style.lineStyle || 'dashed'];
+	this.attrs.arrow = style && style.arrow || false;
 	this.getLayer().draw();
 };

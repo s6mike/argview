@@ -2,9 +2,10 @@
 jQuery.fn.linkEditWidget = function (mapModel) {
 	'use strict';
 	return this.each(function () {
-		var element = jQuery(this), currentLink, width, height, colorElement, lineStyleElement;
+		var element = jQuery(this), currentLink, width, height, colorElement, lineStyleElement, arrowElement;
 		colorElement = element.find('.color');
 		lineStyleElement = element.find('.lineStyle');
+		arrowElement = element.find('.arrow');
 		mapModel.addEventListener('linkSelected', function (link, selectionPoint, linkStyle) {
 			currentLink = link;
 			element.show();
@@ -16,6 +17,7 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			});
 			colorElement.val(linkStyle.color).change();
 			lineStyleElement.val(linkStyle.lineStyle);
+			arrowElement[linkStyle.arrow ? 'addClass' : 'removeClass']('active');
 		});
 		mapModel.addEventListener('mapMoveRequested', function () {
 			element.hide();
@@ -28,8 +30,13 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'color', jQuery(this).val());
 		});
 		lineStyleElement.find('a').click(function () {
-			console.log(jQuery(this).text());
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).text());
+		});
+		arrowElement.change(function () {
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', jQuery(this).val() === 'true');
+		});
+		arrowElement.click(function () {
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', !arrowElement.hasClass('active'));
 		});
 		element.mouseleave(element.hide.bind(element));
 	});
