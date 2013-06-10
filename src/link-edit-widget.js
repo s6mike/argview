@@ -32,9 +32,6 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		lineStyleElement.find('a').click(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).text());
 		});
-		arrowElement.change(function () {
-			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', jQuery(this).val() === 'true');
-		});
 		arrowElement.click(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', !arrowElement.hasClass('active'));
 		});
