@@ -98,9 +98,6 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		stage.attrs.x = 0.5 * stage.getWidth();
 		stage.attrs.y = 0.5 * stage.getHeight();
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
-		jQuery('.modal')
-			.on('show', mapModel.setInputEnabled.bind(mapModel, false))
-			.on('hidden', mapModel.setInputEnabled.bind(mapModel, true));
 		if (!touchEnabled) {
 			jQuery(window).mousewheel(onScroll);
 		} else {
