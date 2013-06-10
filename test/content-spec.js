@@ -1549,6 +1549,22 @@ describe('content aggregate', function () {
 
 			expect(result).toBe(true);
 		});
+		it('should remove link when start node is removed', function () {
+			idea.addLink(2, 3);
+			idea.removeSubIdea(2);
+			expect(_.size(idea.links)).toBe(0);
+		});
+		it('should remove link when end node is removed', function () {
+			idea.addLink(2, 3);
+			idea.removeSubIdea(3);
+			expect(_.size(idea.links)).toBe(0);
+		});
+		it('should put link removal into undo stack when node is removed', function () {
+			idea.addLink(2, 3);
+			idea.removeSubIdea(3);
+			idea.undo();
+			expect(_.size(idea.links)).toBe(1);
+		});
 		it('should dispatch a changed event when addLink method is called', function () {
 			var changedListener = jasmine.createSpy();
 			idea.addEventListener('changed', changedListener);
