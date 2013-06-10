@@ -284,7 +284,7 @@ describe('MapModel', function () {
 								title: 'Second'
 							}
 						}
-					};
+					},
 					layoutCalculatorLayout = layoutBefore;
 					anIdea = MAPJS.content({title: 'ttt'}, originalSession);
 					underTest = new MAPJS.MapModel(layoutCalculator);
@@ -293,32 +293,39 @@ describe('MapModel', function () {
 					underTest.addEventListener('nodeMoved', nodeMovedListener);
 					underTest.selectNode(1);
 					anIdea.dispatchEvent('changed', changeMethod, changeArgs, commandSession);
-				};
+				},
+				sessionCombinations = [
+					[undefined, undefined, 'no session'],
+					['originSession', 'originSession', 'a local session'],
+					['originSession', 'otherSession', 'a remote session']
+				];
+
 			beforeEach(function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
 			});
 			describe('triggering edit when a new node is created', function () {
-				var sessionCombinations = [
-					[undefined, undefined, true, 'when there is no session'],
-					['originSession', 'originSession', true, 'when there is a local session'],
-					['originSession', 'otherSession', false, 'when there is a remote session']
-				];
+				var expectedForSession = {
+					'no session': true,
+					'a local session':  true,
+					'a remote session': false
+				};
 				sessionCombinations.forEach(function (args) {
-					describe(args[3], function () {
+					var description = expectedForSession[args[2]] ? 'should dispatch' : 'should not dispatch';
+					describe('where there is ' + args[2], function () {
 						['insertIntermediate', 'addSubIdea'].forEach(function (cmd) {
-							it('uses sessions to decide if to dispatch edit on ' + cmd, function () {
+							it(description + ' edit on ' + cmd, function () {
 								triggerEdit(cmd, args[0], args[1]);
-								if (args[2]) {
+								if (expectedForSession[args[2]]) {
 									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 								}
 								else {
 									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 								}
 							});
-							it('uses sessions to decide if to dispatch edit on batched ' + cmd, function () {
+							it(description + ' edit on batched ' + cmd, function () {
 								triggerEdit(cmd, args[0], args[1], true);
-								if (args[2]) {
+								if (expectedForSession[args[2]]) {
 									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 								}
 								else {
@@ -330,13 +337,8 @@ describe('MapModel', function () {
 				});
 			});
 			describe('moving the map to keep selected node in the same position on the screen', function () {
-				var sessionCombinations = [
-					[undefined, undefined, 'when there is no session'],
-					['originSession', 'originSession', 'when there is a local session'],
-					['originSession', 'otherSession', 'when there is a remote session']
-				];
 				sessionCombinations.forEach(function (args) {
-					describe(args[2], function () {
+					describe('where there is ' + args[2], function () {
 						it('moves the map to keep selected node in the same position on the screen', function () {
 							updateAttrs(args[0], args[1]);
 							expect(nodeMovedListener.callCount).toBe(1);
