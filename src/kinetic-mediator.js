@@ -252,7 +252,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			shapeTo: nodeByIdeaId[l.ideaIdTo],
 			dashArray: [8, 8],
 			stroke: '#800',
-			strokeWidth: 3
+			strokeWidth: 1.5
 		});
 		link.on('click mouseover', function (event) {
 			mapModel.selectLink(l, { x: event.layerX, y: event.layerY });
