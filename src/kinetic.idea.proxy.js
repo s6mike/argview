@@ -85,13 +85,13 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 			return idea && idea[fname] && idea[fname].apply(idea, arguments);
 		};
 	});
-	_.each([':textChanged', ':editing', ':openAttachmentRequested'], function (fname) {
+	_.each([':textChanged', ':editing', ':request'], function (fname) {
 		idea.on(fname, function (event) {
 			container.fire(fname, event);
 			reRender();
 		});
 	});
-	_.each(['setMMAttr', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows', 'setShadowOffset'], function (fname) {
+	_.each(['setMMAttr', 'setIsSelected', 'setText', 'setIsDroppable', 'editNode', 'setupShadows', 'setShadowOffset', 'setIsActivated'], function (fname) {
 		container[fname] = function () {
 			var result = idea && idea[fname] && idea[fname].apply(idea, arguments);
 			reRender();

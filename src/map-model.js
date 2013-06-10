@@ -23,8 +23,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				node.y += deltaY;
 			});
 		},
+		isAddLinkMode,
 		updateCurrentLayout = function (newLayout, contextNodeId) {
-			var nodeId, newNode, oldNode, newConnector, oldConnector;
+			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink;
 			if (contextNodeId && currentLayout.nodes && currentLayout.nodes[contextNodeId] && newLayout.nodes[contextNodeId]) {
 				moveNodes(newLayout.nodes,
 					currentLayout.nodes[contextNodeId].x - newLayout.nodes[contextNodeId].x,
@@ -46,7 +47,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
-					self.dispatchEvent('nodeRemoved', oldNode);
+					self.dispatchEvent('nodeRemoved', oldNode, nodeId);
 				}
 			}
 			for (nodeId in newLayout.nodes) {
@@ -73,12 +74,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
 			}
-			var linkId, newLink, oldLink;
 			for (linkId in newLayout.links) {
 				newLink = newLayout.links[linkId];
 				oldLink = currentLayout.links && currentLayout.links[linkId];
 				if (oldLink) {
-					if (!_.isEqual(newLink.attr || {}, oldLink && oldLink.attr || {})) {
+					if (!_.isEqual(newLink.attr || {}, (oldLink && oldLink.attr) || {})) {
 						self.dispatchEvent('linkAttrChanged', newLink);
 					}
 				} else {
@@ -94,27 +94,38 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 			currentLayout = newLayout;
 		},
-		onIdeaChanged = function (command, args, originSession) {
-			var newIdeaId, contextNodeId, localCommand;
-			localCommand = (!originSession) || originSession === idea.getSessionKey();
-			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
-			updateCurrentLayout(layoutCalculator(idea), localCommand && contextNodeId);
-			if (!localCommand) {
-				return;
-			}
-			if (command === 'addSubIdea') {
+		checkDefaultUIActions = function (command, args) {
+			var newIdeaId;
+			if (command === 'addSubIdea' || command === 'insertIntermediate') {
 				newIdeaId = args[2];
-				self.selectNode(newIdeaId);
-				self.editNode(false, true, true);
-			}
-			if (command === 'insertIntermediate') {
-				newIdeaId = args[2];
+				revertSelectionForUndo = currentlySelectedIdeaId;
 				self.selectNode(newIdeaId);
 				self.editNode(false, true, true);
 			}
 			if (command === 'paste') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
+			}
+
+		},
+		getCurrentlySelectedIdeaId = function () {
+			return currentlySelectedIdeaId || idea.id;
+		},
+		revertSelectionForUndo,
+		onIdeaChanged = function (command, args, originSession) {
+			var localCommand, contextNodeId = command && command !== 'updateTitle'  && getCurrentlySelectedIdeaId();
+			localCommand = (!originSession) || originSession === idea.getSessionKey();
+			revertSelectionForUndo = false;
+			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
+			if (!localCommand) {
+				return;
+			}
+			if (command === 'batch') {
+				_.each(args, function (singleCmd) {
+					checkDefaultUIActions(singleCmd[0], singleCmd.slice(1));
+				});
+			} else {
+				checkDefaultUIActions(command, args);
 			}
 		},
 		currentlySelectedIdea = function () {
@@ -131,7 +142,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
-			self.setActiveNodes([anIdea.id]);
 			self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			currentlySelectedIdeaId = undefined;
 		}
@@ -156,12 +166,16 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
 			currentlySelectedIdeaId = id;
-			self.setActiveNodes([id]);
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
-	this.clickNode = function (id) {
-		if (isAddLinkMode) {
+	this.clickNode = function (id, event) {
+		if (event && (event.altKey || event.ctrlKey || event.metaKey)) {
+			self.addLink(id);
+		} else if (event && event.shiftKey) {
+			/*don't stop propagation, this is needed for drop targets*/
+			self.activateNode('mouse', id);
+		} else if (isAddLinkMode) {
 			this.addLink(id);
 			this.toggleAddLinkMode();
 		} else {
@@ -185,10 +199,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.toggleCollapse = function (source) {
 		var selectedIdea = currentlySelectedIdea(),
 			isCollapsed;
-		if (_.size(selectedIdea.ideas) > 0) {
-			isCollapsed = currentlySelectedIdea().getAttr('collapsed');
+		if (self.isActivated(selectedIdea.id) && _.size(selectedIdea.ideas) > 0) {
+			isCollapsed = selectedIdea.getAttr('collapsed');
 		} else {
-			isCollapsed = _.every(self.currentlyActivatedNodes(), function (id) {
+			isCollapsed = self.everyActivatedIs(function (id) {
 				var node = self.findIdeaById(id);
 				if (node && _.size(node.ideas) > 0) {
 					return node.getAttr('collapsed');
@@ -201,8 +215,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
 		if (isInputEnabled) {
-			var ids = self.currentlyActivatedNodes();
-			_.each(ids, function (id) {
+			self.applyToActivated(function (id) {
 				var node = self.findIdeaById(id);
 				if (node && (!doCollapse || (node.ideas && _.size(node.ideas) > 0))) {
 					idea.updateAttr(id, 'collapsed', doCollapse);
@@ -214,13 +227,15 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		/*jslint eqeq:true */
 		if (isInputEnabled) {
 			analytic('updateStyle:' + prop, source);
-			var ids = self.currentlyActivatedNodes();
-			_.each(ids, function (id) {
+			self.applyToActivated(function (id) {
 				if (self.getStyleForId(id, prop) != value) {
 					var node = self.findIdeaById(id),
+						merged;
+					if (node) {
 						merged = _.extend({}, node.getAttr('style'));
-					merged[prop] = value;
-					idea.updateAttr(id, 'style', merged);
+						merged[prop] = value;
+						idea.updateAttr(id, 'style', merged);
+					}
 				}
 			});
 		}
@@ -237,8 +252,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
-			ensureNodeIsExpanded(source, target);
-			idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, target);
+				idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+			});
 		}
 	};
 	this.insertIntermediate = function (source) {
@@ -252,16 +269,26 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
 			var parent = idea.findParent(currentlySelectedIdeaId) || idea;
-			ensureNodeIsExpanded(source, parent.id);
-			idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, parent.id);
+				idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			});
 		}
 	};
-	this.removeSubIdea = function (source, targetId) {
+	this.removeSubIdea = function (source) {
 		analytic('removeSubIdea', source);
 		if (isInputEnabled) {
-			var target = targetId || currentlySelectedIdeaId,
-				parent = idea.findParent(target);
-			if (idea.removeSubIdea(target)) {
+			var shouldSelectParent,
+				previousSelectionId = getCurrentlySelectedIdeaId(),
+				parent = idea.findParent(previousSelectionId);
+			self.applyToActivated(function (id) {
+				var removed  = idea.removeSubIdea(id);
+				/*jslint eqeq: true*/
+				if (previousSelectionId == id) {
+					shouldSelectParent = removed;
+				}
+			});
+			if (shouldSelectParent) {
 				self.selectNode(parent.id);
 			}
 		}
@@ -330,15 +357,19 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
 		idea.removeLink(nodeIdFrom, nodeIdTo);
 	};
-	var isAddLinkMode = false;
+
 	this.toggleAddLinkMode = function () {
 		isAddLinkMode = !isAddLinkMode;
 		self.dispatchEvent('addLinkModeToggled', isAddLinkMode);
 	};
 	self.undo = function (source) {
 		analytic('undo', source);
+		var undoSelection = revertSelectionForUndo;
 		if (isInputEnabled) {
 			idea.undo();
+			if (undoSelection) {
+				self.selectNode(undoSelection);
+			}
 		}
 	};
 	self.redo = function (source) {
@@ -378,8 +409,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	self.pasteStyle = function (source) {
 		analytic('pasteStyle', source);
 		if (isInputEnabled && self.clipBoard) {
+
 			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
-			idea.updateAttr(currentlySelectedIdeaId, 'style', pastingStyle);
+			self.applyToActivated(function (id) {
+				idea.updateAttr(id, 'style', pastingStyle);
+			});
 		}
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
@@ -387,26 +421,94 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 
 	//node activation
 	(function () {
-		var activatedNodes = [];
-		self.setActiveNodes = function (activated) {
+		var activatedNodes = [],
+			setActiveNodes = function (activated) {
 				var wasActivated = _.clone(activatedNodes);
 				activatedNodes = activated;
-
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 			};
-
-		self.activateNodesForSameLevel = function () {
+		self.activateSiblingNodes = function (source) {
 			var parent = idea.findParent(currentlySelectedIdeaId),
 				siblingIds;
+			analytic('activateSiblingNodes', source);
 			if (!parent || !parent.ideas) {
 				return;
 			}
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
-			self.setActiveNodes(siblingIds);
+			setActiveNodes(siblingIds);
 		};
-		self.currentlyActivatedNodes = function () {
-			return activatedNodes;
+		self.activateNodeAndChildren = function (source) {
+			analytic('activateNodeAndChildren', source);
+			var contextId = getCurrentlySelectedIdeaId(),
+				subtree = idea.getSubTreeIds(contextId);
+			subtree.push(contextId);
+			setActiveNodes(subtree);
 		};
+		self.activateNode = function (source, nodeId) {
+			analytic('activateNode', source);
+			if (!self.isActivated(nodeId)) {
+				setActiveNodes([nodeId].concat(activatedNodes));
+			}
+		};
+		self.activateChildren = function (source) {
+			analytic('activateChildren', source);
+			var context = currentlySelectedIdea();
+			if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
+				return;
+			}
+			setActiveNodes(idea.getSubTreeIds(context.id));
+		};
+		self.activateSelectedNode = function (source) {
+			analytic('activateSelectedNode', source);
+			setActiveNodes([getCurrentlySelectedIdeaId()]);
+		};
+		self.isActivated = function (id) {
+			/*jslint eqeq:true*/
+			return _.find(activatedNodes, function (activeId) { return id == activeId; });
+		};
+		self.applyToActivated = function (toApply) {
+			idea.batch(function () {_.each(activatedNodes, toApply); });
+		};
+		self.everyActivatedIs = function (predicate) {
+			return _.every(activatedNodes, predicate);
+		};
+		self.activateLevel = function (source, level) {
+			analytic('activateLevel', source);
+			var toActivate = _.map(
+				_.filter(
+					currentLayout.nodes,
+					function (node) {
+						/*jslint eqeq:true*/
+						return node.level == level;
+					}
+				),
+				function (node) {return node.id; }
+			);
+			if (!_.isEmpty(toActivate)) {
+				setActiveNodes(toActivate);
+			}
+		};
+		self.reactivate = function (layout) {
+			_.each(layout.nodes, function (node) {
+				if (_.contains(activatedNodes, node.id)) {
+					node.activated = true;
+				}
+			});
+			return layout;
+		};
+		self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
+			if (!isSelected) {
+				setActiveNodes([]);
+				return;
+			}
+			setActiveNodes([id]);
+		}, 1);
+		self.addEventListener('nodeRemoved', function (node, id) {
+			var selectedId = getCurrentlySelectedIdeaId();
+			if (self.isActivated(id) && !self.isActivated(selectedId)) {
+				setActiveNodes(activatedNodes.concat([selectedId]));
+			}
+		});
 	}());
 
 
