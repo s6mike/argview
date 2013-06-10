@@ -225,6 +225,7 @@ describe('MapModel', function () {
 		describe('focus/edit automatic control', function () {
 			var nodeEditRequestedListener,
 				nodeMovedListener,
+				nodeSelectionChangedListener,
 				triggerEdit = function (command, contentSession, commandSession, isBatch) {
 					anIdea = MAPJS.content({
 						id: 1,
@@ -236,6 +237,8 @@ describe('MapModel', function () {
 					}, contentSession);
 					underTest.setIdea(anIdea);
 					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+					underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
+					underTest.selectNode(2);
 					if (!isBatch) {
 						anIdea.execCommand(command, [2, 'ttl', 3], commandSession);
 					}
@@ -303,6 +306,7 @@ describe('MapModel', function () {
 			beforeEach(function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
+				nodeSelectionChangedListener = jasmine.createSpy();
 			});
 			describe('triggering edit when a new node is created', function () {
 				var expectedForSession = {
@@ -311,10 +315,10 @@ describe('MapModel', function () {
 					'a remote session': false
 				};
 				sessionCombinations.forEach(function (args) {
-					var description = expectedForSession[args[2]] ? 'should dispatch' : 'should not dispatch';
+					var description = expectedForSession[args[2]] ? 'should' : 'should not';
 					describe('where there is ' + args[2], function () {
 						['insertIntermediate', 'addSubIdea'].forEach(function (cmd) {
-							it(description + ' edit on ' + cmd, function () {
+							it(description + ' dispatch edit on ' + cmd, function () {
 								triggerEdit(cmd, args[0], args[1]);
 								if (expectedForSession[args[2]]) {
 									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
@@ -323,13 +327,24 @@ describe('MapModel', function () {
 									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 								}
 							});
-							it(description + ' edit on batched ' + cmd, function () {
+							it(description + ' dispatch edit on batched ' + cmd, function () {
 								triggerEdit(cmd, args[0], args[1], true);
 								if (expectedForSession[args[2]]) {
 									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 								}
 								else {
 									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+								}
+							});
+							it(description + ' return selection to previously selected on undo on ' + cmd, function () {
+								triggerEdit(cmd, args[0], args[1]);
+								nodeSelectionChangedListener.reset();
+								underTest.undo();
+								if (expectedForSession[args[2]]) {
+									expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
+								}
+								else {
+									expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
 								}
 							});
 						});

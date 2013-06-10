@@ -96,13 +96,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		checkDefaultUIActions = function (command, args) {
 			var newIdeaId;
-			if (command === 'addSubIdea') {
+			if (command === 'addSubIdea' || command === 'insertIntermediate') {
 				newIdeaId = args[2];
-				self.selectNode(newIdeaId);
-				self.editNode(false, true, true);
-			}
-			if (command === 'insertIntermediate') {
-				newIdeaId = args[2];
+				revertSelectionForUndo = currentlySelectedIdeaId;
 				self.selectNode(newIdeaId);
 				self.editNode(false, true, true);
 			}
@@ -115,10 +111,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		getCurrentlySelectedIdeaId = function () {
 			return currentlySelectedIdeaId || idea.id;
 		},
+		revertSelectionForUndo,
 		onIdeaChanged = function (command, args, originSession) {
 			var localCommand, contextNodeId = command && command !== 'updateTitle'  && getCurrentlySelectedIdeaId();
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
-
+			revertSelectionForUndo = false;
 			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
 			if (!localCommand) {
 				return;
@@ -367,8 +364,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	self.undo = function (source) {
 		analytic('undo', source);
+		var undoSelection = revertSelectionForUndo;
 		if (isInputEnabled) {
 			idea.undo();
+			if (undoSelection) {
+				self.selectNode(undoSelection);
+			}
 		}
 	};
 	self.redo = function (source) {
