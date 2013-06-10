@@ -84,16 +84,29 @@
 			context.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
 			if (this.attrs.arrow) {
+				var a1x, a1y, a2x, a2y;
 				var len = 14;
 				if (conn.from.x < conn.to.x) {
 					len = -len;
 				}
 				var m = (conn.to.y - conn.from.y) / (conn.to.x - conn.from.x);
 				var n = Math.tan(Math.PI / 9);
-				var a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				var a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
-				var a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				var a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
+				if (m === Infinity) {
+					a1x = conn.to.x - len * Math.sin(n);
+					a1y = conn.to.y - len * Math.cos(n);
+					a2x = conn.to.x + len * Math.sin(n);
+					a2y = conn.to.y - len * Math.cos(n);
+				} else if (m === -Infinity) {
+					a1x = conn.to.x - len * Math.sin(n);
+					a1y = conn.to.y + len * Math.cos(n);
+					a2x = conn.to.x + len * Math.sin(n);
+					a2y = conn.to.y + len * Math.cos(n);
+				} else {
+					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
+					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
+				}
 				context.moveTo(a1x, a1y);
 				context.lineTo(conn.to.x, conn.to.y);
 				context.lineTo(a2x, a2y);
