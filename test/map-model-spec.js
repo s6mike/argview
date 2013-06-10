@@ -972,6 +972,20 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener.mostRecentCall.args[0].sort()).toEqual([6, 7, 8]);
 					expect(activatedNodesChangedListener.mostRecentCall.args[1]).toEqual([5]);
 				});
+				it('should not deactivate selected nodes when activate children called and selected node is leaf node', function () {
+					underTest.selectNode(2);
+					activatedNodesChangedListener.reset();
+					underTest.activateChildren();
+					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+				});
+				it('should not deactivate selected nodes when activate children called and selected node is collapsed', function () {
+					anIdea.updateAttr(5, 'collapsed', true);
+					underTest.selectNode(5);
+					activatedNodesChangedListener.reset();
+					underTest.activateChildren();
+					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+				});
+
 			});
 			describe('single activation', function () {
 				it('activates a node if not already active', function () {
