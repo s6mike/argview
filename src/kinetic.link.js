@@ -76,7 +76,8 @@
 			var context = canvas.getContext(),
 				shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
-				conn;
+				conn,
+				n = Math.tan(Math.PI / 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
 			context.fillStyle = this.attrs.stroke;
 			context.beginPath();
@@ -84,24 +85,20 @@
 			context.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
 			if (this.attrs.arrow) {
-				var a1x, a1y, a2x, a2y;
-				var len = 14;
-				if (conn.from.x < conn.to.x) {
-					len = -len;
-				}
-				var m = (conn.to.y - conn.from.y) / (conn.to.x - conn.from.x);
-				var n = Math.tan(Math.PI / 9);
-				if (m === Infinity) {
-					a1x = conn.to.x - len * Math.sin(n);
-					a1y = conn.to.y - len * Math.cos(n);
-					a2x = conn.to.x + len * Math.sin(n);
-					a2y = conn.to.y - len * Math.cos(n);
-				} else if (m === -Infinity) {
-					a1x = conn.to.x - len * Math.sin(n);
-					a1y = conn.to.y + len * Math.cos(n);
-					a2x = conn.to.x + len * Math.sin(n);
-					a2y = conn.to.y + len * Math.cos(n);
+				var a1x, a1y, a2x, a2y, len = 14, iy, m,
+					dx = conn.to.x - conn.from.x,
+					dy = conn.to.y - conn.from.y;
+				if (dx === 0) {
+					iy = dy < 0 ? -1 : 1;
+					a1x = conn.to.x + len * Math.sin(n) * iy;
+					a2x = conn.to.x - len * Math.sin(n) * iy;
+					a1y = conn.to.y - len * Math.cos(n) * iy;
+					a2y = conn.to.y - len * Math.cos(n) * iy;
 				} else {
+					m = dy / dx;
+					if (conn.from.x < conn.to.x) {
+						len = -len;
+					}
 					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
 					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
