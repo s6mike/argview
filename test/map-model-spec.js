@@ -989,13 +989,13 @@ describe('MapModel', function () {
 			});
 			describe('single activation', function () {
 				it('activates a node if not already active', function () {
-					underTest.activateNode(7);
+					underTest.activateNode('source', 7);
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([7], []);
 				});
 				it('does nothing if node is already active', function () {
-					underTest.activateNode(7);
+					underTest.activateNode('source', 7);
 					activatedNodesChangedListener.reset();
-					underTest.activateNode(7);
+					underTest.activateNode('source', 7);
 					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
 				});
 			});
@@ -1189,7 +1189,7 @@ describe('MapModel', function () {
 		it('should dispatch analytic event when methods are invoked', function () {
 			var methods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
-				'resetView', 'openAttachment', 'setAttachment'];
+				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode'];
 			_.each(methods, function (method) {
 				reset();
 				var spy = jasmine.createSpy(method);

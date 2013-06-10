@@ -177,7 +177,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.addLink(id);
 		} else if (event && event.shiftKey) {
 			/*don't stop propagation, this is needed for drop targets*/
-			self.activateNode(id);
+			self.activateNode('mouse', id);
 		} else if (isAddLinkMode) {
 			this.addLink(id);
 			this.toggleAddLinkMode();
@@ -426,34 +426,39 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				activatedNodes = activated;
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 			};
-		self.activateSiblingNodes = function () {
+		self.activateSiblingNodes = function (source) {
 			var parent = idea.findParent(currentlySelectedIdeaId),
 				siblingIds;
+			analytic('activateSiblingNodes', source);
 			if (!parent || !parent.ideas) {
 				return;
 			}
 			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
 			setActiveNodes(siblingIds);
 		};
-		self.activateNodeAndChildren = function () {
+		self.activateNodeAndChildren = function (source) {
+			analytic('activateNodeAndChildren', source);
 			var contextId = getCurrentlySelectedIdeaId(),
 				subtree = idea.getSubTreeIds(contextId);
 			subtree.push(contextId);
 			setActiveNodes(subtree);
 		};
-		self.activateNode = function (nodeId) {
+		self.activateNode = function (source, nodeId) {
+			analytic('activateNode', source);
 			if (!self.isActivated(nodeId)) {
 				setActiveNodes([nodeId].concat(activatedNodes));
 			}
 		};
-		self.activateChildren = function () {
+		self.activateChildren = function (source) {
+			analytic('activateChildren', source);
 			var context = currentlySelectedIdea();
 			if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
 				return;
 			}
 			setActiveNodes(idea.getSubTreeIds(context.id));
 		};
-		self.activateSelectedNode = function () {
+		self.activateSelectedNode = function (source) {
+			analytic('activateSelectedNode', source);
 			setActiveNodes([getCurrentlySelectedIdeaId()]);
 		};
 		self.isActivated = function (id) {
