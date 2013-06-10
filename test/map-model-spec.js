@@ -223,7 +223,6 @@ describe('MapModel', function () {
 			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9']);
 		});
 		describe('focus/edit automatic control', function () {
-
 			var nodeEditRequestedListener,
 				nodeMovedListener,
 				insertIntermediate = function (contentSession, commandSession) {
@@ -252,7 +251,7 @@ describe('MapModel', function () {
 					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 					anIdea.execCommand('addSubIdea', [2, 'ttt', 3], commandSession);
 				},
-				updateAttrs = function (originalSession, commandSession) {
+				updateAttrs = function (originalSession, commandSession, changeMethod, changeArgs) {
 					var layoutCalculatorLayout,
 						layoutCalculator = function () {
 							return layoutCalculatorLayout;
@@ -261,7 +260,8 @@ describe('MapModel', function () {
 						anIdea,
 						layoutBefore,
 						layoutAfter;
-
+					changeMethod = changeMethod || 'updateAttr';
+					changeArgs = changeArgs || [1];
 					layoutBefore = {
 						nodes: {
 							1: {
@@ -297,11 +297,44 @@ describe('MapModel', function () {
 					layoutCalculatorLayout = layoutAfter;
 					underTest.addEventListener('nodeMoved', nodeMovedListener);
 					underTest.selectNode(1);
-					anIdea.dispatchEvent('changed', 'updateAttr', [1], commandSession);
+					anIdea.dispatchEvent('changed', changeMethod, changeArgs, commandSession);
 				};
 			beforeEach(function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
+			});
+			describe('moving the map to keep selected node in the same position on the screen', function () {
+				var sessionCombinations = [
+					[undefined, undefined, 'when there is no session'],
+					['originSession', 'originSession', 'when there is a local session'],
+					['originSession', 'otherSession', 'when there is a remote session']
+				];
+				sessionCombinations.forEach(function (args) {
+					describe(args[2], function () {
+						it('moves the map to keep selected node in the same position on the screen', function () {
+							updateAttrs(args[0], args[1]);
+							expect(nodeMovedListener.callCount).toBe(1);
+							expect(nodeMovedListener).toHaveBeenCalledWith({
+								x: -10,
+								y: -20,
+								title: 'Second'
+							});
+						});
+						it('does not move the map to keep selected node in the same position on the screen when updating the title', function () {
+							updateAttrs(args[0], args[1], 'updateTitle', [1, 'X']);
+							expect(nodeMovedListener.callCount).toBe(1);
+							expect(nodeMovedListener).toHaveBeenCalledWith({
+								x: 110,
+								y: 220,
+								title: 'First'
+							});
+						});
+
+					});
+
+				});
+
+
 			});
 			describe('when no session is defined', function () {
 				it('should dispatch edit when intermediate is created', function () {
@@ -311,15 +344,6 @@ describe('MapModel', function () {
 				it('should dispatch edit when a new idea is added', function () {
 					addSubIdea();
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-				it('moves the map to keep selected node in the same position on the screen', function () {
-					updateAttrs();
-					expect(nodeMovedListener.callCount).toBe(1);
-					expect(nodeMovedListener).toHaveBeenCalledWith({
-						x: -10,
-						y: -20,
-						title: 'Second'
-					});
 				});
 			});
 			describe('when session is defined and matches local session', function () {
@@ -331,15 +355,6 @@ describe('MapModel', function () {
 					addSubIdea('originSession', 'originSession');
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
 				});
-				it('moves the map to keep selected node in the same position on the screen', function () {
-					updateAttrs('originSession', 'originSession');
-					expect(nodeMovedListener.callCount).toBe(1);
-					expect(nodeMovedListener).toHaveBeenCalledWith({
-						x: -10,
-						y: -20,
-						title: 'Second'
-					});
-				});
 			});
 			describe('when session is defined but command session does not match local session', function () {
 				it('should not dispatch edit when intermediate is created', function () {
@@ -349,15 +364,6 @@ describe('MapModel', function () {
 				it('should not dispatch edit when a new idea is added', function () {
 					addSubIdea('originSession', 'differentSession');
 					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-				});
-				it('moves the map to keep selected node in the same position on the screen', function () {
-					updateAttrs('originSession', 'otherSession');
-					expect(nodeMovedListener.callCount).toBe(1);
-					expect(nodeMovedListener).toHaveBeenCalledWith({
-						x: -10,
-						y: -20,
-						title: 'Second'
-					});
 				});
 			});
 		});
@@ -776,14 +782,14 @@ describe('MapModel', function () {
 			});
 			layout = {
 				nodes: {
-						1: { x: 0, y: 10 },
-						2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
-						3: { x: -10, y: -10 },
-						4: { x: 10, y: 10 },
-						5: { x: 10, y: 30 },
-						6: { x:	50, y: 10 },
-						7: { x:	50, y: -10 }
-					}
+					1: { x: 0, y: 10 },
+					2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
+					3: { x: -10, y: -10 },
+					4: { x: 10, y: 10 },
+					5: { x: 10, y: 30 },
+					6: { x:	50, y: 10 },
+					7: { x:	50, y: -10 }
+				}
 			};
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
