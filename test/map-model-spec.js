@@ -225,7 +225,7 @@ describe('MapModel', function () {
 		describe('focus/edit automatic control', function () {
 			var nodeEditRequestedListener,
 				nodeMovedListener,
-				insertIntermediate = function (contentSession, commandSession) {
+				triggerEdit = function (command, contentSession, commandSession, isBatch) {
 					anIdea = MAPJS.content({
 						id: 1,
 						ideas: {
@@ -236,20 +236,15 @@ describe('MapModel', function () {
 					}, contentSession);
 					underTest.setIdea(anIdea);
 					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-					anIdea.execCommand('insertIntermediate', [2, 'ttl', 3], commandSession);
-				},
-				addSubIdea = function (originalSession, commandSession) {
-					anIdea = MAPJS.content({
-						id: 1,
-						ideas: {
-							7: {
-								id: 2
-							}
-						}
-					}, originalSession);
-					underTest.setIdea(anIdea);
-					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-					anIdea.execCommand('addSubIdea', [2, 'ttt', 3], commandSession);
+					if (!isBatch) {
+						anIdea.execCommand(command, [2, 'ttl', 3], commandSession);
+					}
+					else {
+						anIdea.execCommand('batch',
+						[['updateTitle', 1, 'ttl'],
+						[command, 2, 'ttl', 3]],
+						commandSession);
+					}
 				},
 				updateAttrs = function (originalSession, commandSession, changeMethod, changeArgs) {
 					var layoutCalculatorLayout,
@@ -303,6 +298,37 @@ describe('MapModel', function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
 			});
+			describe('triggering edit when a new node is created', function () {
+				var sessionCombinations = [
+					[undefined, undefined, true, 'when there is no session'],
+					['originSession', 'originSession', true, 'when there is a local session'],
+					['originSession', 'otherSession', false, 'when there is a remote session']
+				];
+				sessionCombinations.forEach(function (args) {
+					describe(args[3], function () {
+						['insertIntermediate', 'addSubIdea'].forEach(function (cmd) {
+							it('uses sessions to decide if to dispatch edit on ' + cmd, function () {
+								triggerEdit(cmd, args[0], args[1]);
+								if (args[2]) {
+									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+								}
+								else {
+									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+								}
+							});
+							it('uses sessions to decide if to dispatch edit on batched ' + cmd, function () {
+								triggerEdit(cmd, args[0], args[1], true);
+								if (args[2]) {
+									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+								}
+								else {
+									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+								}
+							});
+						});
+					});
+				});
+			});
 			describe('moving the map to keep selected node in the same position on the screen', function () {
 				var sessionCombinations = [
 					[undefined, undefined, 'when there is no session'],
@@ -336,36 +362,7 @@ describe('MapModel', function () {
 
 
 			});
-			describe('when no session is defined', function () {
-				it('should dispatch edit when intermediate is created', function () {
-					insertIntermediate();
-					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-				it('should dispatch edit when a new idea is added', function () {
-					addSubIdea();
-					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-			});
-			describe('when session is defined and matches local session', function () {
-				it('should dispatch edit when intermediate is created', function () {
-					insertIntermediate('originSession', 'originSession');
-					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-				it('should dispatch edit when a new idea is added', function () {
-					addSubIdea('originSession', 'originSession');
-					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-			});
-			describe('when session is defined but command session does not match local session', function () {
-				it('should not dispatch edit when intermediate is created', function () {
-					insertIntermediate('originSession', 'differentSession');
-					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-				});
-				it('should not dispatch edit when a new idea is added', function () {
-					addSubIdea('originSession', 'differentSession');
-					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-				});
-			});
+
 		});
 	});
 	describe('methods delegating to idea', function () {
