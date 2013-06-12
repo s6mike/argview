@@ -680,9 +680,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 						clone = idea.clone(id);
 						if (!clone || !idea.paste(nodeId, clone)) {
 							self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
+							analytic('nodeDragCloneFailed');
 						}
 					} else if (!idea.changeParent(id, nodeId)) {
 						self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
+						analytic('nodeDragParentFailed');
 					}
 					return;
 				}
@@ -699,6 +701,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				return;
 			}
 			self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
+			analytic('nodeDragFailed');
 		};
 	}());
 };
