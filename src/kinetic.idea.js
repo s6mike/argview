@@ -331,6 +331,22 @@ Kinetic.Idea.prototype.setStyle = function () {
 	});
 	if (isActivated) {
 		this.rect.attrs.stroke = '#2E9AFE';
+		if (!this.activeAnimation) {
+			this.activeAnimation = new Kinetic.Animation(
+		        function (frame) {
+					var offset = 1 + (frame.time % 2);
+					var da = [[5, 3], [4, 3, 1, 0], [3, 3, 2, 0], [2, 3, 3, 0], [1, 3, 4, 0]][Math.floor(frame.time / 180) % 5];
+					self.rect.attrs.dashArray = da;
+		        },
+		        self.getLayer()
+		    );
+		}
+		this.activeAnimation.start();
+	} else {
+		if (this.activeAnimation) {
+			this.activeAnimation.stop();
+		}
+		this.rect.attrs.dashArray = [];
 	}
 	this.rect.attrs.dashArray = this.isActivated ? [5, 3] : [];
 	this.rect.attrs.strokeWidth = this.isActivated ? 3 : self.rectAttrs.strokeWidth;
