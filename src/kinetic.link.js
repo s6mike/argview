@@ -72,6 +72,21 @@
 				child.attrs.x, child.attrs.y, child.getWidth(), child.getHeight());
 		};
 	Kinetic.Link.prototype = {
+		drawHitFunc: function (canvas) {
+			var context = canvas.getContext(),
+				shapeFrom = this.shapeFrom,
+				shapeTo = this.shapeTo,
+				conn,
+				strokeWidth = this.attrs.strokeWidth;
+			this.attrs.strokeWidth = this.attrs.strokeWidth * 9;
+			conn = calculateConnector(shapeFrom, shapeTo);
+			context.fillStyle = this.attrs.stroke;
+			context.beginPath();
+			context.moveTo(conn.from.x, conn.from.y);
+			context.lineTo(conn.to.x, conn.to.y);
+			canvas.stroke(this);
+			this.attrs.strokeWidth = strokeWidth;
+		},
 		drawFunc: function (canvas) {
 			var context = canvas.getContext(),
 				shapeFrom = this.shapeFrom,
@@ -100,9 +115,9 @@
 						len = -len;
 					}
 					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
+					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m)*(1 + n * n));
+					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 				}
 				context.moveTo(a1x, a1y);
 				context.lineTo(conn.to.x, conn.to.y);
