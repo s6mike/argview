@@ -44,6 +44,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 			cacheImage();
 		},
 		nodeImageDrawFunc;
+	idea.disableAnimations = true;
 	container.attrs.x = idea.attrs.x;
 	container.attrs.y = idea.attrs.y;
 	idea.attrs.x = 0;
