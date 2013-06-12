@@ -332,10 +332,10 @@ Kinetic.Idea.prototype.setStyle = function () {
 	if (isActivated) {
 		this.rect.attrs.stroke = '#2E9AFE';
 		if (!this.activeAnimation) {
+			var dashes = [[5, 3, 0, 0], [4, 3, 1, 0], [3, 3, 2, 0], [2, 3, 3, 0], [1, 3, 4, 0], [0, 3, 5, 0], [0, 2, 5, 1], [0, 1, 5, 2]];
 			this.activeAnimation = new Kinetic.Animation(
 		        function (frame) {
-					var offset = 1 + (frame.time % 2);
-					var da = [[5, 3], [4, 3, 1, 0], [3, 3, 2, 0], [2, 3, 3, 0], [1, 3, 4, 0]][Math.floor(frame.time / 180) % 5];
+					var da = dashes[Math.floor(frame.time / 90) % 8];
 					self.rect.attrs.dashArray = da;
 		        },
 		        self.getLayer()
