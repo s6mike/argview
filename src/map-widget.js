@@ -77,6 +77,9 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 			if (!actOnKeys) {
 				return;
 			}
+			if (/INPUT|TEXTAREA/.test(evt.target.tagName)) {
+				return;
+			}
 			var unicode = evt.charCode || evt.keyCode,
 				actualkey = String.fromCharCode(unicode),
 				mappedFunction = charEventHandlers[actualkey];
