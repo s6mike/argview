@@ -37,8 +37,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'shift+tab': 'insertIntermediate',
 				'meta+0 ctrl+0': 'resetView',
 				'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
-				'meta+plus ctrl+plus s': 'scaleUp',
-				'meta+minus ctrl+minus shift+s': 'scaleDown',
+				'meta+plus ctrl+plus z': 'scaleUp',
+				'meta+minus ctrl+minus shift+z': 'scaleDown',
 				'meta+up ctrl+up': 'moveUp',
 				'meta+down ctrl+down': 'moveDown',
 				'ctrl+shift+v meta+shift+v': 'pasteStyle'
@@ -77,7 +77,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 			if (!actOnKeys) {
 				return;
 			}
-			if (/INPUT|TEXTAREA/.test(evt.target.tagName)) {
+			if (/INPUT|TEXTAREA/.test(evt && evt.target && evt.target.tagName)) {
 				return;
 			}
 			var unicode = evt.charCode || evt.keyCode,
