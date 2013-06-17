@@ -191,7 +191,11 @@
 				.appendTo('body')
 				.keydown(function (e) {
 					if (e.which === ENTER_KEY_CODE) {
-						onCommit();
+						if (ideaInput.val() === '') {
+							onCancelEdit();
+						} else {
+							onCommit();
+						}
 					} else if (e.which === ESC_KEY_CODE) {
 						onCancelEdit();
 					} else if (e.which === 9) {
