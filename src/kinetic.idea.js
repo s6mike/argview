@@ -163,7 +163,11 @@
 					self.getStage().off('xChange yChange', onStageMoved);
 				},
 				onCommit = function () {
-					updateText(ideaInput.val());
+					if (ideaInput.val() === '') {
+						onCancelEdit();
+					} else {
+						updateText(ideaInput.val());
+					}
 				},
 				onCancelEdit = function () {
 					updateText(unformattedText);
@@ -191,11 +195,7 @@
 				.appendTo('body')
 				.keydown(function (e) {
 					if (e.which === ENTER_KEY_CODE) {
-						if (ideaInput.val() === '') {
-							onCancelEdit();
-						} else {
-							onCommit();
-						}
+						onCommit();
 					} else if (e.which === ESC_KEY_CODE) {
 						onCancelEdit();
 					} else if (e.which === 9) {
