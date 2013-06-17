@@ -94,6 +94,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 			currentLayout = newLayout;
 		},
+		revertSelectionForUndo,
 		checkDefaultUIActions = function (command, args) {
 			var newIdeaId;
 			if (command === 'addSubIdea' || command === 'insertIntermediate') {
@@ -111,12 +112,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		getCurrentlySelectedIdeaId = function () {
 			return currentlySelectedIdeaId || idea.id;
 		},
-		revertSelectionForUndo,
 		onIdeaChanged = function (command, args, originSession) {
-			var localCommand, contextNodeId = command && command !== 'updateTitle'  && getCurrentlySelectedIdeaId();
+			var localCommand, contextNodeId = command && command === 'updateAttr'  && getCurrentlySelectedIdeaId();
 			localCommand = (!originSession) || originSession === idea.getSessionKey();
 			revertSelectionForUndo = false;
-			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
+			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), localCommand && contextNodeId);
 			if (!localCommand) {
 				return;
 			}
