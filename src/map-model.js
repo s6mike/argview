@@ -113,10 +113,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			return currentlySelectedIdeaId || idea.id;
 		},
 		onIdeaChanged = function (command, args, originSession) {
-			var localCommand, contextNodeId = command && command === 'updateAttr'  && getCurrentlySelectedIdeaId();
-			localCommand = (!originSession) || originSession === idea.getSessionKey();
+			var localCommand = (!originSession) || originSession === idea.getSessionKey(),
+				contextNodeId = ((command && command === 'updateAttr') || (!localCommand))  && getCurrentlySelectedIdeaId();
 			revertSelectionForUndo = false;
-			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), localCommand && contextNodeId);
+			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
 			if (!localCommand) {
 				return;
 			}

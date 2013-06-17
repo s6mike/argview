@@ -351,28 +351,21 @@ describe('MapModel', function () {
 					});
 				});
 			});
-			describe('moving the map to keep selected node in the same position on the screen', function () {
+			describe('automatic positioning', function () {
 				sessionCombinations.forEach(function (args) {
-					it('moves the map to when updating attributes if no session', function () {
-						updateAttrs();
-						expect(nodeMovedListener.callCount).toBe(1);
-						expect(nodeMovedListener).toHaveBeenCalledWith({
-							x: -10,
-							y: -20,
-							title: 'Second'
+					describe('where there is ' + args[2], function () {
+						it('moves the map to keep selected node in the same position on the screen when updating attributes', function () {
+							updateAttrs(args[0], args[1]);
+							expect(nodeMovedListener.callCount).toBe(1);
+							expect(nodeMovedListener).toHaveBeenCalledWith({
+								x: -10,
+								y: -20,
+								title: 'Second'
+							});
 						});
 					});
-					it('moves the map to when updating attributes if no session', function () {
-						updateAttrs('local', 'local');
-						expect(nodeMovedListener.callCount).toBe(1);
-						expect(nodeMovedListener).toHaveBeenCalledWith({
-							x: -10,
-							y: -20,
-							title: 'Second'
-						});
-					});
-					it('does not moves the map if remote session', function () {
-						updateAttrs('local','remote');
+					it('when there is no session, does not move the map to keep selected node in the same position on the screen when updating the title', function () {
+						updateAttrs(null, null, 'updateTitle', [1, 'X']);
 						expect(nodeMovedListener.callCount).toBe(1);
 						expect(nodeMovedListener).toHaveBeenCalledWith({
 							x: 110,
@@ -380,23 +373,25 @@ describe('MapModel', function () {
 							title: 'First'
 						});
 					});
-					describe('where there is ' + args[2], function () {
-
-						it('does not move the map to keep selected node in the same position on the screen when updating the title', function () {
-							updateAttrs(args[0], args[1], 'updateTitle', [1, 'X']);
-							expect(nodeMovedListener.callCount).toBe(1);
-							expect(nodeMovedListener).toHaveBeenCalledWith({
-								x: 110,
-								y: 220,
-								title: 'First'
-							});
+					it('when it is a local session, does not move the map to keep selected node in the same position on the screen when updating the title', function () {
+						updateAttrs('local', 'local', 'updateTitle', [1, 'X']);
+						expect(nodeMovedListener.callCount).toBe(1);
+						expect(nodeMovedListener).toHaveBeenCalledWith({
+							x: 110,
+							y: 220,
+							title: 'First'
 						});
-
 					});
-
+					it('when it is a local session, moves the map to keep selected node in the same position on the screen when updating the title', function () {
+						updateAttrs('local', 'remote', 'updateTitle', [1, 'X']);
+						expect(nodeMovedListener.callCount).toBe(1);
+						expect(nodeMovedListener).toHaveBeenCalledWith({
+							x: -10,
+							y: -20,
+							title: 'Second'
+						});
+					});
 				});
-
-
 			});
 
 		});
