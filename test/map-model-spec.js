@@ -353,16 +353,35 @@ describe('MapModel', function () {
 			});
 			describe('moving the map to keep selected node in the same position on the screen', function () {
 				sessionCombinations.forEach(function (args) {
-					describe('where there is ' + args[2], function () {
-						it('moves the map to keep selected node in the same position on the screen', function () {
-							updateAttrs(args[0], args[1]);
-							expect(nodeMovedListener.callCount).toBe(1);
-							expect(nodeMovedListener).toHaveBeenCalledWith({
-								x: -10,
-								y: -20,
-								title: 'Second'
-							});
+					it('moves the map to when updating attributes if no session', function () {
+						updateAttrs();
+						expect(nodeMovedListener.callCount).toBe(1);
+						expect(nodeMovedListener).toHaveBeenCalledWith({
+							x: -10,
+							y: -20,
+							title: 'Second'
 						});
+					});
+					it('moves the map to when updating attributes if no session', function () {
+						updateAttrs('local', 'local');
+						expect(nodeMovedListener.callCount).toBe(1);
+						expect(nodeMovedListener).toHaveBeenCalledWith({
+							x: -10,
+							y: -20,
+							title: 'Second'
+						});
+					});
+					it('does not moves the map if remote session', function () {
+						updateAttrs('local','remote');
+						expect(nodeMovedListener.callCount).toBe(1);
+						expect(nodeMovedListener).toHaveBeenCalledWith({
+							x: 110,
+							y: 220,
+							title: 'First'
+						});
+					});
+					describe('where there is ' + args[2], function () {
+
 						it('does not move the map to keep selected node in the same position on the screen when updating the title', function () {
 							updateAttrs(args[0], args[1], 'updateTitle', [1, 'X']);
 							expect(nodeMovedListener.callCount).toBe(1);
