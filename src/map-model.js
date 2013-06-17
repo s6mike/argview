@@ -304,8 +304,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			return false;
 		}
 		var title = currentlySelectedIdea().title;
-		if (intermediaryTitlesToRandomlyChooseFrom.indexOf(title) !== -1 ||
-				 titlesToRandomlyChooseFrom.indexOf(title) !== -1) {
+		if (title === 'Press Space or double-click to edit' || intermediaryTitlesToRandomlyChooseFrom.indexOf(title) !== -1 || titlesToRandomlyChooseFrom.indexOf(title) !== -1) {
 			shouldSelectAll = true;
 		}
 		self.dispatchEvent('nodeEditRequested', currentlySelectedIdeaId, shouldSelectAll, !!editingNew);
