@@ -607,6 +607,11 @@ describe('MapModel', function () {
 			});
 		});
 		describe('clickNode', function () {
+			var contextMenuRequestedListener;
+			beforeEach(function () {
+				contextMenuRequestedListener = jasmine.createSpy('contextMenuRequestedListener');
+				underTest.addEventListener('contextMenuRequested', contextMenuRequestedListener);
+			});
 			it('should select node when not in link mode', function () {
 				spyOn(underTest, 'selectNode');
 
@@ -623,6 +628,19 @@ describe('MapModel', function () {
 
 				expect(underTest.addLink).toHaveBeenCalledWith(2);
 				expect(underTest.selectNode).not.toHaveBeenCalled();
+			});
+			it('should select the node and dispatch contextMenuRequested event if node is right clicked', function () {
+				spyOn(underTest, 'selectNode');
+
+				underTest.clickNode(2, {button: 2, layerX: 100, layerY: 200});
+
+				expect(contextMenuRequestedListener).toHaveBeenCalledWith(2, 100, 200);
+				expect(underTest.selectNode).toHaveBeenCalledWith(2);
+			});
+			it('should not dispatch contextMenuRequested event if node is left clicked', function () {
+				underTest.clickNode(2, {button: 0, layerX: 100, layerY: 200});
+
+				expect(contextMenuRequestedListener).not.toHaveBeenCalled();
 			});
 		});
 		describe('updateLinkStyle', function () {

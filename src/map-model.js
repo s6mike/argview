@@ -180,6 +180,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			this.toggleAddLinkMode();
 		} else {
 			this.selectNode(id);
+			if (event && event.button) {
+				self.dispatchEvent('contextMenuRequested', id, event.layerX, event.layerY);
+			}
 		}
 	};
 	this.findIdeaById = function (id) {

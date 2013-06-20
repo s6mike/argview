@@ -100,6 +100,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		stage.attrs.x = 0.5 * stage.getWidth();
 		stage.attrs.y = 0.5 * stage.getHeight();
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
+		element.on('contextmenu', function (e) { e.preventDefault(); });
 		if (!touchEnabled) {
 			jQuery(window).mousewheel(onScroll);
 		} else {
