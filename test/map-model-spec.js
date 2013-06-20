@@ -642,6 +642,13 @@ describe('MapModel', function () {
 
 				expect(contextMenuRequestedListener).not.toHaveBeenCalled();
 			});
+			it('should not add link if right clicked, should dispatch contextMenuRequested event', function () {
+				underTest.toggleAddLinkMode();
+				spyOn(underTest, 'addLink');
+				underTest.clickNode(2, {button: 2, layerX: 100, layerY: 200});
+				expect(contextMenuRequestedListener).toHaveBeenCalledWith(2, 100, 200);
+				expect(underTest.addLink).not.toHaveBeenCalled();
+			});
 		});
 		describe('updateLinkStyle', function () {
 			var anIdea, underTest;

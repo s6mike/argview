@@ -170,17 +170,18 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.clickNode = function (id, event) {
+		var button = event && event.button;
 		if (event && (event.altKey || event.ctrlKey || event.metaKey)) {
 			self.addLink(id);
 		} else if (event && event.shiftKey) {
 			/*don't stop propagation, this is needed for drop targets*/
 			self.activateNode('mouse', id);
-		} else if (isAddLinkMode) {
+		} else if (isAddLinkMode && !button) {
 			this.addLink(id);
 			this.toggleAddLinkMode();
 		} else {
 			this.selectNode(id);
-			if (event && event.button) {
+			if (button) {
 				self.dispatchEvent('contextMenuRequested', id, event.layerX, event.layerY);
 			}
 		}
