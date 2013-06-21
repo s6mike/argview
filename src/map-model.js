@@ -171,6 +171,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.clickNode = function (id, event) {
 		var button = event && event.button;
+		if (event && event.preventDefault) {
+			event.preventDefault();
+		}
+		if (event && event.stopPropagation) {
+			event.stopPropagation();
+		}
 		if (event && (event.altKey || event.ctrlKey || event.metaKey)) {
 			self.addLink(id);
 		} else if (event && event.shiftKey) {
