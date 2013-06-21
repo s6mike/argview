@@ -31,7 +31,6 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'space': 'editNode',
 				'shift+up': 'toggleCollapse',
 				'c meta+x ctrl+x': 'cut',
-				'p meta+v ctrl+v': 'paste',
 				'y meta+c ctrl+c': 'copy',
 				'u meta+z ctrl+z': 'undo',
 				'shift+tab': 'insertIntermediate',
