@@ -1,5 +1,5 @@
 /*jslint nomen: true*/
-/*global _, jQuery, MAPJS, Kinetic, observable */
+/*global _, jQuery, MAPJS, Kinetic */
 MAPJS.pngExport = function (idea) {
 	'use strict';
 	var deferred = jQuery.Deferred(),
@@ -45,6 +45,18 @@ MAPJS.pngExport = function (idea) {
 		});
 		layer.add(connector);
 		connector.moveToBottom();
+	});
+	_.each(layout.links, function (l) {
+		var link = new Kinetic.Link({
+			shapeFrom: nodeByIdeaId[l.ideaIdFrom],
+			shapeTo: nodeByIdeaId[l.ideaIdTo],
+			dashArray: [8, 8],
+			stroke: '#800',
+			strokeWidth: 1.5
+		});
+		layer.add(link);
+		link.moveToBottom();
+		link.setMMAttr(l.attr);
 	});
 	hiddenstage.draw();
 	hiddenstage.toDataURL({
