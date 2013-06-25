@@ -129,6 +129,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		node.on('dragstart', function () {
 			node.moveToTop();
 			node.setShadowOffset(8);
+			node.attrs.opacity = 0.3;
 		});
 		node.on('dragmove', function () {
 			mapModel.nodeDragMove(
@@ -139,6 +140,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 		node.on('dragend', function (evt) {
 			node.setShadowOffset(4);
+			node.attrs.opacity = 1;
 			mapModel.nodeDragEnd(
 				n.id,
 				node.attrs.x,
