@@ -761,23 +761,39 @@ describe('MapModel', function () {
 		});
 	});
 	describe('map scaling and movement', function () {
-		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener;
+		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel();
+			underTest = new MAPJS.MapModel(
+					function () {
+						return {};
+					}
+				);
+			var anIdea = MAPJS.content({
+					id: 1,
+					ideas: {
+						1: {id:3}
+					}
+				});
+			underTest.setIdea(anIdea);
 			mapScaleChangedListener = jasmine.createSpy('mapScaleChanged');
 			mapViewResetRequestedListener = jasmine.createSpy('mapViewReset');
 			mapMoveRequestedListener = jasmine.createSpy('mapMoveRequested');
+			nodeSelectionChangedListener = jasmine.createSpy('nodeSelectionChanged');
 			underTest.addEventListener('mapScaleChanged', mapScaleChangedListener);
 			underTest.addEventListener('mapViewResetRequested', mapViewResetRequestedListener);
 			underTest.addEventListener('mapMoveRequested', mapMoveRequestedListener);
+			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
 		});
 		it('should dispatch mapScaleChanged event with 1.25 scale and no zoom point when scaleUp method is invoked', function () {
 			underTest.scaleUp('toolbar');
 			expect(mapScaleChangedListener).toHaveBeenCalledWith(1.25, undefined);
 		});
-		it('should dispatch mapViewResetRequested when resetView is called', function () {
+		it('should select center node and dispatch mapViewResetRequested when resetView is called', function () {
+			underTest.selectNode(3);
+			nodeSelectionChangedListener.reset();
 			underTest.resetView();
 			expect(mapViewResetRequestedListener).toHaveBeenCalled();
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
 		});
 		it('should dispatch mapScaleChanged event with 0.8 and no zoom point when scaleDown method is invoked', function () {
 			underTest.scaleDown('toolbar');

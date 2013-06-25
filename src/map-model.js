@@ -333,9 +333,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.resetView = function (source) {
 		if (isInputEnabled) {
+			self.selectNode(idea.id);
 			self.dispatchEvent('mapViewResetRequested');
 			analytic('resetView', source);
 		}
+
 	};
 	this.openAttachment = function (source, nodeId) {
 		analytic('openAttachment', source);
