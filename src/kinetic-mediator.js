@@ -137,7 +137,13 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
 		}
 		node.on('click tap', function (evt) { mapModel.clickNode(n.id, evt); });
-		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false, false));
+		node.on('dblclick dbltap', function () {
+			if (!mapModel.getEditingEnabled()) {
+				mapModel.toggleCollapse('mouse');
+				return;
+			}
+			mapModel.editNode('mouse', false, false);
+		});
 		node.on('dragstart', function () {
 			node.moveToTop();
 			node.setShadowOffset(8);

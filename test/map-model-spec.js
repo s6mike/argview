@@ -771,7 +771,7 @@ describe('MapModel', function () {
 			var anIdea = MAPJS.content({
 					id: 1,
 					ideas: {
-						1: {id:3}
+						1: { id: 3}
 					}
 				});
 			underTest.setIdea(anIdea);
@@ -1209,9 +1209,9 @@ describe('MapModel', function () {
 		});
 	});
 	describe('analytic events', function () {
-		var underTest, analyticListener,
-			reset = function () {
-				underTest = new MAPJS.MapModel(function () {
+		var underTest, analyticListener;
+		beforeEach(function () {
+			underTest = new MAPJS.MapModel(function () {
 					return {
 						nodes: {
 							1: { x: 0 },
@@ -1222,74 +1222,103 @@ describe('MapModel', function () {
 						}
 					};
 				});
-				var anIdea = MAPJS.content({
-					id: 1,
-					title: 'center',
-					ideas: {
-						'-2': {
-							id: 2,
-							title: 'lower left'
-						},
-						'-1': {
-							id: 3,
-							title: 'upper left'
-						},
-						1: {
-							id: 4,
-							title: 'upper right'
-						},
-						2: {
-							id: 5,
-							title: 'lower right',
-							ideas : {
-								1: {
-									id: 6
-								}
+			var anIdea = MAPJS.content({
+				id: 1,
+				title: 'center',
+				ideas: {
+					'-2': {
+						id: 2,
+						title: 'lower left'
+					},
+					'-1': {
+						id: 3,
+						title: 'upper left'
+					},
+					1: {
+						id: 4,
+						title: 'upper right'
+					},
+					2: {
+						id: 5,
+						title: 'lower right',
+						ideas : {
+							1: {
+								id: 6
 							}
 						}
 					}
-				});
-				underTest.setIdea(anIdea);
-				analyticListener = jasmine.createSpy();
-				underTest.addEventListener('analytic', analyticListener);
-			};
-		beforeEach(function () {
-			reset();
-		});
-		it('should dispatch analytic event when methods are invoked', function () {
-			var methods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
-				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
-				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode'];
-			_.each(methods, function (method) {
-				reset();
-				var spy = jasmine.createSpy(method);
-				underTest.addEventListener('analytic', spy);
-				underTest[method]('source');
-				expect(spy).toHaveBeenCalledWith('mapModel', method, 'source');
+				}
 			});
+			underTest.setIdea(anIdea);
+			analyticListener = jasmine.createSpy();
+			underTest.addEventListener('analytic', analyticListener);
 		});
-		it('should dispatch analytic event when collapse method is invoked', function () {
-			underTest.collapse('toolbar', false);
+		describe('should dispatch analytic event', function () {
+			//TODO:addLink, selectLink, removeLink
+			var allMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
+				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
+				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode'];
+			_.each(allMethods, function (method) {
+				it('when ' + method + ' method is invoked', function () {
+					var spy = jasmine.createSpy(method);
+					underTest.addEventListener('analytic', spy);
+					underTest[method]('source');
+					expect(spy).toHaveBeenCalledWith('mapModel', method, 'source');
+				});
+			});
+			it('when collapse method is invoked', function () {
+				underTest.collapse('toolbar', false);
 
-			expect(analyticListener).toHaveBeenCalledWith('mapModel', 'collapse:false', 'toolbar');
-		});
-		it('should dispatch analytic event when collapse method is invoked', function () {
-			underTest.updateStyle('toolbar', 'propname', 'propval');
+				expect(analyticListener).toHaveBeenCalledWith('mapModel', 'collapse:false', 'toolbar');
+			});
+			it('when collapse method is invoked', function () {
+				underTest.updateStyle('toolbar', 'propname', 'propval');
 
-			expect(analyticListener).toHaveBeenCalledWith('mapModel', 'updateStyle:propname', 'toolbar');
-		});
-		it('should dispatch analytic event when insertIntermediate method is invoked, unless there is nothing selected', function () {
-			underTest.selectNode(6);
+				expect(analyticListener).toHaveBeenCalledWith('mapModel', 'updateStyle:propname', 'toolbar');
+			});
+			it('when insertIntermediate method is invoked, unless there is nothing selected', function () {
+				underTest.selectNode(6);
 
-			underTest.insertIntermediate('toolbar');
+				underTest.insertIntermediate('toolbar');
 
-			expect(analyticListener).toHaveBeenCalledWith('mapModel', 'insertIntermediate', 'toolbar');
+				expect(analyticListener).toHaveBeenCalledWith('mapModel', 'insertIntermediate', 'toolbar');
+			});
 		});
 		it('should not dispatch analytic event when insertIntermediate method is invoked and nothing selected', function () {
 			underTest.insertIntermediate('toolbar');
 
 			expect(analyticListener).not.toHaveBeenCalledWith();
 		});
+		describe('when editing is disabled edit methods should not execute ', function () {
+			var editingMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
+				'addSiblingIdea', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode'];
+			_.each(editingMethods, function (method) {
+				it(method + ' does not execute', function () {
+					underTest.selectNode(6);
+					underTest.setEditingEnabled(false);
+					var spy = jasmine.createSpy(method);
+					underTest.addEventListener('analytic', spy);
+					underTest[method]('source');
+					expect(spy).not.toHaveBeenCalled();
+				});
+			});
+
+		});
+		describe('when editing is disabled navigational methods should still execute ', function () {
+			var navigationMethods = ['scaleUp', 'scaleDown', 'move', 'collapse',
+				'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
+				'resetView', 'openAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode'];
+			_.each(navigationMethods, function (method) {
+				it(method + ' executes', function () {
+					underTest.setEditingEnabled(false);
+					var spy = jasmine.createSpy(method);
+					underTest.addEventListener('analytic', spy);
+					underTest[method]('source');
+					expect(spy).toHaveBeenCalled();
+				});
+			});
+		});
+
 	});
 	describe('getSelectedStyle', function () {
 		var anIdea = MAPJS.content({ id: 1, style: {'v': 'x'}, ideas : {7: {id: 2, style: {'v': 'y'}}}}),
