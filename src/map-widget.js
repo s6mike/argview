@@ -35,7 +35,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'y meta+c ctrl+c': 'copy',
 				'u meta+z ctrl+z': 'undo',
 				'shift+tab': 'insertIntermediate',
-				'meta+0 ctrl+0': 'resetView',
+				'Esc 0 meta+0 ctrl+0': 'resetView',
 				'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
 				'meta+plus ctrl+plus z': 'scaleUp',
 				'meta+minus ctrl+minus shift+z': 'scaleDown',

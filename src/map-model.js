@@ -12,6 +12,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		idea,
 		isInputEnabled = true,
+		isEditingEnabled = true,
 		currentlySelectedIdeaId,
 		getRandomTitle = function (titles) {
 			return titles[Math.floor(titles.length * Math.random())];
@@ -151,6 +152,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		self.selectNode(idea.id);
 		self.dispatchEvent('mapViewResetRequested');
 	};
+	this.setEditingEnabled = function (value) {
+		isEditingEnabled = value;
+	};
+	this.getEditingEnabled = function () {
+		return isEditingEnabled;
+	}
 	this.setInputEnabled = function (value) {
 		if (isInputEnabled !== value) {
 			isInputEnabled = value;
@@ -229,6 +236,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.updateStyle = function (source, prop, value) {
 		/*jslint eqeq:true */
+		if (!isEditingEnabled) {
+			return false;
+		}
 		if (isInputEnabled) {
 			analytic('updateStyle:' + prop, source);
 			self.applyToActivated(function (id) {
@@ -245,6 +255,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.updateLinkStyle = function (source, ideaIdFrom, ideaIdTo, prop, value) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		if (isInputEnabled) {
 			analytic('updateLinkStyle:' + prop, source);
 			var merged = _.extend({}, idea.getLinkAttr(ideaIdFrom, ideaIdTo, 'style'));
@@ -253,6 +266,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.addSubIdea = function (source, parentId) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		var target = parentId || currentlySelectedIdeaId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
@@ -263,13 +279,19 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.insertIntermediate = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
-			return;
+			return false;
 		}
 		idea.insertIntermediate(currentlySelectedIdeaId, getRandomTitle(intermediaryTitlesToRandomlyChooseFrom));
 		analytic('insertIntermediate', source);
 	};
 	this.addSiblingIdea = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
 			var parent = idea.findParent(currentlySelectedIdeaId) || idea;
@@ -280,6 +302,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.removeSubIdea = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('removeSubIdea', source);
 		if (isInputEnabled) {
 			var shouldSelectParent,
@@ -301,6 +326,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		idea.updateTitle(ideaId, title);
 	};
 	this.editNode = function (source, shouldSelectAll, editingNew) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		if (source) {
 			analytic('editNode', source);
 		}
@@ -333,9 +361,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.resetView = function (source) {
 		if (isInputEnabled) {
+			self.selectNode(idea.id);
 			self.dispatchEvent('mapViewResetRequested');
 			analytic('resetView', source);
 		}
+
 	};
 	this.openAttachment = function (source, nodeId) {
 		analytic('openAttachment', source);
@@ -347,25 +377,45 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.setAttachment = function (source, nodeId, attachment) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('setAttachment', source);
 		var hasAttachment = !!(attachment && attachment.content);
 		idea.updateAttr(nodeId, 'attachment', hasAttachment && attachment);
 	};
 	this.addLink = function (nodeIdTo) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		idea.addLink(currentlySelectedIdeaId, nodeIdTo);
 	};
 	this.selectLink = function (link, selectionPoint) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));
 	};
 	this.removeLink = function (nodeIdFrom, nodeIdTo) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		idea.removeLink(nodeIdFrom, nodeIdTo);
 	};
 
-	this.toggleAddLinkMode = function () {
+	this.toggleAddLinkMode = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('toggleAddLinkMode', source);
 		isAddLinkMode = !isAddLinkMode;
 		self.dispatchEvent('addLinkModeToggled', isAddLinkMode);
 	};
 	self.undo = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+
 		analytic('undo', source);
 		var undoSelection = revertSelectionForUndo;
 		if (isInputEnabled) {
@@ -376,18 +426,28 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	self.redo = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+
 		analytic('redo', source);
 		if (isInputEnabled) {
 			idea.redo();
 		}
 	};
 	self.moveRelative = function (source, relativeMovement) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('moveRelative', source);
 		if (isInputEnabled) {
 			idea.moveRelative(currentlySelectedIdeaId, relativeMovement);
 		}
 	};
 	self.cut = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('cut', source);
 		if (isInputEnabled) {
 			self.clipBoard = idea.clone(currentlySelectedIdeaId);
@@ -398,18 +458,27 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	self.copy = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('copy', source);
 		if (isInputEnabled) {
 			self.clipBoard = idea.clone(currentlySelectedIdeaId);
 		}
 	};
 	self.paste = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('paste', source);
 		if (isInputEnabled) {
 			idea.paste(currentlySelectedIdeaId, self.clipBoard);
 		}
 	};
 	self.pasteStyle = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
 		analytic('pasteStyle', source);
 		if (isInputEnabled && self.clipBoard) {
 
@@ -658,6 +727,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			};
 		self.nodeDragMove = function (id, x, y) {
 			var nodeId, node;
+
+			if (!isEditingEnabled) {
+				return;
+			}
+
 			for (nodeId in currentLayout.nodes) {
 				node = currentLayout.nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -674,7 +748,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				rootNode = currentLayout.nodes[idea.id],
 				verticallyClosestNode = { id: null, y: Infinity },
 				clone;
+			if (!isEditingEnabled) {
+				self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
+				return;
+			}
 			updateCurrentDroppable(undefined);
+
 			self.dispatchEvent('nodeMoved', nodeBeingDragged);
 			for (nodeId in currentLayout.nodes) {
 				node = currentLayout.nodes[nodeId];

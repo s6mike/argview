@@ -36,6 +36,18 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	var layer = new Kinetic.Layer(),
 		nodeByIdeaId = {},
 		connectorByFromIdeaIdToIdeaId = {},
+		screenToStageCoordinates = function(x,y) {
+			return {
+				x: (x - stage.attrs.x)/(stage.getScale().x || 1 ),
+				y: (y - stage.attrs.y)/(stage.getScale().y || 1 )
+			};
+		},
+		getInteractionPoint = function (evt) {
+			if (evt.changedTouches && evt.changedTouches[0]) {
+				return screenToStageCoordinates(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY)
+			}
+			return screenToStageCoordinates(evt.layerX, evt.layerY);
+		},
 		connectorKey = function (fromIdeaId, toIdeaId) {
 			return fromIdeaId + '_' + toIdeaId;
 		},
@@ -125,24 +137,34 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			node = Kinetic.IdeaProxy(node, stage, layer);
 		}
 		node.on('click tap', function (evt) { mapModel.clickNode(n.id, evt); });
-		node.on('dblclick dbltap', mapModel.editNode.bind(mapModel, 'mouse', false, false));
+		node.on('dblclick dbltap', function () {
+			if (!mapModel.getEditingEnabled()) {
+				mapModel.toggleCollapse('mouse');
+				return;
+			}
+			mapModel.editNode('mouse', false, false);
+		});
 		node.on('dragstart', function () {
 			node.moveToTop();
 			node.setShadowOffset(8);
+			node.attrs.opacity = 0.3;
 		});
-		node.on('dragmove', function () {
+		node.on('dragmove', function (evt) {
+			var stagePoint = getInteractionPoint(evt);
 			mapModel.nodeDragMove(
 				n.id,
-				node.attrs.x,
-				node.attrs.y
+				stagePoint.x,
+				stagePoint.y
 			);
 		});
 		node.on('dragend', function (evt) {
+			var stagePoint = getInteractionPoint(evt);
 			node.setShadowOffset(4);
+			node.attrs.opacity = 1;
 			mapModel.nodeDragEnd(
 				n.id,
-				node.attrs.x,
-				node.attrs.y,
+				stagePoint.x,
+				stagePoint.y,
 				evt.shiftKey
 			);
 			if (n.level > 1) {
