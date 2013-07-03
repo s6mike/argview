@@ -2,7 +2,7 @@ rm -rf lib
 
 mkdir -p lib
 
-curl http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js > lib/jquery-1.9.1.js
+curl http://mindmup.s3.amazonaws.com/lib/jquery-2.0.2.min.js > lib/jquery-2.0.2.min.js
 curl http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore.js > lib/underscore-1.4.4.js
 curl http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.3.js > lib/kinetic-v4.4.3.js
 curl https://raw.github.com/brandonaaron/jquery-mousewheel/master/jquery.mousewheel.js > lib/jquery.mousewheel.js
