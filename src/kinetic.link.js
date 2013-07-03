@@ -127,7 +127,7 @@
 			}
 		}
 	};
-	Kinetic.Global.extend(Kinetic.Link, Kinetic.Shape);
+	Kinetic.Util.extend(Kinetic.Link, Kinetic.Shape);
 }());
 Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 	'use strict';

@@ -97,8 +97,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 			actOnKeys = canInput;
 		});
 		setStageDimensions();
-		stage.attrs.x = 0.5 * stage.getWidth();
-		stage.attrs.y = 0.5 * stage.getHeight();
+		stage.setX(0.5 * stage.getWidth());
+		stage.setY(0.5 * stage.getHeight());
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
 		$(document).on('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); return false; });
 		if (!touchEnabled) {

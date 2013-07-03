@@ -405,4 +405,4 @@ Kinetic.Idea.prototype.setIsDroppable = function (isDroppable) {
 	this.setStyle(this.attrs);
 };
 
-Kinetic.Global.extend(Kinetic.Idea, Kinetic.Group);
+Kinetic.Util.extend(Kinetic.Idea, Kinetic.Group);

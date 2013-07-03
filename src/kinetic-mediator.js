@@ -33,18 +33,19 @@ Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
 
 MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	'use strict';
+	window.stage = stage;
 	var layer = new Kinetic.Layer(),
 		nodeByIdeaId = {},
 		connectorByFromIdeaIdToIdeaId = {},
-		screenToStageCoordinates = function(x,y) {
+		screenToStageCoordinates = function (x, y) {
 			return {
-				x: (x - stage.attrs.x)/(stage.getScale().x || 1 ),
-				y: (y - stage.attrs.y)/(stage.getScale().y || 1 )
+				x: (x - stage.attrs.x) / (stage.getScale().x || 1),
+				y: (y - stage.attrs.y) / (stage.getScale().y || 1)
 			};
 		},
 		getInteractionPoint = function (evt) {
 			if (evt.changedTouches && evt.changedTouches[0]) {
-				return screenToStageCoordinates(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY)
+				return screenToStageCoordinates(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
 			}
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		},
@@ -62,28 +63,28 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			if (!stage) {
 				return;
 			}
+
 			visibleBeforeMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, 0, 0);
 			visibleAfterMove = atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, deltaX, deltaY);
 			if (visibleAfterMove || (!visibleBeforeMove)) {
-				if (deltaY !== 0) { stage.attrs.y += deltaY; }
-				if (deltaX !== 0) { stage.attrs.x += deltaX; }
+				if (deltaY !== 0) { stage.setY(stage.getY() + deltaY); }
+				if (deltaX !== 0) { stage.setX(stage.getX() + deltaX); }
 				stage.draw();
 			}
 		},
 		resetStage = function () {
-			stage.transitionTo({
+			new Kinetic.Tween({
+				node: stage,
 				x: 0.5 * stage.getWidth(),
 				y: 0.5 * stage.getHeight(),
-				scale: {
-					x: 1,
-					y: 1
-				},
+				scaleX: 1,
+				scaleY: 1,
+				easing: Kinetic.Easings.EaseInOut,
 				duration: 0.05,
-				easing: 'ease-in-out',
-				callback: function () {
+				onFinish: function () {
 					stage.fire(':scaleChangeComplete');
 				}
-			});
+			}).play();
 		},
 		ensureSelectedNodeVisible = function (node) {
 			var scale = stage.getScale().x || 1,
@@ -102,12 +103,13 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			} else if (node.getAbsolutePosition().y < offset) {
 				move.y = offset - node.getAbsolutePosition().y;
 			}
-			stage.transitionTo({
+			new Kinetic.Tween({
+				node: stage,
 				x: stage.attrs.x + move.x,
 				y: stage.attrs.y + move.y,
 				duration: 0.4,
-				easing: 'ease-in-out'
-			});
+				easing: Kinetic.Easings.EaseInOut
+			}).play();
 		};
 	stage.add(layer);
 	layer.on('mouseover', function () {
@@ -214,21 +216,25 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		var node = nodeByIdeaId[n.id];
 		delete nodeByIdeaId[n.id];
 		node.off('click dblclick tap dbltap dragstart dragmove dragend mouseover mouseout touchstart touchend :openAttachmentRequested :editing :textChanged ');
-		node.transitionTo({
+		// node.destroy();
+		new Kinetic.Tween({
+			node: node,
 			opacity: 0.25,
-			duration: 0.4,
-			callback: node.destroy.bind(node)
-		});
+			easing: Kinetic.Easings.EaseInOut,
+			duration: 0.2,
+			onFinish: node.destroy.bind(node)
+		}).play();
 	});
 	mapModel.addEventListener('nodeMoved', function (n, reason) {
 		var node = nodeByIdeaId[n.id];
-		node.transitionTo({
+		new Kinetic.Tween({
+			node: node,
 			x: n.x,
 			y: n.y,
+			easing: reason === 'failed' ? Kinetic.Easings.BounceEaseOut: Kinetic.Easings.EaseInOut,
 			duration: 0.4,
-			easing: reason === 'failed' ? 'bounce-ease-out' : 'ease-in-out',
-			callback: ensureSelectedNodeVisible.bind(undefined, node)
-		});
+			onFinish: ensureSelectedNodeVisible.bind(undefined, node)
+		}).play();
 	});
 	mapModel.addEventListener('nodeTitleChanged', function (n) {
 		var node = nodeByIdeaId[n.id];
@@ -247,20 +253,24 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		connectorByFromIdeaIdToIdeaId[connectorKey(n.from, n.to)] = connector;
 		layer.add(connector);
 		connector.moveToBottom();
-		connector.transitionTo({
+		new Kinetic.Tween({
+			node: connector,
 			opacity: 1,
-			duration: 0.4
-		});
+			easing: Kinetic.Easings.EaseInOut,
+			duration: 0.5
+		}).play();
 	});
 	mapModel.addEventListener('connectorRemoved', function (n) {
 		var key = connectorKey(n.from, n.to),
 			connector = connectorByFromIdeaIdToIdeaId[key];
 		delete connectorByFromIdeaIdToIdeaId[key];
-		connector.transitionTo({
+		new Kinetic.Tween({
+			node: connector,
 			opacity: 0,
-			duration: 0.1,
-			callback: connector.destroy.bind(connector)
-		});
+			easing: Kinetic.Easings.EaseInOut,
+			duration: 0.4,
+			onFinish: connector.destroy.bind(connector)
+		}).play();
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
 		var link = new Kinetic.Link({
@@ -294,19 +304,18 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			return;
 		}
 		zoomPoint = zoomPoint || {x:  0.5 * stage.getWidth(), y: 0.5 * stage.getHeight()};
-		stage.transitionTo({
-			scale: {
-				x: targetScale,
-				y: targetScale
-			},
+		new Kinetic.Tween({
+			node: stage,
 			x: zoomPoint.x + (stage.attrs.x - zoomPoint.x) * targetScale / currentScale,
 			y: zoomPoint.y + (stage.attrs.y - zoomPoint.y) * targetScale / currentScale,
+			scaleX: targetScale,
+			scaleY: targetScale,
+			easing: Kinetic.Easings.EaseInOut,
 			duration: 0.01,
-			easing: 'ease-in-out',
-			callback: function () {
+			onFinish: function () {
 				stage.fire(':scaleChangeComplete');
 			}
-		});
+		}).play();
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
 		resetStage();
