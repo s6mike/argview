@@ -23,8 +23,8 @@ MAPJS.pngExport = function (idea) {
 	hiddenstage.add(layer);
 	hiddenstage.setWidth(frame.width);
 	hiddenstage.setHeight(frame.height);
-	hiddenstage.attrs.x = -1 * frame.left;
-	hiddenstage.attrs.y = -1 * frame.top;
+	hiddenstage.setX(-1 * frame.left);
+	hiddenstage.setY(-1 * frame.top);
 	_.each(layout.nodes, function (n) {
 		var node = new Kinetic.Idea({
 			level: n.level,
