@@ -118,6 +118,16 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	layer.on('mouseout', function () {
 		stage.getContainer().style.cursor = 'auto';
 	});
+	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+		stage.getContainer().style.cursor = isOn ? 'crosshair' : 'auto';
+		layer.off('mouseover mouseout');
+		layer.on('mouseover', function () {
+			stage.getContainer().style.cursor = isOn ? 'alias' : 'pointer';
+		});
+		layer.on('mouseout', function () {
+			stage.getContainer().style.cursor = isOn ? 'crosshair' : 'auto';
+		});
+	});
 	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 		var node = nodeByIdeaId[nodeId];
 		if (node) {
