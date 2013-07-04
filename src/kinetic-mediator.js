@@ -179,9 +179,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 				stagePoint.y,
 				evt.shiftKey
 			);
-			if (n.level > 1) {
-				stage.setDraggable(true);
-			}
 		});
 		node.on(':textChanged', function (event) {
 			mapModel.updateTitle(n.id, event.text);

@@ -93,7 +93,6 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 		});
 		element.data('mm-stage', stage);
 		mapModel.addEventListener('inputEnabledChanged', function (canInput) {
-			stage.setDraggable(!canInput);
 			actOnKeys = canInput;
 		});
 		setStageDimensions();
