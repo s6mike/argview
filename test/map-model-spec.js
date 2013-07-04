@@ -626,7 +626,7 @@ describe('MapModel', function () {
 
 				underTest.clickNode(2);
 
-				expect(underTest.addLink).toHaveBeenCalledWith(2);
+				expect(underTest.addLink).toHaveBeenCalledWith('mouse', 2);
 				expect(underTest.selectNode).not.toHaveBeenCalled();
 			});
 			it('should select the node and dispatch contextMenuRequested event if node is right clicked', function () {
@@ -1254,10 +1254,9 @@ describe('MapModel', function () {
 			underTest.addEventListener('analytic', analyticListener);
 		});
 		describe('should dispatch analytic event', function () {
-			//TODO:addLink, selectLink, removeLink
 			var allMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
-				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode'];
+				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(allMethods, function (method) {
 				it('when ' + method + ' method is invoked', function () {
 					var spy = jasmine.createSpy(method);
@@ -1291,7 +1290,7 @@ describe('MapModel', function () {
 		});
 		describe('when editing is disabled edit methods should not execute ', function () {
 			var editingMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
-				'addSiblingIdea', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode'];
+				'addSiblingIdea', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
 					underTest.selectNode(6);
@@ -1403,7 +1402,7 @@ describe('MapModel', function () {
 		it('should invoke content.addLink when addLink method is invoked', function () {
 			spyOn(anIdea, 'addLink');
 
-			underTest.addLink(2);
+			underTest.addLink('source', 2);
 
 			expect(anIdea.addLink).toHaveBeenCalledWith(1, 2);
 		});
@@ -1424,7 +1423,7 @@ describe('MapModel', function () {
 				}
 			});
 
-			underTest.addLink(3);
+			underTest.addLink('source', 3);
 
 			expect(linkCreatedListener).toHaveBeenCalledWith({
 				ideaIdFrom: '1',
@@ -1448,7 +1447,7 @@ describe('MapModel', function () {
 				}
 			});
 
-			underTest.removeLink(1, 4);
+			underTest.removeLink('source', 1, 4);
 
 			expect(linkRemovedListener).toHaveBeenCalledWith({
 				ideaIdFrom: '1',
@@ -1471,7 +1470,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest.addLink(3);
+			underTest.addLink('source', 3);
 			layoutCalculator.andReturn({
 				nodes: {},
 				links: {
@@ -1490,7 +1489,7 @@ describe('MapModel', function () {
 				}
 			});
 
-			underTest.addLink(5);
+			underTest.addLink('source', 5);
 
 			expect(linkCreatedListener).toHaveBeenCalledWith({
 				ideaIdFrom: '1',
@@ -1501,7 +1500,7 @@ describe('MapModel', function () {
 			var linkSelectedListener = jasmine.createSpy('linkSelectedListener');
 			underTest.addEventListener('linkSelected', linkSelectedListener);
 
-			underTest.selectLink({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
+			underTest.selectLink('source', { ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
 
 			expect(linkSelectedListener).toHaveBeenCalledWith({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 }, false);
 		});

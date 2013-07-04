@@ -23,7 +23,7 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			element.hide();
 		});
 		element.find('.delete').click(function () {
-			mapModel.removeLink(currentLink.ideaIdFrom, currentLink.ideaIdTo);
+			mapModel.removeLink('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo);
 			element.hide();
 		});
 		colorElement.change(function () {

@@ -292,7 +292,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			strokeWidth: 1.5
 		});
 		link.on('click tap', function (event) {
-			mapModel.selectLink(l, { x: event.layerX, y: event.layerY });
+			mapModel.selectLink('mouse', l, { x: event.layerX, y: event.layerY });
 		});
 		layer.add(link);
 		link.moveToBottom();
