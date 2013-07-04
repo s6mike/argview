@@ -3,30 +3,44 @@ Need to add these to map model
 mapModel.idea() - returns current idea
 mapModel.isEditingEnabled()
 mapModel.layout()
+
+remove from kinetic mediator
+	- nodeDroppableChanged listener
+	- drag/drop stuff under nodeCreated listener
 */
 
 /*global MAPJS*/
 MAPJS.dragdrop = function (mapModel, analytic, stage) {
 	'use strict';
 	var currentDroppable,
-		updateCurrentDroppable = function (value) {
-			if (currentDroppable !== value) {
+		findNodeOnStage = function (nodeId) {
+			return stage.get('#node_' + nodeId);
+		},
+		showAsDroppable = function (nodeId, isDroppable) {
+			var node = findNodeOnStage(nodeId);
+			node.setIsDroppable(isDroppable);
+		},
+		updateCurrentDroppable = function (nodeId) {
+			if (currentDroppable !== nodeId) {
 				if (currentDroppable) {
-					mapModel.dispatchEvent('nodeDroppableChanged', currentDroppable, false);
+					showAsDroppable(currentDroppable, false);
 				}
-				currentDroppable = value;
+				currentDroppable = nodeId;
 				if (currentDroppable) {
-					mapModel.dispatchEvent('nodeDroppableChanged', currentDroppable, true);
+					showAsDroppable(currentDroppable, true);
 				}
 			}
 		},
-		canDropOnNode = function (id, x, y, node) {
+		isPointOverNode = function (x, y, node) { //move to mapModel candidate
 			/*jslint eqeq: true*/
-			return id != node.id &&
-				x >= node.x &&
+			return x >= node.x &&
 				y >= node.y &&
 				x <= node.x + node.width - 2 * 10 &&
 				y <= node.y + node.height - 2 * 10;
+		},
+		canDropOnNode = function (id, x, y, node) {
+			/*jslint eqeq: true*/
+			return id != node.id && isPointOverNode(x, y, node);
 		},
 		tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
 			var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
@@ -65,7 +79,6 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 			}
 			updateCurrentDroppable(undefined);
 
-			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 			for (nodeId in mapModel.layout().nodes) {
 				node = mapModel.layout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -79,6 +92,7 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 						mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 						analytic('nodeDragParentFailed');
 					}
+					mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 					return;
 				}
 				if ((nodeBeingDragged.x === node.x || nodeBeingDragged.x + nodeBeingDragged.width === node.x + node.width) && y < node.y) {
@@ -88,9 +102,11 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 				}
 			}
 			if (tryFlip(rootNode, nodeBeingDragged, x)) {
+				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 				return;
 			}
 			if (mapModel.idea().positionBefore(id, verticallyClosestNode.id)) {
+				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 				return;
 			}
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
@@ -109,7 +125,7 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		};
 	mapModel.addEventListener('nodeCreated', function (n) {
-		var node = stage.get('#node_' + n.id);
+		var node = findNodeOnStage(n.id);
 		node.on('dragstart', function () {
 			node.moveToTop();
 			node.setShadowOffset(8);
