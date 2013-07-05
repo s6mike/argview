@@ -68,6 +68,7 @@
 		<input type="button" class="openAttachment" value="open attachment"></input>
 		<input type="button" class="toggleAddLinkMode" value="add link"></input>
 		Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
+    Frames: <span id="framerate"></span>
 		<div id="linkEditWidget">
 			<input class="delete" type="button" value="Delete"></input>
 			<select class="color">
@@ -137,13 +138,39 @@
 						window.open(url, '_blank');
 					});
 				});
-				mapModel.addEventListener('analytic', console.log.bind(console));
 				mapModel.setIdea(idea);
 				jQuery('#linkEditWidget').linkEditWidget(mapModel);
 				window.mapModel = mapModel;
 				jQuery('.arrow').click(function () {
 					jQuery(this).toggleClass('active');
 				});
+			}());
+      (function () {
+        window.startPerformanceTest = function () {
+          mapModel.copy();
+          for (i=0; i<3; i++) {
+            mapModel.paste();
+          }
+          mapModel.selectNode(1);
+          var interval = setInterval(function() { window.mapModel.toggleCollapse()}, 200);
+          console.log('run clearInterval('+ interval + ') to stop');
+        };
+        var oldRequestAnimationFrame = Kinetic.Animation.requestAnimFrame,
+        framerateText = jQuery('#framerate'),
+        frames = 0,
+        t0 = Date.now();
+        Kinetic.Animation.requestAnimFrame = function () {
+          var lapsed = Date.now() - t0;
+          frames++;
+          if (oldRequestAnimationFrame) {
+            oldRequestAnimationFrame.apply(window, arguments);
+          }
+          if (lapsed > 3000) {
+            framerateText.text(2 * frames);
+            frames = 0;
+            t0 = Date.now();
+          }
+        };
 			}());
 		</script>
 	</body>
