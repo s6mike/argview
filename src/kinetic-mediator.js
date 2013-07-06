@@ -2,6 +2,13 @@
 if (Kinetic.Stage.prototype.isRectVisible) {
 	throw ('isRectVisible already exists, should not mix in our methods');
 }
+
+Kinetic.Tween.prototype.reset = function() {
+	var node = this.node;
+	this.tween.reset();
+	return this;
+};
+
 MAPJS.Rectangle = function (x, y, width, height) {
 	'use strict';
 	this.scale = function (scale) {
@@ -13,6 +20,25 @@ MAPJS.Rectangle = function (x, y, width, height) {
 	this.inset = function (margin) {
 		return new MAPJS.Rectangle(x + margin, y + margin, width - (margin * 2), height - (margin * 2));
 	};
+	this.xscale = function (scale) {
+		this.x *= scale;
+		this.y *= scale;
+		this.width *= scale;
+		this.height *= scale;
+		return this;
+	};
+	this.xtranslate = function (dx, dy) {
+		this.x += dx;
+		this.y += dy;
+		return this;
+	};
+	this.xinset = function (margin) {
+		this.x += margin;
+		this.y += margin;
+		this.width -= margin * 2;
+		this.height -= margin * 2;
+		return this;
+	};
 	this.x = x;
 	this.y = y;
 	this.height = height;
@@ -22,7 +48,7 @@ Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
 	'use strict';
 	offset = offset || {x: 0, y: 0, margin: 0};
 	var scale = this.getScale().x || 1;
-	rect = rect.scale(scale).translate(offset.x, offset.y).inset(offset.margin);
+	rect = rect.xscale(scale).xtranslate(offset.x, offset.y).xinset(offset.margin);
 	return !(
 		rect.x + this.attrs.x > this.getWidth() ||
 		rect.x + rect.width + this.attrs.x < 0  ||
@@ -223,7 +249,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		var node = nodeByIdeaId[n.id];
 		delete nodeByIdeaId[n.id];
 		node.off('click dblclick tap dbltap dragstart dragmove dragend mouseover mouseout touchstart touchend :openAttachmentRequested :editing :textChanged ');
-		// node.destroy();
+	//	node.destroy();
 		new Kinetic.Tween({
 			node: node,
 			opacity: 0.25,
@@ -256,7 +282,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			strokeWidth: 1,
 			opacity: 0
 		});
-		connector.opacity = 0;
 		connectorByFromIdeaIdToIdeaId[connectorKey(n.from, n.to)] = connector;
 		layer.add(connector);
 		connector.moveToBottom();
@@ -264,8 +289,11 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			node: connector,
 			opacity: 1,
 			easing: Kinetic.Easings.EaseInOut,
-			duration: 0.5
+			duration: 0.1
 		}).play();
+	});
+	mapModel.addEventListener('layoutChangeComplete', function () {
+		stage.draw();
 	});
 	mapModel.addEventListener('connectorRemoved', function (n) {
 		var key = connectorKey(n.from, n.to),
@@ -275,7 +303,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			node: connector,
 			opacity: 0,
 			easing: Kinetic.Easings.EaseInOut,
-			duration: 0.4,
+			duration: 0.1,
 			onFinish: connector.destroy.bind(connector)
 		}).play();
 	});
