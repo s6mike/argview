@@ -146,14 +146,25 @@
 				});
 			}());
       (function () {
-        window.startPerformanceTest = function () {
-          mapModel.copy();
-          for (i=0; i<3; i++) {
-            mapModel.paste();
+        window.startPerformanceTest = function (mapMultiplication, test) {
+          test = test || 'fold';
+          var tests = {
+            fold: function () {
+              mapModel.selectNode(1);
+              var interval = setInterval(function() { window.mapModel.toggleCollapse()}, 500);
+              console.log('run clearInterval('+ interval + ') to stop');
+            },
+            scroll: function () {
+              new Kinetic.Tween({node: jQuery('#container').data('mm-stage'), x: 1000, y: 400, duration: 10}).play()
+            }
           }
-          mapModel.selectNode(1);
-          var interval = setInterval(function() { window.mapModel.toggleCollapse()}, 200);
-          console.log('run clearInterval('+ interval + ') to stop');
+          if (mapMultiplication) {
+            mapModel.copy();
+            for (i=0; i<mapMultiplication; i++) {
+              mapModel.paste();
+            }
+          }
+          tests[test]();
         };
         var oldRequestAnimationFrame = Kinetic.Animation.requestAnimFrame,
         framerateText = jQuery('#framerate'),
@@ -166,7 +177,7 @@
             oldRequestAnimationFrame.apply(window, arguments);
           }
           if (lapsed > 3000) {
-            framerateText.text(2 * frames);
+            framerateText.text(frames/ (lapsed/1000));
             frames = 0;
             t0 = Date.now();
           }
