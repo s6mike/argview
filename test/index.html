@@ -69,6 +69,7 @@
 		<input type="button" class="toggleAddLinkMode" value="add link"></input>
 		Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
     Frames: <span id="framerate"></span>
+    Cycle: <span id="cyclerate"></span>
 		<div id="linkEditWidget">
 			<input class="delete" type="button" value="Delete"></input>
 			<select class="color">
@@ -148,10 +149,22 @@
       (function () {
         window.startPerformanceTest = function (mapMultiplication, test) {
           test = test || 'fold';
+
           var tests = {
             fold: function () {
               mapModel.selectNode(1);
-              var interval = setInterval(function() { window.mapModel.toggleCollapse()}, 500);
+              var cycleText = jQuery('#cyclerate'), 
+                cycles = 0,
+                cycleTime = 0;
+              var interval = setInterval(function() {
+                  var start = Date.now();
+                  window.mapModel.toggleCollapse(); 
+                  cycleTime += Date.now() - start;
+                  cycles++;
+                  if (cycles % 30) {
+                    cycleText.text((cycles * 1000/cycleTime).toFixed(2));
+                  }
+              }, 100);
               console.log('run clearInterval('+ interval + ') to stop');
             },
             scroll: function () {
@@ -167,9 +180,9 @@
           tests[test]();
         };
         var oldRequestAnimationFrame = Kinetic.Animation.requestAnimFrame,
-        framerateText = jQuery('#framerate'),
-        frames = 0,
-        t0 = Date.now();
+          framerateText = jQuery('#framerate'),
+          t0 = Date.now(),
+          frames = 0;
         Kinetic.Animation.requestAnimFrame = function () {
           var lapsed = Date.now() - t0;
           frames++;
@@ -177,8 +190,9 @@
             oldRequestAnimationFrame.apply(window, arguments);
           }
           if (lapsed > 3000) {
-            framerateText.text(frames/ (lapsed/1000));
+            framerateText.text((frames * 1000 / lapsed,2).toFixed(2));
             frames = 0;
+            cycles = 0;
             t0 = Date.now();
           }
         };
