@@ -138,5 +138,5 @@ Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 		dashed: [8, 8]
 	}[style && style.lineStyle || 'dashed'];
 	this.attrs.arrow = style && style.arrow || false;
-	this.getLayer().draw();
+//	this.getLayer().draw();
 };
