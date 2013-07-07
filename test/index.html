@@ -167,6 +167,27 @@
               }, 100);
               console.log('run clearInterval('+ interval + ') to stop');
             },
+            move: function () {
+              mapModel.selectNode(1);
+              mapModel.selectNodeLeft();
+              var cycleText = jQuery('#cyclerate'), 
+                cycles = 0,
+                cycleTime = 0;
+              var interval = setInterval(function() {
+                  var start = Date.now();
+                  if ( (cycles/7).toFixed(0) % 2) {
+                    window.mapModel.moveUp();
+                  } else {
+                    window.mapModel.moveDown();
+                  }
+                  cycleTime += Date.now() - start;
+                  cycles++;
+                  if (cycles % 30) {
+                    cycleText.text((cycles * 1000/cycleTime).toFixed(2));
+                  }
+              }, 100);
+              console.log('run clearInterval('+ interval + ') to stop');
+            },
             scroll: function () {
               new Kinetic.Tween({node: jQuery('#container').data('mm-stage'), x: 1000, y: 400, duration: 10}).play()
             }
