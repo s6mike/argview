@@ -190,9 +190,8 @@
             oldRequestAnimationFrame.apply(window, arguments);
           }
           if (lapsed > 3000) {
-            framerateText.text((frames * 1000 / lapsed,2).toFixed(2));
+            framerateText.text((frames * 1000 / lapsed).toFixed(2));
             frames = 0;
-            cycles = 0;
             t0 = Date.now();
           }
         };
