@@ -145,7 +145,9 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 		var node = nodeByIdeaId[nodeId];
 		if (node) {
-			node.editNode(shouldSelectAll, editingNew);
+			setTimeout(function () {
+				node.editNode(shouldSelectAll, editingNew);
+			}, 1);
 		}
 	});
 	mapModel.addEventListener('nodeCreated', function (n) {
