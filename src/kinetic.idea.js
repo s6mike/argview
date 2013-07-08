@@ -143,7 +143,7 @@
 		};
 		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
-			self.getLayer().draw();
+//			self.getLayer().draw();
 			var canvasPosition = jQuery(self.getLayer().getCanvas().getElement()).offset(),
 				ideaInput,
 				onStageMoved = _.throttle(function () {
@@ -369,7 +369,7 @@ Kinetic.Idea.prototype.setMMAttr = function (newMMAttr) {
 	'use strict';
 	this.mmAttr = newMMAttr;
 	this.setStyle();
-	this.getLayer().draw();
+//	this.getLayer().draw();
 };
 
 Kinetic.Idea.prototype.getIsSelected = function () {

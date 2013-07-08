@@ -272,7 +272,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	mapModel.addEventListener('nodeTitleChanged', function (n) {
 		var node = nodeByIdeaId[n.id];
 		node.setText(n.title);
-		layer.draw();
+//		layer.draw();
 	});
 	mapModel.addEventListener('connectorCreated', function (n) {
 		var connector = new Kinetic.Connector({
@@ -326,7 +326,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	mapModel.addEventListener('linkRemoved', function (l) {
 		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
 		link.destroy();
-		layer.draw();
+//		layer.draw();
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
 		var link = layer.get('#link_' + l.ideaIdFrom + '_' + l.ideaIdTo)[0];
