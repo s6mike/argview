@@ -3,8 +3,8 @@ if (Kinetic.Stage.prototype.isRectVisible) {
 	throw ('isRectVisible already exists, should not mix in our methods');
 }
 
-Kinetic.Tween.prototype.reset = function() {
-	var node = this.node;
+Kinetic.Tween.prototype.reset = function () {
+	'use strict';
 	this.tween.reset();
 	return this;
 };
@@ -63,18 +63,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	var layer = new Kinetic.Layer(),
 		nodeByIdeaId = {},
 		connectorByFromIdeaIdToIdeaId = {},
-		screenToStageCoordinates = function (x, y) {
-			return {
-				x: (x - stage.attrs.x) / (stage.getScale().x || 1),
-				y: (y - stage.attrs.y) / (stage.getScale().y || 1)
-			};
-		},
-		getInteractionPoint = function (evt) {
-			if (evt.changedTouches && evt.changedTouches[0]) {
-				return screenToStageCoordinates(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
-			}
-			return screenToStageCoordinates(evt.layerX, evt.layerY);
-		},
 		connectorKey = function (fromIdeaId, toIdeaId) {
 			return fromIdeaId + '_' + toIdeaId;
 		},
@@ -182,30 +170,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			}
 			mapModel.editNode('mouse', false, false);
 		});
-		node.on('dragstart', function () {
-			node.moveToTop();
-			node.setShadowOffset(8);
-			node.attrs.opacity = 0.3;
-		});
-		node.on('dragmove', function (evt) {
-			var stagePoint = getInteractionPoint(evt);
-			mapModel.nodeDragMove(
-				n.id,
-				stagePoint.x,
-				stagePoint.y
-			);
-		});
-		node.on('dragend', function (evt) {
-			var stagePoint = getInteractionPoint(evt);
-			node.setShadowOffset(4);
-			node.attrs.opacity = 1;
-			mapModel.nodeDragEnd(
-				n.id,
-				stagePoint.x,
-				stagePoint.y,
-				evt.shiftKey
-			);
-		});
 		node.on(':textChanged', function (event) {
 			mapModel.updateTitle(n.id, event.text);
 			mapModel.setInputEnabled(true);
@@ -225,7 +189,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			node.setupShadows();
 		});
 		nodeByIdeaId[n.id] = node;
-	});
+	}, 1);
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = nodeByIdeaId[ideaId];
 		if (!node) {

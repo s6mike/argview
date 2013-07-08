@@ -10,11 +10,11 @@ remove from kinetic mediator
 */
 
 /*global MAPJS*/
-MAPJS.dragdrop = function (mapModel, analytic, stage) {
+MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
 	var currentDroppable,
 		findNodeOnStage = function (nodeId) {
-			return stage.get('#node_' + nodeId);
+			return stage.get('#node_' + nodeId)[0];
 		},
 		showAsDroppable = function (nodeId, isDroppable) {
 			var node = findNodeOnStage(nodeId);
@@ -78,7 +78,7 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 				return;
 			}
 			updateCurrentDroppable(undefined);
-
+			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 			for (nodeId in mapModel.layout().nodes) {
 				node = mapModel.layout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -86,13 +86,12 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 						clone = mapModel.idea().clone(id);
 						if (!clone || !mapModel.idea().paste(nodeId, clone)) {
 							mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-							analytic('nodeDragCloneFailed');
+							mapModel.analytic('nodeDragCloneFailed');
 						}
 					} else if (!mapModel.idea().changeParent(id, nodeId)) {
 						mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-						analytic('nodeDragParentFailed');
+						mapModel.analytic('nodeDragParentFailed');
 					}
-					mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 					return;
 				}
 				if ((nodeBeingDragged.x === node.x || nodeBeingDragged.x + nodeBeingDragged.width === node.x + node.width) && y < node.y) {
@@ -102,15 +101,13 @@ MAPJS.dragdrop = function (mapModel, analytic, stage) {
 				}
 			}
 			if (tryFlip(rootNode, nodeBeingDragged, x)) {
-				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 				return;
 			}
 			if (mapModel.idea().positionBefore(id, verticallyClosestNode.id)) {
-				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 				return;
 			}
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-			analytic('nodeDragFailed');
+			mapModel.analytic('nodeDragFailed');
 		},
 		screenToStageCoordinates = function (x, y) {
 			return {

@@ -703,95 +703,23 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 		};
 	}());
-	//Todo - clean up this shit below
+	//Added for use by drag and drop
 	(function () {
-		var currentDroppable,
-			updateCurrentDroppable = function (value) {
-				if (currentDroppable !== value) {
-					if (currentDroppable) {
-						self.dispatchEvent('nodeDroppableChanged', currentDroppable, false);
-					}
-					currentDroppable = value;
-					if (currentDroppable) {
-						self.dispatchEvent('nodeDroppableChanged', currentDroppable, true);
-					}
-				}
-			},
-			canDropOnNode = function (id, x, y, node) {
-				/*jslint eqeq: true*/
-				return id != node.id &&
-					x >= node.x &&
-					y >= node.y &&
-					x <= node.x + node.width - 2 * 10 &&
-					y <= node.y + node.height - 2 * 10;
-			},
-			tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
-				var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
-					flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
-				if (flipRightToLeft || flipLeftToRight) {
-					return idea.flip(nodeBeingDragged.id);
-				}
-				return false;
-			};
-		self.nodeDragMove = function (id, x, y) {
-			var nodeId, node;
-
-			if (!isEditingEnabled) {
-				return;
-			}
-
-			for (nodeId in currentLayout.nodes) {
-				node = currentLayout.nodes[nodeId];
-				if (canDropOnNode(id, x, y, node)) {
-					updateCurrentDroppable(nodeId);
-					return;
-				}
-			}
-			updateCurrentDroppable(undefined);
+/*
+Need to add these to map model
+mapModel.idea() - returns current idea
+mapModel.isEditingEnabled()
+mapModel.layout()
+*/
+		self.idea = function () {
+			return idea;
 		};
-		self.nodeDragEnd = function (id, x, y, shouldCopy) {
-			var nodeBeingDragged = currentLayout.nodes[id],
-				nodeId,
-				node,
-				rootNode = currentLayout.nodes[idea.id],
-				verticallyClosestNode = { id: null, y: Infinity },
-				clone;
-			if (!isEditingEnabled) {
-				self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-				return;
-			}
-			updateCurrentDroppable(undefined);
-
-			self.dispatchEvent('nodeMoved', nodeBeingDragged);
-			for (nodeId in currentLayout.nodes) {
-				node = currentLayout.nodes[nodeId];
-				if (canDropOnNode(id, x, y, node)) {
-					if (shouldCopy) {
-						clone = idea.clone(id);
-						if (!clone || !idea.paste(nodeId, clone)) {
-							self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-							analytic('nodeDragCloneFailed');
-						}
-					} else if (!idea.changeParent(id, nodeId)) {
-						self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-						analytic('nodeDragParentFailed');
-					}
-					return;
-				}
-				if ((nodeBeingDragged.x === node.x || nodeBeingDragged.x + nodeBeingDragged.width === node.x + node.width) && y < node.y) {
-					if (!verticallyClosestNode || node.y < verticallyClosestNode.y) {
-						verticallyClosestNode = node;
-					}
-				}
-			}
-			if (tryFlip(rootNode, nodeBeingDragged, x)) {
-				return;
-			}
-			if (idea.positionBefore(id, verticallyClosestNode.id)) {
-				return;
-			}
-			self.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-			analytic('nodeDragFailed');
+		self.isEditingEnabled = function () {
+			return isEditingEnabled;
 		};
+		self.layout = function () {
+			return currentLayout;
+		};
+		self.analytic = analytic;
 	}());
 };

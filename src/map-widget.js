@@ -73,6 +73,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				}
 			});
 		});
+		MAPJS.dragdrop(mapModel, stage);
 		$(document).on('keypress', function (evt) {
 			if (!actOnKeys) {
 				return;
