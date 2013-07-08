@@ -68,6 +68,8 @@
 		<input type="button" class="openAttachment" value="open attachment"></input>
 		<input type="button" class="toggleAddLinkMode" value="add link"></input>
 		Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
+    Frames: <span id="framerate"></span>
+    Cycle: <span id="cyclerate"></span>
 		<div id="linkEditWidget">
 			<input class="delete" type="button" value="Delete"></input>
 			<select class="color">
@@ -137,13 +139,83 @@
 						window.open(url, '_blank');
 					});
 				});
-				mapModel.addEventListener('analytic', console.log.bind(console));
 				mapModel.setIdea(idea);
 				jQuery('#linkEditWidget').linkEditWidget(mapModel);
 				window.mapModel = mapModel;
 				jQuery('.arrow').click(function () {
 					jQuery(this).toggleClass('active');
 				});
+			}());
+      (function () {
+        window.startPerformanceTest = function (mapMultiplication, test) {
+          test = test || 'fold';
+
+          var tests = {
+            fold: function () {
+              mapModel.selectNode(1);
+              var cycleText = jQuery('#cyclerate'), 
+                cycles = 0,
+                cycleTime = 0;
+              var interval = setInterval(function() {
+                  var start = Date.now();
+                  window.mapModel.toggleCollapse(); 
+                  cycleTime += Date.now() - start;
+                  cycles++;
+                  if (cycles % 30) {
+                    cycleText.text((cycles * 1000/cycleTime).toFixed(2));
+                  }
+              }, 100);
+              console.log('run clearInterval('+ interval + ') to stop');
+            },
+            move: function () {
+              mapModel.selectNode(1);
+              mapModel.selectNodeLeft();
+              var cycleText = jQuery('#cyclerate'), 
+                cycles = 0,
+                cycleTime = 0;
+              var interval = setInterval(function() {
+                  var start = Date.now();
+                  if ( (cycles/7).toFixed(0) % 2) {
+                    window.mapModel.moveUp();
+                  } else {
+                    window.mapModel.moveDown();
+                  }
+                  cycleTime += Date.now() - start;
+                  cycles++;
+                  if (cycles % 30) {
+                    cycleText.text((cycles * 1000/cycleTime).toFixed(2));
+                  }
+              }, 100);
+              console.log('run clearInterval('+ interval + ') to stop');
+            },
+            scroll: function () {
+              new Kinetic.Tween({node: jQuery('#container').data('mm-stage'), x: 1000, y: 400, duration: 10}).play()
+            }
+          }
+          if (mapMultiplication) {
+            mapModel.copy();
+            for (i=0; i<mapMultiplication; i++) {
+              mapModel.paste();
+            }
+          }
+          tests[test]();
+        };
+        var oldRequestAnimationFrame = Kinetic.Animation.requestAnimFrame,
+          framerateText = jQuery('#framerate'),
+          t0 = Date.now(),
+          frames = 0;
+        Kinetic.Animation.requestAnimFrame = function () {
+          var lapsed = Date.now() - t0;
+          frames++;
+          if (oldRequestAnimationFrame) {
+            oldRequestAnimationFrame.apply(window, arguments);
+          }
+          if (lapsed > 3000) {
+            framerateText.text((frames * 1000 / lapsed).toFixed(2));
+            frames = 0;
+            t0 = Date.now();
+          }
+        };
 			}());
 		</script>
 	</body>

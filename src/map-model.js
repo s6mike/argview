@@ -94,6 +94,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			}
 			currentLayout = newLayout;
+			self.dispatchEvent('layoutChangeComplete');
 		},
 		revertSelectionForUndo,
 		checkDefaultUIActions = function (command, args) {
@@ -118,6 +119,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				contextNodeId = ((command && command === 'updateAttr') || (!localCommand))  && getCurrentlySelectedIdeaId();
 			revertSelectionForUndo = false;
 			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
+
 			if (!localCommand) {
 				return;
 			}
