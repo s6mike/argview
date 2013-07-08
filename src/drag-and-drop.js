@@ -1,14 +1,3 @@
-/*
-Need to add these to map model
-mapModel.idea() - returns current idea
-mapModel.isEditingEnabled()
-mapModel.layout()
-
-remove from kinetic mediator
-	- nodeDroppableChanged listener
-	- drag/drop stuff under nodeCreated listener
-*/
-
 /*global MAPJS*/
 MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
@@ -46,7 +35,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
 				flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
 			if (flipRightToLeft || flipLeftToRight) {
-				return mapModel.idea().flip(nodeBeingDragged.id);
+				return mapModel.getIdea().flip(nodeBeingDragged.id);
 			}
 			return false;
 		},
@@ -57,8 +46,8 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				return;
 			}
 
-			for (nodeId in mapModel.layout().nodes) {
-				node = mapModel.layout().nodes[nodeId];
+			for (nodeId in mapModel.getCurrentLayout().nodes) {
+				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
 					updateCurrentDroppable(nodeId);
 					return;
@@ -67,10 +56,10 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			updateCurrentDroppable(undefined);
 		},
 		nodeDragEnd = function (id, x, y, shouldCopy) {
-			var nodeBeingDragged = mapModel.layout().nodes[id],
+			var nodeBeingDragged = mapModel.getCurrentLayout().nodes[id],
 				nodeId,
 				node,
-				rootNode = mapModel.layout().nodes[mapModel.idea().id],
+				rootNode = mapModel.getCurrentLayout().nodes[mapModel.getIdea().id],
 				verticallyClosestNode = { id: null, y: Infinity },
 				clone;
 			if (!mapModel.isEditingEnabled()) {
@@ -79,16 +68,16 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			updateCurrentDroppable(undefined);
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
-			for (nodeId in mapModel.layout().nodes) {
-				node = mapModel.layout().nodes[nodeId];
+			for (nodeId in mapModel.getCurrentLayout().nodes) {
+				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
 					if (shouldCopy) {
-						clone = mapModel.idea().clone(id);
-						if (!clone || !mapModel.idea().paste(nodeId, clone)) {
+						clone = mapModel.getIdea().clone(id);
+						if (!clone || !mapModel.getIdea().paste(nodeId, clone)) {
 							mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 							mapModel.analytic('nodeDragCloneFailed');
 						}
-					} else if (!mapModel.idea().changeParent(id, nodeId)) {
+					} else if (!mapModel.getIdea().changeParent(id, nodeId)) {
 						mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 						mapModel.analytic('nodeDragParentFailed');
 					}
@@ -103,7 +92,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			if (tryFlip(rootNode, nodeBeingDragged, x)) {
 				return;
 			}
-			if (mapModel.idea().positionBefore(id, verticallyClosestNode.id)) {
+			if (mapModel.getIdea().positionBefore(id, verticallyClosestNode.id)) {
 				return;
 			}
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');

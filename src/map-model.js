@@ -142,6 +142,16 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		};
 	observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
+	self.getIdea = function () {
+		return idea;
+	};
+	self.isEditingEnabled = function () {
+		return isEditingEnabled;
+	};
+	self.getCurrentLayout = function () {
+		return currentLayout;
+	};
+	self.analytic = analytic;
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
@@ -702,24 +712,5 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.selectNode(closestNode.id);
 			}
 		};
-	}());
-	//Added for use by drag and drop
-	(function () {
-/*
-Need to add these to map model
-mapModel.idea() - returns current idea
-mapModel.isEditingEnabled()
-mapModel.layout()
-*/
-		self.idea = function () {
-			return idea;
-		};
-		self.isEditingEnabled = function () {
-			return isEditingEnabled;
-		};
-		self.layout = function () {
-			return currentLayout;
-		};
-		self.analytic = analytic;
 	}());
 };
