@@ -180,7 +180,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		return isInputEnabled;
 	};
 	this.selectNode = function (id) {
-		if (isInputEnabled && id !== currentlySelectedIdeaId) {
+//		if (isInputEnabled && (id !== currentlySelectedIdeaId)) {
+		if (isInputEnabled && (id !== currentlySelectedIdeaId || !self.isActivated(id))) {
 			if (currentlySelectedIdeaId) {
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
