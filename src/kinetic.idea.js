@@ -396,7 +396,7 @@ Kinetic.Idea.prototype.setIsActivated = function (isActivated) {
 	'use strict';
 	this.isActivated = isActivated;
 	this.setStyle();
-	this.getLayer().draw();
+//	this.getLayer().draw();
 };
 
 Kinetic.Idea.prototype.setIsDroppable = function (isDroppable) {

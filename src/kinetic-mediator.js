@@ -334,6 +334,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		};
 		_.each(activatedNodes, setActivated.bind(undefined, true));
 		_.each(deactivatedNodes, setActivated.bind(undefined, false));
+		stage.draw();
 	});
 	(function () {
 		var x, y;
