@@ -45,6 +45,13 @@
 						mapModel.activateLevel('test', (cycles % 4) + 1);
 					});
 				},
+				style: function () {
+					var colors = ['#FF0000', '#00FF00', '#0000FF'];
+					mapModel.activateLevel('test', 3);
+					cycle(function (cycles) {
+						mapModel.updateStyle('test', 'background', colors[cycles % colors.length]);
+					});
+				},
 			},
 			i;
 		if (mapMultiplication) {

@@ -274,6 +274,11 @@ Kinetic.Idea.prototype.setupShadows = function () {
 			opacity: 1
 		},
 		shadow = isSelected ? selectedShadow : normalShadow;
+
+	if (this.oldShadow && this.oldShadow.selected === isSelected && this.oldShadow.scale === scale && this.oldShadow.offset === offset) {
+		return;
+	}
+	this.oldShadow = {selected: isSelected, scale: scale, offset: offset};
 	_.each([this.rect, this.rectbg1, this.rectbg2], function (r) {
 		r.setShadowColor(shadow.color);
 		r.setShadowBlur(shadow.blur);
