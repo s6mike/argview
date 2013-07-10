@@ -143,7 +143,6 @@
 		};
 		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
-//			self.getLayer().draw();
 			var canvasPosition = jQuery(self.getLayer().getCanvas().getElement()).offset(),
 				ideaInput,
 				onStageMoved = _.throttle(function () {
@@ -360,7 +359,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 	this.rect.attrs.strokeWidth = this.isActivated ? 3 : self.rectAttrs.strokeWidth;
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());
-	this.clip.attrs.x = this.text.getWidth() + padding;
+	this.clip.setX(this.text.getWidth() + padding);
 	this.setupShadows();
 	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
 };
