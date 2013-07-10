@@ -53,7 +53,7 @@
 			return props.clipTo;
 		};
 		group.add(new Kinetic.Clip(_.extend({stroke: 'darkslategrey', x: 1, y: 1}, props)));
-		clip = new Kinetic.Clip(_.extend({stroke: 'skyblue'}, props));
+		clip = new Kinetic.Clip(_.extend({stroke: 'skyblue', x: 0, y: 0}, props));
 		group.add(clip);
 		group.on('mouseover', function () {
 			clip.attrs.stroke = 'black';
