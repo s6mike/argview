@@ -1061,7 +1061,16 @@ describe('MapModel', function () {
 					underTest.activateChildren();
 					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
 				});
-
+				it('should reset activation if the currently selected node was not active, but gets re-selected (eg click on center after selecting level)', function () {
+					underTest.selectNode(5);
+					underTest.activateChildren();
+					activatedNodesChangedListener.reset();
+					underTest.selectNode(5);
+					expect(activatedNodesChangedListener.callCount).toBe(2);
+					expect(activatedNodesChangedListener.calls[0].args[0]).toEqual([]);
+					expect(activatedNodesChangedListener.calls[0].args[1].sort()).toEqual([6,7,8]);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([5], []);
+				});
 			});
 			describe('single activation', function () {
 				it('activates a node if not already active', function () {
