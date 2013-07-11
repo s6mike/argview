@@ -924,6 +924,11 @@ describe('MapModel', function () {
 				underTest.selectNode(2);
 				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
 			});
+			it('should change selection if forced even if input is disabled', function () {
+				underTest.setInputEnabled(false);
+				underTest.selectNode(2, true);
+				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
+			});
 		});
 		describe('selectNodeRight', function () {
 			it('should select lowest ranking child when currently selected node is right of central node', function () {
@@ -1068,7 +1073,7 @@ describe('MapModel', function () {
 					underTest.selectNode(5);
 					expect(activatedNodesChangedListener.callCount).toBe(2);
 					expect(activatedNodesChangedListener.calls[0].args[0]).toEqual([]);
-					expect(activatedNodesChangedListener.calls[0].args[1].sort()).toEqual([6,7,8]);
+					expect(activatedNodesChangedListener.calls[0].args[1].sort()).toEqual([6, 7, 8]);
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([5], []);
 				});
 			});

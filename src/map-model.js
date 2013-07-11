@@ -161,7 +161,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		idea = anIdea;
 		idea.addEventListener('changed', onIdeaChanged);
 		onIdeaChanged();
-		self.selectNode(idea.id);
+		self.selectNode(idea.id, true);
 		self.dispatchEvent('mapViewResetRequested');
 	};
 	this.setEditingEnabled = function (value) {
@@ -179,8 +179,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.getInputEnabled = function () {
 		return isInputEnabled;
 	};
-	this.selectNode = function (id) {
-		if (isInputEnabled && (id !== currentlySelectedIdeaId || !self.isActivated(id))) {
+	this.selectNode = function (id, force) {
+		if (force || (isInputEnabled && (id !== currentlySelectedIdeaId || !self.isActivated(id)))) {
 			if (currentlySelectedIdeaId) {
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
