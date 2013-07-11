@@ -642,6 +642,12 @@ describe('MapModel', function () {
 
 				expect(contextMenuRequestedListener).not.toHaveBeenCalled();
 			});
+			it('should not dispatch contextMenuRequested event if input is not enabled', function () {
+				underTest.setInputEnabled(false);
+				underTest.clickNode(2, {button: 2, layerX: 100, layerY: 200});
+
+				expect(contextMenuRequestedListener).not.toHaveBeenCalled();
+			});
 			it('should not add link if right clicked, should dispatch contextMenuRequested event', function () {
 				underTest.toggleAddLinkMode();
 				spyOn(underTest, 'addLink');

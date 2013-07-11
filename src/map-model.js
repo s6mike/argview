@@ -200,7 +200,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			this.toggleAddLinkMode();
 		} else {
 			this.selectNode(id);
-			if (button) {
+			if (button && isInputEnabled) {
 				self.dispatchEvent('contextMenuRequested', id, event.layerX, event.layerY);
 			}
 		}
