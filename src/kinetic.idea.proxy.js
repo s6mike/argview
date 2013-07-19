@@ -45,10 +45,10 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 		},
 		nodeImageDrawFunc;
 	idea.disableAnimations = true;
-	container.attrs.x = idea.attrs.x;
-	container.attrs.y = idea.attrs.y;
-	idea.attrs.x = 0;
-	idea.attrs.y = 0;
+	container.setX(idea.getX());
+	container.setY(idea.getY());
+	idea.setX(0);
+	idea.setY(0);
 	_.each(idea.activeWidgets, function (widget) { widget.remove(); });
 	nodeimage = new Kinetic.Image({
 		x: -1,
@@ -67,10 +67,10 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 		return idea.attrs;
 	};
 	container.isVisible = function (offset) {
-		return stage && stage.isRectVisible(new MAPJS.Rectangle(container.attrs.x, container.attrs.y, container.getWidth(), container.getHeight()), offset);
+		return stage && stage.isRectVisible(new MAPJS.Rectangle(container.getX(), container.getY(), container.getWidth(), container.getHeight()), offset);
 	};
 	idea.isVisible = function (offset) {
-		return stage && stage.isRectVisible(new MAPJS.Rectangle(container.attrs.x, container.attrs.y, container.getWidth(), container.getHeight()), offset);
+		return stage && stage.isRectVisible(new MAPJS.Rectangle(container.getX(), container.getY(), container.getWidth(), container.getHeight()), offset);
 	};
 	idea.getLayer = function () {
 		return layer;

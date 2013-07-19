@@ -36,8 +36,8 @@
 			},
 			rect = new Kinetic.Rect(rectProps),
 			rect2 = new Kinetic.Rect(rectProps);
-		rect2.attrs.x = 7;
-		rect2.attrs.y = -7;
+		rect2.setX(7);
+		rect2.setY(-7);
 		link.add(rect);
 		link.add(rect2);
 		link.setActive = function (isActive) {
@@ -139,7 +139,7 @@
 		};
 		this.isVisible = function (offset) {
 			var stage = self.getStage();
-			return stage && stage.isRectVisible(new MAPJS.Rectangle(self.attrs.x, self.attrs.y, self.getWidth(), self.getHeight()), offset);
+			return stage && stage.isRectVisible(new MAPJS.Rectangle(self.getX(), self.getY(), self.getWidth(), self.getHeight()), offset);
 		};
 		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
@@ -318,9 +318,9 @@ Kinetic.Idea.prototype.setStyle = function () {
 	this.clip.setVisible(isClipVisible);
 	this.attrs.width = this.text.getWidth() + 2 * padding;
 	this.attrs.height = this.text.getHeight() + 2 * padding + clipMargin;
-	this.text.attrs.x = padding;
+	this.text.setX(padding);
 	this.text.setY(padding + clipMargin);
-	this.link.attrs.x = this.text.getWidth() + 10;
+	this.link.setX(this.text.getWidth() + 10);
 	this.link.setY(this.text.getHeight() + 5 + clipMargin);
 	_.each([this.rect, this.rectbg2, this.rectbg1], function (r) {
 		r.attrs.width = self.text.getWidth() + 2 * padding;

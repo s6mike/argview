@@ -100,8 +100,8 @@ MAPJS.dragdrop = function (mapModel, stage) {
 		},
 		screenToStageCoordinates = function (x, y) {
 			return {
-				x: (x - stage.attrs.x) / (stage.getScale().x || 1),
-				y: (y - stage.attrs.y) / (stage.getScale().y || 1)
+				x: (x - stage.getX()) / (stage.getScale().x || 1),
+				y: (y - stage.getY()) / (stage.getScale().y || 1)
 			};
 		},
 		getInteractionPoint = function (evt) {

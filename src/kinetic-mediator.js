@@ -50,10 +50,10 @@ Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
 	var scale = this.getScale().x || 1;
 	rect = rect.xscale(scale).xtranslate(offset.x, offset.y).xinset(offset.margin);
 	return !(
-		rect.x + this.attrs.x > this.getWidth() ||
-		rect.x + rect.width + this.attrs.x < 0  ||
-		rect.y + this.attrs.y > this.getHeight() ||
-		rect.y + rect.height + this.attrs.y < 0
+		rect.x + this.getX() > this.getWidth() ||
+		rect.x + rect.width + this.getX() < 0  ||
+		rect.y + this.getY() > this.getHeight() ||
+		rect.y + rect.height + this.getY() < 0
 	);
 };
 
@@ -119,8 +119,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			}
 			new Kinetic.Tween({
 				node: stage,
-				x: stage.attrs.x + move.x,
-				y: stage.attrs.y + move.y,
+				x: stage.getX() + move.x,
+				y: stage.getY() + move.y,
 				duration: 0.4,
 				easing: Kinetic.Easings.EaseInOut
 			}).play();
@@ -307,8 +307,8 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		zoomPoint = zoomPoint || {x:  0.5 * stage.getWidth(), y: 0.5 * stage.getHeight()};
 		new Kinetic.Tween({
 			node: stage,
-			x: zoomPoint.x + (stage.attrs.x - zoomPoint.x) * targetScale / currentScale,
-			y: zoomPoint.y + (stage.attrs.y - zoomPoint.y) * targetScale / currentScale,
+			x: zoomPoint.x + (stage.getX() - zoomPoint.x) * targetScale / currentScale,
+			y: zoomPoint.y + (stage.getY() - zoomPoint.y) * targetScale / currentScale,
 			scaleX: targetScale,
 			scaleY: targetScale,
 			easing: Kinetic.Easings.EaseInOut,
@@ -339,15 +339,15 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	(function () {
 		var x, y;
 		stage.on('dragmove', function () {
-			var deltaX = x - stage.attrs.x,
-				deltaY = y - stage.attrs.y,
+			var deltaX = x - stage.getX(),
+				deltaY = y - stage.getY(),
 				visibleAfterMove = atLeastOneVisible(nodeByIdeaId, 0, 0) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, 0, 0),
 				shouldMoveBack = !visibleAfterMove && !(atLeastOneVisible(nodeByIdeaId, deltaX, deltaY) || atLeastOneVisible(connectorByFromIdeaIdToIdeaId, deltaX, deltaY));
 			if (shouldMoveBack) {
 				moveStage(deltaX, deltaY);
 			} else {
-				x = stage.attrs.x;
-				y = stage.attrs.y;
+				x = stage.getX();
+				y = stage.getY();
 			}
 		});
 	}());

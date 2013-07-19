@@ -27,8 +27,8 @@
 		};
 	};
 	calculateConnector = function (parent, child) {
-		return calculateConnectorInner(parent.attrs.x, parent.attrs.y, parent.getWidth(), parent.getHeight(),
-			child.attrs.x, child.attrs.y, child.getWidth(), child.getHeight());
+		return calculateConnectorInner(parent.getX(), parent.getY(), parent.getWidth(), parent.getHeight(),
+			child.getX(), child.getY(), child.getWidth(), child.getHeight());
 	};
 	calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
 			childX, childY, childWidth, childHeight) {
