@@ -41,7 +41,8 @@
 		link.add(rect);
 		link.add(rect2);
 		link.setActive = function (isActive) {
-			rect.attrs.stroke = rect2.attrs.stroke = (isActive ? 'black' : '#555555');
+			rect2.setStroke(isActive ? 'black' : '#555555');
+			rect.setStroke(rect2.getStroke());
 			link.getLayer().draw();
 		};
 		return link;
@@ -56,11 +57,11 @@
 		clip = new Kinetic.Clip(_.extend({stroke: 'skyblue', x: 0, y: 0}, props));
 		group.add(clip);
 		group.on('mouseover', function () {
-			clip.attrs.stroke = 'black';
+			clip.setStroke('black');
 			group.getLayer().draw();
 		});
 		group.on('mouseout', function () {
-			clip.attrs.stroke = 'skyblue';
+			clip.setStroke('skyblue');
 			group.getLayer().draw();
 		});
 		return group;
@@ -182,13 +183,13 @@
 					width: (6 + self.getWidth()) * scale,
 					height: (6 + self.getHeight()) * scale,
 					'padding': 3 * scale + 'px',
-					'font-size': self.text.attrs.fontSize * scale + 'px',
+					'font-size': self.text.getFontSize() * scale + 'px',
 					'line-height': '150%',
 					'background-color': self.getBackground(),
 					'margin': -3 * scale,
-					'border-radius': self.rect.attrs.cornerRadius * scale + 'px',
+					'border-radius': self.rect.getCornerRadius() * scale + 'px',
 					'border': self.rectAttrs.strokeWidth * (2 * scale) + 'px dashed ' + self.rectAttrs.stroke,
-					'color': self.text.attrs.fill
+					'color': self.text.getFill()
 				})
 				.val(unformattedText)
 				.appendTo('body')
@@ -250,7 +251,7 @@ Kinetic.Idea.prototype.setShadowOffset = function (offset) {
 Kinetic.Idea.prototype.getMMScale = function () {
 	'use strict';
 	var stage = this.getStage(),
-		scale = (stage && stage.attrs && stage.attrs.scale && stage.attrs.scale.x) || (this.attrs && this.attrs.scale && this.attrs.scale.x) || 1;
+		scale = (stage && stage.getScaleX()) || this.getScaleX() || 1;
 	return {x: scale, y: scale};
 };
 
@@ -316,38 +317,38 @@ Kinetic.Idea.prototype.setStyle = function () {
 		rectOffset = clipMargin,
 		rectIncrement = 4;
 	this.clip.setVisible(isClipVisible);
-	this.attrs.width = this.text.getWidth() + 2 * padding;
-	this.attrs.height = this.text.getHeight() + 2 * padding + clipMargin;
+	this.setWidth(this.text.getWidth() + 2 * padding);
+	this.setHeight(this.text.getHeight() + 2 * padding + clipMargin);
 	this.text.setX(padding);
 	this.text.setY(padding + clipMargin);
 	this.link.setX(this.text.getWidth() + 10);
 	this.link.setY(this.text.getHeight() + 5 + clipMargin);
 	_.each([this.rect, this.rectbg2, this.rectbg1], function (r) {
-		r.attrs.width = self.text.getWidth() + 2 * padding;
-		r.attrs.height = self.text.getHeight() + 2 * padding;
+		r.setWidth(self.text.getWidth() + 2 * padding);
+		r.setHeight(self.text.getHeight() + 2 * padding);
 		r.setY(rectOffset);
 		rectOffset += rectIncrement;
 		if (isDroppable) {
-			r.attrs.stroke = '#9F4F4F';
-			r.attrs.fill = '#EF6F6F';
+			r.setStroke('#9F4F4F');
+			r.setFill('#EF6F6F');
 		} else if (isSelected) {
-			r.attrs.fill = background;
+			r.setFill(background);
 		} else {
-			r.attrs.stroke = self.rectAttrs.stroke;
-			r.attrs.fill = background;
+			r.setStroke(self.rectAttrs.stroke);
+			r.setFill(background);
 		}
 	});
 	if (isActivated) {
-		this.rect.attrs.stroke = '#2E9AFE';
+		this.rect.setStroke('#2E9AFE');
 		var dashes = [[5, 3, 0, 0], [4, 3, 1, 0], [3, 3, 2, 0], [2, 3, 3, 0], [1, 3, 4, 0], [0, 3, 5, 0], [0, 2, 5, 1], [0, 1, 5, 2]];
 		if (true || this.disableAnimations) {
-			self.rect.attrs.dashArray = dashes[0];
+			self.rect.setDashArray(dashes[0]);
 		} else {
 			if (!this.activeAnimation) {
 				this.activeAnimation = new Kinetic.Animation(
 			        function (frame) {
 						var da = dashes[Math.floor(frame.time / 30) % 8];
-						self.rect.attrs.dashArray = da;
+						self.rect.setDashArray(da);
 			        },
 			        self.getLayer()
 			    );
@@ -358,15 +359,15 @@ Kinetic.Idea.prototype.setStyle = function () {
 		if (this.activeAnimation) {
 			this.activeAnimation.stop();
 		}
-		this.rect.attrs.dashArray = [];
+		this.rect.setDashArray([]);
 	}
-	this.rect.attrs.dashArray = this.isActivated ? [5, 3] : [];
-	this.rect.attrs.strokeWidth = this.isActivated ? 3 : self.rectAttrs.strokeWidth;
+	this.rect.setDashArray(this.isActivated ? [5, 3] : []);
+	this.rect.setStrokeWidth(this.isActivated ? 3 : self.rectAttrs.strokeWidth);
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());
 	this.clip.setX(this.text.getWidth() + padding);
 	this.setupShadows();
-	this.text.attrs.fill = MAPJS.contrastForeground(tintedBackground);
+	this.text.setFill(MAPJS.contrastForeground(tintedBackground));
 };
 
 Kinetic.Idea.prototype.setMMAttr = function (newMMAttr) {

@@ -1,4 +1,4 @@
-/*global MAPJS, _*/
+/*global MAPJS*/
 MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
 	var currentDroppable,
@@ -116,7 +116,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 		node.on('dragstart', function () {
 			node.moveToTop();
 			node.setShadowOffset(8);
-			node.attrs.opacity = 0.3;
+			node.setOpacity(0.3);
 		});
 		node.on('dragmove', function (evt) {
 			var stagePoint = getInteractionPoint(evt);
@@ -129,7 +129,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 		node.on('dragend', function (evt) {
 			var stagePoint = getInteractionPoint(evt);
 			node.setShadowOffset(4);
-			node.attrs.opacity = 1;
+			node.setOpacity(1);
 			nodeDragEnd(
 				n.id,
 				stagePoint.x,

@@ -4,7 +4,7 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 	var nodeimage,
 		emptyImage,
 		imageRendered,
-		container = new Kinetic.Group({opacity: 1, draggable: true, id: idea.attrs.id}),
+		container = new Kinetic.Group({opacity: 1, draggable: true, id: idea.getId()}),
 		removeImage = function () {
 			nodeimage.setImage(emptyImage);
 			imageRendered = false;
@@ -33,8 +33,8 @@ Kinetic.IdeaProxy = function (idea, stage, layer) {
 				height: height,
 				callback: function (img) {
 					nodeimage.setImage(img);
-					nodeimage.attrs.width = unscaledWidth;
-					nodeimage.attrs.height = unscaledHeight;
+					nodeimage.setWidth(unscaledWidth);
+					nodeimage.setHeight(unscaledHeight);
 					layer.draw();
 				}
 			});

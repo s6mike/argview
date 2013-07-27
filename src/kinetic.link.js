@@ -77,15 +77,15 @@
 				shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
-				strokeWidth = this.attrs.strokeWidth;
-			this.attrs.strokeWidth = this.attrs.strokeWidth * 9;
+				strokeWidth = this.getStrokeWidth();
+			this.setStrokeWidth(strokeWidth * 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			context.fillStyle = this.attrs.stroke;
+			context.fillStyle = this.getStroke();
 			context.beginPath();
 			context.moveTo(conn.from.x, conn.from.y);
 			context.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
-			this.attrs.strokeWidth = strokeWidth;
+			this.setStrokeWidth(strokeWidth);
 		},
 		drawFunc: function (canvas) {
 			var context = canvas.getContext(),
@@ -94,7 +94,7 @@
 				conn,
 				n = Math.tan(Math.PI / 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			context.fillStyle = this.attrs.stroke;
+			context.fillStyle = this.getStroke();
 			context.beginPath();
 			context.moveTo(conn.from.x, conn.from.y);
 			context.lineTo(conn.to.x, conn.to.y);
@@ -131,12 +131,12 @@
 }());
 Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 	'use strict';
-	var style = newMMAttr && newMMAttr.style;
-	this.attrs.stroke = style && style.color || 'red';
-	this.attrs.dashArray = {
-		solid: [],
-		dashed: [8, 8]
-	}[style && style.lineStyle || 'dashed'];
+	var style = newMMAttr && newMMAttr.style,
+		dashTypes = {
+			solid: [],
+			dashed: [8, 8]
+		};
+	this.setStroke(style && style.color || 'red');
+	this.setDashArray(dashTypes[style && style.lineStyle || 'dashed']);
 	this.attrs.arrow = style && style.arrow || false;
-//	this.getLayer().draw();
 };
