@@ -357,3 +357,320 @@ describe('MAPJS.frame', function () {
 		expect(result).toPartiallyMatch({top: -17, left: -15, width: 36, height: 82});
 	});
 });
+describe('New layout', function () {
+	'use strict';
+	describe('Tree', function () {
+		var dimensionProvider = function (content) {
+			var parts = content.title.split('x');
+			return {
+				width: parseInt(parts[0]),
+				height: parseInt(parts[1])
+			};
+		}
+		describe('Calculating Tree', function () {
+			it ('should convert a single root node into a tree', function () {
+				var content = MAPJS.content({
+						id: 1,
+						title: '100x200',
+						attr: { name: 'value' }
+					}),
+					result;
+
+				result = MAPJS.calculateTree(content, dimensionProvider);
+
+				expect(result).toPartiallyMatch({
+					id: 1,
+					title: '100x200',
+					attr: { name: 'value' },
+					width: 100,
+					height: 200
+				});
+			});
+			it ('should convert a root node with a single child into a tree', function () {
+				var content = MAPJS.content({
+						id: 1,
+						title: '100x200',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80'
+							}
+						}
+					}),
+					result;
+
+				result = MAPJS.calculateTree(content, dimensionProvider, 10);
+
+				expect(result).toPartiallyMatch({
+					id: 1,
+					title: '100x200',
+					width: 100,
+					height: 200
+				});
+				expect(result.subtrees[0]).toPartiallyMatch({
+					id: 2,
+					title: '300x80',
+					width: 300,
+					height: 80,
+					deltaX: 110,
+					deltaY: 60
+				});
+			});
+		});
+		describe('conversion to layout', function () {
+			it('should calculate the layout for a single node', function () {
+				var tree = new MAPJS.Tree({
+					id: 1,
+					title: 'Hello world',
+					attr: { name: 'value' },
+					width: 200,
+					height: 100
+				}), result;
+
+				result = tree.toLayout();
+
+				expect(result).toEqual({
+					nodes: {
+						'1': {
+							id: 1,
+							level: 1,
+							title: 'Hello world',
+							attr: { name: 'value' },
+							x: -100,
+							y: -50
+						}
+					},
+					links: {},
+					connectors: {}
+				});
+			});
+			it('should calculate the layout for two nodes', function () {
+				var tree = new MAPJS.Tree({
+					id: 1,
+					title: 'Hello world',
+					attr: { name: 'value' },
+					width: 200,
+					height: 100,
+					subtrees: [
+						new MAPJS.Tree({
+							id: 2,
+							title: 'First child',
+							attr: { name: 'value2' },
+							width: 300,
+							height: 80,
+							deltaX: 210,
+							deltaY: 10
+						})
+					]
+				}), result;
+
+				result = tree.toLayout();
+
+				expect(result).toEqual({
+					nodes: {
+						'1': {
+							id: 1,
+							level: 1,
+							title: 'Hello world',
+							attr: { name: 'value' },
+							x: -100,
+							y: -50
+						},
+						'2': {
+							id: 2,
+							level: 2,
+							title: 'First child',
+							attr: { name: 'value2' },
+							x: 110,
+							y: -40
+						}
+					},
+					links: {},
+					connectors: {}
+				});
+
+			});
+			it('should calculate the layout for two left-aligned sub child nodes', function () {
+				var tree = new MAPJS.Tree({
+					id: 1,
+					title: 'Hello world',
+					attr: { name: 'value' },
+					width: 200,
+					height: 100,
+					subtrees: [
+						new MAPJS.Tree({
+							id: 2,
+							title: 'First child',
+							attr: { name: 'value2' },
+							width: 300,
+							height: 80,
+							deltaX: 210,
+							deltaY: -10
+						}), 
+						new MAPJS.Tree({
+							id: 3,
+							title: 'Second child',
+							attr: { name: 'value3' },
+							width: 100,
+							height: 30,
+							deltaX: 210,
+							deltaY: 80
+						})
+					]
+				}), result;
+
+				result = tree.toLayout();
+
+				expect(result).toEqual({
+					nodes: {
+						'1': {
+							id: 1,
+							level: 1,
+							title: 'Hello world',
+							attr: { name: 'value' },
+							x: -100,
+							y: -50
+						},
+						'2': {
+							id: 2,
+							level: 2,
+							title: 'First child',
+							attr: { name: 'value2' },
+							x: 110,
+							y: -60
+						},
+						'3': {
+							id: 3,
+							level: 2,
+							title: 'Second child',
+							attr: { name: 'value3' },
+							x: 110,
+							y: 30
+						}
+					},
+					links: {},
+					connectors: {}
+				});
+			});
+		})
+	});
+	describe('Outline', function () {
+		var dimensionProviderResults, dimensionProvider;
+		beforeEach(function () {
+			dimensionProvider = function (content) {
+				var parts = content.title.split('x');
+				return {
+					width: parseInt(parts[0]),
+					height: parseInt(parts[1])
+				};
+			};
+		});
+		it('should create an outline from a single idea', function () {
+			var result, content = MAPJS.content({ title: '20x10' });
+
+			result = MAPJS.calculateOutline(content, dimensionProvider);
+
+			expect(result.borders()).toEqual({
+				top: [{
+					h: -5,
+					l: 20
+				}],
+				bottom: [{
+					h: 5,
+					l: 20
+				}]
+			});
+			expect(result.subOutlines()).toEqual([]);
+		});
+		it('should create an outline from an idea with one child node', function () {
+			var result, content = MAPJS.content({
+				title: '100x200',
+				id: 66,
+				ideas: {
+					100: {
+						title: '50x70',
+						id: 99
+					}
+				}
+			});
+
+			result = MAPJS.calculateOutline(content, dimensionProvider);
+
+			expect(result.borders()).toEqual({
+				top: [{
+					h: -100,
+					l: 100
+				}, {
+					h: -35,
+					l: 60
+				}],
+				bottom: [{
+					h: 100,
+					l: 100
+				}, {
+					h: 35,
+					l: 60
+				}]
+			});
+		});
+		it('should be calculate spacing between simple outlines', function () {
+			var outline1 = new MAPJS.Outline([{ h: -35, l: 50}], [{ h: 35, l: 50}]),
+				outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
+				result;
+
+			result = outline1.spacingAbove(outline2);
+
+			expect(result).toBe(75);
+		});
+		it('should be able to stack outlines', function () {
+			var outline1 = new MAPJS.Outline([{ h: -35, l: 50}], [{ h: 35, l: 50}]),
+				outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
+				result;
+
+			result = outline2.stackBelow(outline1, 10);
+
+			expect(result.borders()).toEqual({
+				top: [{
+					h: -80,
+					l: 50
+				}],
+				bottom: [{
+					h: 80,
+					l: 120
+				}]
+			});
+		});
+		it('should create an outline', function () {
+			var result, content = MAPJS.content({
+				title: '100x200',
+				ideas: {
+					100: {
+						title: '50x70'
+					},
+					200: {
+						title: '120x80'
+					}
+				}
+			});
+
+			result = MAPJS.calculateOutline(content, dimensionProvider);
+
+			expect(result.borders()).toEqual({
+				top: [{
+					h: -100,
+					l: 100
+				}, {
+					h: -80,
+					l: 60
+				}],
+				bottom: [{
+					h: 100,
+					l: 100
+				}, {
+					h: 80,
+					l: 130
+				}]
+			});
+		});
+	});
+});
