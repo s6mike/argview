@@ -169,22 +169,66 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		return _.pick(this, 'top', 'bottom');
 	};
 	this.spacingAbove = function (outline) {
-		return this.bottom[0].h - outline.top[0].h;
+		var i = 0, j = 0, result = 0, li = 0, lj = 0;
+		while (i < this.bottom.length && j < outline.top.length) {
+			result = Math.max(result, this.bottom[i].h - outline.top[j].h);
+			if (li + this.bottom[i].l < lj + outline.top[j].l) {				
+				li += this.bottom[i].l; i++;
+			} else if (li + this.bottom[i].l === lj + outline.top[j].l) {				
+				li += this.bottom[i].l; i++;				
+				lj += outline.top[j].l; j++;
+			} else {				
+				lj += outline.top[j].l; j++;
+			}
+		}
+		return result;
 	};
 	this.stackBelow = function (outline, margin) {
-		var spacing = outline.spacingAbove(this),
-			totalHeight = this.initialHeight() + outline.initialHeight() + margin;
+		var spacing = outline.spacingAbove(this);
+		console.log(JSON.stringify(outline), JSON.stringify(this), spacing);
+		var top = MAPJS.Outline.extendBorder(outline.top, shiftBorder(this.top, spacing + margin));
+		var bottom = MAPJS.Outline.extendBorder(shiftBorder(this.bottom, spacing + margin), outline.bottom);
 		return new MAPJS.Outline(
-			shiftBorder(outline.top, - 0.5 * totalHeight  - outline.top[0].h ),
-			shiftBorder(this.bottom, 0.5 * totalHeight - this.bottom[0].h)
+			top,
+			bottom
 		);
 	};
 	this.stackLeft = function (outline, margin) {
+			var suboutlineHeight = outline.initialHeight(),
+				alignment = - outline.top[0].h - suboutlineHeight * 0.5;
 			outline.extend(margin);
-			return new MAPJS.Outline(this.top.concat(outline.top), this.bottom.concat(outline.bottom));
+			return new MAPJS.Outline(this.top.concat(shiftBorder(outline.top, alignment)), this.bottom.concat(shiftBorder(outline.bottom, alignment)));
 	}
 	this.top = topBorder.slice();
 	this.bottom = bottomBorder.slice();
+};
+MAPJS.Outline.borderLength = function (border) {
+	return _.reduce(border, function (seed, el) {
+		return seed + el.l;
+	}, 0);
+};
+MAPJS.Outline.borderSegmentIndexAt = function (border, length) {
+	var l = 0, i = -1;
+	while (l <= length) {		
+		i++;
+		if (i>=border.length) {
+			return -1;
+		}
+		l += border[i].l;
+	}
+	return i;
+};
+MAPJS.Outline.extendBorder = function (originalBorder, extension) {
+	var result = originalBorder.slice(),
+		origLength = MAPJS.Outline.borderLength(originalBorder),
+		i = MAPJS.Outline.borderSegmentIndexAt(extension, origLength),
+		lengthToCut;
+	if (i >= 0) {
+		lengthToCut = MAPJS.Outline.borderLength (extension.slice(0, i + 1));
+		result.push({h:extension[i].h, l: lengthToCut - origLength});
+		result = result.concat(extension.slice(i + 1));
+	}
+	return result;
 };
 MAPJS.Tree = function (options) {
 	_.extend(this, options);
@@ -256,3 +300,14 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 	}
 	return new MAPJS.Tree(options);
 };
+/*
+MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
+	var tree = MAPJS.calculateTree(idea, function (idea) { 
+		var result = dimensionProvider(idea.title); 
+		console.log(idea.title, JSON.stringify(result));
+		return result;
+	}, margin || 10);
+	return tree.toLayout();
+};
+
+*/

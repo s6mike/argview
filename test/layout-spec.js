@@ -460,7 +460,45 @@ describe('New layout', function () {
 				});
 			});
 		
+
+			it ('should convert a root node with a two children into a tree', function () {
+				var content = MAPJS.content( {
+						id: 1,
+						"title":"118x34",
+						ideas: {
+							100: {
+								id: 2,
+								title: "23x34",
+								ideas: {
+									100: {
+										id: 4,
+										title: "113x34"
+									}
+								}
+							},
+							200: {
+								id: 3,
+								title: "107x34",
+								ideas: {
+									31: {
+										id: 31,
+										title: "23x34"
+									},
+									32: {
+										id: 32,
+										title: "23x34"
+									}
+								}								
+							}
+						}
+					}),
+					result;
+
+				result = MAPJS.calculateTree(content, dimensionProvider, 10);
+				console.log(JSON.stringify(result, null, 2));
+			});
 		});
+
 		describe('conversion to layout', function () {
 			it('should calculate the layout for a single node', function () {
 				var tree = new MAPJS.Tree({
@@ -533,7 +571,7 @@ describe('New layout', function () {
 					connectors: {}
 				});
 
-			});
+			});			
 			it('should calculate the layout for two left-aligned sub child nodes', function () {
 				var tree = new MAPJS.Tree({
 					id: 1,
@@ -635,7 +673,63 @@ describe('New layout', function () {
 
 			expect(result).toBe(75);
 		});
-		it('should be able to stack outlines', function () {
+		it('should calculate spacing between more complex outlines', function () {
+
+			var outline1 = new MAPJS.Outline([{"h":-17,"l":23},{"l":123,"h":-17}],[{"h":17,"l":23},{"l":123,"h":17}]),
+				outline2 = new MAPJS.Outline([{"h":-17,"l":107},{"l":33,"h":-39}],[{"h":17,"l":107},{"l":33,"h":39}]),
+				result = outline1.spacingAbove(outline2);
+
+			expect(result).toBe(56);
+		});
+		describe('borderLength', function () {
+			it('should calculate length of a border', function () {
+				var result;
+
+				result = MAPJS.Outline.borderLength([{ l: 100, h: -10 }, { l: 200, h: -50 }]);
+
+				expect(result).toBe(300);
+			});
+		});
+		describe('borderSegmentIndexAt', [
+				['returns element at length if exists', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 70, 1],
+				['returns -1 if too short', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 151, -1],
+				['returns right segment if on spot', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 50, 1],
+				['returns initial segment if length 0', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 0, 0],
+				['returns -1 on right border', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 150, -1]
+			],
+			function (border, length, expected) {
+				var result;
+
+				result = MAPJS.Outline.borderSegmentIndexAt(border, length);
+
+				expect(result).toBe(expected);
+			}
+		)
+		describe('extending borders', [
+			['should preserve first border if second is shorter', [{h:-10, l:3}] , [{h:-20, l:1}] , [{h:-10, l:3}] ],
+			['should preserve total length when first border is shorter', [{h:-30, l:12}] , [{h:-10, l:6}, {h:-20, l:8}] , [{h:-30, l:12}, {h: -20, l: 2}] ],
+			['should preserve extend with segment of second border if second is longer', [{h:-10, l:3}] , [{h:-20, l:5}] , [{h:-10, l:3}, {h: -20, l:2}] ],
+			['should skip second border elements before end of first border', [{h:-10, l:3}] , [{h:-20, l:1}, {h: -30, l: 4}] , [{h:-10, l:3}, {h: -30, l:2}] ],
+			['should skip second border elements aligned with the end of first border', [{h:-10, l:3}] , [{h:-20, l:3}, {h: -30, l: 4}] , [{h:-10, l:3}, {h: -30, l:4}] ],
+			['should skip second border elements aligned with the end of first border', [{h:-10, l:1}, {h:-20, l:2}, {h:-30, l:3}] , [{h:-20, l:4}, {h: -30, l: 3}, {h: -50, l: 5 }] , [{h:-10, l:1}, {h: -20, l:2}, {h: -30, l: 3}, {h: -30, l: 1 }, {h: -50, l:5 }] ],
+			],
+			function (firstBorder, secondBorder, expected) {
+				var result;
+				result = MAPJS.Outline.extendBorder(firstBorder, secondBorder);
+				expect(result).toEqual(expected);				
+			}
+		);
+		it('should calculate spacing between more complex outlines', function () {
+			var outline1 = new MAPJS.Outline([], [{ h: 5, l: 6}, { h: 15, l: 8 }]),
+				outline2 = new MAPJS.Outline([{ h: -10, l: 12}], []),
+				result;
+
+			result = outline1.spacingAbove(outline2);
+
+			expect(result).toBe(25);
+
+		});
+		it('should be able to stack simple outlines', function () {
 			var outline1 = new MAPJS.Outline([{ h: -35, l: 50}], [{ h: 35, l: 50}]),
 				outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
 				result;
@@ -643,16 +737,21 @@ describe('New layout', function () {
 			result = outline2.stackBelow(outline1, 10);
 
 			expect(result.borders()).toEqual({
-				top: [{
-					h: -80,
-					l: 50
-				}],
-				bottom: [{
-					h: 80,
-					l: 120
-				}]
+				top: [{ h: -35, l: 50}, {h: 45, l: 70}],
+				bottom: [{h: 125, l: 120}]					
 			});
 		});
-		
+		it('should be able to stack outlines with more complex borders', function () {
+			var outline1 = new MAPJS.Outline([{ h: -5, l: 6}, {h: -15, l:8}], [{ h: 5, l: 6}, { h: 15, l: 8}]),
+				outline2 = new MAPJS.Outline([{ h: -10, l: 12}], [{ h: 10, l: 12}]),
+				result;
+
+			result = outline2.stackBelow(outline1, 10);
+
+			expect(result.borders()).toEqual({
+				top: [{ h: -5, l: 6}, {h: -15, l:8}],
+				bottom: [{h: 45, l: 12}, {h: 15, l: 2}]					
+			});
+		});
 	});
 });
