@@ -389,7 +389,7 @@ describe('New layout', function () {
 			it ('should convert a root node with a single child into a tree', function () {
 				var content = MAPJS.content({
 						id: 1,
-						title: '100x200',
+						title: '200x100',
 						ideas: {
 							100: {
 								id: 2,
@@ -403,19 +403,63 @@ describe('New layout', function () {
 
 				expect(result).toPartiallyMatch({
 					id: 1,
-					title: '100x200',
-					width: 100,
-					height: 200
+					title: '200x100',
+					width: 200,
+					height: 100
 				});
 				expect(result.subtrees[0]).toPartiallyMatch({
 					id: 2,
 					title: '300x80',
 					width: 300,
 					height: 80,
-					deltaX: 110,
-					deltaY: 60
+					deltaX: 210,
+					deltaY: 10
 				});
 			});
+			
+			it ('should convert a root node with a two children into a tree', function () {
+				var content = MAPJS.content({
+						id: 1,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80'
+							},
+							200: {
+								id: 3,
+								title: '100x30'
+							}
+						}
+					}),
+					result;
+
+				result = MAPJS.calculateTree(content, dimensionProvider, 10);
+
+				expect(result).toPartiallyMatch({
+					id: 1,
+					title: '200x100',
+					width: 200,
+					height: 100
+				});
+				expect(result.subtrees[0]).toPartiallyMatch({
+					id: 2,
+					title: '300x80',
+					width: 300,
+					height: 80,
+					deltaX: 210,
+					deltaY: -10
+				});
+				expect(result.subtrees[1]).toPartiallyMatch({
+					id: 3,
+					title: '100x30',
+					width: 100,
+					height: 30,
+					deltaX: 210,
+					deltaY: 80
+				});
+			});
+		
 		});
 		describe('conversion to layout', function () {
 			it('should calculate the layout for a single node', function () {
@@ -568,7 +612,7 @@ describe('New layout', function () {
 		it('should create an outline from a single idea', function () {
 			var result, content = MAPJS.content({ title: '20x10' });
 
-			result = MAPJS.calculateOutline(content, dimensionProvider);
+			result = MAPJS.Outline.fromDimensions(dimensionProvider(content));
 
 			expect(result.borders()).toEqual({
 				top: [{
@@ -580,38 +624,7 @@ describe('New layout', function () {
 					l: 20
 				}]
 			});
-			expect(result.subOutlines()).toEqual([]);
-		});
-		it('should create an outline from an idea with one child node', function () {
-			var result, content = MAPJS.content({
-				title: '100x200',
-				id: 66,
-				ideas: {
-					100: {
-						title: '50x70',
-						id: 99
-					}
-				}
-			});
 
-			result = MAPJS.calculateOutline(content, dimensionProvider);
-
-			expect(result.borders()).toEqual({
-				top: [{
-					h: -100,
-					l: 100
-				}, {
-					h: -35,
-					l: 60
-				}],
-				bottom: [{
-					h: 100,
-					l: 100
-				}, {
-					h: 35,
-					l: 60
-				}]
-			});
 		});
 		it('should be calculate spacing between simple outlines', function () {
 			var outline1 = new MAPJS.Outline([{ h: -35, l: 50}], [{ h: 35, l: 50}]),
@@ -640,37 +653,6 @@ describe('New layout', function () {
 				}]
 			});
 		});
-		it('should create an outline', function () {
-			var result, content = MAPJS.content({
-				title: '100x200',
-				ideas: {
-					100: {
-						title: '50x70'
-					},
-					200: {
-						title: '120x80'
-					}
-				}
-			});
-
-			result = MAPJS.calculateOutline(content, dimensionProvider);
-
-			expect(result.borders()).toEqual({
-				top: [{
-					h: -100,
-					l: 100
-				}, {
-					h: -80,
-					l: 60
-				}],
-				bottom: [{
-					h: 100,
-					l: 100
-				}, {
-					h: 80,
-					l: 130
-				}]
-			});
-		});
+		
 	});
 });

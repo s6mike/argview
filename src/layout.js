@@ -179,36 +179,12 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 			shiftBorder(this.bottom, 0.5 * totalHeight - this.bottom[0].h)
 		);
 	};
-	this.subOutlines = function () {
-		return [];
+	this.stackLeft = function (outline, margin) {
+			outline.extend(margin);
+			return new MAPJS.Outline(this.top.concat(outline.top), this.bottom.concat(outline.bottom));
 	}
-	
 	this.top = topBorder.slice();
 	this.bottom = bottomBorder.slice();
-};
-MAPJS.calculateOutline = function (idea, dimensionProvider, margin) {
-	margin = margin || 10;
-	var dimensions = dimensionProvider(idea),
-		ideas = idea.sortedSubIdeas(),
-		result = new MAPJS.Outline([{
-				h: -0.5 * dimensions.height,
-				l: dimensions.width
-			}], [{
-				h: 0.5 * dimensions.height,
-				l: dimensions.width
-			}]
-		);
-	if (ideas.length) {
-		var subOutline = MAPJS.calculateOutline(ideas.shift(), dimensionProvider, margin);
-		ideas.forEach(function (i) {
-			var outline = MAPJS.calculateOutline(i, dimensionProvider);
-			subOutline = outline.stackBelow(subOutline, margin);
-		});
-		subOutline.extend(margin);
-		result.top = result.top.concat(subOutline.top);
-		result.bottom = result.bottom.concat(subOutline.bottom);
-	}
-	return result;
 };
 MAPJS.Tree = function (options) {
 	_.extend(this, options);
@@ -235,22 +211,48 @@ MAPJS.Tree = function (options) {
 				var subLayout = t.toLayout(self.level + 1, self.x, self.y);
 				_.extend(result.nodes, subLayout.nodes);
 			});
-		}
+		} 
 		return result;
 	};
+};
+MAPJS.Outline.fromDimensions = function (dimensions) {
+	return new MAPJS.Outline([{
+					h: -0.5 * dimensions.height,
+					l: dimensions.width
+				}], [{
+					h: 0.5 * dimensions.height,
+					l: dimensions.width
+				}]
+	);
 };
 MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 	var options = {
 		id: content.id,
 		title: content.title,
-		attr: content.attr
-	};
+		attr: content.attr,
+		deltaY: 0,
+		deltaX: 0
+	}, 
+	moveTrees = function (treeArray, dx, dy) {
+		var i;
+		for (i = 0; i< treeArray.length; i++ ){ 
+			treeArray[i].deltaX += dx; 
+			treeArray[i].deltaY += dy; 
+		}	
+	}, subideas = content.sortedSubIdeas();
 	_.extend(options, dimensionProvider(content));
-	options.subtrees = _.map(content.sortedSubIdeas(), function (i) {
-		var subtree = MAPJS.calculateTree(i, dimensionProvider, margin);
-		subtree.deltaX = options.width + margin;
-		subtree.deltaY = (options.height - subtree.height) * 0.5;
-		return subtree;
-	});
+	options.outline = new MAPJS.Outline.fromDimensions(options);
+	if (!_.isEmpty(subideas)) {
+		options.subtrees = _.map(subideas, function (i) {
+			return MAPJS.calculateTree(i, dimensionProvider, margin);
+		});
+		var suboutline = options.subtrees[0].outline;
+		for (i = 1; i< options.subtrees.length; i++ ){ 
+			suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
+			options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;		
+		}
+		moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
+		options.outline = options.outline.stackLeft(suboutline, margin);
+	}
 	return new MAPJS.Tree(options);
 };
