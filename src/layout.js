@@ -307,7 +307,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 	}
 	return new MAPJS.Tree(options);
 };
-
+/*
 MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	var tree = MAPJS.calculateTree(idea, function (idea) { 
 		var result = dimensionProvider(idea.title); 
