@@ -1,4 +1,4 @@
-/*global describe, expect, it, MAPJS*/
+/*global describe, expect, it, MAPJS, beforeEach, afterEach*/
 describe('layout', function () {
 	'use strict';
 	var dimensionProvider = function (text) {
@@ -363,12 +363,12 @@ describe('New layout', function () {
 		var dimensionProvider = function (content) {
 			var parts = content.title.split('x');
 			return {
-				width: parseInt(parts[0]),
-				height: parseInt(parts[1])
+				width: parseInt(parts[0], 10),
+				height: parseInt(parts[1], 10)
 			};
-		}
+		};
 		describe('Calculating Tree', function () {
-			it ('should convert a single root node into a tree', function () {
+			it('should convert a single root node into a tree', function () {
 				var content = MAPJS.content({
 						id: 1,
 						title: '100x200',
@@ -386,7 +386,7 @@ describe('New layout', function () {
 					height: 200
 				});
 			});
-			it ('should convert a root node with a single child into a tree', function () {
+			it('should convert a root node with a single child into a tree', function () {
 				var content = MAPJS.content({
 						id: 1,
 						title: '200x100',
@@ -416,8 +416,7 @@ describe('New layout', function () {
 					deltaY: 10
 				});
 			});
-			
-			it ('should convert a root node with a two children into a tree', function () {
+			it('should convert a root node with a two children into a tree', function () {
 				var content = MAPJS.content({
 						id: 1,
 						title: '200x100',
@@ -459,12 +458,10 @@ describe('New layout', function () {
 					deltaY: 80
 				});
 			});
-		
-
-			it ('should convert a root node with a two children into a tree', function () {
-				var content = MAPJS.content( {
+			it('should convert a root node with a two children into a tree', function () {
+				var content = MAPJS.content({
 						id: 1,
-						"title":"118x34",
+						"title": "118x34",
 						ideas: {
 							100: {
 								id: 2,
@@ -488,7 +485,7 @@ describe('New layout', function () {
 										id: 32,
 										title: "23x34"
 									}
-								}								
+								}
 							}
 						}
 					}),
@@ -575,8 +572,7 @@ describe('New layout', function () {
 						}
 					}
 				});
-
-			});			
+			});
 			it('should calculate the layout for two left-aligned sub child nodes', function () {
 				var tree = new MAPJS.Tree({
 					id: 1,
@@ -593,7 +589,7 @@ describe('New layout', function () {
 							height: 80,
 							deltaX: 210,
 							deltaY: -10
-						}), 
+						}),
 						new MAPJS.Tree({
 							id: 3,
 							title: 'Second child',
@@ -649,7 +645,7 @@ describe('New layout', function () {
 					}
 				});
 			});
-		})
+		});
 	});
 	describe('Outline', function () {
 		var dimensionProviderResults, dimensionProvider;
@@ -657,8 +653,8 @@ describe('New layout', function () {
 			dimensionProvider = function (content) {
 				var parts = content.title.split('x');
 				return {
-					width: parseInt(parts[0]),
-					height: parseInt(parts[1])
+					width: parseInt(parts[0], 10),
+					height: parseInt(parts[1], 10)
 				};
 			};
 		});
@@ -690,8 +686,8 @@ describe('New layout', function () {
 		});
 		it('should calculate spacing between more complex outlines', function () {
 
-			var outline1 = new MAPJS.Outline([{"h":-17,"l":23},{"l":123,"h":-17}],[{"h":17,"l":23},{"l":123,"h":17}]),
-				outline2 = new MAPJS.Outline([{"h":-17,"l":107},{"l":33,"h":-39}],[{"h":17,"l":107},{"l":33,"h":39}]),
+			var outline1 = new MAPJS.Outline([{"h": -17, "l": 23}, {"l": 123, "h": -17}], [{"h": 17, "l": 23}, {"l": 123, "h": 17}]),
+				outline2 = new MAPJS.Outline([{"h": -17, "l": 107}, {"l": 33, "h": -39}], [{"h": 17, "l": 107}, {"l": 33, "h": 39}]),
 				result = outline1.spacingAbove(outline2);
 
 			expect(result).toBe(56);
@@ -726,7 +722,7 @@ describe('New layout', function () {
 				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 17, l: 130}]);
 
 			});
-			it('shortens the initial box into 1/2 and expands the outline if outline is taller than box', function (){
+			it('shortens the initial box into 1/2 and expands the outline if outline is taller than box', function () {
 				var outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
 					result;
 
@@ -734,12 +730,11 @@ describe('New layout', function () {
 
 				expect(result.top).toEqual([{ h: -10, l: 15},  { h: -40, l: 145}]);
 				expect(result.bottom).toEqual([{ h: 10, l: 15}, {h: 40, l: 145}]);
-
-
 			});
 
 		});
-		describe('borderSegmentIndexAt', [
+		describe('borderSegmentIndexAt',
+			[
 				['returns element at length if exists', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 70, 1],
 				['returns -1 if too short', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 151, -1],
 				['returns right segment if on spot', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 50, 1],
@@ -752,22 +747,21 @@ describe('New layout', function () {
 				result = MAPJS.Outline.borderSegmentIndexAt(border, length);
 
 				expect(result).toBe(expected);
-			}
-		)
-		describe('extending borders', [
-			['should preserve first border if second is shorter', [{h:-10, l:3}] , [{h:-20, l:1}] , [{h:-10, l:3}] ],
-			['should preserve total length when first border is shorter', [{h:-30, l:12}] , [{h:-10, l:6}, {h:-20, l:8}] , [{h:-30, l:12}, {h: -20, l: 2}] ],
-			['should preserve extend with segment of second border if second is longer', [{h:-10, l:3}] , [{h:-20, l:5}] , [{h:-10, l:3}, {h: -20, l:2}] ],
-			['should skip second border elements before end of first border', [{h:-10, l:3}] , [{h:-20, l:1}, {h: -30, l: 4}] , [{h:-10, l:3}, {h: -30, l:2}] ],
-			['should skip second border elements aligned with the end of first border', [{h:-10, l:3}] , [{h:-20, l:3}, {h: -30, l: 4}] , [{h:-10, l:3}, {h: -30, l:4}] ],
-			['should skip second border elements aligned with the end of first border', [{h:-10, l:1}, {h:-20, l:2}, {h:-30, l:3}] , [{h:-20, l:4}, {h: -30, l: 3}, {h: -50, l: 5 }] , [{h:-10, l:1}, {h: -20, l:2}, {h: -30, l: 3}, {h: -30, l: 1 }, {h: -50, l:5 }] ],
+			});
+		describe('extending borders',
+			[
+				['should preserve first border if second is shorter', [{h: -10, l: 3}], [{h: -20, l: 1}], [{h: -10, l: 3}]],
+				['should preserve total length when first border is shorter', [{h: -30, l: 12}], [{h: -10, l: 6}, {h: -20, l: 8}], [{h: -30, l: 12}, {h:  -20, l:  2}]],
+				['should preserve extend with segment of second border if second is longer', [{h: -10, l: 3}], [{h: -20, l: 5}], [{h: -10, l: 3}, {h:  -20, l: 2}]],
+				['should skip second border elements before end of first border', [{h: -10, l: 3}], [{h: -20, l: 1}, {h:  -30, l:  4}], [{h: -10, l: 3}, {h:  -30, l: 2}]],
+				['should skip second border elements aligned with the end of first border', [{h: -10, l: 3}], [{h: -20, l: 3}, {h:  -30, l:  4}], [{h: -10, l: 3}, {h:  -30, l: 4}]],
+				['should skip second border elements aligned with the end of first border', [{h: -10, l: 1}, {h: -20, l: 2}, {h: -30, l: 3}], [{h: -20, l: 4}, {h:  -30, l:  3}, {h:  -50, l:  5 }], [{h: -10, l: 1}, {h:  -20, l: 2}, {h:  -30, l:  3}, {h:  -30, l:  1 }, {h:  -50, l: 5 }]],
 			],
 			function (firstBorder, secondBorder, expected) {
 				var result;
 				result = MAPJS.Outline.extendBorder(firstBorder, secondBorder);
-				expect(result).toEqual(expected);				
-			}
-		);
+				expect(result).toEqual(expected);
+			});
 		it('should calculate spacing between more complex outlines', function () {
 			var outline1 = new MAPJS.Outline([], [{ h: 5, l: 6}, { h: 15, l: 8 }]),
 				outline2 = new MAPJS.Outline([{ h: -10, l: 12}], []),
@@ -787,19 +781,19 @@ describe('New layout', function () {
 
 			expect(result.borders()).toEqual({
 				top: [{ h: -35, l: 50}, {h: 45, l: 70}],
-				bottom: [{h: 125, l: 120}]					
+				bottom: [{h: 125, l: 120}]
 			});
 		});
 		it('should be able to stack outlines with more complex borders', function () {
-			var outline1 = new MAPJS.Outline([{ h: -5, l: 6}, {h: -15, l:8}], [{ h: 5, l: 6}, { h: 15, l: 8}]),
+			var outline1 = new MAPJS.Outline([{ h: -5, l: 6}, {h: -15, l: 8}], [{h: 5, l: 6}, {h: 15, l: 8}]),
 				outline2 = new MAPJS.Outline([{ h: -10, l: 12}], [{ h: 10, l: 12}]),
 				result;
 
 			result = outline2.stackBelow(outline1, 10);
 
 			expect(result.borders()).toEqual({
-				top: [{ h: -5, l: 6}, {h: -15, l:8}],
-				bottom: [{h: 45, l: 12}, {h: 15, l: 2}]					
+				top: [{ h: -5, l: 6}, {h: -15, l: 8}],
+				bottom: [{h: 45, l: 12}, {h: 15, l: 2}]
 			});
 		});
 	});
