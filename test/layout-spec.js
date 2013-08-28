@@ -705,10 +705,39 @@ describe('New layout', function () {
 				expect(result).toBe(300);
 			});
 		});
-		describe('stackLeft', function () {
-			it('should ', function () {
+		describe('insertAtStart', function () {
+			it('should add a box at the start of an outline, and extend the existing outline by a margin', function () {
+				var outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
+					result;
+
+				result = outline2.insertAtStart({width: 30, height: 100}, 10);
+
+				expect(result.top).toEqual([{ h: -50, l: 30}, { h: -40, l: 130}]);
+				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 40, l: 130}]);
 
 			});
+			it('centers outline before adding the box', function () {
+				var outline2 = new MAPJS.Outline([{ h: -4, l: 120}], [{ h: 30, l: 120}]),
+					result;
+
+				result = outline2.insertAtStart({width: 30, height: 100}, 10);
+
+				expect(result.top).toEqual([{ h: -50, l: 30}, { h: -17, l: 130}]);
+				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 17, l: 130}]);
+
+			});
+			it('shortens the initial box into 1/2 and expands the outline if outline is taller than box', function (){
+				var outline2 = new MAPJS.Outline([{ h: -40, l: 120}], [{ h: 40, l: 120}]),
+					result;
+
+				result = outline2.insertAtStart({width: 30, height: 20}, 10);
+
+				expect(result.top).toEqual([{ h: -10, l: 15},  { h: -40, l: 145}]);
+				expect(result.bottom).toEqual([{ h: 10, l: 15}, {h: 40, l: 145}]);
+
+
+			});
+
 		});
 		describe('borderSegmentIndexAt', [
 				['returns element at length if exists', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 70, 1],
