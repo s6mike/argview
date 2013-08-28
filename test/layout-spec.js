@@ -705,6 +705,11 @@ describe('New layout', function () {
 				expect(result).toBe(300);
 			});
 		});
+		describe('stackLeft', function () {
+			it('should ', function () {
+
+			});
+		});
 		describe('borderSegmentIndexAt', [
 				['returns element at length if exists', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 70, 1],
 				['returns -1 if too short', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 151, -1],

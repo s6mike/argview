@@ -185,7 +185,6 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 	};
 	this.stackBelow = function (outline, margin) {
 		var spacing = outline.spacingAbove(this);
-		console.log(JSON.stringify(outline), JSON.stringify(this), spacing);
 		var top = MAPJS.Outline.extendBorder(outline.top, shiftBorder(this.top, spacing + margin));
 		var bottom = MAPJS.Outline.extendBorder(shiftBorder(this.bottom, spacing + margin), outline.bottom);
 		return new MAPJS.Outline(
@@ -195,9 +194,21 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 	};
 	this.stackLeft = function (outline, margin) {
 			var suboutlineHeight = outline.initialHeight(),
-				alignment = - outline.top[0].h - suboutlineHeight * 0.5;
+				alignment = - outline.top[0].h - suboutlineHeight * 0.5, result;
 			outline.extend(margin);
-			return new MAPJS.Outline(this.top.concat(shiftBorder(outline.top, alignment)), this.bottom.concat(shiftBorder(outline.bottom, alignment)));
+			result = new MAPJS.Outline(this.top.concat(shiftBorder(outline.top, alignment)), this.bottom.concat(shiftBorder(outline.bottom, alignment)));
+			if (result.top[0].h > result.top[1].h) {
+				result.top = [{h:result.top[0].h, l:result.top[0].l/2 }].concat(result.top);
+				result.top[1].l = result.top[0].l;
+				result.top[1].h = result.top[2].h;
+			}
+			if (result.bottom[0].h < result.bottom[1].h) {
+				result.bottom = [{h:result.bottom[0].h, l:result.bottom[0].l/2 }].concat(result.bottom);
+				result.bottom[1].l = result.bottom[0].l;
+				result.bottom[1].h = result.bottom[2].h;
+			}
+			console.log('SB! ', suboutlineHeight, MAPJS.Outline.borderLength(result.top), JSON.stringify(this), JSON.stringify(outline), JSON.stringify(result));
+			return result;
 	}
 	this.top = topBorder.slice();
 	this.bottom = bottomBorder.slice();
@@ -298,20 +309,19 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 			return MAPJS.calculateTree(i, dimensionProvider, margin);
 		});
 		var suboutline = options.subtrees[0].outline;
-		for (i = 1; i< options.subtrees.length; i++ ){ 
+		for (i = 1; i< options.subtrees.length; i++) {
 			suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
-			options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;		
+			options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
 		}
 		moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
 		options.outline = options.outline.stackLeft(suboutline, margin);
 	}
 	return new MAPJS.Tree(options);
 };
-/*
+
 MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	var tree = MAPJS.calculateTree(idea, function (idea) { 
 		var result = dimensionProvider(idea.title); 
-		console.log(idea.title, JSON.stringify(result));
 		return result;
 	}, margin || 10);
 	return tree.toLayout();
