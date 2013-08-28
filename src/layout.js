@@ -232,7 +232,7 @@ MAPJS.Outline.extendBorder = function (originalBorder, extension) {
 };
 MAPJS.Tree = function (options) {
 	_.extend(this, options);
-	this.toLayout = function (level, x, y) {
+	this.toLayout = function (level, x, y, parentId) {
 		x = x || 0;
 		y = y || 0;
 		var result = {
@@ -250,10 +250,17 @@ MAPJS.Tree = function (options) {
 			self.y = y + this.deltaY || 0
 		}
 		result.nodes[this.id] = self;
+		if (parentId !== undefined) {
+			result.connectors[self.id] = {
+				from: parentId,
+				to: self.id
+			};
+		}
 		if (this.subtrees) {
 			this.subtrees.forEach(function (t) {
-				var subLayout = t.toLayout(self.level + 1, self.x, self.y);
+				var subLayout = t.toLayout(self.level + 1, self.x, self.y, self.id);
 				_.extend(result.nodes, subLayout.nodes);
+				_.extend(result.connectors, subLayout.connectors);
 			});
 		} 
 		return result;
@@ -300,7 +307,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 	}
 	return new MAPJS.Tree(options);
 };
-/*
+
 MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	var tree = MAPJS.calculateTree(idea, function (idea) { 
 		var result = dimensionProvider(idea.title); 
@@ -309,5 +316,4 @@ MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	}, margin || 10);
 	return tree.toLayout();
 };
-
-*/
+/**/
