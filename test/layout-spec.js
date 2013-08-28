@@ -568,7 +568,12 @@ describe('New layout', function () {
 						}
 					},
 					links: {},
-					connectors: {}
+					connectors: {
+						'2': {
+							from: 1,
+							to: 2
+						}
+					}
 				});
 
 			});			
@@ -631,7 +636,17 @@ describe('New layout', function () {
 						}
 					},
 					links: {},
-					connectors: {}
+					connectors: {
+						'2': {
+							from: 1,
+							to: 2
+						},
+						'3': {
+							from: 1,
+							to: 3
+						}
+
+					}
 				});
 			});
 		})
