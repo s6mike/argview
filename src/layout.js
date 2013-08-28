@@ -251,7 +251,7 @@ MAPJS.Tree = function (options) {
 			links: {},
 			connectors: {}
 		}, self;
-		self = _.pick(this, 'id', 'title', 'attr');
+		self = _.pick(this, 'id', 'title', 'attr', 'width', 'height');
 		self.level = level || 1;
 		if (self.level === 1) {
 			self.x = -0.5 * this.width;
@@ -301,12 +301,15 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 			treeArray[i].deltaX += dx; 
 			treeArray[i].deltaY += dy; 
 		}	
-	}, subideas = content.sortedSubIdeas(),
+	}, 
+	shouldIncludeSubIdeas = function (content) {
+		return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed)); 
+	};
 	nodeDimensions = dimensionProvider(content);
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
-	if (!_.isEmpty(subideas)) {
-		options.subtrees = _.map(subideas, function (i) {
+	if (shouldIncludeSubIdeas(content)) {
+		options.subtrees = _.map(content.sortedSubIdeas(), function (i) {
 			return MAPJS.calculateTree(i, dimensionProvider, margin);
 		});
 		var suboutline = options.subtrees[0].outline;
@@ -324,7 +327,7 @@ MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	var tree = MAPJS.calculateTree(idea, function (idea) { 
 		var result = dimensionProvider(idea.title); 
 		return result;
-	}, margin || 10);
+	}, margin || 20);
 	return tree.toLayout();
 };
 /**/

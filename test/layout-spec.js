@@ -416,6 +416,31 @@ describe('New layout', function () {
 					deltaY: 10
 				});
 			});
+			it('should disregard children of collapsed nodes', function () {
+				var content = MAPJS.content({
+						id: 1,
+						title: '200x100',
+						attr: { collapsed: true},
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80'
+							}
+						}
+					}),
+					result;
+
+				result = MAPJS.calculateTree(content, dimensionProvider, 10);
+
+				expect(result).toPartiallyMatch({
+					id: 1,
+					title: '200x100',
+					attr: {collapsed: true},
+					width: 200,
+					height: 100
+				});
+				expect(result.subtrees).toBeUndefined();
+			});
 			it('should convert a root node with a two children into a tree', function () {
 				var content = MAPJS.content({
 						id: 1,
@@ -516,7 +541,9 @@ describe('New layout', function () {
 							title: 'Hello world',
 							attr: { name: 'value' },
 							x: -100,
-							y: -50
+							y: -50,
+							width: 200,
+							height: 100
 						}
 					},
 					links: {},
@@ -553,7 +580,9 @@ describe('New layout', function () {
 							title: 'Hello world',
 							attr: { name: 'value' },
 							x: -100,
-							y: -50
+							y: -50,
+							width: 200,
+							height: 100,
 						},
 						'2': {
 							id: 2,
@@ -561,7 +590,9 @@ describe('New layout', function () {
 							title: 'First child',
 							attr: { name: 'value2' },
 							x: 110,
-							y: -40
+							y: -40,
+							width: 300,
+							height: 80
 						}
 					},
 					links: {},
@@ -612,7 +643,9 @@ describe('New layout', function () {
 							title: 'Hello world',
 							attr: { name: 'value' },
 							x: -100,
-							y: -50
+							y: -50,
+							width: 200,
+							height: 100
 						},
 						'2': {
 							id: 2,
@@ -620,7 +653,9 @@ describe('New layout', function () {
 							title: 'First child',
 							attr: { name: 'value2' },
 							x: 110,
-							y: -60
+							y: -60,
+							width: 300,
+							height: 80
 						},
 						'3': {
 							id: 3,
@@ -628,7 +663,9 @@ describe('New layout', function () {
 							title: 'Second child',
 							attr: { name: 'value3' },
 							x: 110,
-							y: 30
+							y: 30,
+							width: 100,
+							height: 30
 						}
 					},
 					links: {},
