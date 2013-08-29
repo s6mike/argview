@@ -316,11 +316,17 @@ describe('layout', function () {
 	});
 	it('should set style using defaults where not defined', function () {
 		var contentAggregate = MAPJS.content({
-			title: '123',
-			attr: { collapsed: true}
+			id: 1,
+			ideas: {
+				2: { id: 2 },
+				3: { id: 3, attr: { style: {something: 'else'} } }
+			}
 		}),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[1].attr.style.background).not.toBeUndefined();
+		expect(result.nodes[1].attr.style.background).toBe(MAPJS.defaultStyles.root.background);
+		expect(result.nodes[2].attr.style.background).toBe(MAPJS.defaultStyles.nonRoot.background);
+		expect(result.nodes[3].attr.style.background).toBe(MAPJS.defaultStyles.nonRoot.background);
+		expect(result.nodes[3].attr.style.something).toBe('else');
 	});
 	it('should not include links between collapsed nodes', function () {
 		var contentAggregate = MAPJS.content({

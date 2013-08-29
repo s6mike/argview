@@ -339,11 +339,18 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 };
 /*
 MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
-	var tree, layout;
+	var tree, layout,
+		setDefaultStyles = function (nodes) {
+			_.each(nodes, function (node) {
+				node.attr = node.attr || {};
+				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level == 1)? 'root': 'nonRoot'], node.attr.style); 
+			});
+		};
 	tree = MAPJS.calculateTree(idea, function (idea) { 
 			return dimensionProvider(idea.title); 
 		}, margin || 20),
 	layout = tree.toLayout();
+	setDefaultStyles(layout.nodes);
 	layout.links = MAPJS.layoutLinks(idea, layout.nodes);
 	return layout;
 };
