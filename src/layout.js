@@ -80,7 +80,20 @@
 		root: {background: '#22AAE0'},
 		nonRoot: {background: '#E0E0E0'}
 	};
-
+	MAPJS.layoutLinks = function (idea, visibleNodes) {
+		var result = {};
+		_.each(idea.links, function (link) {
+			if (visibleNodes[link.ideaIdFrom] && visibleNodes[link.ideaIdTo]) {
+				result[link.ideaIdFrom + '_' + link.ideaIdTo] = {
+					ideaIdFrom: link.ideaIdFrom,
+					ideaIdTo: link.ideaIdTo,
+					attr: _.clone(link.attr)
+				};
+				//todo - clone
+			}
+		});
+		return result;
+	};
 	MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 		margin = margin || 10;
 		var result = {
@@ -114,6 +127,7 @@
 			};
 		MAPJS.LayoutCompressor.compress(root);
 		calculateLayoutInner(root, 1);
+		/*
 		_.each(idea.links, function (link) {
 			if (result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo]) {
 				result.links[link.ideaIdFrom + '_' + link.ideaIdTo] = {
@@ -124,6 +138,8 @@
 				//todo - clone
 			}
 		});
+		*/
+		result.links = MAPJS.layoutLinks(idea, result.nodes);
 		return result;
 	};
 	MAPJS.calculateFrame = function (nodes, margin) {
@@ -248,7 +264,6 @@ MAPJS.Tree = function (options) {
 		y = y || 0;
 		var result = {
 			nodes: {},
-			links: {},
 			connectors: {}
 		}, self;
 		self = _.pick(this, 'id', 'title', 'attr', 'width', 'height');
@@ -324,10 +339,12 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 };
 /*
 MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
-	var tree = MAPJS.calculateTree(idea, function (idea) { 
-		var result = dimensionProvider(idea.title); 
-		return result;
-	}, margin || 20);
-	return tree.toLayout();
+	var tree, layout;
+	tree = MAPJS.calculateTree(idea, function (idea) { 
+			return dimensionProvider(idea.title); 
+		}, margin || 20),
+	layout = tree.toLayout();
+	layout.links = MAPJS.layoutLinks(idea, layout.nodes);
+	return layout;
 };
 /**/

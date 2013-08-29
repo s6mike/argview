@@ -348,6 +348,32 @@ describe('layout', function () {
 
 		expect(result.links).toEqual([]);
 	});
+	it('should include links between non-collapsed nodes', function () {
+		var contentAggregate = MAPJS.content({
+			id: 1,
+			title: 'first',
+			ideas: {
+				100: {
+					id: 2,
+					title: 'second'
+				},
+				200: {
+					id: 3,
+					title: 'third'
+				}
+			},
+			links: [{
+				ideaIdFrom: 2,
+				ideaIdTo: 3,
+				attr: { name: 'val' }
+			}]
+		}),
+			result;
+
+		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
+
+		expect(result.links).toEqual({ '2_3' : { ideaIdFrom : 2, ideaIdTo : 3, attr : { name: 'val' } } });
+	});
 });
 describe('MAPJS.frame', function () {
 	'use strict';
@@ -546,7 +572,6 @@ describe('New layout', function () {
 							height: 100
 						}
 					},
-					links: {},
 					connectors: {}
 				});
 			});
@@ -595,7 +620,6 @@ describe('New layout', function () {
 							height: 80
 						}
 					},
-					links: {},
 					connectors: {
 						'2': {
 							from: 1,
@@ -668,7 +692,6 @@ describe('New layout', function () {
 							height: 30
 						}
 					},
-					links: {},
 					connectors: {
 						'2': {
 							from: 1,
