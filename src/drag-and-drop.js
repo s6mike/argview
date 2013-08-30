@@ -24,8 +24,8 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			/*jslint eqeq: true*/
 			return x >= node.x &&
 				y >= node.y &&
-				x <= node.x + node.width - 2 * 10 &&
-				y <= node.y + node.height - 2 * 10;
+				x <= node.x + node.width &&
+				y <= node.y + node.height;
 		},
 		canDropOnNode = function (id, x, y, node) {
 			/*jslint eqeq: true*/

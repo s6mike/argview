@@ -326,7 +326,12 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		return _.sortBy(includedRanks, Math.abs);
 	},
 	includedSubIdeas = function () {
-		return _.pick(content.ideas, includedSubIdeaKeys());
+		//return _.pick(content.ideas, includedSubIdeaKeys());
+		var result = [];
+		_.each(includedSubIdeaKeys(), function (key) {
+			result.push (content.ideas[key]);
+		});
+		return result;
 	};
 	nodeDimensions = dimensionProvider(content);
 	_.extend(options, nodeDimensions);
@@ -363,6 +368,7 @@ MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
 		},
 		margin = margin || 20;
 	positiveTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, positive);
+	console.log(JSON.stringify(positiveTree));
 	negativeTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, negative);
 	layout = positiveTree.toLayout();
 	negativeLayout = negativeTree.toLayout();
@@ -377,4 +383,5 @@ MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
 };
 /*
 MAPJS.calculateLayout = MAPJS.calculateLayoutNew; 
+
 /**/
