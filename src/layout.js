@@ -302,7 +302,7 @@ MAPJS.Outline.fromDimensions = function (dimensions) {
 				}]
 	);
 };
-MAPJS.calculateTree = function (content, dimensionProvider, margin) {
+MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate) {
 	var options = {
 		id: content.id,
 		title: content.title,
@@ -317,41 +317,64 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin) {
 			treeArray[i].deltaY += dy; 
 		}	
 	}, 
-	shouldIncludeSubIdeas = function (content) {
+	shouldIncludeSubIdeas = function () {
 		return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed)); 
+	},
+	includedSubIdeaKeys = function () {
+		var allRanks = _.map(_.keys (content.ideas), parseFloat),
+			includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id);}) : allRanks;
+		return _.sortBy(includedRanks, Math.abs);
+	},
+	includedSubIdeas = function () {
+		return _.pick(content.ideas, includedSubIdeaKeys());
 	};
 	nodeDimensions = dimensionProvider(content);
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
-	if (shouldIncludeSubIdeas(content)) {
-		options.subtrees = _.map(content.sortedSubIdeas(), function (i) {
-			return MAPJS.calculateTree(i, dimensionProvider, margin);
+	if (shouldIncludeSubIdeas()) {
+		options.subtrees = _.map(includedSubIdeas(), function (i) {
+			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
-		var suboutline = options.subtrees[0].outline;
-		for (i = 1; i< options.subtrees.length; i++) {
-			suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
-			options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
+		if (!_.isEmpty(options.subtrees)) {
+			var suboutline = options.subtrees[0].outline;
+			for (i = 1; i< options.subtrees.length; i++) {
+				suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
+				options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
+			}
+			moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
+			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
 		}
-		moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
-		options.outline = suboutline.insertAtStart(nodeDimensions, margin);
 	}
 	return new MAPJS.Tree(options);
 };
-/*
-MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
-	var tree, layout,
+
+MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
+	var positiveTree, negativeTree, layout, negativeLayout,
 		setDefaultStyles = function (nodes) {
 			_.each(nodes, function (node) {
 				node.attr = node.attr || {};
 				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level == 1)? 'root': 'nonRoot'], node.attr.style); 
 			});
-		};
-	tree = MAPJS.calculateTree(idea, function (idea) { 
+		},
+		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0;},
+		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0;},
+		titleDimensionProvider = function (idea) {
 			return dimensionProvider(idea.title); 
-		}, margin || 20),
-	layout = tree.toLayout();
-	setDefaultStyles(layout.nodes);
-	layout.links = MAPJS.layoutLinks(idea, layout.nodes);
-	return layout;
+		},
+		margin = margin || 20;
+	positiveTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, positive);
+	negativeTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, negative);
+	layout = positiveTree.toLayout();
+	negativeLayout = negativeTree.toLayout();
+	_.each(negativeLayout.nodes, function (n) {
+		n.x = -1 * n.x - n.width;
+	});
+	_.extend(negativeLayout.nodes, layout.nodes);
+	_.extend(negativeLayout.connectors, layout.connectors);
+	setDefaultStyles(negativeLayout.nodes);
+	negativeLayout.links = MAPJS.layoutLinks(idea, negativeLayout.nodes);
+	return negativeLayout;
 };
+/*
+MAPJS.calculateLayout = MAPJS.calculateLayoutNew; 
 /**/

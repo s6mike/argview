@@ -515,41 +515,38 @@ describe('New layout', function () {
 					deltaY: 80
 				});
 			});
-			it('should convert a root node with a two children into a tree', function () {
+			it('should only include nodes where rank and parent predicate says so', function () {
 				var content = MAPJS.content({
-						id: 1,
-						"title": "118x34",
+						id: 11,
+						title: '200x100',
 						ideas: {
 							100: {
 								id: 2,
-								title: "23x34",
-								ideas: {
-									100: {
-										id: 4,
-										title: "113x34"
-									}
-								}
+								title: '300x80'
 							},
 							200: {
 								id: 3,
-								title: "107x34",
-								ideas: {
-									31: {
-										id: 31,
-										title: "23x34"
-									},
-									32: {
-										id: 32,
-										title: "23x34"
-									}
-								}
+								title: '100x30'
 							}
 						}
 					}),
 					result;
-
-				result = MAPJS.calculateTree(content, dimensionProvider, 10);
-				console.log(JSON.stringify(result, null, 2));
+				result = MAPJS.calculateTree(content, dimensionProvider, 10, function (rank, parentId) { return parentId !== 11 || rank !== 200; });
+				expect(result).toPartiallyMatch({
+					id: 11,
+					title: '200x100',
+					width: 200,
+					height: 100
+				});
+				expect(result.subtrees[0]).toPartiallyMatch({
+					id: 2,
+					title: '300x80',
+					width: 300,
+					height: 80,
+					deltaX: 210,
+					deltaY: 10
+				});
+				expect(result.subtrees[1]).toBeUndefined();
 			});
 		});
 
