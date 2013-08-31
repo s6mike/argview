@@ -219,21 +219,38 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return result;
 		},
 		nodeDimensions = dimensionProvider(content),
-		suboutline, i;
+		positionOutlineSubtrees = function (subtrees) {
+			var suboutline;
+			_.each(subtrees, function (subtree) {
+				if (!suboutline) {
+					suboutline = subtree.outline;
+				} else {
+					suboutline = subtree.outline.stackBelow(suboutline, margin);
+					subtree.deltaY = suboutline.initialHeight() - subtree.height;
+				}
+			});
+			moveTrees(subtrees, nodeDimensions.width + margin, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
+			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
+		},
+		positionFixedSubtrees = function (subtrees) {
+			_.each(subtrees, function (subtree) {
+				subtree.deltaX = subtree.attr.position[0] + nodeDimensions.width * 0.5 - subtree.width * 0.5;
+				subtree.deltaY = subtree.attr.position[1] + nodeDimensions.height * 0.5 - subtree.height * 0.5;
+			});
+		},
+		subtreesByPosition;
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
 	if (shouldIncludeSubIdeas()) {
 		options.subtrees = _.map(includedSubIdeas(), function (i) {
 			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
-		if (!_.isEmpty(options.subtrees)) {
-			suboutline = options.subtrees[0].outline;
-			for (i = 1; i < options.subtrees.length; i += 1) {
-				suboutline = options.subtrees[i].outline.stackBelow(suboutline, margin);
-				options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
-			}
-			moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
-			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
+		subtreesByPosition = _.groupBy(options.subtrees, function (subtree) { return !subtree.attr || !subtree.attr.position; });
+		if (!_.isEmpty(subtreesByPosition[true])) {
+			positionOutlineSubtrees(subtreesByPosition[true]);
+		}
+		if (!_.isEmpty(subtreesByPosition[false])) {
+			positionFixedSubtrees(subtreesByPosition[false]);
 		}
 	}
 	return new MAPJS.Tree(options);

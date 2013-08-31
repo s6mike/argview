@@ -401,6 +401,47 @@ describe('New layout', function () {
 				});
 				expect(result.subtrees[1]).toBeUndefined();
 			});
+			it('should exclude nodes with set position from automatic layout, and position the center relative to the center of the parent node', function () {
+				var content = MAPJS.content({
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80'
+							},
+							200: {
+								id: 3,
+								title: '100x30',
+								attr: { position: [-300, -400] }
+							}
+						}
+					}),
+					result;
+				result = MAPJS.calculateTree(content, dimensionProvider, 10);
+				expect(result).toPartiallyMatch({
+					id: 11,
+					title: '200x100',
+					width: 200,
+					height: 100
+				});
+				expect(result.subtrees[0]).toPartiallyMatch({
+					id: 2,
+					title: '300x80',
+					width: 300,
+					height: 80,
+					deltaX: 210,
+					deltaY: 10
+				});
+				expect(result.subtrees[1]).toPartiallyMatch({
+					id: 3,
+					title: '100x30',
+					width: 100,
+					height: 30,
+					deltaX: -250,
+					deltaY: -365
+				});
+			});
 		});
 
 		describe('conversion to layout', function () {
