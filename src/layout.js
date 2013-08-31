@@ -165,17 +165,18 @@
 	};
 }());
 MAPJS.Outline = function (topBorder, bottomBorder) {
+	'use strict';
 	var shiftBorder = function (border, deltaH) {
 		return _.map (border, function (segment) {
-			return { 
+			return {
 				l: segment.l,
 				h: segment.h + deltaH
-			}
+			};
 		});
-	}
+	};
 	this.initialHeight = function () {
 		return this.bottom[0].h - this.top[0].h;
-	}
+	};
 	this.borders = function () {
 		return _.pick(this, 'top', 'bottom');
 	};
@@ -183,13 +184,17 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		var i = 0, j = 0, result = 0, li = 0, lj = 0;
 		while (i < this.bottom.length && j < outline.top.length) {
 			result = Math.max(result, this.bottom[i].h - outline.top[j].h);
-			if (li + this.bottom[i].l < lj + outline.top[j].l) {				
-				li += this.bottom[i].l; i++;
-			} else if (li + this.bottom[i].l === lj + outline.top[j].l) {				
-				li += this.bottom[i].l; i++;				
-				lj += outline.top[j].l; j++;
-			} else {				
-				lj += outline.top[j].l; j++;
+			if (li + this.bottom[i].l < lj + outline.top[j].l) {
+				li += this.bottom[i].l;
+				i += 1;
+			} else if (li + this.bottom[i].l === lj + outline.top[j].l) {
+				li += this.bottom[i].l;
+				i += 1;
+				lj += outline.top[j].l;
+				j += 1;
+			} else {
+				lj += outline.top[j].l;
+				j += 1;
 			}
 		}
 		return result;
@@ -204,40 +209,40 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		);
 	};
 	this.insertAtStart = function (dimensions, margin) {
-			var suboutlineHeight = this.initialHeight(),
-				alignment = - this.top[0].h - suboutlineHeight * 0.5, 
-				topBorder = shiftBorder(this.top, alignment),
-				bottomBorder = shiftBorder(this.bottom, alignment),
-				easeIn = function (border) {
-					border[0].l *= 0.5;
-					border[1].l += border[0].l;
-				};
-
-			topBorder[0].l += margin;
-			bottomBorder[0].l += margin;
-			
-			topBorder.unshift({h: - 0.5 * dimensions.height, l: dimensions.width});
-			bottomBorder.unshift({h: 0.5 * dimensions.height, l: dimensions.width});
-			if (topBorder[0].h > topBorder[1].h) { 
-				easeIn(topBorder);
-			}
-			if (bottomBorder[0].h < bottomBorder[1].h) { 
-				easeIn(bottomBorder);
-			}
-			return new MAPJS.Outline(topBorder, bottomBorder);
-	}
+		var suboutlineHeight = this.initialHeight(),
+			alignment = - this.top[0].h - suboutlineHeight * 0.5,
+			topBorder = shiftBorder(this.top, alignment),
+			bottomBorder = shiftBorder(this.bottom, alignment),
+			easeIn = function (border) {
+				border[0].l *= 0.5;
+				border[1].l += border[0].l;
+			};
+		topBorder[0].l += margin;
+		bottomBorder[0].l += margin;
+		topBorder.unshift({h: - 0.5 * dimensions.height, l: dimensions.width});
+		bottomBorder.unshift({h: 0.5 * dimensions.height, l: dimensions.width});
+		if (topBorder[0].h > topBorder[1].h) {
+			easeIn(topBorder);
+		}
+		if (bottomBorder[0].h < bottomBorder[1].h) {
+			easeIn(bottomBorder);
+		}
+		return new MAPJS.Outline(topBorder, bottomBorder);
+	};
 	this.top = topBorder.slice();
 	this.bottom = bottomBorder.slice();
 };
 MAPJS.Outline.borderLength = function (border) {
+	'use strict';
 	return _.reduce(border, function (seed, el) {
 		return seed + el.l;
 	}, 0);
 };
 MAPJS.Outline.borderSegmentIndexAt = function (border, length) {
+	'use strict';
 	var l = 0, i = -1;
-	while (l <= length) {		
-		i++;
+	while (l <= length) {
+		i += 1;
 		if (i>=border.length) {
 			return -1;
 		}
@@ -246,6 +251,7 @@ MAPJS.Outline.borderSegmentIndexAt = function (border, length) {
 	return i;
 };
 MAPJS.Outline.extendBorder = function (originalBorder, extension) {
+	'use strict';
 	var result = originalBorder.slice(),
 		origLength = MAPJS.Outline.borderLength(originalBorder),
 		i = MAPJS.Outline.borderSegmentIndexAt(extension, origLength),
@@ -258,6 +264,7 @@ MAPJS.Outline.extendBorder = function (originalBorder, extension) {
 	return result;
 };
 MAPJS.Tree = function (options) {
+	'use strict';
 	_.extend(this, options);
 	this.toLayout = function (level, x, y, parentId) {
 		x = x || 0;
@@ -272,8 +279,8 @@ MAPJS.Tree = function (options) {
 			self.x = -0.5 * this.width;
 			self.y = -0.5 * this.height;
 		} else {
-			self.x = x + this.deltaX || 0,
-			self.y = y + this.deltaY || 0
+			self.x = x + this.deltaX || 0;
+			self.y = y + this.deltaY || 0;
 		}
 		result.nodes[this.id] = self;
 		if (parentId !== undefined) {
@@ -288,52 +295,54 @@ MAPJS.Tree = function (options) {
 				_.extend(result.nodes, subLayout.nodes);
 				_.extend(result.connectors, subLayout.connectors);
 			});
-		} 
+		}
 		return result;
 	};
 };
 MAPJS.Outline.fromDimensions = function (dimensions) {
+	'use strict';
 	return new MAPJS.Outline([{
-					h: -0.5 * dimensions.height,
-					l: dimensions.width
-				}], [{
-					h: 0.5 * dimensions.height,
-					l: dimensions.width
-				}]
+			h: -0.5 * dimensions.height,
+			l: dimensions.width
+		}], [{
+			h: 0.5 * dimensions.height,
+			l: dimensions.width
+		}]
 	);
 };
 MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate) {
+	'use strict';
 	var options = {
 		id: content.id,
 		title: content.title,
 		attr: content.attr,
 		deltaY: 0,
 		deltaX: 0
-	}, 
-	moveTrees = function (treeArray, dx, dy) {
-		var i;
-		for (i = 0; i< treeArray.length; i++ ){ 
-			treeArray[i].deltaX += dx; 
-			treeArray[i].deltaY += dy; 
-		}	
-	}, 
-	shouldIncludeSubIdeas = function () {
-		return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed)); 
 	},
-	includedSubIdeaKeys = function () {
-		var allRanks = _.map(_.keys (content.ideas), parseFloat),
-			includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id);}) : allRanks;
-		return _.sortBy(includedRanks, Math.abs);
-	},
-	includedSubIdeas = function () {
-		//return _.pick(content.ideas, includedSubIdeaKeys());
-		var result = [];
-		_.each(includedSubIdeaKeys(), function (key) {
-			result.push (content.ideas[key]);
-		});
-		return result;
-	};
-	nodeDimensions = dimensionProvider(content);
+		moveTrees = function (treeArray, dx, dy) {
+			var i;
+			for (i = 0; i< treeArray.length; i += 1) {
+				treeArray[i].deltaX += dx;
+				treeArray[i].deltaY += dy;
+			}
+		},
+		shouldIncludeSubIdeas = function () {
+			return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed));
+		},
+		includedSubIdeaKeys = function () {
+			var allRanks = _.map(_.keys (content.ideas), parseFloat),
+				includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id);}) : allRanks;
+			return _.sortBy(includedRanks, Math.abs);
+		},
+		includedSubIdeas = function () {
+			//return _.pick(content.ideas, includedSubIdeaKeys());
+			var result = [];
+			_.each(includedSubIdeaKeys(), function (key) {
+				result.push (content.ideas[key]);
+			});
+			return result;
+		},
+		nodeDimensions = dimensionProvider(content);
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
 	if (shouldIncludeSubIdeas()) {
@@ -341,8 +350,8 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
 		if (!_.isEmpty(options.subtrees)) {
-			var suboutline = options.subtrees[0].outline;
-			for (i = 1; i< options.subtrees.length; i++) {
+			var suboutline = options.subtrees[0].outline, i;
+			for (i = 1; i< options.subtrees.length; i += 1) {
 				suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
 				options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
 			}
@@ -354,21 +363,21 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 };
 
 MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
+	'use strict';
 	var positiveTree, negativeTree, layout, negativeLayout,
 		setDefaultStyles = function (nodes) {
 			_.each(nodes, function (node) {
 				node.attr = node.attr || {};
-				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level == 1)? 'root': 'nonRoot'], node.attr.style); 
+				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level === 1)? 'root': 'nonRoot'], node.attr.style);
 			});
 		},
 		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0;},
 		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0;},
 		titleDimensionProvider = function (idea) {
-			return dimensionProvider(idea.title); 
-		},
-		margin = margin || 20;
+			return dimensionProvider(idea.title);
+		};
+	margin = margin || 20;
 	positiveTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, positive);
-	console.log(JSON.stringify(positiveTree));
 	negativeTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, negative);
 	layout = positiveTree.toLayout();
 	negativeLayout = negativeTree.toLayout();
@@ -381,7 +390,6 @@ MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
 	negativeLayout.links = MAPJS.layoutLinks(idea, negativeLayout.nodes);
 	return negativeLayout;
 };
-/*
 MAPJS.calculateLayout = MAPJS.calculateLayoutNew; 
 
 /**/

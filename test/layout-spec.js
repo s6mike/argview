@@ -755,6 +755,52 @@ describe('New layout', function () {
 
 			expect(result).toBe(56);
 		});
+		it('should calculate spacing between even more complex outlines', function () {
+			var outline1 = new MAPJS.Outline([{
+                "h": -17,
+                "l": 57.5
+              },
+              {
+                "l": 107.5,
+                "h": -71
+              },
+              {
+                "l": 85,
+                "h": 37
+              }
+            ], [
+              {
+                "h": 17,
+                "l": 57.5
+              },
+              {
+                "l": 192.5,
+                "h": 71
+              }
+            ]),
+				outline2 = new MAPJS.Outline([
+          {
+            "h": -17,
+            "l": 30
+          },
+          {
+            "l": 50,
+            "h": -17
+          }
+        ], [
+          {
+            "h": 17,
+            "l": 30
+          },
+          {
+            "l": 50,
+            "h": 17
+          }
+        ]),				
+				result = outline1.spacingAbove(outline2);
+
+			expect(result).toBe(88);
+		});
 		describe('borderLength', function () {
 			it('should calculate length of a border', function () {
 				var result;
@@ -794,7 +840,6 @@ describe('New layout', function () {
 				expect(result.top).toEqual([{ h: -10, l: 15},  { h: -40, l: 145}]);
 				expect(result.bottom).toEqual([{ h: 10, l: 15}, {h: 40, l: 145}]);
 			});
-
 		});
 		describe('borderSegmentIndexAt',
 			[
@@ -858,6 +903,58 @@ describe('New layout', function () {
 				top: [{ h: -5, l: 6}, {h: -15, l: 8}],
 				bottom: [{h: 45, l: 12}, {h: 15, l: 2}]
 			});
+		});
+		it('should be able to stack outlines with more complex borders', function () {
+			var outline1 = new MAPJS.Outline([{
+                "h": -17,
+                "l": 57.5
+              },
+              {
+                "l": 107.5,
+                "h": -71
+              },
+              {
+                "l": 85,
+                "h": 37
+              }
+            ], [
+              {
+                "h": 17,
+                "l": 57.5
+              },
+              {
+                "l": 192.5,
+                "h": 71
+              }
+            ]),
+				outline2 = new MAPJS.Outline([
+          {
+            "h": -17,
+            "l": 30
+          },
+          {
+            "l": 50,
+            "h": -17
+          }
+        ], [
+          {
+            "h": 17,
+            "l": 30
+          },
+          {
+            "l": 50,
+            "h": 17
+          }
+        ]),
+				result;
+
+			result = outline2.stackBelow(outline1, 10);
+
+			expect(result.borders()).toEqual({
+				top : [ { h : -17, l : 57.5 }, { l : 107.5, h : -71 }, { l : 85, h : 37 } ], bottom : [ { l : 30, h : 115 }, { l : 50, h : 115 }, { h : 71, l : 170 } ]
+			});
+
+			//
 		});
 	});
 });
