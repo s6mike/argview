@@ -1,5 +1,5 @@
 /*global describe, expect, it, MAPJS, beforeEach, afterEach*/
-describe('layout', function () {
+describe('calculateLayout', function () {
 	'use strict';
 	var dimensionProvider = function (text) {
 		var length = (text || '').length + 1;
@@ -8,153 +8,6 @@ describe('layout', function () {
 			height: length * 10
 		};
 	};
-	describe('Calculating dimensions', function () {
-		it('should return two margins plus text width/height as dimensions of a single idea', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '1'
-				}),
-				result = MAPJS.calculateDimensions(contentAggregate, dimensionProvider, 10);
-			expect(result).toEqual({
-				id: 7,
-				title: '1',
-				width: 60,
-				height: 40,
-				Width: 60,
-				Height: 40,
-				WidthLeft: 0
-			});
-		});
-		it('should return (width1 + width2 + 4 * margin, max(height1, height2) + 2 * margin)', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '1',
-					ideas: {
-						1: {
-							id: 8,
-							title: '11'
-						}
-					}
-				}),
-				result = MAPJS.calculateDimensions(contentAggregate, dimensionProvider, 10);
-			expect(result).toEqual({
-				id: 7,
-				title: '1',
-				width: 60,
-				height: 40,
-				Width: 140,
-				Height: 50,
-				WidthLeft: 0,
-				ideas: {
-					1: {
-						id: 8,
-						title: '11',
-						width: 80,
-						height: 50,
-						Width: 80,
-						Height: 50,
-						WidthLeft: 0
-					}
-				}
-			});
-		});
-		it('should disregard children of collapsed nodes', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '1',
-					attr: { collapsed: true },
-					ideas: {
-						1: {
-							id: 8,
-							title: '11'
-						}
-					}
-				}),
-				result = MAPJS.calculateDimensions(contentAggregate, dimensionProvider, 10);
-			expect(result).toPartiallyMatch({
-				id: 7,
-				Width: 60,
-				Height: 40,
-				WidthLeft: 0,
-				attr: {collapsed: true}
-			});
-		});
-		it('', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '7',
-					ideas: {
-						'-1': {
-							id: 8,
-							title: '8'
-						},
-						1: {
-							id: 9,
-							title: '9'
-						}
-					}
-				}),
-				result = MAPJS.calculateDimensions(contentAggregate, dimensionProvider, 10);
-			expect(result.Width).toBe(180);
-		});
-	});
-	describe('Calculating positions', function () {
-		it('', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '1'
-				}),
-				result = MAPJS.calculatePositions(contentAggregate, dimensionProvider, 10, 0, 0);
-			expect(result).toEqual({
-				id: 7,
-				title: '1',
-				x: 10,
-				y: 10,
-				width: 60,
-				height: 40,
-				Width: 60,
-				Height: 40,
-				WidthLeft: 0
-			});
-		});
-		it('', function () {
-			var contentAggregate = MAPJS.content({
-					id: 7,
-					title: '1',
-					ideas: {
-						1: {
-							id: 8,
-							title: '11'
-						}
-					}
-				}),
-				result = MAPJS.calculatePositions(contentAggregate, dimensionProvider, 10, 0, 0);
-			expect(result).toEqual({
-				id: 7,
-				title: '1',
-				x: 10,
-				y: 15,
-				width: 60,
-				height: 40,
-				Width: 140,
-				Height: 50,
-				WidthLeft: 0,
-				ideas: {
-					1: {
-						id: 8,
-						title: '11',
-						x: 70,
-						y: 10,
-						width: 80,
-						height: 50,
-						Width: 80,
-						Height: 50,
-						WidthLeft: 0
-					}
-				}
-			});
-		});
-	});
 	it('should assign root node level 1', function () {
 		var contentAggregate = MAPJS.content({ id: 7 }),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
@@ -194,8 +47,8 @@ describe('layout', function () {
 			id: 7,
 			x: -60,
 			y: -30,
-			width: 140,
-			height: 80,
+			width: 120,
+			height: 60,
 			title: 'Hello',
 			level: 1
 		});

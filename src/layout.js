@@ -1,173 +1,51 @@
 /*jslint nomen: true*/
 /*global _, Color, MAPJS*/
-(function () {
+MAPJS.defaultStyles = {
+	root: {background: '#22AAE0'},
+	nonRoot: {background: '#E0E0E0'}
+};
+MAPJS.layoutLinks = function (idea, visibleNodes) {
 	'use strict';
-	MAPJS.calculateDimensions = function calculateDimensions(idea, dimensionProvider, margin) {
-		var dimensions = dimensionProvider(idea.title),
-			result = _.extend(_.pick(idea, ['id', 'title', 'attr']), {
-				width: dimensions.width + 2 * margin,
-				height: dimensions.height + 2 * margin
-			}),
-			leftOrRight,
-			subIdeaWidths = [0, 0],
-			subIdeaHeights = [0, 0],
-			subIdeaRank,
-			subIdea,
-			subIdeaDimensions;
-		if (idea.ideas && !idea.getAttr('collapsed')) {
-			result.ideas = {};
-			for (subIdeaRank in idea.ideas) {
-				subIdea = idea.ideas[subIdeaRank];
-				subIdeaDimensions = calculateDimensions(subIdea, dimensionProvider, margin);
-				result.ideas[subIdeaRank] = subIdeaDimensions;
-				leftOrRight = subIdeaRank > 0 ? 1 : 0;
-				subIdeaWidths[leftOrRight] = Math.max(subIdeaWidths[leftOrRight], subIdeaDimensions.Width);
-				subIdeaHeights[leftOrRight] += subIdeaDimensions.Height;
-			}
-		}
-		result.WidthLeft = subIdeaWidths[0] || 0;
-		result.Width = result.width + subIdeaWidths[0] + subIdeaWidths[1];
-		result.Height = Math.max(result.height, subIdeaHeights[0], subIdeaHeights[1]);
-		return result;
-	};
-	MAPJS.calculatePositions = function calculatePositions(idea, dimensionProvider, margin, x0, y0, result, isLeftSubtree) {
-		var ranks,
-			subIdeaRank,
-			i,
-			subIdeaDimensions,
-			leftOrRight,
-			totalHeights = [0, 0],
-			subIdeaCurrentY0 = [y0, y0];
-		result = result || MAPJS.calculateDimensions(idea, dimensionProvider, margin);
-		x0 += result.WidthLeft;
-		result.x = x0 + margin;
-		result.y = y0 + 0.5 * (result.Height - result.height) + margin;
-		if (result.ideas) {
-			ranks = [];
-			for (subIdeaRank in result.ideas) {
-				ranks.push(parseFloat(subIdeaRank));
-				subIdeaDimensions = result.ideas[subIdeaRank];
-				if (isLeftSubtree) {
-					subIdeaRank = -subIdeaRank;
-				}
-				totalHeights[subIdeaRank < 0 ? 0 : 1] += subIdeaDimensions.Height;
-			}
-			subIdeaCurrentY0[0] += 0.5 * (result.Height - totalHeights[0]);
-			subIdeaCurrentY0[1] += 0.5 * (result.Height - totalHeights[1]);
-			ranks.sort(function ascending(firstRank, secondRank) {
-				if (firstRank >= 0 && secondRank >= 0) {
-					return secondRank - firstRank;
-				}
-				if (firstRank < 0 && secondRank < 0) {
-					return firstRank - secondRank;
-				}
-				return secondRank - firstRank;
-			});
-			for (i = ranks.length - 1; i >= 0; i -= 1) {
-				subIdeaRank = ranks[i];
-				subIdeaDimensions = result.ideas[subIdeaRank];
-				if (isLeftSubtree) {
-					subIdeaRank = -subIdeaRank;
-				}
-				leftOrRight = subIdeaRank > 0 ? 1 : 0;
-				calculatePositions(undefined, dimensionProvider, margin, x0 + (leftOrRight ? result.width : -subIdeaDimensions.width), subIdeaCurrentY0[leftOrRight], subIdeaDimensions, isLeftSubtree || leftOrRight === 0);
-				subIdeaCurrentY0[leftOrRight] += subIdeaDimensions.Height;
-			}
-		}
-		return result;
-	};
-	MAPJS.defaultStyles = {
-		root: {background: '#22AAE0'},
-		nonRoot: {background: '#E0E0E0'}
-	};
-	MAPJS.layoutLinks = function (idea, visibleNodes) {
-		var result = {};
-		_.each(idea.links, function (link) {
-			if (visibleNodes[link.ideaIdFrom] && visibleNodes[link.ideaIdTo]) {
-				result[link.ideaIdFrom + '_' + link.ideaIdTo] = {
-					ideaIdFrom: link.ideaIdFrom,
-					ideaIdTo: link.ideaIdTo,
-					attr: _.clone(link.attr)
-				};
-				//todo - clone
-			}
-		});
-		return result;
-	};
-	MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
-		margin = margin || 10;
-		var result = {
-			nodes: {},
-			connectors: {},
-			links: {}
-		},
-			root = MAPJS.calculatePositions(idea, dimensionProvider, margin, 0, 0),
-			calculateLayoutInner = function (positions, level) {
-				var subIdeaRank, from, to, isRoot = level === 1,
-					defaultStyle = MAPJS.defaultStyles[isRoot ? 'root' : 'nonRoot'],
-					node = _.extend(_.pick(positions, ['id', 'width', 'height', 'title', 'attr']), {
-						x: positions.x - root.x - 0.5 * root.width + margin,
-						y: positions.y - root.y - 0.5 * root.height + margin,
-						level: level
-					});
-				node.attr = node.attr || {};
-				node.attr.style = _.extend({}, defaultStyle, node.attr.style);
-				result.nodes[positions.id] = node;
-				if (positions.ideas) {
-					for (subIdeaRank in positions.ideas) {
-						calculateLayoutInner(positions.ideas[subIdeaRank], level + 1);
-						from = positions.id;
-						to = positions.ideas[subIdeaRank].id;
-						result.connectors[to] = {
-							from: from,
-							to: to
-						};
-					}
-				}
+	var result = {};
+	_.each(idea.links, function (link) {
+		if (visibleNodes[link.ideaIdFrom] && visibleNodes[link.ideaIdTo]) {
+			result[link.ideaIdFrom + '_' + link.ideaIdTo] = {
+				ideaIdFrom: link.ideaIdFrom,
+				ideaIdTo: link.ideaIdTo,
+				attr: _.clone(link.attr)
 			};
-		MAPJS.LayoutCompressor.compress(root);
-		calculateLayoutInner(root, 1);
-		/*
-		_.each(idea.links, function (link) {
-			if (result.nodes[link.ideaIdFrom] && result.nodes[link.ideaIdTo]) {
-				result.links[link.ideaIdFrom + '_' + link.ideaIdTo] = {
-					ideaIdFrom: link.ideaIdFrom,
-					ideaIdTo: link.ideaIdTo,
-					attr: _.clone(link.attr)
-				};
-				//todo - clone
-			}
-		});
-		*/
-		result.links = MAPJS.layoutLinks(idea, result.nodes);
-		return result;
-	};
-	MAPJS.calculateFrame = function (nodes, margin) {
-		margin = margin || 0;
-		var result = {
-			top: _.min(nodes, function (node) {return node.y; }).y - margin,
-			left: _.min(nodes, function (node) {return node.x; }).x - margin
-		};
-		result.width = margin + _.max(_.map(nodes, function (node) { return node.x + node.width; })) - result.left;
-		result.height = margin + _.max(_.map(nodes, function (node) { return node.y + node.height; })) - result.top;
-		return result;
-	};
-	MAPJS.contrastForeground = function (background) {
-		/*jslint newcap:true*/
-		var luminosity = Color(background).luminosity();
-		if (luminosity < 0.5) {
-			return '#EEEEEE';
+			//todo - clone
 		}
-		if (luminosity < 0.9) {
-			return '#4F4F4F';
-		}
-		return '#000000';
+	});
+	return result;
+};
+MAPJS.calculateFrame = function (nodes, margin) {
+	'use strict';
+	margin = margin || 0;
+	var result = {
+		top: _.min(nodes, function (node) {return node.y; }).y - margin,
+		left: _.min(nodes, function (node) {return node.x; }).x - margin
 	};
-}());
+	result.width = margin + _.max(_.map(nodes, function (node) { return node.x + node.width; })) - result.left;
+	result.height = margin + _.max(_.map(nodes, function (node) { return node.y + node.height; })) - result.top;
+	return result;
+};
+MAPJS.contrastForeground = function (background) {
+	'use strict';
+	/*jslint newcap:true*/
+	var luminosity = Color(background).luminosity();
+	if (luminosity < 0.5) {
+		return '#EEEEEE';
+	}
+	if (luminosity < 0.9) {
+		return '#4F4F4F';
+	}
+	return '#000000';
+};
 MAPJS.Outline = function (topBorder, bottomBorder) {
 	'use strict';
 	var shiftBorder = function (border, deltaH) {
-		return _.map (border, function (segment) {
+		return _.map(border, function (segment) {
 			return {
 				l: segment.l,
 				h: segment.h + deltaH
@@ -200,9 +78,9 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		return result;
 	};
 	this.stackBelow = function (outline, margin) {
-		var spacing = outline.spacingAbove(this);
-		var top = MAPJS.Outline.extendBorder(outline.top, shiftBorder(this.top, spacing + margin));
-		var bottom = MAPJS.Outline.extendBorder(shiftBorder(this.bottom, spacing + margin), outline.bottom);
+		var spacing = outline.spacingAbove(this),
+			top = MAPJS.Outline.extendBorder(outline.top, shiftBorder(this.top, spacing + margin)),
+			bottom = MAPJS.Outline.extendBorder(shiftBorder(this.bottom, spacing + margin), outline.bottom);
 		return new MAPJS.Outline(
 			top,
 			bottom
@@ -210,7 +88,7 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 	};
 	this.insertAtStart = function (dimensions, margin) {
 		var suboutlineHeight = this.initialHeight(),
-			alignment = - this.top[0].h - suboutlineHeight * 0.5,
+			alignment = -1 * this.top[0].h - suboutlineHeight * 0.5,
 			topBorder = shiftBorder(this.top, alignment),
 			bottomBorder = shiftBorder(this.bottom, alignment),
 			easeIn = function (border) {
@@ -219,7 +97,7 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 			};
 		topBorder[0].l += margin;
 		bottomBorder[0].l += margin;
-		topBorder.unshift({h: - 0.5 * dimensions.height, l: dimensions.width});
+		topBorder.unshift({h: -0.5 * dimensions.height, l: dimensions.width});
 		bottomBorder.unshift({h: 0.5 * dimensions.height, l: dimensions.width});
 		if (topBorder[0].h > topBorder[1].h) {
 			easeIn(topBorder);
@@ -243,7 +121,7 @@ MAPJS.Outline.borderSegmentIndexAt = function (border, length) {
 	var l = 0, i = -1;
 	while (l <= length) {
 		i += 1;
-		if (i>=border.length) {
+		if (i >= border.length) {
 			return -1;
 		}
 		l += border[i].l;
@@ -257,8 +135,8 @@ MAPJS.Outline.extendBorder = function (originalBorder, extension) {
 		i = MAPJS.Outline.borderSegmentIndexAt(extension, origLength),
 		lengthToCut;
 	if (i >= 0) {
-		lengthToCut = MAPJS.Outline.borderLength (extension.slice(0, i + 1));
-		result.push({h:extension[i].h, l: lengthToCut - origLength});
+		lengthToCut = MAPJS.Outline.borderLength(extension.slice(0, i + 1));
+		result.push({h: extension[i].h, l: lengthToCut - origLength});
 		result = result.concat(extension.slice(i + 1));
 	}
 	return result;
@@ -302,13 +180,12 @@ MAPJS.Tree = function (options) {
 MAPJS.Outline.fromDimensions = function (dimensions) {
 	'use strict';
 	return new MAPJS.Outline([{
-			h: -0.5 * dimensions.height,
-			l: dimensions.width
-		}], [{
-			h: 0.5 * dimensions.height,
-			l: dimensions.width
-		}]
-	);
+		h: -0.5 * dimensions.height,
+		l: dimensions.width
+	}], [{
+		h: 0.5 * dimensions.height,
+		l: dimensions.width
+	}]);
 };
 MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate) {
 	'use strict';
@@ -321,7 +198,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 	},
 		moveTrees = function (treeArray, dx, dy) {
 			var i;
-			for (i = 0; i< treeArray.length; i += 1) {
+			for (i = 0; i < treeArray.length; i += 1) {
 				treeArray[i].deltaX += dx;
 				treeArray[i].deltaY += dy;
 			}
@@ -330,19 +207,19 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed));
 		},
 		includedSubIdeaKeys = function () {
-			var allRanks = _.map(_.keys (content.ideas), parseFloat),
-				includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id);}) : allRanks;
+			var allRanks = _.map(_.keys(content.ideas), parseFloat),
+				includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id); }) : allRanks;
 			return _.sortBy(includedRanks, Math.abs);
 		},
 		includedSubIdeas = function () {
-			//return _.pick(content.ideas, includedSubIdeaKeys());
 			var result = [];
 			_.each(includedSubIdeaKeys(), function (key) {
-				result.push (content.ideas[key]);
+				result.push(content.ideas[key]);
 			});
 			return result;
 		},
-		nodeDimensions = dimensionProvider(content);
+		nodeDimensions = dimensionProvider(content),
+		suboutline, i;
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
 	if (shouldIncludeSubIdeas()) {
@@ -350,9 +227,9 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
 		if (!_.isEmpty(options.subtrees)) {
-			var suboutline = options.subtrees[0].outline, i;
-			for (i = 1; i< options.subtrees.length; i += 1) {
-				suboutline=options.subtrees[i].outline.stackBelow(suboutline, margin);
+			suboutline = options.subtrees[0].outline;
+			for (i = 1; i < options.subtrees.length; i += 1) {
+				suboutline = options.subtrees[i].outline.stackBelow(suboutline, margin);
 				options.subtrees[i].deltaY = suboutline.initialHeight() - options.subtrees[i].height;
 			}
 			moveTrees(options.subtrees, options.width + margin, 0.5 * (options.height  - suboutline.initialHeight()));
@@ -362,17 +239,17 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 	return new MAPJS.Tree(options);
 };
 
-MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
+MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	'use strict';
 	var positiveTree, negativeTree, layout, negativeLayout,
 		setDefaultStyles = function (nodes) {
 			_.each(nodes, function (node) {
 				node.attr = node.attr || {};
-				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level === 1)? 'root': 'nonRoot'], node.attr.style);
+				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level === 1) ? 'root' : 'nonRoot'], node.attr.style);
 			});
 		},
-		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0;},
-		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0;},
+		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0; },
+		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0; },
 		titleDimensionProvider = function (idea) {
 			return dimensionProvider(idea.title);
 		};
@@ -390,6 +267,4 @@ MAPJS.calculateLayoutNew = function (idea, dimensionProvider, margin) {
 	negativeLayout.links = MAPJS.layoutLinks(idea, negativeLayout.nodes);
 	return negativeLayout;
 };
-MAPJS.calculateLayout = MAPJS.calculateLayoutNew; 
 
-/**/
