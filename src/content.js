@@ -346,7 +346,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return result;
 			},
 			newIdea,
-			newRank;
+			newRank,
+			oldPosition;
 		if (initialId) {
 			cachedId = parseInt(initialId, 10) - 1;
 		}
@@ -358,6 +359,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (initialId) {
 			invalidateIdCache();
 		}
+		updateAttr(newIdea, 'position');
 		logChange('paste', [parentIdeaId, jsonToPaste, newIdea.id], function () {
 			delete pasteParent.ideas[newRank];
 		}, originSession);
@@ -473,7 +475,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('changeParent', arguments);
 	};
 	commandProcessors.changeParent = function (originSession, ideaId, newParentId) {
-		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId);
+		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId), oldPosition;
 		if (ideaId == newParentId) {
 			return false;
 		}
@@ -496,8 +498,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		oldRank = oldParent.findChildRankById(ideaId);
 		newRank = appendSubIdea(parent, idea);
+		oldPosition = idea.getAttr('position');
+		updateAttr(idea, 'position');
 		delete oldParent.ideas[oldRank];
 		logChange('changeParent', [ideaId, newParentId], function () {
+			updateAttr(idea, 'position', oldPosition);
 			oldParent.ideas[oldRank] = idea;
 			delete parent.ideas[newRank];
 		}, originSession);

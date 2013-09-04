@@ -1,4 +1,4 @@
-/*global MAPJS*/
+/*global _, MAPJS*/
 MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
 	var currentDroppable,
@@ -41,11 +41,9 @@ MAPJS.dragdrop = function (mapModel, stage) {
 		},
 		nodeDragMove = function (id, x, y) {
 			var nodeId, node;
-
 			if (!mapModel.isEditingEnabled()) {
 				return;
 			}
-
 			for (nodeId in mapModel.getCurrentLayout().nodes) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -55,19 +53,41 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			updateCurrentDroppable(undefined);
 		},
-		nodeDragEnd = function (id, x, y, shouldCopy) {
+		nodeDragEnd = function (id, x, y, shouldCopy, nodeX) {
 			var nodeBeingDragged = mapModel.getCurrentLayout().nodes[id],
 				nodeId,
 				node,
 				rootNode = mapModel.getCurrentLayout().nodes[mapModel.getIdea().id],
-				verticallyClosestNode = { id: null, y: Infinity },
-				clone;
+				verticallyClosestNode,
+				clone,
+				idea = mapModel.getIdea(),
+				parentIdea = idea.findParent(id),
+				parentNode,
+				childrenWithAutoPositioning = {},
+				isPositionedManually = !!idea.getAttrById(id, 'position'),
+				reorderThreshold = 30;
 			if (!mapModel.isEditingEnabled()) {
 				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 				return;
 			}
 			updateCurrentDroppable(undefined);
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
+
+			parentNode = mapModel.getCurrentLayout().nodes[parentIdea.id];
+			if (canDropOnNode(id, x, y, parentNode)) {
+				if (isPositionedManually) {
+					idea.updateAttr(id, 'position');
+				} else {
+					mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
+					mapModel.analytic('nodeDragFailed');
+				}
+				return;
+			}
+			_.map(parentIdea.ideas, function (subIdea) {
+				if (!subIdea.getAttr('position')) {
+					childrenWithAutoPositioning[subIdea.id] = subIdea;
+				}
+			});
 			for (nodeId in mapModel.getCurrentLayout().nodes) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -83,8 +103,14 @@ MAPJS.dragdrop = function (mapModel, stage) {
 					}
 					return;
 				}
-				if ((nodeBeingDragged.x === node.x || nodeBeingDragged.x + nodeBeingDragged.width === node.x + node.width) && y < node.y) {
-					if (!verticallyClosestNode || node.y < verticallyClosestNode.y) {
+				if (childrenWithAutoPositioning[node.id] && Math.abs(nodeX - node.x) < reorderThreshold) {
+					if (!verticallyClosestNode) {
+						verticallyClosestNode = {
+							id: null,
+							y: Infinity
+						};
+					}
+					if (y < node.y && node.y < verticallyClosestNode.y) {
 						verticallyClosestNode = node;
 					}
 				}
@@ -92,11 +118,21 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			if (tryFlip(rootNode, nodeBeingDragged, x)) {
 				return;
 			}
-			if (mapModel.getIdea().positionBefore(id, verticallyClosestNode.id)) {
+			if (!isPositionedManually && verticallyClosestNode && mapModel.getIdea().positionBefore(id, verticallyClosestNode.id)) {
 				return;
 			}
-			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
-			mapModel.analytic('nodeDragFailed');
+			idea.updateAttr(
+				id,
+				'position',
+				[
+					x - parentNode.x - 0.5 * parentNode.width,
+					y - parentNode.y - 0.5 * parentNode.height
+				]
+			);
+			/*
+			todo:
+				- updateAttr1
+			*/
 		},
 		screenToStageCoordinates = function (x, y) {
 			return {
@@ -110,7 +146,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		};
-
 	mapModel.addEventListener('nodeCreated', function (n) {
 		var node = findNodeOnStage(n.id);
 		node.on('dragstart', function () {
@@ -134,7 +169,8 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				n.id,
 				stagePoint.x,
 				stagePoint.y,
-				evt.shiftKey
+				evt.shiftKey,
+				node.getX()
 			);
 		});
 	});

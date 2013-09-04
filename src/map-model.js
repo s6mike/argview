@@ -116,7 +116,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		onIdeaChanged = function (command, args, originSession) {
 			var localCommand = (!originSession) || originSession === idea.getSessionKey(),
-				contextNodeId = ((command && command === 'updateAttr') || (!localCommand))  && getCurrentlySelectedIdeaId();
+				contextNodeId = ((command && command === 'updateAttr1') || (!localCommand))  && getCurrentlySelectedIdeaId();
 			revertSelectionForUndo = false;
 			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
 
