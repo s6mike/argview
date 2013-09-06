@@ -74,6 +74,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				if (!oldConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
+				if (oldConnector && oldConnector.isPositioningAbsolute !== newConnector.isPositioningAbsolute) {
+					self.dispatchEvent('connectorPositioningAbsoluteChanged', newConnector);
+				}
 			}
 			for (linkId in newLayout.links) {
 				newLink = newLayout.links[linkId];

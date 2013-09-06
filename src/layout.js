@@ -164,7 +164,8 @@ MAPJS.Tree = function (options) {
 		if (parentId !== undefined) {
 			result.connectors[self.id] = {
 				from: parentId,
-				to: self.id
+				to: self.id,
+				isPositioningAbsolute: !!(self.attr && self.attr.position)
 			};
 		}
 		if (this.subtrees) {

@@ -8,6 +8,7 @@
 		this.shapeTo = config.shapeTo;
 		this.shapeType = 'Connector';
 		Kinetic.Shape.call(this, config);
+		this.setPositioningAbsolute(config.isPositioningAbsolute);
 		this._setDrawFuncs();
 	};
 	horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
@@ -84,6 +85,10 @@
 			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 			context.quadraticCurveTo(conn.from.x, conn.to.y - offset, conn.to.x, conn.to.y);
 			canvas.stroke(this);
+		},
+		setPositioningAbsolute: function (value) {
+			this.isPositioningAbsolute = value;
+			this.setDashArray(value ? [4, 4] : []);
 		}
 	};
 	Kinetic.Util.extend(Kinetic.Connector, Kinetic.Shape);
