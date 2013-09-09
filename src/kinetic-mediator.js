@@ -239,7 +239,7 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 	});
 	mapModel.addEventListener('connectorCreated', function (n) {
 		var connector = new Kinetic.Connector({
-			id: 'connector_' + nodeByIdeaId[n.to],
+			id: 'connector_' + n.to,
 			shapeFrom: nodeByIdeaId[n.from],
 			shapeTo: nodeByIdeaId[n.to],
 			isPositioningAbsolute: n.isPositioningAbsolute,
