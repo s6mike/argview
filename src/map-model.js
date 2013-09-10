@@ -193,7 +193,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.clickNode = function (id, event) {
 		var button = event && event.button;
-		if (event && (event.altKey || event.ctrlKey || event.metaKey)) {
+		if (event && (event.ctrlKey || event.metaKey)) {
 			self.addLink('mouse', id);
 		} else if (event && event.shiftKey) {
 			/*don't stop propagation, this is needed for drop targets*/
