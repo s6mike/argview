@@ -19,20 +19,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		horizontalSelectionThreshold = 300,
 		moveNodes = function (nodes, deltaX, deltaY) {
-			_.each(nodes, function (node) {
-				node.x += deltaX;
-				node.y += deltaY;
-			});
+			if (deltaX || deltaY) {
+				_.each(nodes, function (node) {
+					node.x += deltaX;
+					node.y += deltaY;
+					self.dispatchEvent('nodeMoved', node);
+				});
+			}
 		},
 		isAddLinkMode,
-		updateCurrentLayout = function (newLayout, contextNodeId) {
+		updateCurrentLayout = function (newLayout) {
 			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink;
-			if (contextNodeId && currentLayout.nodes && currentLayout.nodes[contextNodeId] && newLayout.nodes[contextNodeId]) {
-				moveNodes(newLayout.nodes,
-					currentLayout.nodes[contextNodeId].x - newLayout.nodes[contextNodeId].x,
-					currentLayout.nodes[contextNodeId].y - newLayout.nodes[contextNodeId].y
-					);
-			}
 			for (nodeId in currentLayout.connectors) {
 				newConnector = newLayout.connectors[nodeId];
 				oldConnector = currentLayout.connectors[nodeId];
@@ -118,11 +115,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			return currentlySelectedIdeaId || idea.id;
 		},
 		onIdeaChanged = function (command, args, originSession) {
-			var localCommand = (!originSession) || originSession === idea.getSessionKey(),
-				contextNodeId = ((command && command === 'updateAttr') || (!localCommand))  && getCurrentlySelectedIdeaId();
+			var localCommand = (!originSession) || originSession === idea.getSessionKey();
 			revertSelectionForUndo = false;
-			updateCurrentLayout(self.reactivate(layoutCalculator(idea)), contextNodeId);
-
+			updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
 			if (!localCommand) {
 				return;
 			}
@@ -240,6 +235,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
+		var contextNodeId = getCurrentlySelectedIdeaId(),
+			contextNode = function () {
+				return contextNodeId && currentLayout && currentLayout.nodes && currentLayout.nodes[contextNodeId];
+			},
+			oldContext, newContext;
+		oldContext = contextNode();
 		if (isInputEnabled) {
 			self.applyToActivated(function (id) {
 				var node = self.findIdeaById(id);
@@ -248,6 +249,15 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			});
 		}
+		newContext = contextNode();
+		if (oldContext && newContext) {
+			moveNodes(
+				currentLayout.nodes,
+				oldContext.x - newContext.x,
+				oldContext.y - newContext.y
+			);
+		}
+		self.dispatchEvent('layoutChangeComplete');
 	};
 	this.updateStyle = function (source, prop, value) {
 		/*jslint eqeq:true */

@@ -249,54 +249,6 @@ describe('MapModel', function () {
 						commandSession);
 					}
 				},
-				updateAttrs = function (originalSession, commandSession, changeMethod, changeArgs) {
-					var layoutCalculatorLayout,
-						layoutCalculator = function () {
-							return layoutCalculatorLayout;
-						},
-						underTest,
-						anIdea,
-						layoutBefore,
-						layoutAfter;
-					changeMethod = changeMethod || 'updateAttr';
-					changeArgs = changeArgs || [1];
-					layoutBefore = {
-						nodes: {
-							1: {
-								x: 100,
-								y: 200,
-								title: 'First'
-							},
-							2: {
-								x: 0,
-								y: 0,
-								title: 'Second'
-							}
-						}
-					};
-					layoutAfter = {
-						nodes: {
-							1: {
-								x: 110,
-								y: 220,
-								title: 'First'
-							},
-							2: {
-								x: 0,
-								y: 0,
-								title: 'Second'
-							}
-						}
-					},
-					layoutCalculatorLayout = layoutBefore;
-					anIdea = MAPJS.content({title: 'ttt'}, originalSession);
-					underTest = new MAPJS.MapModel(layoutCalculator);
-					underTest.setIdea(anIdea);
-					layoutCalculatorLayout = layoutAfter;
-					underTest.addEventListener('nodeMoved', nodeMovedListener);
-					underTest.selectNode(1);
-					anIdea.dispatchEvent('changed', changeMethod, changeArgs, commandSession);
-				},
 				sessionCombinations = [
 					[undefined, undefined, 'no session'],
 					['originSession', 'originSession', 'a local session'],
@@ -352,45 +304,70 @@ describe('MapModel', function () {
 				});
 			});
 			describe('automatic positioning', function () {
-				sessionCombinations.forEach(function (args) {
-					describe('where there is ' + args[2], function () {
-						it('moves the map to keep selected node in the same position on the screen when updating attributes', function () {
-							updateAttrs(args[0], args[1]);
-							expect(nodeMovedListener.callCount).toBe(1);
-							expect(nodeMovedListener).toHaveBeenCalledWith({
-								x: -10,
-								y: -20,
-								title: 'Second'
-							});
-						});
+				it('moves the map to keep selected node in the same position on the screen when updating attributes', function () {
+					var layoutCalculatorLayout,
+						layoutCalculator = function () {
+							return layoutCalculatorLayout;
+						},
+						layoutBefore = {
+							nodes: {
+								1: {
+									x: 100,
+									y: 200,
+									title: 'First'
+								},
+								2: {
+									x: 0,
+									y: 0,
+									title: 'Second'
+								}
+							}
+						},
+						layoutAfter = {
+							nodes: {
+								1: {
+									x: 110,
+									y: 220,
+									title: 'First'
+								},
+								2: {
+									x: 0,
+									y: 0,
+									title: 'Second'
+								}
+							}
+						},
+						anIdea = MAPJS.content({title: 'ttt', attr: { collapsed: true}}),
+						underTest = new MAPJS.MapModel(layoutCalculator),
+						calls  = []; /* can't use a spy because args are passed by ref, so test can't check for canges in the same object*/
+					
+					layoutCalculatorLayout = layoutBefore;
+					underTest.setIdea(anIdea);
+					underTest.selectNode(1);
+
+					
+					underTest.addEventListener('nodeMoved', function(node) {
+						calls.push(_.clone(node));
 					});
-					it('when there is no session, does not move the map to keep selected node in the same position on the screen when updating the title', function () {
-						updateAttrs(null, null, 'updateTitle', [1, 'X']);
-						expect(nodeMovedListener.callCount).toBe(1);
-						expect(nodeMovedListener).toHaveBeenCalledWith({
+
+					layoutCalculatorLayout = layoutAfter;
+					underTest.collapse('test', false);
+
+					expect(calls).toEqual([
+						{
 							x: 110,
 							y: 220,
 							title: 'First'
-						});
-					});
-					it('when it is a local session, does not move the map to keep selected node in the same position on the screen when updating the title', function () {
-						updateAttrs('local', 'local', 'updateTitle', [1, 'X']);
-						expect(nodeMovedListener.callCount).toBe(1);
-						expect(nodeMovedListener).toHaveBeenCalledWith({
-							x: 110,
-							y: 220,
+						}, {
+							x: 100,
+							y: 200,
 							title: 'First'
-						});
-					});
-					it('when it is a local session, moves the map to keep selected node in the same position on the screen when updating the title', function () {
-						updateAttrs('local', 'remote', 'updateTitle', [1, 'X']);
-						expect(nodeMovedListener.callCount).toBe(1);
-						expect(nodeMovedListener).toHaveBeenCalledWith({
+						}, {
 							x: -10,
 							y: -20,
 							title: 'Second'
-						});
-					});
+						}
+					]);
 				});
 			});
 
