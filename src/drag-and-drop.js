@@ -151,7 +151,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				node.getX(),
 				node.getY(),
 				evt.shiftKey,
-				evt.altKey
+				evt.shiftKey
 			);
 		});
 		node.on('dragend', function (evt) {
@@ -165,7 +165,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				node.getX(),
 				node.getY(),
 				evt.shiftKey,
-				evt.altKey
+				evt.shiftKey
 			);
 		});
 	});
