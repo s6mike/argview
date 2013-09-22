@@ -77,6 +77,16 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		}
 		return result;
 	};
+	this.indent = function (horizontalIndent) {
+		if (!horizontalIndent) {
+			return this;
+		}
+		var top = this.top.slice(),
+			bottom = this.bottom.slice();
+		top[0].l += horizontalIndent;
+		bottom[0].l += horizontalIndent;
+		return new MAPJS.Outline(top, bottom);
+	};
 	this.stackBelow = function (outline, margin) {
 		var spacing = outline.spacingAbove(this),
 			top = MAPJS.Outline.extendBorder(outline.top, shiftBorder(this.top, spacing + margin)),
@@ -206,7 +216,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		deltaY: 0,
 		deltaX: 0
 	},
-		moveTrees = function (treeArray, dx, dy) {
+		moveTrees = function (treeArray,  dy) {
 			var i,
 				tree,
 				oldSpacing,
@@ -218,13 +228,13 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				tree = treeArray[i];
 				if (tree.attr && tree.attr.position) {
 					// TODO: adjust
-					tree.deltaX = tree.attr.position[0];
+					//tree.deltaX = tree.attr.position[0];
 					tree.deltaY = tree.attr.position[1];
 					if (referenceTree === undefined || tree.attr.position[2] > treeArray[referenceTree].attr.position[2]) {
 						referenceTree = i;
 					}
 				} else {
-					tree.deltaX += dx;
+					//tree.deltaX += dx;
 					tree.deltaY += dy;
 				}
 				if (i > 0) {
@@ -258,18 +268,26 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return result;
 		},
 		nodeDimensions = dimensionProvider(content),
-		positionOutlineSubtrees = function (subtrees) {
-			var suboutline, divider, origHeight, newHeight;
+		appendSubtrees = function (subtrees) {
+			var suboutline, origHeight, newHeight, deltaX, subtreePosition, horizontal;
 			_.each(subtrees, function (subtree) {
-				if (!suboutline) {
-					suboutline = subtree.outline;
+				subtree.deltaX = nodeDimensions.width + margin;
+				subtreePosition = subtree.attr && subtree.attr.position && subtree.attr.position[0];
+				if (subtreePosition) {
+					horizontal = subtreePosition - subtree.deltaX;
+					subtree.deltaX = subtreePosition;
 				} else {
-					suboutline = subtree.outline.stackBelow(suboutline, margin);
+					horizontal = 0;
+				}
+				if (!suboutline) {
+					suboutline = subtree.outline.indent(horizontal);
+				} else {
+					suboutline = subtree.outline.indent(horizontal).stackBelow(suboutline, margin);
 					subtree.deltaY = suboutline.initialHeight() - subtree.height;
 				}
 			});
 			if (subtrees && subtrees.length) {
-				moveTrees(subtrees, nodeDimensions.width + margin, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
+				moveTrees(subtrees, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
 				suboutline = suboutline.expand(
 					subtrees[0].deltaY - nodeDimensions.height * 0.5,
 					subtrees[subtrees.length - 1].deltaY + subtrees[subtrees.length - 1].height - nodeDimensions.height * 0.5
@@ -284,8 +302,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				subtree.deltaX = subtree.attr.position[0] + nodeDimensions.width * 0.5 - subtree.width * 0.5;
 				subtree.deltaY = subtree.attr.position[1] + nodeDimensions.height * 0.5 - subtree.height * 0.5;
 			});
-		},
-		subtreesByPosition;
+		};
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
 	if (shouldIncludeSubIdeas()) {
@@ -293,7 +310,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
 		if (!_.isEmpty(options.subtrees)) {
-			positionOutlineSubtrees(options.subtrees);
+			appendSubtrees(options.subtrees);
 		}
 	}
 	return new MAPJS.Tree(options);

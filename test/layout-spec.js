@@ -515,6 +515,34 @@ describe('New layout', function () {
 					expect(result.subtrees[0].deltaY).toBe(5);
 					expect(result.subtrees[1].deltaY).toBe(95);
 				});
+				it('should take X position into consideration when stacking subtrees', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '10x10',
+							ideas: {
+								100: {
+									id: 2,
+									title: '50x10',
+									attr: { position: [210, -10, 0] },
+									ideas: {
+										201: {
+											id: 4,
+											title: '10x100'
+										}
+									}
+								},
+								200: {
+									id: 3,
+									title: '200x10'
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaY).toBe(-10);
+					expect(result.subtrees[1].deltaY).toBe(10);
+
+				});
 			});
 		});
 
@@ -776,6 +804,18 @@ describe('New layout', function () {
 				result = MAPJS.Outline.borderLength([{ l: 100, h: -10 }, { l: 200, h: -50 }]);
 
 				expect(result).toBe(300);
+			});
+		});
+		describe('indent', function () {
+			it('should add an indent to the initial border segments', function () {
+				var outline = new MAPJS.Outline([{ h: -40, l: 120}, { h: -20, l: 20}], [{ h: 40, l: 100}, {h: 20, l: 20}]),
+					result;
+
+				result = outline.indent(11);
+
+				expect(result.top).toEqual([{ h: -40, l: 131}, { h: -20, l: 20}]);
+				expect(result.bottom).toEqual([{ h: 40, l: 111}, {h: 20, l: 20}]);
+
 			});
 		});
 		describe('insertAtStart', function () {
