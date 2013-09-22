@@ -142,6 +142,13 @@ describe('content aggregate', function () {
 				expect(idea.findSubIdeaById(33)).toBeFalsy();
 			});
 		});
+		describe('sameSideSiblingIds', function () {
+			it('returns siblings with the same rank sign, excluding the argument idea', function () {
+				var idea = MAPJS.content({id: 1, ideas: { 5: {id: 2}, '-10': {id: 3}, 15 : {id: 4}, '-20': {id: 5}, 20: {id:6}}});
+				expect(idea.sameSideSiblingIds(2)).toEqual([4, 6]);
+				expect(idea.sameSideSiblingIds(5)).toEqual([3]);
+			});
+		});
 		describe('find', function () {
 			it('returns an array of ideas that match a predicate, sorted by depth. It only returns ID and title', function () {
 				var aggregate = MAPJS.content({id: 5, title: 'I0', ideas: {9: {id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id: 3, title: 'I3'}, '-15': {id: 4, title: 'I4'}}}}});

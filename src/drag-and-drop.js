@@ -72,8 +72,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				clone,
 				idea = mapModel.getIdea(),
 				parentIdea = idea.findParent(id),
-				parentNode,
-				childrenWithAutoPositioning = {};
+				parentNode, maxSequence = 1;
 			var connector = findConnectorOnStage(id);
 			if (!mapModel.isEditingEnabled()) {
 				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
@@ -85,11 +84,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			updateCurrentDroppable(undefined);
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
 			parentNode = mapModel.getCurrentLayout().nodes[parentIdea.id];
-			_.map(parentIdea.ideas, function (subIdea) {
-				if (!subIdea.getAttr('position')) {
-					childrenWithAutoPositioning[subIdea.id] = subIdea;
-				}
-			});
 			for (nodeId in mapModel.getCurrentLayout().nodes) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -105,23 +99,28 @@ MAPJS.dragdrop = function (mapModel, stage) {
 					}
 					return;
 				}
-				if (childrenWithAutoPositioning[node.id] && y < node.y && node.y < verticallyClosestNode.y) {
+
+			}
+			idea.startBatch();
+			tryFlip(rootNode, nodeBeingDragged, x);
+			_.each(idea.sameSideSiblingIds(id), function (nodeId) {
+				node = mapModel.getCurrentLayout().nodes[nodeId];
+				if (y < node.y && node.y < verticallyClosestNode.y) {
 					verticallyClosestNode = node;
 				}
-			}
-			if (tryFlip(rootNode, nodeBeingDragged, x)) {
-				return;
-			}
+			});
+			idea.positionBefore(id, verticallyClosestNode.id);
 			if (shouldPositionAbsolutely) {
+				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== id && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
 				idea.updateAttr(
 					id,
 					'position',
-					[x - parentNode.x - 0.5 * parentNode.width, y - parentNode.y - 0.5 * parentNode.height]
+					[x - parentNode.x - 0.5 * parentNode.width, y - parentNode.y - 0.5 * parentNode.height, maxSequence + 1]
 				);
 			} else {
 				idea.updateAttr(id, 'position');
-				idea.positionBefore(id, verticallyClosestNode.id);
 			}
+			idea.endBatch();
 		},
 		screenToStageCoordinates = function (x, y) {
 			return {

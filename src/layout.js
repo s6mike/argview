@@ -86,9 +86,19 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 			bottom
 		);
 	};
+	this.expand = function (initialTopHeight, initialBottomHeight) {
+		var topAlignment = initialTopHeight - this.top[0].h,
+			bottomAlignment = initialBottomHeight - this.bottom[0].h,
+			top = shiftBorder(this.top, topAlignment),
+			bottom = shiftBorder(this.bottom, bottomAlignment);
+		return new MAPJS.Outline(
+			top,
+			bottom
+		);
+	};
 	this.insertAtStart = function (dimensions, margin) {
 		var suboutlineHeight = this.initialHeight(),
-			alignment = -1 * this.top[0].h - suboutlineHeight * 0.5,
+			alignment = 0, //-1 * this.top[0].h - suboutlineHeight * 0.5,
 			topBorder = shiftBorder(this.top, alignment),
 			bottomBorder = shiftBorder(this.bottom, alignment),
 			easeIn = function (border) {
@@ -197,10 +207,24 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		deltaX: 0
 	},
 		moveTrees = function (treeArray, dx, dy) {
-			var i;
+			var i, tree, oldSpacing, newSpacing, oldPositions = _.map(treeArray, function (t) { return _.pick(t, 'deltaX', 'deltaY'); });
 			for (i = 0; i < treeArray.length; i += 1) {
-				treeArray[i].deltaX += dx;
-				treeArray[i].deltaY += dy;
+				tree = treeArray[i];
+				if (tree.attr && tree.attr.position) {
+					// TODO: adjust
+					tree.deltaX = tree.attr.position[0];
+					tree.deltaY = tree.attr.position[1];
+				} else {
+					tree.deltaX += dx;
+					tree.deltaY += dy;
+				}
+				if (i > 0) {
+					oldSpacing = oldPositions[i].deltaY - oldPositions[i - 1].deltaY;
+					newSpacing = treeArray[i].deltaY - treeArray[i - 1].deltaY;
+					if (newSpacing < oldSpacing) {
+						tree.deltaY += oldSpacing - newSpacing;
+					}
+				}
 			}
 		},
 		shouldIncludeSubIdeas = function () {
@@ -220,7 +244,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		},
 		nodeDimensions = dimensionProvider(content),
 		positionOutlineSubtrees = function (subtrees) {
-			var suboutline;
+			var suboutline, divider, origHeight, newHeight;
 			_.each(subtrees, function (subtree) {
 				if (!suboutline) {
 					suboutline = subtree.outline;
@@ -229,7 +253,16 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 					subtree.deltaY = suboutline.initialHeight() - subtree.height;
 				}
 			});
-			moveTrees(subtrees, nodeDimensions.width + margin, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
+			if (subtrees && subtrees.length) {
+				moveTrees(subtrees, nodeDimensions.width + margin, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
+				suboutline = suboutline.expand(
+					subtrees[0].deltaY - nodeDimensions.height * 0.5,
+					subtrees[subtrees.length - 1].deltaY + subtrees[subtrees.length - 1].height - nodeDimensions.height * 0.5
+				);
+			}
+			// ensure node with maxsequence position is where it needs to be, everything else can be moved up/down
+			// TODO: shift+drag and shift+click (multi-select) get mixed up!
+			// shift suboutlines and expand horisontally as needed? (screws up with suboutline stacking?)
 			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
 		},
 		positionFixedSubtrees = function (subtrees) {
@@ -245,12 +278,8 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		options.subtrees = _.map(includedSubIdeas(), function (i) {
 			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
 		});
-		subtreesByPosition = _.groupBy(options.subtrees, function (subtree) { return !subtree.attr || !subtree.attr.position; });
-		if (!_.isEmpty(subtreesByPosition[true])) {
-			positionOutlineSubtrees(subtreesByPosition[true]);
-		}
-		if (!_.isEmpty(subtreesByPosition[false])) {
-			positionFixedSubtrees(subtreesByPosition[false]);
+		if (!_.isEmpty(options.subtrees)) {
+			positionOutlineSubtrees(options.subtrees);
 		}
 	}
 	return new MAPJS.Tree(options);

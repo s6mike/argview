@@ -401,45 +401,76 @@ describe('New layout', function () {
 				});
 				expect(result.subtrees[1]).toBeUndefined();
 			});
-			it('should exclude nodes with set position from automatic layout, and position the center relative to the center of the parent node', function () {
-				var content = MAPJS.content({
-						id: 11,
-						title: '200x100',
-						ideas: {
-							100: {
-								id: 2,
-								title: '300x80'
-							},
-							200: {
-								id: 3,
-								title: '100x30',
-								attr: { position: [-300, -400] }
+			describe('manual positioning', function () {
+				it('should use manual position on a single child if set as deltaX and deltaY', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '200x100',
+							ideas: {
+								100: {
+									id: 2,
+									title: '300x80',
+									attr: { position: [500, -800] }
+								}
 							}
-						}
-					}),
-					result;
-				result = MAPJS.calculateTree(content, dimensionProvider, 10);
-				expect(result).toPartiallyMatch({
-					id: 11,
-					title: '200x100',
-					width: 200,
-					height: 100
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0]).toPartiallyMatch({
+						title: '300x80',
+						deltaX: 500,
+						deltaY: -800
+					});
 				});
-				expect(result.subtrees[0]).toPartiallyMatch({
-					id: 2,
-					title: '300x80',
-					width: 300,
-					height: 80,
-					deltaX: 210,
-					deltaY: 10
+				it('should leave second child where it belongs automatically if only first child has manual position', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '200x100',
+							ideas: {
+								100: {
+									id: 2,
+									title: '300x80',
+									attr: { position: [500, -800] }
+								},
+								200: {
+									id: 3,
+									title: '100x30'
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0]).toPartiallyMatch({
+						id: 2,
+						deltaX: 500,
+						deltaY: -800
+					});
+					expect(result.subtrees[1]).toPartiallyMatch({
+						id: 3,
+						deltaX: 210,
+						deltaY: 80
+					});
 				});
-				expect(result.subtrees[1]).toPartiallyMatch({
-					id: 3,
-					title: '100x30',
-					width: 100,
-					height: 30,
-					deltaX: -250,
-					deltaY: -365
+				it('should push second child down if first child has manual position and would overlap', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '200x100',
+							ideas: {
+								100: {
+									id: 2,
+									title: '300x80',
+									attr: { position: [210, 10] }
+								},
+								200: {
+									id: 3,
+									title: '100x30'
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaY).toBe(10);
+					expect(result.subtrees[1].deltaY).toBe(100);
 				});
 			});
 		});
@@ -715,14 +746,14 @@ describe('New layout', function () {
 				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 40, l: 130}]);
 
 			});
-			it('centers outline before adding the box', function () {
+			it('does not move the outline vertically (regression check)', function () {
 				var outline2 = new MAPJS.Outline([{ h: -4, l: 120}], [{ h: 30, l: 120}]),
 					result;
 
 				result = outline2.insertAtStart({width: 30, height: 100}, 10);
 
-				expect(result.top).toEqual([{ h: -50, l: 30}, { h: -17, l: 130}]);
-				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 17, l: 130}]);
+				expect(result.top).toEqual([{ h: -50, l: 30}, { h: -4, l: 130}]);
+				expect(result.bottom).toEqual([{ h: 50, l: 30}, {h: 30, l: 130}]);
 
 			});
 			it('shortens the initial box into 1/2 and expands the outline if outline is taller than box', function () {
@@ -764,6 +795,14 @@ describe('New layout', function () {
 				result = MAPJS.Outline.extendBorder(firstBorder, secondBorder);
 				expect(result).toEqual(expected);
 			});
+		describe('expand', function () {
+			it('should expand borders so that the initial height matches arguments', function () {
+				var outline = new MAPJS.Outline([{h: -10, l: 10}, {h: -110, l: 20}], [{h: 10, l: 10}, {h: 110, l: 20}]),
+					result = outline.expand(-50, 33);
+				expect(result.top).toEqual([{h: -50, l: 10}, {h: -150, l: 20}]);
+				expect(result.bottom).toEqual([{h: 33, l: 10}, {h: 133, l: 20}]);
+			});
+		});
 		it('should calculate spacing between more complex outlines', function () {
 			var outline1 = new MAPJS.Outline([], [{ h: 5, l: 6}, { h: 15, l: 8 }]),
 				outline2 = new MAPJS.Outline([{ h: -10, l: 12}], []),

@@ -201,6 +201,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (siblingsAfter.length === 0) { return false; }
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
+	contentAggregate.sameSideSiblingIds = function (subIdeaId) {
+		var parentIdea = contentAggregate.findParent(subIdeaId),
+			currentRank = parentIdea.findChildRankById(subIdeaId);
+		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) { return i.id; }), subIdeaId);
+	};
 	contentAggregate.getAttrById = function (ideaId, attrName) {
 		var idea = findIdeaById(ideaId);
 		return idea && idea.getAttr(attrName);
