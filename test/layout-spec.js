@@ -472,6 +472,49 @@ describe('New layout', function () {
 					expect(result.subtrees[0].deltaY).toBe(10);
 					expect(result.subtrees[1].deltaY).toBe(100);
 				});
+				it('should push first child up if second child has manual position and would overlap', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '200x100',
+							ideas: {
+								100: {
+									id: 2,
+									title: '300x80',
+								},
+								200: {
+									id: 3,
+									title: '100x30',
+									attr: { position: [210, 10] }
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaY).toBe(-80);
+					expect(result.subtrees[1].deltaY).toBe(10);
+				});
+				it('should use child with maximum priority (3rd element in position) to determine alignment if multiple nodes have manual position', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '200x100',
+							ideas: {
+								100: {
+									id: 2,
+									title: '300x80',
+									attr: { position: [210, 5, 2] }
+								},
+								200: {
+									id: 3,
+									title: '100x30',
+									attr: { position: [210, 10, 0] }
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaY).toBe(5);
+					expect(result.subtrees[1].deltaY).toBe(95);
+				});
 			});
 		});
 

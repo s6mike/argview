@@ -207,13 +207,22 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		deltaX: 0
 	},
 		moveTrees = function (treeArray, dx, dy) {
-			var i, tree, oldSpacing, newSpacing, oldPositions = _.map(treeArray, function (t) { return _.pick(t, 'deltaX', 'deltaY'); });
+			var i,
+				tree,
+				oldSpacing,
+				newSpacing,
+				oldPositions = _.map(treeArray, function (t) { return _.pick(t, 'deltaX', 'deltaY'); }),
+				referenceTree,
+				alignment;
 			for (i = 0; i < treeArray.length; i += 1) {
 				tree = treeArray[i];
 				if (tree.attr && tree.attr.position) {
 					// TODO: adjust
 					tree.deltaX = tree.attr.position[0];
 					tree.deltaY = tree.attr.position[1];
+					if (referenceTree === undefined || tree.attr.position[2] > treeArray[referenceTree].attr.position[2]) {
+						referenceTree = i;
+					}
 				} else {
 					tree.deltaX += dx;
 					tree.deltaY += dy;
@@ -224,6 +233,12 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 					if (newSpacing < oldSpacing) {
 						tree.deltaY += oldSpacing - newSpacing;
 					}
+				}
+			}
+			alignment =  referenceTree && (treeArray[referenceTree].attr.position[1] - treeArray[referenceTree].deltaY);
+			if (alignment) {
+				for (i = 0; i < treeArray.length; i += 1) {
+					treeArray[i].deltaY += alignment;
 				}
 			}
 		},
@@ -260,7 +275,6 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 					subtrees[subtrees.length - 1].deltaY + subtrees[subtrees.length - 1].height - nodeDimensions.height * 0.5
 				);
 			}
-			// ensure node with maxsequence position is where it needs to be, everything else can be moved up/down
 			// TODO: shift+drag and shift+click (multi-select) get mixed up!
 			// shift suboutlines and expand horisontally as needed? (screws up with suboutline stacking?)
 			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
