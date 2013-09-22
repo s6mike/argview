@@ -541,7 +541,26 @@ describe('New layout', function () {
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-10);
 					expect(result.subtrees[1].deltaY).toBe(10);
-
+				});
+				it('should ignore horisontal positions that would make it overlap with parent', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '10x10',
+							ideas: {
+								100: {
+									id: 2,
+									title: '50x10',
+									attr: { position: [-10, 0, 0] },
+								},
+								200: {
+									id: 3,
+									title: '200x10'
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaX).toBe(20);
 				});
 			});
 		});

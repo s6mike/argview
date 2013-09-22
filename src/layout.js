@@ -273,7 +273,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			_.each(subtrees, function (subtree) {
 				subtree.deltaX = nodeDimensions.width + margin;
 				subtreePosition = subtree.attr && subtree.attr.position && subtree.attr.position[0];
-				if (subtreePosition) {
+				if (subtreePosition && subtreePosition > subtree.deltaX) {
 					horizontal = subtreePosition - subtree.deltaX;
 					subtree.deltaX = subtreePosition;
 				} else {
