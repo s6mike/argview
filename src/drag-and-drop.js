@@ -111,6 +111,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			});
 			idea.positionBefore(id, verticallyClosestNode.id);
 			if (shouldPositionAbsolutely) {
+				mapModel.selectNode(id);
 				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== id && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
 				idea.updateAttr(
 					id,

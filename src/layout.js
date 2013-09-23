@@ -216,7 +216,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		deltaY: 0,
 		deltaX: 0
 	},
-		moveTrees = function (treeArray,  dy) {
+		setVerticalSpacing = function (treeArray,  dy) {
 			var i,
 				tree,
 				oldSpacing,
@@ -227,14 +227,11 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			for (i = 0; i < treeArray.length; i += 1) {
 				tree = treeArray[i];
 				if (tree.attr && tree.attr.position) {
-					// TODO: adjust
-					//tree.deltaX = tree.attr.position[0];
 					tree.deltaY = tree.attr.position[1];
 					if (referenceTree === undefined || tree.attr.position[2] > treeArray[referenceTree].attr.position[2]) {
 						referenceTree = i;
 					}
 				} else {
-					//tree.deltaX += dx;
 					tree.deltaY += dy;
 				}
 				if (i > 0) {
@@ -287,14 +284,12 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				}
 			});
 			if (subtrees && subtrees.length) {
-				moveTrees(subtrees, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
+				setVerticalSpacing(subtrees, 0.5 * (nodeDimensions.height  - suboutline.initialHeight()));
 				suboutline = suboutline.expand(
 					subtrees[0].deltaY - nodeDimensions.height * 0.5,
 					subtrees[subtrees.length - 1].deltaY + subtrees[subtrees.length - 1].height - nodeDimensions.height * 0.5
 				);
 			}
-			// TODO: shift+drag and shift+click (multi-select) get mixed up!
-			// shift suboutlines and expand horisontally as needed? (screws up with suboutline stacking?)
 			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
 		},
 		positionFixedSubtrees = function (subtrees) {
