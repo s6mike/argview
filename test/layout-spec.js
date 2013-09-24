@@ -430,7 +430,7 @@ describe('New layout', function () {
 								100: {
 									id: 2,
 									title: '300x80',
-									attr: { position: [500, -800] }
+									attr: { position: [210, -800] }
 								},
 								200: {
 									id: 3,
@@ -442,7 +442,7 @@ describe('New layout', function () {
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0]).toPartiallyMatch({
 						id: 2,
-						deltaX: 500,
+						deltaX: 210,
 						deltaY: -800
 					});
 					expect(result.subtrees[1]).toPartiallyMatch({
@@ -541,6 +541,32 @@ describe('New layout', function () {
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-10);
 					expect(result.subtrees[1].deltaY).toBe(10);
+				});
+				it('should compress as much as possible by Y when stacking subtrees with manual positions', function () {
+					var content = MAPJS.content({
+							id: 11,
+							title: '10x10',
+							ideas: {
+								100: {
+									id: 2,
+									title: '50x10',
+								},
+								200: {
+									id: 3,
+									title: '10x100',
+									attr: { position: [210, 10, 0] }
+								},
+								300: {
+									id: 4,
+									title: '80x10'
+								}
+							}
+						}),
+						result;
+					result = MAPJS.calculateTree(content, dimensionProvider, 10);
+					expect(result.subtrees[0].deltaY).toBe(-20);
+					expect(result.subtrees[1].deltaY).toBe(10);
+					expect(result.subtrees[2].deltaY).toBe(30);
 				});
 				it('should ignore horisontal positions that would make it overlap with parent', function () {
 					var content = MAPJS.content({
@@ -826,15 +852,23 @@ describe('New layout', function () {
 			});
 		});
 		describe('indent', function () {
-			it('should add an indent to the initial border segments', function () {
+			it('should indent the outline by inserting a thin line in the middle at the start', function () {
 				var outline = new MAPJS.Outline([{ h: -40, l: 120}, { h: -20, l: 20}], [{ h: 40, l: 100}, {h: 20, l: 20}]),
 					result;
 
-				result = outline.indent(11);
+				result = outline.indent(11, 8);
 
-				expect(result.top).toEqual([{ h: -40, l: 131}, { h: -20, l: 20}]);
-				expect(result.bottom).toEqual([{ h: 40, l: 111}, {h: 20, l: 20}]);
+				expect(result.top).toEqual([{h: -4, l: 11}, { h: -40, l: 120}, { h: -20, l: 20}]);
+				expect(result.bottom).toEqual([{h: 4, l: 11}, { h: 40, l: 100}, {h: 20, l: 20}]);
+			});
+			it('should center the inserted line based on initial height', function () {
+				var outline = new MAPJS.Outline([{ h: -40, l: 120}, { h: -20, l: 20}], [{ h: -20, l: 100}, {h: 20, l: 20}]),
+					result;
 
+				result = outline.indent(11, 8);
+
+				expect(result.top).toEqual([{h: -34, l: 11}, { h: -40, l: 120}, { h: -20, l: 20}]);
+				expect(result.bottom).toEqual([{h: -26, l: 11}, { h: -20, l: 100}, {h: 20, l: 20}]);
 			});
 		});
 		describe('insertAtStart', function () {

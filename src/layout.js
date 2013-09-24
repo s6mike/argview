@@ -77,14 +77,15 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		}
 		return result;
 	};
-	this.indent = function (horizontalIndent) {
+	this.indent = function (horizontalIndent, margin) {
 		if (!horizontalIndent) {
 			return this;
 		}
 		var top = this.top.slice(),
-			bottom = this.bottom.slice();
-		top[0].l += horizontalIndent;
-		bottom[0].l += horizontalIndent;
+			bottom = this.bottom.slice(),
+			vertCenter = (bottom[0].h + top[0].h) / 2;
+		top.unshift({h: vertCenter - margin / 2, l: horizontalIndent});
+		bottom.unshift({h: vertCenter + margin / 2, l: horizontalIndent});
 		return new MAPJS.Outline(top, bottom);
 	};
 	this.stackBelow = function (outline, margin) {
@@ -266,7 +267,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		},
 		nodeDimensions = dimensionProvider(content),
 		appendSubtrees = function (subtrees) {
-			var suboutline, origHeight, newHeight, deltaX, subtreePosition, horizontal;
+			var suboutline, origHeight, newHeight, deltaX, subtreePosition, horizontal, oldHeight;
 			_.each(subtrees, function (subtree) {
 				subtree.deltaX = nodeDimensions.width + margin;
 				subtreePosition = subtree.attr && subtree.attr.position && subtree.attr.position[0];
@@ -277,10 +278,11 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 					horizontal = 0;
 				}
 				if (!suboutline) {
-					suboutline = subtree.outline.indent(horizontal);
+					suboutline = subtree.outline.indent(horizontal, margin);
 				} else {
-					suboutline = subtree.outline.indent(horizontal).stackBelow(suboutline, margin);
-					subtree.deltaY = suboutline.initialHeight() - subtree.height;
+					oldHeight = subtree.outline.indent(horizontal, margin).initialHeight();
+					suboutline = subtree.outline.indent(horizontal, margin).stackBelow(suboutline, margin);
+					subtree.deltaY = suboutline.initialHeight() - oldHeight;
 				}
 			});
 			if (subtrees && subtrees.length) {
