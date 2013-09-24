@@ -35,6 +35,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			return id != node.id && isPointOverNode(x, y, node);
 		},
 		tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
+
 			var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
 				flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
 			if (flipRightToLeft || flipLeftToRight) {
@@ -72,8 +73,13 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				clone,
 				idea = mapModel.getIdea(),
 				parentIdea = idea.findParent(id),
-				parentNode, maxSequence = 1;
-			var connector = findConnectorOnStage(id);
+				parentNode = mapModel.getCurrentLayout().nodes[parentIdea.id],
+				maxSequence = 1,
+				connector = findConnectorOnStage(id),
+				validReposition = function () {
+					return nodeBeingDragged.level === 2 ||
+						((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
+				};
 			if (!mapModel.isEditingEnabled()) {
 				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 				return;
@@ -83,7 +89,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			updateCurrentDroppable(undefined);
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
-			parentNode = mapModel.getCurrentLayout().nodes[parentIdea.id];
 			for (nodeId in mapModel.getCurrentLayout().nodes) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
@@ -102,7 +107,9 @@ MAPJS.dragdrop = function (mapModel, stage) {
 
 			}
 			idea.startBatch();
-			tryFlip(rootNode, nodeBeingDragged, x);
+			if (nodeBeingDragged.level === 2) {
+				tryFlip(rootNode, nodeBeingDragged, x);
+			}
 			_.each(idea.sameSideSiblingIds(id), function (nodeId) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
 				if (y < node.y && node.y < verticallyClosestNode.y) {
@@ -110,13 +117,13 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				}
 			});
 			idea.positionBefore(id, verticallyClosestNode.id);
-			if (shouldPositionAbsolutely) {
+			if (shouldPositionAbsolutely && validReposition()) {
 				mapModel.selectNode(id);
 				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== id && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
 				idea.updateAttr(
 					id,
 					'position',
-					[x - parentNode.x - 0.5 * parentNode.width, y - parentNode.y - 0.5 * parentNode.height, maxSequence + 1]
+					[Math.abs(nodeX - parentNode.x), nodeY - parentNode.y, maxSequence + 1]
 				);
 			} else {
 				idea.updateAttr(id, 'position');

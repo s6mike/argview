@@ -566,7 +566,7 @@ describe('New layout', function () {
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-20);
 					expect(result.subtrees[1].deltaY).toBe(10);
-					expect(result.subtrees[2].deltaY).toBe(30);
+					expect(result.subtrees[2].deltaY).toBe(75);
 				});
 				it('should ignore horisontal positions that would make it overlap with parent', function () {
 					var content = MAPJS.content({
