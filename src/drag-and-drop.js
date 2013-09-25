@@ -5,9 +5,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 		findNodeOnStage = function (nodeId) {
 			return stage.get('#node_' + nodeId)[0];
 		},
-		findConnectorOnStage = function (nodeId) {
-			return stage.get('#connector_' + nodeId)[0];
-		},
 		showAsDroppable = function (nodeId, isDroppable) {
 			var node = findNodeOnStage(nodeId);
 			node.setIsDroppable(isDroppable);
@@ -44,13 +41,9 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			return false;
 		},
 		nodeDragMove = function (id, x, y, nodeX, nodeY, shouldCopy, shouldPositionAbsolutely) {
-			var nodeId, node, connector;
+			var nodeId, node;
 			if (!mapModel.isEditingEnabled()) {
 				return;
-			}
-			connector = findConnectorOnStage(id);
-			if (connector) {
-				connector.setPositioningAbsolute(shouldPositionAbsolutely);
 			}
 			for (nodeId in mapModel.getCurrentLayout().nodes) {
 				node = mapModel.getCurrentLayout().nodes[nodeId];
@@ -75,7 +68,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				parentIdea = idea.findParent(id),
 				parentNode = mapModel.getCurrentLayout().nodes[parentIdea.id],
 				maxSequence = 1,
-				connector = findConnectorOnStage(id),
 				validReposition = function () {
 					return nodeBeingDragged.level === 2 ||
 						((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
@@ -83,9 +75,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			if (!mapModel.isEditingEnabled()) {
 				mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 				return;
-			}
-			if (shouldPositionAbsolutely && connector) {
-				connector.setPositioningAbsolute(shouldPositionAbsolutely);
 			}
 			updateCurrentDroppable(undefined);
 			mapModel.dispatchEvent('nodeMoved', nodeBeingDragged);
@@ -101,6 +90,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 					} else if (!mapModel.getIdea().changeParent(id, nodeId)) {
 						mapModel.dispatchEvent('nodeMoved', nodeBeingDragged, 'failed');
 						mapModel.analytic('nodeDragParentFailed');
+						idea.updateAttr(id, 'position');
 					}
 					return;
 				}
@@ -118,6 +108,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			});
 			idea.positionBefore(id, verticallyClosestNode.id);
 			if (shouldPositionAbsolutely && validReposition()) {
+				mapModel.analytic('nodeManuallyPositioned');
 				mapModel.selectNode(id);
 				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== id && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
 				idea.updateAttr(
@@ -125,8 +116,6 @@ MAPJS.dragdrop = function (mapModel, stage) {
 					'position',
 					[Math.abs(nodeX - parentNode.x), nodeY - parentNode.y, maxSequence + 1]
 				);
-			} else {
-				idea.updateAttr(id, 'position');
 			}
 			idea.endBatch();
 		},

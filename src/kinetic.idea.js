@@ -315,7 +315,16 @@ Kinetic.Idea.prototype.setStyle = function () {
 		padding = 8,
 		clipMargin = isClipVisible ? this.clip.getClipMargin() : 0,
 		rectOffset = clipMargin,
-		rectIncrement = 4;
+		rectIncrement = 4,
+		getDash = function () {
+			if (!self.isActivated) {
+				return [];
+			}
+			if (self.mmAttr && self.mmAttr.position) {
+				return [5, 6];
+			}
+			return [5, 3];
+		};
 	this.clip.setVisible(isClipVisible);
 	this.setWidth(this.text.getWidth() + 2 * padding);
 	this.setHeight(this.text.getHeight() + 2 * padding + clipMargin);
@@ -361,7 +370,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 		}
 		this.rect.setDashArray([]);
 	}
-	this.rect.setDashArray(this.isActivated ? [5, 3] : []);
+	this.rect.setDashArray(getDash());
 	this.rect.setStrokeWidth(this.isActivated ? 3 : self.rectAttrs.strokeWidth);
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());

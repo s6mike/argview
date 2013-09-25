@@ -242,7 +242,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			id: 'connector_' + n.to,
 			shapeFrom: nodeByIdeaId[n.from],
 			shapeTo: nodeByIdeaId[n.to],
-			isPositioningAbsolute: n.isPositioningAbsolute,
 			stroke: '#888',
 			strokeWidth: 1,
 			opacity: 0
@@ -256,12 +255,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			easing: Kinetic.Easings.EaseInOut,
 			duration: 0.1
 		}).play();
-	});
-	mapModel.addEventListener('connectorPositioningAbsoluteChanged', function (c) {
-		var key = connectorKey(c.from, c.to),
-			connector = connectorByFromIdeaIdToIdeaId[key];
-		connector.setPositioningAbsolute(c.isPositioningAbsolute);
-		connector.draw();
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
 		stage.draw();
