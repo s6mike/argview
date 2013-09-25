@@ -267,7 +267,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		},
 		nodeDimensions = dimensionProvider(content),
 		appendSubtrees = function (subtrees) {
-			var suboutline, deltaHeight, subtreePosition, horizontal;
+			var suboutline, deltaHeight, subtreePosition, horizontal, treeOutline;
 			_.each(subtrees, function (subtree) {
 				subtree.deltaX = nodeDimensions.width + margin;
 				subtreePosition = subtree.attr && subtree.attr.position && subtree.attr.position[0];
@@ -280,8 +280,9 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				if (!suboutline) {
 					suboutline = subtree.outline.indent(horizontal, margin);
 				} else {
-					deltaHeight = subtree.outline.indent(horizontal, margin).initialHeight();
-					suboutline = subtree.outline.indent(horizontal, margin).stackBelow(suboutline, margin);
+					treeOutline = subtree.outline.indent(horizontal, margin);
+					deltaHeight = treeOutline.initialHeight();
+					suboutline = treeOutline.stackBelow(suboutline, margin);
 					subtree.deltaY = suboutline.initialHeight() - deltaHeight / 2 - subtree.height / 2;
 				}
 			});
