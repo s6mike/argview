@@ -350,22 +350,28 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 	}());
 };
-MAPJS.KineticMediator.dimensionProvider = _.memoize(
-	function (idea) {
+MAPJS.KineticMediator.titleDimensionProvider = _.memoize(
+	function (title) {
 		'use strict';
 		var text = new Kinetic.Idea({
-			text: idea.title
+			text: title
 		});
 		return {
 			width: text.getWidth(),
 			height: text.getHeight()
 		};
-	},
-	function (idea) {
-		'use strict';
-		return idea.title;
 	}
 );
+MAPJS.KineticMediator.dimensionProvider = function (idea) {
+	'use strict';
+	if (idea && idea.attr && idea.attr.style && idea.attr.style.outlineHeight && idea.attr.style.outlineWidth) {
+		return {
+			width: idea.attr.style.outlineWidth,
+			height: idea.attr.style.outlineHeight
+		};
+	}
+	return MAPJS.KineticMediator.titleDimensionProvider(idea.title);
+};
 MAPJS.KineticMediator.layoutCalculator = function (idea) {
 	'use strict';
 	return MAPJS.calculateLayout(idea, MAPJS.KineticMediator.dimensionProvider);

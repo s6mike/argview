@@ -56,5 +56,28 @@ describe('Kinetic dimension provider', function () {
 			expect(initCounter).toBe(2);
 			expect(result).toEqual({width: 20, height: 20});
 		});
+		it('uses attr.style.outline width and height to override title width and height', function () {
+			var result;
+			result = MAPJS.KineticMediator.dimensionProvider(
+				MAPJS.content(
+					{
+						title: 'with outline',
+						attr: {
+							style: {
+								outlineWidth: 1000,
+								outlineHeight: 500
+							}
+						}
+					}
+				)
+			);
+			expect(result).toEqual({width: 1000, height: 500});
+		});
+		it('does not mix memoization of same title but different outline ideas', function () {
+			var result;
+			MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same2'}));
+			result = MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same2', attr: { style: { outlineWidth: 1000, outlineHeight: 500 } } }));
+			expect(result).toEqual({width: 1000, height: 500});
+		});
 	});
 });
