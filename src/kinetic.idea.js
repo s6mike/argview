@@ -66,6 +66,7 @@
 		});
 		return group;
 	}
+
 	Kinetic.Idea = function (config) {
 		var ENTER_KEY_CODE = 13,
 			ESC_KEY_CODE = 27,
@@ -80,6 +81,7 @@
 					visible: false
 				});
 			};
+		this.padding = 8;
 		this.level = config.level;
 		this.mmAttr = config.mmAttr;
 		this.isSelected = false;
@@ -126,27 +128,13 @@
 		this.add(this.clip);
 		this.calculateWidth = function () {
 			var forced = (self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineWidth) || 0;
-			return Math.max(this.text.getWidth(), forced);
+			return Math.max(this.text.getWidth() + 2 * self.padding, forced);
 		};
 		this.calculateHeight = function () {
 			var forced = (self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineHeight) || 0;
-			return Math.max(this.text.getHeight(), forced);
+			return Math.max(this.text.getHeight() + 2 * self.padding, forced);
 		};
-		if (this.mmAttr && this.mmAttr.style && this.mmAttr.style.outlineType ===  'img') {
-			this.domImg = new Image();
-			this.domImg.onload = function loadImage() {
-				var kineticImg = new Kinetic.Image({
-					x: 0,
-					y: 0,
-					image: self.domImg,
-					width: self.mmAttr.style.outlineHeight || self.domImg.height,
-					height: self.mmAttr.style.outlineWidth || self.domImg.width
-				});
-				self.add(kineticImg);
-			};
-			this.domImg.src = this.mmAttr.style.outlineImageUrl;
-		}
-		//this.activeWidgets = [this.link, this.clip];
+		self.initBackgroundImage();
 		this.setText = function (text) {
 			var replacement = breakWords(MAPJS.URLHelper.stripLink(text)) ||
 					(text.length < COLUMN_WORD_WRAP_LIMIT ? text : (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...'));
@@ -323,7 +311,43 @@ Kinetic.Idea.prototype.getBackground = function () {
 		};
 	return validColor(this.mmAttr && this.mmAttr.style && this.mmAttr.style.background, defaultBg);
 };
-
+Kinetic.Idea.prototype.getClipMargin = function () {
+	'use strict';
+	var	isClipVisible = this.mmAttr && this.mmAttr.attachment || false;
+	return isClipVisible ? this.clip.getClipMargin() : 0;
+};
+Kinetic.Idea.prototype.initBackgroundImage = function () {
+	'use strict';
+	var self = this,
+		hasImage = function () {
+			return self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineType ===  'img';
+		};
+	if (!hasImage()) {
+		if (self.backgroundImage) {
+			self.bacgroundImage.remove();
+		}
+		return;
+	}
+	self.domImg = self.domImg || new Image();
+	if (self.domImg.src === self.mmAttr.style.outlineImageUrl) {
+		return;
+	}
+	self.domImg.onload = function loadImage() {
+		var imgWidth = self.mmAttr.style.outlineHeight || self.domImg.height,
+			imgHeight =  self.mmAttr.style.outlineWidth || self.domImg.width;
+		self.backgroundImage = new Kinetic.Image({
+			x: 0,
+			y: self.getClipMargin(),
+			image: self.domImg,
+			width: imgWidth,
+			height: imgHeight
+		});
+		self.add(self.backgroundImage);
+		self.text.remove();
+		self.add(self.text);
+	};
+	self.domImg.src = self.mmAttr.style.outlineImageUrl;
+};
 Kinetic.Idea.prototype.setStyle = function () {
 	'use strict';
 	/*jslint newcap: true*/
@@ -333,10 +357,8 @@ Kinetic.Idea.prototype.setStyle = function () {
 		isActivated = this.isActivated,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
-		isClipVisible = this.mmAttr && this.mmAttr.attachment || false,
-		padding = 8,
-		clipMargin = isClipVisible ? this.clip.getClipMargin() : 0,
-		rectOffset = clipMargin,
+		padding = self.padding,
+		rectOffset,
 		rectIncrement = 4,
 		getDash = function () {
 			if (!self.isActivated) {
@@ -344,16 +366,20 @@ Kinetic.Idea.prototype.setStyle = function () {
 			}
 			return [5, 3];
 		};
-	this.clip.setVisible(isClipVisible);
+	this.clip.setVisible(self.getClipMargin());
 	this.setWidth(self.calculateWidth());
-	this.setHeight(self.calculateHeight() + 2 * padding + clipMargin);
-	this.text.setX(padding);
-	this.text.setY(padding + clipMargin);
-	this.link.setX(self.calculateWidth() + 10);
-	this.link.setY(self.calculateHeight() + 5 + clipMargin);
+	this.setHeight(self.calculateHeight() + self.getClipMargin());
+	this.text.setX((self.calculateWidth() - this.text.getWidth()) / 2);
+	this.text.setY((self.calculateHeight() - this.text.getHeight()) / 2 + self.getClipMargin());
+	this.link.setX(self.calculateWidth() - 2 * self.padding + 10);
+	this.link.setY(self.calculateHeight() - 2 * padding + 5 + self.getClipMargin());
+	if (this.backgroundImage) {
+		this.backgroundImage.setY(self.getClipMargin());
+	}
+	rectOffset = self.getClipMargin();
 	_.each([this.rect, this.rectbg2, this.rectbg1], function (r) {
-		r.setWidth(self.calculateWidth() + 2 * padding);
-		r.setHeight(self.calculateHeight() + 2 * padding);
+		r.setWidth(self.calculateWidth());
+		r.setHeight(self.calculateHeight());
 		r.setY(rectOffset);
 		rectOffset += rectIncrement;
 		if (isDroppable) {
@@ -393,7 +419,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 	this.rect.setStrokeWidth(this.isActivated ? 3 : self.rectAttrs.strokeWidth);
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());
-	this.clip.setX(self.calculateWidth() + padding);
+	this.clip.setX(self.calculateWidth() - padding);
 	this.setupShadows();
 	this.text.setFill(MAPJS.contrastForeground(tintedBackground));
 };
