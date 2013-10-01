@@ -1,8 +1,8 @@
 /*global describe, expect, it, MAPJS, beforeEach, afterEach*/
 describe('calculateLayout', function () {
 	'use strict';
-	var dimensionProvider = function (text) {
-		var length = (text || '').length + 1;
+	var dimensionProvider = function (idea) {
+		var length = (idea.title || '').length + 1;
 		return {
 			width: length * 20,
 			height: length * 10

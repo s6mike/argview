@@ -324,13 +324,10 @@ MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 			});
 		},
 		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0; },
-		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0; },
-		titleDimensionProvider = function (idea) {
-			return dimensionProvider(idea.title);
-		};
+		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0; };
 	margin = margin || 20;
-	positiveTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, positive);
-	negativeTree = MAPJS.calculateTree(idea, titleDimensionProvider, margin, negative);
+	positiveTree = MAPJS.calculateTree(idea, dimensionProvider, margin, positive);
+	negativeTree = MAPJS.calculateTree(idea, dimensionProvider, margin, negative);
 	layout = positiveTree.toLayout();
 	negativeLayout = negativeTree.toLayout();
 	_.each(negativeLayout.nodes, function (n) {
