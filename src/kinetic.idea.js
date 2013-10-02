@@ -123,6 +123,7 @@
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
 		this.add(this.rect);
+		this.initBackgroundImage();
 		this.add(this.text);
 		this.add(this.link);
 		this.add(this.clip);
@@ -134,7 +135,7 @@
 			var forced = (self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineHeight) || 0;
 			return Math.max(this.text.getHeight() + 2 * self.padding, forced);
 		};
-		self.initBackgroundImage();
+
 		this.setText = function (text) {
 			var replacement = breakWords(MAPJS.URLHelper.stripLink(text)) ||
 					(text.length < COLUMN_WORD_WRAP_LIMIT ? text : (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...'));
@@ -321,32 +322,41 @@ Kinetic.Idea.prototype.initBackgroundImage = function () {
 	var self = this,
 		hasImage = function () {
 			return self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineType ===  'img';
-		};
+		},
+		imgWidth = self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineWidth,
+		imgHeight =  self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineHeight,
+		oldDraw;
 	if (!hasImage()) {
 		if (self.backgroundImage) {
 			self.bacgroundImage.remove();
 		}
 		return;
 	}
-	self.domImg = self.domImg || new Image();
-	if (self.domImg.src === self.mmAttr.style.outlineImageUrl) {
-		return;
-	}
-	self.domImg.onload = function loadImage() {
-		var imgWidth = self.mmAttr.style.outlineWidth || self.domImg.width,
-			imgHeight =  self.mmAttr.style.outlineHeight || self.domImg.height;
-		self.backgroundImage = new Kinetic.Image({
-			x: 0,
-			y: self.getClipMargin(),
-			image: self.domImg,
-			width: imgWidth,
-			height: imgHeight
-		});
-		self.add(self.backgroundImage);
-		self.text.remove();
-		self.add(self.text);
+	self.backgroundImage = new Kinetic.Image({
+		x: 0,
+		y: self.getClipMargin(),
+		width: imgWidth,
+		height: imgHeight
+	});
+	self.add(self.backgroundImage);
+	oldDraw = self.backgroundImage.drawScene;
+	self.backgroundImage._MAPJS_updateImage = function () {
+		if (!self.domImg) {
+			self.domImg = new Image();
+			self.domImg.onload = function loadImage() {
+				self.backgroundImage.setAttr('image', self.domImg);
+				self.getLayer().draw();
+			};
+		}
+		if (self.domImg.src === self.mmAttr.style.outlineImageUrl) {
+			return;
+		}
+		self.domImg.src = self.mmAttr.style.outlineImageUrl;
 	};
-	self.domImg.src = self.mmAttr.style.outlineImageUrl;
+	self.backgroundImage.drawScene = function () {
+		this._MAPJS_updateImage();
+		oldDraw.apply(this, arguments);
+	};
 };
 Kinetic.Idea.prototype.setStyle = function () {
 	'use strict';
@@ -366,6 +376,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 			}
 			return [5, 3];
 		};
+
 	this.clip.setVisible(self.getClipMargin());
 	this.setWidth(self.calculateWidth());
 	this.setHeight(self.calculateHeight() + self.getClipMargin());
