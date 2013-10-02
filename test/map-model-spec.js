@@ -222,6 +222,41 @@ describe('MapModel', function () {
 
 			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9']);
 		});
+		describe('automatic UI actions', function () {
+			var nodeEditRequestedListener, nodeSelectionChangedListener;
+			beforeEach(function () {
+				nodeEditRequestedListener = jasmine.createSpy();
+				nodeSelectionChangedListener = jasmine.createSpy();
+				anIdea = MAPJS.content({
+					id: 1,
+					ideas: {
+						7: {
+							id: 2
+						}
+					}
+				});
+				underTest.setIdea(anIdea);
+				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+				underTest.selectNode(2);
+				underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
+			});
+			_.each(['addSubIdea', 'insertIntermediate'], function (command) {
+				it('should dispatch edit after ' + command + ' from mapModel', function () {
+					underTest[command]('source');
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+				});
+				it('should not dispatch edit after ' + command + ' bypassing mapModel', function () {
+					anIdea[command](2);
+					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				});
+				it('should return selection to previous on undo after '+ command, function () {
+					underTest[command]('source');
+					nodeSelectionChangedListener.reset();
+					underTest.undo();
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
+				});
+			});
+		});
 		describe('focus/edit automatic control', function () {
 			var nodeEditRequestedListener,
 				nodeMovedListener,
@@ -259,49 +294,6 @@ describe('MapModel', function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
 				nodeSelectionChangedListener = jasmine.createSpy();
-			});
-			describe('triggering edit when a new node is created', function () {
-				var expectedForSession = {
-					'no session': true,
-					'a local session':  true,
-					'a remote session': false
-				};
-				sessionCombinations.forEach(function (args) {
-					var description = expectedForSession[args[2]] ? 'should' : 'should not';
-					describe('where there is ' + args[2], function () {
-						['insertIntermediate', 'addSubIdea'].forEach(function (cmd) {
-							it(description + ' dispatch edit on ' + cmd, function () {
-								triggerEdit(cmd, args[0], args[1]);
-								if (expectedForSession[args[2]]) {
-									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-								}
-								else {
-									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-								}
-							});
-							it(description + ' dispatch edit on batched ' + cmd, function () {
-								triggerEdit(cmd, args[0], args[1], true);
-								if (expectedForSession[args[2]]) {
-									expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-								}
-								else {
-									expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-								}
-							});
-							it(description + ' return selection to previously selected on undo on ' + cmd, function () {
-								triggerEdit(cmd, args[0], args[1]);
-								nodeSelectionChangedListener.reset();
-								underTest.undo();
-								if (expectedForSession[args[2]]) {
-									expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
-								}
-								else {
-									expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
-								}
-							});
-						});
-					});
-				});
 			});
 			describe('automatic positioning', function () {
 				it('moves the map to keep selected node in the same position on the screen when updating attributes', function () {

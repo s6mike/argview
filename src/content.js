@@ -474,7 +474,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		logChange('insertIntermediate', [inFrontOfIdeaId, title, newIdea.id], function () {
 			parentIdea.ideas[childRank] = oldIdea;
 		}, originSession);
-		return true;
+		return newIdea.id;
 	};
 	contentAggregate.changeParent = function (ideaId, newParentId) {
 		return contentAggregate.execCommand('changeParent', arguments);

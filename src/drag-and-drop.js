@@ -1,4 +1,4 @@
-/*global _, MAPJS*/
+/*global _, MAPJS, jQuery*/
 MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
 	var currentDroppable,
@@ -54,11 +54,14 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			updateCurrentDroppable(undefined);
 		},
+		getRootNode = function () {
+			return mapModel.getCurrentLayout().nodes[mapModel.getIdea().id];
+		},
 		nodeDragEnd = function (id, x, y, nodeX, nodeY, shouldCopy, shouldPositionAbsolutely) {
 			var nodeBeingDragged = mapModel.getCurrentLayout().nodes[id],
 				nodeId,
 				node,
-				rootNode = mapModel.getCurrentLayout().nodes[mapModel.getIdea().id],
+				rootNode = getRootNode(),
 				verticallyClosestNode = {
 					id: null,
 					y: Infinity
@@ -131,6 +134,32 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		};
+	jQuery(stage.getContainer()).imageDropWidget(function (dataUrl, imgWidth, imgHeight, x, y) {
+		var node,
+			nodeId,
+			content = mapModel.getIdea(),
+			dropOn = function (ideaId) {
+				var oldStyle = content.getAttrById(ideaId, 'style');
+				content.updateAttr(ideaId, 'style', _.extend({}, oldStyle, {
+					outlineType: 'img',
+					outlineImageUrl: dataUrl,
+					outlineWidth: imgWidth,
+					outlineHeight: imgHeight
+				}));
+			},
+			addNew = function () {
+				content.startBatch();
+				dropOn(content.addSubIdea(content.id));
+				content.endBatch();
+			};
+		for (nodeId in mapModel.getCurrentLayout().nodes) {
+			node = mapModel.getCurrentLayout().nodes[nodeId];
+			if (isPointOverNode(x, y, node)) {
+				return dropOn(nodeId);
+			}
+		}
+		addNew();
+	});
 	mapModel.addEventListener('nodeCreated', function (n) {
 		var node = findNodeOnStage(n.id), shouldPositionAbsolutely;
 		node.on('dragstart', function (evt) {

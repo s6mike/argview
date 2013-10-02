@@ -96,17 +96,16 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		revertSelectionForUndo,
 		checkDefaultUIActions = function (command, args) {
 			var newIdeaId;
-			if (command === 'addSubIdea' || command === 'insertIntermediate') {
-				newIdeaId = args[2];
-				revertSelectionForUndo = currentlySelectedIdeaId;
-				self.selectNode(newIdeaId);
-				self.editNode(false, true, true);
-			}
 			if (command === 'paste') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
 			}
 
+		},
+		editNewIdea = function (newIdeaId) {
+			revertSelectionForUndo = currentlySelectedIdeaId;
+			self.selectNode(newIdeaId);
+			self.editNode(false, true, true);
 		},
 		getCurrentlySelectedIdeaId = function () {
 			return currentlySelectedIdeaId || idea.id;
@@ -291,14 +290,18 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (!isEditingEnabled) {
 			return false;
 		}
-		var target = parentId || currentlySelectedIdeaId;
+		var target = parentId || currentlySelectedIdeaId, newId;
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, target);
-				idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+				newId = idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
 			});
+			if (newId) {
+				editNewIdea(newId);
+			}
 		}
+
 	};
 	this.insertIntermediate = function (source) {
 		if (!isEditingEnabled) {
@@ -307,8 +310,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
 			return false;
 		}
-		idea.insertIntermediate(currentlySelectedIdeaId, getRandomTitle(intermediaryTitlesToRandomlyChooseFrom));
 		analytic('insertIntermediate', source);
+		var newId = idea.insertIntermediate(currentlySelectedIdeaId, getRandomTitle(intermediaryTitlesToRandomlyChooseFrom));
+		if (newId) {
+			editNewIdea(newId);
+		}
 	};
 	this.addSiblingIdea = function (source) {
 		if (!isEditingEnabled) {

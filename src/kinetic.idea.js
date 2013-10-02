@@ -333,8 +333,8 @@ Kinetic.Idea.prototype.initBackgroundImage = function () {
 		return;
 	}
 	self.domImg.onload = function loadImage() {
-		var imgWidth = self.mmAttr.style.outlineHeight || self.domImg.height,
-			imgHeight =  self.mmAttr.style.outlineWidth || self.domImg.width;
+		var imgWidth = self.mmAttr.style.outlineWidth || self.domImg.width,
+			imgHeight =  self.mmAttr.style.outlineHeight || self.domImg.height;
 		self.backgroundImage = new Kinetic.Image({
 			x: 0,
 			y: self.getClipMargin(),
