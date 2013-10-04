@@ -128,11 +128,11 @@
 		this.add(this.link);
 		this.add(this.clip);
 		this.calculateWidth = function () {
-			var forced = (self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineWidth) || 0;
+			var forced = (self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.width) || 0;
 			return Math.max(this.text.getWidth() + 2 * self.padding, forced);
 		};
 		this.calculateHeight = function () {
-			var forced = (self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineHeight) || 0;
+			var forced = (self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.height) || 0;
 			return Math.max(this.text.getHeight() + 2 * self.padding, forced);
 		};
 
@@ -321,10 +321,10 @@ Kinetic.Idea.prototype.initBackgroundImage = function () {
 	'use strict';
 	var self = this,
 		hasImage = function () {
-			return self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineType ===  'img';
+			return self.mmAttr && self.mmAttr.icon;
 		},
-		imgWidth = self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineWidth,
-		imgHeight =  self.mmAttr && self.mmAttr.style && self.mmAttr.style.outlineHeight,
+		imgWidth = self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.width,
+		imgHeight =  self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.height,
 		oldDraw;
 	if (!hasImage()) {
 		if (self.backgroundImage) {
@@ -348,10 +348,10 @@ Kinetic.Idea.prototype.initBackgroundImage = function () {
 				self.getLayer().draw();
 			};
 		}
-		if (self.domImg.src === self.mmAttr.style.outlineImageUrl) {
+		if (self.domImg.src === self.mmAttr.icon.url) {
 			return;
 		}
-		self.domImg.src = self.mmAttr.style.outlineImageUrl;
+		self.domImg.src = self.mmAttr.icon.url;
 	};
 	self.backgroundImage.drawScene = function () {
 		this._MAPJS_updateImage();

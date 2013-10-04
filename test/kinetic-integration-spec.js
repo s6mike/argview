@@ -56,28 +56,41 @@ describe('Kinetic dimension provider', function () {
 			expect(initCounter).toBe(2);
 			expect(result).toEqual({width: 20, height: 20});
 		});
-		it('uses attr.style.outline width and height to override title width and height', function () {
-			var result;
-			result = MAPJS.KineticMediator.dimensionProvider(
-				MAPJS.content(
-					{
-						title: 'with outline',
-						attr: {
-							style: {
-								outlineWidth: 1000,
-								outlineHeight: 500
-							}
-						}
-					}
-				)
-			);
-			expect(result).toEqual({width: 1000, height: 500});
+		describe('icon layouts', function () {
+			it('(center) overlays icon over text and uses maximum dimensions for the node', function () {
+				var iconBigger = MAPJS.content({title: 'icon bigger', attr: {icon: {width: 1000, height: 500, position: 'center' }}}),
+					textWider = MAPJS.content({title: 'textWider', attr: {icon: {width: 1, height: 500, position: 'center' }}}),
+					textTaller = MAPJS.content({title: 'textWider', attr: {icon: {width: 1000, height: 5, position: 'center' }}}),
+					textBigger = MAPJS.content({title: 'textWider', attr: {icon: {width: 1, height: 5, position: 'center' }}});
+				expect(MAPJS.KineticMediator.dimensionProvider(iconBigger)).toEqual({width: 1000, height: 500});
+				expect(MAPJS.KineticMediator.dimensionProvider(textWider)).toEqual({width: 100, height: 500});
+				expect(MAPJS.KineticMediator.dimensionProvider(textTaller)).toEqual({width: 1000, height: 200});
+				expect(MAPJS.KineticMediator.dimensionProvider(textBigger)).toEqual({width: 100, height: 200});
+			});
+			it('(bottom) icon goes below text and uses maximum width for the node', function () {
+				var iconWider = MAPJS.content({title: 'iconWider', attr: {icon: {width: 1000, height: 500, position: 'bottom' }}}),
+					textWider = MAPJS.content({title: 'textWider', attr: {icon: {width: 1, height: 500, position: 'bottom' }}});
+				expect(MAPJS.KineticMediator.dimensionProvider(iconWider)).toEqual({width: 1000, height: 700});
+				expect(MAPJS.KineticMediator.dimensionProvider(textWider)).toEqual({width: 100, height: 700});
+			});
 		});
-		it('does not mix memoization of same title but different outline ideas', function () {
+		it('does not mix memoization of nodes with the same title but with/without icons', function () {
 			var result;
 			MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same2'}));
-			result = MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same2', attr: { style: { outlineWidth: 1000, outlineHeight: 500 } } }));
-			expect(result).toEqual({width: 1000, height: 500});
+			result = MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same2', attr: { icon: { width: 1000, height: 300, position: 'center' } } }));
+			expect(result).toEqual({width: 1000, height: 300});
+		});
+		it('does not mix memoization of nodes with the same title but with different icon size', function () {
+			var result;
+			MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same3', attr: { icon: { width: 1000, height: 500, position: 'center' } } }));
+			result = MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same3', attr: { icon: { width: 1000, height: 300, position: 'center' } } }));
+			expect(result).toEqual({width: 1000, height: 300});
+		});
+		it('does not mix memoization of nodes with the same title but with different icon layout', function () {
+			var result;
+			MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same4', attr: { icon: { width: 1000, height: 500, position: 'center' } } }));
+			result = MAPJS.KineticMediator.dimensionProvider(MAPJS.content({title: 'same4', attr: { icon: { width: 1000, height: 500, position: 'bottom' } } }));
+			expect(result).toEqual({width: 1000, height: 700});
 		});
 	});
 });

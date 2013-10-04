@@ -364,13 +364,23 @@ MAPJS.KineticMediator.titleDimensionProvider = _.memoize(
 );
 MAPJS.KineticMediator.dimensionProvider = function (idea) {
 	'use strict';
-	if (idea && idea.attr && idea.attr.style && idea.attr.style.outlineHeight && idea.attr.style.outlineWidth) {
-		return {
-			width: idea.attr.style.outlineWidth,
-			height: idea.attr.style.outlineHeight
+	var nodeWithoutIcon = MAPJS.KineticMediator.titleDimensionProvider(idea.title),
+		mergeSizes = function (box1, box2, positionOfBox2) {
+			if (positionOfBox2 === 'bottom') {
+				return {
+					width: Math.max(box1.width, box2.width),
+					height: box1.height + box2.height
+				};
+			}
+			return {
+				width: Math.max(box1.width, box2.width),
+				height: Math.max(box1.height, box2.height)
+			};
 		};
+	if (idea.attr && idea.attr.icon) {
+		return mergeSizes(nodeWithoutIcon, idea.attr.icon, idea.attr.icon.position);
 	}
-	return MAPJS.KineticMediator.titleDimensionProvider(idea.title);
+	return nodeWithoutIcon;
 };
 MAPJS.KineticMediator.layoutCalculator = function (idea) {
 	'use strict';

@@ -139,13 +139,11 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			nodeId,
 			content = mapModel.getIdea(),
 			dropOn = function (ideaId) {
-				var oldStyle = content.getAttrById(ideaId, 'style');
-				content.updateAttr(ideaId, 'style', _.extend({}, oldStyle, {
-					outlineType: 'img',
-					outlineImageUrl: dataUrl,
-					outlineWidth: imgWidth,
-					outlineHeight: imgHeight
-				}));
+				content.updateAttr(ideaId, 'icon', {
+					url: dataUrl,
+					width: imgWidth,
+					height: imgHeight
+				});
 			},
 			addNew = function () {
 				content.startBatch();
