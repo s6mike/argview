@@ -73,6 +73,24 @@ describe('Kinetic dimension provider', function () {
 				expect(MAPJS.KineticMediator.dimensionProvider(iconWider)).toEqual({width: 1000, height: 700});
 				expect(MAPJS.KineticMediator.dimensionProvider(textWider)).toEqual({width: 100, height: 700});
 			});
+			it('(left) icon goes left of the text and uses maximum height for the node', function () {
+				var iconTaller = MAPJS.content({title: 'iconTaller', attr: {icon: {width: 333, height: 500, position: 'left' }}}),
+					textTaller = MAPJS.content({title: 'textTaller', attr: {icon: {width: 333, height: 50, position: 'left' }}});
+				expect(MAPJS.KineticMediator.dimensionProvider(iconTaller)).toEqual({width: 433, height: 500});
+				expect(MAPJS.KineticMediator.dimensionProvider(textTaller)).toEqual({width: 433, height: 200});
+			});
+			it('(top) icon goes above text and uses maximum width for the node', function () {
+				var iconWider = MAPJS.content({title: 'iconWider', attr: {icon: {width: 1000, height: 500, position: 'top' }}}),
+					textWider = MAPJS.content({title: 'textWider', attr: {icon: {width: 1, height: 500, position: 'top' }}});
+				expect(MAPJS.KineticMediator.dimensionProvider(iconWider)).toEqual({width: 1000, height: 700});
+				expect(MAPJS.KineticMediator.dimensionProvider(textWider)).toEqual({width: 100, height: 700});
+			});
+			it('(right) icon goes right of the text and uses maximum height for the node', function () {
+				var iconTaller = MAPJS.content({title: 'iconTaller', attr: {icon: {width: 333, height: 500, position: 'right' }}}),
+					textTaller = MAPJS.content({title: 'textTaller', attr: {icon: {width: 333, height: 50, position: 'right' }}});
+				expect(MAPJS.KineticMediator.dimensionProvider(iconTaller)).toEqual({width: 433, height: 500});
+				expect(MAPJS.KineticMediator.dimensionProvider(textTaller)).toEqual({width: 433, height: 200});
+			});
 		});
 		it('does not mix memoization of nodes with the same title but with/without icons', function () {
 			var result;

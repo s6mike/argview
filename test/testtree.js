@@ -6,7 +6,8 @@ function test_tree() {
 			"icon":{
 				url: imgSrc,
 				height: 256, 
-				width: 256
+				width: 256,
+				position: 'right'
 			},
 		"attachment":{"contentType":"text/html","content":"content <b>bold content</b>"}},
 		   "ideas":{"11":{"title":"4","id":4,"ideas":{"2":{"title":"7 is long","id":7,

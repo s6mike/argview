@@ -350,6 +350,25 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 		});
 	}());
 };
+MAPJS.calculateMergedBoxSize = function (box1, box2) {
+	'use strict';
+	if (box2.position === 'bottom' || box2.position === 'top') {
+		return {
+			width: Math.max(box1.width, box2.width),
+			height: box1.height + box2.height
+		};
+	}
+	if (box2.position === 'left' || box2.position === 'right') {
+		return {
+			width: box1.width + box2.width,
+			height: Math.max(box1.height, box2.height)
+		};
+	}
+	return {
+		width: Math.max(box1.width, box2.width),
+		height: Math.max(box1.height, box2.height)
+	};
+};
 MAPJS.KineticMediator.titleDimensionProvider = _.memoize(
 	function (title) {
 		'use strict';
@@ -362,23 +381,12 @@ MAPJS.KineticMediator.titleDimensionProvider = _.memoize(
 		};
 	}
 );
+
 MAPJS.KineticMediator.dimensionProvider = function (idea) {
 	'use strict';
-	var nodeWithoutIcon = MAPJS.KineticMediator.titleDimensionProvider(idea.title),
-		mergeSizes = function (box1, box2, positionOfBox2) {
-			if (positionOfBox2 === 'bottom') {
-				return {
-					width: Math.max(box1.width, box2.width),
-					height: box1.height + box2.height
-				};
-			}
-			return {
-				width: Math.max(box1.width, box2.width),
-				height: Math.max(box1.height, box2.height)
-			};
-		};
+	var nodeWithoutIcon = MAPJS.KineticMediator.titleDimensionProvider(idea.title);
 	if (idea.attr && idea.attr.icon) {
-		return mergeSizes(nodeWithoutIcon, idea.attr.icon, idea.attr.icon.position);
+		return MAPJS.calculateMergedBoxSize(nodeWithoutIcon, idea.attr.icon);
 	}
 	return nodeWithoutIcon;
 };

@@ -66,6 +66,53 @@
 		});
 		return group;
 	}
+	function createIcon() {
+		var	icon = new Kinetic.Image({
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0
+		});
+		icon.oldDrawScene = icon.drawScene;
+		icon.updateMapjsAttribs = function (iconHash) {
+			var safeIconProp = function (name) {
+					return iconHash && iconHash[name];
+				},
+				imgUrl = safeIconProp('url'),
+				imgWidth = safeIconProp('width'),
+				imgHeight = safeIconProp('height');
+			if (imgUrl && this.getAttr('image') && this.getAttr('image').src !== imgUrl) {
+				this.getAttr('image').src = imgUrl;
+			}
+			this.setAttr('mapjs-image-url', imgUrl);
+			if (this.getAttr('width') !== imgWidth) {
+				this.setAttr('width', imgWidth);
+			}
+			if (this.getAttr('height') !== imgHeight) {
+				this.setAttr('height', imgHeight);
+			}
+			this.setVisible(imgUrl);
+		};
+		icon.initMapjsImage = function () {
+			var self = this,
+				imageSrc = this.getAttr('mapjs-image-url');
+			if (!imageSrc) {
+				return;
+			}
+			if (!this.getAttr('image')) {
+				this.setAttr('image', new Image());
+				this.getAttr('image').onload = function loadImage() {
+					self.getLayer().draw();
+				};
+				this.getAttr('image').src = imageSrc;
+			}
+		};
+		icon.drawScene = function () {
+			this.initMapjsImage();
+			this.oldDrawScene.apply(this, arguments);
+		};
+		return icon;
+	}
 
 	Kinetic.Idea = function (config) {
 		var ENTER_KEY_CODE = 13,
@@ -81,7 +128,6 @@
 					visible: false
 				});
 			};
-		this.padding = 8;
 		this.level = config.level;
 		this.mmAttr = config.mmAttr;
 		this.isSelected = false;
@@ -120,22 +166,14 @@
 		this.clip.on('click tap', function () {
 			self.fire(':request', {type: 'openAttachment', source: 'mouse'});
 		});
+		this.icon = createIcon();
 		this.add(this.rectbg1);
 		this.add(this.rectbg2);
 		this.add(this.rect);
-		this.initBackgroundImage();
+		this.add(this.icon);
 		this.add(this.text);
 		this.add(this.link);
 		this.add(this.clip);
-		this.calculateWidth = function () {
-			var forced = (self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.width) || 0;
-			return Math.max(this.text.getWidth() + 2 * self.padding, forced);
-		};
-		this.calculateHeight = function () {
-			var forced = (self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.height) || 0;
-			return Math.max(this.text.getHeight() + 2 * self.padding, forced);
-		};
-
 		this.setText = function (text) {
 			var replacement = breakWords(MAPJS.URLHelper.stripLink(text)) ||
 					(text.length < COLUMN_WORD_WRAP_LIMIT ? text : (text.substring(0, COLUMN_WORD_WRAP_LIMIT) + '...'));
@@ -312,52 +350,8 @@ Kinetic.Idea.prototype.getBackground = function () {
 		};
 	return validColor(this.mmAttr && this.mmAttr.style && this.mmAttr.style.background, defaultBg);
 };
-Kinetic.Idea.prototype.getClipMargin = function () {
-	'use strict';
-	var	isClipVisible = this.mmAttr && this.mmAttr.attachment || false;
-	return isClipVisible ? this.clip.getClipMargin() : 0;
-};
-Kinetic.Idea.prototype.initBackgroundImage = function () {
-	'use strict';
-	var self = this,
-		hasImage = function () {
-			return self.mmAttr && self.mmAttr.icon;
-		},
-		imgWidth = self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.width,
-		imgHeight =  self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.height,
-		oldDraw;
-	if (!hasImage()) {
-		if (self.backgroundImage) {
-			self.bacgroundImage.remove();
-		}
-		return;
-	}
-	self.backgroundImage = new Kinetic.Image({
-		x: 0,
-		y: self.getClipMargin(),
-		width: imgWidth,
-		height: imgHeight
-	});
-	self.add(self.backgroundImage);
-	oldDraw = self.backgroundImage.drawScene;
-	self.backgroundImage._MAPJS_updateImage = function () {
-		if (!self.domImg) {
-			self.domImg = new Image();
-			self.domImg.onload = function loadImage() {
-				self.backgroundImage.setAttr('image', self.domImg);
-				self.getLayer().draw();
-			};
-		}
-		if (self.domImg.src === self.mmAttr.icon.url) {
-			return;
-		}
-		self.domImg.src = self.mmAttr.icon.url;
-	};
-	self.backgroundImage.drawScene = function () {
-		this._MAPJS_updateImage();
-		oldDraw.apply(this, arguments);
-	};
-};
+
+
 Kinetic.Idea.prototype.setStyle = function () {
 	'use strict';
 	/*jslint newcap: true*/
@@ -367,30 +361,65 @@ Kinetic.Idea.prototype.setStyle = function () {
 		isActivated = this.isActivated,
 		background = this.getBackground(),
 		tintedBackground = Color(background).mix(Color('#EEEEEE')).hexString(),
-		padding = self.padding,
 		rectOffset,
 		rectIncrement = 4,
+		padding = 8,
+		isClipVisible = self.mmAttr && self.mmAttr.attachment,
+		clipMargin = isClipVisible ? self.clip.getClipMargin() : 0,
 		getDash = function () {
 			if (!self.isActivated) {
 				return [];
 			}
 			return [5, 3];
+		},
+		calculatedSize = {
+			width: this.text.getWidth() + 2 * padding,
+			height: this.text.getHeight() + 2 * padding
+		},
+		positionTextAndIcon = function () {
+			var iconPos = self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.position;
+			if (!iconPos || iconPos === 'center') {
+				self.text.setX((calculatedSize.width - self.text.getWidth()) / 2);
+				self.text.setY((calculatedSize.height - self.text.getHeight()) / 2 + clipMargin);
+				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
+				self.icon.setX((calculatedSize.width - self.icon.getWidth()) / 2);
+			} else if (iconPos === 'bottom') {
+				self.text.setX((calculatedSize.width - self.text.getWidth()) / 2);
+				self.text.setY(clipMargin + padding);
+				self.icon.setY(calculatedSize.height - self.icon.getHeight());
+				self.icon.setX((calculatedSize.width - self.icon.getWidth()) / 2);
+			} else if (iconPos === 'top') {
+				self.text.setX((calculatedSize.width - self.text.getWidth()) / 2);
+				self.icon.setY(clipMargin + padding);
+				self.text.setY(calculatedSize.height - self.text.getHeight());
+				self.icon.setX((calculatedSize.width - self.icon.getWidth()) / 2);
+			} else if (iconPos === 'left') {
+				self.text.setX(calculatedSize.width - self.text.getWidth() - padding);
+				self.text.setY((calculatedSize.height - self.text.getHeight()) / 2 + clipMargin);
+				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
+				self.icon.setX(0);
+			} else if (iconPos === 'right') {
+				self.text.setY((calculatedSize.height - self.text.getHeight()) / 2 + clipMargin);
+				self.text.setX(padding);
+				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
+				self.icon.setX(calculatedSize.width - self.icon.getWidth());
+			}
 		};
-
-	this.clip.setVisible(self.getClipMargin());
-	this.setWidth(self.calculateWidth());
-	this.setHeight(self.calculateHeight() + self.getClipMargin());
-	this.text.setX((self.calculateWidth() - this.text.getWidth()) / 2);
-	this.text.setY((self.calculateHeight() - this.text.getHeight()) / 2 + self.getClipMargin());
-	this.link.setX(self.calculateWidth() - 2 * self.padding + 10);
-	this.link.setY(self.calculateHeight() - 2 * padding + 5 + self.getClipMargin());
-	if (this.backgroundImage) {
-		this.backgroundImage.setY(self.getClipMargin());
+	if (this.mmAttr && this.mmAttr.icon && this.mmAttr.icon.url) {
+		calculatedSize = MAPJS.calculateMergedBoxSize(calculatedSize, this.mmAttr.icon);
 	}
-	rectOffset = self.getClipMargin();
+	this.icon.updateMapjsAttribs(self.mmAttr && self.mmAttr.icon);
+
+	this.clip.setVisible(clipMargin);
+	this.setWidth(calculatedSize.width);
+	this.setHeight(calculatedSize.height + clipMargin);
+	this.link.setX(calculatedSize.width - 2 * padding + 10);
+	this.link.setY(calculatedSize.height - 2 * padding + 5 + clipMargin);
+	positionTextAndIcon();
+	rectOffset = clipMargin;
 	_.each([this.rect, this.rectbg2, this.rectbg1], function (r) {
-		r.setWidth(self.calculateWidth());
-		r.setHeight(self.calculateHeight());
+		r.setWidth(calculatedSize.width);
+		r.setHeight(calculatedSize.height);
 		r.setY(rectOffset);
 		rectOffset += rectIncrement;
 		if (isDroppable) {
@@ -430,7 +459,7 @@ Kinetic.Idea.prototype.setStyle = function () {
 	this.rect.setStrokeWidth(this.isActivated ? 3 : self.rectAttrs.strokeWidth);
 	this.rectbg1.setVisible(this.isCollapsed());
 	this.rectbg2.setVisible(this.isCollapsed());
-	this.clip.setX(self.calculateWidth() - padding);
+	this.clip.setX(calculatedSize.width - padding);
 	this.setupShadows();
 	this.text.setFill(MAPJS.contrastForeground(tintedBackground));
 };
