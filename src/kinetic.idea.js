@@ -47,6 +47,7 @@
 		};
 		return link;
 	}
+
 	function createClip() {
 		var group, clip, props = {width: 5, height: 25, radius: 3, rotation: 0.1, strokeWidth: 2, clipTo: 10};
 		group = new Kinetic.Group();
@@ -404,9 +405,27 @@ Kinetic.Idea.prototype.setStyle = function () {
 				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
 				self.icon.setX(calculatedSize.width - self.icon.getWidth());
 			}
+		},
+		calculateMergedBoxSize = function (box1, box2) {
+			if (box2.position === 'bottom' || box2.position === 'top') {
+				return {
+					width: Math.max(box1.width, box2.width),
+					height: box1.height + box2.height
+				};
+			}
+			if (box2.position === 'left' || box2.position === 'right') {
+				return {
+					width: box1.width + box2.width,
+					height: Math.max(box1.height, box2.height)
+				};
+			}
+			return {
+				width: Math.max(box1.width, box2.width),
+				height: Math.max(box1.height, box2.height)
+			};
 		};
 	if (this.mmAttr && this.mmAttr.icon && this.mmAttr.icon.url) {
-		calculatedSize = MAPJS.calculateMergedBoxSize(calculatedSize, this.mmAttr.icon);
+		calculatedSize = calculateMergedBoxSize(calculatedSize, this.mmAttr.icon);
 	}
 	this.icon.updateMapjsAttribs(self.mmAttr && self.mmAttr.icon);
 

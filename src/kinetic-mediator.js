@@ -369,27 +369,25 @@ MAPJS.calculateMergedBoxSize = function (box1, box2) {
 		height: Math.max(box1.height, box2.height)
 	};
 };
-MAPJS.KineticMediator.titleDimensionProvider = _.memoize(
-	function (title) {
+MAPJS.KineticMediator.dimensionProvider = _.memoize(
+	function (content) {
 		'use strict';
-		var text = new Kinetic.Idea({
-			text: title
+		var shape = new Kinetic.Idea({
+			text: content.title,
+			mmAttr: content.attr
 		});
 		return {
-			width: text.getWidth(),
-			height: text.getHeight()
+			width: shape.getWidth(),
+			height: shape.getHeight()
 		};
+	},
+	function (content) {
+		'use strict';
+		var iconSize = (content.attr && content.attr.icon && (':' + content.attr.icon.width + 'x' + content.attr.icon.height + 'x' + content.attr.icon.position)) || ':0x0x0';
+		return content.title + iconSize;
 	}
 );
 
-MAPJS.KineticMediator.dimensionProvider = function (idea) {
-	'use strict';
-	var nodeWithoutIcon = MAPJS.KineticMediator.titleDimensionProvider(idea.title);
-	if (idea.attr && idea.attr.icon) {
-		return MAPJS.calculateMergedBoxSize(nodeWithoutIcon, idea.attr.icon);
-	}
-	return nodeWithoutIcon;
-};
 MAPJS.KineticMediator.layoutCalculator = function (idea) {
 	'use strict';
 	return MAPJS.calculateLayout(idea, MAPJS.KineticMediator.dimensionProvider);
