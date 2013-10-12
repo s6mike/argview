@@ -13,13 +13,13 @@ $.fn.imageDropWidget = function (callback) {
 			return loader.promise();
 		},
 		domImg,
-		insertFiles = function (files, x, y) {
+		insertFiles = function (files, evt) {
 			$.each(files, function (idx, fileInfo) {
 				if (/^image\//.test(fileInfo.type)) {
 					$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
 						domImg = new Image();
 						domImg.onload = function () {
-							callback(dataUrl, domImg.width, domImg.height, x, y);
+							callback(dataUrl, domImg.width, domImg.height, evt);
 						};
 						domImg.src = dataUrl;
 					});
@@ -35,7 +35,7 @@ $.fn.imageDropWidget = function (callback) {
 		e.stopPropagation();
 		e.preventDefault();
 		if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-			insertFiles(dataTransfer.files, e.originalEvent.x, e.originalEvent.y);
+			insertFiles(dataTransfer.files, e.originalEvent);
 		}
 	});
 };

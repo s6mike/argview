@@ -134,26 +134,31 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		};
-	jQuery(stage.getContainer()).imageDropWidget(function (dataUrl, imgWidth, imgHeight, x, y) {
+	jQuery(stage.getContainer()).imageDropWidget(function (dataUrl, imgWidth, imgHeight, evt) {
 		var node,
 			nodeId,
 			content = mapModel.getIdea(),
-			dropOn = function (ideaId) {
+			point = getInteractionPoint(evt),
+			dropOn = function (ideaId, position) {
+				var scaleX = Math.min(imgWidth, 300) / imgWidth,
+					scaleY = Math.min(imgHeight, 300) / imgHeight,
+					scale = Math.min(scaleX, scaleY);
 				content.updateAttr(ideaId, 'icon', {
 					url: dataUrl,
-					width: imgWidth,
-					height: imgHeight
+					width: imgWidth * scale,
+					height: imgHeight * scale,
+					position: position
 				});
 			},
 			addNew = function () {
 				content.startBatch();
-				dropOn(content.addSubIdea(content.id));
+				dropOn(content.addSubIdea(content.id), 'center');
 				content.endBatch();
 			};
 		for (nodeId in mapModel.getCurrentLayout().nodes) {
 			node = mapModel.getCurrentLayout().nodes[nodeId];
-			if (isPointOverNode(x, y, node)) {
-				return dropOn(nodeId);
+			if (isPointOverNode(point.x, point.y, node)) {
+				return dropOn(nodeId, 'left');
 			}
 		}
 		addNew();
