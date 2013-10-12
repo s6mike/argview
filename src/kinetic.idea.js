@@ -373,9 +373,16 @@ Kinetic.Idea.prototype.setStyle = function () {
 			}
 			return [5, 3];
 		},
-		calculatedSize = {
-			width: this.text.getWidth() + 2 * padding,
-			height: this.text.getHeight() + 2 * padding
+		textSize = {
+			width: this.text.getWidth(),
+			height: this.text.getHeight()
+		},
+		calculatedSize,
+		pad = function (box) {
+			return {
+				width: box.width + 2 * padding,
+				height: box.height + 2 * padding
+			};
 		},
 		positionTextAndIcon = function () {
 			var iconPos = self.mmAttr && self.mmAttr.icon && self.mmAttr.icon.position;
@@ -387,45 +394,47 @@ Kinetic.Idea.prototype.setStyle = function () {
 			} else if (iconPos === 'bottom') {
 				self.text.setX((calculatedSize.width - self.text.getWidth()) / 2);
 				self.text.setY(clipMargin + padding);
-				self.icon.setY(calculatedSize.height - self.icon.getHeight());
+				self.icon.setY(clipMargin + calculatedSize.height - self.icon.getHeight() - padding);
 				self.icon.setX((calculatedSize.width - self.icon.getWidth()) / 2);
 			} else if (iconPos === 'top') {
 				self.text.setX((calculatedSize.width - self.text.getWidth()) / 2);
 				self.icon.setY(clipMargin + padding);
-				self.text.setY(calculatedSize.height - self.text.getHeight());
+				self.text.setY(clipMargin + calculatedSize.height - self.text.getHeight() - padding);
 				self.icon.setX((calculatedSize.width - self.icon.getWidth()) / 2);
 			} else if (iconPos === 'left') {
 				self.text.setX(calculatedSize.width - self.text.getWidth() - padding);
 				self.text.setY((calculatedSize.height - self.text.getHeight()) / 2 + clipMargin);
 				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
-				self.icon.setX(0);
+				self.icon.setX(padding);
 			} else if (iconPos === 'right') {
 				self.text.setY((calculatedSize.height - self.text.getHeight()) / 2 + clipMargin);
 				self.text.setX(padding);
 				self.icon.setY((calculatedSize.height - self.icon.getHeight()) / 2 + clipMargin);
-				self.icon.setX(calculatedSize.width - self.icon.getWidth());
+				self.icon.setX(calculatedSize.width - self.icon.getWidth() - padding);
 			}
 		},
 		calculateMergedBoxSize = function (box1, box2) {
 			if (box2.position === 'bottom' || box2.position === 'top') {
 				return {
-					width: Math.max(box1.width, box2.width),
-					height: box1.height + box2.height
+					width: Math.max(box1.width, box2.width) + 2 * padding,
+					height: box1.height + box2.height + 3 * padding
 				};
 			}
 			if (box2.position === 'left' || box2.position === 'right') {
 				return {
-					width: box1.width + box2.width,
-					height: Math.max(box1.height, box2.height)
+					width: box1.width + box2.width + 3 * padding,
+					height: Math.max(box1.height, box2.height) + 2 * padding
 				};
 			}
-			return {
+			return pad({
 				width: Math.max(box1.width, box2.width),
 				height: Math.max(box1.height, box2.height)
-			};
+			});
 		};
 	if (this.mmAttr && this.mmAttr.icon && this.mmAttr.icon.url) {
-		calculatedSize = calculateMergedBoxSize(calculatedSize, this.mmAttr.icon);
+		calculatedSize = calculateMergedBoxSize(textSize, this.mmAttr.icon);
+	} else {
+		calculatedSize = pad(textSize);
 	}
 	this.icon.updateMapjsAttribs(self.mmAttr && self.mmAttr.icon);
 
