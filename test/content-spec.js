@@ -388,6 +388,16 @@ describe('content aggregate', function () {
 				idea.paste(3, toPaste);
 				expect(spy).toHaveBeenCalledWith('paste', [3, toPaste, '4.sess'], 'sess');
 			});
+			it('should paste an idea with an empty title but with attributes', function () {
+				var result, pasted;
+				toPaste.title = '';
+				toPaste.attr = {'x': 'y'};
+				result = idea.paste(1, toPaste);
+				expect(result).not.toBeFalsy();
+				pasted = idea.findSubIdeaById(result);
+				expect(pasted.attr).toEqual({'x': 'y'});
+				expect(pasted.title).toBeFalsy();
+			});
 			it('pushes an event on the undo stack if successful', function () {
 				idea.paste(3, toPaste);
 				idea.undo();
