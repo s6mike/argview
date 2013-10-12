@@ -57,7 +57,7 @@ Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
 	);
 };
 
-MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
+MAPJS.KineticMediator = function (mapModel, stage) {
 	'use strict';
 	window.stage = stage;
 	var layer = new Kinetic.Layer(),
@@ -159,9 +159,6 @@ MAPJS.KineticMediator = function (mapModel, stage, imageRendering) {
 			id: 'node_' + n.id,
 			activated: n.activated
 		});
-		if (imageRendering) {
-			node = Kinetic.IdeaProxy(node, stage, layer);
-		}
 		node.on('click tap', function (evt) { mapModel.clickNode(n.id, evt); });
 		node.on('dblclick dbltap', function () {
 			if (!mapModel.getEditingEnabled()) {
