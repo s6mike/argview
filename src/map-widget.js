@@ -52,6 +52,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'a': 'openAttachment'
 			},
 			onScroll = function (event, delta, deltaX, deltaY) {
+				deltaX = deltaX || 0; /*chromebook scroll fix*/
+				deltaY = deltaY || 0;
 				if (event.target === jQuery(stage.getContainer()).find('canvas')[0]) {
 					if (Math.abs(deltaX) < 5) {
 						deltaX = deltaX * 5;
