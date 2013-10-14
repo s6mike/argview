@@ -145,7 +145,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				var scaleX = Math.min(imgWidth, 300) / imgWidth,
 					scaleY = Math.min(imgHeight, 300) / imgHeight,
 					scale = Math.min(scaleX, scaleY);
-				mapModel.setIcon('drag and drop', dataUrl, imgWidth * scale, imgHeight * scale, position, ideaId);
+				mapModel.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), position, ideaId);
 			},
 			addNew = function () {
 				content.startBatch();
