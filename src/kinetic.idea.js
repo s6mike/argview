@@ -82,8 +82,8 @@
 				imgUrl = safeIconProp('url'),
 				imgWidth = safeIconProp('width'),
 				imgHeight = safeIconProp('height');
-			if (imgUrl && this.getAttr('image') && this.getAttr('image').src !== imgUrl) {
-				this.getAttr('image').src = imgUrl;
+			if (this.getAttr('image') && this.getAttr('image').src !== imgUrl) {
+				this.getAttr('image').src = imgUrl || '';
 			}
 			this.setAttr('mapjs-image-url', imgUrl);
 			if (this.getAttr('width') !== imgWidth) {
@@ -109,8 +109,12 @@
 			}
 		};
 		icon.drawScene = function () {
-			this.initMapjsImage();
-			this.oldDrawScene.apply(this, arguments);
+			if (!this.getAttr('image')) {
+				this.initMapjsImage();
+			}
+			if (this.getAttr('mapjs-image-url')) {
+				this.oldDrawScene.apply(this, arguments);
+			}
 		};
 		return icon;
 	}
