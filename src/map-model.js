@@ -540,13 +540,15 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (!nodeIdea) {
 			return false;
 		}
-		if (nodeIdea.title || nodeId === idea.id) {
-			idea.updateAttr(nodeId, 'icon', !url ? false : {
+		if (url) {
+			idea.updateAttr(nodeId, 'icon', {
 				url: url,
 				width: imgWidth,
 				height: imgHeight,
 				position: position
 			});
+		} else if (nodeIdea.title || nodeId === idea.id) {
+			idea.updateAttr(nodeId, 'icon', false);
 		} else {
 			idea.removeSubIdea(nodeId);
 		}
