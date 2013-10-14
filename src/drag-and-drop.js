@@ -1,4 +1,5 @@
 /*global _, MAPJS, jQuery*/
+/*jslint forin:true*/
 MAPJS.dragdrop = function (mapModel, stage) {
 	'use strict';
 	var currentDroppable,
@@ -41,6 +42,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			return false;
 		},
 		nodeDragMove = function (id, x, y, nodeX, nodeY, shouldCopy, shouldPositionAbsolutely) {
+
 			var nodeId, node;
 			if (!mapModel.isEditingEnabled()) {
 				return;
@@ -143,12 +145,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 				var scaleX = Math.min(imgWidth, 300) / imgWidth,
 					scaleY = Math.min(imgHeight, 300) / imgHeight,
 					scale = Math.min(scaleX, scaleY);
-				content.updateAttr(ideaId, 'icon', {
-					url: dataUrl,
-					width: imgWidth * scale,
-					height: imgHeight * scale,
-					position: position
-				});
+				mapModel.setIcon('drag and drop', dataUrl, imgWidth * scale, imgHeight * scale, position, ideaId);
 			},
 			addNew = function () {
 				content.startBatch();

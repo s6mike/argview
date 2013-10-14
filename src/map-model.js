@@ -235,7 +235,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			contextNode = function () {
 				return contextNodeId && currentLayout && currentLayout.nodes && currentLayout.nodes[contextNodeId];
 			},
-			oldContext, newContext;
+			oldContext,
+			newContext;
 		oldContext = contextNode();
 		if (isInputEnabled) {
 			self.applyToActivated(function (id) {
@@ -520,6 +521,34 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.applyToActivated(function (id) {
 				idea.updateAttr(id, 'style', pastingStyle);
 			});
+		}
+	};
+	self.getIcon = function (nodeId) {
+		var node = currentLayout.nodes[nodeId || currentlySelectedIdeaId];
+		if (!node) {
+			return false;
+		}
+		return node.attr && node.attr.icon;
+	};
+	self.setIcon = function (source, url, imgWidth, imgHeight, position, nodeId) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('setIcon', source);
+		nodeId = nodeId || currentlySelectedIdeaId;
+		var nodeIdea = self.findIdeaById(nodeId);
+		if (!nodeIdea) {
+			return false;
+		}
+		if (nodeIdea.title || nodeId === idea.id) {
+			idea.updateAttr(nodeId, 'icon', !url ? false : {
+				url: url,
+				width: imgWidth,
+				height: imgHeight,
+				position: position
+			});
+		} else {
+			idea.removeSubIdea(nodeId);
 		}
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
