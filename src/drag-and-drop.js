@@ -149,7 +149,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			},
 			addNew = function () {
 				content.startBatch();
-				dropOn(content.addSubIdea(content.id), 'center');
+				dropOn(content.addSubIdea(mapModel.getSelectedNodeId()), 'center');
 				content.endBatch();
 			};
 		for (nodeId in mapModel.getCurrentLayout().nodes) {

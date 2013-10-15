@@ -567,7 +567,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	self.moveUp = function (source) { self.moveRelative(source, -1); };
 	self.moveDown = function (source) { self.moveRelative(source, 1); };
-
+	self.getSelectedNodeId = function () {
+		return getCurrentlySelectedIdeaId();
+	};
 	//node activation
 	(function () {
 		var activatedNodes = [],
