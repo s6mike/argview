@@ -240,14 +240,10 @@ describe('MapModel', function () {
 				underTest.selectNode(2);
 				underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
 			});
-			_.each(['addSubIdea', 'insertIntermediate'], function (command) {
+			_.each(['addSubIdea', 'insertIntermediate', 'addSiblingIdea'], function (command) {
 				it('should dispatch edit after ' + command + ' from mapModel', function () {
 					underTest[command]('source');
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
-				});
-				it('should not dispatch edit after ' + command + ' bypassing mapModel', function () {
-					anIdea[command](2);
-					expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 				});
 				it('should return selection to previous on undo after ' + command, function () {
 					underTest[command]('source');
