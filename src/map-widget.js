@@ -49,7 +49,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'='	: 'activateSiblingNodes',
 				'.'	: 'activateSelectedNode',
 				'/' : 'toggleCollapse',
-				'a': 'openAttachment'
+				'a' : 'openAttachment',
+				'i' : 'editIcon'
 			},
 			onScroll = function (event, delta, deltaX, deltaY) {
 				deltaX = deltaX || 0; /*chromebook scroll fix*/

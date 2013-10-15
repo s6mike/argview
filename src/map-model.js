@@ -370,6 +370,18 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 		self.dispatchEvent('nodeEditRequested', currentlySelectedIdeaId, shouldSelectAll, !!editingNew);
 	};
+	this.editIcon = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		if (source) {
+			analytic('editIcon', source);
+		}
+		if (!isInputEnabled) {
+			return false;
+		}
+		self.dispatchEvent('nodeIconEditRequested', currentlySelectedIdeaId);
+	};
 	this.scaleUp = function (source) {
 		self.scale(source, 1.25);
 	};
