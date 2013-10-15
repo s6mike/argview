@@ -318,16 +318,20 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 	};
 	this.addSiblingIdea = function (source) {
+		var newId, parent;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
-			var parent = idea.findParent(currentlySelectedIdeaId) || idea;
+			parent = idea.findParent(currentlySelectedIdeaId) || idea;
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
-				idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+				newId = idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
 			});
+			if (newId) {
+				editNewIdea(newId);
+			}
 		}
 	};
 	this.removeSubIdea = function (source) {
