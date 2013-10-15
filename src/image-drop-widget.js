@@ -1,7 +1,8 @@
-/*global $, FileReader, Image */
-$.fn.imageDropWidget = function (callback) {
+/*global $, FileReader, Image, MAPJS */
+MAPJS.ImageInsertController = function (callback) {
 	'use strict';
-	var readFileIntoDataUrl = function (fileInfo) {
+	var self = this,
+		readFileIntoDataUrl = function (fileInfo) {
 			var loader = $.Deferred(),
 				fReader = new FileReader();
 			fReader.onload = function (e) {
@@ -12,20 +13,23 @@ $.fn.imageDropWidget = function (callback) {
 			fReader.readAsDataURL(fileInfo);
 			return loader.promise();
 		},
-		domImg,
-		insertFiles = function (files, evt) {
-			$.each(files, function (idx, fileInfo) {
-				if (/^image\//.test(fileInfo.type)) {
-					$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
-						domImg = new Image();
-						domImg.onload = function () {
-							callback(dataUrl, domImg.width, domImg.height, evt);
-						};
-						domImg.src = dataUrl;
-					});
-				}
-			});
-		};
+		domImg;
+	self.insertFiles = function (files, evt) {
+		$.each(files, function (idx, fileInfo) {
+			if (/^image\//.test(fileInfo.type)) {
+				$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
+					domImg = new Image();
+					domImg.onload = function () {
+						callback(dataUrl, domImg.width, domImg.height, evt);
+					};
+					domImg.src = dataUrl;
+				});
+			}
+		});
+	};
+};
+$.fn.imageDropWidget = function (imageInsertController) {
+	'use strict';
 	this.on('dragenter dragover', function (e) {
 		if (e.originalEvent.dataTransfer) {
 			return false;
@@ -35,8 +39,9 @@ $.fn.imageDropWidget = function (callback) {
 		e.stopPropagation();
 		e.preventDefault();
 		if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-			insertFiles(dataTransfer.files, e.originalEvent);
+			imageInsertController.insertFiles(dataTransfer.files, e.originalEvent);
 		}
 	});
+	return this;
 };
 

@@ -136,7 +136,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 			return screenToStageCoordinates(evt.layerX, evt.layerY);
 		};
-	jQuery(stage.getContainer()).imageDropWidget(function (dataUrl, imgWidth, imgHeight, evt) {
+	jQuery(stage.getContainer()).imageDropWidget(new MAPJS.ImageInsertController(function (dataUrl, imgWidth, imgHeight, evt) {
 		var node,
 			nodeId,
 			content = mapModel.getIdea(),
@@ -159,7 +159,7 @@ MAPJS.dragdrop = function (mapModel, stage) {
 			}
 		}
 		addNew();
-	});
+	}));
 	mapModel.addEventListener('nodeCreated', function (n) {
 		var node = findNodeOnStage(n.id), shouldPositionAbsolutely;
 		node.on('dragstart', function (evt) {
