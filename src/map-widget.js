@@ -41,7 +41,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'meta+minus ctrl+minus shift+z': 'scaleDown',
 				'meta+up ctrl+up': 'moveUp',
 				'meta+down ctrl+down': 'moveDown',
-				'ctrl+shift+v meta+shift+v': 'pasteStyle'
+				'ctrl+shift+v meta+shift+v': 'pasteStyle',
+				'Esc': 'cancelCurrentAction'
 			},
 			charEventHandlers = {
 				'[' : 'activateChildren',

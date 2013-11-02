@@ -458,9 +458,23 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (!isEditingEnabled) {
 			return false;
 		}
+		if (!isInputEnabled) {
+			return false;
+		}
 		analytic('toggleAddLinkMode', source);
 		isAddLinkMode = !isAddLinkMode;
 		self.dispatchEvent('addLinkModeToggled', isAddLinkMode);
+	};
+	this.cancelCurrentAction = function (source) {
+		if (!isInputEnabled) {
+			return false;
+		}
+		if (!isEditingEnabled) {
+			return false;
+		}
+		if (isAddLinkMode) {
+			this.toggleAddLinkMode(source);
+		}
 	};
 	self.undo = function (source) {
 		if (!isEditingEnabled) {

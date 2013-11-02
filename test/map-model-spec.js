@@ -616,6 +616,23 @@ describe('MapModel', function () {
 				expect(underTest.addLink).not.toHaveBeenCalled();
 			});
 		});
+		describe('cancelCurrentAction', function () {
+			var addLinkModeListener;
+			beforeEach(function () {
+				addLinkModeListener = jasmine.createSpy('addLinkModeToggled');
+				underTest.addEventListener('addLinkModeToggled', addLinkModeListener);
+			});
+			it('cancels addLinkMode if active', function () {
+				underTest.toggleAddLinkMode('source');
+				addLinkModeListener.reset();
+				underTest.cancelCurrentAction();
+				expect(addLinkModeListener).toHaveBeenCalledWith(false);
+			});
+			it('does nothing if addLinkMode not active', function () {
+				underTest.cancelCurrentAction();
+				expect(addLinkModeListener).not.toHaveBeenCalledWith();
+			});
+		});
 		describe('updateLinkStyle', function () {
 			var anIdea, underTest;
 			beforeEach(function () {
