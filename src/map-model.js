@@ -188,7 +188,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.addLink('mouse', id);
 		} else if (event && event.shiftKey) {
 			/*don't stop propagation, this is needed for drop targets*/
-			self.activateNode('mouse', id);
+			self.toggleActivationOnNode('mouse', id);
 		} else if (isAddLinkMode && !button) {
 			this.addLink('mouse', id);
 			this.toggleAddLinkMode();
@@ -612,6 +612,14 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				subtree = idea.getSubTreeIds(contextId);
 			subtree.push(contextId);
 			setActiveNodes(subtree);
+		};
+		self.toggleActivationOnNode = function (source, nodeId) {
+			analytic('toggleActivated', source);
+			if (!self.isActivated(nodeId)) {
+				setActiveNodes([nodeId].concat(activatedNodes));
+			} else {
+				setActiveNodes(_.without(activatedNodes, nodeId));
+			}
 		};
 		self.activateNode = function (source, nodeId) {
 			analytic('activateNode', source);
