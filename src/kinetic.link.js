@@ -72,31 +72,31 @@
 				child.getX(), child.getY(), child.getWidth(), child.getHeight());
 		};
 	Kinetic.Link.prototype = {
-		drawHitFunc: function (canvas) {
+		drawHitFunc: function (context) {
 			var shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
 				strokeWidth = this.getStrokeWidth();
 			this.setStrokeWidth(strokeWidth * 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			canvas.fillStyle = this.getStroke();
-			canvas.beginPath();
-			canvas.moveTo(conn.from.x, conn.from.y);
-			canvas.lineTo(conn.to.x, conn.to.y);
-			canvas.stroke(this);
+			context.fillStyle = this.getStroke();
+			context.beginPath();
+			context.moveTo(conn.from.x, conn.from.y);
+			context.lineTo(conn.to.x, conn.to.y);
+			context.fillStrokeShape(this);
 			this.setStrokeWidth(strokeWidth);
 		},
-		drawFunc: function (canvas) {
+		drawFunc: function (context) {
 			var shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
 				n = Math.tan(Math.PI / 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			canvas.fillStyle = this.getStroke();
-			canvas.beginPath();
-			canvas.moveTo(conn.from.x, conn.from.y);
-			canvas.lineTo(conn.to.x, conn.to.y);
-			canvas.stroke(this);
+			context.fillStyle = this.getStroke();
+			context.beginPath();
+			context.moveTo(conn.from.x, conn.from.y);
+			context.lineTo(conn.to.x, conn.to.y);
+			context.fillStrokeShape(this);
 			if (this.attrs.arrow) {
 				var a1x, a1y, a2x, a2y, len = 14, iy, m,
 					dx = conn.to.x - conn.from.x,
@@ -117,11 +117,11 @@
 					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 				}
-				canvas.moveTo(a1x, a1y);
-				canvas.lineTo(conn.to.x, conn.to.y);
-				canvas.lineTo(a2x, a2y);
-				canvas.lineTo(a1x, a1y);
-				canvas.fill();
+				context.moveTo(a1x, a1y);
+				context.lineTo(conn.to.x, conn.to.y);
+				context.lineTo(a2x, a2y);
+				context.lineTo(a1x, a1y);
+				context.fillStrokeShape(this);
 			}
 		}
 	};
@@ -135,6 +135,7 @@ Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 			dashed: [8, 8]
 		};
 	this.setStroke(style && style.color || 'red');
+	this.setFill(style.color || 'red');
 	this.setDashArray(dashTypes[style && style.lineStyle || 'dashed']);
 	this.attrs.arrow = style && style.arrow || false;
 };
