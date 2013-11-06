@@ -1,4 +1,4 @@
-/*global Kinetic, MAPJS, spyOn, beforeEach, expect, describe, it, afterEach, _*/
+/*global Kinetic, MAPJS, beforeEach, expect, describe, it, afterEach, _*/
 describe('Kinetic dimension provider', function () {
 	'use strict';
 	describe('MAPJS.Kinetic.dimensionProvider', function () {
@@ -16,13 +16,14 @@ describe('Kinetic dimension provider', function () {
 				setY: function (v) { this.y = v; },
 				getX: function () { return this.x; },
 				getY: function () { return this.y; },
-				setFill: function () {}
+				setFill: function () {},
+				getType: function () { return 'Shape'; }
 			};
 		};
 		beforeEach(function () {
 			oldIdea = Kinetic.Text;
 			initCounter = 0;
-			Kinetic.Text = function (idea) {
+			Kinetic.Text = function () {
 				initCounter++;
 				_.extend(this, nextKIdea);
 			};
