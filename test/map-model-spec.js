@@ -567,10 +567,23 @@ describe('MapModel', function () {
 			});
 		});
 		describe('clickNode', function () {
-			var contextMenuRequestedListener;
+			var contextMenuRequestedListener, activatedNodesChangedListener;
 			beforeEach(function () {
 				contextMenuRequestedListener = jasmine.createSpy('contextMenuRequestedListener');
 				underTest.addEventListener('contextMenuRequested', contextMenuRequestedListener);
+				activatedNodesChangedListener = jasmine.createSpy('activatedNodesChanged');
+				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
+			});
+			it('should activate a node if shift is pressed', function () {
+				underTest.clickNode(2, {shiftKey: true});
+				expect(activatedNodesChangedListener).toHaveBeenCalledWith([2], []);
+			});
+			it('should deactivate an active node if shift is pressed', function () {
+				underTest.selectNode(1);
+				underTest.activateNode('test', 2);
+				activatedNodesChangedListener.reset();
+				underTest.clickNode(2, {shiftKey: true});
+				expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [2]);
 			});
 			it('should select node when not in link mode', function () {
 				spyOn(underTest, 'selectNode');
