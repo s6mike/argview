@@ -73,31 +73,29 @@
 		};
 	Kinetic.Link.prototype = {
 		drawHitFunc: function (canvas) {
-			var context = canvas.getContext(),
-				shapeFrom = this.shapeFrom,
+			var shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
 				strokeWidth = this.getStrokeWidth();
 			this.setStrokeWidth(strokeWidth * 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			context.fillStyle = this.getStroke();
-			context.beginPath();
-			context.moveTo(conn.from.x, conn.from.y);
-			context.lineTo(conn.to.x, conn.to.y);
+			canvas.fillStyle = this.getStroke();
+			canvas.beginPath();
+			canvas.moveTo(conn.from.x, conn.from.y);
+			canvas.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
 			this.setStrokeWidth(strokeWidth);
 		},
 		drawFunc: function (canvas) {
-			var context = canvas.getContext(),
-				shapeFrom = this.shapeFrom,
+			var shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
 				n = Math.tan(Math.PI / 9);
 			conn = calculateConnector(shapeFrom, shapeTo);
-			context.fillStyle = this.getStroke();
-			context.beginPath();
-			context.moveTo(conn.from.x, conn.from.y);
-			context.lineTo(conn.to.x, conn.to.y);
+			canvas.fillStyle = this.getStroke();
+			canvas.beginPath();
+			canvas.moveTo(conn.from.x, conn.from.y);
+			canvas.lineTo(conn.to.x, conn.to.y);
 			canvas.stroke(this);
 			if (this.attrs.arrow) {
 				var a1x, a1y, a2x, a2y, len = 14, iy, m,
