@@ -64,7 +64,8 @@
 			return stage && stage.isRectVisible(rect, offset);
 		},
 		drawFunc: function (canvas) {
-			var shapeFrom = this.shapeFrom,
+			var context = canvas.getContext(),
+				shapeFrom = this.shapeFrom,
 				shapeTo = this.shapeTo,
 				conn,
 				offset,
@@ -76,12 +77,12 @@
 			if (!conn) {
 				return;
 			}
-			canvas.beginPath();
-			canvas.moveTo(conn.from.x, conn.from.y);
+			context.beginPath();
+			context.moveTo(conn.from.x, conn.from.y);
 			offset = conn.controlPointOffset * (conn.from.y - conn.to.y);
 			maxOffset = Math.min(shapeTo.getHeight(), shapeFrom.getHeight()) * 1.5;
 			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-			canvas.quadraticCurveTo(conn.from.x, conn.to.y - offset, conn.to.x, conn.to.y);
+			context.quadraticCurveTo(conn.from.x, conn.to.y - offset, conn.to.x, conn.to.y);
 			canvas.stroke(this);
 		}
 	};

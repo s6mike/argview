@@ -198,7 +198,7 @@
 		};
 		this.editNode = function (shouldSelectAll, deleteOnCancel) {
 			self.fire(':editing');
-			var canvasPosition = jQuery(self.getStage().getContainer()).offset(),
+			var canvasPosition = jQuery(self.getLayer().getCanvas().getElement()).offset(),
 				ideaInput,
 				onStageMoved = _.throttle(function () {
 					ideaInput.css({
