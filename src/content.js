@@ -520,7 +520,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		oldAttr = _.extend({}, object.attr);
 		object.attr = _.extend({}, object.attr);
-		if (!attrValue || attrValue === 'false') {
+		if (!attrValue || attrValue === 'false' || (_.isObject(attrValue) && _.isEmpty(attrValue))) {
 			if (!object.attr[attrName]) {
 				return false;
 			}

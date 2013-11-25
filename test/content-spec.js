@@ -430,6 +430,13 @@ describe('content aggregate', function () {
 				expect(aggregate.attr.newAttr).toBeUndefined();
 				expect(aggregate.attr.keptAttr).toBe('oldValue');
 			});
+			it('should remove attrs which have been set to empty hash', function () {
+				var aggregate = MAPJS.content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
+					result = aggregate.updateAttr(1, 'newAttr', {});
+				expect(result).toBeTruthy();
+				expect(aggregate.attr.newAttr).toBeUndefined();
+				expect(aggregate.attr.keptAttr).toBe('oldValue');
+			});
 			it('should remove attrs which have been set to false - as a string', function () {
 				var aggregate = MAPJS.content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
 					result = aggregate.updateAttr(1, 'newAttr', 'false');
