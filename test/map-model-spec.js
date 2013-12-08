@@ -408,63 +408,80 @@ describe('MapModel', function () {
 		});
 		describe('copy', function () {
 			beforeEach(function () {
-				spyOn(anIdea, 'clone').andReturn('CLONE');
+				spyOn(anIdea, 'cloneMultiple').andReturn('CLONE');
 				underTest.selectNode(11);
 			});
 			it('should clone active idea into clipboard when copy is called', function () {
 				underTest.copy('keyboard');
-				expect(anIdea.clone).toHaveBeenCalledWith(11);
+				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11]);
 			});
 			it('should not clone if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.copy('keyboard');
-				expect(anIdea.clone).not.toHaveBeenCalled();
+				expect(anIdea.cloneMultiple).not.toHaveBeenCalled();
+			});
+			it('should work on multiple active nodes', function () {
+				underTest.activateNode('test', 12);
+				underTest.copy('keyboard');
+				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([12, 11]);
 			});
 		});
 		describe('paste', function () {
-			var toPaste;
-			beforeEach(function () {
-				toPaste = {title: 'clone'};
-				spyOn(anIdea, 'clone').andReturn(toPaste);
-				spyOn(anIdea, 'paste');
-				underTest.selectNode(11);
-				underTest.copy('keyboard');
-				underTest.selectNode(12);
-			});
-			it('should paste clipboard into currently selected idea', function () {
-				underTest.paste('keyboard');
-				expect(anIdea.paste).toHaveBeenCalledWith(12, toPaste);
-			});
-			it('should not paste when input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.paste('keyboard');
-				expect(anIdea.paste).not.toHaveBeenCalled();
+			describe('single nodes', function () {
+				var toPaste;
+				beforeEach(function () {
+					toPaste = [{title: 'clone'}];
+					spyOn(anIdea, 'cloneMultiple').andReturn(toPaste);
+					spyOn(anIdea, 'pasteMultiple');
+					underTest.selectNode(11);
+					underTest.copy('keyboard');
+					underTest.selectNode(12);
+				});
+				it('should paste clipboard into currently selected idea', function () {
+					underTest.paste('keyboard');
+					expect(anIdea.pasteMultiple).toHaveBeenCalledWith(12, toPaste);
+				});
+				it('should not paste when input is disabled', function () {
+					underTest.setInputEnabled(false);
+					underTest.paste('keyboard');
+					expect(anIdea.pasteMultiple).not.toHaveBeenCalled();
+				});
 			});
 		});
 		describe('cut', function () {
 			var toPaste;
 			beforeEach(function () {
-				toPaste = {title: 'clone'};
-				spyOn(anIdea, 'clone').andReturn(toPaste);
-				spyOn(anIdea, 'paste');
-				spyOn(anIdea, 'removeSubIdea');
+				toPaste = [{title: 'clone'}];
+				spyOn(anIdea, 'cloneMultiple').andReturn(toPaste);
+				spyOn(anIdea, 'pasteMultiple');
+				spyOn(anIdea, 'removeMultiple');
 				underTest.selectNode(11);
 			});
-			it('should invoke idea.removeSubIdea when cut/paste method is invoked', function () {
+			it('should invoke idea.removeMultiple when cut/paste method is invoked', function () {
 				underTest.cut('keyboard');
-				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(11);
+				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11]);
+			});
+			it('should invoke idea.removeMultipple for all active nodes', function () {
+				underTest.activateNode('test', 12);
+				underTest.cut('keyboard');
+				expect(anIdea.removeMultiple).toHaveBeenCalledWith([12, 11]);
+			});
+			it('should clone all active nodes', function () {
+				underTest.activateNode('test', 12);
+				underTest.cut('keyboard');
+				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([12, 11]);
 			});
 			it('should not invoke idea.removeSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.cut('keyboard');
-				expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
+				expect(anIdea.removeMultiple).not.toHaveBeenCalled();
 			});
 			it('should paste cut content when cut/paste sequence executes', function () {
 				underTest.cut('keyboard');
 				underTest.selectNode(12);
 				underTest.paste('keyboard');
-				expect(anIdea.paste).toHaveBeenCalledWith(12, toPaste);
-				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(11);
+				expect(anIdea.pasteMultiple).toHaveBeenCalledWith(12, toPaste);
+				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11]);
 			});
 		});
 		describe('undo', function () {

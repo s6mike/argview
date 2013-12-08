@@ -94,14 +94,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.dispatchEvent('layoutChangeComplete');
 		},
 		revertSelectionForUndo,
-		checkDefaultUIActions = function (command, args) {
-			var newIdeaId;
-			if (command === 'paste') {
-				newIdeaId = args[2];
-				self.selectNode(newIdeaId);
-			}
-
-		},
 		editNewIdea = function (newIdeaId) {
 			revertSelectionForUndo = currentlySelectedIdeaId;
 			self.selectNode(newIdeaId);
@@ -110,20 +102,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		getCurrentlySelectedIdeaId = function () {
 			return currentlySelectedIdeaId || idea.id;
 		},
-		onIdeaChanged = function (command, args, originSession) {
-			var localCommand = (!originSession) || originSession === idea.getSessionKey();
+		onIdeaChanged = function () {
 			revertSelectionForUndo = false;
 			updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
-			if (!localCommand) {
-				return;
-			}
-			if (command === 'batch') {
-				_.each(args, function (singleCmd) {
-					checkDefaultUIActions(singleCmd[0], singleCmd.slice(1));
-				});
-			} else {
-				checkDefaultUIActions(command, args);
-			}
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -516,20 +497,28 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 		analytic('cut', source);
 		if (isInputEnabled) {
-			self.clipBoard = idea.clone(currentlySelectedIdeaId);
-			var parent = idea.findParent(currentlySelectedIdeaId);
-			if (idea.removeSubIdea(currentlySelectedIdeaId)) {
-				self.selectNode(parent.id);
-			}
+			var activeNodeIds = [], parents = [], firstLiveParent;
+			self.applyToActivated(function (nodeId) {
+				activeNodeIds.push(nodeId);
+				parents.push(idea.findParent(nodeId).id);
+			});
+			self.clipBoard = idea.cloneMultiple(activeNodeIds);
+			idea.removeMultiple(activeNodeIds);
+			firstLiveParent = _.find(parents, idea.findSubIdeaById);
+			self.selectNode(firstLiveParent || idea.id);
 		}
 	};
 	self.copy = function (source) {
+		var activeNodeIds = [];
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('copy', source);
 		if (isInputEnabled) {
-			self.clipBoard = idea.clone(currentlySelectedIdeaId);
+			self.applyToActivated(function (node) {
+				activeNodeIds.push(node);
+			});
+			self.clipBoard = idea.cloneMultiple(activeNodeIds);
 		}
 	};
 	self.paste = function (source) {
@@ -538,7 +527,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 		analytic('paste', source);
 		if (isInputEnabled) {
-			idea.paste(currentlySelectedIdeaId, self.clipBoard);
+			var result = idea.pasteMultiple(currentlySelectedIdeaId, self.clipBoard);
+			if (result && result[0]) {
+				self.selectNode(result[0]);
+			}
 		}
 	};
 	self.pasteStyle = function (source) {
@@ -546,9 +538,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			return false;
 		}
 		analytic('pasteStyle', source);
-		if (isInputEnabled && self.clipBoard) {
-
-			var pastingStyle = self.clipBoard.attr && self.clipBoard.attr.style;
+		if (isInputEnabled && self.clipBoard && self.clipBoard[0]) {
+			var pastingStyle = self.clipBoard[0].attr && self.clipBoard[0].attr.style;
 			self.applyToActivated(function (id) {
 				idea.updateAttr(id, 'style', pastingStyle);
 			});

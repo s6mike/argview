@@ -226,6 +226,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		var toClone = (subIdeaId && subIdeaId != contentAggregate.id && contentAggregate.findSubIdeaById(subIdeaId)) || contentAggregate;
 		return JSON.parse(JSON.stringify(toClone));
 	};
+	contentAggregate.cloneMultiple = function (subIdeaIdArray) {
+		return _.map(subIdeaIdArray, contentAggregate.clone);
+	};
 	contentAggregate.calculatePath = function (ideaId, currentPath, potentialParent) {
 		if (contentAggregate.id == ideaId) {
 			return [];
@@ -333,6 +336,14 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			contentAggregate.endBatch(originSession);
 		}
 	};
+	contentAggregate.pasteMultiple = function (parentIdeaId, jsonArrayToPaste) {
+		contentAggregate.startBatch();
+		var results = _.map(jsonArrayToPaste, function (json) {
+			return contentAggregate.paste(parentIdeaId, json);
+		});
+		contentAggregate.endBatch();
+		return results;
+	};
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		return contentAggregate.execCommand('paste', arguments);
 	};
@@ -424,6 +435,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			delete parent.ideas[newRank];
 		}, originSession);
 		return idea.id;
+	};
+	contentAggregate.removeMultiple = function (subIdeaIdArray) {
+		contentAggregate.startBatch();
+		var results = _.map(subIdeaIdArray, contentAggregate.removeSubIdea);
+		contentAggregate.endBatch();
+		return results;
 	};
 	contentAggregate.removeSubIdea = function (subIdeaId) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
