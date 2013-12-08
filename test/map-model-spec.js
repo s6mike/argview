@@ -423,7 +423,7 @@ describe('MapModel', function () {
 			it('should work on multiple active nodes', function () {
 				underTest.activateNode('test', 12);
 				underTest.copy('keyboard');
-				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([12, 11]);
+				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11, 12]);
 			});
 		});
 		describe('paste', function () {
@@ -464,12 +464,12 @@ describe('MapModel', function () {
 			it('should invoke idea.removeMultipple for all active nodes', function () {
 				underTest.activateNode('test', 12);
 				underTest.cut('keyboard');
-				expect(anIdea.removeMultiple).toHaveBeenCalledWith([12, 11]);
+				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11, 12]);
 			});
 			it('should clone all active nodes', function () {
 				underTest.activateNode('test', 12);
 				underTest.cut('keyboard');
-				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([12, 11]);
+				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11, 12]);
 			});
 			it('should not invoke idea.removeSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -722,28 +722,29 @@ describe('MapModel', function () {
 				underTest.setIdea(anIdea);
 				spyOn(Math, 'random').andReturn(0.6);
 				underTest.selectNode(2);
-				spyOn(anIdea, 'insertIntermediate');
+				spyOn(anIdea, 'insertIntermediateMultiple');
 			};
-			it('should invoke idea.insertIntermediate with the id of the selected node and a random title', function () {
+			it('should invoke idea.insertIntermediate with the id of the selected node', function () {
 				init();
 				underTest.insertIntermediate();
-				expect(anIdea.insertIntermediate).toHaveBeenCalledWith(2, 'beautiful');
+				expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2]);
 			});
-			it('should invoke idea.insertIntermediate a random title from the intermediary array if specified', function () {
-				init(['What', 'a', 'stupid', 'idea!']);
+			it('should invoke idea.insertIntermediate with the ids of all active nodes of the selected node', function () {
+				init();
+				underTest.activateNode('test', 3);
 				underTest.insertIntermediate();
-				expect(anIdea.insertIntermediate).toHaveBeenCalledWith(2, 'stupid');
+				expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2, 3]);
 			});
 			it('should not invoke idea.insertIntermediate when nothing is selected', function () {
-				spyOn(anIdea, 'insertIntermediate');
+				spyOn(anIdea, 'insertIntermediateMultiple');
 				underTest.insertIntermediate();
-				expect(anIdea.insertIntermediate).not.toHaveBeenCalled();
+				expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
 			});
 			it('should not invoke anything if input is disabled', function () {
 				init();
 				underTest.setInputEnabled(false);
 				underTest.insertIntermediate();
-				expect(anIdea.insertIntermediate).not.toHaveBeenCalled();
+				expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
 			});
 		});
 		describe('setIcon', function () {

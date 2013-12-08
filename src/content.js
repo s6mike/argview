@@ -461,6 +461,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return false;
 	};
+	contentAggregate.insertIntermediateMultiple = function (idArray) {
+		contentAggregate.startBatch();
+		var newId = contentAggregate.insertIntermediate(idArray[0]);
+		_.each(idArray.slice(1), function (id) {
+			contentAggregate.changeParent(id, newId);
+		});
+		contentAggregate.endBatch();
+		return newId;
+	};
 	contentAggregate.insertIntermediate = function (inFrontOfIdeaId, title, optionalNewId) {
 		return contentAggregate.execCommand('insertIntermediate', arguments);
 	};

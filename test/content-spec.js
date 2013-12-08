@@ -1805,5 +1805,32 @@ describe('content aggregate', function () {
 				expect(result).toEqual([5, 7]);
 			});
 		});
+		describe('insertIntermediateMultiple', function () {
+			var idea, result;
+			beforeEach(function () {
+				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id:3, title: 'also', ideas: { 99: {id:4, title:'under'}}}}});
+				result = idea.insertIntermediateMultiple([4,2]);
+			});
+			it('adds an idea in front of first provided idea in array and reparents all other ideas', function () {
+				var newIdea = idea.ideas[88].ideas[99];
+				expect(newIdea.id).toEqual(5);
+				expect(_.size(idea.ideas)).toBe(1);
+				expect(_.size(newIdea.ideas)).toBe(2);
+				expect(newIdea.ideas[1]).toPartiallyMatch({id: 4, title: 'under'});
+				expect(newIdea.ideas[2]).toPartiallyMatch({id: 2, title: 'Moved'});
+			});
+			it('returns the new node id', function () {
+				expect(result).toEqual(5);
+			});
+			it('batches the operation', function () {
+				idea.undo();
+				var oldIdea = idea.ideas[88].ideas[99];
+				expect(_.size(idea.ideas)).toBe(2);
+				expect(_.size(oldIdea.ideas)).toBe(0);
+				expect(oldIdea).toPartiallyMatch({id: 4, title: 'under'});
+				expect(idea.ideas[77]).toPartiallyMatch({id: 2, title: 'Moved'});
+
+			});
+		});
 	});
 });

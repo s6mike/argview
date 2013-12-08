@@ -293,8 +293,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
 			return false;
 		}
+		var activeNodes = [], newId;
 		analytic('insertIntermediate', source);
-		var newId = idea.insertIntermediate(currentlySelectedIdeaId, getRandomTitle(intermediaryTitlesToRandomlyChooseFrom));
+		self.applyToActivated(function (i) { activeNodes.push(i); });
+		newId = idea.insertIntermediateMultiple(activeNodes);
 		if (newId) {
 			editNewIdea(newId);
 		}
@@ -737,7 +739,8 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		self.activateNode = function (source, nodeId) {
 			analytic('activateNode', source);
 			if (!self.isActivated(nodeId)) {
-				setActiveNodes([nodeId].concat(activatedNodes));
+				activatedNodes.push(nodeId);
+				self.dispatchEvent('activatedNodesChanged', [nodeId], []);
 			}
 		};
 		self.activateChildren = function (source) {
