@@ -256,34 +256,7 @@ describe('MapModel', function () {
 		describe('focus/edit automatic control', function () {
 			var nodeEditRequestedListener,
 				nodeMovedListener,
-				nodeSelectionChangedListener,
-				triggerEdit = function (command, contentSession, commandSession, isBatch) {
-					anIdea = MAPJS.content({
-						id: 1,
-						ideas: {
-							7: {
-								id: 2
-							}
-						}
-					}, contentSession);
-					underTest.setIdea(anIdea);
-					underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-					underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
-					underTest.selectNode(2);
-					if (!isBatch) {
-						anIdea.execCommand(command, [2, 'ttl', 3], commandSession);
-					} else {
-						anIdea.execCommand('batch',
-							[['updateTitle', 1, 'ttl'], [command, 2, 'ttl', 3]],
-							commandSession);
-					}
-				},
-				sessionCombinations = [
-					[undefined, undefined, 'no session'],
-					['originSession', 'originSession', 'a local session'],
-					['originSession', 'otherSession', 'a remote session']
-				];
-
+				nodeSelectionChangedListener;
 			beforeEach(function () {
 				nodeMovedListener = jasmine.createSpy();
 				nodeEditRequestedListener = jasmine.createSpy();
