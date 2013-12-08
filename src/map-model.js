@@ -146,6 +146,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		return currentLayout;
 	};
 	self.analytic = analytic;
+	self.getCurrentlySelectedIdeaId = getCurrentlySelectedIdeaId;
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
@@ -588,14 +589,124 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	self.getSelectedNodeId = function () {
 		return getCurrentlySelectedIdeaId();
 	};
-	//node activation
+	//node activation and selection
 	(function () {
 		var activatedNodes = [],
 			setActiveNodes = function (activated) {
 				var wasActivated = _.clone(activatedNodes);
 				activatedNodes = activated;
 				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
-			};
+			},
+			isRootOrRightHalf = function (id) {
+				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
+			},
+			isRootOrLeftHalf = function (id) {
+				return currentLayout.nodes[id].x <= currentLayout.nodes[idea.id].x;
+			},
+			nodesWithIDs = function () {
+				return _.map(currentLayout.nodes,
+					function (n, nodeId) {
+						return _.extend({ id: parseInt(nodeId, 10)}, n);
+					});
+			},
+			applyToNodeLeft = function (source, analyticTag, method) {
+				var node,
+					rank,
+					isRoot = currentlySelectedIdeaId === idea.id,
+					targetRank = isRoot ? -Infinity : Infinity;
+				if (!isInputEnabled) {
+					return;
+				}
+				analytic(analyticTag, source);
+				if (isRootOrLeftHalf(currentlySelectedIdeaId)) {
+					node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
+					ensureNodeIsExpanded(source, node.id);
+					for (rank in node.ideas) {
+						rank = parseFloat(rank);
+						if ((isRoot && rank < 0 && rank > targetRank) || (!isRoot && rank > 0 && rank < targetRank)) {
+							targetRank = rank;
+						}
+					}
+					if (targetRank !== Infinity && targetRank !== -Infinity) {
+						method.apply(self, [node.ideas[targetRank].id]);
+					}
+				} else {
+					method.apply(self, [idea.findParent(currentlySelectedIdeaId).id]);
+				}
+			},
+			applyToNodeRight = function (source, analyticTag, method) {
+				var node, rank, minimumPositiveRank = Infinity;
+				if (!isInputEnabled) {
+					return;
+				}
+				analytic(analyticTag, source);
+				if (isRootOrRightHalf(currentlySelectedIdeaId)) {
+					node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
+					ensureNodeIsExpanded(source, node.id);
+					for (rank in node.ideas) {
+						rank = parseFloat(rank);
+						if (rank > 0 && rank < minimumPositiveRank) {
+							minimumPositiveRank = rank;
+						}
+					}
+					if (minimumPositiveRank !== Infinity) {
+						method.apply(self, [node.ideas[minimumPositiveRank].id]);
+					}
+				} else {
+					method.apply(self, [idea.findParent(currentlySelectedIdeaId).id]);
+				}
+			},
+			applyToNodeUp = function (source, analyticTag, method) {
+				var previousSibling = idea.previousSiblingId(currentlySelectedIdeaId),
+					nodesAbove,
+					closestNode,
+					currentNode = currentLayout.nodes[currentlySelectedIdeaId];
+				if (!isInputEnabled) {
+					return;
+				}
+				analytic(analyticTag, source);
+				if (previousSibling) {
+					method.apply(self, [previousSibling]);
+				} else {
+					if (!currentNode) { return; }
+					nodesAbove = _.reject(nodesWithIDs(), function (node) {
+						return node.y >= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
+					});
+					if (_.size(nodesAbove) === 0) {
+						return;
+					}
+					closestNode = _.min(nodesAbove, function (node) {
+						return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
+					});
+					method.apply(self, [closestNode.id]);
+				}
+			},
+			applyToNodeDown = function (source, analyticTag, method) {
+				var nextSibling = idea.nextSiblingId(currentlySelectedIdeaId),
+					nodesBelow,
+					closestNode,
+					currentNode = currentLayout.nodes[currentlySelectedIdeaId];
+				if (!isInputEnabled) {
+					return;
+				}
+				analytic(analyticTag, source);
+				if (nextSibling) {
+					method.apply(self, [nextSibling]);
+				} else {
+					if (!currentNode) { return; }
+					nodesBelow = _.reject(nodesWithIDs(), function (node) {
+						return node.y <= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
+					});
+					if (_.size(nodesBelow) === 0) {
+						return;
+					}
+					closestNode = _.min(nodesBelow, function (node) {
+						return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
+					});
+					method.apply(self, [closestNode.id]);
+				}
+			},
+			applyFuncs = { 'Left': applyToNodeLeft, 'Up': applyToNodeUp, 'Down': applyToNodeDown, 'Right': applyToNodeRight };
 		self.activateSiblingNodes = function (source) {
 			var parent = idea.findParent(currentlySelectedIdeaId),
 				siblingIds;
@@ -613,6 +724,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			subtree.push(contextId);
 			setActiveNodes(subtree);
 		};
+		_.each(['Left', 'Right', 'Up', 'Down'], function (position) {
+			self['activateNode' + position] = function (source) {
+				applyFuncs[position](source, 'activateNode' + position, function (nodeId) {
+					self.activateNode(source, nodeId);
+					currentlySelectedIdeaId = nodeId;
+				});
+			};
+			self['selectNode' + position] = function (source) {
+				applyFuncs[position](source, 'selectNode' + position, self.selectNode);
+			};
+		});
 		self.toggleActivationOnNode = function (source, nodeId) {
 			analytic('toggleActivated', source);
 			if (!self.isActivated(nodeId)) {
@@ -686,118 +808,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				setActiveNodes(activatedNodes.concat([selectedId]));
 			}
 		});
-	}());
 
-
-	(function () {
-		var isRootOrRightHalf = function (id) {
-				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
-			},
-			isRootOrLeftHalf = function (id) {
-				return currentLayout.nodes[id].x <= currentLayout.nodes[idea.id].x;
-			},
-			nodesWithIDs = function () {
-				return _.map(currentLayout.nodes,
-					function (n, nodeId) {
-						return _.extend({ id: parseInt(nodeId, 10)}, n);
-					});
-			};
-		self.selectNodeLeft = function (source) {
-			var node,
-				rank,
-				isRoot = currentlySelectedIdeaId === idea.id,
-				targetRank = isRoot ? -Infinity : Infinity;
-			if (!isInputEnabled) {
-				return;
-			}
-			analytic('selectNodeLeft', source);
-			if (isRootOrLeftHalf(currentlySelectedIdeaId)) {
-				node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
-				ensureNodeIsExpanded(source, node.id);
-				for (rank in node.ideas) {
-					rank = parseFloat(rank);
-					if ((isRoot && rank < 0 && rank > targetRank) || (!isRoot && rank > 0 && rank < targetRank)) {
-						targetRank = rank;
-					}
-				}
-				if (targetRank !== Infinity && targetRank !== -Infinity) {
-					self.selectNode(node.ideas[targetRank].id);
-				}
-			} else {
-				self.selectNode(idea.findParent(currentlySelectedIdeaId).id);
-			}
-		};
-		self.selectNodeRight = function (source) {
-			var node, rank, minimumPositiveRank = Infinity;
-			if (!isInputEnabled) {
-				return;
-			}
-			analytic('selectNodeRight', source);
-			if (isRootOrRightHalf(currentlySelectedIdeaId)) {
-				node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
-				ensureNodeIsExpanded(source, node.id);
-				for (rank in node.ideas) {
-					rank = parseFloat(rank);
-					if (rank > 0 && rank < minimumPositiveRank) {
-						minimumPositiveRank = rank;
-					}
-				}
-				if (minimumPositiveRank !== Infinity) {
-					self.selectNode(node.ideas[minimumPositiveRank].id);
-				}
-			} else {
-				self.selectNode(idea.findParent(currentlySelectedIdeaId).id);
-			}
-		};
-		self.selectNodeUp = function (source) {
-			var previousSibling = idea.previousSiblingId(currentlySelectedIdeaId),
-				nodesAbove,
-				closestNode,
-				currentNode = currentLayout.nodes[currentlySelectedIdeaId];
-			if (!isInputEnabled) {
-				return;
-			}
-			analytic('selectNodeUp', source);
-			if (previousSibling) {
-				self.selectNode(previousSibling);
-			} else {
-				if (!currentNode) { return; }
-				nodesAbove = _.reject(nodesWithIDs(), function (node) {
-					return node.y >= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
-				});
-				if (_.size(nodesAbove) === 0) {
-					return;
-				}
-				closestNode = _.min(nodesAbove, function (node) {
-					return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
-				});
-				self.selectNode(closestNode.id);
-			}
-		};
-		self.selectNodeDown = function (source) {
-			var nextSibling = idea.nextSiblingId(currentlySelectedIdeaId),
-				nodesBelow,
-				closestNode,
-				currentNode = currentLayout.nodes[currentlySelectedIdeaId];
-			if (!isInputEnabled) {
-				return;
-			}
-			analytic('selectNodeDown', source);
-			if (nextSibling) {
-				self.selectNode(nextSibling);
-			} else {
-				if (!currentNode) { return; }
-				nodesBelow = _.reject(nodesWithIDs(), function (node) {
-					return node.y <= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
-				});
-				if (_.size(nodesBelow) === 0) {
-					return;
-				}
-				closestNode = _.min(nodesBelow, function (node) {
-					return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
-				});
-				self.selectNode(closestNode.id);
-			}
-		};
 	}());
 };

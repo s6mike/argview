@@ -1019,12 +1019,105 @@ describe('MapModel', function () {
 			});
 		});
 		describe('multiple node activation', function () {
-			var activatedNodesChangedListener;
+			var activatedNodesChangedListener,
+				checkActivated = function (nodeId) {
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([nodeId], []);
+					expect(underTest.getCurrentlySelectedIdeaId()).toBe(nodeId);
+				};
 
 			beforeEach(function () {
 				activatedNodesChangedListener = jasmine.createSpy();
 				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
-
+			});
+			describe('activating relative to current selection', function () {
+				describe('activateNodeRight', function () {
+					it('should activate lowest ranking child when currently selected node is right of central node', function () {
+						underTest.activateNodeRight();
+						checkActivated(4);
+					});
+					it('should not change activation if input is disabled', function () {
+						underTest.setInputEnabled(false);
+						underTest.activateNodeRight();
+						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+						expect(underTest.getCurrentlySelectedIdeaId()).toBe(1);
+					});
+					it('should expand and activate lowest ranking child when currently selected node is collapsed and to the right of central node', function () {
+						underTest.collapse('source', true);
+						underTest.activateNodeRight();
+						expect(anIdea.getAttr('collapsed')).toBeFalsy();
+						checkActivated(4);
+					});
+					it('should activate parent node when currently selected node left of central node', function () {
+						underTest.selectNode(3);
+						nodeSelectionChangedListener.reset();
+						underTest.activateNodeRight();
+						checkActivated(1);
+					});
+				});
+				describe('activateNodeLeft', function () {
+					it('should activate lowest ranking child when currently selected node is left of central node', function () {
+						underTest.activateNodeLeft();
+						checkActivated(3);
+					});
+					it('should expand the node and activate lowest ranking child when selected node is collapsed and left of central node', function () {
+						underTest.collapse('source', true);
+						underTest.activateNodeLeft();
+						expect(anIdea.getAttr('collapsed')).toBeFalsy();
+						checkActivated(3);
+					});
+					it('should activate parent node currently selected node right of central node', function () {
+						underTest.selectNode(5);
+						nodeSelectionChangedListener.reset();
+						underTest.activateNodeLeft();
+						checkActivated(1);
+					});
+					it('should not change selection if input is disabled', function () {
+						underTest.setInputEnabled(false);
+						underTest.activateNodeLeft();
+						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+						expect(underTest.getCurrentlySelectedIdeaId()).toBe(1);
+					});
+				});
+				describe('activateNodeUp', function () {
+					it('should select sibling above', function () {
+						underTest.selectNode(5);
+						underTest.activateNodeUp();
+						checkActivated(4);
+					});
+					it('should select closest node above if no sibling', function () {
+						underTest.selectNode(6);
+						underTest.activateNodeUp();
+						checkActivated(7);
+					});
+					it('should not change activation when input is disabled', function () {
+						underTest.selectNode(6);
+						activatedNodesChangedListener.reset();
+						underTest.setInputEnabled(false);
+						underTest.activateNodeUp();
+						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+						expect(underTest.getCurrentlySelectedIdeaId()).toBe(6);
+					});
+				});
+				describe('activateNodeDown', function () {
+					it('should select sibling below when selectNodeDown invoked', function () {
+						underTest.selectNode(4);
+						underTest.activateNodeDown();
+						checkActivated(5);
+					});
+					it('should select closest node below if no sibling', function () {
+						underTest.selectNode(7);
+						underTest.activateNodeDown();
+						checkActivated(6);
+					});
+					it('should not change activation when input is disabled', function () {
+						underTest.selectNode(7);
+						activatedNodesChangedListener.reset();
+						underTest.setInputEnabled(false);
+						underTest.activateNodeDown();
+						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+						expect(underTest.getCurrentlySelectedIdeaId()).toBe(7);
+					});
+				});
 			});
 			describe('activating groups of nodes', function () {
 				it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
