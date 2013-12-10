@@ -14,11 +14,12 @@
 		var regex = '.{1,' + width + '}(\\s|$)' + (cut ? '|.{' + width + '}|.+$' : '|\\S+?(\\s|$)');
 		return str.match(new RegExp(regex, 'g')).join(brk);
 	}
-	function joinLines(string) {
-		return string.replace(/\n/g, ' ');
-	}
 	function breakWords(string) {
-		return wordWrap(joinLines(string), COLUMN_WORD_WRAP_LIMIT, '\n', false);
+		var lines = string.split('\n'),
+			formattedLines = _.map(lines, function (line) {
+				return wordWrap(line, COLUMN_WORD_WRAP_LIMIT, '\n', false);
+			});
+		return formattedLines.join('\n');
 	}
 	function createLink() {
 		var link = new Kinetic.Group(),
@@ -123,7 +124,7 @@
 		var ENTER_KEY_CODE = 13,
 			ESC_KEY_CODE = 27,
 			self = this,
-			unformattedText = joinLines(config.text),
+			unformattedText = config.text,
 			bgRect = function (offset) {
 				return new Kinetic.Rect({
 					strokeWidth: 1,
@@ -248,7 +249,10 @@
 				.val(unformattedText)
 				.appendTo('body')
 				.keydown(function (e) {
-					if (e.which === ENTER_KEY_CODE) {
+					if (e.shiftKey && e.which === ENTER_KEY_CODE) {
+						return; // allow shift+enter to break lines
+					}
+					else if (e.which === ENTER_KEY_CODE) {
 						onCommit();
 					} else if (e.which === ESC_KEY_CODE) {
 						onCancelEdit();
