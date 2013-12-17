@@ -244,7 +244,8 @@
 					'margin': -3 * scale,
 					'border-radius': self.rect.getCornerRadius() * scale + 'px',
 					'border': self.rectAttrs.strokeWidth * (2 * scale) + 'px dashed ' + self.rectAttrs.stroke,
-					'color': self.text.getFill()
+					'color': self.text.getFill(),
+					'overflow': 'hidden'
 				})
 				.val(unformattedText)
 				.appendTo('body')
