@@ -25,6 +25,9 @@ MAPJS.getDataURIAndDimensions = function (src, corsProxyUrl) {
 			deferred.reject();
 		}
 	};
+	domImg.onerror = function () {
+		deferred.reject();
+	};
 	if (!isDataUri(src)) {
 		if (corsProxyUrl) {
 			domImg.crossOrigin = 'Anonymous';
@@ -51,9 +54,15 @@ MAPJS.ImageInsertController = function (corsProxyUrl) {
 			return loader.promise();
 		};
 	self.insertDataUrl = function (dataUrl, evt) {
-		MAPJS.getDataURIAndDimensions(dataUrl, corsProxyUrl).then(function (result) {
-			self.dispatchEvent('imageInserted', result.dataUri, result.width, result.height, evt);
-		});
+		self.dispatchEvent('imageLoadStarted');
+		MAPJS.getDataURIAndDimensions(dataUrl, corsProxyUrl).then(
+			function (result) {
+				self.dispatchEvent('imageInserted', result.dataUri, result.width, result.height, evt);
+			},
+			function (reason) {
+				self.dispatchEvent('imageInsertError', reason);
+			}
+		);
 	};
 	self.insertFiles = function (files, evt) {
 		jQuery.each(files, function (idx, fileInfo) {

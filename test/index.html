@@ -145,6 +145,9 @@
 				jQuery('.arrow').click(function () {
 					jQuery(this).toggleClass('active');
 				});
+				imageInsertController.addEventListener('imageInsertError', function (reason) {
+					console.log('image insert error', reason);
+				});
 			}());
 		</script>
 		<script src="perftests.js"></script>
