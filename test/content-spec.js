@@ -1750,4 +1750,87 @@ describe('content aggregate', function () {
 			expect(wrapped.attr.collapsed).toEqual(true);
 		});
 	});
+	describe('support for multi-node operations', function () {
+		describe('cloneMultiple', function () {
+			it('should return an array of cloned ideas when given an array of idea IDs', function () {
+				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}, '-10': { id: 3}, '-15' : {id: 4}}}),
+				result = idea.cloneMultiple([2,3]);
+				expect(result[0]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-5'])));
+				expect(result[0]).not.toBe(idea.ideas['-5']);
+				expect(result[1]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-10'])));
+				expect(result[1]).not.toBe(idea.ideas['-10']);
+			});
+		});
+		describe('removeMultiple', function () {
+			var idea, result;
+			beforeEach(function () {
+				idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
+				result = idea.removeMultiple([2,3,6]);
+			});
+			it('removes subideas given as an array of IDs', function () {
+				expect(_.size(idea.ideas[9].ideas)).toBe(1);
+				expect(idea.ideas[9].ideas[-15].id).toBe(4);
+			});
+			it('batches the removal', function () {
+				idea.undo();
+				expect(_.size(idea.ideas[9].ideas)).toBe(3);
+				expect(idea.ideas[9].ideas[-15].id).toBe(4);
+				expect(idea.ideas[9].ideas[-5].id).toBe(2);
+				expect(idea.ideas[9].ideas[-10].id).toBe(3);
+			});
+			it('returns an array of removal results', function () {
+				expect(result).toEqual([true, true, false]);
+			});
+		});
+		describe('pasteMultiple', function () {
+			var idea, toPaste, result;
+			beforeEach(function () {
+				idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}});
+				toPaste = [{title: 'pasted', id: 1, ideas: {1: { id: 66, title: 'sub sub'}}}, {title: 'pasted2'}];
+				result = idea.pasteMultiple(3, toPaste);
+			});
+			it('pastes an array of JSONs into the subidea idea by id', function () {
+				expect(idea.ideas[-10].ideas[1].title).toBe('pasted');
+				expect(idea.ideas[-10].ideas[1].id).toBe(5);
+				expect(idea.ideas[-10].ideas[1].ideas[1].title).toBe('sub sub');
+				expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(6);
+				expect(idea.ideas[-10].ideas[2].title).toBe('pasted2');
+				expect(idea.ideas[-10].ideas[2].id).toBe(7);
+			});
+			it('batches the paste', function () {
+				idea.undo();
+				expect(idea.ideas[-10].ideas).toEqual({});
+			});
+			it('returns an array of pasting results', function () {
+				expect(result).toEqual([5, 7]);
+			});
+		});
+		describe('insertIntermediateMultiple', function () {
+			var idea, result;
+			beforeEach(function () {
+				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id:3, title: 'also', ideas: { 99: {id:4, title:'under'}}}}});
+				result = idea.insertIntermediateMultiple([4,2]);
+			});
+			it('adds an idea in front of first provided idea in array and reparents all other ideas', function () {
+				var newIdea = idea.ideas[88].ideas[99];
+				expect(newIdea.id).toEqual(5);
+				expect(_.size(idea.ideas)).toBe(1);
+				expect(_.size(newIdea.ideas)).toBe(2);
+				expect(newIdea.ideas[1]).toPartiallyMatch({id: 4, title: 'under'});
+				expect(newIdea.ideas[2]).toPartiallyMatch({id: 2, title: 'Moved'});
+			});
+			it('returns the new node id', function () {
+				expect(result).toEqual(5);
+			});
+			it('batches the operation', function () {
+				idea.undo();
+				var oldIdea = idea.ideas[88].ideas[99];
+				expect(_.size(idea.ideas)).toBe(2);
+				expect(_.size(oldIdea.ideas)).toBe(0);
+				expect(oldIdea).toPartiallyMatch({id: 4, title: 'under'});
+				expect(idea.ideas[77]).toPartiallyMatch({id: 2, title: 'Moved'});
+
+			});
+		});
+	});
 });
