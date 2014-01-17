@@ -223,33 +223,47 @@ describe('MapModel', function () {
 			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9']);
 		});
 		describe('automatic UI actions', function () {
-			var nodeEditRequestedListener, nodeSelectionChangedListener;
+			var nodeEditRequestedListener, nodeSelectionChangedListener, activatedNodesChangedListener;
 			beforeEach(function () {
 				nodeEditRequestedListener = jasmine.createSpy();
 				nodeSelectionChangedListener = jasmine.createSpy();
+				activatedNodesChangedListener = jasmine.createSpy();
 				anIdea = MAPJS.content({
 					id: 1,
 					ideas: {
 						7: {
 							id: 2
+						},
+						8: {
+							id: 3
 						}
 					}
 				});
 				underTest.setIdea(anIdea);
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.selectNode(2);
+				underTest.activateNode('test', 3);
 				underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
+				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
 			});
 			_.each(['addSubIdea', 'insertIntermediate', 'addSiblingIdea'], function (command) {
 				it('should dispatch edit after ' + command + ' from mapModel', function () {
 					underTest[command]('source');
-					expect(nodeEditRequestedListener).toHaveBeenCalledWith(3, true, true);
+					expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true, true);
 				});
 				it('should return selection to previous on undo after ' + command, function () {
 					underTest[command]('source');
 					nodeSelectionChangedListener.reset();
 					underTest.undo();
 					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
+				});
+				it('should return multi-activation to previous on undo after ' + command, function () {
+					underTest[command]('source');
+					activatedNodesChangedListener.reset();
+					underTest.undo();
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [4]);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([2], []);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
 			});
 		});

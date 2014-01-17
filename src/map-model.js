@@ -14,6 +14,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		isInputEnabled = true,
 		isEditingEnabled = true,
 		currentlySelectedIdeaId,
+		activatedNodes = [],
+		setActiveNodes = function (activated) {
+			var wasActivated = _.clone(activatedNodes);
+			activatedNodes = activated;
+			self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
+		},
 		getRandomTitle = function (titles) {
 			return titles[Math.floor(titles.length * Math.random())];
 		},
@@ -94,8 +100,10 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			self.dispatchEvent('layoutChangeComplete');
 		},
 		revertSelectionForUndo,
+		revertActivatedForUndo,
 		editNewIdea = function (newIdeaId) {
 			revertSelectionForUndo = currentlySelectedIdeaId;
+			revertActivatedForUndo = activatedNodes.slice(0);
 			self.selectNode(newIdeaId);
 			self.editNode(false, true, true);
 		},
@@ -104,6 +112,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		onIdeaChanged = function () {
 			revertSelectionForUndo = false;
+			revertActivatedForUndo = false;
 			updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
 		},
 		currentlySelectedIdea = function () {
@@ -466,12 +475,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		}
 
 		analytic('undo', source);
-		var undoSelection = revertSelectionForUndo;
+		var undoSelectionClone = revertSelectionForUndo,
+			undoActivationClone = revertActivatedForUndo;
 		if (isInputEnabled) {
 			idea.undo();
-			if (undoSelection) {
-				self.selectNode(undoSelection);
+			if (undoSelectionClone) {
+				self.selectNode(undoSelectionClone);
 			}
+			if (undoActivationClone) {
+				setActiveNodes(undoActivationClone);
+			}
+
 		}
 	};
 	self.redo = function (source) {
@@ -584,13 +598,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	};
 	//node activation and selection
 	(function () {
-		var activatedNodes = [],
-			setActiveNodes = function (activated) {
-				var wasActivated = _.clone(activatedNodes);
-				activatedNodes = activated;
-				self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
-			},
-			isRootOrRightHalf = function (id) {
+			var isRootOrRightHalf = function (id) {
 				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
 			},
 			isRootOrLeftHalf = function (id) {
