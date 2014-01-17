@@ -1,13 +1,13 @@
 /*global _, jQuery, Kinetic, MAPJS, window, document, $*/
-jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRendering) {
+jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController) {
 	'use strict';
 	return this.each(function () {
 		var element = jQuery(this),
 			stage = new Kinetic.Stage({
-				container: 'container',
+				container: this.id,
 				draggable: true
 			}),
-			mediator = new MAPJS.KineticMediator(mapModel, stage, imageRendering),
+			mediator = new MAPJS.KineticMediator(mapModel, stage),
 			setStageDimensions = function () {
 				stage.setWidth(element.width());
 				stage.setHeight(element.height());
@@ -81,7 +81,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				}
 			});
 		});
-		MAPJS.dragdrop(mapModel, stage);
+		MAPJS.dragdrop(mapModel, stage, imageInsertController);
 		$(document).on('keypress', function (evt) {
 			if (!actOnKeys) {
 				return;
