@@ -130,7 +130,7 @@
 				idea = MAPJS.content(test_tree()),
 				isTouch = false,
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
-				mapModel = new MAPJS.MapModel(MAPJS.KineticMediator.layoutCalculator, ['A brilliant idea...', 'A cunning plan...', 'We\'ll be famous...'], ['hoo har']);
+				mapModel = new MAPJS.MapModel(MAPJS.KineticMediator.layoutCalculator, []);
 				container.mapWidget(console,mapModel, isTouch, imageInsertController);
 				jQuery('body').mapToolbarWidget(mapModel);
 				jQuery('body').attachmentEditorWidget(mapModel);

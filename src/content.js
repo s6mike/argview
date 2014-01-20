@@ -1,4 +1,5 @@
 /*jslint eqeq: true, forin: true, nomen: true*/
+/*jshint unused:false, loopfunc:true */
 /*global _, MAPJS, observable*/
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
@@ -142,6 +143,40 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				contentAggregate.dispatchEvent('changed', method, args, originSession);
 			} else {
 				contentAggregate.dispatchEvent('changed', method, args);
+			}
+		},
+		appendChange = function (method, args, undofunc, originSession) {
+			var prev;
+			if (batches[originSession] || !eventStacks || !eventStacks[originSession] || eventStacks[originSession].length === 0) {
+				logChange(method, args, undofunc, originSession);
+				return;
+			} else {
+				prev = eventStacks[originSession].pop();
+				if (prev.eventMethod === 'batch') {
+					eventStacks[originSession].push({
+						eventMethod: 'batch',
+						eventArgs: prev.eventArgs.push([method].concat(args)),
+						undoFunction: function () {
+							undofunc();
+							prev.undoFunction();
+						}
+					});
+				} else {
+					eventStacks[originSession].push({
+						eventMethod: 'batch',
+						eventArgs: [[prev.eventMethod].concat(prev.eventArgs)].concat([[method].concat(args)]),
+						undoFunction: function () {
+							undofunc();
+							prev.undoFunction();
+						}
+					});
+				}
+			}
+			if (isRedoInProgress) {
+				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
+			} else {
+				notifyChange(method, args, originSession);
+				redoStacks[originSession] = [];
 			}
 		},
 		logChange = function (method, args, undofunc, originSession) {
@@ -344,6 +379,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		contentAggregate.endBatch();
 		return results;
 	};
+
 	contentAggregate.paste = function (parentIdeaId, jsonToPaste, initialId) {
 		return contentAggregate.execCommand('paste', arguments);
 	};
@@ -409,10 +445,19 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (originalTitle == title) {
 			return false;
 		}
-		idea.title = title;
-		logChange('updateTitle', [ideaId, title], function () {
-			idea.title = originalTitle;
-		}, originSession);
+		if (!idea.title) {
+			idea.title = title;
+			appendChange('updateTitle', [ideaId, title], function () {
+				idea.title = originalTitle;
+			}, originSession);
+		}
+		else {
+			idea.title = title;
+			logChange('updateTitle', [ideaId, title], function () {
+				idea.title = originalTitle;
+			}, originSession);
+		}
+
 		return true;
 	};
 	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {
@@ -708,6 +753,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		};
 		commandProcessors.removeLink = function (originSession, ideaIdOne, ideaIdTwo) {
 			var i = 0, link;
+
 			while (contentAggregate.links && i < contentAggregate.links.length) {
 				link = contentAggregate.links[i];
 				if (String(link.ideaIdFrom) === String(ideaIdOne) && String(link.ideaIdTo) === String(ideaIdTwo)) {
