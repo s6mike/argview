@@ -147,7 +147,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		},
 		appendChange = function (method, args, undofunc, originSession) {
 			var prev;
-			if (batches[originSession] || !eventStacks || !eventStacks[originSession] || eventStacks[originSession].length === 0) {
+			if (method === 'batch' || batches[originSession] || !eventStacks || !eventStacks[originSession] || eventStacks[originSession].length === 0) {
 				logChange(method, args, undofunc, originSession);
 				return;
 			} else {
