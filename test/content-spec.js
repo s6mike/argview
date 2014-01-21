@@ -578,6 +578,79 @@ describe('content aggregate', function () {
 				wrapped.undo();
 				expect(wrapped.title).toBe('My Idea');
 			});
+			describe('batching if the previous title was blank', function () {
+				describe('if the previous command was a batch', function () {
+					var content;
+					beforeEach(function () {
+						content = MAPJS.content({id: 2, title: 'old title', ideas: {1: { id: 3, title: ''}}});
+						content.startBatch();
+						content.updateTitle(2, 'new title 1');
+						content.updateTitle(2, 'new title 2');
+						content.endBatch();
+						content.updateTitle(3, 'should not be batched');
+					});
+					it('does not retro-fit it into the batch', function () {
+						content.undo();
+						expect(content.title).toBe('new title 2');
+					});
+					it('does not mess with the undo stack', function () {
+						content.undo();
+						content.undo();
+						expect(content.title).toBe('old title');
+						expect(content.ideas[1].title).toBe('');
+					});
+					it('does not mess with the redo stack', function () {
+						content.undo();
+						content.undo();
+						content.redo();
+						expect(content.title).toBe('new title 2');
+						expect(content.ideas[1].title).toBe('');
+					});
+					it('logs the event to the redo stack normally', function () {
+						content.undo();
+						content.undo();
+						content.redo();
+						content.redo();
+						expect(content.ideas[1].title).toBe('should not be batched');
+					});
+				});
+
+				describe('if the previous command was not a batch', function () {
+
+					var content;
+					beforeEach(function () {
+						content = MAPJS.content({id: 2, title: 'old title'});
+						content.updateTitle(2, 'new title');
+						content.addSubIdea(2);
+						content.updateTitle(3, 'should be batched');
+					});
+					it('retro-fits it into the batch', function () {
+						content.undo();
+						expect(content.title).toBe('new title');
+						expect(content.ideas).toEqual({});
+					});
+					it('adds itself to the redo stack for the previous command', function () {
+						content.undo();
+						content.redo();
+						expect(content.ideas[1].title).toBe('should be batched');
+					});
+					it('does not mess up the undo stack for earlier commands', function () {
+						content.undo();
+						content.undo();
+						expect(content.title).toBe('old title');
+						expect(content.ideas).toEqual({});
+					});
+					it('does not mess up the redo stack for earlier commands', function () {
+						content.undo();
+						content.undo();
+						content.redo();
+						expect(content.title).toBe('new title');
+						expect(content.ideas).toEqual({});
+					});
+
+				});
+
+			});
 		});
 		describe('insertIntermediate', function () {
 			var listener, idea;
@@ -1309,7 +1382,7 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			expect(wrapped.title).toBe('First');
 		});
-		
+
 		it('multiple changes stack on the undo stack in the order of recency', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');

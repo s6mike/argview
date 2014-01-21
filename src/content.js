@@ -151,17 +151,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				logChange(method, args, undofunc, originSession);
 				return;
 			} else {
-				prev = eventStacks[originSession].pop();
-				if (prev.eventMethod === 'batch') {
-					eventStacks[originSession].push({
-						eventMethod: 'batch',
-						eventArgs: prev.eventArgs.push([method].concat(args)),
-						undoFunction: function () {
-							undofunc();
-							prev.undoFunction();
-						}
-					});
+
+				if (eventStacks[originSession][eventStacks[originSession].length - 1].eventMethod === 'batch') {
+					logChange(method, args, undofunc, originSession);
+					return;
 				} else {
+					prev = eventStacks[originSession].pop();
 					eventStacks[originSession].push({
 						eventMethod: 'batch',
 						eventArgs: [[prev.eventMethod].concat(prev.eventArgs)].concat([[method].concat(args)]),
@@ -452,6 +447,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}, originSession);
 		}
 		else {
+
 			idea.title = title;
 			logChange('updateTitle', [ideaId, title], function () {
 				idea.title = originalTitle;
