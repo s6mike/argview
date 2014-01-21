@@ -151,12 +151,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				logChange(method, args, undofunc, originSession);
 				return;
 			} else {
-
-				if (eventStacks[originSession][eventStacks[originSession].length - 1].eventMethod === 'batch') {
-					logChange(method, args, undofunc, originSession);
-					return;
+				prev = eventStacks[originSession].pop();
+				if (prev.eventMethod === 'batch') {
+					eventStacks[originSession].push({
+						eventMethod: 'batch',
+						eventArgs: prev.eventArgs.concat([[method].concat(args)]),
+						undoFunction: function () {
+							undofunc();
+							prev.undoFunction();
+						}
+					});
 				} else {
-					prev = eventStacks[originSession].pop();
 					eventStacks[originSession].push({
 						eventMethod: 'batch',
 						eventArgs: [[prev.eventMethod].concat(prev.eventArgs)].concat([[method].concat(args)]),
@@ -428,6 +433,24 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}, originSession);
 		return true;
 	};
+	contentAggregate.initialiseTitle = function (ideaId, title) {
+		return contentAggregate.execCommand('initialiseTitle', arguments);
+	};
+	commandProcessors.initialiseTitle = function (originSession, ideaId, title) {
+		var idea = findIdeaById(ideaId), originalTitle;
+		if (!idea) {
+			return false;
+		}
+		originalTitle = idea.title;
+		if (originalTitle == title) {
+			return false;
+		}
+		idea.title = title;
+		appendChange('initialiseTitle', [ideaId, title], function () {
+			idea.title = originalTitle;
+		}, originSession);
+		return true;
+	};
 	contentAggregate.updateTitle = function (ideaId, title) {
 		return contentAggregate.execCommand('updateTitle', arguments);
 	};
@@ -440,20 +463,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (originalTitle == title) {
 			return false;
 		}
-		if (!idea.title) {
-			idea.title = title;
-			appendChange('updateTitle', [ideaId, title], function () {
-				idea.title = originalTitle;
-			}, originSession);
-		}
-		else {
-
-			idea.title = title;
-			logChange('updateTitle', [ideaId, title], function () {
-				idea.title = originalTitle;
-			}, originSession);
-		}
-
+		idea.title = title;
+		logChange('updateTitle', [ideaId, title], function () {
+			idea.title = originalTitle;
+		}, originSession);
 		return true;
 	};
 	contentAggregate.addSubIdea = function (parentId, ideaTitle, optionalNewId) {

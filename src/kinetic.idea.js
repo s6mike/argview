@@ -211,7 +211,8 @@
 					self.setStyle();
 					self.getStage().draw();
 					self.fire(':textChanged', {
-						text: newText || unformattedText
+						text: newText || unformattedText,
+						isNew: deleteOnCancel
 					});
 					ideaInput.remove();
 					self.stopEditing = undefined;

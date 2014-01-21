@@ -168,7 +168,7 @@ MAPJS.KineticMediator = function (mapModel, stage) {
 			mapModel.editNode('mouse', false, false);
 		});
 		node.on(':textChanged', function (event) {
-			mapModel.updateTitle(n.id, event.text);
+			mapModel.updateTitle(n.id, event.text, event.isNew);
 			mapModel.setInputEnabled(true);
 		});
 		node.on(':editing', function () {

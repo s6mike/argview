@@ -352,13 +352,18 @@ describe('MapModel', function () {
 		describe('updateTitle', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'updateTitle');
+				spyOn(anIdea, 'initialiseTitle');
 				underTest.selectNode(123);
 			});
 			it('should invoke idea.updateTitle with the arguments', function () {
 				underTest.updateTitle(123, 'abc');
 				expect(anIdea.updateTitle).toHaveBeenCalledWith(123, 'abc');
 			});
-			it('should work even if input is enabled', function () {
+			it('should invoke initialiseTitle if editNew is true', function () {
+				underTest.updateTitle(123, 'abc', true);
+				expect(anIdea.initialiseTitle).toHaveBeenCalledWith(123, 'abc');
+			});
+			it('should work even if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.updateTitle(123, 'abc');
 				expect(anIdea.updateTitle).toHaveBeenCalledWith(123, 'abc');
