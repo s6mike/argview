@@ -90,6 +90,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				});
 				return result;
 			};
+			contentIdea.traverse = function (iterator) {
+				iterator(contentIdea);
+				_.each(contentIdea.sortedSubIdeas(), function (subIdea) {
+					subIdea.traverse(iterator);
+				});
+			};
 			return contentIdea;
 		},
 		maxKey = function (kvMap, sign) {

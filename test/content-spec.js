@@ -1831,4 +1831,12 @@ describe('content aggregate', function () {
 			});
 		});
 	});
+	describe('traverse', function () {
+		it('applies a depth-first, pre-order traversal', function () {
+			var content = MAPJS.content({ id: 1, ideas: { '11': {id: 11, ideas: { 1: { id: 111}, 2: {id: 112} } }, '-12': {id: 12, ideas: { 1: {id: 121} } }, '-13' : {id: 13} } }),
+			result = [];
+			content.traverse(function (idea) { result.push(idea.id); });
+			expect(result).toEqual([1, 11, 111, 112, 12, 121, 13]);
+		});
+	});
 });
