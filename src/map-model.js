@@ -348,8 +348,12 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			}
 		}
 	};
-	this.updateTitle = function (ideaId, title) {
-		idea.updateTitle(ideaId, title);
+	this.updateTitle = function (ideaId, title, isNew) {
+		if (isNew) {
+			idea.initialiseTitle(ideaId, title);
+		} else {
+			idea.updateTitle(ideaId, title);
+		}
 	};
 	this.editNode = function (source, shouldSelectAll, editingNew) {
 		if (!isEditingEnabled) {

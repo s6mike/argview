@@ -521,63 +521,142 @@ describe('content aggregate', function () {
 				expect(aggregate.getAttr('new').sub.subsub).toBe(0);
 			});
 		});
-		describe('updateTitle', function () {
-			it('changes the title of the current idea only if it matches ID in command', function () {
-				var first = MAPJS.content({id: 71, title: 'My Idea'}),
-					firstSucceeded = first.updateTitle(71, 'Updated');
-				expect(firstSucceeded).toBeTruthy();
-				expect(first.title).toBe('Updated');
-			});
-			it('changes the title of the current idea only if it matches ID in command even if given as a string  (DOM/_.js quirk workaround)', function () {
-				var first = MAPJS.content({id: 71.5, title: 'My Idea'}),
-					firstSucceeded = first.updateTitle('71.5', 'Updated');
-				expect(firstSucceeded).toBeTruthy();
-				expect(first.title).toBe('Updated');
-			});
-			it('fails if the aggregate does not contain the target ID', function () {
-				var second = MAPJS.content({id: 72, title: 'Untouched'}),
-					listener = jasmine.createSpy('title_listener');
-				second.addEventListener('changed', listener);
-				expect(second.updateTitle(71, 'Updated')).toBeFalsy();
-				expect(second.title).toBe('Untouched');
-				expect(listener).not.toHaveBeenCalled();
-			});
-			it('fails if the title is the same', function () {
-				var second = MAPJS.content({id: 1, title: 'Untouched'}),
-					listener = jasmine.createSpy('title_listener');
-				second.addEventListener('changed', listener);
-				expect(second.updateTitle(1, 'Untouched')).toBeFalsy();
-				expect(listener).not.toHaveBeenCalled();
-			});
-			it('propagates changes to child ideas if the ID does not match, succeeding if there is a matching child', function () {
-				var ideas = MAPJS.content({id: 1, title: 'My Idea',
-								ideas: {  1: {id: 2, title: 'My First Subidea', ideas: {1: {id: 3, title: 'My First sub-sub-idea'}}}}}),
-					result = ideas.updateTitle(3, 'Updated');
-				expect(result).toBeTruthy();
-				expect(ideas.ideas[1].ideas[1].title).toBe('Updated');
-				expect(ideas.updateTitle('Non Existing', 'XX')).toBeFalsy();
-			});
-			it('fires an event matching the method call when the title changes', function () {
-				var listener = jasmine.createSpy('title_listener'),
-					wrapped = MAPJS.content({title: 'My Idea', id: 2, ideas: {1: {id: 1, title: 'Old title'}}});
-				wrapped.addEventListener('changed', listener);
-				wrapped.updateTitle(1, 'New Title');
-				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'New Title']);
-			});
-			it('fires an event with session ID if defined', function () {
-				var listener = jasmine.createSpy('title_listener'),
-					wrapped = MAPJS.content({id: 1}, 'sess');
-				wrapped.addEventListener('changed', listener);
-				wrapped.updateTitle(1, 'New Title');
-				expect(listener).toHaveBeenCalledWith('updateTitle', [1, 'New Title'], 'sess');
-			});
-			it('puts a undo method on the stack when successful', function () {
-				var wrapped = MAPJS.content({id: 71, title: 'My Idea'});
-				wrapped.updateTitle(71, 'Updated');
-				wrapped.undo();
-				expect(wrapped.title).toBe('My Idea');
+		_.each(['updateTitle', 'initialiseTitle'], function (cmd) {
+			describe(cmd, function () {
+				it('changes the title of the current idea only if it matches ID in command', function () {
+					var first = MAPJS.content({id: 71, title: 'My Idea'}),
+						firstSucceeded = first[cmd](71, 'Updated');
+					expect(firstSucceeded).toBeTruthy();
+					expect(first.title).toBe('Updated');
+				});
+				it('changes the title of the current idea only if it matches ID in command even if given as a string  (DOM/_.js quirk workaround)', function () {
+					var first = MAPJS.content({id: 71.5, title: 'My Idea'}),
+						firstSucceeded = first[cmd]('71.5', 'Updated');
+					expect(firstSucceeded).toBeTruthy();
+					expect(first.title).toBe('Updated');
+				});
+				it('fails if the aggregate does not contain the target ID', function () {
+					var second = MAPJS.content({id: 72, title: 'Untouched'}),
+						listener = jasmine.createSpy('title_listener');
+					second.addEventListener('changed', listener);
+					expect(second[cmd](71, 'Updated')).toBeFalsy();
+					expect(second.title).toBe('Untouched');
+					expect(listener).not.toHaveBeenCalled();
+				});
+				it('fails if the title is the same', function () {
+					var second = MAPJS.content({id: 1, title: 'Untouched'}),
+						listener = jasmine.createSpy('title_listener');
+					second.addEventListener('changed', listener);
+					expect(second[cmd](1, 'Untouched')).toBeFalsy();
+					expect(listener).not.toHaveBeenCalled();
+				});
+				it('propagates changes to child ideas if the ID does not match, succeeding if there is a matching child', function () {
+					var ideas = MAPJS.content({id: 1, title: 'My Idea',
+									ideas: {  1: {id: 2, title: 'My First Subidea', ideas: {1: {id: 3, title: 'My First sub-sub-idea'}}}}}),
+						result = ideas[cmd](3, 'Updated');
+					expect(result).toBeTruthy();
+					expect(ideas.ideas[1].ideas[1].title).toBe('Updated');
+					expect(ideas[cmd]('Non Existing', 'XX')).toBeFalsy();
+				});
+				it('fires an event matching the method call when the title changes', function () {
+					var listener = jasmine.createSpy('title_listener'),
+						wrapped = MAPJS.content({title: 'My Idea', id: 2, ideas: {1: {id: 1, title: 'Old title'}}});
+					wrapped.addEventListener('changed', listener);
+					wrapped[cmd](1, 'New Title');
+					expect(listener).toHaveBeenCalledWith(cmd, [1, 'New Title']);
+				});
+				it('fires an event with session ID if defined', function () {
+					var listener = jasmine.createSpy('title_listener'),
+						wrapped = MAPJS.content({id: 1}, 'sess');
+					wrapped.addEventListener('changed', listener);
+					wrapped[cmd](1, 'New Title');
+					expect(listener).toHaveBeenCalledWith(cmd, [1, 'New Title'], 'sess');
+				});
+				it('puts a undo method on the stack when successful', function () {
+					var wrapped = MAPJS.content({id: 71, title: 'My Idea'});
+					wrapped[cmd](71, 'Updated');
+					wrapped.undo();
+					expect(wrapped.title).toBe('My Idea');
+				});
 			});
 		});
+
+		describe('initialiseTitle batches the update with the previous command', function () {
+			var content;
+
+			describe('if the previous command was a batch', function () {
+				beforeEach(function () {
+					content = MAPJS.content({id: 2, title: 'old title'});
+					content.updateTitle(2, 'new title');
+					content.startBatch();
+					content.updateTitle(2, 'batched new title');
+					content.addSubIdea(2);
+					content.endBatch();
+					content.initialiseTitle(3, 'should be batched');
+				});
+				it('retro-fits it into the batch', function () {
+					content.undo();
+					expect(content.title).toBe('new title');
+					expect(content.ideas).toEqual({});
+				});
+				it('adds itself to the redo stack for the previous command', function () {
+					content.undo();
+					content.redo();
+					expect(content.ideas[1].title).toBe('should be batched');
+					expect(content.title).toBe('batched new title');
+				});
+				it('does not mess up the undo stack for earlier commands', function () {
+					content.undo();
+					content.undo();
+					expect(content.title).toBe('old title');
+					expect(content.ideas).toEqual({});
+				});
+				it('does not mess up the redo stack for earlier commands', function () {
+					content.undo();
+					content.undo();
+					content.redo();
+					expect(content.title).toBe('new title');
+					expect(content.ideas).toEqual({});
+				});
+			});
+
+			describe('if the previous command was not a batch', function () {
+
+				beforeEach(function () {
+					content = MAPJS.content({id: 2, title: 'old title'});
+					content.updateTitle(2, 'new title');
+					content.addSubIdea(2);
+					content.initialiseTitle(3, 'should be batched');
+				});
+				it('retro-fits it into the batch', function () {
+					content.undo();
+					expect(content.title).toBe('new title');
+					expect(content.ideas).toEqual({});
+				});
+				it('adds itself to the redo stack for the previous command', function () {
+					content.undo();
+					content.redo();
+					expect(content.ideas[1].title).toBe('should be batched');
+				});
+				it('does not mess up the undo stack for earlier commands', function () {
+					content.undo();
+					content.undo();
+					expect(content.title).toBe('old title');
+					expect(content.ideas).toEqual({});
+				});
+				it('does not mess up the redo stack for earlier commands', function () {
+					content.undo();
+					content.undo();
+					content.redo();
+					expect(content.title).toBe('new title');
+					expect(content.ideas).toEqual({});
+				});
+
+			});
+
+		});
+
+
 		describe('insertIntermediate', function () {
 			var listener, idea;
 			beforeEach(function () {
@@ -1308,7 +1387,7 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			expect(wrapped.title).toBe('First');
 		});
-		
+
 		it('multiple changes stack on the undo stack in the order of recency', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
