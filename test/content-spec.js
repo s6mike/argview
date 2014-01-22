@@ -1,4 +1,4 @@
-/*global _, observable, beforeEach, content, describe, expect, it, jasmine, spyOn, MAPJS*/
+/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
 describe('content aggregate', function () {
 	'use strict';
 	describe('content wapper', function () {
@@ -144,7 +144,7 @@ describe('content aggregate', function () {
 		});
 		describe('sameSideSiblingIds', function () {
 			it('returns siblings with the same rank sign, excluding the argument idea', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: {id: 2}, '-10': {id: 3}, 15 : {id: 4}, '-20': {id: 5}, 20: {id:6}}});
+				var idea = MAPJS.content({id: 1, ideas: { 5: {id: 2}, '-10': {id: 3}, 15 : {id: 4}, '-20': {id: 5}, 20: {id: 6}}});
 				expect(idea.sameSideSiblingIds(2)).toEqual([4, 6]);
 				expect(idea.sameSideSiblingIds(5)).toEqual([3]);
 			});
@@ -214,10 +214,10 @@ describe('content aggregate', function () {
 			});
 		});
 		describe('clone', function () {
-			var idea_to_clone = function () {return { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}; };
+			var toClone = function () {return { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}; };
 			it('returns a deep clone copy of a subidea by id', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': idea_to_clone(), '-10': { id: 3}, '-15' : {id: 4}}});
-				expect(idea.clone(2)).toEqual(idea_to_clone());
+				var idea = MAPJS.content({id: 1, ideas: { '-5': toClone(), '-10': { id: 3}, '-15' : {id: 4}}});
+				expect(idea.clone(2)).toEqual(toClone());
 				expect(idea.clone(2)).not.toBe(idea.ideas[-5]);
 			});
 			it('clones the aggregate if no subidea given', function () {
@@ -345,13 +345,13 @@ describe('content aggregate', function () {
 				});
 			});
 			it('should reorder children by absolute rank, positive first then negative', function () {
-				var result = idea.paste(3, _.extend(toPaste, {ideas: {
+				idea.paste(3, _.extend(toPaste, {ideas: {
 					77: {id: 10, title: '77'},
 					1: { id: 11, title: '1'},
 				    '-77': {id: 12, title: '-77'},
 				    '-1': {id: 13, title: '-1'}
-				}})),
-					newChildren = idea.ideas[-10].ideas[1].ideas;
+				}}));
+				var	newChildren = idea.ideas[-10].ideas[1].ideas;
 				expect(newChildren[1].title).toBe('1');
 				expect(newChildren[2].title).toBe('77');
 				expect(newChildren[3].title).toBe('-1');
@@ -360,7 +360,6 @@ describe('content aggregate', function () {
 			it('should paste to aggregate root if root ID is given', function () {
 				var result = idea.paste(1, toPaste), newRank;
 				expect(result).toBeTruthy();
-				console.log(idea);
 				newRank = idea.findChildRankById(5);
 				expect(newRank).toBeTruthy();
 				expect(idea.ideas[newRank]).toPartiallyMatch({title: 'pasted'});
@@ -419,8 +418,8 @@ describe('content aggregate', function () {
 			});
 			it('clones attr when setting to a new object to prevent stale references', function () {
 				var oldAttr = {},
-					aggregate = MAPJS.content({id: 1, attr: oldAttr}),
-					result = aggregate.updateAttr(1, 'newAttr', 'newValue');
+					aggregate = MAPJS.content({id: 1, attr: oldAttr});
+				aggregate.updateAttr(1, 'newAttr', 'newValue');
 				expect(oldAttr).toEqual({});
 			});
 			it('should remove attrs which have been set to false', function () {
@@ -525,14 +524,14 @@ describe('content aggregate', function () {
 		describe('updateTitle', function () {
 			it('changes the title of the current idea only if it matches ID in command', function () {
 				var first = MAPJS.content({id: 71, title: 'My Idea'}),
-					first_succeeded = first.updateTitle(71, 'Updated');
-				expect(first_succeeded).toBeTruthy();
+					firstSucceeded = first.updateTitle(71, 'Updated');
+				expect(firstSucceeded).toBeTruthy();
 				expect(first.title).toBe('Updated');
 			});
 			it('changes the title of the current idea only if it matches ID in command even if given as a string  (DOM/_.js quirk workaround)', function () {
 				var first = MAPJS.content({id: 71.5, title: 'My Idea'}),
-					first_succeeded = first.updateTitle('71.5', 'Updated');
-				expect(first_succeeded).toBeTruthy();
+					firstSucceeded = first.updateTitle('71.5', 'Updated');
+				expect(firstSucceeded).toBeTruthy();
 				expect(first.title).toBe('Updated');
 			});
 			it('fails if the aggregate does not contain the target ID', function () {
@@ -627,8 +626,8 @@ describe('content aggregate', function () {
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', '3.sess'], 'sess');
 			});
 			it('fires the generated ID in the event if the ID was not supplied', function () {
-				var result = idea.insertIntermediate(2, 'Steve'),
-					newId = idea.ideas[77].id;
+				idea.insertIntermediate(2, 'Steve');
+				var	newId = idea.ideas[77].id;
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', newId]);
 			});
 			it('fails if argument idea does not exist', function () {
@@ -923,46 +922,46 @@ describe('content aggregate', function () {
 			it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
 				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15 : {id: 4}}}),
 					result = idea.moveRelative(4, -1),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).toBeLessThan(10);
-				expect(new_key).not.toBeLessThan(5);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).toBeLessThan(10);
+				expect(newKey).not.toBeLessThan(5);
 			});
 			it('moves an idea before its immediate previous sibling for negative nodes', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
 					result = idea.moveRelative(4, -1),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).toBeLessThan(-5);
-				expect(new_key).not.toBeLessThan(-10);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).toBeLessThan(-5);
+				expect(newKey).not.toBeLessThan(-10);
 			});
 			it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
 					result = idea.moveRelative(2, 1),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[15].id).toBe(4);
 				expect(idea.ideas[10].id).toBe(3);
-				new_key = idea.findChildRankById(2);
-				expect(new_key).toBeLessThan(15);
-				expect(new_key).not.toBeLessThan(10);
+				newKey = idea.findChildRankById(2);
+				expect(newKey).toBeLessThan(15);
+				expect(newKey).not.toBeLessThan(10);
 			});
 			it('moves an idea before its immediate following sibling for negative nodes', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
 					result = idea.moveRelative(2, 1),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-15].id).toBe(4);
 				expect(idea.ideas[-10].id).toBe(3);
-				new_key = idea.findChildRankById(2);
-				expect(new_key).toBeLessThan(-10);
-				expect(new_key).not.toBeLessThan(-15);
+				newKey = idea.findChildRankById(2);
+				expect(newKey).toBeLessThan(-10);
+				expect(newKey).not.toBeLessThan(-15);
 			});
 			it('moves to top', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
@@ -1000,13 +999,13 @@ describe('content aggregate', function () {
 			it('reorders immediate children by changing the rank of an idea to be immediately before the provided idea', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
 					result = idea.positionBefore(4, 3),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).toBeLessThan(10);
-				expect(new_key).not.toBeLessThan(5);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).toBeLessThan(10);
+				expect(newKey).not.toBeLessThan(5);
 			});
 			it('fails if the idea should be ordered before itself', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 12: { id: 3}, 15 : {id: 4}}}),
@@ -1073,33 +1072,33 @@ describe('content aggregate', function () {
 			it('orders negative ideas as negative ranks', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
 					result = idea.positionBefore(4, 3),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).not.toBeLessThan(-10);
-				expect(new_key).toBeLessThan(-5);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).not.toBeLessThan(-10);
+				expect(newKey).toBeLessThan(-5);
 			});
 			it('puts the child in the first rank if the boundary idea was the first', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
 					result = idea.positionBefore(4, 2),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[5].id).toBe(2);
 				expect(idea.ideas[10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).toBeLessThan(5);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).toBeLessThan(5);
 			});
 			it('gives the idea the largest positive rank if the boundary idea was not defined and current rank was positive', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
 					result = idea.positionBefore(2),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[10].id).toBe(3);
 				expect(idea.ideas[15].id).toBe(4);
-				new_key = idea.findChildRankById(2);
-				expect(new_key).not.toBeLessThan(15);
+				newKey = idea.findChildRankById(2);
+				expect(newKey).not.toBeLessThan(15);
 			});
 			it('fails if the boundary idea was not defined and child was already last', function () {
 				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
@@ -1115,23 +1114,23 @@ describe('content aggregate', function () {
 			it('puts the child closest to zero from the - side if the boundary idea was the smallest negative', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
 					result = idea.positionBefore(4, 2),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-5].id).toBe(2);
 				expect(idea.ideas[-10].id).toBe(3);
-				new_key = idea.findChildRankById(4);
-				expect(new_key).not.toBeLessThan(-5);
-				expect(new_key).toBeLessThan(0);
+				newKey = idea.findChildRankById(4);
+				expect(newKey).not.toBeLessThan(-5);
+				expect(newKey).toBeLessThan(0);
 			});
 			it('puts the child in the last negative rank if the boundary idea was not defined but current rank is negative', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
 					result = idea.positionBefore(2),
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-10].id).toBe(3);
 				expect(idea.ideas[-15].id).toBe(4);
-				new_key = idea.findChildRankById(2);
-				expect(new_key).toBeLessThan(-15);
+				newKey = idea.findChildRankById(2);
+				expect(newKey).toBeLessThan(-15);
 			});
 			it('fails if the boundary idea was not defined and child was already last with negative ranks', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
@@ -1155,15 +1154,15 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 0, title: 'I0', ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
 					result = idea.positionBefore(4, 2),
 					child,
-					new_key;
+					newKey;
 				expect(result).toBeTruthy();
 				child = idea.ideas[9];
 				expect(child.ideas[-5].id).toBe(2);
 				expect(child.ideas[-10].id).toBe(3);
-				new_key = child.findChildRankById(4);
-				expect(new_key).toBeLessThan(10);
-				expect(new_key).not.toBeLessThan(-5);
-				expect(new_key).toBeLessThan(0);
+				newKey = child.findChildRankById(4);
+				expect(newKey).toBeLessThan(10);
+				expect(newKey).not.toBeLessThan(-5);
+				expect(newKey).toBeLessThan(0);
 			});
 			it('fails if none of the children contain the requested idea either', function () {
 				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
@@ -1679,7 +1678,6 @@ describe('content aggregate', function () {
 		});
 		it('should fire an event with session ID if provided when remove link is invoked', function () {
 			var idea = MAPJS.content({id: 1, ideas: {1: {id: 2}, 2: { id: 3}}}, 'sess'),
-				result,
 				changedListener = jasmine.createSpy();
 			idea.addLink(2, 3);
 			idea.addEventListener('changed', changedListener);
@@ -1754,7 +1752,7 @@ describe('content aggregate', function () {
 		describe('cloneMultiple', function () {
 			it('should return an array of cloned ideas when given an array of idea IDs', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}, '-10': { id: 3}, '-15' : {id: 4}}}),
-				result = idea.cloneMultiple([2,3]);
+				result = idea.cloneMultiple([2, 3]);
 				expect(result[0]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-5'])));
 				expect(result[0]).not.toBe(idea.ideas['-5']);
 				expect(result[1]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-10'])));
@@ -1765,7 +1763,7 @@ describe('content aggregate', function () {
 			var idea, result;
 			beforeEach(function () {
 				idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
-				result = idea.removeMultiple([2,3,6]);
+				result = idea.removeMultiple([2, 3, 6]);
 			});
 			it('removes subideas given as an array of IDs', function () {
 				expect(_.size(idea.ideas[9].ideas)).toBe(1);
@@ -1808,8 +1806,8 @@ describe('content aggregate', function () {
 		describe('insertIntermediateMultiple', function () {
 			var idea, result;
 			beforeEach(function () {
-				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id:3, title: 'also', ideas: { 99: {id:4, title:'under'}}}}});
-				result = idea.insertIntermediateMultiple([4,2]);
+				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id: 3, title: 'also', ideas: { 99: {id: 4, title: 'under'}}}}});
+				result = idea.insertIntermediateMultiple([4, 2]);
 			});
 			it('adds an idea in front of first provided idea in array and reparents all other ideas', function () {
 				var newIdea = idea.ideas[88].ideas[99];
