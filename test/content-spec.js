@@ -257,6 +257,61 @@ describe('content aggregate', function () {
 			it('should return the attr from the matching node', function () {
 				expect(wrapped.getAttrById(12, 'style')).toEqual({background: 'red'});
 			});
+			it('should not return a live copy allowing the client to mess with the internals', function () {
+				wrapped.getAttrById(12, 'style').background = 'blue';
+				expect(wrapped.getAttrById(12, 'style')).toEqual({background: 'red'});
+			});
+		});
+		describe('mergeAttrProperty', function () {
+			var underTest;
+			beforeEach(function () {
+				underTest = MAPJS.content({
+					attr: {
+						style: {
+							background: 'red'
+						}
+					},
+					id: 12
+				});
+			});
+			it('adds a new attribute if nothing existed before', function () {
+				underTest.mergeAttrProperty(12, 'kick', 'me', 'yes');
+				expect(underTest.getAttrById(12, 'kick')).toEqual({me: 'yes'});
+			});
+			it('adds a property to an existing attribute if it was a hashmap', function () {
+				underTest.mergeAttrProperty(12, 'style', 'me', 'yes');
+				expect(underTest.getAttrById(12, 'style')).toEqual({background: 'red', me: 'yes'});
+			});
+			it('removes an existing hashmap property', function () {
+				underTest.mergeAttrProperty(12, 'style', 'me', 'yes');
+				underTest.mergeAttrProperty(12, 'style', 'background', false);
+				expect(underTest.getAttrById(12, 'style')).toEqual({me: 'yes'});
+			});
+			it('changes an existing hashmap property', function () {
+				underTest.mergeAttrProperty(12, 'style', 'background', 'blue');
+				expect(underTest.getAttrById(12, 'style')).toEqual({background: 'blue'});
+			});
+			it('fires an updateAttr event', function () {
+				var spy = jasmine.createSpy('changed');
+				underTest.addEventListener('changed', spy);
+				underTest.mergeAttrProperty(12, 'style', 'me', 'yes');
+				expect(spy).toHaveBeenCalledWith('updateAttr', [12, 'style', {background: 'red', me: 'yes'}]);
+			});
+			it('removes the last property', function () {
+				underTest.mergeAttrProperty(12, 'style', 'background', false);
+				expect(underTest.getAttrById(12, 'style')).toBeFalsy();
+			});
+			it('returns true if the value is changed', function () {
+				expect(underTest.mergeAttrProperty(12, 'style', 'background', 'yellow')).toBeTruthy();
+				expect(underTest.mergeAttrProperty(12, 'style', 'background', false)).toBeTruthy();
+				expect(underTest.mergeAttrProperty(12, 'style', 'me', 'yellow')).toBeTruthy();
+				expect(underTest.mergeAttrProperty(12, 'you', 'me', 'yellow')).toBeTruthy();
+			});
+			it('returns false if the value is unchanged', function () {
+				expect(underTest.mergeAttrProperty(12, 'style', 'background', 'red')).toBeFalsy();
+				expect(underTest.mergeAttrProperty(12, 'style', 'me', false)).toBeFalsy();
+				expect(underTest.mergeAttrProperty(12, 'you', 'me', false)).toBeFalsy();
+			});
 		});
 	});
 	describe('command processing', function () {

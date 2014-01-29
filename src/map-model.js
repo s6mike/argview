@@ -256,13 +256,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			analytic('updateStyle:' + prop, source);
 			self.applyToActivated(function (id) {
 				if (self.getStyleForId(id, prop) != value) {
-					var node = self.findIdeaById(id),
-						merged;
-					if (node) {
-						merged = _.extend({}, node.getAttr('style'));
-						merged[prop] = value;
-						idea.updateAttr(id, 'style', merged);
-					}
+					idea.mergeAttrProperty(id, 'style', prop, value);
 				}
 			});
 		}

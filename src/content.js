@@ -75,7 +75,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			};
 			contentIdea.getAttr = function (name) {
 				if (contentIdea.attr && contentIdea.attr[name]) {
-					return contentIdea.attr[name];
+					return _.clone(contentIdea.attr[name]);
 				}
 				return false;
 			};
@@ -623,6 +623,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return function () {
 			object.attr = oldAttr;
 		};
+	};
+	contentAggregate.mergeAttrProperty = function (ideaId, attrName, attrPropertyName, attrPropertyValue) {
+		var val = contentAggregate.getAttrById(ideaId, attrName) || {};
+		if (attrPropertyValue) {
+			val[attrPropertyName] = attrPropertyValue;
+		} else {
+			delete val[attrPropertyName];
+		}
+		if (_.isEmpty(val)) { val = false; }
+		return contentAggregate.updateAttr(ideaId, attrName, val);
 	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
 		return contentAggregate.execCommand('updateAttr', arguments);

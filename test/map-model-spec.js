@@ -1265,37 +1265,34 @@ describe('MapModel', function () {
 				describe('updateStyle', function () {
 					beforeEach(function () {
 						underTest.selectNode(2);
+						spyOn(anIdea, 'mergeAttrProperty').andCallThrough();
 					});
-					it('should invoke idea.setAttr for all activated nodes when toggleCollapse is called as a batch', function () {
+					it('should invoke idea.mergeAttrProperty for all activated nodes when toggleCollapse is called as a batch', function () {
 						var i;
 						underTest.selectNode(3);
 						underTest.activateSiblingNodes();
 						changedListener.reset();
 						underTest.updateStyle('source', 'styleprop', 'styleval');
 						for (i = 2; i <= 5; i++) {
-							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', { styleprop: 'styleval' });
+							expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(i, 'style', 'styleprop', 'styleval');
 						}
 						expect(changedListener.callCount).toBe(1);
 					});
 
-					it('should invoke idea.setAttr with selected ideaId and style argument when updateStyle is called', function () {
+					it('should invoke idea.mergeAttrProperty with selected ideaId and style argument when updateStyle is called', function () {
 						underTest.updateStyle('source', 'styleprop', 'styleval');
-						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', { styleprop: 'styleval' });
+						expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'styleprop', 'styleval');
 					});
-					it('should not invoke idea.setAttr if input is disabled', function () {
+					it('should not invoke idea.mergeAttrProperty if input is disabled', function () {
 						underTest.setInputEnabled(false);
 						underTest.updateStyle('source', 'styleprop', 'styleval');
-						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+						expect(anIdea.mergeAttrProperty).not.toHaveBeenCalled();
 					});
-					it('should not invoke idea.setAttr with selected ideaId and style argument when updateStyle is called with same value', function () {
-						underTest.updateStyle('source', 'styleprop', 'oldValue');
-						expect(anIdea.updateAttr).not.toHaveBeenCalled();
+					it('should not invoke idea if setting the same prop value - this is to prevent roundtrips from the default background and other calculated props in layout', function () {
+                        underTest.updateStyle('source', 'styleprop', 'oldValue');
+						expect(anIdea.mergeAttrProperty).not.toHaveBeenCalled();
 					});
-					it('should merge argument with previous style', function () {
-						anIdea.findSubIdeaById(2).attr = { style : {'color': 'black'}};
-						underTest.updateStyle('source', 'noncolor', 'nonblack');
-						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', {color: 'black', noncolor: 'nonblack'});
-					});
+
 				});
 				describe('pasteStyle', function () {
 					var toPaste;
