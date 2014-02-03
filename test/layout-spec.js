@@ -1,4 +1,4 @@
-/*global describe, expect, it, MAPJS, beforeEach, afterEach*/
+/*global describe, expect, it, MAPJS, beforeEach*/
 describe('calculateLayout', function () {
 	'use strict';
 	var dimensionProvider = function (idea) {
@@ -752,7 +752,7 @@ describe('New layout', function () {
 		});
 	});
 	describe('Outline', function () {
-		var dimensionProviderResults, dimensionProvider;
+		var dimensionProvider;
 		beforeEach(function () {
 			dimensionProvider = function (content) {
 				var parts = content.title.split('x');
@@ -790,56 +790,58 @@ describe('New layout', function () {
 		});
 		it('should calculate spacing between more complex outlines', function () {
 
-			var outline1 = new MAPJS.Outline([{"h": -17, "l": 23}, {"l": 123, "h": -17}], [{"h": 17, "l": 23}, {"l": 123, "h": 17}]),
-				outline2 = new MAPJS.Outline([{"h": -17, "l": 107}, {"l": 33, "h": -39}], [{"h": 17, "l": 107}, {"l": 33, "h": 39}]),
+			var outline1 = new MAPJS.Outline([{'h': -17, 'l': 23}, {'l': 123, 'h': -17}], [{'h': 17, 'l': 23}, {'l': 123, 'h': 17}]),
+				outline2 = new MAPJS.Outline([{'h': -17, 'l': 107}, {'l': 33, 'h': -39}], [{'h': 17, 'l': 107}, {'l': 33, 'h': 39}]),
 				result = outline1.spacingAbove(outline2);
 
 			expect(result).toBe(56);
 		});
 		it('should calculate spacing between even more complex outlines', function () {
-			var outline1 = new MAPJS.Outline([{
-                "h": -17,
-                "l": 57.5
-              },
-              {
-                "l": 107.5,
-                "h": -71
-              },
-              {
-                "l": 85,
-                "h": 37
-              }
-            ], [
-              {
-                "h": 17,
-                "l": 57.5
-              },
-              {
-                "l": 192.5,
-                "h": 71
-              }
-            ]),
-				outline2 = new MAPJS.Outline([
-          {
-            "h": -17,
-            "l": 30
-          },
-          {
-            "l": 50,
-            "h": -17
-          }
-        ], [
-          {
-            "h": 17,
-            "l": 30
-          },
-          {
-            "l": 50,
-            "h": 17
-          }
-        ]),				
-				result = outline1.spacingAbove(outline2);
-
+			var outline1 = new MAPJS.Outline([
+				{
+					'h': -17,
+					'l': 57.5
+				},
+				{
+					'l': 107.5,
+					'h': -71
+				},
+				{
+					'l': 85,
+					'h': 37
+				}
+			],
+			[
+				{
+					'h': 17,
+					'l': 57.5
+				},
+				{
+					'l': 192.5,
+					'h': 71
+				}
+			]),
+			outline2 = new MAPJS.Outline([
+				{
+					'h': -17,
+					'l': 30
+				},
+				{
+					'l': 50,
+					'h': -17
+				}
+			],
+			[
+				{
+					'h': 17,
+					'l': 30
+				},
+				{
+					'l': 50,
+					'h': 17
+				}
+			]),
+			result = outline1.spacingAbove(outline2);
 			expect(result).toBe(88);
 		});
 		describe('borderLength', function () {
@@ -974,53 +976,30 @@ describe('New layout', function () {
 			});
 		});
 		it('should be able to stack outlines with more complex borders', function () {
-			var outline1 = new MAPJS.Outline([{
-                "h": -17,
-                "l": 57.5
-              },
-              {
-                "l": 107.5,
-                "h": -71
-              },
-              {
-                "l": 85,
-                "h": 37
-              }
-            ], [
-              {
-                "h": 17,
-                "l": 57.5
-              },
-              {
-                "l": 192.5,
-                "h": 71
-              }
-            ]),
+			var outline1 = new MAPJS.Outline([
+				{'h': -17, 'l': 57.5 },
+				{'l': 107.5, 'h': -71},
+				{'l': 85, 'h': 37}
+			],
+			[
+				{'h': 17, 'l': 57.5},
+				{'l': 192.5, 'h': 71}
+			]),
 				outline2 = new MAPJS.Outline([
-          {
-            "h": -17,
-            "l": 30
-          },
-          {
-            "l": 50,
-            "h": -17
-          }
-        ], [
-          {
-            "h": 17,
-            "l": 30
-          },
-          {
-            "l": 50,
-            "h": 17
-          }
-        ]),
+				{'h': -17, 'l': 30},
+				{'l': 50, 'h': -17}
+			],
+			[
+				{'h': 17, 'l': 30},
+				{'l': 50, 'h': 17}
+			]),
 				result;
 
 			result = outline2.stackBelow(outline1, 10);
 
 			expect(result.borders()).toEqual({
-				top : [ { h : -17, l : 57.5 }, { l : 107.5, h : -71 }, { l : 85, h : 37 } ], bottom : [ { l : 30, h : 115 }, { l : 50, h : 115 }, { h : 71, l : 170 } ]
+				top : [ { h : -17, l : 57.5 }, { l : 107.5, h : -71 }, { l : 85, h : 37 } ],
+				bottom : [ { l : 30, h : 115 }, { l : 50, h : 115 }, { h : 71, l : 170 } ]
 			});
 
 			//
