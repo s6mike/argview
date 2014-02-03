@@ -1,4 +1,4 @@
-/*global jQuery, window, mapModel, Kinetic */
+/*global jQuery, window, mapModel, Kinetic, setInterval, console*/
 (function () {
 	'use strict';
 	window.startPerformanceTest = function (test, mapMultiplication, multiplicationType) {
