@@ -1,29 +1,28 @@
-/*global _, jasmine,beforeEach, describe, expect, it, jQuery, observable, spyOn, MAPJS*/
-/*jslint es5: true*/
+/*global _, jasmine,beforeEach, describe, expect, it, jQuery, spyOn, MAPJS*/
 describe('mapToolbarWidget', function () {
 	'use strict';
 	var mapModel, element;
 	beforeEach(function () {
 		mapModel = new MAPJS.MapModel(function () { return []; });
 		element = jQuery(
-			'<div>\
-			<input type="button" class="resetView" value="0"></input>\
-			<input type="button" class="scaleUp" value="+"></input>\
-			<input type="button" class="scaleUp" value="+"></input>\
-			<input type="button" class="scaleDown" value="-"></input>\
-			<input type="button" class="addSubIdea" value="++"></input>\
-			<input type="button" class="editNode" value="edit"></input>\
-			<input type="button" class="removeSubIdea" value="remove"></input>\
-			<input type="button" class="insertIntermediate" value="insert parent"></input>\
-			<input type="button" class="addSiblingIdea" value="insert parent"></input>\
-			<input type="button" class="undo" value="undo"></input>\
-			<input type="button" class="redo" value="redo"></input>\
-			<input type="button" class="cut" value="cut"></input>\
-			<input type="button" class="copy" value="copy"></input>\
-			<input type="button" class="paste" value="paste"></input>\
-			<input type="button" class="openAttachment" value="open attachment"></input>\
-			<input data-mm-target-property="color" type="text" class="updateStyle" value=""></input>\
-			</div>'
+			'<div>' +
+			'<input type="button" class="resetView" value="0"></input>' +
+			'<input type="button" class="scaleUp" value="+"></input>' +
+			'<input type="button" class="scaleUp" value="+"></input>' +
+			'<input type="button" class="scaleDown" value="-"></input>' +
+			'<input type="button" class="addSubIdea" value="++"></input>' +
+			'<input type="button" class="editNode" value="edit"></input>' +
+			'<input type="button" class="removeSubIdea" value="remove"></input>' +
+			'<input type="button" class="insertIntermediate" value="insert parent"></input>' +
+			'<input type="button" class="addSiblingIdea" value="insert parent"></input>' +
+			'<input type="button" class="undo" value="undo"></input>' +
+			'<input type="button" class="redo" value="redo"></input>' +
+			'<input type="button" class="cut" value="cut"></input>' +
+			'<input type="button" class="copy" value="copy"></input>' +
+			'<input type="button" class="paste" value="paste"></input>' +
+			'<input type="button" class="openAttachment" value="open attachment"></input>' +
+			'<input data-mm-target-property="color" type="text" class="updateStyle" value=""></input>' +
+			'</div>'
 		);
 		element.appendTo('body');
 	});
