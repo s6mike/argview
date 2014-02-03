@@ -1,4 +1,4 @@
-/*global describe, it, */
+/*global describe, it*/
 (function describeBatch() {
 	'use strict';
 	var oldDescribe = describe;
@@ -11,7 +11,7 @@
 		if (arguments.length === 3 && Array.isArray(optionalBatch)) {
 			parameterizedSpec = arguments[2];
 			oldDescribe.call(this, arguments[0], function () {
-				optionalBatch.forEach(function(args) {
+				optionalBatch.forEach(function (args) {
 					var specArgs = args.slice(1);
 					it.call(this, args[0], function () {
 						parameterizedSpec.apply(this, specArgs);
