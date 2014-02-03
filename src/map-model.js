@@ -706,108 +706,110 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				}
 			},
 			applyFuncs = { 'Left': applyToNodeLeft, 'Up': applyToNodeUp, 'Down': applyToNodeDown, 'Right': applyToNodeRight };
-		self.activateSiblingNodes = function (source) {
-			var parent = idea.findParent(currentlySelectedIdeaId),
-				siblingIds;
-			analytic('activateSiblingNodes', source);
-			if (!parent || !parent.ideas) {
-				return;
-			}
-			siblingIds = _.map(parent.ideas, function (child) { return child.id; });
-			setActiveNodes(siblingIds);
-		};
-		self.activateNodeAndChildren = function (source) {
-			analytic('activateNodeAndChildren', source);
-			var contextId = getCurrentlySelectedIdeaId(),
-				subtree = idea.getSubTreeIds(contextId);
-			subtree.push(contextId);
-			setActiveNodes(subtree);
-		};
-		_.each(['Left', 'Right', 'Up', 'Down'], function (position) {
-			self['activateNode' + position] = function (source) {
-				applyFuncs[position](source, 'activateNode' + position, function (nodeId) {
-					self.activateNode(source, nodeId);
-					currentlySelectedIdeaId = nodeId;
-				});
+			self.getActivatedNodeIds = function () {
+				return activatedNodes.slice(0);
 			};
-			self['selectNode' + position] = function (source) {
-				applyFuncs[position](source, 'selectNode' + position, self.selectNode);
+			self.activateSiblingNodes = function (source) {
+				var parent = idea.findParent(currentlySelectedIdeaId),
+					siblingIds;
+				analytic('activateSiblingNodes', source);
+				if (!parent || !parent.ideas) {
+					return;
+				}
+				siblingIds = _.map(parent.ideas, function (child) { return child.id; });
+				setActiveNodes(siblingIds);
 			};
-		});
-		self.toggleActivationOnNode = function (source, nodeId) {
-			analytic('toggleActivated', source);
-			if (!self.isActivated(nodeId)) {
-				setActiveNodes([nodeId].concat(activatedNodes));
-			} else {
-				setActiveNodes(_.without(activatedNodes, nodeId));
-			}
-		};
-		self.activateNode = function (source, nodeId) {
-			analytic('activateNode', source);
-			if (!self.isActivated(nodeId)) {
-				activatedNodes.push(nodeId);
-				self.dispatchEvent('activatedNodesChanged', [nodeId], []);
-			}
-		};
-		self.activateChildren = function (source) {
-			analytic('activateChildren', source);
-			var context = currentlySelectedIdea();
-			if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
-				return;
-			}
-			setActiveNodes(idea.getSubTreeIds(context.id));
-		};
-		self.activateSelectedNode = function (source) {
-			analytic('activateSelectedNode', source);
-			setActiveNodes([getCurrentlySelectedIdeaId()]);
-		};
-		self.isActivated = function (id) {
-			/*jslint eqeq:true*/
-			return _.find(activatedNodes, function (activeId) { return id == activeId; });
-		};
-		self.applyToActivated = function (toApply) {
-			idea.batch(function () {_.each(activatedNodes, toApply); });
-		};
-		self.everyActivatedIs = function (predicate) {
-			return _.every(activatedNodes, predicate);
-		};
-		self.activateLevel = function (source, level) {
-			analytic('activateLevel', source);
-			var toActivate = _.map(
-				_.filter(
-					currentLayout.nodes,
-					function (node) {
-						/*jslint eqeq:true*/
-						return node.level == level;
+			self.activateNodeAndChildren = function (source) {
+				analytic('activateNodeAndChildren', source);
+				var contextId = getCurrentlySelectedIdeaId(),
+					subtree = idea.getSubTreeIds(contextId);
+				subtree.push(contextId);
+				setActiveNodes(subtree);
+			};
+			_.each(['Left', 'Right', 'Up', 'Down'], function (position) {
+				self['activateNode' + position] = function (source) {
+					applyFuncs[position](source, 'activateNode' + position, function (nodeId) {
+						self.activateNode(source, nodeId);
+						currentlySelectedIdeaId = nodeId;
+					});
+				};
+				self['selectNode' + position] = function (source) {
+					applyFuncs[position](source, 'selectNode' + position, self.selectNode);
+				};
+			});
+			self.toggleActivationOnNode = function (source, nodeId) {
+				analytic('toggleActivated', source);
+				if (!self.isActivated(nodeId)) {
+					setActiveNodes([nodeId].concat(activatedNodes));
+				} else {
+					setActiveNodes(_.without(activatedNodes, nodeId));
+				}
+			};
+			self.activateNode = function (source, nodeId) {
+				analytic('activateNode', source);
+				if (!self.isActivated(nodeId)) {
+					activatedNodes.push(nodeId);
+					self.dispatchEvent('activatedNodesChanged', [nodeId], []);
+				}
+			};
+			self.activateChildren = function (source) {
+				analytic('activateChildren', source);
+				var context = currentlySelectedIdea();
+				if (!context || _.isEmpty(context.ideas) || context.getAttr('collapsed')) {
+					return;
+				}
+				setActiveNodes(idea.getSubTreeIds(context.id));
+			};
+			self.activateSelectedNode = function (source) {
+				analytic('activateSelectedNode', source);
+				setActiveNodes([getCurrentlySelectedIdeaId()]);
+			};
+			self.isActivated = function (id) {
+				/*jslint eqeq:true*/
+				return _.find(activatedNodes, function (activeId) { return id == activeId; });
+			};
+			self.applyToActivated = function (toApply) {
+				idea.batch(function () {_.each(activatedNodes, toApply); });
+			};
+			self.everyActivatedIs = function (predicate) {
+				return _.every(activatedNodes, predicate);
+			};
+			self.activateLevel = function (source, level) {
+				analytic('activateLevel', source);
+				var toActivate = _.map(
+					_.filter(
+						currentLayout.nodes,
+						function (node) {
+							/*jslint eqeq:true*/
+							return node.level == level;
+						}
+					),
+					function (node) {return node.id; }
+				);
+				if (!_.isEmpty(toActivate)) {
+					setActiveNodes(toActivate);
+				}
+			};
+			self.reactivate = function (layout) {
+				_.each(layout.nodes, function (node) {
+					if (_.contains(activatedNodes, node.id)) {
+						node.activated = true;
 					}
-				),
-				function (node) {return node.id; }
-			);
-			if (!_.isEmpty(toActivate)) {
-				setActiveNodes(toActivate);
-			}
-		};
-		self.reactivate = function (layout) {
-			_.each(layout.nodes, function (node) {
-				if (_.contains(activatedNodes, node.id)) {
-					node.activated = true;
+				});
+				return layout;
+			};
+			self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
+				if (!isSelected) {
+					setActiveNodes([]);
+					return;
+				}
+				setActiveNodes([id]);
+			}, 1);
+			self.addEventListener('nodeRemoved', function (node, id) {
+				var selectedId = getCurrentlySelectedIdeaId();
+				if (self.isActivated(id) && !self.isActivated(selectedId)) {
+					setActiveNodes(activatedNodes.concat([selectedId]));
 				}
 			});
-			return layout;
-		};
-		self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
-			if (!isSelected) {
-				setActiveNodes([]);
-				return;
-			}
-			setActiveNodes([id]);
-		}, 1);
-		self.addEventListener('nodeRemoved', function (node, id) {
-			var selectedId = getCurrentlySelectedIdeaId();
-			if (self.isActivated(id) && !self.isActivated(selectedId)) {
-				setActiveNodes(activatedNodes.concat([selectedId]));
-			}
-		});
-
-	}());
+		}());
 };

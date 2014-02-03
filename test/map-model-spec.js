@@ -1219,6 +1219,23 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener).not.toHaveBeenCalled();
 				});
 			});
+			describe('getActivatedNodeIds', function () {
+				it('should return the selected node id ', function () {
+					underTest.selectNode(1);
+					expect(underTest.getActivatedNodeIds()).toEqual([1]);
+				});
+				it('should return activated nodes', function () {
+					underTest.selectNode(3);
+					underTest.activateSiblingNodes();
+					expect(underTest.getActivatedNodeIds().sort()).toEqual([2, 3, 4, 5]);
+				});
+				it('should not allow the internal representation ot be mutated', function () {
+					underTest.selectNode(3);
+					var toMutate = underTest.getActivatedNodeIds();
+					toMutate.push(42);
+					expect(underTest.getActivatedNodeIds()).toEqual([3]);
+				});
+			});
 			describe('actions on activated nodes', function () {
 				var changedListener;
 				beforeEach(function () {
