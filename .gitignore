@@ -2,3 +2,9 @@
 pub
 lib
 
+#grunt and jasmine artificats
+node_modules/
+SpecRunner.html
+.grunt
+
+
