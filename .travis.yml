@@ -1,4 +1,3 @@
-install: sh dl_dependencies.sh
 before_script:
   - npm install  grunt-cli
   - npm install  grunt-contrib-jasmine --save-dev
