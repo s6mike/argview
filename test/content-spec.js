@@ -111,7 +111,7 @@ describe('content aggregate', function () {
 			var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2', ideas: {8: {id: 8}}}, 10: { id: 3, title: 'I3'}, 15 : {id: 4, title: 'I4'}}});
 			it('returns the parent idea by child id', function () {
 				expect(idea.findParent(2)).toBe(idea);
-				expect(idea.findParent(8)).toPartiallyMatch({id: 2});
+				expect(idea.findParent(8)).toEqual(jasmine.objectContaining({id: 2}));
 			});
 			it('returns false if no such child exists', function () {
 				expect(idea.findParent('xxx')).toBeFalsy();
@@ -353,7 +353,7 @@ describe('content aggregate', function () {
 			it('should create a new child and paste cloned contents', function () {
 				var result = idea.paste(3, toPaste);
 				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].ideas[1]).toPartiallyMatch({title: 'pasted'});
+				expect(idea.ideas[-10].ideas[1]).toEqual(jasmine.objectContaining({title: 'pasted'}));
 			});
 			describe('when no ID provided', function () {
 				it('should reassign IDs based on next available ID in the aggregate', function () {
@@ -417,7 +417,7 @@ describe('content aggregate', function () {
 				expect(result).toBeTruthy();
 				newRank = idea.findChildRankById(5);
 				expect(newRank).toBeTruthy();
-				expect(idea.ideas[newRank]).toPartiallyMatch({title: 'pasted'});
+				expect(idea.ideas[newRank]).toEqual(jasmine.objectContaining({title: 'pasted'}));
 			});
 			it('should fail if invalid idea id', function () {
 				var result = idea.paste(-3, toPaste);
@@ -722,10 +722,10 @@ describe('content aggregate', function () {
 			it('adds an idea between the argument idea and its parent, keeping the same rank for the new node and reassigning rank of 1 to the argument', function () {
 				var result = idea.insertIntermediate(2, 'Steve');
 				expect(result).toBeTruthy();
-				expect(idea.ideas[77]).toPartiallyMatch({id: 3, title: 'Steve'});
+				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 3, title: 'Steve'}));
 				expect(_.size(idea.ideas)).toBe(1);
 				expect(_.size(idea.ideas[77].ideas)).toBe(1);
-				expect(idea.ideas[77].ideas[1]).toPartiallyMatch({id: 2, title: 'Moved'});
+				expect(idea.ideas[77].ideas[1]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 			it('assigns an ID automatically if not provided', function () {
 				var result = idea.insertIntermediate(2, 'Steve');
@@ -775,7 +775,7 @@ describe('content aggregate', function () {
 			it('pops an event to undo stack if successful', function () {
 				idea.insertIntermediate(2, 'Steve');
 				idea.undo();
-				expect(idea.ideas[77]).toPartiallyMatch({id: 2, title: 'Moved'});
+				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 		});
 		describe('addSubIdea', function () {
@@ -866,7 +866,7 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 4, ideas: {1: {id: 5, title: 'My Idea'}}});
 				idea.addSubIdea(4, 'New');
 				idea.undo();
-				expect(idea.ideas[1]).toPartiallyMatch({id: 5, title: 'My Idea'});
+				expect(idea.ideas[1]).toEqual(jasmine.objectContaining({id: 5, title: 'My Idea'}));
 				expect(_.size(idea.ideas)).toBe(1);
 			});
 			it('takes negative rank items as absolute while calculating new rank ID (bug resurrection test)', function () {
@@ -999,7 +999,7 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				idea.removeSubIdea(2);
 				idea.undo();
-				expect(idea.ideas[5]).toPartiallyMatch({id: 2});
+				expect(idea.ideas[5]).toEqual(jasmine.objectContaining({id: 2}));
 			});
 		});
 		describe('flip', function () {
@@ -1501,7 +1501,7 @@ describe('content aggregate', function () {
 				wrapped.updateTitle(1, 'Mix');
 				wrapped.updateTitle(1, 'Max');
 			});
-			expect(listener.callCount).toBe(1);
+			expect(listener.calls.count()).toBe(1);
 			expect(listener).toHaveBeenCalledWith('batch', [
 				['updateTitle', 1, 'Mix' ],
 				['updateTitle', 1, 'Max' ]
@@ -1519,7 +1519,7 @@ describe('content aggregate', function () {
 			});
 			it('sends out a single event for the entire batch', function () {
 				wrapped.endBatch();
-				expect(listener.callCount).toBe(1);
+				expect(listener.calls.count()).toBe(1);
 				expect(listener).toHaveBeenCalledWith('batch', [
 					['updateTitle', 1, 'Mix' ],
 					['updateTitle', 1, 'Max' ]
@@ -1531,7 +1531,7 @@ describe('content aggregate', function () {
 				wrapped.updateTitle(1, 'Vox');
 				wrapped.endBatch();
 
-				expect(listener.callCount).toBe(2);
+				expect(listener.calls.count()).toBe(2);
 				expect(listener).toHaveBeenCalledWith('batch', [
 					['updateTitle', 1, 'Mix'],
 					['updateTitle', 1, 'Max']
@@ -1561,18 +1561,18 @@ describe('content aggregate', function () {
 			it('supports mixing batched and non batched commands', function () {
 				wrapped.endBatch();
 				wrapped.addSubIdea(1);
-				expect(listener.callCount).toBe(2);
-				expect(listener.calls[0].args[0]).toBe('batch');
-				expect(listener.calls[1].args[0]).toBe('addSubIdea');
+				expect(listener.calls.count()).toBe(2);
+				expect(listener.calls.first().args[0]).toBe('batch');
+				expect(listener.calls.all()[1].args[0]).toBe('addSubIdea');
 			});
 			it('does not confuse non batched commands after an empty batch', function () {
 				wrapped.endBatch();
 				wrapped.startBatch();
 				wrapped.endBatch();
 				wrapped.addSubIdea(1);
-				expect(listener.callCount).toBe(2);
-				expect(listener.calls[0].args[0]).toBe('batch');
-				expect(listener.calls[1].args[0]).toBe('addSubIdea');
+				expect(listener.calls.count()).toBe(2);
+				expect(listener.calls.first().args[0]).toBe('batch');
+				expect(listener.calls.all()[1].args[0]).toBe('addSubIdea');
 			});
 			it('will send the event directly instead of a batch with a single event', function () {
 				wrapped = MAPJS.content({id: 1, title: 'Original'});
@@ -1590,13 +1590,13 @@ describe('content aggregate', function () {
 				wrapped.undo();
 
 				expect(wrapped.title).toBe('Original');
-				expect(listener.callCount).toBe(2);
+				expect(listener.calls.count()).toBe(2);
 			});
 			it('undos an open batch as a separate event', function () {
 				wrapped.undo();
 
 				expect(wrapped.title).toBe('Original');
-				expect(listener.callCount).toBe(2);
+				expect(listener.calls.count()).toBe(2);
 			});
 			it('redos an entire batch', function () {
 				wrapped.endBatch();
@@ -1635,7 +1635,7 @@ describe('content aggregate', function () {
 				], 'session2');
 			});
 			it('sends out a single event for the entire batch', function () {
-				expect(listener.callCount).toBe(1);
+				expect(listener.calls.count()).toBe(1);
 				expect(listener).toHaveBeenCalledWith('batch', [
 					['updateTitle', 1, 'Mix' ],
 					['updateTitle', 1, 'Max' ]
@@ -1645,7 +1645,7 @@ describe('content aggregate', function () {
 				wrapped.execCommand('undo', [], 'session2');
 
 				expect(wrapped.title).toBe('Original');
-				expect(listener.callCount).toBe(2);
+				expect(listener.calls.count()).toBe(2);
 			});
 			it('redos an entire batch as a single event', function () {
 				wrapped.execCommand('undo', [], 'session2');
@@ -1653,7 +1653,7 @@ describe('content aggregate', function () {
 				wrapped.execCommand('redo', [], 'session2');
 
 				expect(wrapped.title).toBe('Max');
-				expect(listener.callCount).toBe(3);
+				expect(listener.calls.count()).toBe(3);
 			});
 		});
 		describe('across sessions', function () {
@@ -1778,10 +1778,10 @@ describe('content aggregate', function () {
 
 			expect(result).toBe(false);
 			expect(idea.links.length).toBe(1);
-			expect(idea.links[0]).toPartiallyMatch({
+			expect(idea.links[0]).toEqual(jasmine.objectContaining({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			});
+			}));
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should not be able to add the link in the opposite direction of an already existing link', function () {
@@ -1793,10 +1793,10 @@ describe('content aggregate', function () {
 
 			expect(result).toBe(false);
 			expect(idea.links.length).toBe(1);
-			expect(idea.links[0]).toPartiallyMatch({
+			expect(idea.links[0]).toEqual(jasmine.objectContaining({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			});
+			}));
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should remove a link when removeLink method is invoked', function () {
@@ -1829,10 +1829,10 @@ describe('content aggregate', function () {
 
 			expect(result).toBe(false);
 			expect(idea.links.length).toBe(1);
-			expect(idea.links[0]).toPartiallyMatch({
+			expect(idea.links[0]).toEqual(jasmine.objectContaining({
 				ideaIdFrom: 2,
 				ideaIdTo: 3
-			});
+			}));
 			expect(changedListener).not.toHaveBeenCalled();
 		});
 		it('should allow a link attribute to be set on the aggregate', function () {
@@ -1948,8 +1948,8 @@ describe('content aggregate', function () {
 				expect(newIdea.id).toEqual(5);
 				expect(_.size(idea.ideas)).toBe(1);
 				expect(_.size(newIdea.ideas)).toBe(2);
-				expect(newIdea.ideas[1]).toPartiallyMatch({id: 4, title: 'under'});
-				expect(newIdea.ideas[2]).toPartiallyMatch({id: 2, title: 'Moved'});
+				expect(newIdea.ideas[1]).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
+				expect(newIdea.ideas[2]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 			it('returns the new node id', function () {
 				expect(result).toEqual(5);
@@ -1959,8 +1959,8 @@ describe('content aggregate', function () {
 				var oldIdea = idea.ideas[88].ideas[99];
 				expect(_.size(idea.ideas)).toBe(2);
 				expect(_.size(oldIdea.ideas)).toBe(0);
-				expect(oldIdea).toPartiallyMatch({id: 4, title: 'under'});
-				expect(idea.ideas[77]).toPartiallyMatch({id: 2, title: 'Moved'});
+				expect(oldIdea).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
+				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 
 			});
 		});

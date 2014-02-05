@@ -28,14 +28,14 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			specs: {
-				files: ['spec/*.js'],
-				tasks: ['jasmine', 'notify:jasmine'],
+				files: ['test/*-spec.js'],
+				tasks: ['jasmine'],
 				options: {
 					spawn: false
 				}
 			},
 			src: {
-				files: ['public/**/*.js'],
+				files: ['src/*.js'],
 				tasks: ['jasmine', 'notify:jasmine'],
 				options: {
 					spawn: false
@@ -51,9 +51,10 @@ module.exports = function (grunt) {
 					outfile: 'SpecRunner.html',
 					keepRunner: true,
 					specs: [
-						'specs/*.js',
+						'test/*-spec.js',
 					],
 					vendor: [
+						'src/mapjs.js',
 						'http://mindmup.s3.amazonaws.com/lib/jquery-1.9.1.min.js',
 						'http://mindmup.s3.amazonaws.com/lib/bootstrap-2.3.1.min.js',
 						'http://mindmup.s3.amazonaws.com/lib/jquery-ui-1.10.0.custom.min.js',
@@ -61,13 +62,7 @@ module.exports = function (grunt) {
 						'http://mindmup.s3.amazonaws.com/lib/color-0.4.1.min.js'
 					],
 					helpers: [
-						'test-lib/mm.js',
-						'test-lib/console-runner.js',
-						'test-lib/sinon-1.5.2.js',
-						'test-lib/describe-batch.js',
-						'test-lib/fake-bootstrap-modal.js',
-						'test-lib/jasmine-tagname-match.js',
-						'public/mapjs-compiled.js',
+						'test-lib/describe-batch.js'
 					]
 				}
 			}
@@ -84,7 +79,7 @@ module.exports = function (grunt) {
 		if (target === 'specs') {
 			options.options.specs = [filepath];
 		} else {
-			options.options.specs = ['test/*.js'];
+			options.options.specs = ['test/*-spec.js'];
 		}
 		grunt.config(['jasmine', 'all'], options);
 

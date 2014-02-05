@@ -1,4 +1,4 @@
-/*global describe, expect, it, MAPJS, beforeEach*/
+/*global describe, expect, it, MAPJS, beforeEach, jasmine*/
 describe('calculateLayout', function () {
 	'use strict';
 	var dimensionProvider = function (idea) {
@@ -43,7 +43,7 @@ describe('calculateLayout', function () {
 			}),
 			result;
 		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[7]).toPartiallyMatch({
+		expect(result.nodes[7]).toEqual(jasmine.objectContaining({
 			id: 7,
 			x: -60,
 			y: -30,
@@ -51,7 +51,7 @@ describe('calculateLayout', function () {
 			height: 60,
 			title: 'Hello',
 			level: 1
-		});
+		}));
 	});
 	it('should place root node left of its only right child', function () {
 		var contentAggregate = MAPJS.content({
@@ -66,14 +66,14 @@ describe('calculateLayout', function () {
 			}),
 			result;
 		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[7]).toPartiallyMatch({
+		expect(result.nodes[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10
-		});
-		expect(result.nodes[8]).toPartiallyMatch({
+		}));
+		expect(result.nodes[8]).toEqual(jasmine.objectContaining({
 			x: 40,
 			y: -15
-		});
+		}));
 	});
 	it('should place root node right of its only left child', function () {
 		var contentAggregate = MAPJS.content({
@@ -92,10 +92,10 @@ describe('calculateLayout', function () {
 			}),
 			result;
 		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[9]).toPartiallyMatch({
+		expect(result.nodes[9]).toEqual(jasmine.objectContaining({
 			x: -120,
 			y: -20
-		});
+		}));
 	});
 	it('should work recursively', function () {
 		var contentAggregate = MAPJS.content({
@@ -163,9 +163,9 @@ describe('calculateLayout', function () {
 			attr: { collapsed: true, style: { background: '#FFFFFF'}}
 		}),
 			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
-		expect(result.nodes[1]).toPartiallyMatch({
+		expect(result.nodes[1]).toEqual(jasmine.objectContaining({
 			attr: {collapsed: true, style: { background: '#FFFFFF'}}
-		});
+		}));
 	});
 	it('should set style using defaults where not defined', function () {
 		var contentAggregate = MAPJS.content({
@@ -205,7 +205,7 @@ describe('calculateLayout', function () {
 
 		result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
 
-		expect(result.links).toEqual([]);
+		expect(result.links).toEqual({});
 	});
 	it('should include links between non-collapsed nodes', function () {
 		var contentAggregate = MAPJS.content({
@@ -239,7 +239,7 @@ describe('MAPJS.frame', function () {
 	it('should set origin.y to be the minimum y', function () {
 		var nodes = [{x: -10, y: 5, width: 10, height: 55}, {x: 1, y: -12, width: 15, height: 30}],
 			result = MAPJS.calculateFrame(nodes, 5);
-		expect(result).toPartiallyMatch({top: -17, left: -15, width: 36, height: 82});
+		expect(result).toEqual(jasmine.objectContaining({top: -17, left: -15, width: 36, height: 82}));
 	});
 });
 describe('New layout', function () {
@@ -263,13 +263,13 @@ describe('New layout', function () {
 
 				result = MAPJS.calculateTree(content, dimensionProvider);
 
-				expect(result).toPartiallyMatch({
+				expect(result).toEqual(jasmine.objectContaining({
 					id: 1,
 					title: '100x200',
 					attr: { name: 'value' },
 					width: 100,
 					height: 200
-				});
+				}));
 			});
 			it('should convert a root node with a single child into a tree', function () {
 				var content = MAPJS.content({
@@ -286,20 +286,20 @@ describe('New layout', function () {
 
 				result = MAPJS.calculateTree(content, dimensionProvider, 10);
 
-				expect(result).toPartiallyMatch({
+				expect(result).toEqual(jasmine.objectContaining({
 					id: 1,
 					title: '200x100',
 					width: 200,
 					height: 100
-				});
-				expect(result.subtrees[0]).toPartiallyMatch({
+				}));
+				expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 					id: 2,
 					title: '300x80',
 					width: 300,
 					height: 80,
 					deltaX: 210,
 					deltaY: 10
-				});
+				}));
 			});
 			it('should disregard children of collapsed nodes', function () {
 				var content = MAPJS.content({
@@ -317,13 +317,13 @@ describe('New layout', function () {
 
 				result = MAPJS.calculateTree(content, dimensionProvider, 10);
 
-				expect(result).toPartiallyMatch({
+				expect(result).toEqual(jasmine.objectContaining({
 					id: 1,
 					title: '200x100',
 					attr: {collapsed: true},
 					width: 200,
 					height: 100
-				});
+				}));
 				expect(result.subtrees).toBeUndefined();
 			});
 			it('should convert a root node with a two children into a tree', function () {
@@ -345,28 +345,28 @@ describe('New layout', function () {
 
 				result = MAPJS.calculateTree(content, dimensionProvider, 10);
 
-				expect(result).toPartiallyMatch({
+				expect(result).toEqual(jasmine.objectContaining({
 					id: 1,
 					title: '200x100',
 					width: 200,
 					height: 100
-				});
-				expect(result.subtrees[0]).toPartiallyMatch({
+				}));
+				expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 					id: 2,
 					title: '300x80',
 					width: 300,
 					height: 80,
 					deltaX: 210,
 					deltaY: -10
-				});
-				expect(result.subtrees[1]).toPartiallyMatch({
+				}));
+				expect(result.subtrees[1]).toEqual(jasmine.objectContaining({
 					id: 3,
 					title: '100x30',
 					width: 100,
 					height: 30,
 					deltaX: 210,
 					deltaY: 80
-				});
+				}));
 			});
 			it('should only include nodes where rank and parent predicate says so', function () {
 				var content = MAPJS.content({
@@ -385,20 +385,20 @@ describe('New layout', function () {
 					}),
 					result;
 				result = MAPJS.calculateTree(content, dimensionProvider, 10, function (rank, parentId) { return parentId !== 11 || rank !== 200; });
-				expect(result).toPartiallyMatch({
+				expect(result).toEqual(jasmine.objectContaining({
 					id: 11,
 					title: '200x100',
 					width: 200,
 					height: 100
-				});
-				expect(result.subtrees[0]).toPartiallyMatch({
+				}));
+				expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 					id: 2,
 					title: '300x80',
 					width: 300,
 					height: 80,
 					deltaX: 210,
 					deltaY: 10
-				});
+				}));
 				expect(result.subtrees[1]).toBeUndefined();
 			});
 			describe('manual positioning', function () {
@@ -416,11 +416,11 @@ describe('New layout', function () {
 						}),
 						result;
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
-					expect(result.subtrees[0]).toPartiallyMatch({
+					expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 						title: '300x80',
 						deltaX: 500,
 						deltaY: -800
-					});
+					}));
 				});
 				it('should leave second child where it belongs automatically if only first child has manual position', function () {
 					var content = MAPJS.content({
@@ -440,16 +440,16 @@ describe('New layout', function () {
 						}),
 						result;
 					result = MAPJS.calculateTree(content, dimensionProvider, 10);
-					expect(result.subtrees[0]).toPartiallyMatch({
+					expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 						id: 2,
 						deltaX: 210,
 						deltaY: -800
-					});
-					expect(result.subtrees[1]).toPartiallyMatch({
+					}));
+					expect(result.subtrees[1]).toEqual(jasmine.objectContaining({
 						id: 3,
 						deltaX: 210,
 						deltaY: 80
-					});
+					}));
 				});
 				it('should push second child down if first child has manual position and would overlap', function () {
 					var content = MAPJS.content({

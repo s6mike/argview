@@ -1,1 +1,1 @@
-var MAPJS = {};
+var MAPJS = MAPJS || {};

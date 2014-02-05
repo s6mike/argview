@@ -1,2 +1,5 @@
 install: sh dl_dependencies.sh
-script: phantomjs test-lib/run_jasmine_test.coffee test/SpecRunner.html 
+before_script:
+  - npm install  grunt-cli
+  - npm install  grunt-contrib-jasmine --save-dev
+script: grunt jasmine
