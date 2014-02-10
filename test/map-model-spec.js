@@ -1777,7 +1777,7 @@ describe('MapModel', function () {
 							1: { id: 6, title: 'cousin below' },
 							2: {
 								id: 7,
-								title: 'cousin benson',
+								title: 'cousin Benson',
 								attr: {collapsed: true},
 								ideas: {1: {id: 8, title: 'child of cousin benson'}}
 							}
@@ -1792,9 +1792,16 @@ describe('MapModel', function () {
 			expect(underTest.search('cousin')).toEqual([
 				{id: 41, title: 'cousin above'},
 				{id: 6, title: 'cousin below'},
-				{id: 7, title: 'cousin benson'},
+				{id: 7, title: 'cousin Benson'},
 				{id: 8, title: 'child of cousin benson'}
 			]);
+		});
+		it('searches case insensitive', function () {
+			expect(underTest.search('benson')).toEqual([
+				{id: 7, title: 'cousin Benson'},
+				{id: 8, title: 'child of cousin benson'}
+			]);
+
 		});
 	});
 });
