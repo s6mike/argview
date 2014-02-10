@@ -594,6 +594,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	self.getSelectedNodeId = function () {
 		return getCurrentlySelectedIdeaId();
 	};
+	self.centerOnNode = function (nodeId) {
+		if (!currentLayout.nodes[nodeId]) {
+			idea.startBatch();
+			_.each(idea.calculatePath(nodeId), function (parent) {
+				idea.updateAttr(parent.id, 'collapsed', false);
+			});
+			idea.endBatch();
+		}
+		self.dispatchEvent('nodeFocusRequested', nodeId);
+		self.selectNode(nodeId);
+	};
 	//node activation and selection
 	(function () {
 			var isRootOrRightHalf = function (id) {

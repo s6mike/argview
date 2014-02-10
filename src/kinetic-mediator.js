@@ -197,6 +197,14 @@ MAPJS.KineticMediator = function (mapModel, stage) {
 		}
 		ensureSelectedNodeVisible(node);
 	});
+	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
+		var node = nodeByIdeaId[ideaId];
+		stage.setScale(1);
+		stage.setX((stage.getWidth() / 2) - (0.5 * node.getWidth()) - node.getX());
+		stage.setY((stage.getHeight() / 2) - (0.5 * node.getHeight()) - node.getY());
+		stage.draw();
+		stage.fire(':scaleChangeComplete');
+	});
 	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		var node = nodeByIdeaId[n.id];
 		node.setMMAttr(n.attr);

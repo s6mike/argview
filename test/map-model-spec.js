@@ -1671,7 +1671,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('focusOn', function () {
-		var nodeSelectionChangedListener, anIdea, underTest, layout;
+		var nodeSelectionChangedListener, anIdea, underTest, layout, changeListener, nodeNodeFocusRequestedListener, calls;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -1695,9 +1695,15 @@ describe('MapModel', function () {
 					2: {
 						id: 5,
 						title: 'lower right',
+						attr: {collapsed: true},
 						ideas : {
 							1: { id: 6, title: 'cousin below' },
-							2: { id: 7, title: 'cousin benson', ideas: {1: {id: 8, title: 'child of cousin benson'}}}
+							2: {
+								id: 7,
+								title: 'cousin benson',
+								attr: {collapsed: true},
+								ideas: {1: {id: 8, title: 'child of cousin benson'}}
+							}
 						}
 					}
 				}
@@ -1708,26 +1714,37 @@ describe('MapModel', function () {
 					2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
 					3: { x: -10, y: -10 },
 					4: { x: 10, y: 10 },
-					5: { x: 10, y: 30 },
-					6: { x:	50, y: 10 },
-					7: { x:	50, y: -10 }
+					5: { x: 10, y: 30 }
 				}
 			};
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
 			underTest.setIdea(anIdea);
-			nodeSelectionChangedListener = jasmine.createSpy();
+			calls = [];
+			nodeSelectionChangedListener = jasmine.createSpy('nodeSelectionChanged').and.callFake(function () {calls.push('nodeSelectionChanged'); });
+			nodeNodeFocusRequestedListener = jasmine.createSpy('nodeFocusRequested').and.callFake(function () {calls.push('nodeFocusRequested'); });
+			changeListener = jasmine.createSpy('change');
 			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
+			anIdea.addEventListener('changed', changeListener);
+			underTest.addEventListener('nodeFocusRequested', nodeNodeFocusRequestedListener);
 		});
 		it('if the node is not in the layout, uncollapses all its parents as a batch to ensure that it appears on screen', function () {
+			underTest.centerOnNode(8);
 
+			expect(anIdea.getAttrById(7, 'collapsed')).toBeFalsy();
+			expect(anIdea.getAttrById(5, 'collapsed')).toBeFalsy();
+			expect(changeListener.calls.count()).toBe(1);
 		});
 		it('if the nodes is in the layout, does not touch parents', function () {
-
+			underTest.centerOnNode(5);
+			expect(changeListener).not.toHaveBeenCalled();
 		});
-		it('sets scale to 1 and position to center on the node', function () {
-
+		it('dispatches nodeFocusRequested then nodeSelectionChanged', function () {
+			underTest.centerOnNode(8);
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(8, true);
+			expect(nodeNodeFocusRequestedListener).toHaveBeenCalledWith(8);
+			expect(calls).toEqual(['nodeFocusRequested', 'nodeSelectionChanged', 'nodeSelectionChanged']);
 		});
 	});
 });
