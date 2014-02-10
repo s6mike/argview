@@ -1,4 +1,4 @@
-/*global _, Kinetic, MAPJS*/
+/*global _, Kinetic, MAPJS */
 if (Kinetic.Stage.prototype.isRectVisible) {
 	throw ('isRectVisible already exists, should not mix in our methods');
 }
@@ -59,7 +59,6 @@ Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
 
 MAPJS.KineticMediator = function (mapModel, stage) {
 	'use strict';
-	window.stage = stage;
 	var layer = new Kinetic.Layer(),
 		nodeByIdeaId = {},
 		connectorByFromIdeaIdToIdeaId = {},

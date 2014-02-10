@@ -1670,4 +1670,64 @@ describe('MapModel', function () {
 			expect(linkSelectedListener).toHaveBeenCalledWith({ ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 }, false);
 		});
 	});
+	describe('focusOn', function () {
+		var nodeSelectionChangedListener, anIdea, underTest, layout;
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'center',
+				ideas: {
+					'-2': {
+						id: 2,
+						title: 'lower left'
+					},
+					'-1': {
+						id: 3,
+						title: 'upper left'
+					},
+					1: {
+						id: 4,
+						title: 'upper right',
+						ideas: {
+							1: { id: 7, title: 'cousin above' }
+						}
+					},
+					2: {
+						id: 5,
+						title: 'lower right',
+						ideas : {
+							1: { id: 6, title: 'cousin below' },
+							2: { id: 7, title: 'cousin benson', ideas: {1: {id: 8, title: 'child of cousin benson'}}}
+						}
+					}
+				}
+			});
+			layout = {
+				nodes: {
+					1: { x: 0, y: 10 },
+					2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}},
+					3: { x: -10, y: -10 },
+					4: { x: 10, y: 10 },
+					5: { x: 10, y: 30 },
+					6: { x:	50, y: 10 },
+					7: { x:	50, y: -10 }
+				}
+			};
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			});
+			underTest.setIdea(anIdea);
+			nodeSelectionChangedListener = jasmine.createSpy();
+			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
+		});
+		it('if the node is not in the layout, uncollapses all its parents as a batch to ensure that it appears on screen', function () {
+
+		});
+		it('if the nodes is in the layout, does not touch parents', function () {
+
+		});
+		it('sets scale to 1 and position to center on the node', function () {
+
+		});
+	});
 });
