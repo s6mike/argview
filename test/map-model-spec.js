@@ -1747,4 +1747,54 @@ describe('MapModel', function () {
 			expect(calls).toEqual(['nodeFocusRequested', 'nodeSelectionChanged', 'nodeSelectionChanged']);
 		});
 	});
+	describe('search', function () {
+		var anIdea, underTest;
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'center',
+				ideas: {
+					'-2': {
+						id: 2,
+						title: 'lower left'
+					},
+					'-1': {
+						id: 3,
+						title: 'upper left'
+					},
+					1: {
+						id: 4,
+						title: 'upper right',
+						ideas: {
+							1: { id: 41, title: 'cousin above' }
+						}
+					},
+					2: {
+						id: 5,
+						title: 'lower right',
+						attr: {collapsed: true},
+						ideas : {
+							1: { id: 6, title: 'cousin below' },
+							2: {
+								id: 7,
+								title: 'cousin benson',
+								attr: {collapsed: true},
+								ideas: {1: {id: 8, title: 'child of cousin benson'}}
+							}
+						}
+					}
+				}
+			});
+			underTest = new MAPJS.MapModel(function () { return []; });
+			underTest.setIdea(anIdea);
+		});
+		it('given part of a title, returns a list of nodes with that title flattened to id and title', function () {
+			expect(underTest.search('cousin')).toEqual([
+				{id: 41, title: 'cousin above'},
+				{id: 6, title: 'cousin below'},
+				{id: 7, title: 'cousin benson'},
+				{id: 8, title: 'child of cousin benson'}
+			]);
+		});
+	});
 });

@@ -605,6 +605,15 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		self.dispatchEvent('nodeFocusRequested', nodeId);
 		self.selectNode(nodeId);
 	};
+	self.search = function (query) {
+		var result = [];
+		idea.traverse(function (contentIdea) {
+			if (contentIdea.title && contentIdea.title.indexOf(query) >= 0) {
+				result.push({id: contentIdea.id, title: contentIdea.title});
+			}
+		});
+		return result;
+	};
 	//node activation and selection
 	(function () {
 			var isRootOrRightHalf = function (id) {
