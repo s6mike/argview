@@ -108,7 +108,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 		stage.setX(0.5 * stage.getWidth());
 		stage.setY(0.5 * stage.getHeight());
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
-		$(document).on('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); return false; });
+		element.on('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); return false; });
 		element.on('mousedown touch', function (e) {
 			window.focus();
 			if (document.activeElement !== e.target) {
