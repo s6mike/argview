@@ -165,13 +165,18 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.getInputEnabled = function () {
 		return isInputEnabled;
 	};
-	this.selectNode = function (id, force) {
+	this.selectNode = function (id, force, appendToActive) {
 		if (force || (isInputEnabled && (id !== currentlySelectedIdeaId || !self.isActivated(id)))) {
 			if (currentlySelectedIdeaId) {
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
 			currentlySelectedIdeaId = id;
-			setActiveNodes([id]);
+			if (appendToActive) {
+				self.activateNode('internal', id);
+			} else {
+				setActiveNodes([id]);
+			}
+
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
@@ -752,10 +757,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			_.each(['Left', 'Right', 'Up', 'Down'], function (position) {
 				self['activateNode' + position] = function (source) {
 					applyFuncs[position](source, 'activateNode' + position, function (nodeId) {
-						self.activateNode(source, nodeId);
-						self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
-						currentlySelectedIdeaId = nodeId;
-						self.dispatchEvent('nodeSelectionChanged', nodeId, true);
+						self.selectNode(nodeId, false, true);
 					});
 				};
 				self['selectNode' + position] = function (source) {
@@ -823,13 +825,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				});
 				return layout;
 			};
-			self.addEventListener('xnodeSelectionChanged', function (id, isSelected) {
-				if (!isSelected) {
-					setActiveNodes([]);
-					return;
-				}
-				setActiveNodes([id]);
-			}, 1);
 			self.addEventListener('nodeRemoved', function (node, id) {
 				var selectedId = getCurrentlySelectedIdeaId();
 				if (self.isActivated(id) && !self.isActivated(selectedId)) {
