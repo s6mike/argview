@@ -27,10 +27,10 @@ describe('MapModel', function () {
 		var underTest,
 			anIdea,
 			layoutBefore,
-			layoutAfter;
+			layoutAfter,
+			layoutCalculatorLayout;
 		beforeEach(function () {
-			var layoutCalculatorLayout,
-				layoutCalculator = function () {
+			var layoutCalculator = function () {
 					return layoutCalculatorLayout;
 				};
 			layoutBefore = {
@@ -264,6 +264,21 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([2], [4]);
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
+			});
+			it('should deactivate nodes that are removed', function () {
+				layoutCalculatorLayout = JSON.parse(JSON.stringify(layoutCalculatorLayout));
+				delete layoutCalculatorLayout.nodes[3];
+				anIdea.removeSubIdea(3);
+				expect(underTest.getActivatedNodeIds()).toEqual([2]);
+			});
+			it('should activate the selected node if there are no more active nodes', function () {
+				underTest.selectNode(1);
+				underTest.activateChildren();
+				layoutCalculatorLayout = JSON.parse(JSON.stringify(layoutCalculatorLayout));
+				delete layoutCalculatorLayout.nodes[3];
+				delete layoutCalculatorLayout.nodes[2];
+				anIdea.removeSubIdea(2);
+				expect(underTest.getActivatedNodeIds()).toEqual([1]);
 			});
 		});
 		describe('focus/edit automatic control', function () {

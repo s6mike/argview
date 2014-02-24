@@ -17,7 +17,11 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		activatedNodes = [],
 		setActiveNodes = function (activated) {
 			var wasActivated = _.clone(activatedNodes);
-			activatedNodes = activated;
+			if (activated.length === 0) {
+				activatedNodes = [currentlySelectedIdeaId];
+			} else {
+				activatedNodes = activated;
+			}
 			self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 		},
 		getRandomTitle = function (titles) {
@@ -35,7 +39,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		},
 		isAddLinkMode,
 		updateCurrentLayout = function (newLayout) {
-			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink;
+			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink, newActive;
 			for (nodeId in currentLayout.connectors) {
 				newConnector = newLayout.connectors[nodeId];
 				oldConnector = currentLayout.connectors[nodeId];
@@ -47,9 +51,13 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				oldNode = currentLayout.nodes[nodeId];
 				newNode = newLayout.nodes[nodeId];
 				if (!newNode) {
-					/*jslint eqeq: true*/
+					/*jslint eqeq: true, loopfunc: true*/
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
+					}
+					newActive = _.reject(activatedNodes, function (e) { return e == nodeId; });
+					if (newActive.length !== activatedNodes.length) {
+						setActiveNodes(newActive);
 					}
 					self.dispatchEvent('nodeRemoved', oldNode, nodeId);
 				}
@@ -825,11 +833,5 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				});
 				return layout;
 			};
-			self.addEventListener('nodeRemoved', function (node, id) {
-				var selectedId = getCurrentlySelectedIdeaId();
-				if (self.isActivated(id) && !self.isActivated(selectedId)) {
-					setActiveNodes(activatedNodes.concat([selectedId]));
-				}
-			});
 		}());
 };
