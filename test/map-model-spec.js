@@ -261,8 +261,7 @@ describe('MapModel', function () {
 					underTest[command]('source');
 					activatedNodesChangedListener.calls.reset();
 					underTest.undo();
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [4]);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([2], []);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([2], [4]);
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
 			});
@@ -1057,9 +1056,12 @@ describe('MapModel', function () {
 		});
 		describe('multiple node activation', function () {
 			var activatedNodesChangedListener,
-				checkActivated = function (nodeId) {
+				checkActivated = function (nodeId, previouslySelected) {
+					previouslySelected = previouslySelected || 1;
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([nodeId], []);
-					expect(underTest.getCurrentlySelectedIdeaId()).toBe(nodeId);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(previouslySelected, false);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(nodeId, true);
+					expect(underTest.getActivatedNodeIds()).toEqual([previouslySelected, nodeId]);
 				};
 
 			beforeEach(function () {
@@ -1088,7 +1090,7 @@ describe('MapModel', function () {
 						underTest.selectNode(3);
 						nodeSelectionChangedListener.calls.reset();
 						underTest.activateNodeRight();
-						checkActivated(1);
+						checkActivated(1, 3);
 					});
 				});
 				describe('activateNodeLeft', function () {
@@ -1106,7 +1108,7 @@ describe('MapModel', function () {
 						underTest.selectNode(5);
 						nodeSelectionChangedListener.calls.reset();
 						underTest.activateNodeLeft();
-						checkActivated(1);
+						checkActivated(1, 5);
 					});
 					it('should not change selection if input is disabled', function () {
 						underTest.setInputEnabled(false);
@@ -1119,12 +1121,12 @@ describe('MapModel', function () {
 					it('should select sibling above', function () {
 						underTest.selectNode(5);
 						underTest.activateNodeUp();
-						checkActivated(4);
+						checkActivated(4, 5);
 					});
 					it('should select closest node above if no sibling', function () {
 						underTest.selectNode(6);
 						underTest.activateNodeUp();
-						checkActivated(7);
+						checkActivated(7, 6);
 					});
 					it('should not change activation when input is disabled', function () {
 						underTest.selectNode(6);
@@ -1134,17 +1136,24 @@ describe('MapModel', function () {
 						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
 						expect(underTest.getCurrentlySelectedIdeaId()).toBe(6);
 					});
+					it('should process subsequent calls by using the last activated node as a reference', function () {
+						underTest.selectNode(5);
+						underTest.activateNodeUp();
+						underTest.activateNodeUp();
+						expect(underTest.getActivatedNodeIds()).toEqual([5, 4, 3]);
+						expect(underTest.getSelectedNodeId()).toEqual(3);
+					});
 				});
 				describe('activateNodeDown', function () {
 					it('should select sibling below when selectNodeDown invoked', function () {
 						underTest.selectNode(4);
 						underTest.activateNodeDown();
-						checkActivated(5);
+						checkActivated(5, 4);
 					});
 					it('should select closest node below if no sibling', function () {
 						underTest.selectNode(7);
 						underTest.activateNodeDown();
-						checkActivated(6);
+						checkActivated(6, 7);
 					});
 					it('should not change activation when input is disabled', function () {
 						underTest.selectNode(7);
@@ -1159,9 +1168,10 @@ describe('MapModel', function () {
 			describe('activating groups of nodes', function () {
 				it('should send event showing nodes activated and nodes deactivated when the selected node changed', function () {
 					underTest.selectNode(7);
+					activatedNodesChangedListener.calls.reset();
+
 					underTest.selectNode(3);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([], [7]);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], [7]);
 				});
 				it('should send event showing nodes activated and nodes deactivated when the sibling nodes are activated', function () {
 					underTest.selectNode(3);
@@ -1200,11 +1210,11 @@ describe('MapModel', function () {
 					underTest.selectNode(5);
 					underTest.activateChildren();
 					activatedNodesChangedListener.calls.reset();
+
 					underTest.selectNode(5);
-					expect(activatedNodesChangedListener.calls.count()).toBe(2);
-					expect(activatedNodesChangedListener.calls.first().args[0]).toEqual([]);
-					expect(activatedNodesChangedListener.calls.first().args[1].sort()).toEqual([6, 7, 8]);
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([5], []);
+
+					expect(activatedNodesChangedListener.calls.count()).toBe(1);
+					expect(activatedNodesChangedListener).toHaveBeenCalledWith([5], [6, 8, 7]);
 				});
 			});
 			describe('single activation', function () {

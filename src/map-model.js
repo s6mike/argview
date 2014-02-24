@@ -140,6 +140,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
+			setActiveNodes([]);
 			self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			currentlySelectedIdeaId = undefined;
 		}
@@ -170,6 +171,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
 			currentlySelectedIdeaId = id;
+			setActiveNodes([id]);
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
@@ -751,7 +753,9 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				self['activateNode' + position] = function (source) {
 					applyFuncs[position](source, 'activateNode' + position, function (nodeId) {
 						self.activateNode(source, nodeId);
+						self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 						currentlySelectedIdeaId = nodeId;
+						self.dispatchEvent('nodeSelectionChanged', nodeId, true);
 					});
 				};
 				self['selectNode' + position] = function (source) {
@@ -819,7 +823,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				});
 				return layout;
 			};
-			self.addEventListener('nodeSelectionChanged', function (id, isSelected) {
+			self.addEventListener('xnodeSelectionChanged', function (id, isSelected) {
 				if (!isSelected) {
 					setActiveNodes([]);
 					return;
