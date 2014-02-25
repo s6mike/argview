@@ -344,7 +344,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (newId) {
 			editNewIdea(newId);
 		}
-	}
+	};
 	this.addSiblingIdea = function (source) {
 		var newId, nextId, parent, contextRank, newRank;
 		if (!isEditingEnabled) {
