@@ -7,7 +7,6 @@
   <% css.forEach(function(style){ %>
   <link rel="stylesheet" type="text/css" href="<%= style %>">
   <% }) %>
-  <script src="http://mindmup.s3.amazonaws.com/lib/underscore-1.4.4.min.js"></script>
   <script src="test-lib/bind.js"></script>
   <% with (scripts) { %>
   <% [].concat(polyfills, jasmine, boot, vendor, helpers, src, specs, reporters).forEach(function(script){ %>

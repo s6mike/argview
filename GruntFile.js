@@ -55,11 +55,7 @@ module.exports = function (grunt) {
 					],
 					vendor: [
 						'src/mapjs.js',
-						'http://mindmup.s3.amazonaws.com/lib/jquery-1.9.1.min.js',
-						'http://mindmup.s3.amazonaws.com/lib/bootstrap-2.3.1.min.js',
-						'http://mindmup.s3.amazonaws.com/lib/jquery-ui-1.10.0.custom.min.js',
-						'http://mindmup.s3.amazonaws.com/lib/kinetic-v4.5.4.min.js',
-						'http://mindmup.s3.amazonaws.com/lib/color-0.4.1.min.js'
+						grunt.option('external-scripts') || 'http://static.mindmup.com/20131204091534/external.js',
 					],
 					helpers: [
 						'test-lib/describe-batch.js'
