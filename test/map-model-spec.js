@@ -246,7 +246,7 @@ describe('MapModel', function () {
 				underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
 				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
 			});
-			_.each(['addSubIdea', 'insertIntermediate', 'addSiblingIdea'], function (command) {
+			_.each(['addSubIdea', 'insertIntermediate', 'addSiblingIdea', 'addSiblingIdeaBefore'], function (command) {
 				it('should dispatch edit after ' + command + ' from mapModel', function () {
 					underTest[command]('source');
 					expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true, true);
@@ -587,6 +587,124 @@ describe('MapModel', function () {
 				underTest.setInputEnabled(false);
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
+			});
+			describe('should add an idea at the same side as the currently selected idea', function ()  {
+				it('adds right-side ideas when currently selected is on the right', function () {
+					underTest.selectNode(2);
+					underTest.addSiblingIdea();
+					expect(anIdea.findChildRankById(3) > 0).toBeTruthy();
+				});
+				it('adds left-side ideas when currently selected is on the left', function () {
+					underTest.selectNode(1);
+					underTest.addSubIdea();
+					underTest.selectNode(3);
+					underTest.addSiblingIdea();
+
+					expect(anIdea.findChildRankById(4) < 0).toBeTruthy();
+				});
+				it('toggles left-right if adding sibling to the center idea', function () {
+					underTest.selectNode(1);
+					underTest.addSiblingIdea();
+					underTest.selectNode(1);
+					underTest.addSiblingIdea();
+
+					expect(anIdea.findChildRankById(3) < 0).toBeTruthy();
+					expect(anIdea.findChildRankById(4) > 0).toBeTruthy();
+
+				});
+			});
+			describe('inserting ideas in the middle of existing ideas', function () {
+				var currentRanks;
+				beforeEach(function () {
+					underTest.selectNode(2);
+					underTest.addSiblingIdea();
+					currentRanks = _.map(anIdea.ideas, function (v, k) { return parseFloat(k); }).sort();
+
+					anIdea.addSubIdea.calls.reset();
+					underTest.selectNode(2);
+					underTest.addSiblingIdea();
+				});
+				it('should not change ranks of siblings', function () {
+					expect(anIdea.findChildRankById(2)).toBe(currentRanks[0]);
+					expect(anIdea.findChildRankById(3)).toBe(currentRanks[1]);
+				});
+				it('should add an idea directly below the currently selected idea ID', function () {
+					var newRank = anIdea.findChildRankById(4);
+					expect(newRank > currentRanks[0]).toBeTruthy();
+					expect(newRank < currentRanks[1]).toBeTruthy();
+				});
+			});
+		});
+		describe('addSiblingIdeaBefore', function () {
+			beforeEach(function () {
+				spyOn(anIdea, 'addSubIdea').and.callThrough();
+			});
+			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
+				underTest.selectNode(2);
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+			});
+			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+			});
+			it('should expand the parent node if it is collapsed, as a batched event', function () {
+				underTest.collapse('source', true);
+				spyOn(anIdea, 'updateAttr').and.callThrough();
+				spyOn(anIdea, 'dispatchEvent');
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+			});
+			it('should not invoke anything if input is disabled', function () {
+				underTest.setInputEnabled(false);
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
+			});
+			describe('should add an idea at the same side as the currently selected idea', function ()  {
+				it('adds right-side ideas when currently selected is on the right', function () {
+					underTest.selectNode(2);
+					underTest.addSiblingIdeaBefore();
+					expect(anIdea.findChildRankById(3) > 0).toBeTruthy();
+				});
+				it('adds left-side ideas when currently selected is on the left', function () {
+					underTest.selectNode(1);
+					underTest.addSubIdea();
+					underTest.selectNode(3);
+					underTest.addSiblingIdeaBefore();
+
+					expect(anIdea.findChildRankById(4) < 0).toBeTruthy();
+				});
+				it('toggles left-right if adding sibling to the center idea', function () {
+					underTest.selectNode(1);
+					underTest.addSiblingIdeaBefore();
+					underTest.selectNode(1);
+					underTest.addSiblingIdeaBefore();
+
+					expect(anIdea.findChildRankById(3) < 0).toBeTruthy();
+					expect(anIdea.findChildRankById(4) > 0).toBeTruthy();
+
+				});
+			});
+			describe('inserting ideas in the middle of existing ideas', function () {
+				var currentRanks;
+				beforeEach(function () {
+					underTest.selectNode(2);
+					underTest.addSiblingIdea();
+					currentRanks = _.map(anIdea.ideas, function (v, k) { return parseFloat(k); }).sort();
+
+					underTest.selectNode(3);
+					underTest.addSiblingIdeaBefore();
+				});
+				it('should not change ranks of siblings', function () {
+					expect(anIdea.findChildRankById(2)).toBe(currentRanks[0]);
+					expect(anIdea.findChildRankById(3)).toBe(currentRanks[1]);
+				});
+				it('should add an idea directly below the currently selected idea ID', function () {
+					var newRank = anIdea.findChildRankById(4);
+					expect(newRank > currentRanks[0]).toBeTruthy();
+					expect(newRank < currentRanks[1]).toBeTruthy();
+				});
 			});
 		});
 		describe('clickNode', function () {
@@ -1444,7 +1562,7 @@ describe('MapModel', function () {
 		});
 		describe('should dispatch analytic event', function () {
 			var allMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
-				'addSiblingIdea', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
+				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink',
 				'setIcon', 'removeLink'];
 			_.each(allMethods, function (method) {
@@ -1480,7 +1598,7 @@ describe('MapModel', function () {
 		});
 		describe('when editing is disabled edit methods should not execute ', function () {
 			var editingMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
-				'addSiblingIdea', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
+				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
 					underTest.selectNode(6);

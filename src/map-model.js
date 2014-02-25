@@ -319,8 +319,34 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			editNewIdea(newId);
 		}
 	};
+	this.addSiblingIdeaBefore = function (source) {
+		var newId, parent, contextRank, newRank;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('addSiblingIdeaBefore', source);
+		if (!isInputEnabled) {
+			return false;
+		}
+		parent = idea.findParent(currentlySelectedIdeaId) || idea;
+		idea.batch(function () {
+			ensureNodeIsExpanded(source, parent.id);
+			newId = idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			if (newId && currentlySelectedIdeaId !== idea.id) {
+				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
+				newRank = parent.findChildRankById(newId);
+				if (contextRank * newRank < 0) {
+					idea.flip(newId);
+				}
+				idea.positionBefore(newId, currentlySelectedIdeaId);
+			}
+		});
+		if (newId) {
+			editNewIdea(newId);
+		}
+	}
 	this.addSiblingIdea = function (source) {
-		var newId, parent;
+		var newId, nextId, parent, contextRank, newRank;
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -330,6 +356,17 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
 				newId = idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+				if (newId && currentlySelectedIdeaId !== idea.id) {
+					nextId = idea.nextSiblingId(currentlySelectedIdeaId);
+					contextRank = parent.findChildRankById(currentlySelectedIdeaId);
+					newRank = parent.findChildRankById(newId);
+					if (contextRank * newRank < 0) {
+						idea.flip(newId);
+					}
+					if (nextId) {
+						idea.positionBefore(newId, nextId);
+					}
+				}
 			});
 			if (newId) {
 				editNewIdea(newId);

@@ -22,6 +22,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 			},
 			hotkeyEventHandlers = {
 				'return': 'addSiblingIdea',
+				'shift+return': 'addSiblingIdeaBefore',
 				'del backspace': 'removeSubIdea',
 				'tab insert': 'addSubIdea',
 				'left': 'selectNodeLeft',
