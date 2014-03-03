@@ -176,7 +176,10 @@ MAPJS.KineticMediator = function (mapModel, stage) {
 		node.on(':request', function (event) {
 			mapModel[event.type](event.source, n.id);
 		});
-		if (n.level > 1) {
+		if (!mapModel.isEditingEnabled()) {
+			node.setDraggable(false);
+		}
+		if (n.level > 1 && mapModel.isEditingEnabled()) {
 			node.on('mouseover touchstart', stage.setDraggable.bind(stage, false));
 			node.on('mouseout touchend', stage.setDraggable.bind(stage, true));
 		}
