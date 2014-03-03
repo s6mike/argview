@@ -98,7 +98,7 @@ describe('MapModel', function () {
 					}
 				}
 			};
-			underTest = new MAPJS.MapModel(layoutCalculator, ['this will have all text selected'], ['this will too']);
+			underTest = new MAPJS.MapModel(layoutCalculator, ['this will have all text selected']);
 			layoutCalculatorLayout = layoutBefore;
 			anIdea = MAPJS.content({
 				id: 4,
@@ -197,15 +197,6 @@ describe('MapModel', function () {
 				underTest.editNode('toolbar', false);
 
 				expect(nodeEditRequestedListener).toHaveBeenCalledWith(6, true, false);
-			});
-			it('should select all text when the current text of child node is one of our intermediate defaults', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
-				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-				underTest.selectNode(5);
-
-				underTest.editNode('toolbar', false);
-
-				expect(nodeEditRequestedListener).toHaveBeenCalledWith(5, true, false);
 			});
 		});
 		it('should dispatch nodeAttrChanged the style changes is created', function () {
@@ -404,11 +395,11 @@ describe('MapModel', function () {
 			});
 			it('should invoke idea.addSubIdea with currently selected idea as parentId', function () {
 				underTest.addSubIdea();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
 				underTest.addSubIdea('source', 555);
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(555, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(555);
 			});
 			it('should not invoke idea.addSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -423,20 +414,6 @@ describe('MapModel', function () {
 				underTest.addSubIdea();
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
-			});
-			it('should invoke idea.addSubIdea with randomly selected title when addSubIdea method is invoked', function () {
-				var underTest = new MAPJS.MapModel(
-					function () {
-						return {};
-					},
-					['What', 'a', 'beautiful', 'idea!'] //.split(' ')
-				);
-				underTest.setIdea(anIdea);
-				spyOn(Math, 'random').and.returnValue(0.6);
-
-				underTest.addSubIdea();
-
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'beautiful');
 			});
 		});
 		describe('copy', function () {
@@ -569,11 +546,11 @@ describe('MapModel', function () {
 			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
 				underTest.selectNode(2);
 				underTest.addSiblingIdea();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
 				underTest.addSiblingIdea();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);
@@ -642,11 +619,11 @@ describe('MapModel', function () {
 			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
 				underTest.selectNode(2);
 				underTest.addSiblingIdeaBefore();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
 				underTest.addSiblingIdeaBefore();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'double click to edit');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);

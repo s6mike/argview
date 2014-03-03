@@ -1,9 +1,7 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, intermediaryTitlesToRandomlyChooseFrom) {
+MAPJS.MapModel = function (layoutCalculator, selectAllTitles) {
 	'use strict';
-	titlesToRandomlyChooseFrom = titlesToRandomlyChooseFrom || ['double click to edit'];
-	intermediaryTitlesToRandomlyChooseFrom = intermediaryTitlesToRandomlyChooseFrom || titlesToRandomlyChooseFrom;
 	var self = this,
 		analytic,
 		currentLayout = {
@@ -23,9 +21,6 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 				activatedNodes = activated;
 			}
 			self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
-		},
-		getRandomTitle = function (titles) {
-			return titles[Math.floor(titles.length * Math.random())];
 		},
 		horizontalSelectionThreshold = 300,
 		moveNodes = function (nodes, deltaX, deltaY) {
@@ -296,7 +291,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		if (isInputEnabled) {
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, target);
-				newId = idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
+				newId = idea.addSubIdea(target);
 			});
 			if (newId) {
 				editNewIdea(newId);
@@ -331,7 +326,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 		parent = idea.findParent(currentlySelectedIdeaId) || idea;
 		idea.batch(function () {
 			ensureNodeIsExpanded(source, parent.id);
-			newId = idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+			newId = idea.addSubIdea(parent.id);
 			if (newId && currentlySelectedIdeaId !== idea.id) {
 				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
 				newRank = parent.findChildRankById(newId);
@@ -355,7 +350,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			parent = idea.findParent(currentlySelectedIdeaId) || idea;
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
-				newId = idea.addSubIdea(parent.id, getRandomTitle(titlesToRandomlyChooseFrom));
+				newId = idea.addSubIdea(parent.id);
 				if (newId && currentlySelectedIdeaId !== idea.id) {
 					nextId = idea.nextSiblingId(currentlySelectedIdeaId);
 					contextRank = parent.findChildRankById(currentlySelectedIdeaId);
@@ -412,7 +407,7 @@ MAPJS.MapModel = function (layoutCalculator, titlesToRandomlyChooseFrom, interme
 			return false;
 		}
 		var title = currentlySelectedIdea().title;
-		if (title === 'Press Space or double-click to edit' || intermediaryTitlesToRandomlyChooseFrom.indexOf(title) !== -1 || titlesToRandomlyChooseFrom.indexOf(title) !== -1) {
+		if (_.include(selectAllTitles, title)) { // === 'Press Space or double-click to edit') {
 			shouldSelectAll = true;
 		}
 		self.dispatchEvent('nodeEditRequested', currentlySelectedIdeaId, shouldSelectAll, !!editingNew);
