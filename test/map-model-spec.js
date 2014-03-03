@@ -349,7 +349,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('methods delegating to idea', function () {
-		var anIdea, underTest;
+		var anIdea, underTest, clipboard;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -361,11 +361,12 @@ describe('MapModel', function () {
 					}
 				}
 			});
+			clipboard = jasmine.createSpyObj('clipboard', ['get', 'put']);
 			underTest = new MAPJS.MapModel(function () {
 				return {
 					nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
 				};
-			});
+			}, [], clipboard);
 			underTest.setIdea(anIdea);
 		});
 		describe('updateTitle', function () {
@@ -420,10 +421,12 @@ describe('MapModel', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'cloneMultiple').and.returnValue('CLONE');
 				underTest.selectNode(11);
+				anIdea.cloneMultiple.and.returnValue([1, 2, 3, 4, 5]);
 			});
 			it('should clone active idea into clipboard when copy is called', function () {
 				underTest.copy('keyboard');
 				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11]);
+				expect(clipboard.put).toHaveBeenCalledWith([1, 2, 3, 4, 5]);
 			});
 			it('should not clone if input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -441,10 +444,8 @@ describe('MapModel', function () {
 				var toPaste;
 				beforeEach(function () {
 					toPaste = [{title: 'clone'}];
-					spyOn(anIdea, 'cloneMultiple').and.returnValue(toPaste);
+					clipboard.get.and.returnValue(toPaste);
 					spyOn(anIdea, 'pasteMultiple');
-					underTest.selectNode(11);
-					underTest.copy('keyboard');
 					underTest.selectNode(12);
 				});
 				it('should paste clipboard into currently selected idea', function () {
@@ -476,22 +477,16 @@ describe('MapModel', function () {
 				underTest.cut('keyboard');
 				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11, 12]);
 			});
-			it('should clone all active nodes', function () {
+			it('should clone all active nodes into the clipboard', function () {
 				underTest.activateNode('test', 12);
 				underTest.cut('keyboard');
 				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11, 12]);
+				expect(clipboard.put).toHaveBeenCalledWith(toPaste);
 			});
 			it('should not invoke idea.removeSubIdea when input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.cut('keyboard');
 				expect(anIdea.removeMultiple).not.toHaveBeenCalled();
-			});
-			it('should paste cut content when cut/paste sequence executes', function () {
-				underTest.cut('keyboard');
-				underTest.selectNode(12);
-				underTest.paste('keyboard');
-				expect(anIdea.pasteMultiple).toHaveBeenCalledWith(12, toPaste);
-				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11]);
 			});
 		});
 		describe('undo', function () {

@@ -1,8 +1,9 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (layoutCalculator, selectAllTitles) {
+MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider) {
 	'use strict';
 	var self = this,
+		clipboard = clipboardProvider || new MAPJS.MemoryClipboard(),
 		analytic,
 		currentLayout = {
 			nodes: {},
@@ -563,7 +564,7 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles) {
 				activeNodeIds.push(nodeId);
 				parents.push(idea.findParent(nodeId).id);
 			});
-			self.clipBoard = idea.cloneMultiple(activeNodeIds);
+			clipboard.put(idea.cloneMultiple(activeNodeIds));
 			idea.removeMultiple(activeNodeIds);
 			firstLiveParent = _.find(parents, idea.findSubIdeaById);
 			self.selectNode(firstLiveParent || idea.id);
@@ -579,7 +580,7 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles) {
 			self.applyToActivated(function (node) {
 				activeNodeIds.push(node);
 			});
-			self.clipBoard = idea.cloneMultiple(activeNodeIds);
+			clipboard.put(idea.cloneMultiple(activeNodeIds));
 		}
 	};
 	self.paste = function (source) {
@@ -588,19 +589,20 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles) {
 		}
 		analytic('paste', source);
 		if (isInputEnabled) {
-			var result = idea.pasteMultiple(currentlySelectedIdeaId, self.clipBoard);
+			var result = idea.pasteMultiple(currentlySelectedIdeaId, clipboard.get());
 			if (result && result[0]) {
 				self.selectNode(result[0]);
 			}
 		}
 	};
 	self.pasteStyle = function (source) {
+		var clipContents = clipboard.get();
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('pasteStyle', source);
-		if (isInputEnabled && self.clipBoard && self.clipBoard[0]) {
-			var pastingStyle = self.clipBoard[0].attr && self.clipBoard[0].attr.style;
+		if (isInputEnabled && clipContents && clipContents[0]) {
+			var pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
 			self.applyToActivated(function (id) {
 				idea.updateAttr(id, 'style', pastingStyle);
 			});
