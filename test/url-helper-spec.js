@@ -30,6 +30,9 @@ describe('URLHelper', function () {
 			expect(MAPJS.URLHelper.getLink('www.google.com')).toBe('http://www.google.com');
 			expect(MAPJS.URLHelper.getLink('abc.google.com')).toBeFalsy();
 		});
+		it('supports google forum links', function () {
+			expect(MAPJS.URLHelper.getLink('https://groups.google.com/forum/#!topic/deltabot/kDagXbWri94')).toBe('https://groups.google.com/forum/#!topic/deltabot/kDagXbWri94');
+		});
 		it('only retrieves the first link', function () {
 			expect(MAPJS.URLHelper.getLink('prefix http://www.google.com suffix http://xkcd.com')).toBe('http://www.google.com');
 		});

@@ -1,6 +1,6 @@
 /*global MAPJS */
 MAPJS.URLHelper = {
-	urlPattern: /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i,
+	urlPattern: /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w.,!@?^=%&amp;:\/~+#-]*[\w!@?^=%&amp;\/~+#-])?/i,
 	containsLink : function (text) {
 		'use strict';
 		return MAPJS.URLHelper.urlPattern.test(text);
