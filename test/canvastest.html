@@ -1,0 +1,138 @@
+
+<head>
+	<script type="text/javascript" src="../lib/jquery-2.0.2.min.js"></script>
+	<script type="text/javascript" src="../lib/underscore-1.4.4.js"></script>
+	<script src="../lib/color-0.4.1.min.js"></script>
+	<script type="text/javascript" src="../src/mapjs.js"></script>
+	<script type="text/javascript" src="../src/layout.js"></script>
+</head>
+<style type="text/css">
+	#body {
+		min-height: 100%;
+	}
+	#container {
+		min-height: 100%;
+		height: 100%;
+		width: 100%;
+	}
+	canvas.stage {
+		background-color: transparent;
+
+	}
+</style>
+<body>
+	<div id="container">
+	</div>
+<script>
+	var withAttachment = {"id":1,
+			"title":"1 should check all",
+			"attr":	{
+					"style": {"background":"#FF0000"}, 
+					"attachment":	{"contentType":"text/html","content":"content <b>bold content</b>"}
+				},
+			"width":272,
+			"height":308,
+			"level":1,
+			"x":-136,
+			"y":-154
+		},
+		multiLine = {
+				"id":	35,
+				"title":	"first\nsecond\nthird",
+				"attr":	{"style":{"background":"#FF0000"}},
+				"width":58,
+				"height":70,
+				"level":1,
+				"x":-30,
+				"y":-35,
+				"activated": true
+			}, 
+		defaultTextProperties = {
+			fontStyle: 'bold',
+			fontSize: 12,
+			fontFamily: 'Helvetica',
+			fontSpacing: 2,
+			lineHeight: 1.5
+		},
+		drawText = function (stage, text, properties) {
+			var lines = text.split('\n'),
+				lineHeight = properties.fontSize * properties.lineHeight;
+			stage.context.font= properties.fontStyle + ' ' + properties.fontSize + 'px ' + properties.fontFamily;
+			stage.context.textAlign ='center';
+			stage.context.fillStyle = properties.color;
+			lines.forEach(function(lineText, lineNo) {
+				stage.context.fillText(
+					lineText, 
+					Math.round(stage.x + properties.x + properties.width / 2) /* because of text-align: center */, 
+					Math.round(stage.y + properties.y + (lineNo + 1) * lineHeight) /* relative to baseline */
+				);
+			});
+		},
+		roundedRectPath = function (context, x, y, w, h, r) {
+			if (w < 2 * r) r = w / 2;
+			if (h < 2 * r) r = h / 2;
+			context.beginPath();
+			context.moveTo(x+r, y);
+			context.arcTo(x+w, y,   x+w, y+h, r);
+			context.arcTo(x+w, y+h, x,   y+h, r);
+			context.arcTo(x,   y+h, x,   y,   r);
+			context.arcTo(x,   y,   x+w, y,   r);
+			context.closePath();
+		},
+		foregroundColor = function (backgroundColor) {
+			var tintedBackground = Color(backgroundColor).mix(Color('#EEEEEE')).hexString();
+			return MAPJS.contrastForeground(tintedBackground);	
+		},
+		drawNode = function (stage, node) {
+			var options = {
+					padding: 4,
+					cornerRadius: 10,
+					strokeStyle: '#888'
+				},
+				backgroundColor = function () {
+					var fromStyle =	node.attr && node.attr.style && node.attr.style.background,
+						generic = MAPJS.defaultStyles[node.level === 1 ? 'root' : 'nonRoot'].background;
+					return fromStyle ||  generic;
+				}
+				textProperties = {
+					x: node.x + options.padding,
+					y: node.y + options.padding,
+					width: node.width - 2 * options.padding,
+					height: node.height - 2 * options.padding,
+					color: foregroundColor(backgroundColor())
+				};
+			roundedRectPath(stage.context, stage.x + node.x, stage.y + node.y, node.width, node.height, options.cornerRadius);
+			stage.context.fillStyle = backgroundColor();
+			stage.context.fill();
+			stage.context.strokeStyle = options.strokeStyle;
+			stage.context.stroke();
+			drawText(stage, node.title, _.extend({}, defaultTextProperties, textProperties));
+		};
+	var container = $('#container');
+	var canvas = $('<canvas>').attr('width', container.width()).attr('height', container.height()).appendTo(container)[0];
+	stage = {
+		context: canvas.getContext('2d'),
+		x: canvas.width / 2,
+		y: canvas.height / 2
+	};
+	drawNode(stage, multiLine);
+
+// icon position
+// link
+// attachment - clip
+// shadows
+// folded
+// activated, selected
+// zoom
+// mouse events 
+// default and non default backgrounds for root and children
+
+/* fontSize: 12,
+			fontFamily: 'Helvetica',
+			lineHeight: 1.5,
+			fontStyle: 'bold',
+			align: 'center'
+*/
+
+</script>
+</body>
