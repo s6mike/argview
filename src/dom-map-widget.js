@@ -71,12 +71,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				},
 				offset = calculatedConnector.controlPointOffset * (from.y - to.y),
 				maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
-				straightLine = false;
+				straightLine = false,
+				pathElement;
 			position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
 			position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
 			element.css(position);
-			element.empty();
 			if (straightLine) {
+				element.empty();
 				$(svg('line')).attr({
 					x1: from.x - position.left,
 					x2: to.x - position.left,
@@ -86,15 +87,27 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				}).appendTo(element);
 			} else {
 				offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-				$(svg('path')).attr('d',
+				pathElement = element.find('path');
+				if (pathElement.length === 0) {
+					element.empty();
+					pathElement = $(svg('path')).attr({
+						fill: 'none',
+						stroke: config.stroke,
+						'stroke-width': config.width,
+						'class': 'connector'
+					}).appendTo(element);
+				}
+				pathElement.attr('d',
 					'M' + (from.x - position.left) + ',' + (from.y - position.top) +
 					'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
-				).attr({
-					fill: 'none',
-					stroke: config.stroke,
-					'stroke-width': config.width
-				}).appendTo(element);
+				);
 			}
+		},
+		connectorsFor = function (nodeId) {
+			return $('[data-connector-from=' + nodeId + ']').add('[data-connector-to=' + nodeId + ']');
+		},
+		updateNodeConnectors = function (nodeId) {
+			_.each(connectorsFor(nodeId), updateDOMConnector);
 		};
 
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
@@ -112,20 +125,21 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#node_' + node.id).remove();
 	});
+
 	mapModel.addEventListener('nodeMoved', function (node, reason) {
-		var connectors = $('[data-connector-from=' + node.id + ']').add('[data-connector-to=' + node.id + ']');
+
 		$('#node_' + node.id).css({
 			'left': node.x + stageElement.innerWidth() / 2,
 			'top': node.y + stageElement.innerHeight() / 2
 		});
-		_.each(connectors, updateDOMConnector);
+		updateNodeConnectors(node.id);
+
 		//onFinish: ensureSelectedNodeVisible.bind(undefined, node)
 	});
 
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var	domConnector = $(svg('svg'))
 			.attr({'id': connectorKey(connector), 'data-connector-from': connector.from, 'data-connector-to': connector.to})
-			.addClass('connector')
 			.appendTo(stageElement);
 		updateDOMConnector(domConnector);
 	});
@@ -155,7 +169,21 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'width': node.width,
 				'height': node.height,
 				'background-color': backgroundColor()
-			}).appendTo(stageElement),
+			}).appendTo(stageElement).click(function (evt) {
+				mapModel.clickNode(node.id, evt);
+			}).draggable({
+				containment: 'parent',
+				start: function () {
+					connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
+				},
+				drag: function () {
+					updateNodeConnectors(node.id);
+				},
+				stop: function () {
+					connectorsFor(node.id).find('.connector').add(nodeDiv).removeClass('dragging');
+					updateNodeConnectors(node.id);
+				}
+			}),
 			textBox = $('<span>').addClass('text').text(node.title).appendTo(nodeDiv).css({
 				color: foregroundColor(backgroundColor()),
 				display: 'block'

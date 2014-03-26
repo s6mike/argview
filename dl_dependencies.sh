@@ -9,3 +9,4 @@ curl http://static.mindmup.com/lib/jquery.mousewheel-3.1.3.js > lib/jquery.mouse
 curl http://mindmup.s3.amazonaws.com/lib/jquery.hotkeys.js > lib/jquery.hotkeys.js
 curl http://cloud.github.com/downloads/harthur/color/color-0.4.1.min.js > lib/color-0.4.1.min.js
 curl http://mindmup.s3.amazonaws.com/lib/jquery.hammer.min.js > lib/jquery.hammer.min.js
+curl http://static.mindmup.com/lib/jquery-ui-1.10.0.custom.min.js > lib/jquery-ui-1.10.0.custom.min.js
