@@ -1,17 +1,29 @@
 /*global _, jQuery, Kinetic, MAPJS, window, document, $, MutationObserver*/
 jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController) {
 	'use strict';
+
 	return this.each(function () {
 		var element = jQuery(this),
 			stage = new Kinetic.Stage({
 				container: this.id,
 				draggable: true
 			}),
+			/*jshint unused:false */
 			mediator = new MAPJS.KineticMediator(mapModel, stage),
 			setStageDimensions = function () {
-				stage.setWidth(element.width());
-				stage.setHeight(element.height());
-				stage.draw();
+				var changed;
+				if (stage.getWidth() !== element.width()) {
+					stage.setWidth(element.width());
+					changed = true;
+				}
+				if (stage.getHeight() !== element.height()) {
+					stage.setHeight(element.height());
+					changed = true;
+				}
+				if (changed) {
+					stage.draw();
+				}
+				return changed;
 			},
 			lastGesture,
 			actOnKeys = true,
@@ -109,11 +121,12 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 		stage.setX(0.5 * stage.getWidth());
 		stage.setY(0.5 * stage.getHeight());
 
-		new MutationObserver(function (mutations) {
-			setStageDimensions();
-			stage.setX(0.5 * stage.getWidth());
-			stage.setY(0.5 * stage.getHeight());
-			stage.draw();
+		new MutationObserver(function () {
+			if (setStageDimensions()) {
+				stage.setX(0.5 * stage.getWidth());
+				stage.setY(0.5 * stage.getHeight());
+				stage.draw();
+			}
 		}).observe(element[0], {attributes: true});
 
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
