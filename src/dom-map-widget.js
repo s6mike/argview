@@ -7,6 +7,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	var connectorKey = function (connectorObj) {
 			return 'connector_' + connectorObj.from + '_' + connectorObj.to;
 		},
+		svg = function (tag) {
+			return document.createElementNS('http://www.w3.org/2000/svg', tag);
+		},
 		horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
 				childX, childY, childWidth, childHeight) {
 			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
@@ -27,7 +30,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			return calculateConnectorInner(parent.position().left, parent.position().top, parent.width(), parent.height(),
 				child.position().left, child.position().top, child.width(), child.height());
 		},
-
 		calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
 				childX, childY, childWidth, childHeight) {
 			var tolerance = 10,
@@ -51,7 +53,49 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			};
 		}, function () {
 			return Array.prototype.join.call(arguments, ',');
-		});
+		}),
+		updateDOMConnector = function (domElement) {
+			var config = {
+					stroke: '#888',
+					width: 1
+				},
+				element = $(domElement),
+				shapeFrom = $('#node_' + element.attr('data-connector-from')),
+				shapeTo = $('#node_' + element.attr('data-connector-to')),
+				calculatedConnector = calculateConnector(shapeFrom, shapeTo),
+				from = calculatedConnector.from,
+				to = calculatedConnector.to,
+				position = {
+					left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+					top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+				},
+				offset = calculatedConnector.controlPointOffset * (from.y - to.y),
+				maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
+				straightLine = false;
+			position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
+			position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
+			element.css(position);
+			element.empty();
+			if (straightLine) {
+				$(svg('line')).attr({
+					x1: from.x - position.left,
+					x2: to.x - position.left,
+					y1: from.y - position.top,
+					y2: to.y - position.top,
+					style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
+				}).appendTo(element);
+			} else {
+				offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+				$(svg('path')).attr('d',
+					'M' + (from.x - position.left) + ',' + (from.y - position.top) +
+					'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
+				).attr({
+					fill: 'none',
+					stroke: config.stroke,
+					'stroke-width': config.width
+				}).appendTo(element);
+			}
+		};
 
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
@@ -65,52 +109,22 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#node_' + node.id).remove();
 	});
+	mapModel.addEventListener('nodeMoved', function (node, reason) {
+		var connectors = $('[data-connector-from=' + node.id + ']').add('[data-connector-to=' + node.id + ']');
+		$('#node_' + node.id).css({
+			'left': node.x + stageElement.innerWidth() / 2,
+			'top': node.y + stageElement.innerHeight() / 2
+		});
+		_.each(connectors, updateDOMConnector);
+		//onFinish: ensureSelectedNodeVisible.bind(undefined, node)
+	});
+
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		var	shapeFrom = $('#node_' + connector.from),
-			shapeTo = $('#node_' + connector.to),
-			config = {
-				stroke: '#888',
-				width: 1
-			},
-			domConnector,
-			svg = function (tag) {
-				return document.createElementNS('http://www.w3.org/2000/svg', tag);
-			},
-			calculatedConnector = calculateConnector(shapeFrom, shapeTo),
-			from = calculatedConnector.from,
-			to = calculatedConnector.to,
-			position = {
-				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
-				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
-			},
-			offset = calculatedConnector.controlPointOffset * (from.y - to.y),
-			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
-			straightLine = false;
-
-
-		position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
-		position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
-		domConnector = $(svg('svg')).attr(position);
-		if (straightLine) {
-			$(svg('line')).attr({
-				x1: from.x - position.left,
-				x2: to.x - position.left,
-				y1: from.y - position.top,
-				y2: to.y - position.top,
-				style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
-			}).appendTo(domConnector);
-		} else {
-			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-			$(svg('path')).attr('d',
-				'M' + (from.x - position.left) + ',' + (from.y - position.top) +
-				'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
-			).attr({
-				fill: 'none',
-				stroke: config.stroke,
-				'stroke-width': config.width
-			}).appendTo(domConnector);
-		}
-		domConnector.attr('id', connectorKey(connector)).css(position).addClass('connector').appendTo(stageElement);
+		var	domConnector = $(svg('svg'))
+			.attr({'id': connectorKey(connector), 'data-connector-from': connector.from, 'data-connector-to': connector.to})
+			.addClass('connector')
+			.appendTo(stageElement);
+		updateDOMConnector(domConnector);
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		$('#' + connectorKey(connector)).remove();
@@ -285,7 +299,7 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // -	mapModel.addEventListener('nodeTitleChanged', function (n) {
 // +	mapModel.addEventListener('connectorCreated', function (n) {
 // -	mapModel.addEventListener('layoutChangeComplete', function () {
-// -	mapModel.addEventListener('connectorRemoved', function (n) {
+// +	mapModel.addEventListener('connectorRemoved', function (n) {
 // -	mapModel.addEventListener('linkCreated', function (l) {
 // -	mapModel.addEventListener('linkRemoved', function (l) {
 // -	mapModel.addEventListener('linkAttrChanged', function (l) {
@@ -295,5 +309,6 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 // animations
 // - node removed
+// - node moved (esp reason = failed)
 // no more memoization on calc connector - not needed
 
