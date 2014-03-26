@@ -4,56 +4,66 @@
 MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
 
-	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
-			childX, childY, childWidth, childHeight) {
-		var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
-			parentHorizontalOffset = 1 - childHorizontalOffset;
-		return {
-			from: {
-				x: parentX + parentHorizontalOffset * parentWidth,
-				y: parentY + 0.5 * parentHeight
-			},
-			to: {
-				x: childX + childHorizontalOffset * childWidth,
-				y: childY + 0.5 * childHeight
-			},
-			controlPointOffset: 0
-		};
-	},
-	calculateConnector = function (parent, child) {
-		return calculateConnectorInner(parent.position().left, parent.position().top, parent.width(), parent.height(),
-			child.position().left, child.position().top, child.width(), child.height());
-	},
-	calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
-			childX, childY, childWidth, childHeight) {
-		var tolerance = 10,
-			childMid = childY + childHeight * 0.5,
-			parentMid = parentY + parentHeight * 0.5,
-			childHorizontalOffset;
-		if (Math.abs(parentMid - childMid) + tolerance < Math.max(childHeight, parentHeight * 0.75)) {
-			return horizontalConnector(parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight);
-		}
-		childHorizontalOffset = parentX < childX ? 0 : 1;
-		return {
-			from: {
-				x: parentX + 0.5 * parentWidth,
-				y: parentY + 0.5 * parentHeight
-			},
-			to: {
-				x: childX + childHorizontalOffset * childWidth,
-				y: childY + 0.5 * childHeight
-			},
-			controlPointOffset: 0.75
-		};
-	}, function () {
-		return Array.prototype.join.call(arguments, ',');
-	});
+	var connectorKey = function (connectorObj) {
+			return 'connector_' + connectorObj.from + '_' + connectorObj.to;
+		},
+		horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
+				childX, childY, childWidth, childHeight) {
+			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
+				parentHorizontalOffset = 1 - childHorizontalOffset;
+			return {
+				from: {
+					x: parentX + parentHorizontalOffset * parentWidth,
+					y: parentY + 0.5 * parentHeight
+				},
+				to: {
+					x: childX + childHorizontalOffset * childWidth,
+					y: childY + 0.5 * childHeight
+				},
+				controlPointOffset: 0
+			};
+		},
+		calculateConnector = function (parent, child) {
+			return calculateConnectorInner(parent.position().left, parent.position().top, parent.width(), parent.height(),
+				child.position().left, child.position().top, child.width(), child.height());
+		},
+
+		calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
+				childX, childY, childWidth, childHeight) {
+			var tolerance = 10,
+				childMid = childY + childHeight * 0.5,
+				parentMid = parentY + parentHeight * 0.5,
+				childHorizontalOffset;
+			if (Math.abs(parentMid - childMid) + tolerance < Math.max(childHeight, parentHeight * 0.75)) {
+				return horizontalConnector(parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight);
+			}
+			childHorizontalOffset = parentX < childX ? 0 : 1;
+			return {
+				from: {
+					x: parentX + 0.5 * parentWidth,
+					y: parentY + 0.5 * parentHeight
+				},
+				to: {
+					x: childX + childHorizontalOffset * childWidth,
+					y: childY + 0.5 * childHeight
+				},
+				controlPointOffset: 0.75
+			};
+		}, function () {
+			return Array.prototype.join.call(arguments, ',');
+		});
 
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
 		if (isSelected) {
+//			node.addClass('selected');
 			node.focus();
+		} else {
+//			node.removeClass('selected');
 		}
+	});
+	mapModel.addEventListener('nodeRemoved', function (node) {
+		$('#node_' + node.id).remove();
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var	shapeFrom = $('#node_' + connector.from),
@@ -100,9 +110,11 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'stroke-width': config.width
 			}).appendTo(domConnector);
 		}
-		domConnector.css(position).addClass('connector').appendTo(stageElement);
+		domConnector.attr('id', connectorKey(connector)).css(position).addClass('connector').appendTo(stageElement);
 	});
-
+	mapModel.addEventListener('connectorRemoved', function (connector) {
+		$('#' + connectorKey(connector)).remove();
+	});
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var config = {
 				padding: '8px'
@@ -165,9 +177,78 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 };
 $.fn.domMapWidget = function (activityLog, mapModel) {
 	'use strict';
+	var hotkeyEventHandlers = {
+			'return': 'addSiblingIdea',
+			'shift+return': 'addSiblingIdeaBefore',
+			'del backspace': 'removeSubIdea',
+			'tab insert': 'addSubIdea',
+			'left': 'selectNodeLeft',
+			'up': 'selectNodeUp',
+			'right': 'selectNodeRight',
+			'shift+right': 'activateNodeRight',
+			'shift+left': 'activateNodeLeft',
+			'shift+up': 'activateNodeUp',
+			'shift+down': 'activateNodeDown',
+			'down': 'selectNodeDown',
+			'space f2': 'editNode',
+			'f': 'toggleCollapse',
+			'c meta+x ctrl+x': 'cut',
+			'p meta+v ctrl+v': 'paste',
+			'y meta+c ctrl+c': 'copy',
+			'u meta+z ctrl+z': 'undo',
+			'shift+tab': 'insertIntermediate',
+			'Esc 0 meta+0 ctrl+0': 'resetView',
+			'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
+			'meta+plus ctrl+plus z': 'scaleUp',
+			'meta+minus ctrl+minus shift+z': 'scaleDown',
+			'meta+up ctrl+up': 'moveUp',
+			'meta+down ctrl+down': 'moveDown',
+			'ctrl+shift+v meta+shift+v': 'pasteStyle',
+			'Esc': 'cancelCurrentAction'
+		},
+		charEventHandlers = {
+			'[' : 'activateChildren',
+			'{'	: 'activateNodeAndChildren',
+			'='	: 'activateSiblingNodes',
+			'.'	: 'activateSelectedNode',
+			'/' : 'toggleCollapse',
+			'a' : 'openAttachment',
+			'i' : 'editIcon'
+		},
+		actOnKeys = true;
+	mapModel.addEventListener('inputEnabledChanged', function (canInput) {
+		actOnKeys = canInput;
+	});
+
 	return this.each(function () {
 		var element = $(this);
 		MAPJS.domMediator(mapModel, element);
+		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
+			element.keydown(keysPressed, function (event) {
+				if (actOnKeys) {
+					event.preventDefault();
+					mapModel[mappedFunction]('keyboard');
+				}
+			});
+		});
+		element.on('keypress', function (evt) {
+			if (!actOnKeys) {
+				return;
+			}
+			if (/INPUT|TEXTAREA/.test(evt && evt.target && evt.target.tagName)) {
+				return;
+			}
+			var unicode = evt.charCode || evt.keyCode,
+				actualkey = String.fromCharCode(unicode),
+				mappedFunction = charEventHandlers[actualkey];
+			if (mappedFunction) {
+				evt.preventDefault();
+				mapModel[mappedFunction]('keyboard');
+			} else if (Number(actualkey) <= 9 && Number(actualkey) >= 1) {
+				evt.preventDefault();
+				mapModel.activateLevel('keyboard', Number(actualkey) + 1);
+			}
+		});
 	});
 };
 
@@ -176,8 +257,11 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // + default and non default backgrounds for root and children
 // + multi-line text
 //
+// focus or selected?
+// drag * drop
+// drag background
 // icon position
-// link
+// custom connectors
 // attachment - clip
 // straight lines extension
 // collaboration avatars
@@ -185,6 +269,31 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // activated
 // zoom
 // mouse events
-
-
+// mapwidget keyboard bindings
+// mapwidget mouse bindings
+// hyperlinks
+// remaining kinetic mediator events
+// -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+// -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+// +	mapModel.addEventListener('nodeCreated', function (n) {
+// -	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
+// -	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
+// -	mapModel.addEventListener('nodeAttrChanged', function (n) {
+// -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
+// +	mapModel.addEventListener('nodeRemoved', function (n) {
+// -	mapModel.addEventListener('nodeMoved', function (n, reason) {
+// -	mapModel.addEventListener('nodeTitleChanged', function (n) {
+// +	mapModel.addEventListener('connectorCreated', function (n) {
+// -	mapModel.addEventListener('layoutChangeComplete', function () {
+// -	mapModel.addEventListener('connectorRemoved', function (n) {
+// -	mapModel.addEventListener('linkCreated', function (l) {
+// -	mapModel.addEventListener('linkRemoved', function (l) {
+// -	mapModel.addEventListener('linkAttrChanged', function (l) {
+// -	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
+// -	mapModel.addEventListener('mapViewResetRequested', function () {
+// -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
+// -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
+// animations
+// - node removed
+// no more memoization on calc connector - not needed
 
