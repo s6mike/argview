@@ -123,9 +123,14 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 
 		new MutationObserver(function () {
 			if (setStageDimensions()) {
-				stage.setX(0.5 * stage.getWidth());
-				stage.setY(0.5 * stage.getHeight());
-				stage.draw();
+				if (mapModel.getIdea() !== undefined) {
+					mapModel.centerOnNode(mapModel.getSelectedNodeId() ||  1);
+				} else {
+					stage.setX(0.5 * stage.getWidth());
+					stage.setY(0.5 * stage.getHeight());
+					stage.draw();
+				}
+
 			}
 		}).observe(element[0], {attributes: true});
 
