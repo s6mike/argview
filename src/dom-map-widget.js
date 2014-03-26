@@ -106,6 +106,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 //			node.removeClass('selected');
 		}
 	});
+	mapModel.addEventListener('nodeTitleChanged', function (node) {
+		$('#node_' + node.id).find('.text').text(node.title);
+	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#node_' + node.id).remove();
 	});
@@ -295,8 +298,8 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // -	mapModel.addEventListener('nodeAttrChanged', function (n) {
 // -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 // +	mapModel.addEventListener('nodeRemoved', function (n) {
-// -	mapModel.addEventListener('nodeMoved', function (n, reason) {
-// -	mapModel.addEventListener('nodeTitleChanged', function (n) {
+// +	mapModel.addEventListener('nodeMoved', function (n, reason) {
+// +	mapModel.addEventListener('nodeTitleChanged', function (n) {
 // +	mapModel.addEventListener('connectorCreated', function (n) {
 // -	mapModel.addEventListener('layoutChangeComplete', function () {
 // +	mapModel.addEventListener('connectorRemoved', function (n) {
@@ -311,4 +314,3 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 // - node removed
 // - node moved (esp reason = failed)
 // no more memoization on calc connector - not needed
-
