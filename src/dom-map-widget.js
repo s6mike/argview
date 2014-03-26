@@ -1,4 +1,4 @@
-/*global MAPJS, Color, $*/
+/*global MAPJS, Color, $, _*/
 /*jslint nomen: true, newcap: true, browser: true*/
 
 MAPJS.domMediator = function (mapModel, stageElement) {
@@ -67,32 +67,39 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				return document.createElementNS('http://www.w3.org/2000/svg', tag);
 			},
 			calculatedConnector = calculateConnector(shapeFrom, shapeTo),
-			from = {
-				top: calculatedConnector.from.y,
-				left: calculatedConnector.from.x
-			},
-			to = {
-				top: calculatedConnector.to.y,
-				left: calculatedConnector.to.x
-			},
+			from = calculatedConnector.from,
+			to = calculatedConnector.to,
 			position = {
-				left: Math.min(from.left, to.left),
-				top: Math.min(from.top, to.top),
-			};
+				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+			},
+			offset = calculatedConnector.controlPointOffset * (from.y - to.y),
+			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
+			straightLine = false;
 
-		position.width = Math.max(from.left, to.left, position.left + 1) - position.left;
-		position.height = Math.max(from.top, to.top, position.top + 1) - position.top;
-		domConnector = $(svg('svg')).attr({
-			height: position.height,
-			width: position.width
-		});
-		$(svg('line')).attr({
-			x1: from.left - position.left,
-			x2: to.left - position.left,
-			y1: from.top - position.top,
-			y2: to.top - position.top,
-			style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
-		}).appendTo(domConnector);
+
+		position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
+		position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
+		domConnector = $(svg('svg')).attr(position);
+		if (straightLine) {
+			$(svg('line')).attr({
+				x1: from.x - position.left,
+				x2: to.x - position.left,
+				y1: from.y - position.top,
+				y2: to.y - position.top,
+				style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
+			}).appendTo(domConnector);
+		} else {
+			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+			$(svg('path')).attr('d',
+				'M' + (from.x - position.left) + ',' + (from.y - position.top) +
+				'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
+			).attr({
+				fill: 'none',
+				stroke: config.stroke,
+				'stroke-width': config.width
+			}).appendTo(domConnector);
+		}
 		domConnector.css(position).addClass('connector').appendTo(stageElement);
 	});
 
