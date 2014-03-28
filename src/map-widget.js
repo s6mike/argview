@@ -85,6 +85,18 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 						event.preventDefault();
 					}
 				}
+			},
+			resizeAndCenter = function () {
+				if (setStageDimensions()) {
+					if (mapModel.getIdea() !== undefined) {
+						mapModel.centerOnNode(mapModel.getSelectedNodeId() ||  1);
+					} else {
+						stage.setX(0.5 * stage.getWidth());
+						stage.setY(0.5 * stage.getHeight());
+						stage.draw();
+					}
+
+				}
 			};
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			jQuery(document).keydown(keysPressed, function (event) {
@@ -121,18 +133,11 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 		stage.setX(0.5 * stage.getWidth());
 		stage.setY(0.5 * stage.getHeight());
 
-		new MutationObserver(function () {
-			if (setStageDimensions()) {
-				if (mapModel.getIdea() !== undefined) {
-					mapModel.centerOnNode(mapModel.getSelectedNodeId() ||  1);
-				} else {
-					stage.setX(0.5 * stage.getWidth());
-					stage.setY(0.5 * stage.getHeight());
-					stage.draw();
-				}
-
-			}
-		}).observe(element[0], {attributes: true});
+		if (window && window.MutationObserver) {
+			new MutationObserver(resizeAndCenter).observe(element[0], {attributes: true});
+		} else {
+			jQuery(element[0]).bind(' resize', resizeAndCenter);
+		}
 
 		jQuery(window).bind('orientationchange resize', setStageDimensions);
 		element.on('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); return false; });
