@@ -133,7 +133,7 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 		stage.setX(0.5 * stage.getWidth());
 		stage.setY(0.5 * stage.getHeight());
 
-		if (window && window.MutationObserver) {
+		if (window && window.MutationObserver && element.data('mm-context') !== 'embedded') {
 			new MutationObserver(resizeAndCenter).observe(element[0], {attributes: true});
 		} else {
 			jQuery(element[0]).bind(' resize', resizeAndCenter);
