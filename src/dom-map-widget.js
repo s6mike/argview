@@ -1,6 +1,16 @@
 /*global MAPJS, Color, $, _*/
 /*jslint nomen: true, newcap: true, browser: true*/
 
+$.fn.positionNode = function (stageElement) {
+	'use strict';
+	return $(this).each(function () {
+		var node = $(this);
+		node.css({
+			'left': node.data('x')  + stageElement.data('stage-x'),
+			'top': node.data('y') + stageElement.data('stage-y')
+		});
+	});
+};
 MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
 
@@ -113,10 +123,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
 		if (isSelected) {
-//			node.addClass('selected');
+			node.addClass('selected');
 			node.focus();
 		} else {
-//			node.removeClass('selected');
+			node.removeClass('selected');
 		}
 	});
 	mapModel.addEventListener('nodeTitleChanged', function (node) {
@@ -128,18 +138,23 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 
 	mapModel.addEventListener('nodeMoved', function (node, reason) {
 
-		$('#node_' + node.id).css({
-			'left': node.x + stageElement.innerWidth() / 2,
-			'top': node.y + stageElement.innerHeight() / 2
-		});
+		$('#node_' + node.id).data({
+			'x': node.x,
+			'y': node.y
+		}).positionNode(stageElement);
 		updateNodeConnectors(node.id);
 
 		//onFinish: ensureSelectedNodeVisible.bind(undefined, node)
 	});
-
+	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
+		stageElement.data('stage-x', stageElement.data('stage-x') + deltaX);
+		stageElement.data('stage-y', stageElement.data('stage-y') + deltaY);
+		stageElement.find('[data-mapjs-role=node]').positionNode(stageElement);
+		stageElement.find('[data-mapjs-role=connector]').each(function () { updateDOMConnector(this); });
+	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var	domConnector = $(svg('svg'))
-			.attr({'id': connectorKey(connector), 'data-connector-from': connector.from, 'data-connector-to': connector.to})
+			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'data-connector-from': connector.from, 'data-connector-to': connector.to})
 			.appendTo(stageElement);
 		updateDOMConnector(domConnector);
 	});
@@ -161,33 +176,38 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			},
 			nodeDiv = $('<div>')
 				.attr('tabindex', 0)
-				.attr('id', 'node_' + node.id)
+				.attr({
+					'id': 'node_' + node.id,
+					'data-mapjs-role': 'node'
+				}).data({
+					'x': node.x,
+					'y': node.y
+				})
+				.positionNode(stageElement)
 				.addClass('node')
 				.css({
-				'left': node.x + stageElement.innerWidth() / 2,
-				'top': node.y + stageElement.innerHeight() / 2,
-				'width': node.width,
-				'height': node.height,
-				'background-color': backgroundColor()
-			}).appendTo(stageElement).click(function (evt) {
-				mapModel.clickNode(node.id, evt);
-			}).draggable({
-				containment: 'parent',
-				start: function () {
-					connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
-				},
-				drag: function () {
-					updateNodeConnectors(node.id);
-				},
-				stop: function () {
-					connectorsFor(node.id).find('.connector').add(nodeDiv).removeClass('dragging');
-					updateNodeConnectors(node.id);
-				}
-			}),
+					'width': node.width,
+					'height': node.height,
+					'background-color': backgroundColor()
+				}).appendTo(stageElement).click(function (evt) {
+					mapModel.clickNode(node.id, evt);
+				}).draggable({
+					containment: 'parent',
+					start: function () {
+						connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
+					},
+					drag: function () {
+						updateNodeConnectors(node.id);
+					},
+					stop: function () {
+						connectorsFor(node.id).find('.connector').add(nodeDiv).removeClass('dragging');
+						updateNodeConnectors(node.id);
+					}
+				}),
 			textBox = $('<span>').addClass('text').text(node.title).appendTo(nodeDiv).css({
-				color: foregroundColor(backgroundColor()),
-				display: 'block'
-			}),
+					color: foregroundColor(backgroundColor()),
+					display: 'block'
+				}),
 			icon;
 		if (node.attr && node.attr.icon) {
 			icon = document.createElement('img');
@@ -220,7 +240,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		}
 	});
 };
-$.fn.domMapWidget = function (activityLog, mapModel) {
+$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 	'use strict';
 	var hotkeyEventHandlers = {
 			'return': 'addSiblingIdea',
@@ -260,13 +280,30 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 			'a' : 'openAttachment',
 			'i' : 'editIcon'
 		},
-		actOnKeys = true;
+		actOnKeys = true,
+		onScroll = function (event, delta, deltaX, deltaY) {
+			deltaX = deltaX || 0; /*chromebook scroll fix*/
+			deltaY = deltaY || 0;
+			if (Math.abs(deltaX) < 5) {
+				deltaX = deltaX * 5;
+			}
+			if (Math.abs(deltaY) < 5) {
+				deltaY = deltaY * 5;
+			}
+			mapModel.move('mousewheel', -1 * deltaX, deltaY);
+			if (event.preventDefault) { // stop the back button
+				event.preventDefault();
+			}
+		};
 	mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 		actOnKeys = canInput;
 	});
 
+
 	return this.each(function () {
 		var element = $(this);
+		element.data('stage-x', element.innerWidth() / 2);
+		element.data('stage-y', element.innerHeight() / 2);
 		MAPJS.domMediator(mapModel, element);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
@@ -276,6 +313,9 @@ $.fn.domMapWidget = function (activityLog, mapModel) {
 				}
 			});
 		});
+		if (!touchEnabled) {
+			element.mousewheel(onScroll);
+		}
 		element.on('keypress', function (evt) {
 			if (!actOnKeys) {
 				return;
