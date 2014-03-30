@@ -146,12 +146,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 
 		//onFinish: ensureSelectedNodeVisible.bind(undefined, node)
 	});
-	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
-		stageElement.data('stage-x', stageElement.data('stage-x') + deltaX);
-		stageElement.data('stage-y', stageElement.data('stage-y') + deltaY);
-		stageElement.find('[data-mapjs-role=node]').positionNode(stageElement);
-		stageElement.find('[data-mapjs-role=connector]').each(function () { updateDOMConnector(this); });
-	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var	domConnector = $(svg('svg'))
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'data-connector-from': connector.from, 'data-connector-to': connector.to})
@@ -280,31 +274,20 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 			'a' : 'openAttachment',
 			'i' : 'editIcon'
 		},
-		actOnKeys = true,
-		onScroll = function (event, delta, deltaX, deltaY) {
-			deltaX = deltaX || 0; /*chromebook scroll fix*/
-			deltaY = deltaY || 0;
-			if (Math.abs(deltaX) < 5) {
-				deltaX = deltaX * 5;
-			}
-			if (Math.abs(deltaY) < 5) {
-				deltaY = deltaY * 5;
-			}
-			mapModel.move('mousewheel', -1 * deltaX, deltaY);
-			if (event.preventDefault) { // stop the back button
-				event.preventDefault();
-			}
-		};
+		actOnKeys = true;
 	mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 		actOnKeys = canInput;
 	});
 
 
 	return this.each(function () {
-		var element = $(this);
-		element.data('stage-x', element.innerWidth() / 2);
-		element.data('stage-y', element.innerHeight() / 2);
-		MAPJS.domMediator(mapModel, element);
+		var element = $(this),
+			stage = $('<div>').css({width: '5000', height: '5000', position: 'relative'}).attr('data-mapjs-role', 'stage').appendTo(element);
+		stage.data('stage-x', 2500);
+		stage.data('stage-y', 2500);
+		element.scrollLeft(2500 + element.innerHeight() / 2);
+		element.scrollTop(2500 + element.innerWidth() / 2);
+		MAPJS.domMediator(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
 				if (actOnKeys) {
@@ -313,9 +296,6 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				}
 			});
 		});
-		if (!touchEnabled) {
-			element.mousewheel(onScroll);
-		}
 		element.on('keypress', function (evt) {
 			if (!actOnKeys) {
 				return;
