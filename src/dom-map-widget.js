@@ -1,34 +1,22 @@
-/*global MAPJS, Color, $, _*/
+/*global MAPJS, Color, $, _, Hammer*/
 /*jslint nomen: true, newcap: true, browser: true*/
-var capturePosition = function (event) {
-	'use strict';
-	return {
-		x: event.pageX || (event.gesture && event.gesture.center && event.gesture.center.pageX),
-		y: event.pageY || (event.gesture && event.gesture.center && event.gesture.center.pageY)
-	};
-};
-
 $.fn.draggableContainer = function () {
 	'use strict';
 	var currentDragObject,
-		dragPosition,
 		originalDragObjectPosition,
 
 		drag = function (event) {
-			var eventPosition = capturePosition(event),
-				deltaX = (eventPosition.x - dragPosition.x) || 0,
-				deltaY = (eventPosition.y - dragPosition.y) || 0,
-				oldpos = {
-					top: parseInt(currentDragObject.css('top')),
-					left: parseInt(currentDragObject.css('left'))
-				},
-				newpos = {
-					top: oldpos.top + deltaY,
-					left: oldpos.left + deltaX
-				};
-			currentDragObject.css(newpos).trigger('mm:drag');
-			dragPosition = eventPosition;
-			event.preventDefault();
+			if (currentDragObject && event.gesture) {
+				var newpos = {
+						top: parseInt(originalDragObjectPosition.top) + event.gesture.deltaY,
+						left: parseInt(originalDragObjectPosition.left) + event.gesture.deltaX
+					};
+				currentDragObject.css(newpos).trigger('mm:drag');
+				event.preventDefault();
+				if (event.gesture) {
+					event.gesture.preventDefault();
+				}
+			}
 		},
 		rollback = function () {
 			var target = currentDragObject; // allow it to be cleared while animating
@@ -48,36 +36,32 @@ $.fn.draggableContainer = function () {
 				top: currentDragObject.css('top'),
 				left: currentDragObject.css('left')
 			};
-			dragPosition = capturePosition(event);
-			$(this).on('mousemove drag', drag);
+			$(this).on('drag', drag);
 		}
-	}).on('mouseup dragstop', function () {
+	}).on('dragend', function () {
 		var evt = $.Event('mm:stop-dragging');
 		if (currentDragObject) {
 			currentDragObject.trigger(evt);
 			if (evt.result === false) {
 				rollback();
 			}
-			currentDragObject = dragPosition = undefined;
-			$(this).off('mousemove drag', drag);
+			$(this).off('drag', drag);
+			currentDragObject = undefined;
 		}
 	}).on('mouseleave', function () {
 		if (currentDragObject) {
+			$(this).off('drag', drag);
 			rollback();
-			currentDragObject = dragPosition = undefined;
-			$(this).off('mousemove drag', drag);
+			currentDragObject = undefined;
 		}
 	}).attr('data-drag-role', 'container');
 };
 $.fn.draggable = function () {
 	'use strict';
-	return Hammer($(this)).on('dragstart mousedown', function (event) {
-		var position = capturePosition(event);
+	return $(this).on('mousedown dragstart', function (event) {
 		$(this).trigger(
 			$.Event('mm:start-dragging', {
-				relatedTarget: this,
-				pageX: position.x,
-				pageY: position.y
+				relatedTarget: this
 			})
 		);
 	});
@@ -290,7 +274,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					'width': node.width,
 					'height': node.height,
 					'background-color': backgroundColor()
-				}).appendTo(stageElement).click(function (evt) {
+				}).appendTo(stageElement).on('click tap', function (evt) {
 					mapModel.clickNode(node.id, evt);
 				}).draggable()
 				.on('mm:start-dragging', function () {
