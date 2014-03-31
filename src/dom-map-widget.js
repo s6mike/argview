@@ -41,7 +41,7 @@ $.fn.draggableContainer = function () {
 				}
 			});
 		};
-	return Hammer($(this)).on('mm:start-dragging', function (event) {
+	return Hammer($(this), {'drag_min_distance': 2}).on('mm:start-dragging', function (event) {
 		if (!currentDragObject) {
 			currentDragObject = $(event.relatedTarget);
 			originalDragObjectPosition = {
@@ -54,10 +54,10 @@ $.fn.draggableContainer = function () {
 		var evt = $.Event('mm:stop-dragging');
 		if (currentDragObject) {
 			currentDragObject.trigger(evt);
+			$(this).off('drag', drag);
 			if (evt.result === false) {
 				rollback();
 			}
-			$(this).off('drag', drag);
 			currentDragObject = undefined;
 		}
 	}).on('mouseleave', function () {
@@ -70,7 +70,7 @@ $.fn.draggableContainer = function () {
 };
 $.fn.draggable = function () {
 	'use strict';
-	return $(this).on('mousedown dragstart', function (event) {
+	return $(this).on('dragstart', function (event) {
 		$(this).trigger(
 			$.Event('mm:start-dragging', {
 				relatedTarget: this
@@ -278,9 +278,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
 				.draggable()
 				.on('mm:start-dragging', function () {
-					connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
+					nodeDiv.addClass('dragging');
 				}).on('mm:stop-dragging mm:cancel-dragging', function () {
-					connectorsFor(node.id).find('.connector').add(nodeDiv).removeClass('dragging');
+					nodeDiv.removeClass('dragging');
 					updateNodeConnectors(node.id);
 					return false;
 				}).on('mm:drag', function () {
