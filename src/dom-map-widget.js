@@ -22,7 +22,7 @@ $.fn.draggableContainer = function () {
 					top: oldpos.top + deltaY,
 					left: oldpos.left + deltaX
 				};
-			currentDragObject.css(newpos).trigger('drag');
+			currentDragObject.css(newpos).trigger('mm:drag');
 			capturePosition(event);
 			event.preventDefault();
 		},
@@ -30,14 +30,14 @@ $.fn.draggableContainer = function () {
 			var target = currentDragObject; // allow it to be cleared while animating
 			target.animate(originalDragObjectPosition, {
 				complete: function () {
-					target.trigger('cancel-dragging');
+					target.trigger('mm:cancel-dragging');
 				},
 				progress: function () {
-					target.trigger('drag');
+					target.trigger('mm:drag');
 				}
 			});
 		};
-	$(this).on('start-dragging', function (event) {
+	$(this).on('mm:start-dragging', function (event) {
 		if (!currentDragObject) {
 			currentDragObject = $(event.relatedTarget);
 			originalDragObjectPosition = {
@@ -48,7 +48,7 @@ $.fn.draggableContainer = function () {
 			$(this).on('mousemove', drag);
 		}
 	}).on('mouseup', function () {
-		var evt = $.Event('stop-dragging');
+		var evt = $.Event('mm:stop-dragging');
 		if (currentDragObject) {
 			currentDragObject.trigger(evt);
 			if (evt.result === false) {
@@ -58,7 +58,6 @@ $.fn.draggableContainer = function () {
 			$(this).off('mousemove', drag);
 		}
 	}).on('mouseleave', function (event) {
-		console.log('drag out');
 		if (currentDragObject) {
 			rollback();
 			currentDragObject = dragPosition = undefined;
@@ -71,7 +70,7 @@ $.fn.draggable = function (options) {
 	'use strict';
 	$(this).mousedown(function (event) {
 		$(this).trigger(
-			$.Event('start-dragging', {
+			$.Event('mm:start-dragging', {
 				relatedTarget: this,
 				pageX: event.pageX,
 				pageY: event.pageY
@@ -291,13 +290,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				}).appendTo(stageElement).click(function (evt) {
 					mapModel.clickNode(node.id, evt);
 				}).draggable()
-				.on('start-dragging', function () {
+				.on('mm:start-dragging', function () {
 					connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
-				}).on('stop-dragging cancel-dragging', function () {
+				}).on('mm:stop-dragging mm:cancel-dragging', function () {
 					connectorsFor(node.id).find('.connector').add(nodeDiv).removeClass('dragging');
 					updateNodeConnectors(node.id);
 					return false;
-				}).on('drag', function () {
+				}).on('mm:drag', function () {
 					updateNodeConnectors(node.id);
 				}),
 			textBox = $('<span>').addClass('text').text(node.title).appendTo(nodeDiv).css({
