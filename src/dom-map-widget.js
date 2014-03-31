@@ -4,10 +4,38 @@
 $.fn.positionNode = function (stageElement) {
 	'use strict';
 	return $(this).each(function () {
-		var node = $(this);
+		var node = $(this),
+			xpos = node.data('x') + stageElement.data('stage-x'),
+			ypos = node.data('y') + stageElement.data('stage-y'),
+			growx = 0, growy = 0, minGrow = 100,
+		    move = function () {
+				var element = $(this),
+					oldpos = {
+						top: parseInt(element.css('top')),
+						left: parseInt(element.css('left'))
+					},
+					newpos = {
+						top: oldpos.top + growy,
+						left: oldpos.left + growx
+					};
+				console.log('moving', element, oldpos, newpos);
+				element.css(newpos);
+			};
+		if (xpos < 0) {
+			growx = Math.max(-1 * xpos, minGrow);
+		}
+		if (ypos < 0) {
+			growy = Math.max(-1 * ypos, minGrow);
+		}
+		if (growx > 0 || growy > 0) {
+			console.log('growing by', growx, growy);
+			stageElement.children().each(move);
+			stageElement.data('stage-x', stageElement.data('stage-x') + growx);
+			stageElement.data('stage-y', stageElement.data('stage-y') + growy);
+		}
 		node.css({
-			'left': node.data('x')  + stageElement.data('stage-x'),
-			'top': node.data('y') + stageElement.data('stage-y')
+			'left': xpos + growx,
+			'top': ypos + growy
 		});
 	});
 };
@@ -282,11 +310,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 
 	return this.each(function () {
 		var element = $(this),
-			stage = $('<div>').css({width: '5000', height: '5000', position: 'relative'}).attr('data-mapjs-role', 'stage').appendTo(element);
-		stage.data('stage-x', 2500);
-		stage.data('stage-y', 2500);
-		element.scrollLeft(2500 + element.innerHeight() / 2);
-		element.scrollTop(2500 + element.innerWidth() / 2);
+			stage = $('<div>').css({width: '100%', height: '100%', position: 'relative'}).attr('data-mapjs-role', 'stage').appendTo(element);
+		stage.data('stage-x', element.innerWidth() / 2);
+		stage.data('stage-y', element.innerHeight() / 2);
 		MAPJS.domMediator(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
@@ -321,6 +347,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + selected
 // + default and non default backgrounds for root and children
 // + multi-line text
+//
+// if adding a node to left/top coordinate beyond 0, expand the stage and move all nodes down, expand by a margin to avoid re-expanding all the time
 //
 // focus or selected?
 // drag * drop
