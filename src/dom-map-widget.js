@@ -1,19 +1,23 @@
 /*global MAPJS, Color, $, _*/
 /*jslint nomen: true, newcap: true, browser: true*/
+var capturePosition = function (event) {
+	'use strict';
+	return {
+		x: event.pageX || (event.gesture && event.gesture.center && event.gesture.center.pageX),
+		y: event.pageY || (event.gesture && event.gesture.center && event.gesture.center.pageY)
+	};
+};
+
 $.fn.draggableContainer = function () {
 	'use strict';
 	var currentDragObject,
 		dragPosition,
 		originalDragObjectPosition,
-		capturePosition = function (event) {
-			dragPosition = {
-				x: event.pageX,
-				y: event.pageY
-			};
-		},
+
 		drag = function (event) {
-			var deltaX = (event.pageX - dragPosition.x) || 0,
-				deltaY = (event.pageY - dragPosition.y) || 0,
+			var eventPosition = capturePosition(event),
+				deltaX = (eventPosition.x - dragPosition.x) || 0,
+				deltaY = (eventPosition.y - dragPosition.y) || 0,
 				oldpos = {
 					top: parseInt(currentDragObject.css('top')),
 					left: parseInt(currentDragObject.css('left'))
@@ -23,7 +27,7 @@ $.fn.draggableContainer = function () {
 					left: oldpos.left + deltaX
 				};
 			currentDragObject.css(newpos).trigger('mm:drag');
-			capturePosition(event);
+			dragPosition = eventPosition;
 			event.preventDefault();
 		},
 		rollback = function () {
@@ -37,17 +41,17 @@ $.fn.draggableContainer = function () {
 				}
 			});
 		};
-	$(this).on('mm:start-dragging', function (event) {
+	return Hammer($(this)).on('mm:start-dragging', function (event) {
 		if (!currentDragObject) {
 			currentDragObject = $(event.relatedTarget);
 			originalDragObjectPosition = {
 				top: currentDragObject.css('top'),
 				left: currentDragObject.css('left')
 			};
-			capturePosition(event);
-			$(this).on('mousemove', drag);
+			dragPosition = capturePosition(event);
+			$(this).on('mousemove drag', drag);
 		}
-	}).on('mouseup', function () {
+	}).on('mouseup dragstop', function () {
 		var evt = $.Event('mm:stop-dragging');
 		if (currentDragObject) {
 			currentDragObject.trigger(evt);
@@ -55,29 +59,28 @@ $.fn.draggableContainer = function () {
 				rollback();
 			}
 			currentDragObject = dragPosition = undefined;
-			$(this).off('mousemove', drag);
+			$(this).off('mousemove drag', drag);
 		}
 	}).on('mouseleave', function () {
 		if (currentDragObject) {
 			rollback();
 			currentDragObject = dragPosition = undefined;
-			$(this).off('mousemove', drag);
+			$(this).off('mousemove drag', drag);
 		}
 	}).attr('data-drag-role', 'container');
-	return this;
 };
 $.fn.draggable = function () {
 	'use strict';
-	$(this).mousedown(function (event) {
+	return Hammer($(this)).on('dragstart mousedown', function (event) {
+		var position = capturePosition(event);
 		$(this).trigger(
 			$.Event('mm:start-dragging', {
 				relatedTarget: this,
-				pageX: event.pageX,
-				pageY: event.pageY
+				pageX: position.x,
+				pageY: position.y
 			})
 		);
 	});
-	return this;
 };
 $.fn.positionNode = function (stageElement) {
 	'use strict';
