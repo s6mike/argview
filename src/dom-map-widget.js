@@ -1,4 +1,4 @@
-/*global MAPJS, Color, $, _, console*/
+/*global MAPJS, Color, $, _*/
 /*jslint nomen: true, newcap: true, browser: true*/
 $.fn.draggableContainer = function () {
 	'use strict';
@@ -57,7 +57,7 @@ $.fn.draggableContainer = function () {
 			currentDragObject = dragPosition = undefined;
 			$(this).off('mousemove', drag);
 		}
-	}).on('mouseleave', function (event) {
+	}).on('mouseleave', function () {
 		if (currentDragObject) {
 			rollback();
 			currentDragObject = dragPosition = undefined;
@@ -66,7 +66,7 @@ $.fn.draggableContainer = function () {
 	}).attr('data-drag-role', 'container');
 	return this;
 };
-$.fn.draggable = function (options) {
+$.fn.draggable = function () {
 	'use strict';
 	$(this).mousedown(function (event) {
 		$(this).trigger(
