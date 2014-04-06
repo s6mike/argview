@@ -2,13 +2,30 @@
 /*jslint nomen: true, newcap: true, browser: true*/
 MAPJS.DOMRender = {
 	config: {
-		padding: '8px'
+		padding: 8,
+		textMaxWidth: 166,
+		textClass: 'mapjs-text'
+	},
+	dimensionProvider: function (idea) {
+		'use strict';
+		/* add line breaks to make consistent with PDF, or solve breaking in PDF differently */
+		var textBox = $('<span>').addClass(MAPJS.DOMRender.config.textClass).text(idea.title).css('max-width', MAPJS.DOMRender.config.textMaxWidth).addClass('invisible').appendTo('body'),
+			result = {
+			width: textBox.outerWidth(true),
+			height: textBox.outerHeight(true)
+		}, icon = idea.attr && idea.attr.icon;
+		textBox.detach();
+		if (icon) {
+			if (icon.position === 'top') {
+				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
+				result.height = result.height + icon.height + MAPJS.DOMRender.config.padding;
+			}
+		}
+		return result;
 	},
 	layoutCalculator: function (contentAggregate) {
 		'use strict';
-		var domDimensionProvider = function (idea) {
-		};
-		return MAPJS.calculateLayout(contentAggregate, domDimensionProvider);
+		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
 	}
 };
 
@@ -286,7 +303,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				}).on('mm:drag', function () {
 					updateNodeConnectors(node.id);
 				}),
-			textBox = $('<span>').addClass('text').text(node.title).appendTo(nodeDiv).css({
+			textBox = $('<span>').addClass(MAPJS.DOMRender.config.textClass).text(node.title).appendTo(nodeDiv).css({
 				color: foregroundColor(backgroundColor()),
 				display: 'block'
 			}),
@@ -312,13 +329,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			} else {
 				nodeDiv.prepend(icon);
 			}
-		}
-		else {
-			textBox.css({
-				'margin-top': (node.height - textBox.outerHeight(true)) / 2,
-				'margin-left': (node.width - textBox.outerWidth(true)) / 2
-			});
-
 		}
 	});
 };

@@ -79,15 +79,18 @@
         margin: -2px;
         box-shadow: 5px 5px 5px black;
       }
-      .node .text {
+	  .invisible {
+		  position: absolute; visibility:hidden; 
+	  }
+      .mapjs-text {
         padding: 0;
-        white-space: pre;
+        white-space: pre-wrap;
 		font-family: "Helvetica";
 		font-weight: bold;
 		font-size: 12;
 		text-align: center;
-        line-height: '150%';
-        margin:2px;
+        line-height: 150% !important;
+		margin: 8px;
       }
 		</style>
 
@@ -172,7 +175,7 @@
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
-				mapModel = new MAPJS.MapModel(MAPJS.KineticMediator.layoutCalculator, []);
+				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
 				//container.mapWidget(console,mapModel, isTouch, imageInsertController);
         container.domMapWidget(console, mapModel);
 				jQuery('body').mapToolbarWidget(mapModel);
