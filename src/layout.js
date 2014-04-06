@@ -108,8 +108,7 @@ MAPJS.Outline = function (topBorder, bottomBorder) {
 		);
 	};
 	this.insertAtStart = function (dimensions, margin) {
-		var suboutlineHeight = this.initialHeight(),
-			alignment = 0, //-1 * this.top[0].h - suboutlineHeight * 0.5,
+		var alignment = 0, //-1 * this.top[0].h - suboutlineHeight * 0.5,
 			topBorder = shiftBorder(this.top, alignment),
 			bottomBorder = shiftBorder(this.bottom, alignment),
 			easeIn = function (border) {
@@ -294,12 +293,6 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				);
 			}
 			options.outline = suboutline.insertAtStart(nodeDimensions, margin);
-		},
-		positionFixedSubtrees = function (subtrees) {
-			_.each(subtrees, function (subtree) {
-				subtree.deltaX = subtree.attr.position[0] + nodeDimensions.width * 0.5 - subtree.width * 0.5;
-				subtree.deltaY = subtree.attr.position[1] + nodeDimensions.height * 0.5 - subtree.height * 0.5;
-			});
 		};
 	_.extend(options, nodeDimensions);
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
