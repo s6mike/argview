@@ -1,5 +1,17 @@
 /*global MAPJS, Color, $, _, Hammer*/
 /*jslint nomen: true, newcap: true, browser: true*/
+MAPJS.DOMRender = {
+	config: {
+		padding: '8px'
+	},
+	layoutCalculator: function (contentAggregate) {
+		'use strict';
+		var domDimensionProvider = function (idea) {
+		};
+		return MAPJS.calculateLayout(contentAggregate, domDimensionProvider);
+	}
+};
+
 $.fn.draggableContainer = function () {
 	'use strict';
 	var currentDragObject,
@@ -247,10 +259,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + connectorKey(connector)).remove();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var config = {
-				padding: '8px'
-			},
-			backgroundColor = function () {
+		var backgroundColor = function () {
 				var fromStyle =	node.attr && node.attr.style && node.attr.style.background,
 					generic = MAPJS.defaultStyles[node.level === 1 ? 'root' : 'nonRoot'].background;
 				return fromStyle ||  generic;
@@ -261,22 +270,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			},
 			nodeDiv = $('<div>')
 				.attr('tabindex', 0)
-				.attr({
-					'id': 'node_' + node.id,
-					'data-mapjs-role': 'node'
-				}).data({
-					'x': node.x,
-					'y': node.y
-				})
+				.attr({ 'id': 'node_' + node.id, 'data-mapjs-role': 'node' })
+				.data({ 'x': node.x, 'y': node.y})
 				.positionNode(stageElement)
 				.addClass('node')
-				.css({
-					'width': node.width,
-					'height': node.height,
-					'background-color': backgroundColor()
-				}).appendTo(stageElement).on('click tap', function (evt) {
-					mapModel.clickNode(node.id, evt);
-				}).draggable()
+				.css({ 'width': node.width, 'height': node.height, 'background-color': backgroundColor()})
+				.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
+				.draggable()
 				.on('mm:start-dragging', function () {
 					connectorsFor(node.id).find('.connector').add(nodeDiv).addClass('dragging');
 				}).on('mm:stop-dragging mm:cancel-dragging', function () {
@@ -287,9 +287,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					updateNodeConnectors(node.id);
 				}),
 			textBox = $('<span>').addClass('text').text(node.title).appendTo(nodeDiv).css({
-					color: foregroundColor(backgroundColor()),
-					display: 'block'
-				}),
+				color: foregroundColor(backgroundColor()),
+				display: 'block'
+			}),
 			icon;
 		if (node.attr && node.attr.icon) {
 			icon = document.createElement('img');
@@ -301,12 +301,12 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				$(icon).css({
 					'display': 'block',
 					'margin-left': (node.width - icon.width) / 2,
-					'margin-top': config.padding
+					'margin-top': MAPJS.DOMRender.config.padding + 'px'
 				}).prependTo(nodeDiv);
 				textBox.css({
 					'display': 'block',
 					'width': '100%',
-					'margin-top': config.padding
+					'margin-top': MAPJS.DOMRender.config.padding + 'px'
 				});
 				nodeDiv.css('text-align', 'center');
 			} else {
