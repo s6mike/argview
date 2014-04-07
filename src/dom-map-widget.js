@@ -314,7 +314,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					'max-width': MAPJS.DOMRender.config.textMaxWidth + 'px'
 				})
 				.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
-				.draggable()
 				.on('mm:start-dragging', function () {
 					nodeDiv.addClass('dragging');
 				}).on('mm:stop-dragging mm:cancel-dragging', function () {
@@ -323,7 +322,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					return false;
 				}).on('mm:drag', function () {
 					updateNodeConnectors(node.id);
-				}).keydown('space', editNode)
+				})
 				.addClass(MAPJS.DOMRender.config.textClass),
 			icon = node.attr && node.attr.icon,
 			textBox = $('<span>')
@@ -357,6 +356,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
 				});
 			}
+		}
+		if (mapModel.isEditingEnabled()) {
+			nodeDiv.draggable().keydown('space', editNode)
 		}
 	});
 };
@@ -447,27 +449,41 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + default and non default backgrounds for root and children
 // + multi-line text
 // + if adding a node to left/top coordinate beyond 0, expand the stage and move all nodes down, expand by a margin to avoid re-expanding all the time
+// + images in background or as separate elements?
+// + icon position
+// + focus or selected?
 //
-// focus or selected?
+//
+//
+// --------- read only ------------
+// - scroll/swipe
+// attachment - clip
+// folded
+//  click-tap to collapse/uncollapse
+// custom connectors
+// prevent scrolling so the screen is blank
+// zoom
+// hyperlinks
+// animations
+// perf test large maps
+//
+// --------- editing --------------
+// - don't set contentEditable
+// - enable drag & drop
 // drop
-// images in background or as separate elements?
 // editing as span or as textarea - grow automatically
 // drag background
-// icon position
-// custom connectors
-// attachment - clip
 // straight lines extension
 // collaboration avatars
-// folded
 // activated
-// zoom
 // mouse events
 // mapwidget keyboard bindings
 // mapwidget mouse bindings
-	// prevent scrolling so the screen is blank
 // html export
+
+
 // collaboration - collaborator images
-// hyperlinks
+
 // remaining kinetic mediator events
 // -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
 // -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
@@ -489,7 +505,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // -	mapModel.addEventListener('mapViewResetRequested', function () {
 // -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
 // -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
-// animations
+
 // - node removed
 // - node moved (esp reason = failed)
 // no more memoization on calc connector - not needed
