@@ -20,7 +20,7 @@ MAPJS.DOMRender = {
 				result.height = result.height + icon.height + MAPJS.DOMRender.config.padding;
 			} else if (icon.position === 'left' || icon.position === 'right') {
 				result.width = result.width + icon.width + MAPJS.DOMRender.config.padding;
-				result.height = Math.max(result.height, icon.height);// + 2 * MAPJS.DOMRender.config.padding);
+				result.height = Math.max(result.height, icon.height + 2 * MAPJS.DOMRender.config.padding);
 			} else {
 				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
 				result.height = Math.max(result.height, icon.height + 2 * MAPJS.DOMRender.config.padding);
