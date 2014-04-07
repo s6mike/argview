@@ -163,8 +163,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			};
 		},
 		calculateConnector = function (parent, child) {
-			return calculateConnectorInner(parent.position().left, parent.position().top, parent.width(), parent.height(),
-				child.position().left, child.position().top, child.width(), child.height());
+			return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
+				child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
 		},
 		calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
 				childX, childY, childWidth, childHeight) {
