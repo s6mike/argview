@@ -3,7 +3,7 @@
 MAPJS.DOMRender = {
 	config: {
 		padding: 8,
-		textMaxWidth: 166,
+		textMaxWidth: 160,
 		textClass: 'mapjs-text'
 	},
 	dimensionProvider: function (idea) {
@@ -11,16 +11,22 @@ MAPJS.DOMRender = {
 		/* add line breaks to make consistent with PDF, or solve breaking in PDF differently */
 		var textBox = $('<span>').addClass(MAPJS.DOMRender.config.textClass).text(idea.title).css('max-width', MAPJS.DOMRender.config.textMaxWidth).addClass('invisible').appendTo('body'),
 			result = {
-			width: textBox.outerWidth(true),
-			height: textBox.outerHeight(true)
+			width: textBox.outerWidth() + 2 * MAPJS.DOMRender.config.padding,
+			height: textBox.outerHeight() + 2 * MAPJS.DOMRender.config.padding
 		}, icon = idea.attr && idea.attr.icon;
-		textBox.detach();
 		if (icon) {
-			if (icon.position === 'top') {
+			if (icon.position === 'top' || icon.position === 'bottom') {
 				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
 				result.height = result.height + icon.height + MAPJS.DOMRender.config.padding;
+			} else if (icon.position === 'left' || icon.position === 'right') {
+				result.width = result.width + icon.width + MAPJS.DOMRender.config.padding;
+				result.height = Math.max(result.height, icon.height);// + 2 * MAPJS.DOMRender.config.padding);
+			} else {
+				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
+				result.height = Math.max(result.height, icon.height + 2 * MAPJS.DOMRender.config.padding);
 			}
 		}
+		textBox.detach();
 		return result;
 	},
 	layoutCalculator: function (contentAggregate) {
@@ -276,7 +282,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + connectorKey(connector)).remove();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var backgroundColor = function () {
+		var padding = MAPJS.DOMRender.config.padding,
+			doublePad = 2 * padding,
+			backgroundColor = function () {
 				var fromStyle =	node.attr && node.attr.style && node.attr.style.background,
 					generic = MAPJS.defaultStyles[node.level === 1 ? 'root' : 'nonRoot'].background;
 				return fromStyle ||  generic;
@@ -285,13 +293,26 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				var tintedBackground = Color(backgroundColor).mix(Color('#EEEEEE')).hexString();
 				return MAPJS.contrastForeground(tintedBackground);
 			},
+			stopEditing = function () {
+				mapModel.setInputEnabled(true);
+				nodeDiv.attr('contentEditable', 'false').off('blur', stopEditing);
+			},
+			editNode = function () {
+				mapModel.setInputEnabled(false);
+				nodeDiv.attr('contentEditable', 'true').on('blur', stopEditing);
+				nodeDiv.focus();
+			},
 			nodeDiv = $('<div>')
 				.attr('tabindex', 0)
 				.attr({ 'id': 'node_' + node.id, 'data-mapjs-role': 'node' })
 				.data({ 'x': node.x, 'y': node.y})
 				.positionNode(stageElement)
 				.addClass('node')
-				.css({ 'width': node.width, 'height': node.height, 'background-color': backgroundColor()})
+				.css({ 'background-color': backgroundColor(), color: foregroundColor(backgroundColor()),
+					'min-width': node.width - doublePad, 'min-height': node.height - doublePad,
+					'padding': padding + 'px',
+					'max-width': MAPJS.DOMRender.config.textMaxWidth + 'px'
+				})
 				.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
 				.draggable()
 				.on('mm:start-dragging', function () {
@@ -302,32 +323,39 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					return false;
 				}).on('mm:drag', function () {
 					updateNodeConnectors(node.id);
-				}),
-			textBox = $('<span>').addClass(MAPJS.DOMRender.config.textClass).text(node.title).appendTo(nodeDiv).css({
-				color: foregroundColor(backgroundColor()),
-				display: 'block'
-			}),
-			icon;
-		if (node.attr && node.attr.icon) {
-			icon = document.createElement('img');
-			icon.src = node.attr.icon.url;
-			icon.width = node.attr.icon.width;
-			icon.height = node.attr.icon.height;
-
-			if (node.attr.icon.position === 'top') {
-				$(icon).css({
-					'display': 'block',
-					'margin-left': (node.width - icon.width) / 2,
-					'margin-top': MAPJS.DOMRender.config.padding + 'px'
-				}).prependTo(nodeDiv);
+				}).keydown('space', editNode)
+				.addClass(MAPJS.DOMRender.config.textClass),
+			icon = node.attr && node.attr.icon,
+			textBox = $('<span>')
+				.addClass(MAPJS.DOMRender.config.textClass)
+				.text(node.title).appendTo(nodeDiv);
+		if (icon) {
+			nodeDiv.css({
+				'background-image': 'url("' + icon.url + '")',
+				'background-repeat': 'no-repeat',
+				'background-size': icon.width + 'px ' + icon.height + 'px'
+			});
+			if (icon.position === 'top' || icon.position === 'bottom') {
+				nodeDiv.css({
+					'background-position': 'center ' + icon.position + ' ' + padding + 'px',
+					'min-height': node.height - icon.height - doublePad
+				}).css('padding-' + icon.position, icon.height + doublePad);
+			}
+			else if (icon.position === 'left' || icon.position === 'right') {
+				nodeDiv.css({
+					'background-position': icon.position + ' ' + padding + 'px center',
+					'min-width': node.width - icon.width - doublePad
+				}).css('padding-' + icon.position, icon.width + doublePad);
 				textBox.css({
-					'display': 'block',
-					'width': '100%',
-					'margin-top': MAPJS.DOMRender.config.padding + 'px'
+					'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
 				});
-				nodeDiv.css('text-align', 'center');
 			} else {
-				nodeDiv.prepend(icon);
+				nodeDiv.css({
+					'background-position': 'center center',
+				});
+				textBox.css({
+					'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
+				});
 			}
 		}
 	});
@@ -418,11 +446,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + selected
 // + default and non default backgrounds for root and children
 // + multi-line text
-//
-// if adding a node to left/top coordinate beyond 0, expand the stage and move all nodes down, expand by a margin to avoid re-expanding all the time
+// + if adding a node to left/top coordinate beyond 0, expand the stage and move all nodes down, expand by a margin to avoid re-expanding all the time
 //
 // focus or selected?
-// drag * drop
+// drop
+// images in background or as separate elements?
+// editing as span or as textarea - grow automatically
 // drag background
 // icon position
 // custom connectors
@@ -435,6 +464,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // mouse events
 // mapwidget keyboard bindings
 // mapwidget mouse bindings
+	// prevent scrolling so the screen is blank
+// html export
+// collaboration - collaborator images
 // hyperlinks
 // remaining kinetic mediator events
 // -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {

@@ -14,6 +14,50 @@ function test_tree() {
 		"attachment":{"contentType":"text/html","content":"content <b>bold content</b>"}},
 		   "ideas":{"11":{"title":"4","id":4,"ideas":{"2":{"title": lorem,"id":7,
 
-			   "ideas":{"2":{"title":"91","id":9},"5":{"title":"12","id":12},"6":{"title":"We'll be famous...","id":34}}}}},"12":{"title":"A cunning plan...","id":15,"ideas":{"1":{"title":"10","id":10,"attr":{position:[0,100]}}}}},"formatVersion":2,"links":[]};
+			   "ideas":{"2":{"title":"91","id":9},"5":{"title":"12","id":12,
+		attr: {
+			"icon":{
+				url: imgSrc,
+				height: 100,
+				width: 150,
+				position: 'left'
+			}
+		}
+
+
+			   },"6":{"title":"We'll be famous...","id":34,
+
+		attr: {
+			"icon":{
+				url: imgSrc,
+				height: 50,
+				width: 50,
+				position: 'bottom'
+			}
+		}
+
+
+			   }}}}},"12":{"title": lorem,"id":15,
+		attr: {
+			"icon":{
+				url: imgSrc,
+				height: 100,
+				width: 220,
+				position: 'right'
+			}
+		}
+
+
+				   ,"ideas":{"1":{"title":"10","id":10,"attr":{
+
+			"icon":{
+				url: imgSrc,
+				height: 100,
+				width: 100,
+				position: 'center'
+			},
+
+
+					   position:[0,100]}}}}},"formatVersion":2,"links":[]};
 	return {"title":"1 should check all","id":1,"attr":{"style":{"background":"#FF0000"},"attachment":{"contentType":"text/html","content":"content <b>bold content</b>"}},"ideas":{"1":{"attr":{"collapsed":true,"style":{"background":"#E0E0E0"}},"title":"2 is very very lng www.google.com","id":2,"ideas":{"1":{"title":"3 is also very long","id":3}}},"11":{"title":"4","id":4,"ideas":{"1":{"title":"5","id":5,"ideas":{"1":{"title":"6","id":6},"2":{"title":"7 is long","id":7,"ideas":{"1":{"title":"8","id":8},"2":{"title":"9","id":9},"3":{"title":"10","id":10},"4":{"title":"11","id":11},"5":{"title":"12","id":12}}}}}}},"12":{"title":"A cunning plan...","id":15},"13":{"title":"A cunning plan...","id":17},"14":{"title":"We'll be famous...","id":19},"15":{"title":"A brilliant idea...","id":21,"ideas":{"1":{"title":"A brilliant idea...","id":24},"2":{"title":"A cunning plan...","id":25},"3":{"title":"A brilliant idea...","id":26},"4":{"title":"A brilliant idea...","id":27},"5":{"title":"A brilliant idea...","id":28},"6":{"title":"A cunning plan...","id":29},"7":{"title":"A brilliant idea...","id":30},"8":{"title":"A brilliant idea...","id":31}}},"16":{"title":"A cunning plan...","id":23},"-1":{"title":"A brilliant idea...","id":13},"-2":{"title":"A brilliant idea...","id":14},"-3":{"title":"A cunning plan...","id":16},"-4":{"title":"We'll be famous...","id":18},"-5":{"title":"We'll be famous...","id":20},"-6":{"title":"A brilliant idea...","id":22}},"formatVersion":2,"links":[{"ideaIdFrom":18,"ideaIdTo":15,"attr":{"style":{"lineStyle":"solid","color":"blue"}}},{"ideaIdFrom":14,"ideaIdTo":19,"attr":{"style":{"lineStyle":"solid"}}},{"ideaIdFrom":16,"ideaIdTo":17,"attr":{"style":{"color":"blue"}}},{"ideaIdFrom":13,"ideaIdTo":15,"attr":{"style":{"color":"red"}}}]};
 }
