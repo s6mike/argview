@@ -1,4 +1,4 @@
-/*global jQuery, describe, it, beforeEach, afterEach, _, expect*/
+/*global jQuery, describe, it, beforeEach, afterEach, _, expect, navigator*/
 /*
 describe('MapViewController', function () {
 	'use strict';
@@ -22,8 +22,18 @@ describe('MapViewController', function () {
 */
 describe('updateNodeContent', function () {
 	'use strict';
-	var underTest, nodeContent;
+	var underTest, nodeContent, style,
+		isHeadless = function () {
+			return (navigator.userAgent.indexOf('PhantomJS')  !== -1);
+		},
+		checkNoStyle = function (element, style) {
+			if (element.attr('style')) {
+				expect(element.attr('style').indexOf(style)).toBe(-1);
+			}
+
+		};
 	beforeEach(function () {
+		style = jQuery('<style type="text/css"> .test-padding { padding: 5px} </style>').appendTo('head');
 		underTest = jQuery('<span>').appendTo('body');
 		nodeContent = {
 			title: 'Hello World!',
@@ -32,6 +42,7 @@ describe('updateNodeContent', function () {
 	});
 	afterEach(function () {
 		underTest.detach();
+		style.detach();
 	});
 	it('returns itself to allow chaining', function () {
 		expect(underTest.updateNodeContent(nodeContent)[0]).toEqual(underTest[0]);
@@ -91,8 +102,7 @@ describe('updateNodeContent', function () {
 		it('clears background color and mapjs-node-* styles from the style if not specified', function () {
 			underTest.css('background-color', 'blue').addClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
 			underTest.updateNodeContent(nodeContent);
-
-			expect(_.contains(underTest.attr('style'), 'background-color')).toBeFalsy();
+			checkNoStyle(underTest, 'background-color');
 			_.each(['mapsj-node-dark', 'mapjs-node-white', 'mapjs-node-light'], function (cls) {
 				expect(underTest.hasClass(cls)).toBeFalsy();
 			});
@@ -112,6 +122,7 @@ describe('updateNodeContent', function () {
 				};
 				nodeContent.title = 'AAAA';
 				textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+				underTest.addClass('test-padding');
 			});
 			it('sets the generic background properties to the image which does not repeat', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -131,21 +142,48 @@ describe('updateNodeContent', function () {
 				nodeContent.attr.icon.height = 5;
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('50% 50%');
-				expect(_.contains(underTest.attr('style'), 'min-width')).toBeFalsy();
-				expect(_.contains(underTest.attr('style'), 'min-height')).toBeFalsy();
-				expect(_.contains(textBox.attr('style'), 'margin-top')).toBeFalsy();
+				checkNoStyle(underTest, 'min-width');
+				checkNoStyle(underTest, 'min-height');
+				checkNoStyle(textBox, 'margin-top');
 			});
 			it('positions left icons left of node text and vertically centers the text', function () {
 				nodeContent.attr.icon.position = 'left';
+				underTest.updateNodeContent(nodeContent);
+				if (!isHeadless()) {
+					expect(underTest.css('background-position')).toBe('left 5px top 50%');
+				}
+
+				expect(underTest.css('padding-left')).toEqual('410px');
+				expect(textBox.css('margin-top')).toBe('241px');
 			});
 			it('positions right icons right of node text and vertically centers the text', function () {
+				nodeContent.attr.icon.position = 'right';
+				underTest.updateNodeContent(nodeContent);
 
+				if (!isHeadless()) {
+					expect(underTest.css('background-position')).toBe('right 5px top 50%');
+				}
+
+				expect(underTest.css('padding-right')).toEqual('410px');
+				expect(textBox.css('margin-top')).toBe('241px');
 			});
 			it('positions top icons top of node text and horizontally centers the text', function () {
+				nodeContent.attr.icon.position = 'top';
+				underTest.updateNodeContent(nodeContent);
 
+				if (!isHeadless()) {
+					expect(underTest.css('background-position')).toBe('left 50% top 5px');
+				}
+				expect(underTest.css('padding-top')).toEqual('510px');
 			});
 			it('positions bottom icons bottom of node text and horizontally centers the text', function () {
+				nodeContent.attr.icon.position = 'bottom';
+				underTest.updateNodeContent(nodeContent);
 
+				if (!isHeadless()) {
+					expect(underTest.css('background-position')).toBe('left 50% bottom 5px');
+				}
+				expect(underTest.css('padding-bottom')).toEqual('510px');
 			});
 
 		});

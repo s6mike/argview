@@ -44,6 +44,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			var textBox = textSpan(),
 				textHeight = textBox.outerHeight(),
 				textWidth = textBox.outerWidth(),
+				padding,
 				selfProps = {
 					'min-height': '',
 					'min-width': '',
@@ -53,6 +54,8 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					'background-position': ''
 				},
 				textProps = {'margin-top': ''};
+			self.css({padding: ''});
+			padding = parseInt(self.css('padding-left'), 10);
 			if (icon) {
 				_.extend(selfProps, {
 					'background-image': 'url("' + icon.url + '")',
@@ -61,22 +64,18 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					'background-position': 'center center'
 				});
 				if (icon.position === 'top' || icon.position === 'bottom') {
-				/*	self.css({
-						'background-position': 'center ' + icon.position + ' ' + padding + 'px',
-						'min-height': node.height - icon.height
-					}).css('padding-' + icon.position, icon.height + doublePad);
-					*/
+					selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
+					selfProps['padding-' + icon.position] = icon.height + (padding * 2);
 				}
 				else if (icon.position === 'left' || icon.position === 'right') {
-				/*
-					self.css({
-						'background-position': icon.position + ' ' + padding + 'px center',
-						'min-width': node.width - icon.width
-					}).css('padding-' + icon.position, icon.width + doublePad);
-					textBox.css({
-						'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
-					});
-				*/
+					selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
+					selfProps['padding-' + icon.position] = icon.width + (padding * 2);
+					if (icon.height > textHeight) {
+						textProps['margin-top'] =  (icon.height - textHeight) / 2;
+						selfProps['min-height'] = icon.height;
+					} else {
+						textProps['margin-top'] = '';
+					}
 				} else {
 					if (icon.height > textHeight) {
 						textProps['margin-top'] =  (icon.height - textHeight) / 2;

@@ -1,7 +1,7 @@
 .mapjs-node {
 	position: absolute;
 	margin: 0px;
-	padding: 0px;
+	padding: 8px;
 	border-radius: 10px;
 	border: 1px solid #888;
 	box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.4);
