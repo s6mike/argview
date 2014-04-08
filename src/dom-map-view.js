@@ -19,6 +19,13 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		updateText = function (title) {
 			textSpan().text(title);
 		},
+		setCollapseClass = function () {
+			if (nodeContent.attr && nodeContent.attr.collapsed) {
+				self.addClass('mapjs-collapsed');
+			} else {
+				self.removeClass('mapjs-collapsed');
+			}
+		},
 		foregroundClass = function (backgroundColor) {
 			/*jslint newcap:true*/
 			var luminosity = Color(backgroundColor).mix(Color('#EEEEEE')).luminosity();
@@ -66,6 +73,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 				if (icon.position === 'top' || icon.position === 'bottom') {
 					selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
 					selfProps['padding-' + icon.position] = icon.height + (padding * 2);
+					selfProps['min-width'] = icon.width;
 				}
 				else if (icon.position === 'left' || icon.position === 'right') {
 					selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
@@ -73,15 +81,11 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					if (icon.height > textHeight) {
 						textProps['margin-top'] =  (icon.height - textHeight) / 2;
 						selfProps['min-height'] = icon.height;
-					} else {
-						textProps['margin-top'] = '';
 					}
 				} else {
 					if (icon.height > textHeight) {
 						textProps['margin-top'] =  (icon.height - textHeight) / 2;
 						selfProps['min-height'] = icon.height;
-					} else {
-						textProps['margin-top'] = '';
 					}
 					if (icon.width > textWidth) {
 						selfProps['min-width'] = icon.width;
@@ -93,8 +97,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		};
 	updateText(nodeContent.title);
 	self.attr('mapjs-level', nodeContent.level);
-	self.addClass('mapjs-node');
+
 	setColors();
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
+	setCollapseClass();
 	return self;
 };

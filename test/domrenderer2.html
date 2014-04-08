@@ -30,14 +30,16 @@
     <script type="text/javascript" src="../src/dom-map-view.js"></script>
     <script>
 
-      var left=0;
+      var left=0, top=300,
+          lorem = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non haben';
+
       _.each(['top', 'left', 'bottom', 'right', 'center'], function (pos) {
-        $('<div tabindex="1" style="left:' + left + 'px">').appendTo('#container').updateNodeContent( {
-            level: 1,
-            title: 'Hey you guys!',
+        $('<div id="node_' + left + '" tabindex="1" style="left:' + left + 'px">').appendTo('#container').addClass('mapjs-node').updateNodeContent( {
+            level: 2,
+            title: "lorem",
             attr: {
                 style: {
-                  background: '#00004F'
+                  // background: '#00004F'
                 },
                 icon: {
                   url: 'http://paperbotz.files.wordpress.com/2010/11/hello_kitty001.png',

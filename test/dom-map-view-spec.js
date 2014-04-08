@@ -14,10 +14,26 @@ describe('MapViewController', function () {
 		it('expands the stage if necessary and moves all other nodes down or right', function () {
 
 		});
+		it('adds a mapjs-node class to the node', function () {
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-node')).toBeTruthy();
+		});
 	});
 	describe('onMapScaleChanged', function () {
 
 	});
+	describe('selection and activation', function () {
+		it('adds a selected class when selected', function () {
+
+		});
+		it('focuses the node when selected', function () {
+
+		});
+		it('removes the selected class when unselected', function () {
+
+		});
+	});
+
 });
 */
 describe('updateNodeContent', function () {
@@ -28,7 +44,14 @@ describe('updateNodeContent', function () {
 		},
 		checkNoStyle = function (element, style) {
 			if (element.attr('style')) {
-				expect(element.attr('style').indexOf(style)).toBe(-1);
+				if (_.isArray(style)) {
+					_.each(style, function (aStyle) {
+						checkNoStyle(element, aStyle);
+					});
+				} else {
+					expect(element.attr('style').indexOf(style)).toBe(-1);
+				}
+
 			}
 
 		};
@@ -57,12 +80,6 @@ describe('updateNodeContent', function () {
 			underTest.updateNodeContent(nodeContent);
 			expect(existingSpan.text()).toEqual(nodeContent.title);
 			expect(underTest.children().length).toBe(1);
-		});
-	});
-	describe('css styling', function () {
-		it('adds a mapjs-node class to the node', function () {
-			underTest.updateNodeContent(nodeContent);
-			expect(underTest.hasClass('mapjs-node')).toBeTruthy();
 		});
 	});
 	describe('setting the level', function () {
@@ -109,8 +126,11 @@ describe('updateNodeContent', function () {
 		});
 	});
 	describe('icon handling', function () {
+		var textBox;
+		beforeEach(function () {
+			textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+		});
 		describe('when icon is set', function () {
-			var textBox;
 			beforeEach(function () {
 				nodeContent.attr = {
 					icon: {
@@ -121,7 +141,7 @@ describe('updateNodeContent', function () {
 					}
 				};
 				nodeContent.title = 'AAAA';
-				textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+
 				underTest.addClass('test-padding');
 			});
 			it('sets the generic background properties to the image which does not repeat', function () {
@@ -175,6 +195,7 @@ describe('updateNodeContent', function () {
 					expect(underTest.css('background-position')).toBe('left 50% top 5px');
 				}
 				expect(underTest.css('padding-top')).toEqual('510px');
+				expect(underTest.css('min-width')).toEqual('400px');
 			});
 			it('positions bottom icons bottom of node text and horizontally centers the text', function () {
 				nodeContent.attr.icon.position = 'bottom';
@@ -184,35 +205,38 @@ describe('updateNodeContent', function () {
 					expect(underTest.css('background-position')).toBe('left 50% bottom 5px');
 				}
 				expect(underTest.css('padding-bottom')).toEqual('510px');
+				expect(underTest.css('min-width')).toEqual('400px');
 			});
 
 		});
 		it('removes background image settings and narrows the node if no icon set', function () {
-
-		});
-	});
-	describe('selection and activation', function () {
-		it('adds a selected class when selected', function () {
-
-		});
-		it('focuses the node when selected', function () {
-
-		});
-		it('removes the selected class when unselected', function () {
+			underTest.css({
+					'min-height': '200px',
+					'min-width': '20px',
+					'background-image': 'url(http://iconurl/)',
+					'background-repeat': 'no-repeat',
+					'background-size': '20px 20px',
+					'background-position': 'center center',
+					'padding': '10px 20px 30px 40px'
+				});
+			textBox.css('margin-top', '20px');
+			underTest.updateNodeContent(nodeContent);
+			checkNoStyle(underTest, ['background', 'padding', 'min-']);
+			checkNoStyle(textBox, 'margin-top');
 
 		});
 	});
 	describe('collapsed', function () {
-		it('adds a collapsed background when collapsed', function () {
-
+		it('adds a collapsed class when collapsed', function () {
+			nodeContent.attr = {collapsed: true};
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-collapsed')).toBeTruthy();
 		});
-		it('removes the collapsed background when uncollapsed', function () {
-
+		it('removes the collapsed class when uncollapsed', function () {
+			underTest.addClass('mapjs-collapsed');
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-collapsed')).toBeFalsy();
 		});
-		it('adds a collapsed background when collapsed', function () {
-
-		});
-
 	});
 	describe('hyperlink handling', function () {
 		_.each([
