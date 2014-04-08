@@ -1,0 +1,27 @@
+.mapjs-node {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	border-radius: 10px;
+	border: 1px solid #888;
+	box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.4);
+	z-index: 2;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	background-color: #E0E0E0;
+	color: #4F4F4F;
+}
+.mapjs-node[mapjs-level="1"] {
+	background-color:#22AAE0;
+}
+.mapjs-node-light {
+	color: #4F4F4F;
+}
+.mapjs-node-dark {
+	color: #EEEEEE;
+}
+.mapjs-node-white {
+	color: black;
+}
