@@ -1,4 +1,4 @@
-/*global jQuery, Color*/
+/*global jQuery, Color, _*/
 /*
  * MapViewController
  * -  listening to map model, updating the dom on the stage
@@ -39,10 +39,63 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			} else {
 				self.css('background-color', '');
 			}
+		},
+		setIcon = function (icon) {
+			var textBox = textSpan(),
+				textHeight = textBox.outerHeight(),
+				textWidth = textBox.outerWidth(),
+				selfProps = {
+					'min-height': '',
+					'min-width': '',
+					'background-image': '',
+					'background-repeat': '',
+					'background-size': '',
+					'background-position': ''
+				},
+				textProps = {'margin-top': ''};
+			if (icon) {
+				_.extend(selfProps, {
+					'background-image': 'url("' + icon.url + '")',
+					'background-repeat': 'no-repeat',
+					'background-size': icon.width + 'px ' + icon.height + 'px',
+					'background-position': 'center center'
+				});
+				if (icon.position === 'top' || icon.position === 'bottom') {
+				/*	self.css({
+						'background-position': 'center ' + icon.position + ' ' + padding + 'px',
+						'min-height': node.height - icon.height
+					}).css('padding-' + icon.position, icon.height + doublePad);
+					*/
+				}
+				else if (icon.position === 'left' || icon.position === 'right') {
+				/*
+					self.css({
+						'background-position': icon.position + ' ' + padding + 'px center',
+						'min-width': node.width - icon.width
+					}).css('padding-' + icon.position, icon.width + doublePad);
+					textBox.css({
+						'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
+					});
+				*/
+				} else {
+					if (icon.height > textHeight) {
+						textProps['margin-top'] =  (icon.height - textHeight) / 2;
+						selfProps['min-height'] = icon.height;
+					} else {
+						textProps['margin-top'] = '';
+					}
+					if (icon.width > textWidth) {
+						selfProps['min-width'] = icon.width;
+					}
+				}
+			}
+			self.css(selfProps);
+			textBox.css(textProps);
 		};
 	updateText(nodeContent.title);
 	self.attr('mapjs-level', nodeContent.level);
 	self.addClass('mapjs-node');
 	setColors();
+	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	return self;
 };

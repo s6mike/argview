@@ -99,19 +99,54 @@ describe('updateNodeContent', function () {
 		});
 	});
 	describe('icon handling', function () {
-		it('positions left icons left of node text and vertically centers the text', function () {
+		describe('when icon is set', function () {
+			var textBox;
+			beforeEach(function () {
+				nodeContent.attr = {
+					icon: {
+						url: 'http://iconurl/',
+						width: 400,
+						height: 500,
+						position: 'center'
+					}
+				};
+				nodeContent.title = 'AAAA';
+				textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+			});
+			it('sets the generic background properties to the image which does not repeat', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.css('background-image')).toBe('url(http://iconurl/)');
+				expect(underTest.css('background-repeat')).toBe('no-repeat');
+				expect(underTest.css('background-size')).toBe('400px 500px');
+			});
+			it('positions center icons behind text and expands the node if needed to fit the image', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.css('background-position')).toBe('50% 50%');
+				expect(underTest.css('min-width')).toEqual('400px');
+				expect(underTest.css('min-height')).toEqual('500px');
+				expect(textBox.css('margin-top')).toBe('241px');
+			});
+			it('positions center icons behind text and does not expand the node if not needed', function () {
+				nodeContent.attr.icon.width = 5;
+				nodeContent.attr.icon.height = 5;
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.css('background-position')).toBe('50% 50%');
+				expect(_.contains(underTest.attr('style'), 'min-width')).toBeFalsy();
+				expect(_.contains(underTest.attr('style'), 'min-height')).toBeFalsy();
+				expect(_.contains(textBox.attr('style'), 'margin-top')).toBeFalsy();
+			});
+			it('positions left icons left of node text and vertically centers the text', function () {
+				nodeContent.attr.icon.position = 'left';
+			});
+			it('positions right icons right of node text and vertically centers the text', function () {
 
-		});
-		it('positions right icons right of node text and vertically centers the text', function () {
+			});
+			it('positions top icons top of node text and horizontally centers the text', function () {
 
-		});
-		it('positions top icons top of node text and horizontally centers the text', function () {
+			});
+			it('positions bottom icons bottom of node text and horizontally centers the text', function () {
 
-		});
-		it('positions bottom icons bottom of node text and horizontally centers the text', function () {
-
-		});
-		it('positions center icons behind text and expands the node if needed to fit the image', function () {
+			});
 
 		});
 		it('removes background image settings and narrows the node if no icon set', function () {
