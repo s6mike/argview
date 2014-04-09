@@ -69,8 +69,8 @@ jQuery.fn.updateConnector = function () {
 			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
 			straightLine = false,
 			pathElement;
-		position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
-		position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
+		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
+		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
 		element.css(position);
 		if (straightLine) {
 			element.empty();
