@@ -48,9 +48,16 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
 				element = textSpan();
 			element.text(text.trim());
-			element.css('max-width', '');
+			element.css({'max-width': '', 'min-width': ''});
 			if ((element[0].scrollWidth - 10) > element.outerWidth()) {
 				element.css('max-width', element[0].scrollWidth + 'px');
+			}
+			else {
+				var height = element.height();
+				element.css('min-width', element.css('max-width'));
+				if (element.height() === height) {
+					element.css('min-width', '');
+				}
 			}
 		},
 		setCollapseClass = function () {

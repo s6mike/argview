@@ -3,7 +3,8 @@ function test_tree() {
 
 	var lorem = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
 
-	return {"title":"first shouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshould last","id":1,
+	var longish = 'first shouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshould last';
+	return {"title": 'longish',"id":1,
 		"attr":{"style":{"background":"#FF0000"},
 			"icon":{
 				url: imgSrc,
@@ -14,7 +15,7 @@ function test_tree() {
 		"attachment":{"contentType":"text/html","content":"content <b>bold content</b>"}},
 		   "ideas":{"11":{"title":"4","id":4,"ideas":{"2":{"title": lorem,"id":7,
 
-			   "ideas":{"2":{"title":"91","id":9},"5":{"title":"12","id":12,
+			   "ideas":{"2":{"title":"91","id":9},"5":{"title":"12\nsome\nlines","id":12,
 		attr: {
 			"icon":{
 				url: imgSrc,
@@ -25,7 +26,7 @@ function test_tree() {
 		}
 
 
-			   },"6":{"title":"We'll be famous...","id":34,
+			   },"6":{"title":"We'll\nbe\nfamous...","id":34,
 
 		attr: {
 			"icon":{

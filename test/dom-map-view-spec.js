@@ -88,6 +88,18 @@ describe('updateNodeContent', function () {
 
 			expect(parseInt(textBox.css('max-width'), 10)).toBeGreaterThan(160);
 		});
+		it('should not allow the box to shrink width if it is multiline', function () {
+			var textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest).css('width', '100px');
+			nodeContent.title = 'first should could would maybe not so much and so on go on';
+			underTest.updateNodeContent(nodeContent);
+			expect(textBox.css('min-width')).toBe('160px');
+		});
+		it('should not force expand narrow multi-line text', function () {
+			var textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest).css('width', '100px');
+			nodeContent.title = 'f\ns\nc';
+			underTest.updateNodeContent(nodeContent);
+			checkNoStyle(textBox, 'min-width');
+		});
 
 	});
 	describe('setting the level', function () {

@@ -8,24 +8,11 @@ MAPJS.DOMRender = {
 	},
 	dimensionProvider: function (idea) {
 		'use strict';
-		/* add line breaks to make consistent with PDF, or solve breaking in PDF differently */
-		var textBox = $('<span>').addClass(MAPJS.DOMRender.config.textClass).text(idea.title).css('max-width', MAPJS.DOMRender.config.textMaxWidth).addClass('invisible').appendTo('body'),
+		var textBox = $('<div>').addClass('mapjs-node invisible').appendTo('body').updateNodeContent(idea),
 			result = {
-			width: textBox.outerWidth() + 2 * MAPJS.DOMRender.config.padding,
-			height: textBox.outerHeight() + 2 * MAPJS.DOMRender.config.padding
-		}, icon = idea.attr && idea.attr.icon;
-		if (icon) {
-			if (icon.position === 'top' || icon.position === 'bottom') {
-				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
-				result.height = result.height + icon.height + MAPJS.DOMRender.config.padding;
-			} else if (icon.position === 'left' || icon.position === 'right') {
-				result.width = result.width + icon.width + MAPJS.DOMRender.config.padding;
-				result.height = Math.max(result.height, icon.height + 2 * MAPJS.DOMRender.config.padding);
-			} else {
-				result.width = Math.max(result.width, icon.width + 2 * MAPJS.DOMRender.config.padding);
-				result.height = Math.max(result.height, icon.height + 2 * MAPJS.DOMRender.config.padding);
+				width: textBox.outerWidth(true),
+				height: textBox.outerHeight(true)
 			}
-		}
 		textBox.detach();
 		return result;
 	},
