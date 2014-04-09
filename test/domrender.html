@@ -101,7 +101,7 @@
 				idea = MAPJS.content(test_tree()),
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-		mapModel.setEditingEnabled(false);
+	//	mapModel.setEditingEnabled(false);
         container.domMapWidget(console, mapModel);
 				jQuery('body').mapToolbarWidget(mapModel);
 				jQuery('body').attachmentEditorWidget(mapModel);

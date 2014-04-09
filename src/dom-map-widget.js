@@ -130,11 +130,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	var connectorKey = function (connectorObj) {
 			return 'connector_' + connectorObj.from + '_' + connectorObj.to;
 		},
+		linkKey = function (linkObj) {
+			return 'link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo;
+		},
 		nodeKey = function (id) {
 			return 'node_' + id;
 		},
 		connectorsFor = function (nodeId) {
-			return $('[data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-node-to=' + nodeKey(nodeId) + ']');
+			return $('[data-mapjs-role=connector][data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-role=connector][data-mapjs-node-to=' + nodeKey(nodeId) + ']');
 		};
 
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
@@ -167,11 +170,28 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		MAPJS.createSVG()
-			.attr({'id': connectorKey(connector), 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
+			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
 			.appendTo(stageElement).updateConnector();
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		$('#' + connectorKey(connector)).remove();
+	});
+	mapModel.addEventListener('linkCreated', function (l) {
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
+		MAPJS.createSVG()
+			.attr({
+				'id': linkKey(l),
+				'data-mapjs-role': 'link',
+				'class': 'mapjs-draw-container',
+				'data-mapjs-node-from': nodeKey(l.ideaIdFrom),
+				'data-mapjs-node-to': nodeKey(l.ideaIdTo),
+				'data-mapjs-line-style': attr.lineStyle,
+				'data-mapjs-line-color': attr.color,
+				'data-mapjs-line-arrow': attr.arrow
+			}).appendTo(stageElement).updateLink();
+	});
+	mapModel.addEventListener('linkRemoved', function (l) {
+		$('#' + linkKey(l)).remove();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
 		$('<div>')

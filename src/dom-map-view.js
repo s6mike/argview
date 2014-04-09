@@ -94,6 +94,128 @@ jQuery.fn.updateConnector = function () {
 		}
 	});
 };
+jQuery.fn.updateLink = function () {
+	'use strict';
+	return jQuery.each(this, function () {
+		var	element = jQuery(this),
+			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
+			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
+			calculateConnectorInner = function (parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight) {
+				var parent = [
+					{
+						x: parentX + 0.5 * parentWidth,
+						y: parentY
+					},
+					{
+						x: parentX + parentWidth,
+						y: parentY + 0.5 * parentHeight
+					},
+					{
+						x: parentX + 0.5 * parentWidth,
+						y: parentY + parentHeight
+					},
+					{
+						x: parentX,
+						y: parentY + 0.5 * parentHeight
+					}
+				], child = [
+					{
+						x: childX + 0.5 * childWidth,
+						y: childY
+					},
+					{
+						x: childX + childWidth,
+						y: childY + 0.5 * childHeight
+					},
+					{
+						x: childX + 0.5 * childWidth,
+						y: childY + childHeight
+					},
+					{
+						x: childX,
+						y: childY + 0.5 * childHeight
+					}
+				], i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
+				for (i = 0; i < parent.length; i += 1) {
+					for (j = 0; j < child.length; j += 1) {
+						dx = parent[i].x - child[j].x;
+						dy = parent[i].y - child[j].y;
+						current = dx * dx + dy * dy;
+						if (current < min) {
+							bestParent = i;
+							bestChild = j;
+							min = current;
+						}
+					}
+				}
+				return {
+					from: parent[bestParent],
+					to: child[bestChild]
+				};
+			},
+			calculateConnector = function (parent, child) {
+				return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
+					child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
+			},
+			conn = calculateConnector(shapeFrom, shapeTo),
+			position = {
+				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+			},
+			pathElement,
+			n = Math.tan(Math.PI / 9),
+			dashes = {
+				dashed: '8, 8'
+			};
+		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
+		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
+		element.css(position);
+		element.css({stroke: element.data('mapjs-line-color')});
+		pathElement = element.find('path');
+		element.attr('stroke-dasharray', dashes[element.data('mapjs-line-style')]);
+		if (pathElement.length === 0) {
+			element.empty();
+			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
+		}
+		pathElement.attr('d',
+			'M' + (conn.from.x - position.left) + ',' + (conn.from.y - position.top) +
+			'L' + (conn.to.x - position.left) + ',' + (conn.to.y - position.top)
+		);
+
+
+		/*
+		context.moveTo(conn.from.x, conn.from.y);
+		context.lineTo(conn.to.x, conn.to.y);
+		canvas.stroke(this);
+			if (this.attrs.arrow) {
+				var a1x, a1y, a2x, a2y, len = 14, iy, m,
+					dx = conn.to.x - conn.from.x,
+					dy = conn.to.y - conn.from.y;
+				if (dx === 0) {
+					iy = dy < 0 ? -1 : 1;
+					a1x = conn.to.x + len * Math.sin(n) * iy;
+					a2x = conn.to.x - len * Math.sin(n) * iy;
+					a1y = conn.to.y - len * Math.cos(n) * iy;
+					a2y = conn.to.y - len * Math.cos(n) * iy;
+				} else {
+					m = dy / dx;
+					if (conn.from.x < conn.to.x) {
+						len = -len;
+					}
+					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				}
+				context.moveTo(a1x, a1y);
+				context.lineTo(conn.to.x, conn.to.y);
+				context.lineTo(a2x, a2y);
+				context.lineTo(a1x, a1y);
+		*/
+
+
+	});
+};
 jQuery.fn.updateNodeContent = function (nodeContent) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,

@@ -82,3 +82,7 @@
 	fill: none;
 	stroke: #888;
 }
+.mapjs-link {
+	stroke-width: 1.5px;
+	fill: none;
+}
