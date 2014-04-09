@@ -158,17 +158,15 @@ jQuery.fn.updateLink = function () {
 		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
 		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
 		element.css(position);
-		element.css({stroke: element.data('mapjs-line-color')});
 
-		element.attr('stroke-dasharray', dashes[element.data('mapjs-line-style')]);
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
 		}
-
-		pathElement.attr('d',
-			'M' + (conn.from.x - position.left) + ',' + (conn.from.y - position.top) +
-			'L' + (conn.to.x - position.left) + ',' + (conn.to.y - position.top)
-		);
+		pathElement.attr({
+			'd': 'M' + (conn.from.x - position.left) + ',' + (conn.from.y - position.top) +
+				 'L' + (conn.to.x - position.left) + ',' + (conn.to.y - position.top),
+			'stroke-dasharray': dashes[element.data('mapjs-line-style')]
+		}).css({stroke: element.data('mapjs-line-color')});
 		if (element.data('mapjs-line-arrow')) {
 			if (arrowElement.length === 0) {
 				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);

@@ -1,4 +1,4 @@
-/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine*/
+/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color*/
 /*
 describe('MapViewController', function () {
 	'use strict';
@@ -84,6 +84,91 @@ describe('updateConnector', function () {
 		third.detach();
 		anotherConnector.detach();
 	});
+});
+describe('updateLink', function () {
+	'use strict';
+	var underTest, fromNode, toNode, third, anotherLink;
+	beforeEach(function () {
+		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
+		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
+		underTest = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
+		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
+		anotherLink = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
+	});
+	it('returns itself for chaining', function () {
+		expect(underTest.updateLink()[0]).toEqual(underTest[0]);
+		expect(jQuery('[data-mapjs-node-from=node_fr]').length).toBe(2);
+	});
+	it('draws a straight between the borders of two nodes', function () {
+		underTest.updateLink();
+		var path = underTest.find('path');
+		expect(path.length).toBe(1);
+		expect(path.attr('class')).toEqual('mapjs-link');
+		expect(path.attr('d')).toEqual('M100,20L136,120');
+	});
+	it('positions the link to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
+		underTest.updateLink();
+		expect(underTest.css('top')).toEqual('100px');
+		expect(underTest.css('left')).toEqual('200px');
+		expect(underTest.css('height')).toEqual('164px');
+		expect(underTest.css('width')).toEqual('142px');
+	});
+	it('uses the data-mapjs-line-style attribute to control the dashed styling', function () {
+		underTest.attr('data-mapjs-line-style', 'dashed').updateLink();
+		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('8, 8');
+	});
+	it('clears the dashes if not provided in the data-mapjs-line-style attribute', function () {
+		underTest.find('path').attr('stroke-dasharray', '1, 1');
+		underTest.attr('data-mapjs-line-style', '').updateLink();
+		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBeFalsy();
+	});
+	it('uses the data-mapjs-line-color attribute to set the line stroke', function () {
+		/*jslint newcap:true*/
+		underTest.attr('data-mapjs-line-color', 'blue').updateLink();
+		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
+		expect(Color(underTest.find('path.mapjs-link').css('stroke')).hexString()).toBe('#0000FF');
+	});
+
+	it('updates the existing line if one is present', function () {
+		var path = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(underTest);
+		underTest.updateLink();
+		expect(underTest.find('path.mapjs-link').length).toBe(1);
+		expect(underTest.find('path.mapjs-link')[0]).toEqual(path[0]);
+	});
+	it('uses the data-mapjs-line-arrow attribute to draw an arrow', function () {
+		underTest.attr('data-mapjs-line-arrow', 'true').updateLink();
+		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('inline');
+	});
+	it('updates an existing arrow if one is present', function () {
+		var path = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
+		underTest.attr('data-mapjs-line-arrow', 'true').updateLink();
+		expect(underTest.find('path.mapjs-arrow').length).toBe(1);
+		expect(underTest.find('path.mapjs-arrow')[0]).toEqual(path[0]);
+	});
+	it('uses the data-mapjs-line-color attribute to set the arrow fill', function () {
+		/*jslint newcap:true*/
+		underTest.attr('data-mapjs-line-arrow', 'true').attr('data-mapjs-line-color', '#FF7577').updateLink();
+		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
+		expect(Color(underTest.find('path.mapjs-arrow').css('fill')).hexString()).toBe('#FF7577');
+	});
+	it('hides an existing arrow when the attribute is no longer present', function () {
+		var path = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
+		underTest.updateLink();
+		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('none');
+	});
+	it('updates multiple links at once', function () {
+		jQuery('[data-mapjs-node-from=node_fr]').updateLink();
+		expect(underTest.find('path').attr('d')).toEqual('M100,20L136,120');
+		expect(anotherLink.find('path').attr('d')).toEqual('M50,40L79.5,230');
+	});
+	afterEach(function () {
+		fromNode.detach();
+		toNode.detach();
+		underTest.detach();
+		third.detach();
+		anotherLink.detach();
+	});
+
 });
 describe('updateNodeContent', function () {
 	'use strict';
