@@ -165,7 +165,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		MAPJS.createSVG()
-			.attr({'id': connectorKey(connector), 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
+			.attr({'id': connectorKey(connector), 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
 			.appendTo(stageElement).updateConnector();
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {

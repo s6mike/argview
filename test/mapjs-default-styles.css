@@ -70,3 +70,14 @@
 	background-size: 1.5em;
 	background-repeat: no-repeat no-repeat;
 }
+.mapjs-draw-container {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	z-index: 1;
+}
+.mapjs-connector {
+	stroke-width: 1px;
+	fill: none;
+	stroke: #888;
+}

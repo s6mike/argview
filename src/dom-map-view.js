@@ -34,7 +34,7 @@ jQuery.fn.updateConnector = function () {
 				return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
 					child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
 			},
-			calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
+			calculateConnectorInner = function (parentX, parentY, parentWidth, parentHeight,
 					childX, childY, childWidth, childHeight) {
 				var tolerance = 10,
 					childMid = childY + childHeight * 0.5,
@@ -55,12 +55,6 @@ jQuery.fn.updateConnector = function () {
 					},
 					controlPointOffset: 0.75
 				};
-			}, function () {
-				return Array.prototype.join.call(arguments, ',');
-			}),
-			config = {
-				stroke: '#888',
-				width: 1
 			},
 			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
 			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
@@ -84,20 +78,14 @@ jQuery.fn.updateConnector = function () {
 				x1: from.x - position.left,
 				x2: to.x - position.left,
 				y1: from.y - position.top,
-				y2: to.y - position.top,
-				style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
+				y2: to.y - position.top
 			}).appendTo(element);
 		} else {
 			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 			pathElement = element.find('path');
 			if (pathElement.length === 0) {
 				element.empty();
-				pathElement = MAPJS.createSVG('path').attr({
-					fill: 'none',
-					stroke: config.stroke,
-					'stroke-width': config.width,
-					'class': 'mapjs-connector'
-				}).appendTo(element);
+				pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 			}
 			pathElement.attr('d',
 				'M' + (from.x - position.left) + ',' + (from.y - position.top) +

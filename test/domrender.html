@@ -7,62 +7,15 @@
 		<style>
 			#container {
 				background-color: #FFFFFF;
-        overflow: auto;
-        height: 100%;
-        width: 100%;
-        border: 1px dashed black;
+				overflow: auto;
+				height: 100%;
+				width: 100%;
+				border: 1px dashed black;
 			}
-			#linkEditWidget {
-				background-color: yellow;
-				z-index: 999;
-				display:none;
-				position: absolute;
-			}
-			.active {
-				background-color: green;
-				color: white;
-      }
-      svg {
-        position: absolute;
-        margin: 0px;
-        padding: 0px;
-        z-index: 1;
-      }
-      .node {
-        position: absolute;
-        margin: 0px;
-        padding: 0px;
-        border-radius: 10px;
-        border: 1px solid #888;
-        box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.4);
-        z-index: 2;
-		user-select: none;
-		-moz-user-select: none;
-		-webkit-user-select: none;
-	    -ms-user-select: none;
-      }
-	  .node.dragging, .connector.dragging {
-		  opacity: 0.4
-	  }
-      .node.selected, .node:focus {
-        outline: 0;
-        border: 3px dashed #2E9AFE;
-        margin: -2px;
-        box-shadow: 5px 5px 5px black;
-        z-index: 3;
-      }
+	  
 	  .invisible {
 		  position: absolute; visibility:hidden;
 	  }
-      .mapjs-text {
-        white-space: pre-wrap;
-		font-family: "Helvetica";
-		font-weight: bold;
-		font-size: 12;
-		text-align: center;
-        line-height: 150% !important;
-		display: block;
-      }
 		</style>
 
 		<input type="button" class="resetView" value="0"></input>
