@@ -95,6 +95,7 @@ $.fn.positionNode = function (stageElement) {
 			xpos = node.data('x') + stageElement.data('stage-x'),
 			ypos = node.data('y') + stageElement.data('stage-y'),
 			growx = 0, growy = 0, minGrow = 100,
+			expandx = 0, expandy = 0,
 		    move = function () {
 				var element = $(this),
 					oldpos = {
@@ -106,17 +107,28 @@ $.fn.positionNode = function (stageElement) {
 						left: oldpos.left + growx
 					};
 				element.css(newpos);
-			};
+			},
+		    rightBleed = xpos + node.outerWidth(true) - stageElement.width(),
+		    bottomBleed = ypos + node.outerHeight(true) - stageElement.height();
 		if (xpos < 0) {
 			growx = Math.max(-1 * xpos, minGrow);
 		}
 		if (ypos < 0) {
 			growy = Math.max(-1 * ypos, minGrow);
 		}
+		if (rightBleed > 0) {
+			expandx = Math.max(rightBleed, minGrow);
+		}
+		if (bottomBleed > 0) {
+			expandy = Math.max(bottomBleed, minGrow);
+		}
 		if (growx > 0 || growy > 0) {
 			stageElement.children().each(move);
 			stageElement.data('stage-x', stageElement.data('stage-x') + growx);
 			stageElement.data('stage-y', stageElement.data('stage-y') + growy);
+		}
+		if (growx + rightBleed > 0) {
+			stageElement.css('min-width', stageElement.width() + growx + rightBleed);
 		}
 		node.css({
 			'left': xpos + growx,
@@ -199,8 +211,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			.data({ 'x': node.x, 'y': node.y})
 			.addClass('mapjs-node')
 			.appendTo(stageElement)
-			.positionNode(stageElement)
 			.updateNodeContent(node)
+			.positionNode(stageElement)
 			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
 			.on('doubletap', function () {
 				if (!mapModel.getEditingEnabled()) {
@@ -260,6 +272,8 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 	return this.each(function () {
 		var element = $(this),
 			stage = $('<div>').css({width: '100%', height: '100%', position: 'relative'}).attr('data-mapjs-role', 'stage').appendTo(element);
+		stage.css('min-width', element.innerWidth());
+		stage.css('min-height', element.innerHeight());
 		element.draggableContainer();
 		stage.data('stage-x', element.innerWidth() / 2);
 		stage.data('stage-y', element.innerHeight() / 2);
@@ -306,16 +320,18 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + hyperlinks
 // + custom connectors
 // + links and connectors to observe move and drag on nodes and repaint themselves
+// + custom connector specs
+// + stage resizing (esp node max width)
 //
 // --------- read only ------------
 // - scroll/swipe
 // attachment - clip - hook into displaying the attach
-// custom connector specs
+
 // prevent scrolling so the screen is blank
 // zoom
 // animations
 // perf test large maps
-// stage resizing (esp node max width)
+
 //
 // --------- editing --------------
 // - don't set contentEditable
