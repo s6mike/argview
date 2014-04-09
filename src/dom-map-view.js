@@ -10,7 +10,6 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,
 		self = jQuery(this),
-		linkElement,
 		textSpan = function () {
 			var span = self.find('[data-mapjs-role=title]');
 			if (span.length === 0) {
@@ -19,17 +18,30 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			return span;
 		},
 		applyLinkUrl = function (title) {
-			var url = MAPJS.URLHelper.getLink(title);
+			var url = MAPJS.URLHelper.getLink(title),
+				element = self.find('a.mapjs-link');
 			if (!url) {
-				if (linkElement) {
-					linkElement.hide();
-				}
+				element.hide();
 				return;
 			}
-			if (!linkElement) {
-				linkElement = jQuery('<a target="_blank" class="mapjs-link"></a>').appendTo(self);
+			if (element.length === 0) {
+				element = jQuery('<a target="_blank" class="mapjs-link"></a>').appendTo(self);
 			}
-			linkElement.attr('href', url).show();
+			element.attr('href', url).show();
+		},
+		applyAttachment = function () {
+			var attachment = nodeContent.attr && nodeContent.attr.attachment,
+				element = self.find('a.mapjs-attachment');
+			if (!attachment) {
+				element.hide();
+				return;
+			}
+			if (element.length === 0) {
+				element = jQuery('<a href="#" class="mapjs-attachment"></a>').appendTo(self).click(function () {
+					self.trigger('attachment-click');
+				});
+			}
+			element.show();
 		},
 		updateText = function (title) {
 			var text = MAPJS.URLHelper.stripLink(title) ||
@@ -115,6 +127,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		};
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
+	applyAttachment();
 	self.attr('mapjs-level', nodeContent.level);
 
 	setColors();

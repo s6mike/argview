@@ -1,4 +1,4 @@
-/*global jQuery, describe, it, beforeEach, afterEach, _, expect, navigator*/
+/*global jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine*/
 /*
 describe('MapViewController', function () {
 	'use strict';
@@ -270,6 +270,12 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('a.mapjs-link').attr('href')).toEqual('http://www.google.com');
 				expect(underTest.find('a.mapjs-link').attr('target')).toEqual('_blank');
 			});
+			it('should reuse and show existing element', function () {
+				jQuery('<a href="#" class="mapjs-link"></a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-link').length).toBe(1);
+				expect(underTest.find('a.mapjs-link').is(':visible')).toBeTruthy();
+			});
 		});
 		describe('when there is no link', function () {
 			it('hides the link element', function () {
@@ -280,16 +286,36 @@ describe('updateNodeContent', function () {
 	});
 	describe('attachment handling', function () {
 		describe('when there is an attachment', function () {
+			beforeEach(function () {
+				nodeContent.attr = {
+					'attachment': {
+						'contentType': 'text/html',
+						'content': 'aa'
+					}
+				};
+			});
 			it('shows the paperclip element', function () {
-
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
 			});
 			it('binds the paperclip click to dispatch a mapModel event (which one?)', function () {
-
+				var listener = jasmine.createSpy('listener');
+				underTest.on('attachment-click', listener);
+				underTest.updateNodeContent(nodeContent);
+				underTest.find('a.mapjs-attachment').click();
+				expect(listener).toHaveBeenCalled();
+			});
+			it('should reuse and show existing element', function () {
+				jQuery('<a href="#" class="mapjs-attachment">hello</a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-attachment').length).toBe(1);
+				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
 			});
 		});
 		describe('when there is no attachment', function () {
 			it('hides the paperclip element', function () {
-
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeFalsy();
 			});
 		});
 

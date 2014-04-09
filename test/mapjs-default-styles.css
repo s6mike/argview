@@ -59,3 +59,14 @@
 	background-size: 1.5em;
 	background-repeat: no-repeat no-repeat;
 }
+.mapjs-attachment {
+	right: -0.4em;
+	position: absolute;
+	top: -0.45em;
+	font-size: 1.25em;
+	background-image: url(iconmonstr-paperclip-icon.svg);
+	width: 1.5em;
+	height: 1.5em;
+	background-size: 1.5em;
+	background-repeat: no-repeat no-repeat;
+}
