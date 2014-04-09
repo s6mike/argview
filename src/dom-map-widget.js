@@ -135,12 +135,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		},
 		nodeKey = function (id) {
 			return 'node_' + id;
-		},
-		connectorsFor = function (nodeId) {
-			return $('[data-mapjs-role=connector][data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-role=connector][data-mapjs-node-to=' + nodeKey(nodeId) + ']');
-		},
-		linksFor = function (nodeId) {
-			return $('[data-mapjs-role=link][data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-role=link][data-mapjs-node-to=' + nodeKey(nodeId) + ']');
 		};
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
@@ -161,24 +155,24 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#node_' + node.id).data({
 			'x': node.x,
 			'y': node.y
-		}).positionNode(stageElement);
-		connectorsFor(node.id).updateConnector();
-		linksFor(node.id).updateLink();
+		}).positionNode(stageElement).trigger('mapjs:move');
 	});
 	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		$('#' + nodeKey(n.id)).updateNodeContent(n);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		MAPJS.createSVG()
+		var element = MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
 			.appendTo(stageElement).updateConnector();
+		$('#' + nodeKey(connector.from)).on('mapjs:move', function () { element.updateConnector(); });
+		$('#' + nodeKey(connector.to)).on('mapjs:move', function () { element.updateConnector(); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		$('#' + connectorKey(connector)).remove();
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
-		MAPJS.createSVG()
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style),
+			link = MAPJS.createSVG()
 			.attr({
 				'id': linkKey(l),
 				'data-mapjs-role': 'link',
@@ -189,6 +183,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'data-mapjs-line-color': attr.color,
 				'data-mapjs-line-arrow': attr.arrow
 			}).appendTo(stageElement).updateLink();
+		$('#' + nodeKey(l.ideaIdFrom)).on('mapjs:move', function () { link.updateLink(); });
+		$('#' + nodeKey(l.ideaIdTo)).on('mapjs:move', function () { link.updateLink(); });
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		$('#' + linkKey(l)).remove();
@@ -202,9 +198,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			.attr({ 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
 			.data({ 'x': node.x, 'y': node.y})
 			.addClass('mapjs-node')
-			.appendTo(stageElement).on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
+			.appendTo(stageElement)
 			.positionNode(stageElement)
 			.updateNodeContent(node)
+			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
 			.on('doubletap', function () {
 				if (!mapModel.getEditingEnabled()) {
 					mapModel.toggleCollapse('mouse');
@@ -308,6 +305,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + dblclick-tap to collapse/uncollapse
 // + hyperlinks
 // + custom connectors
+// + links and connectors to observe move and drag on nodes and repaint themselves
 //
 // --------- read only ------------
 // - scroll/swipe
