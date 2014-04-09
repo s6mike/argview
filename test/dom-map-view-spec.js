@@ -42,20 +42,28 @@ describe('updateConnector', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = MAPJS.createSVG().appendTo('body').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
+		underTest = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
-		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
+		anotherConnector = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
 	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
+		expect(jQuery('[data-mapjs-node-from=node_fr]').length).toBe(2);
 
 	});
-	it('draws a cubic curve between from and to', function () {
+	it('draws a cubic curve between the centers of two nodes', function () {
 		underTest.updateConnector();
 		var path = underTest.find('path');
 		expect(path.length).toBe(1);
 		expect(path.attr('class')).toEqual('mapjs-connector');
 		expect(path.attr('d')).toEqual('M50,20Q50,202 130,142');
+	});
+	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
+		underTest.updateConnector();
+		expect(underTest.css('top')).toEqual('100px');
+		expect(underTest.css('left')).toEqual('200px');
+		expect(underTest.css('height')).toEqual('164px');
+		expect(underTest.css('width')).toEqual('142px');
 	});
 	it('updates the existing curve if one is present', function () {
 		var path = MAPJS.createSVG('path').appendTo(underTest);
@@ -64,10 +72,11 @@ describe('updateConnector', function () {
 		expect(underTest.find('path')[0]).toEqual(path[0]);
 	});
 	it('updates multiple connectors at once', function () {
-		expect(jQuery('[data-mapjs-node-from=node_fr]').updateConnector().length).toBe(2);
+		jQuery('[data-mapjs-node-from=node_fr]').updateConnector();
 		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
 		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,317.5 20,257.5');
 	});
+
 	afterEach(function () {
 		fromNode.detach();
 		toNode.detach();

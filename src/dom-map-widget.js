@@ -304,15 +304,17 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + folded
 // + dblclick-tap to collapse/uncollapse
 // + hyperlinks
+// + custom connectors
 //
 // --------- read only ------------
 // - scroll/swipe
 // attachment - clip - hook into displaying the attach
-// custom connectors
+// custom connector specs
 // prevent scrolling so the screen is blank
 // zoom
 // animations
 // perf test large maps
+// stage resizing (esp node max width)
 //
 // --------- editing --------------
 // - don't set contentEditable

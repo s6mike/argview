@@ -67,31 +67,18 @@ jQuery.fn.updateConnector = function () {
 			},
 			offset = calculatedConnector.controlPointOffset * (from.y - to.y),
 			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
-			straightLine = false,
-			pathElement;
+			pathElement = element.find('path');
 		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
 		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
 		element.css(position);
-		if (straightLine) {
-			element.empty();
-			MAPJS.createSVG('line').attr({
-				x1: from.x - position.left,
-				x2: to.x - position.left,
-				y1: from.y - position.top,
-				y2: to.y - position.top
-			}).appendTo(element);
-		} else {
-			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-			pathElement = element.find('path');
-			if (pathElement.length === 0) {
-				element.empty();
-				pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
-			}
-			pathElement.attr('d',
-				'M' + (from.x - position.left) + ',' + (from.y - position.top) +
-				'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
-			);
+		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+		if (pathElement.length === 0) {
+			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
+		pathElement.attr('d',
+			'M' + (from.x - position.left) + ',' + (from.y - position.top) +
+			'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
+		);
 	});
 };
 jQuery.fn.updateLink = function () {
