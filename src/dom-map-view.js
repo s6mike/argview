@@ -1,4 +1,4 @@
-/*global jQuery, Color, _*/
+/*global jQuery, Color, _, MAPJS*/
 /*
  * MapViewController
  * -  listening to map model, updating the dom on the stage
@@ -8,7 +8,9 @@
  */
 jQuery.fn.updateNodeContent = function (nodeContent) {
 	'use strict';
-	var self = jQuery(this),
+	var MAX_URL_LENGTH = 25,
+		self = jQuery(this),
+		linkElement,
 		textSpan = function () {
 			var span = self.find('[data-mapjs-role=title]');
 			if (span.length === 0) {
@@ -16,8 +18,24 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			}
 			return span;
 		},
+		applyLinkUrl = function (title) {
+			var url = MAPJS.URLHelper.getLink(title);
+			if (!url) {
+				if (linkElement) {
+					linkElement.hide();
+				}
+				return;
+			}
+			if (!linkElement) {
+				linkElement = jQuery('<a target="_blank" class="mapjs-link"></a>').appendTo(self);
+			}
+			linkElement.attr('href', url).show();
+		},
 		updateText = function (title) {
-			textSpan().text(title);
+			var text = MAPJS.URLHelper.stripLink(title) ||
+					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...'));
+
+			textSpan().text(text.trim());
 		},
 		setCollapseClass = function () {
 			if (nodeContent.attr && nodeContent.attr.collapsed) {
@@ -96,6 +114,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			textBox.css(textProps);
 		};
 	updateText(nodeContent.title);
+	applyLinkUrl(nodeContent.title);
 	self.attr('mapjs-level', nodeContent.level);
 
 	setColors();

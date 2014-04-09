@@ -239,6 +239,11 @@ describe('updateNodeContent', function () {
 		});
 	});
 	describe('hyperlink handling', function () {
+		var textBox;
+		beforeEach(function () {
+			textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+		});
+
 		_.each([
 				['removes the first link from text', 'google http://www.google.com', 'google'],
 				['does not touch text without hyperlinks', 'google', 'google'],
@@ -247,20 +252,29 @@ describe('updateNodeContent', function () {
 				['truncates the link if it is too long and appends ...', 'http://google.com/search?q=onlylink', 'http://google.com/search?...']
 			], function (testArgs) {
 				it(testArgs[0], function () {
-
+					nodeContent.title = testArgs[1];
+					underTest.updateNodeContent(nodeContent);
+					expect(textBox.text()).toEqual(testArgs[2]);
 				});
 			});
 		describe('when there is a link', function () {
-			it('shows the link element', function () {
-
+			beforeEach(function () {
+				nodeContent.title = 'google http://www.google.com';
 			});
-			it('sets the href on the link element to the hyperlink in node', function () {
-
+			it('shows the link element', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-link').is(':visible')).toBeTruthy();
+			});
+			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-link').attr('href')).toEqual('http://www.google.com');
+				expect(underTest.find('a.mapjs-link').attr('target')).toEqual('_blank');
 			});
 		});
 		describe('when there is no link', function () {
 			it('hides the link element', function () {
-
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-link').is(':visible')).toBeFalsy();
 			});
 		});
 	});
