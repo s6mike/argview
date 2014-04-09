@@ -5,7 +5,9 @@ function test_tree() {
 
 	var longish = 'first shouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshould last';
 	return {"title": 'longish',"id":1,
-		"attr":{"style":{"background":"#FF0000"},
+		"attr":{
+			"style":{"background":"#FF0000"},
+
 			"icon":{
 				url: imgSrc,
 				height: 130,
@@ -14,6 +16,7 @@ function test_tree() {
 			},
 		"attachment":{"contentType":"text/html","content":"content <b>bold content</b>"}},
 		   "ideas":{"11":{"title":"4","id":4,"ideas":{"2":{"title": lorem,"id":7,
+				"attr": {"collapsed": true},
 
 			   "ideas":{"2":{"title":"91","id":9},"5":{"title":"12\nsome\nlines","id":12,
 		attr: {

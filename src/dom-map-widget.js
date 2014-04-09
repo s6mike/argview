@@ -134,7 +134,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			return 'node_' + id;
 		},
 		connectorsFor = function (nodeId) {
-			return $('[data-mapjs-node-from=' + nodeId + ']').add('[data-mapjs-node-to=' + nodeId + ']');
+			return $('[data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-node-to=' + nodeKey(nodeId) + ']');
 		};
 
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
@@ -160,9 +160,11 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			'y': node.y
 		}).positionNode(stageElement);
 		connectorsFor(node.id).updateConnector();
-
-		//onFinish: ensureSelectedNodeVisible.bind(undefined, node)
 	});
+	mapModel.addEventListener('nodeAttrChanged', function (n) {
+		$('#' + nodeKey(n.id)).updateNodeContent(n);
+	});
+
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
@@ -177,9 +179,16 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			.attr({ 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
 			.data({ 'x': node.x, 'y': node.y})
 			.addClass('mapjs-node')
-			.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
+			.appendTo(stageElement).on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
 			.positionNode(stageElement)
-			.updateNodeContent(node);
+			.updateNodeContent(node)
+			.on('doubletap', function () {
+				if (!mapModel.getEditingEnabled()) {
+					mapModel.toggleCollapse('mouse');
+					return;
+				}
+				mapModel.editNode('mouse', false, false);
+			});
 	});
 };
 $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
@@ -272,18 +281,16 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + images in background or as separate elements?
 // + icon position
 // + focus or selected?
-//
-//
+// + folded
+// + dblclick-tap to collapse/uncollapse
+// + hyperlinks
 //
 // --------- read only ------------
 // - scroll/swipe
-// attachment - clip
-// folded
-//  click-tap to collapse/uncollapse
+// attachment - clip - hook into displaying the attach
 // custom connectors
 // prevent scrolling so the screen is blank
 // zoom
-// hyperlinks
 // animations
 // perf test large maps
 //
@@ -310,7 +317,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // +	mapModel.addEventListener('nodeCreated', function (n) {
 // -	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 // -	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
-// -	mapModel.addEventListener('nodeAttrChanged', function (n) {
+// +	mapModel.addEventListener('nodeAttrChanged', function (n) {
 // -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 // +	mapModel.addEventListener('nodeRemoved', function (n) {
 // +	mapModel.addEventListener('nodeMoved', function (n, reason) {

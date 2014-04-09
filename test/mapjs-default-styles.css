@@ -12,6 +12,7 @@
 	-ms-user-select: none;
 	background-color: #E0E0E0;
 	color: #4F4F4F;
+	cursor: hand;
 }
 .mapjs-node span {
 	white-space: pre-wrap;
