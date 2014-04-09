@@ -1,4 +1,3 @@
-/*global MAPJS, $, _, Hammer*/
 /*jslint nomen: true, newcap: true, browser: true*/
 MAPJS.DOMRender = {
 	config: {
@@ -96,17 +95,12 @@ $.fn.positionNode = function (stageElement) {
 			ypos = node.data('y') + stageElement.data('stage-y'),
 			growx = 0, growy = 0, minGrow = 100,
 			expandx = 0, expandy = 0,
-		    move = function () {
-				var element = $(this),
-					oldpos = {
-						top: parseInt(element.css('top'), 10),
-						left: parseInt(element.css('left'), 10)
-					},
-					newpos = {
-						top: oldpos.top + growy,
-						left: oldpos.left + growx
-					};
-				element.css(newpos);
+		    shift = function () {
+				var element = $(this);
+				element.css({
+					'left': element.data('x') + stageElement.data('stage-x'),
+					'top' : element.data('y') + stageElement.data('stage-y')
+				});
 			},
 		    rightBleed = xpos + node.outerWidth(true) - stageElement.width(),
 		    bottomBleed = ypos + node.outerHeight(true) - stageElement.height();
@@ -123,17 +117,17 @@ $.fn.positionNode = function (stageElement) {
 			expandy = Math.max(bottomBleed, minGrow);
 		}
 		if (growx > 0 || growy > 0) {
-			stageElement.children().each(move);
 			stageElement.data('stage-x', stageElement.data('stage-x') + growx);
 			stageElement.data('stage-y', stageElement.data('stage-y') + growy);
+			stageElement.children().each(shift);
 		}
 		if (growx + rightBleed > 0) {
 			stageElement.css('min-width', stageElement.width() + growx + rightBleed);
 		}
-		node.css({
-			'left': xpos + growx,
-			'top': ypos + growy
-		});
+		if (growy + bottomBleed > 0) {
+			stageElement.css('min-height', stageElement.height() + growy + bottomBleed);
+		}
+		node.each(shift);
 	});
 };
 MAPJS.domMediator = function (mapModel, stageElement) {
@@ -222,6 +216,25 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				mapModel.editNode('mouse', false, false);
 			});
 	});
+ 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
+		var currentScale = stageElement.data('stage-scale') || 1,
+			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2);
+		if (currentScale === targetScale) {
+			return;
+		}
+		console.log(zoomPoint);
+		stageElement.data('stage-scale', targetScale);
+
+		stageElement.css({'transform': 'scale(' + targetScale + ')', 'transform-origin': '0 0'});
+	});
+	mapModel.addEventListener('xnodeFocusRequested', function (ideaId)  {
+		var node = nodeByIdeaId[ideaId];
+		stage.setScale(1);
+		stage.setX((stage.getWidth() / 2) - (0.5 * node.getWidth()) - node.getX());
+		stage.setY((stage.getHeight() / 2) - (0.5 * node.getHeight()) - node.getY());
+		stage.draw();
+		stage.fire(':scaleChangeComplete');
+	});
 };
 $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 	'use strict';
@@ -271,12 +284,18 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 
 	return this.each(function () {
 		var element = $(this),
-			stage = $('<div>').css({width: '100%', height: '100%', position: 'relative'}).attr('data-mapjs-role', 'stage').appendTo(element);
-		stage.css('min-width', element.innerWidth());
-		stage.css('min-height', element.innerHeight());
+			stage = $('<div>').css({
+				width: '100%',
+				height: '100%',
+				position: 'relative',
+				'min-width': element.innerWidth(),
+				'min-height': element.innerHeight()
+			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
+			'stage-x': element.innerWidth() / 2,
+			'stage-y': element.innerHeight() / 2,
+			'stage-scale': 1
+		});
 		element.draggableContainer();
-		stage.data('stage-x', element.innerWidth() / 2);
-		stage.data('stage-y', element.innerHeight() / 2);
 		MAPJS.domMediator(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
@@ -351,25 +370,29 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // collaboration - collaborator images
 
 // remaining kinetic mediator events
-// -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
-// -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+//
+// viewing
 // +	mapModel.addEventListener('nodeCreated', function (n) {
-// -	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
-// -	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
-// +	mapModel.addEventListener('nodeAttrChanged', function (n) {
-// -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
-// +	mapModel.addEventListener('nodeRemoved', function (n) {
-// +	mapModel.addEventListener('nodeMoved', function (n, reason) {
-// +	mapModel.addEventListener('nodeTitleChanged', function (n) {
-// +	mapModel.addEventListener('connectorCreated', function (n) {
-// -	mapModel.addEventListener('layoutChangeComplete', function () {
 // +	mapModel.addEventListener('connectorRemoved', function (n) {
-// -	mapModel.addEventListener('linkCreated', function (l) {
-// -	mapModel.addEventListener('linkRemoved', function (l) {
+// +	mapModel.addEventListener('linkCreated', function (l) {
+// +	mapModel.addEventListener('linkRemoved', function (l) {
 // +	mapModel.addEventListener('linkAttrChanged', function (l) {
+// +	mapModel.addEventListener('nodeMoved', function (n, reason) {
+// +	mapModel.addEventListener('nodeRemoved', function (n) {
+// +	mapModel.addEventListener('connectorCreated', function (n) {
+// - 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
+//		- ensure selected node is visible!
+// -	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
+// -	mapModel.addEventListener('layoutChangeComplete', function () {
 // -	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 // -	mapModel.addEventListener('mapViewResetRequested', function () {
 // -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
+// editing
+// -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+// -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+// +	mapModel.addEventListener('nodeAttrChanged', function (n) {
+// -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
+// +	mapModel.addEventListener('nodeTitleChanged', function (n) {
 // -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 
 // - node removed
