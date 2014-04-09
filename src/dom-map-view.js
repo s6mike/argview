@@ -162,7 +162,8 @@ jQuery.fn.updateLink = function () {
 				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
 				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
 			},
-			pathElement,
+			pathElement = element.find('path.mapjs-link'),
+			arrowElement = element.find('path.mapjs-arrow'),
 			n = Math.tan(Math.PI / 9),
 			dashes = {
 				dashed: '8, 8'
@@ -171,48 +172,49 @@ jQuery.fn.updateLink = function () {
 		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
 		element.css(position);
 		element.css({stroke: element.data('mapjs-line-color')});
-		pathElement = element.find('path');
+
 		element.attr('stroke-dasharray', dashes[element.data('mapjs-line-style')]);
 		if (pathElement.length === 0) {
-			element.empty();
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
 		}
+
 		pathElement.attr('d',
 			'M' + (conn.from.x - position.left) + ',' + (conn.from.y - position.top) +
 			'L' + (conn.to.x - position.left) + ',' + (conn.to.y - position.top)
 		);
-
-
-		/*
-		context.moveTo(conn.from.x, conn.from.y);
-		context.lineTo(conn.to.x, conn.to.y);
-		canvas.stroke(this);
-			if (this.attrs.arrow) {
-				var a1x, a1y, a2x, a2y, len = 14, iy, m,
-					dx = conn.to.x - conn.from.x,
-					dy = conn.to.y - conn.from.y;
-				if (dx === 0) {
-					iy = dy < 0 ? -1 : 1;
-					a1x = conn.to.x + len * Math.sin(n) * iy;
-					a2x = conn.to.x - len * Math.sin(n) * iy;
-					a1y = conn.to.y - len * Math.cos(n) * iy;
-					a2y = conn.to.y - len * Math.cos(n) * iy;
-				} else {
-					m = dy / dx;
-					if (conn.from.x < conn.to.x) {
-						len = -len;
-					}
-					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+		if (element.data('mapjs-line-arrow')) {
+			if (arrowElement.length === 0) {
+				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
+			}
+			var a1x, a1y, a2x, a2y, len = 14, iy, m,
+				dx = conn.to.x - conn.from.x,
+				dy = conn.to.y - conn.from.y;
+			if (dx === 0) {
+				iy = dy < 0 ? -1 : 1;
+				a1x = conn.to.x + len * Math.sin(n) * iy;
+				a2x = conn.to.x - len * Math.sin(n) * iy;
+				a1y = conn.to.y - len * Math.cos(n) * iy;
+				a2y = conn.to.y - len * Math.cos(n) * iy;
+			} else {
+				m = dy / dx;
+				if (conn.from.x < conn.to.x) {
+					len = -len;
 				}
-				context.moveTo(a1x, a1y);
-				context.lineTo(conn.to.x, conn.to.y);
-				context.lineTo(a2x, a2y);
-				context.lineTo(a1x, a1y);
-		*/
-
+				a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+			}
+			arrowElement.attr('d',
+				'M' + (a1x - position.left) + ',' + (a1y - position.top) +
+				'L' + (conn.to.x - position.left) + ',' + (conn.to.y - position.top) +
+				'L' + (a2x - position.left) + ',' + (a2y - position.top) +
+				'Z')
+				.css({fill: element.data('mapjs-line-color')})
+				.show();
+		} else {
+			arrowElement.hide();
+		}
 
 	});
 };
