@@ -138,8 +138,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		},
 		connectorsFor = function (nodeId) {
 			return $('[data-mapjs-role=connector][data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-role=connector][data-mapjs-node-to=' + nodeKey(nodeId) + ']');
+		},
+		linksFor = function (nodeId) {
+			return $('[data-mapjs-role=link][data-mapjs-node-from=' + nodeKey(nodeId) + ']').add('[data-mapjs-role=link][data-mapjs-node-to=' + nodeKey(nodeId) + ']');
 		};
-
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
 		if (isSelected) {
@@ -155,19 +157,17 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#node_' + node.id).remove();
 	});
-
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
-
 		$('#node_' + node.id).data({
 			'x': node.x,
 			'y': node.y
 		}).positionNode(stageElement);
 		connectorsFor(node.id).updateConnector();
+		linksFor(node.id).updateLink();
 	});
 	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		$('#' + nodeKey(n.id)).updateNodeContent(n);
 	});
-
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
@@ -192,6 +192,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		$('#' + linkKey(l)).remove();
+	});
+	mapModel.addEventListener('linkAttrChanged', function (l) {
+		$('#' + linkKey(l)).updateLink();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
 		$('<div>')
@@ -349,7 +352,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // +	mapModel.addEventListener('connectorRemoved', function (n) {
 // -	mapModel.addEventListener('linkCreated', function (l) {
 // -	mapModel.addEventListener('linkRemoved', function (l) {
-// -	mapModel.addEventListener('linkAttrChanged', function (l) {
+// +	mapModel.addEventListener('linkAttrChanged', function (l) {
 // -	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 // -	mapModel.addEventListener('mapViewResetRequested', function () {
 // -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
