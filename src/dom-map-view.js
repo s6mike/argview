@@ -45,9 +45,13 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		updateText = function (title) {
 			var text = MAPJS.URLHelper.stripLink(title) ||
-					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...'));
-
-			textSpan().text(text.trim());
+					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
+				element = textSpan();
+			element.text(text.trim());
+			element.css('max-width', '');
+			if ((element[0].scrollWidth - 10) > element.outerWidth()) {
+				element.css('max-width', element[0].scrollWidth + 'px');
+			}
 		},
 		setCollapseClass = function () {
 			if (nodeContent.attr && nodeContent.attr.collapsed) {
@@ -80,7 +84,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		setIcon = function (icon) {
 			var textBox = textSpan(),
 				textHeight = textBox.outerHeight(),
-				textWidth = textBox.outerWidth(),
+				maxTextWidth = parseInt(textBox.css('max-width'), 10),
 				padding,
 				selfProps = {
 					'min-height': '',
@@ -90,7 +94,10 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					'background-size': '',
 					'background-position': ''
 				},
-				textProps = {'margin-top': ''};
+				textProps = {
+					'margin-top': '',
+					'margin-left': ''
+				};
 			self.css({padding: ''});
 			padding = parseInt(self.css('padding-left'), 10);
 			if (icon) {
@@ -104,6 +111,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
 					selfProps['padding-' + icon.position] = icon.height + (padding * 2);
 					selfProps['min-width'] = icon.width;
+					if (icon.width > maxTextWidth) {
+						textProps['margin-left'] =  (icon.width - maxTextWidth) / 2;
+					}
 				}
 				else if (icon.position === 'left' || icon.position === 'right') {
 					selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
@@ -117,8 +127,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 						textProps['margin-top'] =  (icon.height - textHeight) / 2;
 						selfProps['min-height'] = icon.height;
 					}
-					if (icon.width > textWidth) {
-						selfProps['min-width'] = icon.width;
+					selfProps['min-width'] = icon.width;
+					if (icon.width > maxTextWidth) {
+						textProps['margin-left'] =  (icon.width - maxTextWidth) / 2;
 					}
 				}
 			}

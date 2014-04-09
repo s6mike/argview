@@ -1,4 +1,4 @@
-/*global MAPJS, Color, $, _, Hammer*/
+/*global MAPJS, $, _, Hammer*/
 /*jslint nomen: true, newcap: true, browser: true*/
 MAPJS.DOMRender = {
 	config: {
@@ -43,8 +43,8 @@ $.fn.draggableContainer = function () {
 		drag = function (event) {
 			if (currentDragObject && event.gesture) {
 				var newpos = {
-						top: parseInt(originalDragObjectPosition.top) + event.gesture.deltaY,
-						left: parseInt(originalDragObjectPosition.left) + event.gesture.deltaX
+						top: parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY,
+						left: parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX
 					};
 				currentDragObject.css(newpos).trigger('mm:drag');
 				event.preventDefault();
@@ -93,7 +93,7 @@ $.fn.draggableContainer = function () {
 };
 $.fn.draggable = function () {
 	'use strict';
-	return $(this).on('dragstart', function (event) {
+	return $(this).on('dragstart', function () {
 		$(this).trigger(
 			$.Event('mm:start-dragging', {
 				relatedTarget: this
@@ -111,8 +111,8 @@ $.fn.positionNode = function (stageElement) {
 		    move = function () {
 				var element = $(this),
 					oldpos = {
-						top: parseInt(element.css('top')),
-						left: parseInt(element.css('left'))
+						top: parseInt(element.css('top'), 10),
+						left: parseInt(element.css('left'), 10)
 					},
 					newpos = {
 						top: oldpos.top + growy,
@@ -262,7 +262,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#node_' + node.id).remove();
 	});
 
-	mapModel.addEventListener('nodeMoved', function (node, reason) {
+	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
 
 		$('#node_' + node.id).data({
 			'x': node.x,
@@ -282,87 +282,97 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + connectorKey(connector)).remove();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var padding = MAPJS.DOMRender.config.padding,
-			doublePad = 2 * padding,
-			backgroundColor = function () {
-				var fromStyle =	node.attr && node.attr.style && node.attr.style.background,
-					generic = MAPJS.defaultStyles[node.level === 1 ? 'root' : 'nonRoot'].background;
-				return fromStyle ||  generic;
-			},
-			foregroundColor = function (backgroundColor) {
-				var tintedBackground = Color(backgroundColor).mix(Color('#EEEEEE')).hexString();
-				return MAPJS.contrastForeground(tintedBackground);
-			},
-			stopEditing = function () {
-				mapModel.setInputEnabled(true);
-				nodeDiv.attr('contentEditable', 'false').off('blur', stopEditing);
-			},
-			editNode = function () {
-				mapModel.setInputEnabled(false);
-				nodeDiv.attr('contentEditable', 'true').on('blur', stopEditing);
-				nodeDiv.focus();
-			},
-			nodeDiv = $('<div>')
+		// var padding = MAPJS.DOMRender.config.padding,
+		// 	doublePad = 2 * padding,
+		// 	backgroundColor = function () {
+		// 		var fromStyle =	node.attr && node.attr.style && node.attr.style.background,
+		// 			generic = MAPJS.defaultStyles[node.level === 1 ? 'root' : 'nonRoot'].background;
+		// 		return fromStyle ||  generic;
+		// 	},
+		// 	foregroundColor = function (backgroundColor) {
+		// 		var tintedBackground = Color(backgroundColor).mix(Color('#EEEEEE')).hexString();
+		// 		return MAPJS.contrastForeground(tintedBackground);
+		// 	},
+		// 	stopEditing = function () {
+		// 		mapModel.setInputEnabled(true);
+		// 		nodeDiv.attr('contentEditable', 'false').off('blur', stopEditing);
+		// 	},
+		// 	editNode = function () {
+		// 		mapModel.setInputEnabled(false);
+		// 		nodeDiv.attr('contentEditable', 'true').on('blur', stopEditing);
+		// 		nodeDiv.focus();
+		// 	},
+		// 	nodeDiv = $('<div>')
+		// 		.attr('tabindex', 0)
+		// 		.attr({ 'id': 'node_' + node.id, 'data-mapjs-role': 'node' })
+		// 		.data({ 'x': node.x, 'y': node.y})
+		// 		.positionNode(stageElement)
+		// 		.addClass('node')
+		// 		.css({ 'background-color': backgroundColor(), color: foregroundColor(backgroundColor()),
+		// 			'min-width': node.width - doublePad, 'min-height': node.height - doublePad,
+		// 			'padding': padding + 'px',
+		// 			'max-width': MAPJS.DOMRender.config.textMaxWidth + 'px'
+		// 		})
+		// 		.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
+		// 		.on('mm:start-dragging', function () {
+		// 			nodeDiv.addClass('dragging');
+		// 		}).on('mm:stop-dragging mm:cancel-dragging', function () {
+		// 			nodeDiv.removeClass('dragging');
+		// 			updateNodeConnectors(node.id);
+		// 			return false;
+		// 		}).on('mm:drag', function () {
+		// 			updateNodeConnectors(node.id);
+		// 		})
+		// 		.addClass(MAPJS.DOMRender.config.textClass),
+		// 	icon = node.attr && node.attr.icon,
+		// 	textBox = $('<span>')
+		// 		.addClass(MAPJS.DOMRender.config.textClass)
+		// 		.text(node.title).appendTo(nodeDiv);
+		// if (icon) {
+		// 	nodeDiv.css({
+		// 		'background-image': 'url("' + icon.url + '")',
+		// 		'background-repeat': 'no-repeat',
+		// 		'background-size': icon.width + 'px ' + icon.height + 'px'
+		// 	});
+		// 	if (icon.position === 'top' || icon.position === 'bottom') {
+		// 		nodeDiv.css({
+		// 			'background-position': 'center ' + icon.position + ' ' + padding + 'px',
+		// 			'min-height': node.height - icon.height - doublePad
+		// 		}).css('padding-' + icon.position, icon.height + doublePad);
+		// 	}
+		// 	else if (icon.position === 'left' || icon.position === 'right') {
+		// 		nodeDiv.css({
+		// 			'background-position': icon.position + ' ' + padding + 'px center',
+		// 			'min-width': node.width - icon.width - doublePad
+		// 		}).css('padding-' + icon.position, icon.width + doublePad);
+		// 		textBox.css({
+		// 			'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
+		// 		});
+		// 	} else {
+		// 		nodeDiv.css({
+		// 			'background-position': 'center center',
+		// 		});
+		// 		textBox.css({
+		// 			'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
+		// 		});
+		// 	}
+		// }
+		var nodeElement = $('<div>')
 				.attr('tabindex', 0)
 				.attr({ 'id': 'node_' + node.id, 'data-mapjs-role': 'node' })
 				.data({ 'x': node.x, 'y': node.y})
-				.positionNode(stageElement)
-				.addClass('node')
-				.css({ 'background-color': backgroundColor(), color: foregroundColor(backgroundColor()),
-					'min-width': node.width - doublePad, 'min-height': node.height - doublePad,
-					'padding': padding + 'px',
-					'max-width': MAPJS.DOMRender.config.textMaxWidth + 'px'
-				})
+				.addClass('mapjs-node')
 				.appendTo(stageElement).on('click tap', function (evt) { mapModel.clickNode(node.id, evt); })
-				.on('mm:start-dragging', function () {
-					nodeDiv.addClass('dragging');
-				}).on('mm:stop-dragging mm:cancel-dragging', function () {
-					nodeDiv.removeClass('dragging');
-					updateNodeConnectors(node.id);
-					return false;
-				}).on('mm:drag', function () {
-					updateNodeConnectors(node.id);
-				})
-				.addClass(MAPJS.DOMRender.config.textClass),
-			icon = node.attr && node.attr.icon,
-			textBox = $('<span>')
-				.addClass(MAPJS.DOMRender.config.textClass)
-				.text(node.title).appendTo(nodeDiv);
-		if (icon) {
-			nodeDiv.css({
-				'background-image': 'url("' + icon.url + '")',
-				'background-repeat': 'no-repeat',
-				'background-size': icon.width + 'px ' + icon.height + 'px'
-			});
-			if (icon.position === 'top' || icon.position === 'bottom') {
-				nodeDiv.css({
-					'background-position': 'center ' + icon.position + ' ' + padding + 'px',
-					'min-height': node.height - icon.height - doublePad
-				}).css('padding-' + icon.position, icon.height + doublePad);
-			}
-			else if (icon.position === 'left' || icon.position === 'right') {
-				nodeDiv.css({
-					'background-position': icon.position + ' ' + padding + 'px center',
-					'min-width': node.width - icon.width - doublePad
-				}).css('padding-' + icon.position, icon.width + doublePad);
-				textBox.css({
-					'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
-				});
-			} else {
-				nodeDiv.css({
-					'background-position': 'center center',
-				});
-				textBox.css({
-					'margin-top': (node.height - textBox.outerHeight(true) - doublePad) / 2
-				});
-			}
-		}
-		if (mapModel.isEditingEnabled()) {
-			nodeDiv.draggable().keydown('space', editNode)
-		}
+				.positionNode(stageElement)
+				.updateNodeContent(node);
+
+		console.log('nodeElement', nodeElement);
+		// if (mapModel.isEditingEnabled()) {
+		// 	nodeDiv.draggable().keydown('space', editNode)
+		// }
 	});
 };
-$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
+$.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 	'use strict';
 	var hotkeyEventHandlers = {
 			'return': 'addSiblingIdea',

@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" type="text/css" href="mapjs-default-styles.css"></link>
 	</head>
 	<body>
 		<style>
@@ -10,36 +11,6 @@
         height: 100%;
         width: 100%;
         border: 1px dashed black;
-			}
-			#xcontainer {
-				background-size: 22px 22px;
-				background-image:
-				-webkit-repeating-linear-gradient(45deg, rgba(127, 191, 255, .4), rgba(127, 191, 255, .4) 1px, transparent 2px, transparent 15px),
-				-webkit-repeating-linear-gradient(-45deg, rgba(255, 182, 193, .4), rgba(255, 182, 193, .4) 1px, transparent 2px, transparent 15px);
-				background-image:
-				-moz-repeating-linear-gradient(45deg, rgba(0, 191, 255, .5), rgba(0, 191, 255, .5) 1px, transparent 2px, transparent 15px),
-				-moz-repeating-linear-gradient(-45deg, rgba(255, 182, 193, .5), rgba(255, 182, 193, .5) 1px, transparent 2px, transparent 15px);
-				background-image:
-				-o-repeating-linear-gradient(45deg, rgba(0, 191, 255, .5), rgba(0, 191, 255, .5) 1px, transparent 2px, transparent 15px),
-				-o-repeating-linear-gradient(-45deg, rgba(255, 182, 193, .5), rgba(255, 182, 193, .5) 1px, transparent 2px, transparent 15px);
-				background-image:
-				repeating-linear-gradient(45deg, rgba(127, 191, 255, .5), rgba(127, 191, 255, .5) 1px, transparent 2px, transparent 15px),
-				repeating-linear-gradient(-45deg, rgba(255, 182, 193, .5), rgba(255, 182, 193, .5) 1px, transparent 2px, transparent 15px);
-			}
-			.ideaInput {
-				position: absolute;
-				border: none;
-				z-index: 999;
-				background-color: transparent;
-				color: #F8F8F8;
-				font-family: "Helvetica";
-				font-weight: bold;
-				font-size: 13;
-				text-align: center;
-				resize: none;
-			}
-			.ideaInput:focus {
-				outline: none;
 			}
 			#linkEditWidget {
 				background-color: yellow;
@@ -81,7 +52,7 @@
         z-index: 3;
       }
 	  .invisible {
-		  position: absolute; visibility:hidden; 
+		  position: absolute; visibility:hidden;
 	  }
       .mapjs-text {
         white-space: pre-wrap;
@@ -152,6 +123,7 @@
 		<script type="text/javascript" src="../src/map-widget.js"></script>
 		<script type="text/javascript" src="../src/link-edit-widget.js"></script>
 		<script type="text/javascript" src="../src/image-drop-widget.js"></script>
+		<script type="text/javascript" src="../src/dom-map-view.js"></script>
 		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
 		<script type="text/javascript" src="testtree.js"></script>
 		<script>

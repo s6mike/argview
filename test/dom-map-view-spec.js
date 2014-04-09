@@ -56,7 +56,7 @@ describe('updateNodeContent', function () {
 
 		};
 	beforeEach(function () {
-		style = jQuery('<style type="text/css"> .test-padding { padding: 5px} </style>').appendTo('head');
+		style = jQuery('<style type="text/css"> .test-padding { padding: 5px;}  .test-max-width { max-width:160px; display: block }</style>').appendTo('head');
 		underTest = jQuery('<span>').appendTo('body');
 		nodeContent = {
 			title: 'Hello World!',
@@ -81,6 +81,14 @@ describe('updateNodeContent', function () {
 			expect(existingSpan.text()).toEqual(nodeContent.title);
 			expect(underTest.children().length).toBe(1);
 		});
+		it('should not allow text to overflow when there are long words', function () {
+			var textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest);
+			nodeContent.title = 'first shouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshouldshould last';
+			underTest.updateNodeContent(nodeContent);
+
+			expect(parseInt(textBox.css('max-width'), 10)).toBeGreaterThan(160);
+		});
+
 	});
 	describe('setting the level', function () {
 		it('sets the level attribute to the node content level', function () {
@@ -128,7 +136,7 @@ describe('updateNodeContent', function () {
 	describe('icon handling', function () {
 		var textBox;
 		beforeEach(function () {
-			textBox = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
+			textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest);
 		});
 		describe('when icon is set', function () {
 			beforeEach(function () {
@@ -162,7 +170,7 @@ describe('updateNodeContent', function () {
 				nodeContent.attr.icon.height = 5;
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('50% 50%');
-				checkNoStyle(underTest, 'min-width');
+				expect(underTest.css('min-width')).toBe('5px');
 				checkNoStyle(underTest, 'min-height');
 				checkNoStyle(textBox, 'margin-top');
 			});
@@ -196,6 +204,7 @@ describe('updateNodeContent', function () {
 				}
 				expect(underTest.css('padding-top')).toEqual('510px');
 				expect(underTest.css('min-width')).toEqual('400px');
+				expect(textBox.css('margin-left')).toBe('120px');
 			});
 			it('positions bottom icons bottom of node text and horizontally centers the text', function () {
 				nodeContent.attr.icon.position = 'bottom';
@@ -206,6 +215,7 @@ describe('updateNodeContent', function () {
 				}
 				expect(underTest.css('padding-bottom')).toEqual('510px');
 				expect(underTest.css('min-width')).toEqual('400px');
+				expect(textBox.css('margin-left')).toBe('120px');
 			});
 
 		});
