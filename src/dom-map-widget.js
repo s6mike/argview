@@ -91,15 +91,15 @@ $.fn.positionNode = function (stageElement) {
 	'use strict';
 	return $(this).each(function () {
 		var node = $(this),
-			xpos = node.data('x') + stageElement.data('stage-x'),
-			ypos = node.data('y') + stageElement.data('stage-y'),
+			xpos = node.data('x') + stageElement.data('stageX'),
+			ypos = node.data('y') + stageElement.data('stageY'),
 			growx = 0, growy = 0, minGrow = 100,
 			expandx = 0, expandy = 0,
 		    shift = function () {
 				var element = $(this);
 				element.css({
-					'left': element.data('x') + stageElement.data('stage-x'),
-					'top' : element.data('y') + stageElement.data('stage-y')
+					'left': element.data('x') + stageElement.data('stageX'),
+					'top' : element.data('y') + stageElement.data('stageY')
 				});
 			},
 		    rightBleed = xpos + node.outerWidth(true) - stageElement.width(),
@@ -117,8 +117,8 @@ $.fn.positionNode = function (stageElement) {
 			expandy = Math.max(bottomBleed, minGrow);
 		}
 		if (growx > 0 || growy > 0) {
-			stageElement.data('stage-x', stageElement.data('stage-x') + growx);
-			stageElement.data('stage-y', stageElement.data('stage-y') + growy);
+			stageElement.data('stageX', stageElement.data('stageX') + growx);
+			stageElement.data('stageY', stageElement.data('stageY') + growy);
 			stageElement.children().each(shift);
 		}
 		if (growx + rightBleed > 0) {
@@ -217,15 +217,15 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			});
 	});
  	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
-		var currentScale = stageElement.data('stage-scale') || 1,
-			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2);
+		var currentScale = stageElement.data('stageScale'),
+			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
+			scrollParent = stageElement.parent();
 		if (currentScale === targetScale) {
 			return;
 		}
-		console.log(zoomPoint);
-		stageElement.data('stage-scale', targetScale);
-
+		stageElement.data('stageScale', targetScale);
 		stageElement.css({'transform': 'scale(' + targetScale + ')', 'transform-origin': '0 0'});
+		console.log(currentScale, targetScale, $('[data-mapjs-role=stage]').data('stageScale'), $('[data-mapjs-role=stage]').data('stageX'), $('#node_1').position().left + $('#node_1').outerWidth(true)/2, $('[data-mapjs-role=stage]').parent().scrollLeft())
 	});
 	mapModel.addEventListener('xnodeFocusRequested', function (ideaId)  {
 		var node = nodeByIdeaId[ideaId];
@@ -291,9 +291,9 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 				'min-width': element.innerWidth(),
 				'min-height': element.innerHeight()
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
-			'stage-x': element.innerWidth() / 2,
-			'stage-y': element.innerHeight() / 2,
-			'stage-scale': 1
+			'stageX': element.innerWidth() / 2,
+			'stageY': element.innerHeight() / 2,
+			'stageScale': 1
 		});
 		element.draggableContainer();
 		MAPJS.domMediator(mapModel, stage);
