@@ -1,4 +1,4 @@
-/*global jQuery, Color, _, MAPJS*/
+/*global jQuery, Color, _, MAPJS, document*/
 /*
  * MapViewController
  * -  listening to map model, updating the dom on the stage
@@ -6,6 +6,106 @@
  * -  listening to the DOM updates and telling the model about that
  * -  repositioning various UI elements
  */
+MAPJS.createSVG = function (tag) {
+	'use strict';
+	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
+};
+jQuery.fn.updateConnector = function () {
+	'use strict';
+	return jQuery.each(this, function () {
+		var	element = jQuery(this),
+			horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
+					childX, childY, childWidth, childHeight) {
+				var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
+					parentHorizontalOffset = 1 - childHorizontalOffset;
+				return {
+					from: {
+						x: parentX + parentHorizontalOffset * parentWidth,
+						y: parentY + 0.5 * parentHeight
+					},
+					to: {
+						x: childX + childHorizontalOffset * childWidth,
+						y: childY + 0.5 * childHeight
+					},
+					controlPointOffset: 0
+				};
+			},
+			calculateConnector = function (parent, child) {
+				return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
+					child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
+			},
+			calculateConnectorInner = _.memoize(function (parentX, parentY, parentWidth, parentHeight,
+					childX, childY, childWidth, childHeight) {
+				var tolerance = 10,
+					childMid = childY + childHeight * 0.5,
+					parentMid = parentY + parentHeight * 0.5,
+					childHorizontalOffset;
+				if (Math.abs(parentMid - childMid) + tolerance < Math.max(childHeight, parentHeight * 0.75)) {
+					return horizontalConnector(parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight);
+				}
+				childHorizontalOffset = parentX < childX ? 0 : 1;
+				return {
+					from: {
+						x: parentX + 0.5 * parentWidth,
+						y: parentY + 0.5 * parentHeight
+					},
+					to: {
+						x: childX + childHorizontalOffset * childWidth,
+						y: childY + 0.5 * childHeight
+					},
+					controlPointOffset: 0.75
+				};
+			}, function () {
+				return Array.prototype.join.call(arguments, ',');
+			}),
+			config = {
+				stroke: '#888',
+				width: 1
+			},
+			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
+			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
+			calculatedConnector = calculateConnector(shapeFrom, shapeTo),
+			from = calculatedConnector.from,
+			to = calculatedConnector.to,
+			position = {
+				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+			},
+			offset = calculatedConnector.controlPointOffset * (from.y - to.y),
+			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
+			straightLine = false,
+			pathElement;
+		position.width = Math.max(shapeFrom.position().left + shapeFrom.width(), shapeTo.position().left + shapeTo.width(), position.left + 1) - position.left;
+		position.height = Math.max(shapeFrom.position().top + shapeFrom.height(), shapeTo.position().top + shapeTo.height(), position.top + 1) - position.top;
+		element.css(position);
+		if (straightLine) {
+			element.empty();
+			MAPJS.createSVG('line').attr({
+				x1: from.x - position.left,
+				x2: to.x - position.left,
+				y1: from.y - position.top,
+				y2: to.y - position.top,
+				style: 'stroke:' + config.stroke + ';stroke-width:' + config.width + 'px'
+			}).appendTo(element);
+		} else {
+			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+			pathElement = element.find('path');
+			if (pathElement.length === 0) {
+				element.empty();
+				pathElement = MAPJS.createSVG('path').attr({
+					fill: 'none',
+					stroke: config.stroke,
+					'stroke-width': config.width,
+					'class': 'mapjs-connector'
+				}).appendTo(element);
+			}
+			pathElement.attr('d',
+				'M' + (from.x - position.left) + ',' + (from.y - position.top) +
+				'Q' + (from.x - position.left) + ',' + (to.y - offset - position.top) + ' ' + (to.x - position.left) + ',' + (to.y - position.top)
+			);
+		}
+	});
+};
 jQuery.fn.updateNodeContent = function (nodeContent) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,

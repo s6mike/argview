@@ -1,4 +1,4 @@
-/*global jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine*/
+/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine*/
 /*
 describe('MapViewController', function () {
 	'use strict';
@@ -36,6 +36,46 @@ describe('MapViewController', function () {
 
 });
 */
+describe('updateConnector', function () {
+	'use strict';
+	var underTest, fromNode, toNode, third, anotherConnector;
+	beforeEach(function () {
+		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
+		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
+		underTest = MAPJS.createSVG().appendTo('body').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
+		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
+		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
+	});
+	it('returns itself for chaining', function () {
+		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
+
+	});
+	it('draws a cubic curve between from and to', function () {
+		underTest.updateConnector();
+		var path = underTest.find('path');
+		expect(path.length).toBe(1);
+		expect(path.attr('class')).toEqual('mapjs-connector');
+		expect(path.attr('d')).toEqual('M50,20Q50,202 130,142');
+	});
+	it('updates the existing curve if one is present', function () {
+		var path = MAPJS.createSVG('path').appendTo(underTest);
+		underTest.updateConnector();
+		expect(underTest.find('path').length).toBe(1);
+		expect(underTest.find('path')[0]).toEqual(path[0]);
+	});
+	it('updates multiple connectors at once', function () {
+		expect(jQuery('[data-mapjs-node-from=node_fr]').updateConnector().length).toBe(2);
+		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
+		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,317.5 20,257.5');
+	});
+	afterEach(function () {
+		fromNode.detach();
+		toNode.detach();
+		underTest.detach();
+		third.detach();
+		anotherConnector.detach();
+	});
+});
 describe('updateNodeContent', function () {
 	'use strict';
 	var underTest, nodeContent, style,
