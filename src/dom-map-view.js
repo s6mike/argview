@@ -58,19 +58,24 @@ jQuery.fn.updateConnector = function () {
 			},
 			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
 			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
-			calculatedConnector = calculateConnector(shapeFrom, shapeTo),
-			from = calculatedConnector.from,
-			to = calculatedConnector.to,
-			position = {
-				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
-				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
-			},
-			offset = calculatedConnector.controlPointOffset * (from.y - to.y),
-			maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5,
-			pathElement = element.find('path');
+			calculatedConnector, from, to, position, offset, maxOffset, pathElement;
+		if (shapeFrom.length === 0 || shapeTo.length === 0) {
+			element.hide();
+			return;
+		}
+		calculatedConnector = calculateConnector(shapeFrom, shapeTo);
+		from = calculatedConnector.from;
+		to = calculatedConnector.to;
+		position = {
+			left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+			top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+		};
+		offset = calculatedConnector.controlPointOffset * (from.y - to.y);
+		maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5;
+		pathElement = element.find('path');
 		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
 		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
-		element.css(position);
+		element.css(position).show();
 		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
@@ -144,20 +149,25 @@ jQuery.fn.updateLink = function () {
 				return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
 					child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
 			},
-			conn = calculateConnector(shapeFrom, shapeTo),
-			position = {
-				left: Math.min(shapeFrom.position().left, shapeTo.position().left),
-				top: Math.min(shapeFrom.position().top, shapeTo.position().top),
-			},
+			conn, position,
 			pathElement = element.find('path.mapjs-link'),
 			arrowElement = element.find('path.mapjs-arrow'),
 			n = Math.tan(Math.PI / 9),
 			dashes = {
 				dashed: '8, 8'
 			};
+		if (shapeFrom.length === 0 || shapeTo.length === 0) {
+			element.hide();
+			return;
+		}
+		conn = calculateConnector(shapeFrom, shapeTo);
+		position = {
+			left: Math.min(shapeFrom.position().left, shapeTo.position().left),
+			top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+		};
 		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
 		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
-		element.css(position);
+		element.css(position).show();
 
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);

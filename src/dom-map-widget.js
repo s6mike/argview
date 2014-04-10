@@ -108,12 +108,31 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'top' : element.data('y') + stageElement.data('stageY')
 			}).trigger('mapjs:move');
 		},
+		animateToPositionCoordinates = function () {
+			var element = $(this),
+				triggerMove = function () {
+					element.trigger('mapjs:move');
+				};
+			element.animate({
+				'left': element.data('x') + stageElement.data('stageX'),
+				'top' : element.data('y') + stageElement.data('stageY'),
+
+			}, {
+				duration: 300,
+				progress: triggerMove,
+				complete: function () {
+					element.each(updateScreenCoordinates).trigger('mapjs:move');
+				},
+				'queue': 'nodeQueue',
+				'easing': 'linear'
+			});
+		},
 		growStage = function (growx, growy) {
 			stageElement.data('stageX', stageElement.data('stageX') + growx);
 			stageElement.data('stageY', stageElement.data('stageY') + growy);
 			stageElement.children('[data-mapjs-role=node]').each(updateScreenCoordinates);
 		},
-		positionNode = function () {
+		ensureSpaceForNode = function () {
 			return $(this).each(function () {
 				var node = $(this),
 					xpos = node.data('x') + stageElement.data('stageX'),
@@ -144,11 +163,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				if (growy + bottomBleed > 0) {
 					stageElement.css('min-height', stageElement.height() + growy + bottomBleed);
 				}
-				node.each(updateScreenCoordinates);
 			});
 		};
-
-
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
 		if (isSelected) {
@@ -168,7 +184,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#node_' + node.id).data({
 			'x': node.x,
 			'y': node.y
-		}).each(positionNode);
+		}).each(ensureSpaceForNode).each(animateToPositionCoordinates);
 	});
 	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		$('#' + nodeKey(n.id)).updateNodeContent(n);
@@ -220,7 +236,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					return;
 				}
 				mapModel.editNode('mouse', false, false);
-			}).each(positionNode);
+			}).each(ensureSpaceForNode).each(updateScreenCoordinates);
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('stageScale'),
@@ -268,6 +284,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		scrollParent.scrollLeft(newLeftScroll);
 		scrollParent.scrollTop(newTopScroll);
 	});
+	mapModel.addEventListener('layoutChangeComplete', function () {
+		stageElement.children().dequeue('nodeQueue');
+	});
+
 
 };
 $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
@@ -383,7 +403,8 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // --------- read only ------------
 // - scroll/swipe
 // attachment - clip - hook into displaying the attach
-
+// drag background to move things
+// drag root node to move things
 // prevent scrolling so the screen is blank
 // zoom
 // animations
