@@ -40,11 +40,11 @@ jQuery.fn.updateConnector = function () {
 			},
 			calculateConnector = function (parent, child) {
 				var tolerance = 10,
-					childHorizontalOffset;
-				child.mid = child.top + child.height * 0.5;
-				parent.mid = parent.top + parent.height * 0.5;
+					childHorizontalOffset,
+					childMid = child.top + child.height * 0.5,
+					parentMid = parent.top + parent.height * 0.5;
 
-				if (Math.abs(parent.mid - child.mid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
+				if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
 					return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
 				}
 				childHorizontalOffset = parent.left < child.left ? 0 : 1;
@@ -62,18 +62,20 @@ jQuery.fn.updateConnector = function () {
 			},
 			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
 			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
-			calculatedConnector, from, to, position, offset, maxOffset, pathElement, fromBox, toBox;
+			calculatedConnector, from, to, position, offset, maxOffset, pathElement, fromBox, toBox, changeCheck;
 		if (shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
 		}
 		fromBox = shapeFrom.getBox();
 		toBox = shapeTo.getBox();
-		calculatedConnector = calculateConnector(fromBox, toBox);
-		if (_.isEqual(calculatedConnector, element.data('oldConnector'))) {
+		changeCheck = {from: fromBox, to: toBox};
+		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}
-		element.data('oldConnector', calculatedConnector);
+
+		element.data('changeCheck', changeCheck);
+		calculatedConnector = calculateConnector(fromBox, toBox);
 		from = calculatedConnector.from;
 		to = calculatedConnector.to;
 		position = {
@@ -161,13 +163,24 @@ jQuery.fn.updateLink = function () {
 			n = Math.tan(Math.PI / 9),
 			dashes = {
 				dashed: '8, 8'
-			}, fromBox, toBox;
+			},
+			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color'),
+			fromBox, toBox, changeCheck;
 		if (shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
 		}
 		fromBox = shapeFrom.getBox();
 		toBox = shapeTo.getBox();
+
+		changeCheck = {from: fromBox, to: toBox, attrs: attrs};
+		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
+			return;
+		}
+
+		element.data('changeCheck', changeCheck);
+
+
 		conn = calculateConnector(fromBox, toBox);
 		position = {
 			left: Math.min(fromBox.left, toBox.left),
@@ -183,9 +196,9 @@ jQuery.fn.updateLink = function () {
 		pathElement.attr({
 			'd': 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) +
 				 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
-			'stroke-dasharray': dashes[element.data('mapjs-line-style')]
-		}).css({stroke: element.data('mapjs-line-color')});
-		if (element.data('mapjs-line-arrow')) {
+			'stroke-dasharray': dashes[attrs.lineStyle]
+		}).css('stroke', attrs.color);
+		if (attrs.arrow) {
 			if (arrowElement.length === 0) {
 				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 			}
@@ -213,7 +226,7 @@ jQuery.fn.updateLink = function () {
 				'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top) +
 				'L' + Math.round(a2x - position.left) + ',' + Math.round(a2y - position.top) +
 				'Z')
-				.css({fill: element.data('mapjs-line-color')})
+				.css('fill', attrs.color)
 				.show();
 		} else {
 			arrowElement.hide();

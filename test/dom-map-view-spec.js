@@ -71,12 +71,38 @@ describe('updateConnector', function () {
 		expect(underTest.find('path').length).toBe(1);
 		expect(underTest.find('path')[0]).toEqual(path[0]);
 	});
+
 	it('updates multiple connectors at once', function () {
 		jQuery('[data-mapjs-node-from=node_fr]').updateConnector();
 		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
 		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
 	});
+	describe('performance optimisations', function () {
+		it('rounds coordinates', function () {
+			anotherConnector.updateConnector();
+			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
+		});
+		it('will not update if the shapes have not moved', function () {
+			underTest.updateConnector();
+			underTest.find('path').attr('d', '');
 
+			underTest.updateConnector();
+			expect(underTest.find('path').attr('d')).toBe('');
+		});
+		it('will update if the shapes move', function () {
+			underTest.updateConnector();
+			underTest.find('path').attr('d', '');
+			fromNode.css('top', '50px');
+
+			underTest.updateConnector();
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,252 130,192');
+		});
+
+	});
+	it('does not die if one of the shapes is no longer present', function () {
+		underTest.attr('data-mapjs-node-from', 'node_non_existent');
+		underTest.updateConnector();
+	});
 	afterEach(function () {
 		fromNode.detach();
 		toNode.detach();
@@ -113,18 +139,18 @@ describe('updateLink', function () {
 		expect(underTest.css('height')).toEqual('164px');
 		expect(underTest.css('width')).toEqual('142px');
 	});
-	it('uses the data-mapjs-line-style attribute to control the dashed styling', function () {
-		underTest.attr('data-mapjs-line-style', 'dashed').updateLink();
+	it('uses the lineStyle data attribute to control the dashed styling', function () {
+		underTest.data('lineStyle', 'dashed').updateLink();
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('8, 8');
 	});
-	it('clears the dashes if not provided in the data-mapjs-line-style attribute', function () {
+	it('clears the dashes if not provided in the lineStyle data attribute', function () {
 		underTest.find('path').attr('stroke-dasharray', '1, 1');
-		underTest.attr('data-mapjs-line-style', '').updateLink();
+		underTest.data('lineStyle', '').updateLink();
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBeFalsy();
 	});
-	it('uses the data-mapjs-line-color attribute to set the line stroke', function () {
+	it('uses the color attribute to set the line stroke', function () {
 		/*jslint newcap:true*/
-		underTest.attr('data-mapjs-line-color', 'blue').updateLink();
+		underTest.data('color', 'blue').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
 		expect(Color(underTest.find('path.mapjs-link').css('stroke')).hexString()).toBe('#0000FF');
 	});
@@ -135,31 +161,65 @@ describe('updateLink', function () {
 		expect(underTest.find('path.mapjs-link').length).toBe(1);
 		expect(underTest.find('path.mapjs-link')[0]).toEqual(path[0]);
 	});
-	it('uses the data-mapjs-line-arrow attribute to draw an arrow', function () {
-		underTest.attr('data-mapjs-line-arrow', 'true').updateLink();
+	it('uses the arrow data attribute to draw an arrow', function () {
+		underTest.data('arrow', 'true').updateLink();
 		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('inline');
 	});
 	it('updates an existing arrow if one is present', function () {
 		var path = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
-		underTest.attr('data-mapjs-line-arrow', 'true').updateLink();
+		underTest.data('arrow', 'true').updateLink();
 		expect(underTest.find('path.mapjs-arrow').length).toBe(1);
 		expect(underTest.find('path.mapjs-arrow')[0]).toEqual(path[0]);
 	});
-	it('uses the data-mapjs-line-color attribute to set the arrow fill', function () {
+	it('uses the color attribute to set the arrow fill', function () {
 		/*jslint newcap:true*/
-		underTest.attr('data-mapjs-line-arrow', 'true').attr('data-mapjs-line-color', '#FF7577').updateLink();
+		underTest.data('arrow', 'true').data('color', '#FF7577').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
 		expect(Color(underTest.find('path.mapjs-arrow').css('fill')).hexString()).toBe('#FF7577');
 	});
 	it('hides an existing arrow when the attribute is no longer present', function () {
-		var path = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
+		MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
 		underTest.updateLink();
 		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('none');
 	});
+
 	it('updates multiple links at once', function () {
 		jQuery('[data-mapjs-node-from=node_fr]').updateLink();
 		expect(underTest.find('path').attr('d')).toEqual('M100,20L136,120');
 		expect(anotherLink.find('path').attr('d')).toEqual('M50,40L80,230');
+	});
+	it('does not die if one of the shapes is no longer present', function () {
+		underTest.attr('data-mapjs-node-from', 'node_non_existent');
+		underTest.updateLink();
+	});
+	describe('performance optimisations', function () {
+		it('rounds coordinates', function () {
+			anotherLink.data('arrow', 'true').updateLink();
+			expect(anotherLink.find('path.mapjs-link').attr('d')).toEqual('M50,40L80,230');
+			expect(anotherLink.find('path.mapjs-arrow').attr('d')).toEqual('M82,216L80,230L73,218Z');
+		});
+		it('will not update if the shapes have not moved and attributes have not changed', function () {
+			underTest.updateLink();
+			underTest.find('path').attr('d', '');
+
+			underTest.updateLink();
+			expect(underTest.find('path').attr('d')).toBe('');
+		});
+		it('will update if the shapes move', function () {
+			underTest.updateLink();
+			underTest.find('path').attr('d', '');
+			fromNode.css('top', '50px');
+
+			underTest.updateLink();
+			expect(underTest.find('path').attr('d')).toBe('M100,20L136,170');
+		});
+		it('will update if the attributes change', function () {
+			underTest.updateLink();
+			underTest.find('path').attr('d', '');
+			underTest.data('lineStyle', 'solid').updateLink();
+			expect(underTest.find('path').attr('d')).toBe('M100,20L136,120');
+
+		});
 	});
 	afterEach(function () {
 		fromNode.detach();

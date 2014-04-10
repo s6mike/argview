@@ -207,11 +207,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'data-mapjs-role': 'link',
 				'class': 'mapjs-draw-container',
 				'data-mapjs-node-from': nodeKey(l.ideaIdFrom),
-				'data-mapjs-node-to': nodeKey(l.ideaIdTo),
-				'data-mapjs-line-style': attr.lineStyle,
-				'data-mapjs-line-color': attr.color,
-				'data-mapjs-line-arrow': attr.arrow
-			}).appendTo(stageElement).updateLink();
+				'data-mapjs-node-to': nodeKey(l.ideaIdTo)
+			})
+			.data(attr)
+			.appendTo(stageElement).updateLink();
 		$('#' + nodeKey(l.ideaIdFrom)).on('mapjs:move', function () { link.updateLink(); });
 		$('#' + nodeKey(l.ideaIdTo)).on('mapjs:move', function () { link.updateLink(); });
 	});
@@ -219,7 +218,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + linkKey(l)).remove();
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
-		$('#' + linkKey(l)).updateLink();
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
+		$('#' + linkKey(l)).data(attr).updateLink();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
 		$('<div>')
