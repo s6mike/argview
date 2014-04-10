@@ -164,6 +164,24 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					stageElement.css('min-height', stageElement.height() + growy + bottomBleed);
 				}
 			});
+		},
+		centerViewOn = function (viewX, viewY) {
+			var scrollParent = stageElement.parent(),
+				newLeftScroll = viewX - scrollParent.innerWidth() / 2,
+				newTopScroll = viewY - scrollParent.innerHeight() / 2,
+				growX = Math.max(-1 * newLeftScroll, 0),
+				growY = Math.max(-1 * newTopScroll, 0);
+			if (growX > 0 || growY > 0) {
+				growStage(growX, growY);
+			}
+			if (stageElement.width() - scrollParent.innerWidth() < newLeftScroll - growX) {
+				stageElement.css('min-width', scrollParent.innerWidth() + newLeftScroll - growX);
+			}
+			if (stageElement.height() - scrollParent.innerHeight() < newTopScroll - growY) {
+				stageElement.css('min-height', scrollParent.innerHeight() + newTopScroll - growY);
+			}
+			scrollParent.scrollLeft(newLeftScroll - growX);
+			scrollParent.scrollTop(newTopScroll - growY);
 		};
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
@@ -180,7 +198,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#node_' + node.id).remove();
 	});
-	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
+	mapModel.addEventListener('nodeMoved', function (node) {
 		$('#node_' + node.id).data({
 			'x': node.x,
 			'y': node.y
@@ -255,25 +273,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = $('#' + nodeKey(ideaId)),
 			nodeCenterX = stageElement.data('stageX') + node.data('x') + node.outerWidth(true) / 2,
-			nodeCenterY = stageElement.data('stageY') + node.data('y') + node.outerWidth(true) / 2,
-			scrollParent = stageElement.parent(),
-			newLeftScroll = nodeCenterX - scrollParent.innerWidth() / 2,
-			newTopScroll = nodeCenterY - scrollParent.innerHeight() / 2,
-			growX = Math.max(-1 * newLeftScroll, 0),
-			growY = Math.max(-1 * newTopScroll, 0);
-		stageElement.data('stageScale', 1);
-		stageElement.css('transform', '');
-		if (growX > 0 || growY > 0) {
-			growStage(growX, growY);
-		}
-		if (stageElement.width() - scrollParent.innerWidth() < newLeftScroll - growX) {
-			stageElement.css('min-width', scrollParent.innerWidth() + newLeftScroll - growX);
-		}
-		if (stageElement.height() - scrollParent.innerHeight() < newTopScroll - growY) {
-			stageElement.css('min-height', scrollParent.innerHeight() + newTopScroll - growY);
-		}
-		scrollParent.scrollLeft(newLeftScroll - growX);
-		scrollParent.scrollTop(newTopScroll - growY);
+			nodeCenterY = stageElement.data('stageY') + node.data('y') + node.outerWidth(true) / 2;
+		stageElement.data('stageScale', 1).css('transform', '');
+		centerViewOn(nodeCenterX, nodeCenterY);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
 		var scrollParent = stageElement.parent(),
@@ -381,8 +383,8 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 };
 
 
-// connectors and links should hide if either of the nodes isn't present any more... and not die
-// connectors and links should just return on update if they would repaint the same thing - check for parent positions
+// + connectors and links should hide if either of the nodes isn't present any more... and not die
+// + connectors and links should just return on update if they would repaint the same thing - check for parent positions
 //
 // + shadows
 // + selected
@@ -399,6 +401,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + links and connectors to observe move and drag on nodes and repaint themselves
 // + custom connector specs
 // + stage resizing (esp node max width)
+// + zoom
 //
 // --------- read only ------------
 // - scroll/swipe
@@ -406,7 +409,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // drag background to move things
 // drag root node to move things
 // prevent scrolling so the screen is blank
-// zoom
+
 // animations
 // perf test large maps
 
