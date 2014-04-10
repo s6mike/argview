@@ -219,21 +219,16 @@ MAPJS.domMediator = function (mapModel, stageElement) {
  	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 		var currentScale = stageElement.data('stageScale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
-			scrollParent = stageElement.parent();
+			scrollParent = stageElement.parent(),
+			stageX = stageElement.data('stageX'),
+			stageY = stageElement.data('stageY');
 		if (currentScale === targetScale) {
 			return;
 		}
 		stageElement.data('stageScale', targetScale);
-		stageElement.css({'transform': 'scale(' + targetScale + ')', 'transform-origin': '0 0'});
-		console.log(currentScale, targetScale, $('[data-mapjs-role=stage]').data('stageScale'), $('[data-mapjs-role=stage]').data('stageX'), $('#node_1').position().left + $('#node_1').outerWidth(true)/2, $('[data-mapjs-role=stage]').parent().scrollLeft())
-	});
-	mapModel.addEventListener('xnodeFocusRequested', function (ideaId)  {
-		var node = nodeByIdeaId[ideaId];
-		stage.setScale(1);
-		stage.setX((stage.getWidth() / 2) - (0.5 * node.getWidth()) - node.getX());
-		stage.setY((stage.getHeight() / 2) - (0.5 * node.getHeight()) - node.getY());
-		stage.draw();
-		stage.fire(':scaleChangeComplete');
+		stageElement.css('transform', 'translate(-' + stageX +'px, -' + stageY +'px) scale(' + targetScale + ') translate(' + stageX + 'px, ' + stageY + 'px)');
+		scrollParent.scrollLeft(stageX * (targetScale - currentScale) + scrollParent.scrollLeft());
+		scrollParent.scrollTop(stageY * (targetScale - currentScale) + scrollParent.scrollTop());
 	});
 };
 $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
@@ -384,7 +379,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 //		- ensure selected node is visible!
 // -	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 // -	mapModel.addEventListener('layoutChangeComplete', function () {
-// -	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
+// +	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 // -	mapModel.addEventListener('mapViewResetRequested', function () {
 // -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
 // editing
