@@ -74,7 +74,7 @@ describe('updateConnector', function () {
 	it('updates multiple connectors at once', function () {
 		jQuery('[data-mapjs-node-from=node_fr]').updateConnector();
 		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
-		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,317.5 20,257.5');
+		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
 	});
 
 	afterEach(function () {
@@ -159,7 +159,7 @@ describe('updateLink', function () {
 	it('updates multiple links at once', function () {
 		jQuery('[data-mapjs-node-from=node_fr]').updateLink();
 		expect(underTest.find('path').attr('d')).toEqual('M100,20L136,120');
-		expect(anotherLink.find('path').attr('d')).toEqual('M50,40L79.5,230');
+		expect(anotherLink.find('path').attr('d')).toEqual('M50,40L80,230');
 	});
 	afterEach(function () {
 		fromNode.detach();
