@@ -180,8 +180,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			if (stageElement.height() - scrollParent.innerHeight() < newTopScroll - growY) {
 				stageElement.css('min-height', scrollParent.innerHeight() + newTopScroll - growY);
 			}
-			scrollParent.scrollLeft(newLeftScroll - growX);
-			scrollParent.scrollTop(newTopScroll - growY);
+			scrollParent.animate({
+				scrollLeft: newLeftScroll - growX,
+				scrollTop: newTopScroll - growY
+			}, {
+				duration: 100,
+				easing: 'linear'
+			});
 		};
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#node_' + ideaId);
