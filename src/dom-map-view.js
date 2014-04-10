@@ -12,6 +12,12 @@ MAPJS.createSVG = function (tag) {
 };
 jQuery.fn.updateConnector = function () {
 	'use strict';
+	var getBox = function (domShape) {
+		var pos = domShape.position();
+		pos.width = domShape.outerWidth(true);
+		pos.height = domShape.outerHeight(true);
+		return pos;
+	};
 	return jQuery.each(this, function () {
 		var	element = jQuery(this),
 			horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
@@ -31,50 +37,52 @@ jQuery.fn.updateConnector = function () {
 				};
 			},
 			calculateConnector = function (parent, child) {
-				return calculateConnectorInner(parent.position().left, parent.position().top, parent.outerWidth(true), parent.outerHeight(true),
-					child.position().left, child.position().top, child.outerWidth(true), child.outerHeight(true));
-			},
-			calculateConnectorInner = function (parentX, parentY, parentWidth, parentHeight,
-					childX, childY, childWidth, childHeight) {
 				var tolerance = 10,
-					childMid = childY + childHeight * 0.5,
-					parentMid = parentY + parentHeight * 0.5,
 					childHorizontalOffset;
-				if (Math.abs(parentMid - childMid) + tolerance < Math.max(childHeight, parentHeight * 0.75)) {
-					return horizontalConnector(parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight);
+				child.mid = child.top + child.height * 0.5;
+				parent.mid = parent.top + parent.height * 0.5;
+
+				if (Math.abs(parent.mid - child.mid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
+					return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
 				}
-				childHorizontalOffset = parentX < childX ? 0 : 1;
+				childHorizontalOffset = parent.left < child.left ? 0 : 1;
 				return {
 					from: {
-						x: parentX + 0.5 * parentWidth,
-						y: parentY + 0.5 * parentHeight
+						x: parent.left + 0.5 * parent.width,
+						y: parent.top + 0.5 * parent.height
 					},
 					to: {
-						x: childX + childHorizontalOffset * childWidth,
-						y: childY + 0.5 * childHeight
+						x: child.left + childHorizontalOffset * child.width,
+						y: child.top + 0.5 * child.height
 					},
 					controlPointOffset: 0.75
 				};
 			},
 			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
 			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
-			calculatedConnector, from, to, position, offset, maxOffset, pathElement;
+			calculatedConnector, from, to, position, offset, maxOffset, pathElement, fromBox, toBox;
 		if (shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
 		}
-		calculatedConnector = calculateConnector(shapeFrom, shapeTo);
+		fromBox = getBox(shapeFrom);
+		toBox = getBox(shapeTo);
+		calculatedConnector = calculateConnector(fromBox, toBox);
+		if (_.isEqual(calculatedConnector, element.data('oldConnector'))) {
+			return;
+		}
+		element.data('oldConnector', calculatedConnector);
 		from = calculatedConnector.from;
 		to = calculatedConnector.to;
 		position = {
-			left: Math.min(shapeFrom.position().left, shapeTo.position().left),
-			top: Math.min(shapeFrom.position().top, shapeTo.position().top),
+			left: Math.min(fromBox.left, toBox.left),
+			top: Math.min(fromBox.top, toBox.top),
 		};
 		offset = calculatedConnector.controlPointOffset * (from.y - to.y);
 		maxOffset = Math.min(shapeTo.height(), shapeFrom.height()) * 1.5;
 		pathElement = element.find('path');
-		position.width = Math.max(shapeFrom.position().left + shapeFrom.outerWidth(true), shapeTo.position().left + shapeTo.outerWidth(true), position.left + 1) - position.left;
-		position.height = Math.max(shapeFrom.position().top + shapeFrom.outerHeight(true), shapeTo.position().top + shapeTo.outerHeight(true), position.top + 1) - position.top;
+		position.width = Math.max(fromBox.left + fromBox.width, toBox.left + toBox.width, position.left + 1) - position.left;
+		position.height = Math.max(fromBox.top + fromBox.height, toBox.top + toBox.height, position.top + 1) - position.top;
 		element.css(position).show();
 		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 		if (pathElement.length === 0) {
@@ -161,6 +169,10 @@ jQuery.fn.updateLink = function () {
 			return;
 		}
 		conn = calculateConnector(shapeFrom, shapeTo);
+		if (_.isEqual(conn, element.data('oldLink'))) {
+			return;
+		}
+		element.data('oldLink', conn);
 		position = {
 			left: Math.min(shapeFrom.position().left, shapeTo.position().left),
 			top: Math.min(shapeFrom.position().top, shapeTo.position().top),

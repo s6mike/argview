@@ -118,7 +118,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'top' : element.data('y') + stageElement.data('stageY'),
 
 			}, {
-				duration: 300,
+				duration: 100,
 				progress: triggerMove,
 				complete: function () {
 					element.each(updateScreenCoordinates).trigger('mapjs:move');
