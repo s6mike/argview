@@ -101,20 +101,6 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		nodeKey = function (id) {
 			return 'node_' + id;
 		},
-		scale = function (scaleMultiplier /*, zoomPoint */) {
-			var currentScale = stageElement.data('stageScale'),
-				targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
-				scrollParent = stageElement.parent(),
-				stageX = stageElement.data('stageX'),
-				stageY = stageElement.data('stageY');
-			if (currentScale === targetScale) {
-				return;
-			}
-			stageElement.data('stageScale', targetScale);
-			stageElement.css('transform', 'translate(-' + stageX + 'px, -' + stageY + 'px) scale(' + targetScale + ') translate(' + stageX + 'px, ' + stageY + 'px)');
-			scrollParent.scrollLeft(stageX * (targetScale - currentScale) + scrollParent.scrollLeft());
-			scrollParent.scrollTop(stageY * (targetScale - currentScale) + scrollParent.scrollTop());
-		},
 		updateScreenCoordinates = function () {
 			var element = $(this);
 			element.css({
@@ -236,8 +222,20 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				mapModel.editNode('mouse', false, false);
 			}).each(positionNode);
 	});
-	mapModel.addEventListener('mapScaleChanged', scale);
-
+	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
+		var currentScale = stageElement.data('stageScale'),
+			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
+			scrollParent = stageElement.parent(),
+			stageX = stageElement.data('stageX'),
+			stageY = stageElement.data('stageY');
+		if (currentScale === targetScale) {
+			return;
+		}
+		stageElement.data('stageScale', targetScale);
+		stageElement.css('transform', 'translate(-' + stageX + 'px, -' + stageY + 'px) scale(' + targetScale + ') translate(' + stageX + 'px, ' + stageY + 'px)');
+		scrollParent.scrollLeft(stageX * (targetScale - currentScale) + scrollParent.scrollLeft());
+		scrollParent.scrollTop(stageY * (targetScale - currentScale) + scrollParent.scrollTop());
+	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = $('#' + nodeKey(ideaId)),
 			nodeCenterX = stageElement.data('stageX') + node.data('x') + node.outerWidth(true) / 2,
@@ -247,7 +245,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			newTopScroll = nodeCenterY - scrollParent.innerHeight() / 2,
 			growX = Math.max(-1 * newLeftScroll, 0),
 			growY = Math.max(-1 * newTopScroll, 0);
-		scale(1);
+		stageElement.data('stageScale', 1);
+		stageElement.css('transform', '');
 		if (growX > 0 || growY > 0) {
 			growStage(growX, growY);
 		}
@@ -259,7 +258,15 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		}
 		scrollParent.scrollLeft(newLeftScroll - growX);
 		scrollParent.scrollTop(newTopScroll - growY);
-		node.focus();
+	});
+	mapModel.addEventListener('mapViewResetRequested', function () {
+		var scrollParent = stageElement.parent(),
+			newLeftScroll = stageElement.data('stageX') - scrollParent.innerWidth() / 2,
+			newTopScroll = stageElement.data('stageY') - scrollParent.innerHeight() / 2;
+		stageElement.data('stageScale', 1);
+		stageElement.css('transform', '');
+		scrollParent.scrollLeft(newLeftScroll);
+		scrollParent.scrollTop(newTopScroll);
 	});
 
 };
