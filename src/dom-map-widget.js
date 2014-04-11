@@ -51,7 +51,26 @@ $.fn.queueFadeIn = function () {
 				{ complete: function () { element.css('opacity', ''); }, duration: 400, 'queue': 'nodeQueue' }
 			);
 };
-
+$.fn.scrollWhenDragging = function () {
+	'use strict';
+	return this.each(function () {
+		var element = $(this),
+			dragOrigin;
+		element.on('dragstart', function () {
+			dragOrigin = {
+				top: element.scrollTop(),
+				left: element.scrollLeft()
+			};
+		}).on('drag', function (e) {
+			if (e.gesture && dragOrigin) {
+				element.scrollTop(dragOrigin.top - e.gesture.deltaY);
+				element.scrollLeft(dragOrigin.left - e.gesture.deltaX);
+			}
+		}).on('dragend', function () {
+			dragOrigin = undefined;
+		});
+	});
+};
 $.fn.draggableContainer = function () {
 	'use strict';
 	var currentDragObject,
@@ -396,7 +415,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 
 
 };
-$.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
+$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 	'use strict';
 	var hotkeyEventHandlers = {
 			'return': 'addSiblingIdea',
@@ -455,7 +474,11 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 				'stageY': element.innerHeight() / 2,
 				'stageScale': 1
 			});
+
 		element.draggableContainer();
+		if (!touchEnabled) {
+			element.scrollWhenDragging(); //no need to do this for touch, this is native
+		}
 		MAPJS.domMediator(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
@@ -509,12 +532,14 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + animations
 // + perf test large maps
 // + collapsed style
+// + scroll/swipe
+// + drag background
 // --------- read only ------------
-// scroll/swipe
+
 // attachment - clip - hook into displaying the attach
 // drag background to move things
 // drag root node to move things
-// prevent scrolling so the screen is blank
+
 
 // clip and hyperlink hover/ better images
 // proper node dimension caching
@@ -526,8 +551,7 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // - enable drag & drop
 // drop
 // editing as span or as textarea - grow automatically
-// drag background
-// straight lines extension
+
 // collaboration avatars
 // activated
 // mouse events
@@ -536,8 +560,12 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // html export
 
 
+//- v2 -
 // collaboration - collaborator images
-
+// straight lines extension
+// prevent scrolling so the screen is blank
+//
+//
 // remaining kinetic mediator events
 //
 // viewing
