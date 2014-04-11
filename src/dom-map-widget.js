@@ -103,14 +103,17 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent();
 
-	var connectorKey = function (connectorObj) {
-			return ('connector_' + connectorObj.from + '_' + connectorObj.to).replace('.', '_');
+	var cleanDOMId = function (s) {
+			return s.replace(/\./g, '_');
+		},
+		connectorKey = function (connectorObj) {
+			return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
 		},
 		linkKey = function (linkObj) {
-			return ('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo).replace('.', '_');
+			return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
 		},
 		nodeKey = function (id) {
-			return ('node_' + id).replace('.', '_');
+			return cleanDOMId('node_' + id);
 		},
 		stageToViewCoordinates = function (x, y) {
 			var stage = stageElement.data();
