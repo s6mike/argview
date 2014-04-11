@@ -139,7 +139,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'left': element.data('x') + stageElement.data('stageX'),
 				'top' : element.data('y') + stageElement.data('stageY'),
 			}, {
-				duration: 10000,
+				duration: 400,
 				progress: triggerMove,
 				complete: function () {
 					element.each(updateScreenCoordinates).trigger('mapjs:move');
@@ -248,7 +248,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + nodeKey(node.id)).find('.text').text(node.title);
 	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
-		$('#' + nodeKey(node.id)).remove();
+		var element = $('#' + nodeKey(node.id));
+		element.fadeOut({
+			duration: 400,
+			complete: function () {
+				element.remove();
+			},
+			'queue': 'nodeQueue'
+		});
 	});
 	mapModel.addEventListener('nodeMoved', function (node) {
 		var	nodeDom = $('#' + nodeKey(node.id)).data({
@@ -276,7 +283,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + nodeKey(connector.to)).on('mapjs:move', function () { element.updateConnector(false); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
-		$('#' + connectorKey(connector)).remove();
+		var element = $('#' + connectorKey(connector));
+		element.fadeOut({
+			duration: 400,
+			complete: function () {
+				element.remove();
+			},
+			'queue': 'nodeQueue'
+		});
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
 		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style),
@@ -347,8 +361,11 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
+		console.log('same curve', MAPJS.sameCurve, 'new curve', MAPJS.newCurve);
 		animateCount = moveCount = 0;
+		// animate dirty curves
 		stageElement.children().dequeue('nodeQueue');
+		MAPJS.sameCurve = MAPJS.newCurve = 0;
 	});
 
 
