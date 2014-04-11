@@ -122,7 +122,8 @@ $.fn.draggable = function () {
 MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
-		animateCount = 0, moveCount = 0;
+		animateCount = 0, moveCount = 0,
+		connectorsForAnimation = $();
 
 	var cleanDOMId = function (s) {
 			return s.replace(/\./g, '_');
@@ -151,22 +152,19 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			}).trigger('mapjs:move');
 		},
 		animateToPositionCoordinates = function () {
-			var element = $(this),
-				triggerMove = function () {
-					element.trigger('mapjs:move');
-				};
-			element.animate({
+			var element = $(this);
+			element.clearQueue('nodeQueue').animate({
 				'left': element.data('x') + stageElement.data('stageX'),
 				'top' : element.data('y') + stageElement.data('stageY'),
+				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
 			}, {
 				duration: 400,
-				progress: triggerMove,
 				complete: function () {
 					element.each(updateScreenCoordinates).trigger('mapjs:move');
 				},
 				'queue': 'nodeQueue',
 				'easing': 'linear'
-			});
+			}).trigger('mapjs:animatemove');
 		},
 		growStage = function (growx, growy) {
 			stageElement.data('stageX', stageElement.data('stageX') + growx);
@@ -292,8 +290,9 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		var element = MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
 			.appendTo(stageElement).queueFadeIn().updateConnector();
-		$('#' + nodeKey(connector.from)).on('mapjs:move', function () { element.updateConnector(false); });
-		$('#' + nodeKey(connector.to)).on('mapjs:move', function () { element.updateConnector(false); });
+		$('#' + nodeKey(connector.from)).add($('#' + nodeKey(connector.to)))
+			.on('mapjs:move', function () { element.updateConnector(); })
+			.on('mapjs:animatemove', function () { connectorsForAnimation = connectorsForAnimation.add(element); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		$('#' + connectorKey(connector)).queueFadeOut();
@@ -368,7 +367,16 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
-		stageElement.children().dequeue('nodeQueue');
+		var connectorGroupClone = connectorsForAnimation;
+		connectorsForAnimation = $();
+		stageElement.animate({'opacity': 1}, {
+			duration: 400,
+			queue: 'nodeQueue',
+			start: function () {},
+			progress: function () { connectorGroupClone.updateConnector(); },
+			complete: function () { }
+		});
+		stageElement.children().andSelf().dequeue('nodeQueue');
 	});
 
 

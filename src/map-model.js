@@ -101,7 +101,9 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 				}
 			}
 			currentLayout = newLayout;
-			self.dispatchEvent('layoutChangeComplete');
+			if (!self.isInCollapse) {
+				self.dispatchEvent('layoutChangeComplete');
+			}
 		},
 		revertSelectionForUndo,
 		revertActivatedForUndo,
@@ -233,6 +235,7 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 	};
 	this.collapse = function (source, doCollapse) {
 		analytic('collapse:' + doCollapse, source);
+		self.isInCollapse = true;
 		var contextNodeId = getCurrentlySelectedIdeaId(),
 			contextNode = function () {
 				return contextNodeId && currentLayout && currentLayout.nodes && currentLayout.nodes[contextNodeId];
@@ -256,6 +259,7 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 				oldContext.y - newContext.y
 			);
 		}
+		self.isInCollapse = false;
 		self.dispatchEvent('layoutChangeComplete');
 	};
 	this.updateStyle = function (source, prop, value) {
