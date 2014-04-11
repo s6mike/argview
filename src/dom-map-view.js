@@ -10,13 +10,30 @@ MAPJS.createSVG = function (tag) {
 	'use strict';
 	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
 };
-jQuery.fn.getBox = function () {
+jQuery.fn.getBoxSlow = function () {
 	'use strict';
 	var domShape = jQuery(this),
 		pos = domShape.position();
 	pos.width = domShape.outerWidth(true);
 	pos.height = domShape.outerHeight(true);
 	return pos;
+};
+jQuery.fn.getBox = function () {
+	'use strict';
+	var domShape = jQuery(this); /*,
+		pos = domShape.position();
+	pos.width = domShape.outerWidth(true);
+	pos.height = domShape.outerHeight(true);
+	*/
+	if (!domShape.data('width')) {
+		return domShape.getBoxSlow();
+	}
+	return {
+		top: domShape.data('y') + domShape.parent().data('stageY'),
+		left: domShape.data('x') + domShape.parent().data('stageX'),
+		width: domShape.data('width'),
+		height: domShape.data('height')
+	};
 };
 jQuery.fn.updateConnector = function () {
 	'use strict';

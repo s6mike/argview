@@ -7,13 +7,23 @@ MAPJS.DOMRender = {
 		textClass: 'mapjs-text'
 	},
 	dimensionProvider: function (idea) {
-		'use strict';
-		var textBox = $('<div>').addClass('mapjs-node invisible').appendTo('body').updateNodeContent(idea),
-			result = {
-				width: textBox.outerWidth(true),
-				height: textBox.outerHeight(true)
-			};
+		'use strict'; /* support multiple stages? */
+		var existing = document.getElementById('node_' + idea.id),
+			textBox,
+			result;
+		if (existing) {
+			textBox = $(existing);
+			if (textBox.find('span').text() === idea.title /* check for collapsed and icon size */) {
+				return _.pick(textBox.data(), 'width', 'height');
+			}
+		}
+		textBox = $('<div>').addClass('mapjs-node invisible').appendTo('body').updateNodeContent(idea);
+		result = {
+			width: textBox.outerWidth(true),
+			height: textBox.outerHeight(true)
+		};
 		textBox.detach();
+		MAPJS.nonexisting = MAPJS.nonexisting + 1;
 		return result;
 	},
 	layoutCalculator: function (contentAggregate) {
@@ -94,13 +104,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	var viewPort = stageElement.parent();
 
 	var connectorKey = function (connectorObj) {
-			return 'connector_' + connectorObj.from + '_' + connectorObj.to;
+			return ('connector_' + connectorObj.from + '_' + connectorObj.to).replace('.', '_');
 		},
 		linkKey = function (linkObj) {
-			return 'link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo;
+			return ('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo).replace('.', '_');
 		},
 		nodeKey = function (id) {
-			return 'node_' + id;
+			return ('node_' + id).replace('.', '_');
 		},
 		stageToViewCoordinates = function (x, y) {
 			var stage = stageElement.data();
@@ -222,7 +232,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			return result;
 		};
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
-		var node = $('#node_' + ideaId);
+		var node = $('#' + nodeKey(ideaId));
 		if (isSelected) {
 			ensureNodeVisible(node).then(function () {
 				node.addClass('selected').focus();
@@ -232,13 +242,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		}
 	});
 	mapModel.addEventListener('nodeTitleChanged', function (node) {
-		$('#node_' + node.id).find('.text').text(node.title);
+		$('#' + nodeKey(node.id)).find('.text').text(node.title);
 	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
-		$('#node_' + node.id).remove();
+		$('#' + nodeKey(node.id)).remove();
 	});
 	mapModel.addEventListener('nodeMoved', function (node) {
-		$('#node_' + node.id).data({
+		$('#' + nodeKey(node.id)).data({
 			'x': node.x,
 			'y': node.y
 		}).each(ensureSpaceForNode).each(animateToPositionCoordinates);
@@ -279,10 +289,10 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + linkKey(l)).data(attr).updateLink();
 	});
 	mapModel.addEventListener('nodeCreated', function (node) {
-		$('<div>')
+		var element = $('<div>')
 			.attr('tabindex', 0)
 			.attr({ 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
-			.data({ 'x': node.x, 'y': node.y})
+			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
 			.addClass('mapjs-node')
 			.appendTo(stageElement)
 			.updateNodeContent(node)
@@ -294,6 +304,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				}
 				mapModel.editNode('mouse', false, false);
 			}).each(ensureSpaceForNode).each(updateScreenCoordinates);
+		element.css('min-width', element.css('width'));
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('stageScale'),
