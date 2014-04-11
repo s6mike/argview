@@ -385,6 +385,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			}
 		});
 		connectorsForAnimation = $();
+		linksForAnimation = $();
 		stageElement.animate({'opacity': 1}, {
 			duration: 400,
 			queue: 'nodeQueue',
