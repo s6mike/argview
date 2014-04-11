@@ -119,6 +119,7 @@ jQuery.fn.updateConnector = function () {
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
+		// if only the relative position changed, do not re-update the curve!!!!
 		pathElement.attr('d',
 			'M' + Math.round(from.x - position.left) + ',' + Math.round(from.y - position.top) +
 			'Q' + Math.round(from.x - position.left) + ',' + Math.round(to.y - offset - position.top) + ' ' + Math.round(to.x - position.left) + ',' + Math.round(to.y - position.top)

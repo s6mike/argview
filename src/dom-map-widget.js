@@ -101,7 +101,8 @@ $.fn.draggable = function () {
 
 MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
-	var viewPort = stageElement.parent();
+	var viewPort = stageElement.parent(),
+		animateCount = 0, moveCount = 0;
 
 	var cleanDOMId = function (s) {
 			return s.replace(/\./g, '_');
@@ -137,9 +138,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			element.animate({
 				'left': element.data('x') + stageElement.data('stageX'),
 				'top' : element.data('y') + stageElement.data('stageY'),
-
 			}, {
-				duration: 100,
+				duration: 10000,
 				progress: triggerMove,
 				complete: function () {
 					element.each(updateScreenCoordinates).trigger('mapjs:move');
@@ -251,10 +251,19 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + nodeKey(node.id)).remove();
 	});
 	mapModel.addEventListener('nodeMoved', function (node) {
-		$('#' + nodeKey(node.id)).data({
-			'x': node.x,
-			'y': node.y
-		}).each(ensureSpaceForNode).each(animateToPositionCoordinates);
+		var	nodeDom = $('#' + nodeKey(node.id)).data({
+				'x': node.x,
+				'y': node.y
+			}).each(ensureSpaceForNode),
+			screenTopLeft = stageToViewCoordinates(node.x, node.y),
+			screenBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
+		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
+			moveCount++;
+			nodeDom.each(updateScreenCoordinates);
+		} else {
+			animateCount++;
+			nodeDom.each(animateToPositionCoordinates);
+		}
 	});
 	mapModel.addEventListener('nodeAttrChanged', function (n) {
 		$('#' + nodeKey(n.id)).updateNodeContent(n);
@@ -263,8 +272,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		var element = MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
 			.appendTo(stageElement).updateConnector();
-		$('#' + nodeKey(connector.from)).on('mapjs:move', function () { element.updateConnector(); });
-		$('#' + nodeKey(connector.to)).on('mapjs:move', function () { element.updateConnector(); });
+		$('#' + nodeKey(connector.from)).on('mapjs:move', function () { element.updateConnector(false); });
+		$('#' + nodeKey(connector.to)).on('mapjs:move', function () { element.updateConnector(false); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		$('#' + connectorKey(connector)).remove();
@@ -338,6 +347,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
+		animateCount = moveCount = 0;
 		stageElement.children().dequeue('nodeQueue');
 	});
 
