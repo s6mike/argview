@@ -123,7 +123,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		animateCount = 0, moveCount = 0,
-		connectorsForAnimation = $();
+		connectorsForAnimation = $(),
+		linksForAnimation = $();
 
 	var cleanDOMId = function (s) {
 			return s.replace(/\./g, '_');
@@ -309,8 +310,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			})
 			.data(attr)
 			.appendTo(stageElement).queueFadeIn().updateLink();
-		$('#' + nodeKey(l.ideaIdFrom)).on('mapjs:move', function () { link.updateLink(); });
-		$('#' + nodeKey(l.ideaIdTo)).on('mapjs:move', function () { link.updateLink(); });
+
+
+
+		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
+			.on('mapjs:move', function () { link.updateLink(); })
+			.on('mapjs:animatemove', function () { linksForAnimation = connectorsForAnimation.add(link); });
+
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		$('#' + linkKey(l)).queueFadeOut();
@@ -367,14 +373,22 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
-		var connectorGroupClone = connectorsForAnimation;
+		var connectorGroupClone = $(), linkGroupClone = $();
+		connectorsForAnimation.each(function () {
+			if (!$(this).animateConnectorToPosition()) {
+				connectorGroupClone = connectorGroupClone.add(this);
+			}
+		});
+		linksForAnimation.each(function () {
+			if (!$(this).animateConnectorToPosition()) {
+				linkGroupClone = linkGroupClone.add(this);
+			}
+		});
 		connectorsForAnimation = $();
 		stageElement.animate({'opacity': 1}, {
 			duration: 400,
 			queue: 'nodeQueue',
-			start: function () {},
-			progress: function () { connectorGroupClone.updateConnector(); },
-			complete: function () { }
+			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
 		});
 		stageElement.children().andSelf().dequeue('nodeQueue');
 	});

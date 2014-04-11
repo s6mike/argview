@@ -21,6 +21,9 @@ jQuery.fn.getBoxSlow = function () {
 jQuery.fn.getBox = function () {
 	'use strict';
 	var domShape = jQuery(this)[0];
+	if (!domShape) {
+		return false;
+	}
 	return {
 		top: domShape.offsetTop,
 		left: domShape.offsetLeft,
@@ -28,15 +31,11 @@ jQuery.fn.getBox = function () {
 		height: domShape.offsetHeight
 	};
 };
-jQuery.fn.fastGetBox = function () {
+jQuery.fn.getDataBox = function () {
 	'use strict';
-	var domShape = jQuery(this); /*,
-		pos = domShape.position();
-	pos.width = domShape.outerWidth(true);
-	pos.height = domShape.outerHeight(true);
-	*/
+	var domShape = jQuery(this);
 	if (!domShape.data('width')) {
-		return domShape.getBoxSlow();
+		return domShape.getBox();
 	}
 	return {
 		top: domShape.data('y') + domShape.parent().data('stageY'),
@@ -44,6 +43,33 @@ jQuery.fn.fastGetBox = function () {
 		width: domShape.data('width'),
 		height: domShape.data('height')
 	};
+};
+jQuery.fn.animateConnectorToPosition = function () {
+	'use strict';
+	var element = jQuery(this),
+		shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
+		shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
+		fromBox = shapeFrom.getDataBox(),
+		toBox = shapeTo.getDataBox(),
+		oldBox = element.data('changeCheck');
+	if (fromBox && toBox && oldBox && oldBox.from.width	=== fromBox.width	&&
+		oldBox.to.width		=== toBox.width		&&
+		oldBox.from.height	=== fromBox.height		&&
+		oldBox.to.height	=== toBox.height		&&
+		Math.round(oldBox.from.top - oldBox.to.top) === Math.round(fromBox.top - toBox.top) &&
+		Math.round(oldBox.from.left - oldBox.to.left) === Math.round(fromBox.left - toBox.left)) {
+
+		element.animate({
+			left: Math.min(fromBox.left, toBox.left),
+			top: Math.min(fromBox.top, toBox.top),
+		}, {
+			duration: 400,
+			queue: 'nodeQueue',
+			easing: 'linear'
+		});
+		return true;
+	}
+	return false;
 };
 jQuery.fn.updateConnector = function () {
 	'use strict';
