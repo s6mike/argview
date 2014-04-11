@@ -20,6 +20,16 @@ jQuery.fn.getBoxSlow = function () {
 };
 jQuery.fn.getBox = function () {
 	'use strict';
+	var domShape = jQuery(this)[0];
+	return {
+		top: domShape.offsetTop,
+		left: domShape.offsetLeft,
+		width: domShape.offsetWidth,
+		height: domShape.offsetHeight
+	};
+};
+jQuery.fn.fastGetBox = function () {
+	'use strict';
 	var domShape = jQuery(this); /*,
 		pos = domShape.position();
 	pos.width = domShape.outerWidth(true);
