@@ -56,8 +56,8 @@ jQuery.fn.animateConnectorToPosition = function () {
 		oldBox.to.width		=== toBox.width		&&
 		oldBox.from.height	=== fromBox.height		&&
 		oldBox.to.height	=== toBox.height		&&
-		Math.round(oldBox.from.top - oldBox.to.top) === Math.round(fromBox.top - toBox.top) &&
-		Math.round(oldBox.from.left - oldBox.to.left) === Math.round(fromBox.left - toBox.left)) {
+		Math.abs(oldBox.from.top - oldBox.to.top - (fromBox.top - toBox.top)) < 2 &&
+		Math.abs(oldBox.from.left - oldBox.to.left - (fromBox.left - toBox.left)) < 2) {
 
 		element.animate({
 			left: Math.min(fromBox.left, toBox.left),
