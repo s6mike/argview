@@ -24,15 +24,6 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 			self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 		},
 		horizontalSelectionThreshold = 300,
-		moveNodes = function (nodes, deltaX, deltaY) {
-			if (deltaX || deltaY) {
-				_.each(nodes, function (node) {
-					node.x += deltaX;
-					node.y += deltaY;
-					self.dispatchEvent('nodeMoved', node);
-				});
-			}
-		},
 		isAddLinkMode,
 		updateCurrentLayout = function (newLayout) {
 			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink, newActive;
@@ -239,6 +230,15 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 		var contextNodeId = getCurrentlySelectedIdeaId(),
 			contextNode = function () {
 				return contextNodeId && currentLayout && currentLayout.nodes && currentLayout.nodes[contextNodeId];
+			},
+			moveNodes = function (nodes, deltaX, deltaY) {
+				if (deltaX || deltaY) {
+					_.each(nodes, function (node) {
+						node.x += deltaX;
+						node.y += deltaY;
+						self.dispatchEvent('nodeMoved', node, 'scroll');
+					});
+				}
 			},
 			oldContext,
 			newContext;

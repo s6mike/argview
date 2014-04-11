@@ -269,14 +269,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#' + nodeKey(node.id)).queueFadeOut();
 	});
-	mapModel.addEventListener('nodeMoved', function (node) {
+	mapModel.addEventListener('nodeMoved', function (node, reason) {
 		var	nodeDom = $('#' + nodeKey(node.id)).data({
 				'x': node.x,
 				'y': node.y
 			}).each(ensureSpaceForNode),
 			screenTopLeft = stageToViewCoordinates(node.x, node.y),
 			screenBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
-		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
+		if (reason === scroll || screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
 			moveCount++;
 			nodeDom.each(updateScreenCoordinates);
 		} else {
