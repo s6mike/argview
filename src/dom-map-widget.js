@@ -507,14 +507,18 @@ $.fn.domMapWidget = function (activityLog, mapModel /*, touchEnabled */) {
 // + stage resizing (esp node max width)
 // + zoom
 // + animations
-//
+// + perf test large maps
+// + collapsed style
 // --------- read only ------------
 // scroll/swipe
 // attachment - clip - hook into displaying the attach
 // drag background to move things
 // drag root node to move things
 // prevent scrolling so the screen is blank
-// perf test large maps
+
+// clip and hyperlink hover/ better images
+// proper node dimension caching
+// widget tests
 
 //
 // --------- editing --------------

@@ -1,10 +1,10 @@
 .mapjs-node {
 	position: absolute;
 	margin: 0;
-	padding: 8px;
+	padding: 7px;
 	border-radius: 10px;
-	border: 1px solid #888;
-	box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.4);
+	border: 1px solid #777;
+	box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.8);
 	z-index: 2;
 	user-select: none;
 	-moz-user-select: none;
@@ -22,7 +22,7 @@
 	text-align: center;
 	line-height: 150% !important;
 	display: block;
-	max-width: 160px;
+	max-width: 146px;
 }
 .mapjs-node.selected, .mapjs-node:focus {
 	outline: 0;
@@ -32,10 +32,10 @@
 	z-index: 3;
 }
 .mapjs-collapsed {
-	box-shadow: 4px 4px 0 #105773, 5px 5px 0 #666, 8px 8px 0 #0A3647, 9px 9px 0 #333;
+	box-shadow: 3px 3px 0 #A0A0A0, 4px 4px 0 #333, 6px 6px 0 #707070, 7px 7px 0 #222;
 }
 .mapjs-collapsed.selected, .mapjs-collapsed:focus {
-	box-shadow: 4px 4px 0 #105773, 5px 5px 0 #666, 8px 8px 0 #0A3647, 9px 9px 0 #333, 12px 12px 5px black;
+	box-shadow: 4px 4px 0 #A0A0A0, 5px 5px 0 #333, 8px 8px 0 #707070, 9px 9px 0 #222, 12px 12px 5px black;
 }
 .mapjs-node[mapjs-level="1"] {
 	background-color:#22AAE0;
