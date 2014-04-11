@@ -315,7 +315,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 
 		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
 			.on('mapjs:move', function () { link.updateLink(); })
-			.on('mapjs:animatemove', function () { linksForAnimation = connectorsForAnimation.add(link); });
+			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });
 
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
