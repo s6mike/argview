@@ -319,7 +319,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var element = MAPJS.createSVG()
-			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container', 'data-mapjs-node-from': nodeKey(connector.from), 'data-mapjs-node-to': nodeKey(connector.to)})
+			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
+			.data({'nodeFrom': $('#' + nodeKey(connector.from)), 'nodeTo': $('#' + nodeKey(connector.to))})
 			.appendTo(stageElement).queueFadeIn().updateConnector();
 		$('#' + nodeKey(connector.from)).add($('#' + nodeKey(connector.to)))
 			.on('mapjs:move', function () { element.updateConnector(); })
@@ -329,20 +330,15 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + connectorKey(connector)).queueFadeOut();
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style),
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style, { 'nodeFrom': $('#' + nodeKey(l.ideaIdFrom)), 'nodeTo': $('#' + nodeKey(l.ideaIdTo)) }),
 			link = MAPJS.createSVG()
 			.attr({
 				'id': linkKey(l),
 				'data-mapjs-role': 'link',
-				'class': 'mapjs-draw-container',
-				'data-mapjs-node-from': nodeKey(l.ideaIdFrom),
-				'data-mapjs-node-to': nodeKey(l.ideaIdTo)
+				'class': 'mapjs-draw-container'
 			})
 			.data(attr)
 			.appendTo(stageElement).queueFadeIn().updateLink();
-
-
-
 		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
 			.on('mapjs:move', function () { link.updateLink(); })
 			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });

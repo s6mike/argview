@@ -97,7 +97,7 @@ describe('animateConnectorToPosition', function () {
 	beforeEach(function () {
 		from = jQuery('<div>').attr('id', 'fromC').appendTo('body').css({position: 'absolute', width: 50, height: 60, left: 70, top: 80}).data({width: 50, height: 60, x: 70, y: 80});
 		to = jQuery('<div>').attr('id', 'toC').appendTo('body').css({position: 'absolute', width: 90, height: 100, left: 110, top: 120}).data({width: 90, height: 100, x: 110, y: 120});
-		connector = jQuery('<div>').attr({'data-mapjs-node-from': 'fromC', 'data-mapjs-node-to': 'toC'}).appendTo('body');
+		connector = jQuery('<div>').data({'nodeFrom': from, 'nodeTo': to}).appendTo('body');
 		spyOn(jQuery.fn, 'animate').and.callThrough();
 	});
 	afterEach(function () {
@@ -163,14 +163,12 @@ describe('updateConnector', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
+		underTest = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
-		anotherConnector = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
+		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
-		expect(jQuery('[data-mapjs-node-from=node_fr]').length).toBe(2);
-
 	});
 	it('draws a cubic curve between the centers of two nodes', function () {
 		underTest.updateConnector();
@@ -194,7 +192,7 @@ describe('updateConnector', function () {
 	});
 
 	it('updates multiple connectors at once', function () {
-		jQuery('[data-mapjs-node-from=node_fr]').updateConnector();
+		jQuery('[data-role=test-connector]').updateConnector();
 		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
 		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
 	});
@@ -221,8 +219,18 @@ describe('updateConnector', function () {
 
 	});
 	it('does not die if one of the shapes is no longer present', function () {
-		underTest.attr('data-mapjs-node-from', 'node_non_existent');
+		fromNode.remove();
 		underTest.updateConnector();
+	});
+	it('does not die if nodeFrom gets cleared out', function () {
+		underTest.data('nodeFrom', false);
+		underTest.updateLink();
+		expect(underTest.is(':visible')).toBeFalsy();
+	});
+	it('does not die if nodeTo gets cleared out', function () {
+		underTest.data('nodeTo', false);
+		underTest.updateLink();
+		expect(underTest.is(':visible')).toBeFalsy();
 	});
 	afterEach(function () {
 		fromNode.remove();
@@ -238,13 +246,12 @@ describe('updateLink', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_to');
+		underTest = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
-		anotherLink = MAPJS.createSVG().appendTo('body').css('position', 'absolute').attr('data-mapjs-node-from', 'node_fr').attr('data-mapjs-node-to', 'node_third');
+		anotherLink = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateLink()[0]).toEqual(underTest[0]);
-		expect(jQuery('[data-mapjs-node-from=node_fr]').length).toBe(2);
 	});
 	it('draws a straight between the borders of two nodes', function () {
 		underTest.updateLink();
@@ -305,13 +312,23 @@ describe('updateLink', function () {
 	});
 
 	it('updates multiple links at once', function () {
-		jQuery('[data-mapjs-node-from=node_fr]').updateLink();
+		jQuery('[data-role=test-link]').updateLink();
 		expect(underTest.find('path').attr('d')).toEqual('M100,20L136,120');
 		expect(anotherLink.find('path').attr('d')).toEqual('M50,40L80,230');
 	});
 	it('does not die if one of the shapes is no longer present', function () {
-		underTest.attr('data-mapjs-node-from', 'node_non_existent');
+		fromNode.remove();
 		underTest.updateLink();
+	});
+	it('does not die if nodeFrom gets cleared out', function () {
+		underTest.data('nodeFrom', false);
+		underTest.updateLink();
+		expect(underTest.is(':visible')).toBeFalsy();
+	});
+	it('does not die if nodeTo gets cleared out', function () {
+		underTest.data('nodeTo', false);
+		underTest.updateLink();
+		expect(underTest.is(':visible')).toBeFalsy();
 	});
 	describe('performance optimisations', function () {
 		it('rounds coordinates', function () {

@@ -33,13 +33,13 @@ jQuery.fn.getDataBox = function () {
 jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 	'use strict';
 	var element = jQuery(this),
-		shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
-		shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
-		fromBox = shapeFrom.getDataBox(),
-		toBox = shapeTo.getDataBox(),
+		shapeFrom = element.data('nodeFrom'),
+		shapeTo = element.data('nodeTo'),
+		fromBox = shapeFrom && shapeFrom.getDataBox(),
+		toBox = shapeTo && shapeTo.getDataBox(),
 		oldBox = {
-			from: shapeFrom.getBox(),
-			to: shapeTo.getBox()
+			from: shapeFrom && shapeFrom.getBox(),
+			to: shapeTo && shapeTo.getBox()
 		};
 	tolerance = tolerance || 1;
 	if (fromBox && toBox && oldBox && oldBox.from.width	=== fromBox.width	&&
@@ -99,10 +99,10 @@ jQuery.fn.updateConnector = function () {
 					controlPointOffset: 0.75
 				};
 			},
-			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
-			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
+			shapeFrom = element.data('nodeFrom'),
+			shapeTo = element.data('nodeTo'),
 			calculatedConnector, from, to, position, offset, maxOffset, pathElement, fromBox, toBox, changeCheck;
-		if (shapeFrom.length === 0 || shapeTo.length === 0) {
+		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
 		}
@@ -142,8 +142,8 @@ jQuery.fn.updateLink = function () {
 	'use strict';
 	return jQuery.each(this, function () {
 		var	element = jQuery(this),
-			shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
-			shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
+			shapeFrom = element.data('nodeFrom'),
+			shapeTo = element.data('nodeTo'),
 			calculateConnector = function (parent, child) {
 				var parentPoints = [
 					{
@@ -206,7 +206,7 @@ jQuery.fn.updateLink = function () {
 			},
 			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color'),
 			fromBox, toBox, changeCheck;
-		if (shapeFrom.length === 0 || shapeTo.length === 0) {
+		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
 		}
