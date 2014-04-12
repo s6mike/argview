@@ -534,18 +534,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + collapsed style
 // + scroll/swipe
 // + drag background
+// + drag root node to move things
+// + drag background to move things
 // --------- read only ------------
-
 // attachment - clip - hook into displaying the attach
-// drag background to move things
-// drag root node to move things
-
-
 // clip and hyperlink hover/ better images
 // proper node dimension caching
 // widget tests
 
-//
 // --------- editing --------------
 // - don't set contentEditable
 // - enable drag & drop

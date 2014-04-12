@@ -50,26 +50,30 @@
 	color: black;
 }
 .mapjs-link {
-	right: -0.4em;
+	right: -0.5em;
 	position: absolute;
-	bottom: -0.45em;
-	font-size: 1.25em;
-	background-image: url(iconmonstr-link-icon.svg);
+	bottom: -0.5em;
+	background-image: url(icon-link-inactive.svg);
 	width: 1.5em;
 	height: 1.5em;
 	background-size: 1.5em;
 	background-repeat: no-repeat no-repeat;
 }
+.mapjs-link:hover {
+	background-image:url(icon-link-active.svg);
+}
 .mapjs-attachment {
-	right: -0.4em;
+	right: -5px;
 	position: absolute;
-	top: -0.45em;
-	font-size: 1.25em;
-	background-image: url(iconmonstr-paperclip-icon.svg);
-	width: 1.5em;
-	height: 1.5em;
-	background-size: 1.5em;
+	top: -15px;
+	background-image: url(icon-paperclip-inactive.svg);
+	width: 16px;
+	height: 32px;
+	background-size: 16px 32px;
 	background-repeat: no-repeat no-repeat;
+}
+.mapjs-attachment:hover{
+	background-image:url(icon-paperclip-active.svg);
 }
 .mapjs-draw-container {
 	position: absolute;
