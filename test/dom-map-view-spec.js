@@ -1,97 +1,162 @@
-/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color*/
-describe('jQuery extensions', function () {
-	'use strict';
-	describe('getBox', function () {
-		var underTest;
-		beforeEach(function () {
-			underTest = jQuery('<div>').appendTo('body').css({
-				position: 'absolute',
-				top: '200px',
-				left: '300px',
-				width: '150px',
-				height: '20px'
-			});
+/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn*/
 
+describe('getBox', function () {
+	'use strict';
+	var underTest;
+	beforeEach(function () {
+		underTest = jQuery('<div>').appendTo('body').css({
+			position: 'absolute',
+			top: '200px',
+			left: '300px',
+			width: '150px',
+			height: '20px'
 		});
-		afterEach(function () {
-			underTest.detach();
-		});
-		it('retrieves offset box from a DOM element', function () {
-			expect(underTest.getBox()).toEqual({
-				top: 200,
-				left: 300,
-				width: 150,
-				height: 20
-			});
-		});
-		it('retrieves the offset box from the first element of a jQuery selector', function () {
-			var another = jQuery('<div>');
-			expect(underTest.add(another).getBox()).toEqual({
-				top: 200,
-				left: 300,
-				width: 150,
-				height: 20
-			});
-		});
-		it('returns false if selector is empty', function () {
-			expect(jQuery('#non-existent').getBox()).toBeFalsy();
+
+	});
+	afterEach(function () {
+		underTest.remove();
+	});
+	it('retrieves offset box from a DOM element', function () {
+		expect(underTest.getBox()).toEqual({
+			top: 200,
+			left: 300,
+			width: 150,
+			height: 20
 		});
 	});
-	describe('getDataBox', function () {
-		var underTest, stage;
-		beforeEach(function () {
-			stage = jQuery('<div>').appendTo('body');
-			underTest = jQuery('<div>').appendTo(stage).css({
-				position: 'absolute',
-				top: '200px',
-				left: '300px',
-				width: '150px',
-				height: '20px'
-			}).data({
-				x: 11,
-				y: 12,
-				width: 13,
-				height: 14
-			});
+	it('retrieves the offset box from the first element of a jQuery selector', function () {
+		var another = jQuery('<div>');
+		expect(underTest.add(another).getBox()).toEqual({
+			top: 200,
+			left: 300,
+			width: 150,
+			height: 20
 		});
-		afterEach(function () {
-			underTest.detach();
-			stage.detach();
+	});
+	it('returns false if selector is empty', function () {
+		expect(jQuery('#non-existent').getBox()).toBeFalsy();
+	});
+});
+describe('getDataBox', function () {
+	'use strict';
+	var underTest, stage;
+	beforeEach(function () {
+		stage = jQuery('<div>').appendTo('body');
+		underTest = jQuery('<div>').appendTo(stage).css({
+			position: 'absolute',
+			top: '200px',
+			left: '300px',
+			width: '150px',
+			height: '20px'
+		}).data({
+			x: 11,
+			y: 12,
+			width: 13,
+			height: 14
 		});
-		it('retrieves a pre-calculated box from data attributes if they are present', function () {
+	});
+	afterEach(function () {
+		underTest.remove();
+		stage.remove();
+	});
+	it('retrieves a pre-calculated box from data attributes if they are present', function () {
+		expect(underTest.getDataBox()).toEqual({
+			left: 11,
+			top: 12,
+			width: 13,
+			height: 14
+		});
+	});
+	it('adds stage offset from the parent if present to x and y', function () {
+		stage.data({'stageX': 200, 'stageY': 300});
+		expect(underTest.getDataBox()).toEqual({
+			left: 211,
+			top: 312,
+			width: 13,
+			height: 14
+		});
+	});
+	_.each(['width', 'height'], function (attrib) {
+		it('falls back to DOM boxing if data attribute ' + attrib + ' is not present', function () {
+			underTest.data(attrib, '');
 			expect(underTest.getDataBox()).toEqual({
-				left: 11,
-				top: 12,
-				width: 13,
-				height: 14
+				top: 200,
+				left: 300,
+				width: 150,
+				height: 20
 			});
 		});
-		it('adds stage offset from the parent if present to x and y', function () {
-			stage.data({'stageX': 200, 'stageY': 300});
-			expect(underTest.getDataBox()).toEqual({
-				left: 211,
-				top: 312,
-				width: 13,
-				height: 14
-			});
+	});
+	it('returns false if selector is empty', function () {
+		expect(jQuery('#non-existent').getDataBox()).toBeFalsy();
+	});
+});
+describe('animateConnectorToPosition optimises connector transformations to simple animations if possible', function () {
+	'use strict';
+	var from, to, connector;
+	beforeEach(function () {
+		from = jQuery('<div>').attr('id', 'fromC').appendTo('body').css({position: 'absolute', width: 50, height: 60, left: 70, top: 80}).data({width: 50, height: 60, x: 70, y: 80});
+		to = jQuery('<div>').attr('id', 'toC').appendTo('body').css({position: 'absolute', width: 90, height: 100, left: 110, top: 120}).data({width: 90, height: 100, x: 110, y: 120});
+		connector = jQuery('<div>').attr({'data-mapjs-node-from': 'fromC', 'data-mapjs-node-to': 'toC'}).appendTo('body');
+		spyOn(jQuery.fn, 'animate').and.callThrough();
+	});
+	afterEach(function () {
+		from.add(to).add(connector).remove();
+	});
+	describe('returns true and schedules an animation', function () {
+		it('when dataBox and real dom boxes for connecting element have just moved by the same offset', function () {
+			from.data('x', from.data('x') + 20);
+			from.data('y', from.data('y') + 30);
+			to.data('x', to.data('x') + 20);
+			to.data('y', to.data('y') + 30);
+			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
+			expect(result).toBeTruthy();
+			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 90, top : 110 }, { duration : 230, queue : 'animQueue'});
 		});
-		_.each(['width', 'height'], function (attrib) {
-			it('falls back to DOM boxing if data attribute ' + attrib + ' is not present', function () {
-				underTest.data(attrib, '');
-				expect(underTest.getDataBox()).toEqual({
-					top: 200,
-					left: 300,
-					width: 150,
-					height: 20
+		it('when the movement difference  is less than threshold (to avoid small rounding errors)', function () {
+			from.data('x', from.data('x') + 22);
+			from.data('y', from.data('y') + 30);
+			to.data('x', to.data('x') + 20);
+			to.data('y', to.data('y') + 33);
+			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' }, 5);
+			expect(result).toBeTruthy();
+			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 92, top : 110 }, { duration : 230, queue : 'animQueue'});
+		});
+		it('rounds the coordinates to avoid performance problems', function () {
+			from.data('x', from.data('x') + 20.1);
+			from.data('y', from.data('y') + 30.3);
+			to.data('x', to.data('x') + 20.3);
+			to.data('y', to.data('y') + 30.1);
+			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
+			expect(result).toBeTruthy();
+			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 90, top : 110 }, { duration : 230, queue : 'animQueue'});
+		});
+	});
+	describe('returns false and does not schedule animations if box differences are nor resolvable using simple translation', function () {
+		it('when orientation changes', function () {
+			var fromData = _.clone(from.data());
+			from.data(to.data());
+			to.data(fromData);
+			var result = connector.animateConnectorToPosition();
+			expect(result).toBeFalsy();
+			expect(jQuery.fn.animate).not.toHaveBeenCalled();
+		});
+		_.each(['fromC', 'toC'], function (changeId) {
+			_.each(['width', 'height', 'x', 'y'], function (attrib) {
+				it('when node boxes change independently (' + changeId + ' ' + attrib, function () {
+					var changeOb = jQuery('#' + changeId), result;
+					changeOb.data(attrib, changeOb.data(attrib) + 5.1);
+					result = connector.animateConnectorToPosition({}, 5);
+					expect(result).toBeFalsy();
+					expect(jQuery.fn.animate).not.toHaveBeenCalled();
 				});
 			});
 		});
-		it('returns false if selector is empty', function () {
-			expect(jQuery('#non-existent').getDataBox()).toBeFalsy();
-		});
+
 	});
 
 });
+
 describe('updateConnector', function () {
 	'use strict';
 	var underTest, fromNode, toNode, third, anotherConnector;
@@ -160,11 +225,11 @@ describe('updateConnector', function () {
 		underTest.updateConnector();
 	});
 	afterEach(function () {
-		fromNode.detach();
-		toNode.detach();
-		underTest.detach();
-		third.detach();
-		anotherConnector.detach();
+		fromNode.remove();
+		toNode.remove();
+		underTest.remove();
+		third.remove();
+		anotherConnector.remove();
 	});
 });
 describe('updateLink', function () {
@@ -278,11 +343,11 @@ describe('updateLink', function () {
 		});
 	});
 	afterEach(function () {
-		fromNode.detach();
-		toNode.detach();
-		underTest.detach();
-		third.detach();
-		anotherLink.detach();
+		fromNode.remove();
+		toNode.remove();
+		underTest.remove();
+		third.remove();
+		anotherLink.remove();
 	});
 
 });
@@ -314,8 +379,8 @@ describe('updateNodeContent', function () {
 		};
 	});
 	afterEach(function () {
-		underTest.detach();
-		style.detach();
+		underTest.remove();
+		style.remove();
 	});
 	it('returns itself to allow chaining', function () {
 		expect(underTest.updateNodeContent(nodeContent)[0]).toEqual(underTest[0]);

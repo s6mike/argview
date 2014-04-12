@@ -30,29 +30,29 @@ jQuery.fn.getDataBox = function () {
 	}
 	return this.getBox();
 };
-jQuery.fn.animateConnectorToPosition = function () {
+jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 	'use strict';
 	var element = jQuery(this),
 		shapeFrom = jQuery('#' + element.attr('data-mapjs-node-from')),
 		shapeTo = jQuery('#' + element.attr('data-mapjs-node-to')),
 		fromBox = shapeFrom.getDataBox(),
 		toBox = shapeTo.getDataBox(),
-		oldBox = element.data('changeCheck');
+		oldBox = {
+			from: shapeFrom.getBox(),
+			to: shapeTo.getBox()
+		};
+	tolerance = tolerance || 1;
 	if (fromBox && toBox && oldBox && oldBox.from.width	=== fromBox.width	&&
 		oldBox.to.width		=== toBox.width		&&
 		oldBox.from.height	=== fromBox.height		&&
 		oldBox.to.height	=== toBox.height		&&
-		Math.abs(oldBox.from.top - oldBox.to.top - (fromBox.top - toBox.top)) < 2 &&
-		Math.abs(oldBox.from.left - oldBox.to.left - (fromBox.left - toBox.left)) < 2) {
+		Math.abs(oldBox.from.top - oldBox.to.top - (fromBox.top - toBox.top)) < tolerance &&
+		Math.abs(oldBox.from.left - oldBox.to.left - (fromBox.left - toBox.left)) < tolerance) {
 
 		element.animate({
-			left: Math.min(fromBox.left, toBox.left),
-			top: Math.min(fromBox.top, toBox.top),
-		}, {
-			duration: 400,
-			queue: 'nodeQueue',
-			easing: 'linear'
-		});
+			left: Math.round(Math.min(fromBox.left, toBox.left)),
+			top: Math.round(Math.min(fromBox.top, toBox.top)),
+		}, animationOptions);
 		return true;
 	}
 	return false;

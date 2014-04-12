@@ -409,14 +409,15 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
-		var connectorGroupClone = $(), linkGroupClone = $();
+		var connectorGroupClone = $(), linkGroupClone = $(),
+			animationProperties = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
 		connectorsForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition()) {
+			if (!$(this).animateConnectorToPosition(animationProperties, 2)) {
 				connectorGroupClone = connectorGroupClone.add(this);
 			}
 		});
 		linksForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition()) {
+			if (!$(this).animateConnectorToPosition(animationProperties, 2)) {
 				linkGroupClone = linkGroupClone.add(this);
 			}
 		});
@@ -555,11 +556,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + drag background to move things
 // + clip and hyperlink hover/ better images
 // + proper node dimension caching
+// + attachment - clip - hook into displaying the attach
 // --------- read only ------------
-// attachment - clip - hook into displaying the attach
-
 // widget tests
-
+// optimise connector -> endpoint searches by mapping data to real objects
+//
 // --------- editing --------------
 // - don't set contentEditable
 // - enable drag & drop
