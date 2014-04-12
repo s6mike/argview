@@ -35,7 +35,6 @@ MAPJS.DOMRender = {
 			height: textBox.outerHeight(true)
 		};
 		textBox.detach();
-		MAPJS.nonexisting = MAPJS.nonexisting + 1;
 		return result;
 	},
 	layoutCalculator: function (contentAggregate) {
