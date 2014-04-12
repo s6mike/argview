@@ -421,3 +421,40 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 	setCollapseClass();
 	return self;
 };
+MAPJS.DOMRender = {
+	nodeCacheMark: function (idea) {
+		'use strict';
+		return {
+			title: idea.title,
+			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
+			collapsed: idea.attr && idea.attr.collapsed
+		};
+	},
+	addNodeCacheMark: function (domNode, idea) {
+		'use strict';
+		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
+	},
+	dimensionProvider: function (idea) {
+		'use strict'; /* support multiple stages? */
+		var existing = document.getElementById('node_' + idea.id),
+			textBox,
+			result;
+		if (existing) {
+			textBox = jQuery(existing);
+			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea))) {
+				return _.pick(textBox.data(), 'width', 'height');
+			}
+		}
+		textBox = jQuery('<div>').addClass('mapjs-node').css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
+		result = {
+			width: textBox.outerWidth(true),
+			height: textBox.outerHeight(true)
+		};
+		textBox.detach();
+		return result;
+	},
+	layoutCalculator: function (contentAggregate) {
+		'use strict';
+		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
+	}
+};

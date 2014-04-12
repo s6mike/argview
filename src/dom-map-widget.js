@@ -1,16 +1,11 @@
 /*jslint nomen: true, newcap: true, browser: true*/
 /*global MAPJS, $, Hammer, _, jQuery*/
 MAPJS.DOMRender = {
-	config: {
-		padding: 8,
-		textMaxWidth: 160,
-		textClass: 'mapjs-text'
-	},
 	nodeCacheMark: function (idea) {
 		'use strict';
 		return {
 			title: idea.title,
-			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height'),
+			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed
 		};
 	},
@@ -29,7 +24,7 @@ MAPJS.DOMRender = {
 				return _.pick(textBox.data(), 'width', 'height');
 			}
 		}
-		textBox = $('<div>').addClass('mapjs-node invisible').appendTo('body').updateNodeContent(idea);
+		textBox = $('<div>').addClass('mapjs-node').css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
 		result = {
 			width: textBox.outerWidth(true),
 			height: textBox.outerHeight(true)

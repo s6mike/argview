@@ -675,3 +675,74 @@ describe('updateNodeContent', function () {
 
 	});
 });
+describe('MAPJS.DOMRender', function () {
+	'use strict';
+	describe('nodeCacheMark', function () {
+
+		describe('returns the same value for two nodes if they have the same title, icon sizes and positions, and collapsed attribute', [
+				['no icons, just titles', {title: 'zeka', x: 1, attr: {ignored: 1}}, {title: 'zeka', x: 2, attr: {ignored: 2}}],
+				['titles and collapsed', {title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
+				['titles and icon', {title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}]
+			], function (first, second) {
+				expect(MAPJS.DOMRender.nodeCacheMark(first)).toEqual(MAPJS.DOMRender.nodeCacheMark(second));
+			});
+		describe('returns different values for two nodes if they differ in the', [
+				['titles', {title: 'zeka'}, {title: 'zeka2'}],
+				['collapsed', {title: 'zeka', attr: {collapsed: true}}, {title: 'zeka', attr: {collapsed: false}}],
+				['icon width', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 101, height: 120, position: 'top'}}}],
+				['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
+				['icon position', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'left'} }}, {title: 'zeka', attr: {icon: {width: 100, height: 120, position: 'top'}}}]
+			], function (first, second) {
+				expect(MAPJS.DOMRender.nodeCacheMark(first)).not.toEqual(MAPJS.DOMRender.nodeCacheMark(second));
+			});
+	});
+	describe('dimensionProvider', function () {
+		var newElement, oldUpdateNodeContent, idea;
+		beforeEach(function () {
+			oldUpdateNodeContent = jQuery.fn.updateNodeContent;
+			idea = {id: 1, title: 'zeka'};
+		});
+		afterEach(function () {
+			if (newElement) {
+				newElement.remove();
+			}
+			jQuery.fn.updateNodeContent = oldUpdateNodeContent;
+		});
+		it('calculates the width and height of node by drawing an invisible box with .mapjs-node and detaching it after', function () {
+			newElement = jQuery('<style type="text/css">.mapjs-node { width:456px !important; min-height:789px !important}</style>').appendTo('body');
+			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 456, height: 789});
+			expect(jQuery('.mapjs-node').length).toBe(0);
+		});
+		it('applies the updateNodeContent function while calculating dimensions', function () {
+			jQuery.fn.updateNodeContent = function () {
+				this.css('width', '654px');
+				this.css('height', '786px');
+				return this;
+			};
+			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 654, height: 786});
+		});
+		describe('caching', function () {
+			beforeEach(function () {
+				jQuery.fn.updateNodeContent = jasmine.createSpy();
+				jQuery.fn.updateNodeContent.and.callFake(function () {
+					this.css('width', '654px');
+					this.css('height', '786px');
+					return this;
+				});
+			});
+			it('looks up a DOM object with the matching node ID and if the node cache mark matches, returns the DOM width without re-applying content', function () {
+				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_1').appendTo('body');
+				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 111, height: 222});
+				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
+			});
+			it('ignores DOM objects where the cache mark does not match', function () {
+				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_1').appendTo('body');
+				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				expect(MAPJS.DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
+				expect(jQuery.fn.updateNodeContent).toHaveBeenCalled();
+
+			});
+		});
+	});
+});
