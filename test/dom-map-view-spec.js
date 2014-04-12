@@ -91,7 +91,7 @@ describe('getDataBox', function () {
 		expect(jQuery('#non-existent').getDataBox()).toBeFalsy();
 	});
 });
-describe('animateConnectorToPosition optimises connector transformations to simple animations if possible', function () {
+describe('animateConnectorToPosition', function () {
 	'use strict';
 	var from, to, connector;
 	beforeEach(function () {
@@ -103,7 +103,7 @@ describe('animateConnectorToPosition optimises connector transformations to simp
 	afterEach(function () {
 		from.add(to).add(connector).remove();
 	});
-	describe('returns true and schedules an animation', function () {
+	describe('optimises connector transformations to simple animations if possible', function () {
 		it('when dataBox and real dom boxes for connecting element have just moved by the same offset', function () {
 			from.data('x', from.data('x') + 20);
 			from.data('y', from.data('y') + 30);
