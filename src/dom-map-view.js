@@ -1,26 +1,11 @@
 /*global jQuery, Color, _, MAPJS, document*/
-/*
- * MapViewController
- * -  listening to map model, updating the dom on the stage
- * -  interaction between keyboard and mouse and the model
- * -  listening to the DOM updates and telling the model about that
- * -  repositioning various UI elements
- */
 MAPJS.createSVG = function (tag) {
 	'use strict';
 	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
 };
-jQuery.fn.getBoxSlow = function () {
-	'use strict';
-	var domShape = jQuery(this),
-		pos = domShape.position();
-	pos.width = domShape.outerWidth(true);
-	pos.height = domShape.outerHeight(true);
-	return pos;
-};
 jQuery.fn.getBox = function () {
 	'use strict';
-	var domShape = jQuery(this)[0];
+	var domShape = this && this[0];
 	if (!domShape) {
 		return false;
 	}
@@ -33,16 +18,17 @@ jQuery.fn.getBox = function () {
 };
 jQuery.fn.getDataBox = function () {
 	'use strict';
-	var domShape = jQuery(this);
-	if (!domShape.data('width')) {
-		return domShape.getBox();
+	var domShapeData = this.data(),
+		parentData = this.parent().data();
+	if (domShapeData && domShapeData.width && domShapeData.height) {
+		return {
+			top: domShapeData.y + (parentData.stageY || 0),
+			left: domShapeData.x + (parentData.stageX || 0),
+			width: domShapeData.width,
+			height: domShapeData.height
+		};
 	}
-	return {
-		top: domShape.data('y') + domShape.parent().data('stageY'),
-		left: domShape.data('x') + domShape.parent().data('stageX'),
-		width: domShape.data('width'),
-		height: domShape.data('height')
-	};
+	return this.getBox();
 };
 jQuery.fn.animateConnectorToPosition = function () {
 	'use strict';

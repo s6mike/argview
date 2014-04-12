@@ -1,41 +1,97 @@
 /*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color*/
-/*
-describe('MapViewController', function () {
+describe('jQuery extensions', function () {
 	'use strict';
-	it('selects a node when focused', function () {
+	describe('getBox', function () {
+		var underTest;
+		beforeEach(function () {
+			underTest = jQuery('<div>').appendTo('body').css({
+				position: 'absolute',
+				top: '200px',
+				left: '300px',
+				width: '150px',
+				height: '20px'
+			});
 
+		});
+		afterEach(function () {
+			underTest.detach();
+		});
+		it('retrieves offset box from a DOM element', function () {
+			expect(underTest.getBox()).toEqual({
+				top: 200,
+				left: 300,
+				width: 150,
+				height: 20
+			});
+		});
+		it('retrieves the offset box from the first element of a jQuery selector', function () {
+			var another = jQuery('<div>');
+			expect(underTest.add(another).getBox()).toEqual({
+				top: 200,
+				left: 300,
+				width: 150,
+				height: 20
+			});
+		});
+		it('returns false if selector is empty', function () {
+			expect(jQuery('#non-existent').getBox()).toBeFalsy();
+		});
 	});
-	describe('onNodeCreated', function () {
-		it('adds a node', function () {
+	describe('getDataBox', function () {
+		var underTest, stage;
+		beforeEach(function () {
+			stage = jQuery('<div>').appendTo('body');
+			underTest = jQuery('<div>').appendTo(stage).css({
+				position: 'absolute',
+				top: '200px',
+				left: '300px',
+				width: '150px',
+				height: '20px'
+			}).data({
+				x: 11,
+				y: 12,
+				width: 13,
+				height: 14
+			});
 		});
-		it('positions the node', function () {
-
+		afterEach(function () {
+			underTest.detach();
+			stage.detach();
 		});
-		it('expands the stage if necessary and moves all other nodes down or right', function () {
-
+		it('retrieves a pre-calculated box from data attributes if they are present', function () {
+			expect(underTest.getDataBox()).toEqual({
+				left: 11,
+				top: 12,
+				width: 13,
+				height: 14
+			});
 		});
-		it('adds a mapjs-node class to the node', function () {
-			underTest.updateNodeContent(nodeContent);
-			expect(underTest.hasClass('mapjs-node')).toBeTruthy();
+		it('adds stage offset from the parent if present to x and y', function () {
+			stage.data({'stageX': 200, 'stageY': 300});
+			expect(underTest.getDataBox()).toEqual({
+				left: 211,
+				top: 312,
+				width: 13,
+				height: 14
+			});
 		});
-	});
-	describe('onMapScaleChanged', function () {
-
-	});
-	describe('selection and activation', function () {
-		it('adds a selected class when selected', function () {
-
+		_.each(['width', 'height'], function (attrib) {
+			it('falls back to DOM boxing if data attribute ' + attrib + ' is not present', function () {
+				underTest.data(attrib, '');
+				expect(underTest.getDataBox()).toEqual({
+					top: 200,
+					left: 300,
+					width: 150,
+					height: 20
+				});
+			});
 		});
-		it('focuses the node when selected', function () {
-
-		});
-		it('removes the selected class when unselected', function () {
-
+		it('returns false if selector is empty', function () {
+			expect(jQuery('#non-existent').getDataBox()).toBeFalsy();
 		});
 	});
 
 });
-*/
 describe('updateConnector', function () {
 	'use strict';
 	var underTest, fromNode, toNode, third, anotherConnector;
