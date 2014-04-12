@@ -3,7 +3,7 @@
 
 $.fn.queueFadeOut = function () {
 	'use strict';
-	var element = $(this);
+	var element = this;
 	return element.fadeOut({
 		duration: 400,
 		complete: function () {
@@ -14,7 +14,7 @@ $.fn.queueFadeOut = function () {
 };
 $.fn.queueFadeIn = function () {
 	'use strict';
-	var element = $(this);
+	var element = this;
 	return element.css('opacity', 0)
 			.animate(
 				{'opacity': 1},

@@ -126,7 +126,7 @@ jQuery.fn.updateConnector = function () {
 		pathElement = element.find('path');
 		position.width = Math.max(fromBox.left + fromBox.width, toBox.left + toBox.width, position.left + 1) - position.left;
 		position.height = Math.max(fromBox.top + fromBox.height, toBox.top + toBox.height, position.top + 1) - position.top;
-		element.css(position).show();
+		element.css(position);
 		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
@@ -228,7 +228,7 @@ jQuery.fn.updateLink = function () {
 		};
 		position.width = Math.max(fromBox.left + fromBox.width, toBox.left + toBox.width, position.left + 1) - position.left;
 		position.height = Math.max(fromBox.top + fromBox.height, toBox.top + toBox.height, position.top + 1) - position.top;
-		element.css(position).show();
+		element.css(position);
 
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
