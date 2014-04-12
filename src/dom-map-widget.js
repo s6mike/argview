@@ -6,6 +6,18 @@ MAPJS.DOMRender = {
 		textMaxWidth: 160,
 		textClass: 'mapjs-text'
 	},
+	nodeCacheMark: function (idea) {
+		'use strict';
+		return {
+			title: idea.title,
+			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height'),
+			collapsed: idea.attr && idea.attr.collapsed
+		};
+	},
+	addNodeCacheMark: function (domNode, idea) {
+		'use strict';
+		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
+	},
 	dimensionProvider: function (idea) {
 		'use strict'; /* support multiple stages? */
 		var existing = document.getElementById('node_' + idea.id),
@@ -13,7 +25,7 @@ MAPJS.DOMRender = {
 			result;
 		if (existing) {
 			textBox = $(existing);
-			if (textBox.find('span').text() === idea.title /* check for collapsed and icon size */) {
+			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea))) {
 				return _.pick(textBox.data(), 'width', 'height');
 			}
 		}
@@ -360,8 +372,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 					return;
 				}
 				mapModel.editNode('mouse', false, false);
-			}).each(ensureSpaceForNode).each(updateScreenCoordinates);
+			})
+			.on('attachment-click', function () {
+				mapModel.openAttachment('mouse', node.id);
+			})
+			.each(ensureSpaceForNode)
+			.each(updateScreenCoordinates);
 		element.css('min-width', element.css('width'));
+		MAPJS.DOMRender.addNodeCacheMark(element, node);
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('stageScale'),
@@ -536,10 +554,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + drag background
 // + drag root node to move things
 // + drag background to move things
+// + clip and hyperlink hover/ better images
+// + proper node dimension caching
 // --------- read only ------------
 // attachment - clip - hook into displaying the attach
-// clip and hyperlink hover/ better images
-// proper node dimension caching
+
 // widget tests
 
 // --------- editing --------------
