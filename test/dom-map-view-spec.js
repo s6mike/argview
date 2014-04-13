@@ -841,15 +841,47 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 			describe('grows the stage if needed to fit in', function () {
-				it('grows the stage from the top if Y would be negative, moving all current node children down', function () {
+				beforeEach(function () {
+					stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150});
+					spyOn(jQuery.fn, 'updateStage').and.callThrough();
 				});
-				it('grows the stage from the left if X would be negative, moving all current node children right', function () {
+
+				it('grows the stage from the top if y would be negative', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('offsetY')).toBe(120);
+					expect(stage.data('height')).toBe(170);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
 				});
-				it('expands the stage min width if the total width would be over the current boundary', function () {
+				it('grows the stage from the left if x would be negative', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: -230, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('offsetX')).toBe(230);
+					expect(stage.data('width')).toBe(330);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				});
+				it('expands the stage min width without touching the offset if the total width would be over the current boundary', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: 80, y: 20, width: 40, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('width')).toBe(320);
+					expect(stage.data('offsetX')).toBe(200);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
 
 				});
-				it('expands the stage min height if the total height would be over the current boundary', function () {
-
+				it('expands the stage min height without touching the offset if the total height would be over the current boundary', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: 80, y: 20, width: 40, height: 60, title: 'zeka', id: 1});
+					expect(stage.data('height')).toBe(180);
+					expect(stage.data('offsetY')).toBe(100);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				});
+				it('does not expand the stage or call updateStage if the node would fit into current bounds', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: -10, y: -10, width: 20, height: 20, title: 'zeka', id: 1});
+					expect(stage.data('width')).toBe(300);
+					expect(stage.data('height')).toBe(150);
+					expect(stage.data('offsetX')).toBe(200);
+					expect(stage.data('offsetY')).toBe(100);
+					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
 				});
 			});
 		});

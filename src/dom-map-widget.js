@@ -40,7 +40,7 @@ $.fn.scrollWhenDragging = function () {
 		});
 	});
 };
-$.fn.cssViewport = function () {
+$.fn.updateStage = function () {
 	'use strict';
 	var data = this.data(),
 		size = {
@@ -132,7 +132,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				dirty = true;
 			}
 			if (dirty) {
-				stageElement.cssViewport();
+				stageElement.updateStage();
 			}
 		},
 		ensureSpaceForNode = function () {
@@ -297,25 +297,25 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		if (currentScale === targetScale) {
 			return;
 		}
-		stageElement.data('scale', targetScale).cssViewport();
+		stageElement.data('scale', targetScale).updateStage();
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = $('#' + nodeKey(ideaId)),
 			nodeCenterX = node.data('x') + node.outerWidth(true) / 2,
 			nodeCenterY = node.data('y') + node.outerWidth(true) / 2;
-		stageElement.data('scale', 1).cssViewport();
+		stageElement.data('scale', 1).updateStage();
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
 /*		var newLeftScroll = stageElement.data('offsetX') - viewPort.innerWidth() / 2,
 			newTopScroll = stageElement.data('offsetY') - viewPort.innerHeight() / 2;
-		stageElement.data('scale', 1).cssViewport();
+		stageElement.data('scale', 1).updateStage();
 		viewPort.scrollLeft(newLeftScroll);
 		viewPort.scrollTop(newTopScroll);
 		*/
 
-		stageElement.data('scale', 1).cssViewport();
+		stageElement.data('scale', 1).updateStage();
 		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
@@ -397,7 +397,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'width': element.innerWidth(),
 				'height': element.innerHeight(),
 				'scale': 1
-			}).cssViewport();
+			}).updateStage();
 
 		//element.draggableContainer();
 		if (!touchEnabled) {
