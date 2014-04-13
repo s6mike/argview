@@ -988,7 +988,7 @@ describe('MAPJS.DOMRender', function () {
 		describe('nodeRemoved', function () {
 			var underTest, node;
 			beforeEach(function () {
-				node = {id: '11.12', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
 				mapModel.dispatchEvent('nodeCreated', node);
 				underTest = stage.children().first();
 				spyOn(jQuery.fn, 'queueFadeOut');
@@ -997,6 +997,139 @@ describe('MAPJS.DOMRender', function () {
 				mapModel.dispatchEvent('nodeRemoved', node);
 				expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
 				expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+			});
+		});
+		describe('nodeMoved', function () {
+			var underTest, node;
+			beforeEach(function () {
+				node = {id: 1, title: 'zeka', x: 0, y: 0, width: 20, height: 10};
+				stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150});
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children().first();
+
+				spyOn(jQuery.fn, 'updateStage').and.callThrough();
+			});
+			it('sets the new data coordinates', function () {
+				mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+				expect(underTest.data('x')).toBe(20);
+				expect(underTest.data('y')).toBe(-120);
+			});
+			describe('expands the stage if needed', function () {
+				it('grows the stage from the top if y would be negative', function () {
+					mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('offsetY')).toBe(120);
+					expect(stage.data('height')).toBe(170);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				});
+				it('grows the stage from the left if x would be negative', function () {
+					mapModel.dispatchEvent('nodeMoved', {x: -230, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('offsetX')).toBe(230);
+					expect(stage.data('width')).toBe(330);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				});
+				it('expands the stage min width without touching the offset if the total width would be over the current boundary', function () {
+					mapModel.dispatchEvent('nodeMoved', {x: 90, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('width')).toBe(310);
+					expect(stage.data('offsetX')).toBe(200);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+
+				});
+				it('expands the stage min height without touching the offset if the total height would be over the current boundary', function () {
+					mapModel.dispatchEvent('nodeMoved', {x: 20, y: 45, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('height')).toBe(155);
+					expect(stage.data('offsetY')).toBe(100);
+					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				});
+				it('does not expand the stage or call updateStage if the node would fit into current bounds', function () {
+					mapModel.dispatchEvent('nodeMoved', {x: -10, y: -10, width: 20, height: 10, title: 'zeka', id: 1});
+					expect(stage.data('width')).toBe(300);
+					expect(stage.data('height')).toBe(150);
+					expect(stage.data('offsetX')).toBe(200);
+					expect(stage.data('offsetY')).toBe(100);
+					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
+				});
+			});
+
+			describe('viewport interactions', function () {
+				var moveListener, animateMoveListener;
+				beforeEach(function () {
+					viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+					stage.data({ 'offsetX': 100, 'offsetY': 50, 'scale': 2, 'width': 500, 'height': 500 });
+					stage.updateStage();
+					viewPort.scrollLeft(180);
+					viewPort.scrollTop(80);
+					moveListener = jasmine.createSpy('mapjs:move');
+					animateMoveListener = jasmine.createSpy('mapjs:animatemove');
+					underTest.on('mapjs:move', moveListener).on('mapjs:animatemove', animateMoveListener);
+					spyOn(jQuery.fn, 'animate').and.returnValue(underTest);
+				});
+				_.each([
+						['on left edge of', -20, 10],
+						['on right edge of', 80, 10],
+						['on top edge of', 20, -15],
+						['on bottom edge of', 20, 35],
+						['inside', 20, 10]
+					],
+					function (testArgs) {
+						var caseName = testArgs[0], nodeX = testArgs[1], nodeY = testArgs[2];
+						describe('when ' + caseName + ' viewport', function () {
+							beforeEach(function () {
+								mapModel.dispatchEvent('nodeMoved', {x: nodeX, y: nodeY, width: 20, height: 10, id: 1});
+							});
+							it('does not update screen coordinates immediately', function () {
+								expect(underTest.css('left')).toBe('0px');
+								expect(underTest.css('top')).toBe('0px');
+							});
+							it('does not fire the moved event immediately', function () {
+								expect(moveListener).not.toHaveBeenCalled();
+							});
+							it('fires the moveanimate event', function () {
+								expect(animateMoveListener).toHaveBeenCalled();
+							});
+							it('schedules an animation to move the coordinates', function () {
+								expect(jQuery.fn.animate.calls.count()).toBe(1);
+								expect(jQuery.fn.animate.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.animate.calls.first().args[0]).toEqual({left: nodeX, top: nodeY, opacity: 1});
+							});
+							it('fires the move event after the animation completes', function () {
+								jQuery.fn.animate.calls.first().args[1].complete();
+								expect(underTest.css('left')).toBe(nodeX + 'px');
+								expect(underTest.css('top')).toBe(nodeY + 'px');
+								expect(moveListener).toHaveBeenCalled();
+							});
+
+						});
+					});
+				_.each([
+						['above', 20, -30],
+						['below', 20, 45],
+						['left of', -35, 10],
+						['right of', 95, 10]
+					], function (testArgs) {
+						var caseName = testArgs[0], nodeX = testArgs[1], nodeY = testArgs[2];
+						describe('when ' + caseName + ' viewport', function () {
+							beforeEach(function () {
+								mapModel.dispatchEvent('nodeMoved', {x: nodeX, y: nodeY, width: 20, height: 10, id: 1});
+							});
+							it('updates screen coordinates immediately', function () {
+								expect(underTest.css('left')).toBe(nodeX + 'px');
+								expect(underTest.css('top')).toBe(nodeY + 'px');
+							});
+							it('fires the moved event immediately', function () {
+								expect(moveListener).toHaveBeenCalled();
+							});
+							it('does not fire the moveanimate event', function () {
+								expect(animateMoveListener).not.toHaveBeenCalled();
+							});
+							it('does not schedule an animation', function () {
+								expect(jQuery.fn.animate).not.toHaveBeenCalled();
+							});
+						});
+					});
 			});
 		});
 	});

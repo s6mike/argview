@@ -60,7 +60,6 @@ $.fn.updateStage = function () {
 MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
-		animateCount = 0, moveCount = 0,
 		connectorsForAnimation = $(),
 		linksForAnimation = $(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
@@ -191,7 +190,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			if (_.isEmpty(animation)) {
 				result.resolve();
 			} else {
-				viewPort.animate(animation, {duration: 100, easing: 'linear', complete: result.resolve});
+				viewPort.animate(animation, {duration: 100, complete: result.resolve});
 			}
 			return result;
 		};
@@ -230,9 +229,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			node.removeClass('selected');
 		}
 	});
-	mapModel.addEventListener('nodeTitleChanged', function (node) {
-		$('#' + nodeKey(node.id)).find('.text').text(node.title);
-	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
 	});
@@ -243,15 +239,13 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			}).each(ensureSpaceForNode),
 			screenTopLeft = stageToViewCoordinates(node.x, node.y),
 			screenBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
-		if (reason === scroll || screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
-			moveCount++;
+		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
 			nodeDom.each(updateScreenCoordinates);
 		} else {
-			animateCount++;
 			nodeDom.each(animateToPositionCoordinates);
 		}
 	});
-	mapModel.addEventListener('nodeAttrChanged', function (n) {
+	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged', function (n) {
 		$('#' + nodeKey(n.id)).updateNodeContent(n);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
