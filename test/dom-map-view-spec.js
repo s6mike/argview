@@ -1132,5 +1132,19 @@ describe('MAPJS.DOMRender', function () {
 					});
 			});
 		});
+		_.each(['nodeTitleChanged', 'nodeAttrChanged'], function (eventType) {
+			it('updates node content on ' + eventType, function () {
+				var underTest, node;
+				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children().first();
+				spyOn(jQuery.fn, 'updateNodeContent');
+
+				mapModel.dispatchEvent(eventType, node);
+				expect(jQuery.fn.updateNodeContent.calls.count()).toBe(1);
+				expect(jQuery.fn.updateNodeContent.calls.first().object[0]).toEqual(underTest[0]);
+
+			});
+		});
 	});
 });
