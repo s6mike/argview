@@ -1146,5 +1146,193 @@ describe('MAPJS.DOMRender', function () {
 
 			});
 		});
+		describe('connector events', function () {
+			var nodeFrom, nodeTo, underTest, connector;
+			beforeEach(function () {
+				connector = {from: '1.from', to: '1.to'};
+				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
+				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
+				nodeFrom = jQuery('#node_1_from');
+				nodeTo = jQuery('#node_1_to');
+				spyOn(jQuery.fn, 'updateConnector').and.callThrough();
+				jQuery.fn.queueFadeIn.calls.reset();
+
+				mapModel.dispatchEvent('connectorCreated', connector);
+				underTest = stage.children('[data-mapjs-role=connector]').first();
+
+			});
+			describe('connectorCreated', function () {
+				it('adds a connector element to the stage', function () {
+					expect(underTest.length).toBe(1);
+					expect(underTest.parent()[0]).toEqual(stage[0]);
+				});
+				it('creates a SVG mapjs-draw-container class', function () {
+					expect(underTest.prop('tagName')).toBe('svg');
+					expect(underTest.attr('class')).toEqual('mapjs-draw-container');
+				});
+				it('assigns the DOM Id by sanitising node IDs', function () {
+					expect(underTest.prop('id')).toBe('connector_1_from_1_to');
+				});
+				it('maps the from and to nodes as jQuery objects to data properties', function () {
+					expect(underTest.data('nodeFrom')[0]).toEqual(nodeFrom[0]);
+					expect(underTest.data('nodeTo')[0]).toEqual(nodeTo[0]);
+				});
+				it('queues connector fade in', function () {
+					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
+					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
+					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				it('updates the connector content', function () {
+					expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
+					expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				describe('event wiring for node updates', function () {
+					beforeEach(function () {
+						jQuery.fn.updateConnector.calls.reset();
+						spyOn(jQuery.fn, 'animateConnectorToPosition');
+					});
+					_.each(['from', 'to'], function (node) {
+						describe('moving node ' + node, function () {
+							beforeEach(function () {
+								jQuery('#node_1_' + node).trigger('mapjs:move');
+							});
+							it('updates connector', function () {
+								expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
+								expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+							});
+							it('does not add connectors to animation list', function () {
+								mapModel.dispatchEvent('layoutChangeComplete');
+								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
+							});
+						});
+						describe('animating node ' + node, function () {
+							beforeEach(function () {
+								jQuery('#node_1_' + node).trigger('mapjs:animatemove');
+							});
+							it('does not update the connector immediately', function () {
+								expect(jQuery.fn.updateConnector).not.toHaveBeenCalled();
+							});
+							it('does not animate the connector immediately', function () {
+								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
+							});
+							it('animates the connector after the layout change is complete', function () {
+								mapModel.dispatchEvent('layoutChangeComplete');
+								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
+								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
+							});
+						});
+					});
+				});
+			});
+			describe('connectorRemoved', function () {
+				it('schedules a fade out animation', function () {
+					spyOn(jQuery.fn, 'queueFadeOut');
+					mapModel.dispatchEvent('connectorRemoved', connector);
+
+					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
+					expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
+					expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+				});
+			});
+		});
+
+
+		describe('link events', function () {
+			var nodeFrom, nodeTo, underTest, link;
+			beforeEach(function () {
+				link = {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}};
+				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
+				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
+				nodeFrom = jQuery('#node_1_from');
+				nodeTo = jQuery('#node_1_to');
+				spyOn(jQuery.fn, 'updateLink').and.callThrough();
+				jQuery.fn.queueFadeIn.calls.reset();
+
+				mapModel.dispatchEvent('linkCreated', link);
+				underTest = stage.children('[data-mapjs-role=link]').first();
+
+			});
+			describe('linkCreated', function () {
+				it('adds a link element to the stage', function () {
+					expect(underTest.length).toBe(1);
+					expect(underTest.parent()[0]).toEqual(stage[0]);
+				});
+				it('creates a SVG mapjs-draw-container class', function () {
+					expect(underTest.prop('tagName')).toBe('svg');
+					expect(underTest.attr('class')).toEqual('mapjs-draw-container');
+				});
+				it('assigns the DOM Id by sanitising node IDs', function () {
+					expect(underTest.prop('id')).toBe('link_1_from_1_to');
+				});
+				it('maps the from and to nodes as jQuery objects to data properties', function () {
+					expect(underTest.data('nodeFrom')[0]).toEqual(nodeFrom[0]);
+					expect(underTest.data('nodeTo')[0]).toEqual(nodeTo[0]);
+				});
+				it('queues link fade in', function () {
+					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
+					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
+					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				it('updates the link content', function () {
+					expect(jQuery.fn.updateLink.calls.count()).toBe(1);
+					expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				it('passes the style properties as data attributes to the DOM object', function () {
+					expect(underTest.data('lineStyle')).toBe('solid');
+					expect(underTest.data('color')).toBe('blue');
+					expect(underTest.data('arrow')).toBeTruthy();
+				});
+				describe('event wiring for node updates', function () {
+					beforeEach(function () {
+						jQuery.fn.updateLink.calls.reset();
+						spyOn(jQuery.fn, 'animateConnectorToPosition');
+					});
+					_.each(['from', 'to'], function (node) {
+						describe('moving node ' + node, function () {
+							beforeEach(function () {
+								jQuery('#node_1_' + node).trigger('mapjs:move');
+							});
+							it('updates link', function () {
+								expect(jQuery.fn.updateLink.calls.count()).toBe(1);
+								expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+							});
+							it('does not add links to animation list', function () {
+								mapModel.dispatchEvent('layoutChangeComplete');
+								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
+							});
+						});
+						describe('animating node ' + node, function () {
+							beforeEach(function () {
+								jQuery('#node_1_' + node).trigger('mapjs:animatemove');
+							});
+							it('does not update the link immediately', function () {
+								expect(jQuery.fn.updateLink).not.toHaveBeenCalled();
+							});
+							it('does not animate the link immediately', function () {
+								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
+							});
+							it('animates the link after the layout change is complete', function () {
+								mapModel.dispatchEvent('layoutChangeComplete');
+								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
+								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
+							});
+						});
+					});
+				});
+			});
+			describe('linkRemoved', function () {
+				it('schedules a fade out animation', function () {
+					spyOn(jQuery.fn, 'queueFadeOut');
+					mapModel.dispatchEvent('linkRemoved', link);
+
+					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
+					expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
+					expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+				});
+			});
+		});
+
+
+
 	});
 });

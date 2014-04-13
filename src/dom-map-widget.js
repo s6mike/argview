@@ -232,7 +232,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		$('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
 	});
-	mapModel.addEventListener('nodeMoved', function (node, reason) {
+	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
 		var	nodeDom = $('#' + nodeKey(node.id)).data({
 				'x': node.x,
 				'y': node.y
