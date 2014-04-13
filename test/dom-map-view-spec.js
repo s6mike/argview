@@ -67,11 +67,11 @@ describe('getDataBox', function () {
 			height: 14
 		});
 	});
-	it('adds stage offset from the parent if present to x and y', function () {
-		stage.data({'stageX': 200, 'stageY': 300});
+	it('ignores stage offset and zoom', function () {
+		stage.data({'stageX': 200, 'stageY': 300, 'stageScale': 2});
 		expect(underTest.getDataBox()).toEqual({
-			left: 211,
-			top: 312,
+			left: 11,
+			top: 12,
 			width: 13,
 			height: 14
 		});
@@ -771,6 +771,8 @@ describe('MAPJS.DOMRender', function () {
 					});
 					stage.data('stageX', 200);
 					stage.data('stageY', 100);
+					stage.data('stageScale', 3);
+
 					mapModel.dispatchEvent('nodeCreated', node);
 					underTest = stage.children().first();
 				});
@@ -833,9 +835,9 @@ describe('MAPJS.DOMRender', function () {
 				it('tags the node with a cache mark', function () {
 					expect(underTest.data('nodeCacheMark')).toEqual({ title : 'zeka', icon : undefined, collapsed : undefined });
 				});
-				it('sets the screen coordinates according to data attributes', function () {
-					expect(underTest.css('top')).toBe('120px');
-					expect(underTest.css('left')).toBe('210px');
+				it('sets the screen coordinates according to data attributes, ignoring stage zoom and transformations', function () {
+					expect(underTest.css('top')).toBe('20px');
+					expect(underTest.css('left')).toBe('10px');
 				});
 			});
 			describe('grows the stage if needed to fit in', function () {

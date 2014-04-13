@@ -40,6 +40,23 @@ $.fn.scrollWhenDragging = function () {
 		});
 	});
 };
+$.fn.cssViewport = function () {
+	'use strict';
+	var data = this.data(),
+		size = {
+			'min-width': data.width - data.stageX,
+			'min-height': data.height - data.stageY,
+			'width': data.width - data.stageX,
+			'height': data.height - data.stageY,
+			'transform-origin': 'top left',
+			'transform': 'translate(' + data.stageX + 'px, ' + data.stageY + 'px)'
+		};
+	if (data.stageScale && data.stageScale !== 1) {
+		size.transform = 'scale(' + data.stageScale + ') translate(' + data.stageX + 'px, ' + data.stageY + 'px)';
+	}
+	this.css(size);
+	return this;
+};
 MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
@@ -67,18 +84,25 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				y: stage.stageScale * (y + stage.stageY) - viewPort.scrollTop()
 			};
 		},
+		viewToStageCoordinates = function (x, y) {
+			var stage = stageElement.data();
+			return {
+				x: (viewPort.scrollLeft() + x) / stage.stageScale - stage.stageX,
+				y: (viewPort.scrollTop() + y) / stage.stageScale - stage.stageY
+			};
+		},
 		updateScreenCoordinates = function () {
 			var element = $(this);
 			element.css({
-				'left': element.data('x') + stageElement.data('stageX'),
-				'top' : element.data('y') + stageElement.data('stageY')
+				'left': element.data('x'),
+				'top' : element.data('y'),
 			}).trigger('mapjs:move');
 		},
 		animateToPositionCoordinates = function () {
 			var element = $(this);
 			element.clearQueue(nodeAnimOptions.queue).animate({
-				'left': element.data('x') + stageElement.data('stageX'),
-				'top' : element.data('y') + stageElement.data('stageY'),
+				'left': element.data('x'),
+				'top' : element.data('y'),
 				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
 			}, _.extend({
 				complete: function () {
@@ -86,72 +110,72 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				},
 			}, nodeAnimOptions)).trigger('mapjs:animatemove');
 		},
-		growStage = function (growx, growy) {
-			stageElement.data('stageX', stageElement.data('stageX') + growx);
-			stageElement.data('stageY', stageElement.data('stageY') + growy);
-			stageElement.children('[data-mapjs-role=node]').each(updateScreenCoordinates);
+		ensureSpaceForPoint = function (x, y) {/* in stage coordinates */
+			var stage = stageElement.data(),
+				dirty = false;
+			if (x < -1 * stage.stageX) {
+				stage.width =  stage.width - stage.stageX - x;
+				stage.stageX = -1 * x;
+				dirty = true;
+			}
+			if (y < -1 * stage.stageY) {
+				stage.height = stage.height - stage.stageY - y;
+				stage.stageY = -1 * y;
+				dirty = true;
+			}
+			if (x > stage.width - stage.stageX) {
+				stage.width = stage.stageX + x;
+				dirty = true;
+			}
+			if (y > stage.height - stage.stageY) {
+				stage.height = stage.stageY + y;
+				dirty = true;
+			}
+			if (dirty) {
+				stageElement.cssViewport();
+			}
 		},
 		ensureSpaceForNode = function () {
 			return $(this).each(function () {
-				var node = $(this),
-					xpos = node.data('x') + stageElement.data('stageX'),
-					ypos = node.data('y') + stageElement.data('stageY'),
-					growx = 0, growy = 0, minGrow = 100,
-					expandx = 0, expandy = 0,
-
-					rightBleed = xpos + node.outerWidth(true) - stageElement.width(),
-					bottomBleed = ypos + node.outerHeight(true) - stageElement.height();
-				if (xpos < 0) {
-					growx = Math.max(-1 * xpos, minGrow);
-				}
-				if (ypos < 0) {
-					growy = Math.max(-1 * ypos, minGrow);
-				}
-				if (rightBleed > 0) {
-					expandx = Math.max(rightBleed, minGrow);
-				}
-				if (bottomBleed > 0) {
-					expandy = Math.max(bottomBleed, minGrow);
-				}
-				if (growx > 0 || growy > 0) {
-					growStage(growx, growy);
-				}
-				if (growx + rightBleed > 0) {
-					stageElement.css('min-width', stageElement.width() + growx + rightBleed);
-				}
-				if (growy + bottomBleed > 0) {
-					stageElement.css('min-height', stageElement.height() + growy + bottomBleed);
-				}
+				var node = $(this).data();
+				/* sequence of calculations is important because maxX and maxY take into consideration the new stageX snd stageY */
+				ensureSpaceForPoint(node.x, node.y);
+				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
 			});
 		},
-		centerViewOn = function (x, y)/*in the stage coordinate system*/ {
-			var viewX = stageElement.data('stageX') + x,
-				viewY = stageElement.data('stageY') + y,
-				newLeftScroll = viewX - viewPort.innerWidth() / 2,
-				newTopScroll = viewY - viewPort.innerHeight() / 2,
-				growX = Math.max(-1 * newLeftScroll, 0),
-				growY = Math.max(-1 * newTopScroll, 0);
-			if (growX > 0 || growY > 0) {
-				growStage(growX, growY);
+		centerViewOn = function (x, y, animate)/*in the stage coordinate system*/ {
+			var stage = stageElement.data(),
+				viewPortCenter = {
+					x: viewPort.innerWidth() / 2,
+					y: viewPort.innerHeight() / 2
+				},
+				newLeftScroll, newTopScroll;
+			ensureSpaceForPoint(x - viewPortCenter.x / stage.stageScale, y - viewPortCenter.y / stage.stageScale);
+			ensureSpaceForPoint(x + viewPortCenter.x / stage.stageScale, y + viewPortCenter.y / stage.stageScale);
+
+			newLeftScroll = stage.stageScale * (x + stage.stageX) - viewPortCenter.x;
+			newTopScroll = stage.stageScale * (y + stage.stageY) - viewPortCenter.y;
+
+			if (animate) {
+				viewPort.animate({
+					scrollLeft: newLeftScroll,
+					scrollTop: newTopScroll
+				}, {
+					duration: 400
+				});
+			} else {
+				viewPort.scrollLeft(newLeftScroll);
+				viewPort.scrollTop(newTopScroll);
 			}
-			if (stageElement.width() - viewPort.innerWidth() < newLeftScroll - growX) {
-				stageElement.css('min-width', viewPort.innerWidth() + newLeftScroll - growX);
-			}
-			if (stageElement.height() - viewPort.innerHeight() < newTopScroll - growY) {
-				stageElement.css('min-height', viewPort.innerHeight() + newTopScroll - growY);
-			}
-			viewPort.animate({
-				scrollLeft: newLeftScroll - growX,
-				scrollTop: newTopScroll - growY
-			}, {
-				duration: 100,
-				easing: 'linear'
-			});
+		},
+		stagePointAtViewportCenter = function () {
+			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
 		},
 		ensureNodeVisible = function (domElement) {
 			var result = jQuery.Deferred(),
-				nodeTopLeft = stageToViewCoordinates(domElement.data('x'), domElement.data('y')),
-				nodeBottomRight = stageToViewCoordinates(domElement.data('x') + domElement.outerWidth(true), domElement.data('y') + domElement.outerHeight(true)),
+				node = domElement.data(),
+				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
+				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
 				animation = {},
 				margin = 10;
 			if (nodeTopLeft.x < 0) {
@@ -269,30 +293,30 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('stageScale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
-			stageX = stageElement.data('stageX'),
-			stageY = stageElement.data('stageY');
+			currentCenter = stagePointAtViewportCenter();
 		if (currentScale === targetScale) {
 			return;
 		}
-		stageElement.data('stageScale', targetScale);
-		stageElement.css('transform', 'translate(-' + stageX + 'px, -' + stageY + 'px) scale(' + targetScale + ') translate(' + stageX + 'px, ' + stageY + 'px)');
-		viewPort.scrollLeft(stageX * (targetScale - currentScale) + viewPort.scrollLeft());
-		viewPort.scrollTop(stageY * (targetScale - currentScale) + viewPort.scrollTop());
+		stageElement.data('stageScale', targetScale).cssViewport();
+		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = $('#' + nodeKey(ideaId)),
 			nodeCenterX = node.data('x') + node.outerWidth(true) / 2,
 			nodeCenterY = node.data('y') + node.outerWidth(true) / 2;
-		stageElement.data('stageScale', 1).css('transform', '');
-		centerViewOn(nodeCenterX, nodeCenterY);
+		stageElement.data('stageScale', 1).cssViewport();
+		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
-		var newLeftScroll = stageElement.data('stageX') - viewPort.innerWidth() / 2,
+/*		var newLeftScroll = stageElement.data('stageX') - viewPort.innerWidth() / 2,
 			newTopScroll = stageElement.data('stageY') - viewPort.innerHeight() / 2;
-		stageElement.data('stageScale', 1);
-		stageElement.css('transform', '');
+		stageElement.data('stageScale', 1).cssViewport();
 		viewPort.scrollLeft(newLeftScroll);
 		viewPort.scrollTop(newTopScroll);
+		*/
+
+		stageElement.data('stageScale', 1).cssViewport();
+		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
 		var connectorGroupClone = $(), linkGroupClone = $();
@@ -366,16 +390,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 	return this.each(function () {
 		var element = $(this),
 			stage = $('<div>').css({
-				width: '100%',
-				height: '100%',
-				position: 'relative',
-				'min-width': element.innerWidth(),
-				'min-height': element.innerHeight()
+				position: 'relative'
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
 				'stageX': element.innerWidth() / 2,
 				'stageY': element.innerHeight() / 2,
+				'width': element.innerWidth(),
+				'height': element.innerHeight(),
 				'stageScale': 1
-			});
+			}).cssViewport();
 
 		//element.draggableContainer();
 		if (!touchEnabled) {

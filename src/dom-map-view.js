@@ -22,8 +22,8 @@ jQuery.fn.getDataBox = function () {
 		parentData = this.parent().data();
 	if (domShapeData && domShapeData.width && domShapeData.height) {
 		return {
-			top: domShapeData.y + (parentData.stageY || 0),
-			left: domShapeData.x + (parentData.stageX || 0),
+			top: domShapeData.y, // + (parentData.stageY || 0),
+			left: domShapeData.x, // + (parentData.stageX || 0),
 			width: domShapeData.width,
 			height: domShapeData.height
 		};
