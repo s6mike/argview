@@ -68,7 +68,7 @@ describe('getDataBox', function () {
 		});
 	});
 	it('ignores stage offset and zoom', function () {
-		stage.data({'stageX': 200, 'stageY': 300, 'stageScale': 2});
+		stage.data({'offsetX': 200, 'offsetY': 300, 'scale': 2});
 		expect(underTest.getDataBox()).toEqual({
 			left: 11,
 			top: 12,
@@ -769,9 +769,9 @@ describe('MAPJS.DOMRender', function () {
 						this.css('width', 30);
 						return this;
 					});
-					stage.data('stageX', 200);
-					stage.data('stageY', 100);
-					stage.data('stageScale', 3);
+					stage.data('offsetX', 200);
+					stage.data('offsetY', 100);
+					stage.data('scale', 3);
 
 					mapModel.dispatchEvent('nodeCreated', node);
 					underTest = stage.children().first();

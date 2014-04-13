@@ -44,15 +44,15 @@ $.fn.cssViewport = function () {
 	'use strict';
 	var data = this.data(),
 		size = {
-			'min-width': data.width - data.stageX,
-			'min-height': data.height - data.stageY,
-			'width': data.width - data.stageX,
-			'height': data.height - data.stageY,
+			'min-width': data.width - data.offsetX,
+			'min-height': data.height - data.offsetY,
+			'width': data.width - data.offsetX,
+			'height': data.height - data.offsetY,
 			'transform-origin': 'top left',
-			'transform': 'translate(' + data.stageX + 'px, ' + data.stageY + 'px)'
+			'transform': 'translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)'
 		};
-	if (data.stageScale && data.stageScale !== 1) {
-		size.transform = 'scale(' + data.stageScale + ') translate(' + data.stageX + 'px, ' + data.stageY + 'px)';
+	if (data.scale && data.scale !== 1) {
+		size.transform = 'scale(' + data.scale + ') translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)';
 	}
 	this.css(size);
 	return this;
@@ -80,15 +80,15 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		stageToViewCoordinates = function (x, y) {
 			var stage = stageElement.data();
 			return {
-				x: stage.stageScale * (x + stage.stageX) - viewPort.scrollLeft(),
-				y: stage.stageScale * (y + stage.stageY) - viewPort.scrollTop()
+				x: stage.scale * (x + stage.offsetX) - viewPort.scrollLeft(),
+				y: stage.scale * (y + stage.offsetY) - viewPort.scrollTop()
 			};
 		},
 		viewToStageCoordinates = function (x, y) {
 			var stage = stageElement.data();
 			return {
-				x: (viewPort.scrollLeft() + x) / stage.stageScale - stage.stageX,
-				y: (viewPort.scrollTop() + y) / stage.stageScale - stage.stageY
+				x: (viewPort.scrollLeft() + x) / stage.scale - stage.offsetX,
+				y: (viewPort.scrollTop() + y) / stage.scale - stage.offsetY
 			};
 		},
 		updateScreenCoordinates = function () {
@@ -113,22 +113,22 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		ensureSpaceForPoint = function (x, y) {/* in stage coordinates */
 			var stage = stageElement.data(),
 				dirty = false;
-			if (x < -1 * stage.stageX) {
-				stage.width =  stage.width - stage.stageX - x;
-				stage.stageX = -1 * x;
+			if (x < -1 * stage.offsetX) {
+				stage.width =  stage.width - stage.offsetX - x;
+				stage.offsetX = -1 * x;
 				dirty = true;
 			}
-			if (y < -1 * stage.stageY) {
-				stage.height = stage.height - stage.stageY - y;
-				stage.stageY = -1 * y;
+			if (y < -1 * stage.offsetY) {
+				stage.height = stage.height - stage.offsetY - y;
+				stage.offsetY = -1 * y;
 				dirty = true;
 			}
-			if (x > stage.width - stage.stageX) {
-				stage.width = stage.stageX + x;
+			if (x > stage.width - stage.offsetX) {
+				stage.width = stage.offsetX + x;
 				dirty = true;
 			}
-			if (y > stage.height - stage.stageY) {
-				stage.height = stage.stageY + y;
+			if (y > stage.height - stage.offsetY) {
+				stage.height = stage.offsetY + y;
 				dirty = true;
 			}
 			if (dirty) {
@@ -138,7 +138,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		ensureSpaceForNode = function () {
 			return $(this).each(function () {
 				var node = $(this).data();
-				/* sequence of calculations is important because maxX and maxY take into consideration the new stageX snd stageY */
+				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
 				ensureSpaceForPoint(node.x, node.y);
 				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
 			});
@@ -150,11 +150,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 					y: viewPort.innerHeight() / 2
 				},
 				newLeftScroll, newTopScroll;
-			ensureSpaceForPoint(x - viewPortCenter.x / stage.stageScale, y - viewPortCenter.y / stage.stageScale);
-			ensureSpaceForPoint(x + viewPortCenter.x / stage.stageScale, y + viewPortCenter.y / stage.stageScale);
+			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
+			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale, y + viewPortCenter.y / stage.scale);
 
-			newLeftScroll = stage.stageScale * (x + stage.stageX) - viewPortCenter.x;
-			newTopScroll = stage.stageScale * (y + stage.stageY) - viewPortCenter.y;
+			newLeftScroll = stage.scale * (x + stage.offsetX) - viewPortCenter.x;
+			newTopScroll = stage.scale * (y + stage.offsetY) - viewPortCenter.y;
 
 			if (animate) {
 				viewPort.animate({
@@ -291,31 +291,31 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	});
 
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
-		var currentScale = stageElement.data('stageScale'),
+		var currentScale = stageElement.data('scale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
 			currentCenter = stagePointAtViewportCenter();
 		if (currentScale === targetScale) {
 			return;
 		}
-		stageElement.data('stageScale', targetScale).cssViewport();
+		stageElement.data('scale', targetScale).cssViewport();
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = $('#' + nodeKey(ideaId)),
 			nodeCenterX = node.data('x') + node.outerWidth(true) / 2,
 			nodeCenterY = node.data('y') + node.outerWidth(true) / 2;
-		stageElement.data('stageScale', 1).cssViewport();
+		stageElement.data('scale', 1).cssViewport();
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
-/*		var newLeftScroll = stageElement.data('stageX') - viewPort.innerWidth() / 2,
-			newTopScroll = stageElement.data('stageY') - viewPort.innerHeight() / 2;
-		stageElement.data('stageScale', 1).cssViewport();
+/*		var newLeftScroll = stageElement.data('offsetX') - viewPort.innerWidth() / 2,
+			newTopScroll = stageElement.data('offsetY') - viewPort.innerHeight() / 2;
+		stageElement.data('scale', 1).cssViewport();
 		viewPort.scrollLeft(newLeftScroll);
 		viewPort.scrollTop(newTopScroll);
 		*/
 
-		stageElement.data('stageScale', 1).cssViewport();
+		stageElement.data('scale', 1).cssViewport();
 		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
@@ -392,11 +392,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 			stage = $('<div>').css({
 				position: 'relative'
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
-				'stageX': element.innerWidth() / 2,
-				'stageY': element.innerHeight() / 2,
+				'offsetX': element.innerWidth() / 2,
+				'offsetY': element.innerHeight() / 2,
 				'width': element.innerWidth(),
 				'height': element.innerHeight(),
-				'stageScale': 1
+				'scale': 1
 			}).cssViewport();
 
 		//element.draggableContainer();

@@ -18,12 +18,11 @@ jQuery.fn.getBox = function () {
 };
 jQuery.fn.getDataBox = function () {
 	'use strict';
-	var domShapeData = this.data(),
-		parentData = this.parent().data();
+	var domShapeData = this.data();
 	if (domShapeData && domShapeData.width && domShapeData.height) {
 		return {
-			top: domShapeData.y, // + (parentData.stageY || 0),
-			left: domShapeData.x, // + (parentData.stageX || 0),
+			top: domShapeData.y,
+			left: domShapeData.x,
 			width: domShapeData.width,
 			height: domShapeData.height
 		};
