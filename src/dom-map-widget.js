@@ -1,25 +1,24 @@
 /*jslint nomen: true, newcap: true, browser: true*/
 /*global MAPJS, $, Hammer, _, jQuery*/
 
-$.fn.queueFadeOut = function () {
+$.fn.queueFadeOut = function (options) {
 	'use strict';
 	var element = this;
-	return element.fadeOut({
-		duration: 400,
+	return element.fadeOut(_.extend({
 		complete: function () {
 			element.remove();
-		},
-		'queue': 'nodeQueue'
-	});
+		}
+	}, options));
 };
-$.fn.queueFadeIn = function () {
+$.fn.queueFadeIn = function (options) {
 	'use strict';
 	var element = this;
-	return element.css('opacity', 0)
-			.animate(
-				{'opacity': 1},
-				{ complete: function () { element.css('opacity', ''); }, duration: 400, 'queue': 'nodeQueue' }
-			);
+	return element
+		.css('opacity', 0)
+		.animate(
+			{'opacity': 1},
+			_.extend({ complete: function () { element.css('opacity', ''); }}, options)
+		);
 };
 $.fn.scrollWhenDragging = function () {
 	'use strict';
@@ -113,7 +112,8 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 	var viewPort = stageElement.parent(),
 		animateCount = 0, moveCount = 0,
 		connectorsForAnimation = $(),
-		linksForAnimation = $();
+		linksForAnimation = $(),
+		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
 
 	var cleanDOMId = function (s) {
 			return s.replace(/\./g, '_');
@@ -143,18 +143,15 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		},
 		animateToPositionCoordinates = function () {
 			var element = $(this);
-			element.clearQueue('nodeQueue').animate({
+			element.clearQueue(nodeAnimOptions.queue).animate({
 				'left': element.data('x') + stageElement.data('stageX'),
 				'top' : element.data('y') + stageElement.data('stageY'),
 				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
-			}, {
-				duration: 400,
+			}, _.extend({
 				complete: function () {
 					element.each(updateScreenCoordinates).trigger('mapjs:move');
 				},
-				'queue': 'nodeQueue',
-				'easing': 'linear'
-			}).trigger('mapjs:animatemove');
+			}, nodeAnimOptions)).trigger('mapjs:animatemove');
 		},
 		growStage = function (growx, growy) {
 			stageElement.data('stageX', stageElement.data('stageX') + growx);
@@ -256,7 +253,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		$('#' + nodeKey(node.id)).find('.text').text(node.title);
 	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
-		$('#' + nodeKey(node.id)).queueFadeOut();
+		$('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('nodeMoved', function (node, reason) {
 		var	nodeDom = $('#' + nodeKey(node.id)).data({
@@ -280,13 +277,13 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		var element = MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
 			.data({'nodeFrom': $('#' + nodeKey(connector.from)), 'nodeTo': $('#' + nodeKey(connector.to))})
-			.appendTo(stageElement).queueFadeIn().updateConnector();
+			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateConnector();
 		$('#' + nodeKey(connector.from)).add($('#' + nodeKey(connector.to)))
 			.on('mapjs:move', function () { element.updateConnector(); })
 			.on('mapjs:animatemove', function () { connectorsForAnimation = connectorsForAnimation.add(element); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
-		$('#' + connectorKey(connector)).queueFadeOut();
+		$('#' + connectorKey(connector)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
 		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style, { 'nodeFrom': $('#' + nodeKey(l.ideaIdFrom)), 'nodeTo': $('#' + nodeKey(l.ideaIdTo)) }),
@@ -297,14 +294,14 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 				'class': 'mapjs-draw-container'
 			})
 			.data(attr)
-			.appendTo(stageElement).queueFadeIn().updateLink();
+			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateLink();
 		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
 			.on('mapjs:move', function () { link.updateLink(); })
 			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });
 
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
-		$('#' + linkKey(l)).queueFadeOut();
+		$('#' + linkKey(l)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
 		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
@@ -317,7 +314,7 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
 			.addClass('mapjs-node')
 			.appendTo(stageElement)
-			.queueFadeIn()
+			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node)
 			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
 			.on('doubletap', function () {
@@ -364,26 +361,24 @@ MAPJS.domMediator = function (mapModel, stageElement) {
 		viewPort.scrollTop(newTopScroll);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
-		var connectorGroupClone = $(), linkGroupClone = $(),
-			animationProperties = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
+		var connectorGroupClone = $(), linkGroupClone = $();
+
 		connectorsForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition(animationProperties, 2)) {
+			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
 				connectorGroupClone = connectorGroupClone.add(this);
 			}
 		});
 		linksForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition(animationProperties, 2)) {
+			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
 				linkGroupClone = linkGroupClone.add(this);
 			}
 		});
 		connectorsForAnimation = $();
 		linksForAnimation = $();
-		stageElement.animate({'opacity': 1}, {
-			duration: 400,
-			queue: 'nodeQueue',
+		stageElement.animate({'opacity': 1}, _.extend({
 			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
-		});
-		stageElement.children().andSelf().dequeue('nodeQueue');
+		}, nodeAnimOptions));
+		stageElement.children().andSelf().dequeue(nodeAnimOptions.queue);
 	});
 
 
