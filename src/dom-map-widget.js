@@ -107,7 +107,7 @@ $.fn.draggable = function () {
 	});
 };
 
-MAPJS.domMediator = function (mapModel, stageElement) {
+MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		animateCount = 0, moveCount = 0,
@@ -447,7 +447,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
 		}
-		MAPJS.domMediator(mapModel, stage);
+		MAPJS.DOMRender.viewController(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
 				if (actOnKeys) {
