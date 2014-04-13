@@ -1220,6 +1220,18 @@ describe('MAPJS.DOMRender', function () {
 								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
 								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
 							});
+							it('if a connector cannot simply be animated, updates with each animation progress tick', function () {
+								jQuery.fn.animateConnectorToPosition.and.returnValue(false);
+								jQuery.fn.updateConnector.calls.reset();
+
+								spyOn(jQuery.fn, 'animate');
+								mapModel.dispatchEvent('layoutChangeComplete');
+
+								jQuery.fn.animate.calls.mostRecent().args[1].progress();
+								expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
+								expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+
+							});
 						});
 					});
 				});
@@ -1316,6 +1328,18 @@ describe('MAPJS.DOMRender', function () {
 								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
 								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
 							});
+							it('if a link cannot simply be animated, updates with each animation progress tick', function () {
+								jQuery.fn.animateConnectorToPosition.and.returnValue(false);
+								jQuery.fn.updateLink.calls.reset();
+
+								spyOn(jQuery.fn, 'animate');
+								mapModel.dispatchEvent('layoutChangeComplete');
+
+								jQuery.fn.animate.calls.mostRecent().args[1].progress();
+								expect(jQuery.fn.updateLink.calls.count()).toBe(1);
+								expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+
+							});
 						});
 					});
 				});
@@ -1331,8 +1355,6 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 		});
-
-
 
 	});
 });

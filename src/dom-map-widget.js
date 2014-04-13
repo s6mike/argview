@@ -278,11 +278,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('linkRemoved', function (l) {
 		$('#' + linkKey(l)).queueFadeOut(nodeAnimOptions);
 	});
-	mapModel.addEventListener('linkAttrChanged', function (l) {
-		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
-		$('#' + linkKey(l)).data(attr).updateLink();
-	});
-
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('scale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
@@ -480,25 +475,19 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // +	mapModel.addEventListener('connectorRemoved', function (n) {
 // +	mapModel.addEventListener('linkCreated', function (l) {
 // +	mapModel.addEventListener('linkRemoved', function (l) {
-// +	mapModel.addEventListener('linkAttrChanged', function (l) {
 // +	mapModel.addEventListener('nodeMoved', function (n, reason) {
 // +	mapModel.addEventListener('nodeRemoved', function (n) {
 // +	mapModel.addEventListener('connectorCreated', function (n) {
-//		- ensure selected node is visible!
 // +	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
-//		- center!
 // +	mapModel.addEventListener('layoutChangeComplete', function () {
 // +	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
-// -	mapModel.addEventListener('mapViewResetRequested', function () {
-// -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
+// +	mapModel.addEventListener('mapViewResetRequested', function () {
 // editing
+// -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
 // -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
 // -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 // +	mapModel.addEventListener('nodeAttrChanged', function (n) {
 // -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 // +	mapModel.addEventListener('nodeTitleChanged', function (n) {
 // -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
-
-// - node removed
-// - node moved (esp reason = failed)
-// no more memoization on calc connector - not needed
+// -	mapModel.addEventListener('linkAttrChanged', function (l) {
