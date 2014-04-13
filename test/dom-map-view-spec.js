@@ -985,5 +985,19 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 		});
+		describe('nodeRemoved', function () {
+			var underTest, node;
+			beforeEach(function () {
+				node = {id: '11.12', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children().first();
+				spyOn(jQuery.fn, 'queueFadeOut');
+			});
+			it('animates a fade-out', function () {
+				mapModel.dispatchEvent('nodeRemoved', node);
+				expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
+				expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+			});
+		});
 	});
 });
