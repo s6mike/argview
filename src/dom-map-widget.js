@@ -191,8 +191,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			if (_.isEmpty(animation)) {
 				result.resolve();
 			} else {
-				viewPort.animate(animation, {queue: 'scrollQueue', duration: 100, easing: 'linear', complete: result.resolve});
-				viewPort.dequeue('scrollQueue');
+				viewPort.animate(animation, {duration: 100, easing: 'linear', complete: result.resolve});
 			}
 			return result;
 		};
@@ -308,13 +307,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
-/*		var newLeftScroll = stageElement.data('offsetX') - viewPort.innerWidth() / 2,
-			newTopScroll = stageElement.data('offsetY') - viewPort.innerHeight() / 2;
-		stageElement.data('scale', 1).updateStage();
-		viewPort.scrollLeft(newLeftScroll);
-		viewPort.scrollTop(newTopScroll);
-		*/
-
 		stageElement.data('scale', 1).updateStage();
 		centerViewOn(0, 0);
 	});
@@ -398,7 +390,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'height': element.innerHeight(),
 				'scale': 1
 			}).updateStage();
-
+		element.css('overflow', 'auto');
 		//element.draggableContainer();
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
@@ -463,9 +455,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + clip and hyperlink hover/ better images
 // + proper node dimension caching
 // + attachment - clip - hook into displaying the attach
+// optimise connector -> endpoint searches by mapping data to real objects
 // --------- read only ------------
 // widget tests
-// optimise connector -> endpoint searches by mapping data to real objects
 //
 // --------- editing --------------
 // - don't set contentEditable

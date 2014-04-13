@@ -747,17 +747,17 @@ describe('MAPJS.DOMRender', function () {
 	});
 	describe('viewController', function () {
 		var stage,
-			scrollParent,
+			viewPort,
 			mapModel;
 		beforeEach(function () {
 			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'editNode', 'getEditingEnabled', 'editNode']));
-			scrollParent = jQuery('<div>').appendTo('body');
-			stage = jQuery('<div>').appendTo(scrollParent);
+			viewPort = jQuery('<div>').appendTo('body');
+			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
 			spyOn(jQuery.fn, 'queueFadeIn').and.callThrough();
 		});
 		afterEach(function () {
-			scrollParent.remove();
+			viewPort.remove();
 		});
 		describe('nodeCreated', function () {
 			describe('adds a DIV for the node to the stage', function () {
@@ -882,6 +882,106 @@ describe('MAPJS.DOMRender', function () {
 					expect(stage.data('offsetX')).toBe(200);
 					expect(stage.data('offsetY')).toBe(100);
 					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
+				});
+			});
+		});
+		describe('nodeSelectionChanged', function () {
+			var underTest;
+			beforeEach(function () {
+				var node = {id: '11.12', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
+					this.css('height', 40);
+					this.css('width', 30);
+					return this;
+				});
+				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+				stage.data({
+					'offsetX': 100,
+					'offsetY': 50,
+					'scale': 2,
+					'width': 500,
+					'height': 500
+				});
+				stage.updateStage();
+				viewPort.scrollLeft(180);
+				viewPort.scrollTop(80);
+
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children().first();
+				spyOn(jQuery.fn, 'focus').and.callThrough();
+				spyOn(jQuery.fn, 'animate');
+			});
+			describe('when deselected', function () {
+				beforeEach(function () {
+					underTest.addClass('selected');
+					mapModel.dispatchEvent('nodeSelectionChanged', '11.12', false);
+				});
+				it('removes the selected class', function () {
+					expect(underTest.hasClass('selected')).toBeFalsy();
+				});
+				it('does not move the viewport', function () {
+					expect(viewPort.scrollLeft()).toBe(180);
+					expect(viewPort.scrollTop()).toBe(80);
+				});
+				it('does not request focus or animate', function () {
+					expect(jQuery.fn.focus).not.toHaveBeenCalled();
+					expect(jQuery.fn.animate).not.toHaveBeenCalled();
+				});
+			});
+			describe('when selected', function () {
+				describe('when node is visible', function () {
+					beforeEach(function ()  {
+						viewPort.scrollLeft(5);
+						viewPort.scrollTop(3);
+						mapModel.dispatchEvent('nodeSelectionChanged', '11.12', true);
+					});
+					it('adds the selected class immediately', function () {
+						expect(underTest.hasClass('selected')).toBeTruthy();
+					});
+					it('requests focus for the node immediately', function () {
+						expect(jQuery.fn.focus.calls.count()).toBe(1);
+						expect(jQuery.fn.focus.calls.first().object[0]).toEqual(underTest[0]);
+					});
+					it('does not animate', function () {
+						expect(jQuery.fn.animate).not.toHaveBeenCalled();
+					});
+				});
+
+				_.each([
+					['left', -80, 0, {scrollLeft: 30}],
+					['top', 0, -20, {scrollTop: 50}],
+					['left', -80, 0, {scrollLeft: 30}],
+					['top left', -80, -20, {scrollLeft: 30, scrollTop: 50}],
+					['right', 90, 0, {scrollLeft: 250}],
+					['bottom', 0, 80, {scrollTop: 210}],
+					['bottom right', 90, 80, {scrollTop: 210, scrollLeft: 250}]
+				], function (testArgs) {
+					var caseName = testArgs[0],
+						nodeX = testArgs[1],
+						nodeY = testArgs[2],
+						expectedAnimation = testArgs[3];
+					describe('when ' + caseName + ' of viewport', function () {
+						beforeEach(function ()  {
+							underTest.data('x', nodeX);
+							underTest.data('y', nodeY);
+							mapModel.dispatchEvent('nodeSelectionChanged', '11.12', true);
+						});
+						it('does not immediately adds the selected class or focus', function () {
+							expect(underTest.hasClass('selected')).toBeFalsy();
+							expect(jQuery.fn.focus).not.toHaveBeenCalled();
+						});
+						it('animates scroll movements to show selected node', function () {
+							expect(jQuery.fn.animate.calls.count()).toBe(1);
+							expect(jQuery.fn.animate.calls.first().object[0]).toEqual(viewPort[0]);
+							expect(jQuery.fn.animate.calls.first().args[0]).toEqual(expectedAnimation);
+						});
+						it('sets the selected class and asks for focus once the animation completes', function () {
+							jQuery.fn.animate.calls.first().args[1].complete();
+							expect(underTest.hasClass('selected')).toBeTruthy();
+							expect(jQuery.fn.focus.calls.count()).toBe(1);
+							expect(jQuery.fn.focus.calls.first().object[0]).toEqual(underTest[0]);
+						});
+					});
 				});
 			});
 		});
