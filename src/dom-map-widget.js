@@ -1,6 +1,5 @@
 /*jslint nomen: true, newcap: true, browser: true*/
 /*global MAPJS, $, Hammer, _, jQuery*/
-
 $.fn.queueFadeOut = function (options) {
 	'use strict';
 	var element = this;
@@ -22,6 +21,7 @@ $.fn.queueFadeIn = function (options) {
 };
 $.fn.scrollWhenDragging = function () {
 	'use strict';
+	Hammer(this);
 	return this.each(function () {
 		var element = $(this),
 			dragOrigin;
@@ -40,73 +40,6 @@ $.fn.scrollWhenDragging = function () {
 		});
 	});
 };
-$.fn.draggableContainer = function () {
-	'use strict';
-	var currentDragObject,
-		originalDragObjectPosition,
-
-		drag = function (event) {
-			if (currentDragObject && event.gesture) {
-				var newpos = {
-						top: parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY,
-						left: parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX
-					};
-				currentDragObject.css(newpos).trigger('mm:drag');
-				event.preventDefault();
-				if (event.gesture) {
-					event.gesture.preventDefault();
-				}
-			}
-		},
-		rollback = function () {
-			var target = currentDragObject; // allow it to be cleared while animating
-			target.animate(originalDragObjectPosition, {
-				complete: function () {
-					target.trigger('mm:cancel-dragging');
-				},
-				progress: function () {
-					target.trigger('mm:drag');
-				}
-			});
-		};
-	return Hammer($(this), {'drag_min_distance': 2}).on('mm:start-dragging', function (event) {
-		if (!currentDragObject) {
-			currentDragObject = $(event.relatedTarget);
-			originalDragObjectPosition = {
-				top: currentDragObject.css('top'),
-				left: currentDragObject.css('left')
-			};
-			$(this).on('drag', drag);
-		}
-	}).on('dragend', function () {
-		var evt = $.Event('mm:stop-dragging');
-		if (currentDragObject) {
-			currentDragObject.trigger(evt);
-			$(this).off('drag', drag);
-			if (evt.result === false) {
-				rollback();
-			}
-			currentDragObject = undefined;
-		}
-	}).on('mouseleave', function () {
-		if (currentDragObject) {
-			$(this).off('drag', drag);
-			rollback();
-			currentDragObject = undefined;
-		}
-	}).attr('data-drag-role', 'container');
-};
-$.fn.draggable = function () {
-	'use strict';
-	return $(this).on('dragstart', function () {
-		$(this).trigger(
-			$.Event('mm:start-dragging', {
-				relatedTarget: this
-			})
-		);
-	});
-};
-
 MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
@@ -149,7 +82,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
 			}, _.extend({
 				complete: function () {
-					element.each(updateScreenCoordinates).trigger('mapjs:move');
+					element.each(updateScreenCoordinates);
 				},
 			}, nodeAnimOptions)).trigger('mapjs:animatemove');
 		},
@@ -239,6 +172,31 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			}
 			return result;
 		};
+	mapModel.addEventListener('nodeCreated', function (node) {
+		var element = $('<div>')
+			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
+			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
+			.css({display: 'block', position: 'absolute'})
+			.addClass('mapjs-node')
+			.appendTo(stageElement)
+			.queueFadeIn(nodeAnimOptions)
+			.updateNodeContent(node)
+			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
+			.on('doubletap', function () {
+				if (!mapModel.getEditingEnabled()) {
+					mapModel.toggleCollapse('mouse');
+					return;
+				}
+				mapModel.editNode('mouse');
+			})
+			.on('attachment-click', function () {
+				mapModel.openAttachment('mouse', node.id);
+			})
+			.each(ensureSpaceForNode)
+			.each(updateScreenCoordinates);
+		element.css('min-width', element.css('width'));
+		MAPJS.DOMRender.addNodeCacheMark(element, node);
+	});
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = $('#' + nodeKey(ideaId));
 		if (isSelected) {
@@ -307,31 +265,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
 		$('#' + linkKey(l)).data(attr).updateLink();
 	});
-	mapModel.addEventListener('nodeCreated', function (node) {
-		var element = $('<div>')
-			.attr('tabindex', 0)
-			.attr({ 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
-			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
-			.addClass('mapjs-node')
-			.appendTo(stageElement)
-			.queueFadeIn(nodeAnimOptions)
-			.updateNodeContent(node)
-			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
-			.on('doubletap', function () {
-				if (!mapModel.getEditingEnabled()) {
-					mapModel.toggleCollapse('mouse');
-					return;
-				}
-				mapModel.editNode('mouse', false, false);
-			})
-			.on('attachment-click', function () {
-				mapModel.openAttachment('mouse', node.id);
-			})
-			.each(ensureSpaceForNode)
-			.each(updateScreenCoordinates);
-		element.css('min-width', element.css('width'));
-		MAPJS.DOMRender.addNodeCacheMark(element, node);
-	});
+
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('stageScale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
@@ -443,7 +377,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'stageScale': 1
 			});
 
-		element.draggableContainer();
+		//element.draggableContainer();
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
 		}

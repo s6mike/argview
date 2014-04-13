@@ -1,4 +1,4 @@
-/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn*/
+/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable*/
 
 describe('getBox', function () {
 	'use strict';
@@ -742,6 +742,113 @@ describe('MAPJS.DOMRender', function () {
 				expect(MAPJS.DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalled();
 
+			});
+		});
+	});
+	describe('viewController', function () {
+		var stage,
+			scrollParent,
+			mapModel;
+		beforeEach(function () {
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'editNode', 'getEditingEnabled', 'editNode']));
+			scrollParent = jQuery('<div>').appendTo('body');
+			stage = jQuery('<div>').appendTo(scrollParent);
+			MAPJS.DOMRender.viewController(mapModel, stage);
+			spyOn(jQuery.fn, 'queueFadeIn').and.callThrough();
+		});
+		afterEach(function () {
+			scrollParent.remove();
+		});
+		describe('nodeCreated', function () {
+			describe('adds a DIV for the node to the stage', function () {
+				var underTest, node;
+				beforeEach(function () {
+					node = {id: '11.12', title: 'zeka', x: 10, y: 20, width: 30, height: 40};
+					spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
+						this.css('height', 40);
+						this.css('width', 30);
+						return this;
+					});
+					stage.data('stageX', 200);
+					stage.data('stageY', 100);
+					mapModel.dispatchEvent('nodeCreated', node);
+					underTest = stage.children().first();
+				});
+				it('sanitises the ID by replacing dots with underscores', function () {
+					expect(underTest.attr('id')).toBe('node_11_12');
+				});
+				it('makes the node focusable by adding a tabindex', function () {
+					expect(underTest.attr('tabIndex')).toBe('0');
+				});
+				it('assigns the node role', function () {
+					expect(underTest.attr('data-mapjs-role')).toBe('node');
+				});
+				it('adds an absolute position so it can move and have width', function () {
+					expect(underTest.css('display')).toBe('block');
+					expect(underTest.css('position')).toBe('absolute');
+				});
+				it('sets the x, y, width, height properties according to node values', function () {
+					expect(underTest.data('x')).toBe(10);
+					expect(underTest.data('y')).toBe(20);
+					expect(underTest.data('width')).toBe(30);
+					expect(underTest.data('height')).toBe(40);
+				});
+				it('assigns a mapjs-node css class', function () {
+					expect(underTest.hasClass('mapjs-node')).toBeTruthy();
+				});
+				it('updates the node content', function () {
+					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledWith(node);
+					expect(jQuery.fn.updateNodeContent.calls.count()).toBe(1);
+					expect(jQuery.fn.updateNodeContent.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				it('schedules a fade-in animation', function () {
+					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
+					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+				});
+				it('connects the node tap event to mapModel clickNode', function () {
+					var event = jQuery.Event('tap');
+					underTest.trigger(event);
+					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
+				});
+				it('connects the node double-tap event to toggleCollapse if editing is disabled', function () {
+					mapModel.getEditingEnabled.and.returnValue(false);
+					underTest.trigger('doubletap');
+					expect(mapModel.toggleCollapse).toHaveBeenCalledWith('mouse');
+					expect(mapModel.editNode).not.toHaveBeenCalled();
+				});
+				it('connects the node double-tap event to node editing if editing is enabled', function () {
+					mapModel.getEditingEnabled.and.returnValue(true);
+					underTest.trigger('doubletap');
+					expect(mapModel.toggleCollapse).not.toHaveBeenCalled();
+					expect(mapModel.editNode).toHaveBeenCalledWith('mouse');
+				});
+				it('connects attachment-click with openAttachment even when editing is disabled', function () {
+					mapModel.getEditingEnabled.and.returnValue(false);
+					underTest.trigger('attachment-click');
+					expect(mapModel.openAttachment).toHaveBeenCalledWith('mouse', '11.12');
+				});
+				it('fixes the width of the node so it does not condense on movements', function () {
+					expect(underTest.css('min-width')).toBe('30px');
+				});
+				it('tags the node with a cache mark', function () {
+					expect(underTest.data('nodeCacheMark')).toEqual({ title : 'zeka', icon : undefined, collapsed : undefined });
+				});
+				it('sets the screen coordinates according to data attributes', function () {
+					expect(underTest.css('top')).toBe('120px');
+					expect(underTest.css('left')).toBe('210px');
+				});
+			});
+			describe('grows the stage if needed to fit in', function () {
+				it('grows the stage from the top if Y would be negative, moving all current node children down', function () {
+				});
+				it('grows the stage from the left if X would be negative, moving all current node children right', function () {
+				});
+				it('expands the stage min width if the total width would be over the current boundary', function () {
+
+				});
+				it('expands the stage min height if the total height would be over the current boundary', function () {
+
+				});
 			});
 		});
 	});
