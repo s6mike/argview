@@ -1355,6 +1355,40 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 		});
+		describe('mapScaleChanged', function () {
+			beforeEach(function () {
+				spyOn(jQuery.fn, 'updateStage').and.callThrough();
+				spyOn(jQuery.fn, 'animate');
+				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+				stage.data({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 1000, 'height': 1000 });
+				stage.updateStage();
+				viewPort.scrollLeft(180);
+				viewPort.scrollTop(80);
 
+				stage.updateStage.calls.reset();
+				mapModel.dispatchEvent('mapScaleChanged', 2);
+			});
+			it('updates stage data property and calls updateStage to set CSS transformations', function () {
+				expect(stage.data('scale')).toBe(2);
+				expect(jQuery.fn.updateStage.calls.count()).toBe(1);
+				expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+			});
+			it('applies scale factors successively', function () {
+				mapModel.dispatchEvent('mapScaleChanged', 2.5);
+				expect(stage.data('scale')).toBe(5);
+			});
+			it('keeps the center point in the same position in the new scale', function () {
+				expect(viewPort.scrollLeft()).toBe(460);
+				expect(viewPort.scrollTop()).toBe(210);
+			});
+			it('does not allow scaling by more than factor of 5', function () {
+				mapModel.dispatchEvent('mapScaleChanged', 10);
+				expect(stage.data('scale')).toBe(5);
+			});
+			it('does not allow scaling by a factor of less than 0.2', function () {
+				mapModel.dispatchEvent('mapScaleChanged', 0.0001);
+				expect(stage.data('scale')).toBe(0.2);
+			});
+		});
 	});
 });

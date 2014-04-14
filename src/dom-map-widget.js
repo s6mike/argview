@@ -289,9 +289,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
-		var node = $('#' + nodeKey(ideaId)),
-			nodeCenterX = node.data('x') + node.outerWidth(true) / 2,
-			nodeCenterY = node.data('y') + node.outerWidth(true) / 2;
+		var node = $('#' + nodeKey(ideaId)).data(),
+			nodeCenterX = node.x + node.width / 2,
+			nodeCenterY = node.y + node.height / 2;
 		stageElement.data('scale', 1).updateStage();
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
@@ -415,38 +415,10 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 };
 
 
-// + connectors and links should hide if either of the nodes isn't present any more... and not die
-// + connectors and links should just return on update if they would repaint the same thing - check for parent positions
-//
-// + shadows
-// + selected
-// + default and non default backgrounds for root and children
-// + multi-line text
-// + if adding a node to left/top coordinate beyond 0, expand the stage and move all nodes down, expand by a margin to avoid re-expanding all the time
-// + images in background or as separate elements?
-// + icon position
-// + focus or selected?
-// + folded
-// + dblclick-tap to collapse/uncollapse
-// + hyperlinks
-// + custom connectors
-// + links and connectors to observe move and drag on nodes and repaint themselves
-// + custom connector specs
-// + stage resizing (esp node max width)
-// + zoom
-// + animations
-// + perf test large maps
-// + collapsed style
-// + scroll/swipe
-// + drag background
-// + drag root node to move things
-// + drag background to move things
-// + clip and hyperlink hover/ better images
-// + proper node dimension caching
-// + attachment - clip - hook into displaying the attach
-// optimise connector -> endpoint searches by mapping data to real objects
 // --------- read only ------------
-// widget tests
+// round coordinates for
+//  * CSS translation
+//  * nodes
 //
 // --------- editing --------------
 // - don't set contentEditable
