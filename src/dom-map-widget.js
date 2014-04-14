@@ -292,7 +292,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		var node = $('#' + nodeKey(ideaId)).data(),
 			nodeCenterX = node.x + node.width / 2,
 			nodeCenterY = node.y + node.height / 2;
-		stageElement.data('scale', 1).updateStage();
+		if (stageElement.data('scale') !== 1) {
+			stageElement.data('scale', 1).updateStage();
+		}
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {

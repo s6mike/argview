@@ -1,5 +1,19 @@
 /*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable*/
 
+beforeEach(function () {
+	'use strict';
+	jasmine.addMatchers({
+		toHaveBeenCalledOnJQueryObject: function () {
+			return {
+				compare: function (actual, expected) {
+					return {
+						pass: actual.calls && actual.calls.mostRecent() && actual.calls.mostRecent().object[0] === expected[0]
+					};
+				}
+			};
+		}
+	});
+});
 describe('getBox', function () {
 	'use strict';
 	var underTest;
@@ -800,12 +814,11 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('updates the node content', function () {
 					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledWith(node);
+					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledOnJQueryObject(underTest);
 					expect(jQuery.fn.updateNodeContent.calls.count()).toBe(1);
-					expect(jQuery.fn.updateNodeContent.calls.first().object[0]).toEqual(underTest[0]);
 				});
 				it('schedules a fade-in animation', function () {
-					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
-					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('connects the node tap event to mapModel clickNode', function () {
 					var event = jQuery.Event('tap');
@@ -850,30 +863,25 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('offsetY')).toBe(120);
 					expect(stage.data('height')).toBe(170);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('grows the stage from the left if x would be negative', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: -230, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('offsetX')).toBe(230);
 					expect(stage.data('width')).toBe(330);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min width without touching the offset if the total width would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 80, y: 20, width: 40, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('width')).toBe(320);
 					expect(stage.data('offsetX')).toBe(200);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
-
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min height without touching the offset if the total height would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 80, y: 20, width: 40, height: 60, title: 'zeka', id: 1});
 					expect(stage.data('height')).toBe(180);
 					expect(stage.data('offsetY')).toBe(100);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('does not expand the stage or call updateStage if the node would fit into current bounds', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: -10, y: -10, width: 20, height: 20, title: 'zeka', id: 1});
@@ -940,7 +948,7 @@ describe('MAPJS.DOMRender', function () {
 					});
 					it('requests focus for the node immediately', function () {
 						expect(jQuery.fn.focus.calls.count()).toBe(1);
-						expect(jQuery.fn.focus.calls.first().object[0]).toEqual(underTest[0]);
+						expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
 					});
 					it('does not animate', function () {
 						expect(jQuery.fn.animate).not.toHaveBeenCalled();
@@ -971,15 +979,13 @@ describe('MAPJS.DOMRender', function () {
 							expect(jQuery.fn.focus).not.toHaveBeenCalled();
 						});
 						it('animates scroll movements to show selected node', function () {
-							expect(jQuery.fn.animate.calls.count()).toBe(1);
-							expect(jQuery.fn.animate.calls.first().object[0]).toEqual(viewPort[0]);
+							expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(viewPort);
 							expect(jQuery.fn.animate.calls.first().args[0]).toEqual(expectedAnimation);
 						});
 						it('sets the selected class and asks for focus once the animation completes', function () {
 							jQuery.fn.animate.calls.first().args[1].complete();
 							expect(underTest.hasClass('selected')).toBeTruthy();
-							expect(jQuery.fn.focus.calls.count()).toBe(1);
-							expect(jQuery.fn.focus.calls.first().object[0]).toEqual(underTest[0]);
+							expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
 						});
 					});
 				});
@@ -995,8 +1001,7 @@ describe('MAPJS.DOMRender', function () {
 			});
 			it('animates a fade-out', function () {
 				mapModel.dispatchEvent('nodeRemoved', node);
-				expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
-				expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+				expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
 			});
 		});
 		describe('nodeMoved', function () {
@@ -1019,30 +1024,25 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('offsetY')).toBe(120);
 					expect(stage.data('height')).toBe(170);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('grows the stage from the left if x would be negative', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: -230, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('offsetX')).toBe(230);
 					expect(stage.data('width')).toBe(330);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min width without touching the offset if the total width would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 90, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('width')).toBe(310);
 					expect(stage.data('offsetX')).toBe(200);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
-
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min height without touching the offset if the total height would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 20, y: 45, width: 20, height: 10, title: 'zeka', id: 1});
 					expect(stage.data('height')).toBe(155);
 					expect(stage.data('offsetY')).toBe(100);
-					expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-					expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('does not expand the stage or call updateStage if the node would fit into current bounds', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: -10, y: -10, width: 20, height: 10, title: 'zeka', id: 1});
@@ -1091,8 +1091,7 @@ describe('MAPJS.DOMRender', function () {
 								expect(animateMoveListener).toHaveBeenCalled();
 							});
 							it('schedules an animation to move the coordinates', function () {
-								expect(jQuery.fn.animate.calls.count()).toBe(1);
-								expect(jQuery.fn.animate.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(underTest);
 								expect(jQuery.fn.animate.calls.first().args[0]).toEqual({left: nodeX, top: nodeY, opacity: 1});
 							});
 							it('fires the move event after the animation completes', function () {
@@ -1141,8 +1140,7 @@ describe('MAPJS.DOMRender', function () {
 				spyOn(jQuery.fn, 'updateNodeContent');
 
 				mapModel.dispatchEvent(eventType, node);
-				expect(jQuery.fn.updateNodeContent.calls.count()).toBe(1);
-				expect(jQuery.fn.updateNodeContent.calls.first().object[0]).toEqual(underTest[0]);
+				expect(jQuery.fn.updateNodeContent).toHaveBeenCalledOnJQueryObject(underTest);
 
 			});
 		});
@@ -1179,12 +1177,10 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('queues connector fade in', function () {
 					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
-					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
-					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('updates the connector content', function () {
-					expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
-					expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				describe('event wiring for node updates', function () {
 					beforeEach(function () {
@@ -1197,8 +1193,7 @@ describe('MAPJS.DOMRender', function () {
 								jQuery('#node_1_' + node).trigger('mapjs:move');
 							});
 							it('updates connector', function () {
-								expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
-								expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
 							});
 							it('does not add connectors to animation list', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
@@ -1217,8 +1212,7 @@ describe('MAPJS.DOMRender', function () {
 							});
 							it('animates the connector after the layout change is complete', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
-								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
-								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.animateConnectorToPosition).toHaveBeenCalledOnJQueryObject(underTest);
 							});
 							it('if a connector cannot simply be animated, updates with each animation progress tick', function () {
 								jQuery.fn.animateConnectorToPosition.and.returnValue(false);
@@ -1228,8 +1222,7 @@ describe('MAPJS.DOMRender', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
 
 								jQuery.fn.animate.calls.mostRecent().args[1].progress();
-								expect(jQuery.fn.updateConnector.calls.count()).toBe(1);
-								expect(jQuery.fn.updateConnector.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
 
 							});
 						});
@@ -1242,8 +1235,7 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('connectorRemoved', connector);
 
 					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
-					expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
-					expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 			});
 		});
@@ -1282,12 +1274,10 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('queues link fade in', function () {
 					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
-					expect(jQuery.fn.queueFadeIn.calls.count()).toBe(1);
-					expect(jQuery.fn.queueFadeIn.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('updates the link content', function () {
-					expect(jQuery.fn.updateLink.calls.count()).toBe(1);
-					expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('passes the style properties as data attributes to the DOM object', function () {
 					expect(underTest.data('lineStyle')).toBe('solid');
@@ -1305,8 +1295,7 @@ describe('MAPJS.DOMRender', function () {
 								jQuery('#node_1_' + node).trigger('mapjs:move');
 							});
 							it('updates link', function () {
-								expect(jQuery.fn.updateLink.calls.count()).toBe(1);
-								expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
 							});
 							it('does not add links to animation list', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
@@ -1325,8 +1314,7 @@ describe('MAPJS.DOMRender', function () {
 							});
 							it('animates the link after the layout change is complete', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
-								expect(jQuery.fn.animateConnectorToPosition.calls.count()).toBe(1);
-								expect(jQuery.fn.animateConnectorToPosition.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.animateConnectorToPosition).toHaveBeenCalledOnJQueryObject(underTest);
 							});
 							it('if a link cannot simply be animated, updates with each animation progress tick', function () {
 								jQuery.fn.animateConnectorToPosition.and.returnValue(false);
@@ -1336,8 +1324,7 @@ describe('MAPJS.DOMRender', function () {
 								mapModel.dispatchEvent('layoutChangeComplete');
 
 								jQuery.fn.animate.calls.mostRecent().args[1].progress();
-								expect(jQuery.fn.updateLink.calls.count()).toBe(1);
-								expect(jQuery.fn.updateLink.calls.first().object[0]).toEqual(underTest[0]);
+								expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
 
 							});
 						});
@@ -1348,10 +1335,8 @@ describe('MAPJS.DOMRender', function () {
 				it('schedules a fade out animation', function () {
 					spyOn(jQuery.fn, 'queueFadeOut');
 					mapModel.dispatchEvent('linkRemoved', link);
-
 					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
-					expect(jQuery.fn.queueFadeOut.calls.count()).toBe(1);
-					expect(jQuery.fn.queueFadeOut.calls.first().object[0]).toEqual(underTest[0]);
+					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 			});
 		});
@@ -1370,8 +1355,7 @@ describe('MAPJS.DOMRender', function () {
 			});
 			it('updates stage data property and calls updateStage to set CSS transformations', function () {
 				expect(stage.data('scale')).toBe(2);
-				expect(jQuery.fn.updateStage.calls.count()).toBe(1);
-				expect(jQuery.fn.updateStage.calls.first().object[0]).toEqual(stage[0]);
+				expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 			});
 			it('applies scale factors successively', function () {
 				mapModel.dispatchEvent('mapScaleChanged', 2.5);
@@ -1389,6 +1373,61 @@ describe('MAPJS.DOMRender', function () {
 				mapModel.dispatchEvent('mapScaleChanged', 0.0001);
 				expect(stage.data('scale')).toBe(0.2);
 			});
+		});
+		describe('nodeFocusRequested', function () {
+			beforeEach(function () {
+				spyOn(jQuery.fn, 'updateStage').and.callThrough();
+				spyOn(jQuery.fn, 'animate').and.callFake(function () { return this; });
+				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+				stage.data({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 400, 'height': 300 });
+				stage.updateStage();
+				viewPort.scrollLeft(180);
+				viewPort.scrollTop(80);
+				mapModel.dispatchEvent('nodeCreated', {id: '11.12', title: 'zeka2', x: 100, y: 50, width: 20, height: 10});
+				jQuery.fn.animate.calls.reset();
+				jQuery.fn.updateStage.calls.reset();
+			});
+			it('resets stage scale', function () {
+				stage.data({scale: 2}).updateStage();
+				stage.updateStage.calls.reset();
+				mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+				expect(stage.data('scale')).toBe(1);
+				expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
+			});
+			it('does not immediately change viewport', function () {
+				mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+				expect(viewPort.scrollLeft()).toBe(180);
+				expect(viewPort.scrollTop()).toBe(80);
+			});
+			it('schedules an animation for the viewport', function () {
+				mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+				expect(jQuery.fn.animate.calls.count()).toBe(1);
+				expect(jQuery.fn.animate).toHaveBeenCalledWith({scrollLeft: 110, scrollTop: 55}, {duration: 400});
+				expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(viewPort);
+			});
+			it('does not expand the stage if not needed', function () {
+				mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+				expect(stage.data()).toEqual({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 400, 'height': 300 });
+				expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
+			});
+			describe('expands the stage to enable scrolling to the node point when the node is ', [
+					['left', -50, 50, 140, 50, 440, 300],
+					['top', 100, -40, 100, 85, 400, 335 ],
+					['right', 270, 50, 100, 50, 480, 300 ],
+					['bottom', 100, 230, 100, 50, 400, 335 ]
+
+				], function (nodeX, nodeY, expectedStageOffsetX, expectedStageOffsetY, expectedStageWidth, expectedStageHeight) {
+					jQuery('#node_11_12').data({x: nodeX, y: nodeY});
+					mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
+
+					expect(stage.data('offsetX')).toEqual(expectedStageOffsetX);
+					expect(stage.data('offsetY')).toEqual(expectedStageOffsetY);
+					expect(stage.data('width')).toEqual(expectedStageWidth);
+					expect(stage.data('height')).toEqual(expectedStageHeight);
+				}
+			);
+
 		});
 	});
 });
