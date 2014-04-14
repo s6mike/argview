@@ -500,8 +500,8 @@ MAPJS.DOMRender = {
 MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
-		connectorsForAnimation = $(),
-		linksForAnimation = $(),
+		connectorsForAnimation = jQuery(),
+		linksForAnimation = jQuery(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
 
 	var cleanDOMId = function (s) {
@@ -531,14 +531,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			};
 		},
 		updateScreenCoordinates = function () {
-			var element = $(this);
+			var element = jQuery(this);
 			element.css({
 				'left': element.data('x'),
 				'top' : element.data('y'),
 			}).trigger('mapjs:move');
 		},
 		animateToPositionCoordinates = function () {
-			var element = $(this);
+			var element = jQuery(this);
 			element.clearQueue(nodeAnimOptions.queue).animate({
 				'left': element.data('x'),
 				'top' : element.data('y'),
@@ -575,8 +575,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			}
 		},
 		ensureSpaceForNode = function () {
-			return $(this).each(function () {
-				var node = $(this).data();
+			return jQuery(this).each(function () {
+				var node = jQuery(this).data();
 				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
 				ensureSpaceForPoint(node.x, node.y);
 				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
@@ -635,7 +635,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			return result;
 		};
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var element = $('<div>')
+		var element = jQuery('<div>')
 			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
 			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
 			.css({display: 'block', position: 'absolute'})
@@ -660,7 +660,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		MAPJS.DOMRender.addNodeCacheMark(element, node);
 	});
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
-		var node = $('#' + nodeKey(ideaId));
+		var node = jQuery('#' + nodeKey(ideaId));
 		if (isSelected) {
 			ensureNodeVisible(node).then(function () {
 				node.addClass('selected').focus();
@@ -670,10 +670,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		}
 	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
-		$('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
+		jQuery('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
-		var	nodeDom = $('#' + nodeKey(node.id)).data({
+		var	nodeDom = jQuery('#' + nodeKey(node.id)).data({
 				'x': node.x,
 				'y': node.y
 			}).each(ensureSpaceForNode),
@@ -686,22 +686,22 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		}
 	});
 	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged', function (n) {
-		$('#' + nodeKey(n.id)).updateNodeContent(n);
+		jQuery('#' + nodeKey(n.id)).updateNodeContent(n);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var element = MAPJS.createSVG()
 			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
-			.data({'nodeFrom': $('#' + nodeKey(connector.from)), 'nodeTo': $('#' + nodeKey(connector.to))})
+			.data({'nodeFrom': jQuery('#' + nodeKey(connector.from)), 'nodeTo': jQuery('#' + nodeKey(connector.to))})
 			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateConnector();
-		$('#' + nodeKey(connector.from)).add($('#' + nodeKey(connector.to)))
+		jQuery('#' + nodeKey(connector.from)).add(jQuery('#' + nodeKey(connector.to)))
 			.on('mapjs:move', function () { element.updateConnector(); })
 			.on('mapjs:animatemove', function () { connectorsForAnimation = connectorsForAnimation.add(element); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
-		$('#' + connectorKey(connector)).queueFadeOut(nodeAnimOptions);
+		jQuery('#' + connectorKey(connector)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style, { 'nodeFrom': $('#' + nodeKey(l.ideaIdFrom)), 'nodeTo': $('#' + nodeKey(l.ideaIdTo)) }),
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style, { 'nodeFrom': jQuery('#' + nodeKey(l.ideaIdFrom)), 'nodeTo': jQuery('#' + nodeKey(l.ideaIdTo)) }),
 			link = MAPJS.createSVG()
 			.attr({
 				'id': linkKey(l),
@@ -710,13 +710,13 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			})
 			.data(attr)
 			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateLink();
-		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
+		jQuery('#' + nodeKey(l.ideaIdFrom)).add(jQuery('#' + nodeKey(l.ideaIdTo)))
 			.on('mapjs:move', function () { link.updateLink(); })
 			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });
 
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
-		$('#' + linkKey(l)).queueFadeOut(nodeAnimOptions);
+		jQuery('#' + linkKey(l)).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		var currentScale = stageElement.data('scale'),
@@ -729,7 +729,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
-		var node = $('#' + nodeKey(ideaId)).data(),
+		var node = jQuery('#' + nodeKey(ideaId)).data(),
 			nodeCenterX = node.x + node.width / 2,
 			nodeCenterY = node.y + node.height / 2;
 		if (stageElement.data('scale') !== 1) {
@@ -742,20 +742,20 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
-		var connectorGroupClone = $(), linkGroupClone = $();
+		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
 
 		connectorsForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
 				connectorGroupClone = connectorGroupClone.add(this);
 			}
 		});
 		linksForAnimation.each(function () {
-			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
 				linkGroupClone = linkGroupClone.add(this);
 			}
 		});
-		connectorsForAnimation = $();
-		linksForAnimation = $();
+		connectorsForAnimation = jQuery();
+		linksForAnimation = jQuery();
 		stageElement.animate({'opacity': 1}, _.extend({
 			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
 		}, nodeAnimOptions));
