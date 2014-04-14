@@ -1,5 +1,6 @@
 /*global MAPJS, Color, _, jQuery, Kinetic*/
 /*jslint nomen: true, newcap: true, browser: true*/
+if (window.Kinetic) {
 (function () {
 	'use strict';
 	/*shamelessly copied from http://james.padolsey.com/javascript/wordwrap-for-javascript */
@@ -543,3 +544,4 @@ Kinetic.Idea.prototype.setIsDroppable = function (isDroppable) {
 };
 
 Kinetic.Util.extend(Kinetic.Idea, Kinetic.Group);
+}; // if kinetic

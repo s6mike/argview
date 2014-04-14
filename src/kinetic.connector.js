@@ -1,5 +1,6 @@
 /*global _, Kinetic, MAPJS*/
 /*jslint nomen: true*/
+if (window.Kinetic) {
 (function () {
 	'use strict';
 	var horizontalConnector, calculateConnector, calculateConnectorInner;
@@ -88,3 +89,4 @@
 	};
 	Kinetic.Util.extend(Kinetic.Connector, Kinetic.Shape);
 }());
+}

@@ -1,5 +1,6 @@
 /*global _, Kinetic*/
 /*jslint nomen: true*/
+if (window.Kinetic) {
 (function () {
 	'use strict';
 	Kinetic.Link = function (config) {
@@ -140,3 +141,4 @@ Kinetic.Link.prototype.setMMAttr = function (newMMAttr) {
 	this.setDashArray(dashTypes[style && style.lineStyle || 'dashed']);
 	this.attrs.arrow = style && style.arrow || false;
 };
+}; /* if Kinetic */

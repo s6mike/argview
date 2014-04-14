@@ -1,14 +1,22 @@
-/*global _, Kinetic, MAPJS */
-if (Kinetic.Stage.prototype.isRectVisible) {
-	throw ('isRectVisible already exists, should not mix in our methods');
-}
-
+/*global _, Kinetic, MAPJS, window */
+if (window.Kinetic) {
 Kinetic.Tween.prototype.reset = function () {
 	'use strict';
 	this.tween.reset();
 	return this;
 };
-
+Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
+	'use strict';
+	offset = offset || {x: 0, y: 0, margin: 0};
+	var scale = this.getScale().x || 1;
+	rect = rect.xscale(scale).xtranslate(offset.x, offset.y).xinset(offset.margin);
+	return !(
+		rect.x + this.getX() > this.getWidth() ||
+		rect.x + rect.width + this.getX() < 0  ||
+		rect.y + this.getY() > this.getHeight() ||
+		rect.y + rect.height + this.getY() < 0
+	);
+};
 MAPJS.Rectangle = function (x, y, width, height) {
 	'use strict';
 	this.scale = function (scale) {
@@ -44,18 +52,7 @@ MAPJS.Rectangle = function (x, y, width, height) {
 	this.height = height;
 	this.width = width;
 };
-Kinetic.Stage.prototype.isRectVisible = function (rect, offset) {
-	'use strict';
-	offset = offset || {x: 0, y: 0, margin: 0};
-	var scale = this.getScale().x || 1;
-	rect = rect.xscale(scale).xtranslate(offset.x, offset.y).xinset(offset.margin);
-	return !(
-		rect.x + this.getX() > this.getWidth() ||
-		rect.x + rect.width + this.getX() < 0  ||
-		rect.y + this.getY() > this.getHeight() ||
-		rect.y + rect.height + this.getY() < 0
-	);
-};
+
 
 MAPJS.KineticMediator = function (mapModel, stage) {
 	'use strict';
@@ -399,3 +396,5 @@ MAPJS.KineticMediator.layoutCalculator = function (idea) {
 	'use strict';
 	return MAPJS.calculateLayout(idea, MAPJS.KineticMediator.dimensionProvider);
 };
+} /* if kinetic*/
+
