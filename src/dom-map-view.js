@@ -384,6 +384,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		setColors = function () {
 			var fromStyle =	nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background;
+			if (fromStyle === 'false' || fromStyle === 'transparent') {
+				fromStyle = false;
+			}
 			self.removeClass('mapsj-node-dark mapjs-node-white mapjs-node-light');
 			if (fromStyle) {
 				self.css('background-color', fromStyle);

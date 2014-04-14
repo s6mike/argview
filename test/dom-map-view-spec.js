@@ -490,6 +490,19 @@ describe('updateNodeContent', function () {
 				expect(underTest.hasClass(cls)).toBeFalsy();
 			});
 		});
+		describe('handles weird background clearance - some browsers put in crap', function () {
+			_.each([false, 'false', '', 'transparent'], function (weirdBgStyle) {
+				it('deals with ' + weirdBgStyle + ' by clearing the background', function () {
+					nodeContent.attr = {
+						style: {
+							background: weirdBgStyle
+						}
+					};
+					underTest.updateNodeContent(nodeContent);
+					checkNoStyle(underTest, 'background-color');
+				});
+			});
+		});
 	});
 	describe('icon handling', function () {
 		var textBox;
