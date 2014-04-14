@@ -56,6 +56,43 @@ jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 	}
 	return false;
 };
+jQuery.fn.queueFadeOut = function (options) {
+	'use strict';
+	var element = this;
+	return element.fadeOut(_.extend({
+		complete: function () {
+			element.remove();
+		}
+	}, options));
+};
+jQuery.fn.queueFadeIn = function (options) {
+	'use strict';
+	var element = this;
+	return element
+		.css('opacity', 0)
+		.animate(
+			{'opacity': 1},
+			_.extend({ complete: function () { element.css('opacity', ''); }}, options)
+		);
+};
+
+jQuery.fn.updateStage = function () {
+	'use strict';
+	var data = this.data(),
+		size = {
+			'min-width': data.width - data.offsetX,
+			'min-height': data.height - data.offsetY,
+			'width': data.width - data.offsetX,
+			'height': data.height - data.offsetY,
+			'transform-origin': 'top left',
+			'transform': 'translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)'
+		};
+	if (data.scale && data.scale !== 1) {
+		size.transform = 'scale(' + data.scale + ') translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)';
+	}
+	this.css(size);
+	return this;
+};
 jQuery.fn.updateConnector = function () {
 	'use strict';
 	return jQuery.each(this, function () {
@@ -457,3 +494,274 @@ MAPJS.DOMRender = {
 		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
 	}
 };
+
+
+
+MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
+	'use strict';
+	var viewPort = stageElement.parent(),
+		connectorsForAnimation = $(),
+		linksForAnimation = $(),
+		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
+
+	var cleanDOMId = function (s) {
+			return s.replace(/\./g, '_');
+		},
+		connectorKey = function (connectorObj) {
+			return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
+		},
+		linkKey = function (linkObj) {
+			return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
+		},
+		nodeKey = function (id) {
+			return cleanDOMId('node_' + id);
+		},
+		stageToViewCoordinates = function (x, y) {
+			var stage = stageElement.data();
+			return {
+				x: stage.scale * (x + stage.offsetX) - viewPort.scrollLeft(),
+				y: stage.scale * (y + stage.offsetY) - viewPort.scrollTop()
+			};
+		},
+		viewToStageCoordinates = function (x, y) {
+			var stage = stageElement.data();
+			return {
+				x: (viewPort.scrollLeft() + x) / stage.scale - stage.offsetX,
+				y: (viewPort.scrollTop() + y) / stage.scale - stage.offsetY
+			};
+		},
+		updateScreenCoordinates = function () {
+			var element = $(this);
+			element.css({
+				'left': element.data('x'),
+				'top' : element.data('y'),
+			}).trigger('mapjs:move');
+		},
+		animateToPositionCoordinates = function () {
+			var element = $(this);
+			element.clearQueue(nodeAnimOptions.queue).animate({
+				'left': element.data('x'),
+				'top' : element.data('y'),
+				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
+			}, _.extend({
+				complete: function () {
+					element.each(updateScreenCoordinates);
+				},
+			}, nodeAnimOptions)).trigger('mapjs:animatemove');
+		},
+		ensureSpaceForPoint = function (x, y) {/* in stage coordinates */
+			var stage = stageElement.data(),
+				dirty = false;
+			if (x < -1 * stage.offsetX) {
+				stage.width =  stage.width - stage.offsetX - x;
+				stage.offsetX = -1 * x;
+				dirty = true;
+			}
+			if (y < -1 * stage.offsetY) {
+				stage.height = stage.height - stage.offsetY - y;
+				stage.offsetY = -1 * y;
+				dirty = true;
+			}
+			if (x > stage.width - stage.offsetX) {
+				stage.width = stage.offsetX + x;
+				dirty = true;
+			}
+			if (y > stage.height - stage.offsetY) {
+				stage.height = stage.offsetY + y;
+				dirty = true;
+			}
+			if (dirty) {
+				stageElement.updateStage();
+			}
+		},
+		ensureSpaceForNode = function () {
+			return $(this).each(function () {
+				var node = $(this).data();
+				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
+				ensureSpaceForPoint(node.x, node.y);
+				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
+			});
+		},
+		centerViewOn = function (x, y, animate)/*in the stage coordinate system*/ {
+			var stage = stageElement.data(),
+				viewPortCenter = {
+					x: viewPort.innerWidth() / 2,
+					y: viewPort.innerHeight() / 2
+				},
+				newLeftScroll, newTopScroll;
+			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
+			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale, y + viewPortCenter.y / stage.scale);
+
+			newLeftScroll = stage.scale * (x + stage.offsetX) - viewPortCenter.x;
+			newTopScroll = stage.scale * (y + stage.offsetY) - viewPortCenter.y;
+
+			if (animate) {
+				viewPort.animate({
+					scrollLeft: newLeftScroll,
+					scrollTop: newTopScroll
+				}, {
+					duration: 400
+				});
+			} else {
+				viewPort.scrollLeft(newLeftScroll);
+				viewPort.scrollTop(newTopScroll);
+			}
+		},
+		stagePointAtViewportCenter = function () {
+			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
+		},
+		ensureNodeVisible = function (domElement) {
+			var result = jQuery.Deferred(),
+				node = domElement.data(),
+				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
+				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
+				animation = {},
+				margin = 10;
+			if (nodeTopLeft.x < 0) {
+				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin;
+			} else if (nodeBottomRight.x > viewPort.innerWidth()) {
+				animation.scrollLeft = viewPort.scrollLeft() + nodeBottomRight.x - viewPort.innerWidth() + margin;
+			}
+			if (nodeTopLeft.y < 0) {
+				animation.scrollTop = viewPort.scrollTop() + nodeTopLeft.y - margin;
+			} else if (nodeBottomRight.y > viewPort.innerHeight()) {
+				animation.scrollTop = viewPort.scrollTop() + nodeBottomRight.y - viewPort.innerHeight() + margin;
+			}
+			if (_.isEmpty(animation)) {
+				result.resolve();
+			} else {
+				viewPort.animate(animation, {duration: 100, complete: result.resolve});
+			}
+			return result;
+		};
+	mapModel.addEventListener('nodeCreated', function (node) {
+		var element = $('<div>')
+			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
+			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
+			.css({display: 'block', position: 'absolute'})
+			.addClass('mapjs-node')
+			.appendTo(stageElement)
+			.queueFadeIn(nodeAnimOptions)
+			.updateNodeContent(node)
+			.on('tap', function (evt) { mapModel.clickNode(node.id, evt); })
+			.on('doubletap', function () {
+				if (!mapModel.getEditingEnabled()) {
+					mapModel.toggleCollapse('mouse');
+					return;
+				}
+				mapModel.editNode('mouse');
+			})
+			.on('attachment-click', function () {
+				mapModel.openAttachment('mouse', node.id);
+			})
+			.each(ensureSpaceForNode)
+			.each(updateScreenCoordinates);
+		element.css('min-width', element.css('width'));
+		MAPJS.DOMRender.addNodeCacheMark(element, node);
+	});
+	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
+		var node = $('#' + nodeKey(ideaId));
+		if (isSelected) {
+			ensureNodeVisible(node).then(function () {
+				node.addClass('selected').focus();
+			});
+		} else {
+			node.removeClass('selected');
+		}
+	});
+	mapModel.addEventListener('nodeRemoved', function (node) {
+		$('#' + nodeKey(node.id)).queueFadeOut(nodeAnimOptions);
+	});
+	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
+		var	nodeDom = $('#' + nodeKey(node.id)).data({
+				'x': node.x,
+				'y': node.y
+			}).each(ensureSpaceForNode),
+			screenTopLeft = stageToViewCoordinates(node.x, node.y),
+			screenBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
+		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
+			nodeDom.each(updateScreenCoordinates);
+		} else {
+			nodeDom.each(animateToPositionCoordinates);
+		}
+	});
+	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged', function (n) {
+		$('#' + nodeKey(n.id)).updateNodeContent(n);
+	});
+	mapModel.addEventListener('connectorCreated', function (connector) {
+		var element = MAPJS.createSVG()
+			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
+			.data({'nodeFrom': $('#' + nodeKey(connector.from)), 'nodeTo': $('#' + nodeKey(connector.to))})
+			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateConnector();
+		$('#' + nodeKey(connector.from)).add($('#' + nodeKey(connector.to)))
+			.on('mapjs:move', function () { element.updateConnector(); })
+			.on('mapjs:animatemove', function () { connectorsForAnimation = connectorsForAnimation.add(element); });
+	});
+	mapModel.addEventListener('connectorRemoved', function (connector) {
+		$('#' + connectorKey(connector)).queueFadeOut(nodeAnimOptions);
+	});
+	mapModel.addEventListener('linkCreated', function (l) {
+		var attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style, { 'nodeFrom': $('#' + nodeKey(l.ideaIdFrom)), 'nodeTo': $('#' + nodeKey(l.ideaIdTo)) }),
+			link = MAPJS.createSVG()
+			.attr({
+				'id': linkKey(l),
+				'data-mapjs-role': 'link',
+				'class': 'mapjs-draw-container'
+			})
+			.data(attr)
+			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateLink();
+		$('#' + nodeKey(l.ideaIdFrom)).add($('#' + nodeKey(l.ideaIdTo)))
+			.on('mapjs:move', function () { link.updateLink(); })
+			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });
+
+	});
+	mapModel.addEventListener('linkRemoved', function (l) {
+		$('#' + linkKey(l)).queueFadeOut(nodeAnimOptions);
+	});
+	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
+		var currentScale = stageElement.data('scale'),
+			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
+			currentCenter = stagePointAtViewportCenter();
+		if (currentScale === targetScale) {
+			return;
+		}
+		stageElement.data('scale', targetScale).updateStage();
+		centerViewOn(currentCenter.x, currentCenter.y);
+	});
+	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
+		var node = $('#' + nodeKey(ideaId)).data(),
+			nodeCenterX = node.x + node.width / 2,
+			nodeCenterY = node.y + node.height / 2;
+		if (stageElement.data('scale') !== 1) {
+			stageElement.data('scale', 1).updateStage();
+		}
+		centerViewOn(nodeCenterX, nodeCenterY, true);
+	});
+	mapModel.addEventListener('mapViewResetRequested', function () {
+		stageElement.data('scale', 1).updateStage();
+		centerViewOn(0, 0);
+	});
+	mapModel.addEventListener('layoutChangeComplete', function () {
+		var connectorGroupClone = $(), linkGroupClone = $();
+
+		connectorsForAnimation.each(function () {
+			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+				connectorGroupClone = connectorGroupClone.add(this);
+			}
+		});
+		linksForAnimation.each(function () {
+			if (!$(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+				linkGroupClone = linkGroupClone.add(this);
+			}
+		});
+		connectorsForAnimation = $();
+		linksForAnimation = $();
+		stageElement.animate({'opacity': 1}, _.extend({
+			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
+		}, nodeAnimOptions));
+		stageElement.children().andSelf().dequeue(nodeAnimOptions.queue);
+	});
+
+
+};
+
