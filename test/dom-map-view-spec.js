@@ -1078,6 +1078,41 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 		});
+		describe('activatedNodesChanged', function () {
+			var nodes;
+			beforeEach(function () {
+				var i;
+				nodes = [];
+				for (i = 0; i < 4; i++) {
+					nodes.push(jQuery('<div>').attr('id', 'node_' + i).appendTo(stage));
+				}
+			});
+			it('adds the activated class to all the activated nodes', function () {
+				mapModel.dispatchEvent('activatedNodesChanged', [1, 2], []);
+				expect(nodes[0].hasClass('activated')).toBeFalsy();
+				expect(nodes[1].hasClass('activated')).toBeTruthy();
+				expect(nodes[2].hasClass('activated')).toBeTruthy();
+				expect(nodes[3].hasClass('activated')).toBeFalsy();
+			});
+			it('removes the activated class from all deactivated nodes', function () {
+				nodes[2].addClass('activated');
+				nodes[3].addClass('activated');
+				mapModel.dispatchEvent('activatedNodesChanged', [], [2, 3]);
+				expect(nodes[0].hasClass('activated')).toBeFalsy();
+				expect(nodes[1].hasClass('activated')).toBeFalsy();
+				expect(nodes[2].hasClass('activated')).toBeFalsy();
+				expect(nodes[3].hasClass('activated')).toBeFalsy();
+			});
+			it('applies both operations at the same time', function () {
+				nodes[2].addClass('activated');
+				nodes[3].addClass('activated');
+				mapModel.dispatchEvent('activatedNodesChanged', [1], [2, 3]);
+				expect(nodes[0].hasClass('activated')).toBeFalsy();
+				expect(nodes[1].hasClass('activated')).toBeTruthy();
+				expect(nodes[2].hasClass('activated')).toBeFalsy();
+				expect(nodes[3].hasClass('activated')).toBeFalsy();
+			});
+		});
 		describe('nodeSelectionChanged', function () {
 			var underTest;
 			beforeEach(function () {
@@ -1597,6 +1632,37 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('linkRemoved', link);
 					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration : 400, queue : 'nodeQueue', easing : 'linear' });
 					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
+				});
+			});
+			describe('linkAttrChanged', function () {
+
+				it('passes the style properties as data attributes to the DOM object', function () {
+					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed', arrow: true}}});
+					expect(underTest.data('lineStyle')).toBe('dashed');
+					expect(underTest.data('color')).toBe('yellow');
+					expect(underTest.data('arrow')).toBeTruthy();
+				});
+				it('removes arrow if not set', function () {
+					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
+					expect(underTest.data('lineStyle')).toBe('dashed');
+					expect(underTest.data('color')).toBe('yellow');
+					expect(underTest.data('arrow')).toBeFalsy();
+				});
+				it('calls updateLink', function () {
+					jQuery.fn.updateLink.calls.reset();
+					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
+					expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
+				});
+			});
+			describe('addLinkModeToggled', function () {
+				it('gives the stage the mapjs-add-link class if on', function () {
+					mapModel.dispatchEvent('addLinkModeToggled', true);
+					expect(stage.hasClass('mapjs-add-link')).toBeTruthy();
+				});
+				it('gives the stage the mapjs-add-link class if on', function () {
+					stage.addClass('mapjs-add-link');
+					mapModel.dispatchEvent('addLinkModeToggled', false);
+					expect(stage.hasClass('mapjs-add-link')).toBeFalsy();
 				});
 			});
 		});

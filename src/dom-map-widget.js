@@ -116,15 +116,16 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 
 
 // --------- editing --------------
-// enable editing only if mapmodel allows it
+// + mapwidget keyboard bindings
+// + editing as span or as textarea - grow automatically
 // - enable drag & drop
+//		only if mapmodel allows it
 // drop
-// editing as span or as textarea - grow automatically
 
 // collaboration avatars
 // activated
 // mouse events
-// mapwidget keyboard bindings
+
 // mapwidget mouse bindings
 // html export
 
@@ -134,6 +135,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // straight lines extension
 // prevent scrolling so the screen is blank
 // support for multiple stages so that eg stage ID is prepended to the node and connector IDs
+// support for selectAll when editing nodes or remove that from the mapModel - do we still use it?
 //
 // remaining kinetic mediator events
 //
@@ -151,10 +153,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // +	mapModel.addEventListener('mapViewResetRequested', function () {
 // editing
 // -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
-// -	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
-// -	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+//		- do we need this? it was used onscroll and onswipe
+// +	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+// +	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 // +	mapModel.addEventListener('nodeAttrChanged', function (n) {
 // -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 // +	mapModel.addEventListener('nodeTitleChanged', function (n) {
-// -	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
-// -	mapModel.addEventListener('linkAttrChanged', function (l) {
+// +	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
+// +	mapModel.addEventListener('linkAttrChanged', function (l) {

@@ -13,6 +13,12 @@
 	color: #4F4F4F;
 	cursor: hand;
 }
+.mapjs-add-link {
+	cursor: crosshair;
+}
+.mapjs-add-link .mapjs-node {
+	cursor: alias;
+}
 .mapjs-node span {
 	white-space: pre-wrap;
 	font-family: "Helvetica";
@@ -32,6 +38,11 @@
 	-webkit-user-select: text;
 	-ms-user-select: text;
 	word-break: break-all;
+}
+.mapjs-node.activated {
+	outline: 0;
+	border: 3px dashed #2E9AFE;
+	margin: -2px;
 }
 .mapjs-node.selected, .mapjs-node:focus {
 	outline: 0;

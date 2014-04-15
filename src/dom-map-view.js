@@ -859,7 +859,25 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				editingElement.focus();
 			});
 	});
+	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+		if (isOn) {
+			stageElement.addClass('mapjs-add-link');
+		} else {
+			stageElement.removeClass('mapjs-add-link');
+		}
+	});
+	mapModel.addEventListener('linkAttrChanged', function (l) {
+		var  attr = _.extend({arrow: false}, l.attr && l.attr.style);
+		jQuery('#' + linkKey(l)).data(attr).updateLink();
+	});
 
-
+	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
+		_.each(activatedNodes, function (nodeId) {
+			jQuery('#' + nodeKey(nodeId)).addClass('activated');
+		});
+		_.each(deactivatedNodes, function (nodeId) {
+			jQuery('#' + nodeKey(nodeId)).removeClass('activated');
+		});
+	});
 };
 
