@@ -487,12 +487,12 @@ jQuery.fn.editNode = function () {
 		result = jQuery.Deferred(),
 		finishEditing = function () {
 			detachListeners();
-			textBox.attr('contenteditable', false);
+			textBox.removeAttr('contenteditable');
 			result.resolve(textBox.text());
 		},
 		cancelEditing = function () {
 			detachListeners();
-			textBox.attr('contenteditable', false);
+			textBox.removeAttr('contenteditable');
 			textBox.text(originalText);
 			result.reject();
 		},
@@ -507,22 +507,19 @@ jQuery.fn.editNode = function () {
 			}
 			else if (e.which === ENTER_KEY_CODE) {
 				finishEditing();
+				e.stopPropagation();
 			} else if (e.which === ESC_KEY_CODE) {
 				cancelEditing();
-			} else if (e.which === TAB_KEY_CODE) {
+				e.stopPropagation();
+			} else if (e.which === TAB_KEY_CODE || (e.which === S_KEY_CODE && (e.metaKey || e.ctrlKey))) {
 				finishEditing();
 				e.preventDefault(); /* stop focus on another object */
-				return;/* but propagate to handle tabs with the map widget */
-			} else if (e.which === S_KEY_CODE && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				finishEditing();
-				return; /* propagate to let the environment handle ctrl+s */
 			} else if (!e.shiftKey && e.which === Z_KEY_CODE && (e.metaKey || e.ctrlKey)) { /* undo node edit on ctrl+z if text was not changed */
 				if (textBox.text() === unformattedText) {
 					cancelEditing();
 				}
+				e.stopPropagation();
 			}
-			e.stopPropagation();
 		},
 		attachListeners = function () {
 			textBox.on('blur', finishEditing).on('keydown', keyboardEvents);
