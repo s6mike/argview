@@ -865,6 +865,16 @@ describe('MAPJS.DOMRender', function () {
 					expect(underTest.data('width')).toBe(30);
 					expect(underTest.data('height')).toBe(40);
 				});
+				it('rounds x, y, width and height to improve performance', function () {
+					node = {id: '12', title: 'zeka', x: 10.02, y: 19.99, width: 30.2, height: 40.3};
+					mapModel.dispatchEvent('nodeCreated', node);
+					underTest = stage.children('#node_12');
+					expect(underTest.data('x')).toBe(10);
+					expect(underTest.data('y')).toBe(20);
+					expect(underTest.data('width')).toBe(30);
+					expect(underTest.data('height')).toBe(40);
+				});
+
 				it('assigns a mapjs-node css class', function () {
 					expect(underTest.hasClass('mapjs-node')).toBeTruthy();
 				});
@@ -1072,6 +1082,11 @@ describe('MAPJS.DOMRender', function () {
 			});
 			it('sets the new data coordinates', function () {
 				mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+				expect(underTest.data('x')).toBe(20);
+				expect(underTest.data('y')).toBe(-120);
+			});
+			it('rounds the coordinates for performance', function () {
+				mapModel.dispatchEvent('nodeMoved', {x: 20.11, y: -119.99, width: 20, height: 10, title: 'zeka', id: 1});
 				expect(underTest.data('x')).toBe(20);
 				expect(underTest.data('y')).toBe(-120);
 			});

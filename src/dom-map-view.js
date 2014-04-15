@@ -640,7 +640,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var element = jQuery('<div>')
 			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
-			.data({ 'x': node.x, 'y': node.y, 'width': node.width, 'height': node.height})
+			.data({ 'x': Math.round(node.x), 'y': Math.round(node.y), 'width': Math.round(node.width), 'height': Math.round(node.height)})
 			.css({display: 'block', position: 'absolute'})
 			.addClass('mapjs-node')
 			.appendTo(stageElement)
@@ -677,11 +677,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
 		var	nodeDom = jQuery('#' + nodeKey(node.id)).data({
-				'x': node.x,
-				'y': node.y
+				'x': Math.round(node.x),
+				'y': Math.round(node.y)
 			}).each(ensureSpaceForNode),
-			screenTopLeft = stageToViewCoordinates(node.x, node.y),
-			screenBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
+			screenTopLeft = stageToViewCoordinates(Math.round(node.x), Math.round(node.y)),
+			screenBottomRight = stageToViewCoordinates(Math.round(node.x + node.width), Math.round(node.y + node.height));
 		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
 			nodeDom.each(updateScreenCoordinates);
 		} else {
