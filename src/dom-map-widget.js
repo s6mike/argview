@@ -68,7 +68,6 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		actOnKeys = canInput;
 	});
 
-
 	return this.each(function () {
 		var element = $(this),
 			stage = $('<div>').css({
@@ -81,7 +80,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'scale': 1
 			}).updateStage();
 		element.css('overflow', 'auto');
-		//element.draggableContainer();
+
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
 		}
@@ -116,13 +115,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 };
 
 
-// --------- read only ------------
-// round coordinates for
-//  * CSS translation
-//  * nodes
-//
 // --------- editing --------------
-// - don't set contentEditable
+// enable editing only if mapmodel allows it
 // - enable drag & drop
 // drop
 // editing as span or as textarea - grow automatically
@@ -139,7 +133,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // collaboration - collaborator images
 // straight lines extension
 // prevent scrolling so the screen is blank
-//
+// support for multiple stages so that eg stage ID is prepended to the node and connector IDs
 //
 // remaining kinetic mediator events
 //

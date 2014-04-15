@@ -22,6 +22,16 @@
 	line-height: 150% !important;
 	display: block;
 	max-width: 146px;
+	min-height: 1.5em;
+	min-width: 1em;
+	outline: none;
+}
+.mapjs-node span[contenteditable=true] {
+	user-select: text;
+	-moz-user-select: text;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+	word-break: break-all;
 }
 .mapjs-node.selected, .mapjs-node:focus {
 	outline: 0;

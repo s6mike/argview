@@ -1,4 +1,4 @@
-/*global jQuery, Color, _, MAPJS, document*/
+/*global jQuery, Color, _, MAPJS, document, window*/
 MAPJS.createSVG = function (tag) {
 	'use strict';
 	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
@@ -29,6 +29,8 @@ jQuery.fn.getDataBox = function () {
 	}
 	return this.getBox();
 };
+
+
 jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 	'use strict';
 	var element = jQuery(this),
@@ -352,6 +354,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
 				element = textSpan();
 			element.text(text.trim());
+			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
 			if ((element[0].scrollWidth - 10) > element.outerWidth()) {
 				element.css('max-width', element[0].scrollWidth + 'px');
@@ -454,11 +457,85 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 	applyLinkUrl(nodeContent.title);
 	applyAttachment();
 	self.attr('mapjs-level', nodeContent.level);
-
 	setColors();
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
 	return self;
+};
+jQuery.fn.placeCaretAtEnd = function () {
+	'use strict';
+	var el = this[0];
+	if (window.getSelection && document.createRange) {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (document.body.createTextRange) {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+};
+jQuery.fn.editNode = function () {
+	'use strict';
+	var textBox = this.find('[data-mapjs-role=title]'),
+		unformattedText = this.data('title'),
+		originalText = textBox.text(),
+		result = jQuery.Deferred(),
+		finishEditing = function () {
+			detachListeners();
+			textBox.attr('contenteditable', false);
+			result.resolve(textBox.text());
+		},
+		cancelEditing = function () {
+			detachListeners();
+			textBox.attr('contenteditable', false);
+			textBox.text(originalText);
+			result.reject();
+		},
+		keyboardEvents = function (e) {
+			var ENTER_KEY_CODE = 13,
+				ESC_KEY_CODE = 27,
+				TAB_KEY_CODE = 9,
+				S_KEY_CODE = 83,
+				Z_KEY_CODE = 90;
+			if (e.shiftKey && e.which === ENTER_KEY_CODE) {
+				return; // allow shift+enter to break lines
+			}
+			else if (e.which === ENTER_KEY_CODE) {
+				finishEditing();
+			} else if (e.which === ESC_KEY_CODE) {
+				cancelEditing();
+			} else if (e.which === TAB_KEY_CODE) {
+				finishEditing();
+				e.preventDefault(); /* stop focus on another object */
+				return;/* but propagate to handle tabs with the map widget */
+			} else if (e.which === S_KEY_CODE && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				finishEditing();
+				return; /* propagate to let the environment handle ctrl+s */
+			} else if (!e.shiftKey && e.which === Z_KEY_CODE && (e.metaKey || e.ctrlKey)) { /* undo node edit on ctrl+z if text was not changed */
+				if (textBox.text() === unformattedText) {
+					cancelEditing();
+				}
+			}
+			e.stopPropagation();
+		},
+		attachListeners = function () {
+			textBox.on('blur', finishEditing).on('keydown', keyboardEvents);
+		},
+		detachListeners = function () {
+			textBox.off('blur', finishEditing).off('keydown', keyboardEvents);
+		};
+	attachListeners();
+	textBox.text(unformattedText).attr('contenteditable', true).focus();
+	if (unformattedText) {
+		textBox.placeCaretAtEnd();
+	}
+	return result.promise();
 };
 MAPJS.DOMRender = {
 	nodeCacheMark: function (idea) {
@@ -640,7 +717,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var element = jQuery('<div>')
 			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
-			.data({ 'x': Math.round(node.x), 'y': Math.round(node.y), 'width': Math.round(node.width), 'height': Math.round(node.height)})
+			.data({'x': Math.round(node.x), 'y': Math.round(node.y), 'width': Math.round(node.width), 'height': Math.round(node.height)})
 			.css({display: 'block', position: 'absolute'})
 			.addClass('mapjs-node')
 			.appendTo(stageElement)
@@ -763,6 +840,26 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
 		}, nodeAnimOptions));
 		stageElement.children().andSelf().dequeue(nodeAnimOptions.queue);
+	});
+
+	/* editing */
+
+	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+		var editingElement = jQuery('#' + nodeKey(nodeId));
+		mapModel.setInputEnabled(false);
+		viewPort.finish(); /* close any pending animations */
+		editingElement.editNode(shouldSelectAll, editingNew).done(
+			function (newText) {
+				mapModel.setInputEnabled(true);
+				mapModel.updateTitle(nodeId, newText, editingNew);
+				editingElement.focus();
+			}).fail(function () {
+				mapModel.setInputEnabled(true);
+				if (editingNew) {
+					mapModel.undo('internal');
+				}
+				editingElement.focus();
+			});
 	});
 
 
