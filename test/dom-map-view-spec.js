@@ -464,6 +464,10 @@ describe('updateNodeContent', function () {
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.find('[data-mapjs-role=title]').text()).toEqual(nodeContent.title);
 		});
+		it('sets the node title as the data attribute', function () {
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('title')).toEqual(nodeContent.title);
+		});
 		it('reuses the existing span element if it already exists', function () {
 			var existingSpan = jQuery('<span data-mapjs-role="title"></span>').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
@@ -700,6 +704,10 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('a.mapjs-link').length).toBe(1);
 				expect(underTest.find('a.mapjs-link').is(':visible')).toBeTruthy();
 			});
+			it('sets the whole text with the link as the data title', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.data('title')).toEqual('google http://www.google.com');
+			});
 		});
 		describe('when there is no link', function () {
 			it('hides the link element', function () {
@@ -820,7 +828,7 @@ describe('MAPJS.DOMRender', function () {
 			viewPort,
 			mapModel;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'editNode', 'getEditingEnabled', 'editNode']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'getEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
@@ -1213,6 +1221,76 @@ describe('MAPJS.DOMRender', function () {
 				mapModel.dispatchEvent(eventType, node);
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalledOnJQueryObject(underTest);
 
+			});
+		});
+		describe('nodeEditRequested', function () {
+			var underTest, node, editDeferred;
+			beforeEach(function () {
+				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children().first();
+				editDeferred = jQuery.Deferred();
+				spyOn(jQuery.fn, 'focus');
+				spyOn(jQuery.fn, 'finish');
+				spyOn(jQuery.fn, 'editNode').and.returnValue(editDeferred.promise());
+			});
+			describe('when editing an existing node', function () {
+				beforeEach(function () {
+					mapModel.dispatchEvent('nodeEditRequested', '11', false, false);
+				});
+				it('disables input on mapModel', function () {
+					expect(mapModel.setInputEnabled).toHaveBeenCalledWith(false);
+				});
+				it('completes all viewport scrolling animations immediately - required to prevent loss of focus when viewport is scrolling', function () {
+					expect(jQuery.fn.finish).toHaveBeenCalledOnJQueryObject(viewPort);
+				});
+				it('puts the node into edit mode', function () {
+					expect(jQuery.fn.editNode).toHaveBeenCalledOnJQueryObject(underTest);
+				});
+				describe('when editing completes', function () {
+					beforeEach(function () {
+						mapModel.setInputEnabled.calls.reset();
+						editDeferred.resolve('new text');
+					});
+					it('re-enables input on map model', function () {
+						expect(mapModel.setInputEnabled).toHaveBeenCalledWith(true);
+					});
+					it('updates the node title', function () {
+						expect(mapModel.updateTitle).toHaveBeenCalledWith('11', 'new text', false);
+					});
+					it('sets the focus back on the node', function () {
+						expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
+					});
+				});
+				describe('when editing fails', function () {
+					beforeEach(function () {
+						mapModel.setInputEnabled.calls.reset();
+						editDeferred.reject();
+					});
+					it('re-enables input on map model', function () {
+						expect(mapModel.setInputEnabled).toHaveBeenCalledWith(true);
+					});
+					it('does not undo the last action', function () {
+						expect(mapModel.undo).not.toHaveBeenCalled();
+					});
+					it('sets the focus back on the node', function () {
+						expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
+					});
+				});
+			});
+			describe('when editing an existing node', function () {
+				beforeEach(function () {
+					mapModel.dispatchEvent('nodeEditRequested', '11', false, true);
+				});
+				it('passes the editNew correctly to mapModel when updating the title', function () {
+					editDeferred.resolve('new text');
+					expect(mapModel.updateTitle).toHaveBeenCalledWith('11', 'new text', true);
+				});
+				it('calls undo to drop the newly added node when editing is cancelled', function () {
+					editDeferred.reject();
+					expect(mapModel.undo).toHaveBeenCalled();
+
+				});
 			});
 		});
 		describe('connector events', function () {

@@ -848,11 +848,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		var editingElement = jQuery('#' + nodeKey(nodeId));
 		mapModel.setInputEnabled(false);
 		viewPort.finish(); /* close any pending animations */
-		editingElement.editNode(shouldSelectAll, editingNew).done(
+		editingElement.editNode().done(
 			function (newText) {
 				mapModel.setInputEnabled(true);
 				mapModel.updateTitle(nodeId, newText, editingNew);
 				editingElement.focus();
+
 			}).fail(function () {
 				mapModel.setInputEnabled(true);
 				if (editingNew) {
