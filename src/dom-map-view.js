@@ -80,15 +80,15 @@ jQuery.fn.updateStage = function () {
 	'use strict';
 	var data = this.data(),
 		size = {
-			'min-width': data.width - data.offsetX,
-			'min-height': data.height - data.offsetY,
-			'width': data.width - data.offsetX,
-			'height': data.height - data.offsetY,
+			'min-width': Math.round(data.width - data.offsetX),
+			'min-height': Math.round(data.height - data.offsetY),
+			'width': Math.round(data.width - data.offsetX),
+			'height': Math.round(data.height - data.offsetY),
 			'transform-origin': 'top left',
-			'transform': 'translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)'
+			'transform': 'translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)'
 		};
 	if (data.scale && data.scale !== 1) {
-		size.transform = 'scale(' + data.scale + ') translate(' + data.offsetX + 'px, ' + data.offsetY + 'px)';
+		size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)';
 	}
 	this.css(size);
 	return this;
