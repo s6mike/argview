@@ -79,7 +79,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'height': element.innerHeight(),
 				'scale': 1
 			}).updateStage();
-		element.css('overflow', 'auto');
+		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {
 			element.simpleDraggableContainer();
 		}
