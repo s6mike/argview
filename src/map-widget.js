@@ -106,6 +106,27 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageInsert
 				}
 			});
 		});
+		jQuery(document).on('keydown', function (e) {
+			var functions = {
+				'U+003D': 'scaleUp',
+				'U+002D': 'scaleDown',
+				61: 'scaleUp',
+				173: 'scaleDown'
+			}, mappedFunction;
+			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {
+				if (e.originalEvent && e.originalEvent.keyIdentifier) { /* webkit */
+					mappedFunction = functions[e.originalEvent.keyIdentifier];
+				} else if (e.key === 'MozPrintableKey') {
+					mappedFunction = functions[e.which];
+				}
+				if (mappedFunction) {
+					if (actOnKeys) {
+						e.preventDefault();
+						mapModel[mappedFunction]('keyboard');
+					}
+				}
+			}
+		});
 		MAPJS.dragdrop(mapModel, stage, imageInsertController);
 		$(document).on('keypress', function (evt) {
 			if (!actOnKeys) {
