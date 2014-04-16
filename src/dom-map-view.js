@@ -664,10 +664,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		},
 		ensureSpaceForNode = function () {
 			return jQuery(this).each(function () {
-				var node = jQuery(this).data();
+				var node = jQuery(this).data(),
+					margin = MAPJS.DOMRender.stageMargin || 0;
 				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
-				ensureSpaceForPoint(node.x, node.y);
-				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
+				ensureSpaceForPoint(node.x - margin, node.y - margin);
+				ensureSpaceForPoint(node.x + node.width + margin, node.y + node.height + margin);
 			});
 		},
 		centerViewOn = function (x, y, animate)/*in the stage coordinate system*/ {
