@@ -852,12 +852,12 @@ describe('updateNodeContent', function () {
 		it('adds a collapsed class when collapsed', function () {
 			nodeContent.attr = {collapsed: true};
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.hasClass('mapjs-collapsed')).toBeTruthy();
+			expect(underTest.hasClass('collapsed')).toBeTruthy();
 		});
 		it('removes the collapsed class when uncollapsed', function () {
-			underTest.addClass('mapjs-collapsed');
+			underTest.addClass('collapsed');
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.hasClass('mapjs-collapsed')).toBeFalsy();
+			expect(underTest.hasClass('collapsed')).toBeFalsy();
 		});
 	});
 	describe('hyperlink handling', function () {
@@ -885,18 +885,18 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the link element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-link').is(':visible')).toBeTruthy();
+				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeTruthy();
 			});
 			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-link').attr('href')).toEqual('http://www.google.com');
-				expect(underTest.find('a.mapjs-link').attr('target')).toEqual('_blank');
+				expect(underTest.find('a.mapjs-hyperlink').attr('href')).toEqual('http://www.google.com');
+				expect(underTest.find('a.mapjs-hyperlink').attr('target')).toEqual('_blank');
 			});
 			it('should reuse and show existing element', function () {
 				jQuery('<a href="#" class="mapjs-link"></a>').appendTo(underTest).hide();
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-link').length).toBe(1);
-				expect(underTest.find('a.mapjs-link').is(':visible')).toBeTruthy();
+				expect(underTest.find('a.mapjs-hyperlink').length).toBe(1);
+				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeTruthy();
 			});
 			it('sets the whole text with the link as the data title', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -906,7 +906,7 @@ describe('updateNodeContent', function () {
 		describe('when there is no link', function () {
 			it('hides the link element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-link').is(':visible')).toBeFalsy();
+				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeFalsy();
 			});
 		});
 	});
@@ -1456,6 +1456,7 @@ describe('MAPJS.DOMRender', function () {
 								expect(underTest.css('left')).toBe(nodeX + 'px');
 								expect(underTest.css('top')).toBe(nodeY + 'px');
 								expect(moveListener).toHaveBeenCalled();
+								expect(underTest).not.toHaveOwnStyle('opacity');
 							});
 
 						});

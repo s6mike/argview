@@ -325,13 +325,13 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		applyLinkUrl = function (title) {
 			var url = MAPJS.URLHelper.getLink(title),
-				element = self.find('a.mapjs-link');
+				element = self.find('a.mapjs-hyperlink');
 			if (!url) {
 				element.hide();
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a target="_blank" class="mapjs-link"></a>').appendTo(self);
+				element = jQuery('<a target="_blank" class="mapjs-hyperlink"></a>').appendTo(self);
 			}
 			element.attr('href', url).show();
 		},
@@ -369,9 +369,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		setCollapseClass = function () {
 			if (nodeContent.attr && nodeContent.attr.collapsed) {
-				self.addClass('mapjs-collapsed');
+				self.addClass('collapsed');
 			} else {
-				self.removeClass('mapjs-collapsed');
+				self.removeClass('collapsed');
 			}
 		},
 		foregroundClass = function (backgroundColor) {
@@ -632,6 +632,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
 			}, _.extend({
 				complete: function () {
+					element.css('opacity', '');
 					element.each(updateScreenCoordinates);
 				},
 			}, nodeAnimOptions)).trigger('mapjs:animatemove');

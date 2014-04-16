@@ -120,11 +120,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // --------- editing --------------
 
 //--- go live
+// + pich to zoom and scale around zoom point not around centre of viewport!
 // firefox selection bug
 // collaboration - collaborator images - not to break
 // straight lines - not to break
 // optional load of the new renderer
-// pich to zoom and scale around zoom point not around centre of viewport!
+
 // focus after drop if going off screen
 //
 //- v2 -
