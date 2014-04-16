@@ -1,8 +1,9 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider) {
+MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider) {
 	'use strict';
 	var self = this,
+		layoutCalculator = layoutCalculatorArg,
 		clipboard = clipboardProvider || new MAPJS.MemoryClipboard(),
 		analytic,
 		currentLayout = {
@@ -942,6 +943,9 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 
 		}
 		return result;
+	};
+	self.setLayoutCalculator = function (newCalculator) {
+		layoutCalculator = newCalculator;
 	};
 
 };
