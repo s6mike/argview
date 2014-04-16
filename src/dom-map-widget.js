@@ -80,7 +80,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'scale': 1
 			}).updateStage();
 		element.css('overflow', 'auto');
-
+		if (mapModel.isEditingEnabled()) {
+			element.simpleDraggableContainer();
+		}
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
 		}
@@ -116,19 +118,22 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 
 
 // --------- editing --------------
+// + activated
 // + mapwidget keyboard bindings
 // + editing as span or as textarea - grow automatically
 // - enable drag & drop
 //		only if mapmodel allows it
 // drop
-
+// MAPJS.dragdrop equivalent!
 // collaboration avatars
-// activated
+// test for break-all when text is different from node text during edit
+// drag & drop at scale
+// focus after drop if going off screen
 // mouse events
 
 // mapwidget mouse bindings
 // html export
-
+// drag and drop images?
 
 //- v2 -
 // collaboration - collaborator images

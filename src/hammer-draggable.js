@@ -1,10 +1,9 @@
 /*global $, Hammer*/
-/*jslint newcap:true */
-$.fn.draggableContainer = function () {
+/*jslint newcap:true*/
+$.fn.simpleDraggableContainer = function () {
 	'use strict';
 	var currentDragObject,
 		originalDragObjectPosition,
-
 		drag = function (event) {
 			if (currentDragObject && event.gesture) {
 				var newpos = {
@@ -38,11 +37,11 @@ $.fn.draggableContainer = function () {
 			};
 			$(this).on('drag', drag);
 		}
-	}).on('dragend', function () {
-		var evt = $.Event('mm:stop-dragging');
+	}).on('dragend', function (e) {
+		var evt = $.Event('mm:stop-dragging', {gesture: e.gesture});
+		$(this).off('drag', drag);
 		if (currentDragObject) {
 			currentDragObject.trigger(evt);
-			$(this).off('drag', drag);
 			if (evt.result === false) {
 				rollback();
 			}
@@ -56,14 +55,18 @@ $.fn.draggableContainer = function () {
 		}
 	}).attr('data-drag-role', 'container');
 };
-$.fn.draggable = function () {
+$.fn.simpleDraggable = function () {
 	'use strict';
-	return $(this).on('dragstart', function () {
+	return $(this).on('dragstart', function (e) {
 		$(this).trigger(
 			$.Event('mm:start-dragging', {
 				relatedTarget: this
 			})
 		);
+		e.stopPropagation();
+		if (e.gesture) {
+			e.gesture.stopPropagation();
+		}
 	});
 };
 

@@ -19,6 +19,12 @@
 .mapjs-add-link .mapjs-node {
 	cursor: alias;
 }
+.mapjs-node span[contenteditable=true] {
+	user-select: text;
+	-moz-user-select: text;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+}
 .mapjs-node span {
 	white-space: pre-wrap;
 	font-family: "Helvetica";
@@ -32,13 +38,6 @@
 	min-width: 1em;
 	outline: none;
 }
-.mapjs-node span[contenteditable=true] {
-	user-select: text;
-	-moz-user-select: text;
-	-webkit-user-select: text;
-	-ms-user-select: text;
-	word-break: break-all;
-}
 .mapjs-node.activated {
 	outline: 0;
 	border: 3px dashed #2E9AFE;
@@ -50,6 +49,9 @@
 	margin: -2px;
 	box-shadow: 5px 5px 5px black;
 	z-index: 3;
+}
+.mapjs-node.dragging {
+	opacity: 0.4;
 }
 .mapjs-collapsed {
 	box-shadow: 3px 3px 0 #A0A0A0, 4px 4px 0 #333, 6px 6px 0 #707070, 7px 7px 0 #222;
@@ -112,3 +114,4 @@
 }
 .mapjs-arrow {
 }
+
