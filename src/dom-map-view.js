@@ -549,14 +549,15 @@ MAPJS.DOMRender = {
 		return {
 			title: idea.title,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
-			collapsed: idea.attr && idea.attr.collapsed
+			collapsed: idea.attr && idea.attr.collapsed,
+			level: idea.level
 		};
 	},
 	addNodeCacheMark: function (domNode, idea) {
 		'use strict';
 		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
 	},
-	dimensionProvider: function (idea) {
+	dimensionProvider: function (idea, level) {
 		'use strict'; /* support multiple stages? */
 		var existing = document.getElementById('node_' + idea.id),
 			textBox,
@@ -567,7 +568,7 @@ MAPJS.DOMRender = {
 				return _.pick(textBox.data(), 'width', 'height');
 			}
 		}
-		textBox = jQuery('<div>').addClass('mapjs-node').css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
+		textBox = jQuery('<div>').addClass('mapjs-node').attr('mapjs-level', level).css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
 		result = {
 			width: textBox.outerWidth(true),
 			height: textBox.outerHeight(true)

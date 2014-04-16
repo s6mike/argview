@@ -951,15 +951,16 @@ describe('MAPJS.DOMRender', function () {
 	'use strict';
 	describe('nodeCacheMark', function () {
 
-		describe('returns the same value for two nodes if they have the same title, icon sizes and positions, and collapsed attribute', [
-				['no icons, just titles', {title: 'zeka', x: 1, attr: {ignored: 1}}, {title: 'zeka', x: 2, attr: {ignored: 2}}],
-				['titles and collapsed', {title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
-				['titles and icon', {title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}]
+		describe('returns the same value for two nodes if they have the same title, icon sizes, levels and positions, and collapsed attribute', [
+				['no icons, just titles', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2}}],
+				['titles and collapsed', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
+				['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}]
 			], function (first, second) {
 				expect(MAPJS.DOMRender.nodeCacheMark(first)).toEqual(MAPJS.DOMRender.nodeCacheMark(second));
 			});
 		describe('returns different values for two nodes if they differ in the', [
 				['titles', {title: 'zeka'}, {title: 'zeka2'}],
+				['levels', {title: 'zeka', level: 2}, {title: 'zeka', level: 1}],
 				['collapsed', {title: 'zeka', attr: {collapsed: true}}, {title: 'zeka', attr: {collapsed: false}}],
 				['icon width', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 101, height: 120, position: 'top'}}}],
 				['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
@@ -984,6 +985,15 @@ describe('MAPJS.DOMRender', function () {
 			newElement = jQuery('<style type="text/css">.mapjs-node { width:456px !important; min-height:789px !important}</style>').appendTo('body');
 			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 456, height: 789});
 			expect(jQuery('.mapjs-node').length).toBe(0);
+		});
+		it('takes level into consideration when calculating node dimensions', function () {
+			newElement = jQuery('<style type="text/css">' +
+								'.mapjs-node { width:356px !important; min-height:389px !important} ' +
+								'.mapjs-node[mapjs-level="1"] { width:456px !important; min-height:789px !important} ' +
+								'</style>').appendTo('body');
+			expect(MAPJS.DOMRender.dimensionProvider(idea, 1)).toEqual({width: 456, height: 789});
+			expect(MAPJS.DOMRender.dimensionProvider(idea, 2)).toEqual({width: 356, height: 389});
+
 		});
 		it('applies the updateNodeContent function while calculating dimensions', function () {
 			jQuery.fn.updateNodeContent = function () {
@@ -1114,7 +1124,7 @@ describe('MAPJS.DOMRender', function () {
 					expect(underTest.css('min-width')).toBe('30px');
 				});
 				it('tags the node with a cache mark', function () {
-					expect(underTest.data('nodeCacheMark')).toEqual({ title : 'zeka', icon : undefined, collapsed : undefined });
+					expect(underTest.data('nodeCacheMark')).toEqual({ level: undefined, title : 'zeka', icon : undefined, collapsed : undefined });
 				});
 				it('sets the screen coordinates according to data attributes, ignoring stage zoom and transformations', function () {
 					expect(underTest.css('top')).toBe('20px');
