@@ -63,9 +63,13 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 			'a' : 'openAttachment',
 			'i' : 'editIcon'
 		},
-		actOnKeys = true;
+		actOnKeys = true,
+		self = this;
 	mapModel.addEventListener('inputEnabledChanged', function (canInput) {
 		actOnKeys = canInput;
+		if (canInput) {
+			self.focus();
+		}
 	});
 
 	return this.each(function () {
