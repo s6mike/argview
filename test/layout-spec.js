@@ -598,7 +598,8 @@ describe('New layout', function () {
 					title: 'Hello world',
 					attr: { name: 'value' },
 					width: 200,
-					height: 100
+					height: 100,
+					level: 1
 				}), result;
 
 				result = tree.toLayout();
@@ -626,9 +627,11 @@ describe('New layout', function () {
 					attr: { name: 'value' },
 					width: 200,
 					height: 100,
+					level: 1,
 					subtrees: [
 						new MAPJS.Tree({
 							id: 2,
+							level: 2,
 							title: 'First child',
 							attr: { name: 'value2' },
 							width: 300,
@@ -679,6 +682,7 @@ describe('New layout', function () {
 					attr: { name: 'value' },
 					width: 200,
 					height: 100,
+					level: 1,
 					subtrees: [
 						new MAPJS.Tree({
 							id: 2,
@@ -687,7 +691,8 @@ describe('New layout', function () {
 							width: 300,
 							height: 80,
 							deltaX: 210,
-							deltaY: -10
+							deltaY: -10,
+							level: 2,
 						}),
 						new MAPJS.Tree({
 							id: 3,
@@ -696,7 +701,8 @@ describe('New layout', function () {
 							width: 100,
 							height: 30,
 							deltaX: 210,
-							deltaY: 80
+							deltaY: 80,
+							level: 2
 						})
 					]
 				}), result;

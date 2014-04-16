@@ -164,15 +164,14 @@ MAPJS.Outline.extendBorder = function (originalBorder, extension) {
 MAPJS.Tree = function (options) {
 	'use strict';
 	_.extend(this, options);
-	this.toLayout = function (level, x, y, parentId) {
+	this.toLayout = function (x, y, parentId) {
 		x = x || 0;
 		y = y || 0;
 		var result = {
 			nodes: {},
 			connectors: {}
 		}, self;
-		self = _.pick(this, 'id', 'title', 'attr', 'width', 'height');
-		self.level = level || 1;
+		self = _.pick(this, 'id', 'title', 'attr', 'width', 'height', 'level');
 		if (self.level === 1) {
 			self.x = -0.5 * this.width;
 			self.y = -0.5 * this.height;
@@ -189,7 +188,7 @@ MAPJS.Tree = function (options) {
 		}
 		if (this.subtrees) {
 			this.subtrees.forEach(function (t) {
-				var subLayout = t.toLayout(self.level + 1, self.x, self.y, self.id);
+				var subLayout = t.toLayout(self.x, self.y, self.id);
 				_.extend(result.nodes, subLayout.nodes);
 				_.extend(result.connectors, subLayout.connectors);
 			});
@@ -207,14 +206,15 @@ MAPJS.Outline.fromDimensions = function (dimensions) {
 		l: dimensions.width
 	}]);
 };
-MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate) {
+MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate, level) {
 	'use strict';
 	var options = {
 		id: content.id,
 		title: content.title,
 		attr: content.attr,
 		deltaY: 0,
-		deltaX: 0
+		deltaX: 0,
+		level: level || 1
 	},
 		setVerticalSpacing = function (treeArray,  dy) {
 			var i,
@@ -264,7 +264,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 			});
 			return result;
 		},
-		nodeDimensions = dimensionProvider(content),
+		nodeDimensions = dimensionProvider(content, options.level),
 		appendSubtrees = function (subtrees) {
 			var suboutline, deltaHeight, subtreePosition, horizontal, treeOutline;
 			_.each(subtrees, function (subtree) {
@@ -298,7 +298,7 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 	options.outline = new MAPJS.Outline.fromDimensions(nodeDimensions);
 	if (shouldIncludeSubIdeas()) {
 		options.subtrees = _.map(includedSubIdeas(), function (i) {
-			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate);
+			return MAPJS.calculateTree(i, dimensionProvider, margin, rankAndParentPredicate, options.level + 1);
 		});
 		if (!_.isEmpty(options.subtrees)) {
 			appendSubtrees(options.subtrees);
