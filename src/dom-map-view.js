@@ -751,6 +751,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			.on('mm:start-dragging', function () {
 				element.addClass('dragging');
 			})
+			.on('contextmenu', function (event) {
+				// ugly ugly ugly!
+				mapModel.dispatchEvent('contextMenuRequested', node.id, event.pageX, event.pageY);
+				event.preventDefault();
+				return false;
+			})
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
 				var dropPosition = evt && evt.gesture && evt.gesture.center,

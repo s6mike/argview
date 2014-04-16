@@ -1103,6 +1103,15 @@ describe('MAPJS.DOMRender', function () {
 					underTest.trigger(event);
 					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
 				});
+				it('forwards the contextMenu event by dispatching it for the mapModel', function () {
+					var spy = jasmine.createSpy();
+					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
+					mapModel.addEventListener('contextMenuRequested', spy);
+					underTest.trigger(event);
+					expect(spy).toHaveBeenCalledWith('11.12', 111, 112);
+					expect(event.isDefaultPrevented()).toBeTruthy();
+
+				});
 				it('connects the node double-tap event to toggleCollapse if editing is disabled', function () {
 					mapModel.isEditingEnabled.and.returnValue(false);
 					underTest.trigger('doubletap');

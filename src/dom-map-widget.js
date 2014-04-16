@@ -137,6 +137,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 //		- perhaps read some css property
 //		$('svg').first().css('var-mapjs-line-style', 'curved'); console.log($('svg')[0].style.varMapjsLineStyle
 // prevent scrolling so the screen is blank
+// mapModel - clean up the notion of clicks, in particular context menu which is no longer working like that!
 // support for multiple stages so that eg stage ID is prepended to the node and connector IDs
 // support for selectAll when editing nodes or remove that from the mapModel - do we still use it?
 // html export
