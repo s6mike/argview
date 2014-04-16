@@ -872,4 +872,76 @@ MAPJS.MapModel = function (layoutCalculator, selectAllTitles, clipboardProvider)
 				return layout;
 			};
 		}());
+	self.dropNode = function (nodeId, x, y, shiftKey) {
+		var rootNode = currentLayout.nodes[idea.id],
+			verticallyClosestNode = {
+				id: null,
+				y: Infinity
+			},
+			parentIdea = idea.findParent(nodeId),
+			parentNode = currentLayout.nodes[parentIdea.id],
+			nodeBeingDragged = currentLayout.nodes[nodeId],
+			isPointOverNode = function (node) { //move to mapModel candidate
+				/*jslint eqeq: true*/
+				return x >= node.x &&
+					y >= node.y &&
+					x <= node.x + node.width &&
+					y <= node.y + node.height;
+			},
+			canDropOnNode = function (node) {
+				/*jslint eqeq: true*/
+				return nodeId != node.id && isPointOverNode(node);
+			},
+			tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
+				var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
+					flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
+				if (flipRightToLeft || flipLeftToRight) {
+					return idea.flip(nodeId);
+				}
+				return false;
+			},
+			maxSequence = 1,
+			validReposition = function () {
+				return nodeBeingDragged.level === 2 ||
+					((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
+			},
+			potentialDropTarget = _.find(currentLayout.nodes, canDropOnNode),
+			result = false,
+			clone;
+		if (potentialDropTarget) {
+			if (shiftKey) {
+				clone = idea.clone(nodeId);
+				if (clone) {
+					idea.paste(potentialDropTarget.id, clone);
+				}
+				return false;
+			}
+			return idea.changeParent(nodeId, potentialDropTarget.id);
+		} else {
+			idea.startBatch();
+			if (currentLayout.nodes[nodeId].level === 2) {
+				tryFlip(rootNode, nodeBeingDragged, x);
+			}
+			_.each(idea.sameSideSiblingIds(nodeId), function (id) {
+				var node = currentLayout.nodes[id];
+				if (y < node.y && node.y < verticallyClosestNode.y) {
+					verticallyClosestNode = node;
+				}
+			});
+			result = idea.positionBefore(nodeId, verticallyClosestNode.id);
+			if (shiftKey && validReposition()) {
+				analytic('nodeManuallyPositioned');
+				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
+				result = idea.updateAttr(
+					nodeId,
+					'position',
+					[Math.abs(x - parentNode.x), y - parentNode.y, maxSequence + 1]
+				);
+			}
+			idea.endBatch();
+
+		}
+		return result;
+	};
+
 };

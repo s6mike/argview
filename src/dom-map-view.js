@@ -668,21 +668,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				ensureSpaceForPoint(node.x + node.width, node.y + node.height);
 			});
 		},
-		nodesAtPagePosition = function (pageX, pageY) {
-			var vpOffset = viewPort.offset(),
-				viewportDropCoordinates = {
-					x: pageX - vpOffset.left,
-					y: pageY -  vpOffset.top
-				},
-				stageDropCoordinates = viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
-			return stageElement.find('[data-mapjs-role=node]').filter(function () {
-				var target = jQuery(this).data();
-				return target.x <= stageDropCoordinates.x &&
-					   target.y <= stageDropCoordinates.y &&
-					   target.x + target.width >= stageDropCoordinates.x &&
-					   target.y + target.height >= stageDropCoordinates.y;
-			});
-		},
 		centerViewOn = function (x, y, animate)/*in the stage coordinate system*/ {
 			var stage = stageElement.data(),
 				viewPortCenter = {
@@ -766,11 +751,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
 				var dropPosition = evt && evt.gesture && evt.gesture.center,
-					potentialDrop = nodesAtPagePosition(dropPosition.pageX, dropPosition.pageY).not(element).data('nodeId');
-				if (potentialDrop) {
-					return mapModel.getIdea().changeParent(node.id, potentialDrop);
-				}
-				return false;
+					isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
+					vpOffset = viewPort.offset(),
+					viewportDropCoordinates = {
+						x: dropPosition.pageX - vpOffset.left,
+						y: dropPosition.pageY -  vpOffset.top
+					},
+				stageDropCoordinates = viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
+				return mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, isShift);
 			})
 			.on('mm:cancel-dragging', function () {
 				element.removeClass('dragging');
