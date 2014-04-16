@@ -753,12 +753,15 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				var dropPosition = evt && evt.gesture && evt.gesture.center,
 					isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					vpOffset = viewPort.offset(),
+					viewportDropCoordinates, stageDropCoordinates = { };
+				if (dropPosition) {
 					viewportDropCoordinates = {
 						x: dropPosition.pageX - vpOffset.left,
 						y: dropPosition.pageY -  vpOffset.top
-					},
-				stageDropCoordinates = viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
-				return mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, isShift);
+					};
+					stageDropCoordinates = viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
+				}
+				return mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, !!isShift);
 			})
 			.on('mm:cancel-dragging', function () {
 				element.removeClass('dragging');

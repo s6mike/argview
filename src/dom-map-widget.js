@@ -121,23 +121,30 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // + activated
 // + mapwidget keyboard bindings
 // + editing as span or as textarea - grow automatically
-// - enable drag & drop
+// + drag & drop at scale
+// + enable drag & drop
 //		only if mapmodel allows it
-// drop
-// MAPJS.dragdrop equivalent!
-// collaboration avatars
-// test for break-all when text is different from node text during edit
-// drag & drop at scale
+// + drop
+// + MAPJS.dragdrop equivalent!
+// + test for break-all when text is different from node text during edit
+//
+// pich to zoom and scale around zoom point not around centre of viewport!
 // focus after drop if going off screen
-// mouse events
-
-// mapwidget mouse bindings
 // html export
-// drag and drop images?
 
+//--- go live
+// firefox selection bug
+// collaboration - collaborator images - not to break
+// straight lines - not to break
+// optional load of the new renderer
 //- v2 -
-// collaboration - collaborator images
+// drag and drop images?
+// consolidate links and connectors into a single concept with different styles?
+// extract generic stage/viewport functions from DOMRender.ViewController into JQuery functions?
+// collaborator images in collaboration
 // straight lines extension
+//		- perhaps read some css property
+//		$('svg').first().css('var-mapjs-line-style', 'curved'); console.log($('svg')[0].style.varMapjsLineStyle
 // prevent scrolling so the screen is blank
 // support for multiple stages so that eg stage ID is prepended to the node and connector IDs
 // support for selectAll when editing nodes or remove that from the mapModel - do we still use it?
@@ -157,12 +164,15 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // +	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier, zoomPoint) {
 // +	mapModel.addEventListener('mapViewResetRequested', function () {
 // editing
-// -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
-//		- do we need this? it was used onscroll and onswipe
 // +	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
 // +	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
 // +	mapModel.addEventListener('nodeAttrChanged', function (n) {
-// -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
 // +	mapModel.addEventListener('nodeTitleChanged', function (n) {
 // +	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 // +	mapModel.addEventListener('linkAttrChanged', function (l) {
+//
+//
+// -	mapModel.addEventListener('nodeDroppableChanged', function (ideaId, isDroppable) {
+// -	mapModel.addEventListener('mapMoveRequested', function (deltaX, deltaY) {
+//		- do we need this? it was used onscroll and onswipe
+//      - we don't need this any more!

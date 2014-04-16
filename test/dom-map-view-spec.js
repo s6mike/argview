@@ -924,7 +924,7 @@ describe('updateNodeContent', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
 			});
-			it('binds the paperclip click to dispatch a mapModel event (which one?)', function () {
+			it('binds the paperclip click to dispatch an attachment-click event', function () {
 				var listener = jasmine.createSpy('listener');
 				underTest.on('attachment-click', listener);
 				underTest.updateNodeContent(nodeContent);
@@ -1022,7 +1022,7 @@ describe('MAPJS.DOMRender', function () {
 			viewPort,
 			mapModel;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
@@ -1158,6 +1158,45 @@ describe('MAPJS.DOMRender', function () {
 					expect(stage.data('offsetX')).toBe(200);
 					expect(stage.data('offsetY')).toBe(100);
 					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
+				});
+				describe('drag and drop features', function () {
+					var underTest;
+					beforeEach(function () {
+						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+						underTest = stage.children().first();
+						underTest.trigger('mm:start-dragging');
+					});
+					it('assigns a dragging class when the node is being dragged', function () {
+						expect(underTest.hasClass('dragging')).toBeTruthy();
+					});
+					it('removes the dragging class when dragging is cancelled', function () {
+						underTest.trigger('mm:cancel-dragging');
+						expect(underTest.hasClass('dragging')).toBeFalsy();
+					});
+					it('removes the dragging class when dragging is stopped', function () {
+						underTest.trigger('mm:stop-dragging');
+						expect(underTest.hasClass('dragging')).toBeFalsy();
+					});
+					it('when dragging stops, works out the stage drop position from the page drop position and calls mapModel.dropNode with the stage drop position', function () {
+
+						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+
+						viewPort.scrollLeft(20);
+						viewPort.scrollTop(10);
+						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {center: {pageX: 70, pageY: 50}}}));
+						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, false);
+					});
+					it('passes the shift key state when dropped', function () {
+						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+
+						viewPort.scrollLeft(20);
+						viewPort.scrollTop(10);
+						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}}));
+						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, true);
+
+					});
 				});
 			});
 		});
