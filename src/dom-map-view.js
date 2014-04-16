@@ -734,7 +734,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				mapModel.clickNode(node.id, realEvent);
 			})
 			.on('doubletap', function () {
-				if (!mapModel.getEditingEnabled()) {
+				if (!mapModel.isEditingEnabled()) {
 					mapModel.toggleCollapse('mouse');
 					return;
 				}

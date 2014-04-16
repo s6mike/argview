@@ -939,7 +939,7 @@ describe('MAPJS.DOMRender', function () {
 			viewPort,
 			mapModel;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'getEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
@@ -1011,19 +1011,19 @@ describe('MAPJS.DOMRender', function () {
 					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
 				});
 				it('connects the node double-tap event to toggleCollapse if editing is disabled', function () {
-					mapModel.getEditingEnabled.and.returnValue(false);
+					mapModel.isEditingEnabled.and.returnValue(false);
 					underTest.trigger('doubletap');
 					expect(mapModel.toggleCollapse).toHaveBeenCalledWith('mouse');
 					expect(mapModel.editNode).not.toHaveBeenCalled();
 				});
 				it('connects the node double-tap event to node editing if editing is enabled', function () {
-					mapModel.getEditingEnabled.and.returnValue(true);
+					mapModel.isEditingEnabled.and.returnValue(true);
 					underTest.trigger('doubletap');
 					expect(mapModel.toggleCollapse).not.toHaveBeenCalled();
 					expect(mapModel.editNode).toHaveBeenCalledWith('mouse');
 				});
 				it('connects attachment-click with openAttachment even when editing is disabled', function () {
-					mapModel.getEditingEnabled.and.returnValue(false);
+					mapModel.isEditingEnabled.and.returnValue(false);
 					underTest.trigger('attachment-click');
 					expect(mapModel.openAttachment).toHaveBeenCalledWith('mouse', '11.12');
 				});
