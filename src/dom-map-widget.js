@@ -118,25 +118,15 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 
 
 // --------- editing --------------
-// + activated
-// + mapwidget keyboard bindings
-// + editing as span or as textarea - grow automatically
-// + drag & drop at scale
-// + enable drag & drop
-//		only if mapmodel allows it
-// + drop
-// + MAPJS.dragdrop equivalent!
-// + test for break-all when text is different from node text during edit
-//
-// pich to zoom and scale around zoom point not around centre of viewport!
-// focus after drop if going off screen
-// html export
 
 //--- go live
 // firefox selection bug
 // collaboration - collaborator images - not to break
 // straight lines - not to break
 // optional load of the new renderer
+// pich to zoom and scale around zoom point not around centre of viewport!
+// focus after drop if going off screen
+//
 //- v2 -
 // drag and drop images?
 // consolidate links and connectors into a single concept with different styles?
@@ -148,6 +138,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 // prevent scrolling so the screen is blank
 // support for multiple stages so that eg stage ID is prepended to the node and connector IDs
 // support for selectAll when editing nodes or remove that from the mapModel - do we still use it?
+// html export
 //
 // remaining kinetic mediator events
 //
