@@ -11,8 +11,74 @@ beforeEach(function () {
 					};
 				}
 			};
+		},
+		toHaveOwnStyle: function () {
+			var checkStyle = function (element, style) {
+				if (element.attr('style')) {
+					if (_.isArray(style)) {
+						return _.find(style, function (aStyle) { return checkStyle(element, aStyle); });
+					} else {
+						return element.attr('style').indexOf(style) >= 0;
+					}
+				}
+				return false;
+			};
+			return {
+				compare: function (element, styleName) {
+					var result = {
+						pass: checkStyle(element, styleName)
+					};
+					if (result.pass) {
+						result.message = element.attr('style') + ' has own style ' + styleName;
+					} else {
+						result.message = element[0] + ' does not have own style ' + styleName + ' (' + element.attr('style') + ')';
+					}
+					return result;
+				}
+			};
 		}
 	});
+});
+describe('toHaveBeenCalledOnJQueryObject matcher', function () {
+	'use strict';
+	var underTest1, underTest2;
+	beforeEach(function () {
+		underTest1 = jQuery('<div id="fst">').appendTo('body');
+		underTest2 = jQuery('<div id="snd">').appendTo('body');
+		spyOn(jQuery.fn, 'focus');
+	});
+	afterEach(function () {
+		underTest1.remove();
+		underTest2.remove();
+	});
+	it('checks that a function was applied to a jQuery selector by comparing elements', function () {
+		underTest1.focus();
+		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest1);
+		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(jQuery('#fst'));
+		expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(underTest2);
+		expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(jQuery('#snd'));
+	});
+});
+describe('toHaveOwnStyle', function () {
+	'use strict';
+	var underTest;
+	beforeEach(function () {
+		underTest = jQuery('<div id="fst">').appendTo('body');
+	});
+	afterEach(function () {
+		underTest.remove();
+	});
+	it('checks that a function was applied to a jQuery selector by comparing elements', function () {
+		underTest.css('outline', 'none');
+		expect(underTest).toHaveOwnStyle('outline');
+		expect(underTest).not.toHaveOwnStyle('display');
+	});
+	it('checks for any of the styles in the array', function () {
+		underTest.css('outline', 'none');
+		expect(underTest).toHaveOwnStyle(['outline', 'display']);
+		expect(underTest).not.toHaveOwnStyle(['display', 'z-index']);
+	});
+
 });
 describe('updateStage', function () {
 	'use strict';
@@ -165,6 +231,29 @@ describe('editNode', function () {
 	it('fills the text box with the data title attribute', function () {
 		expect(textBox.text()).toEqual('some title');
 	});
+	describe('break word control', function () {
+		it('sets the word break to break-all if the original title is different from the text in the box ' +
+			 ' - this is to avoid long text normally hidden (eg links) messing up the layuot', function () {
+			expect(textBox.css('word-break')).toBe('break-all');
+		});
+
+		it('clears the word break when the editing is completed', function () {
+			textBox.trigger('blur'); // complete previous edit
+			expect(textBox).not.toHaveOwnStyle('word-break');
+
+		});
+		it('clears the word break when the editing is canceled', function () {
+			textBox.trigger(jQuery.Event('keydown', { which: 27 }));
+			expect(textBox).not.toHaveOwnStyle('word-break');
+		});
+		it('does not set the word break if the original title and the node text are the same', function () {
+			textBox.trigger('blur'); // complete previous edit
+			textBox.text('some title');
+			node.editNode();
+			expect(textBox).not.toHaveOwnStyle('word-break');
+		});
+	});
+
 	it('focuses on the text box', function () {
 		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(textBox);
 	});
@@ -217,6 +306,12 @@ describe('editNode', function () {
 			expect(textBox.attr('contenteditable')).toBeFalsy();
 			expect(rejected).toHaveBeenCalled();
 			expect(event.isPropagationStopped()).toBeTruthy();
+			expect(textBox.text()).toBe('some old text');
+		});
+		it('cancels editing if the text is not modified, even if the user did not press escape', function () {
+			textBox.text('some title').trigger('blur');
+			expect(textBox.attr('contenteditable')).toBeFalsy();
+			expect(rejected).toHaveBeenCalled();
 			expect(textBox.text()).toBe('some old text');
 		});
 		_.each(['ctrl', 'meta'], function (specialKey) {
@@ -541,19 +636,6 @@ describe('updateNodeContent', function () {
 	var underTest, nodeContent, style,
 		isHeadless = function () {
 			return (navigator.userAgent.indexOf('PhantomJS')  !== -1);
-		},
-		checkNoStyle = function (element, style) {
-			if (element.attr('style')) {
-				if (_.isArray(style)) {
-					_.each(style, function (aStyle) {
-						checkNoStyle(element, aStyle);
-					});
-				} else {
-					expect(element.attr('style').indexOf(style)).toBe(-1);
-				}
-
-			}
-
 		};
 	beforeEach(function () {
 		style = jQuery('<style type="text/css"> .test-padding { padding: 5px;}  .test-max-width { max-width:160px; display: block }</style>').appendTo('head');
@@ -602,7 +684,8 @@ describe('updateNodeContent', function () {
 			var textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest).css('width', '100px');
 			nodeContent.title = 'f\ns\nc';
 			underTest.updateNodeContent(nodeContent);
-			checkNoStyle(textBox, 'min-width');
+			expect(textBox).not.toHaveOwnStyle('min-width');
+
 		});
 
 	});
@@ -643,7 +726,7 @@ describe('updateNodeContent', function () {
 		it('clears background color and mapjs-node-* styles from the style if not specified', function () {
 			underTest.css('background-color', 'blue').addClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
 			underTest.updateNodeContent(nodeContent);
-			checkNoStyle(underTest, 'background-color');
+			expect(underTest).not.toHaveOwnStyle('background-color');
 			_.each(['mapsj-node-dark', 'mapjs-node-white', 'mapjs-node-light'], function (cls) {
 				expect(underTest.hasClass(cls)).toBeFalsy();
 			});
@@ -657,7 +740,7 @@ describe('updateNodeContent', function () {
 						}
 					};
 					underTest.updateNodeContent(nodeContent);
-					checkNoStyle(underTest, 'background-color');
+					expect(underTest).not.toHaveOwnStyle('background-color');
 				});
 			});
 		});
@@ -700,8 +783,8 @@ describe('updateNodeContent', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('50% 50%');
 				expect(underTest.css('min-width')).toBe('5px');
-				checkNoStyle(underTest, 'min-height');
-				checkNoStyle(textBox, 'margin-top');
+				expect(underTest).not.toHaveOwnStyle('min-height');
+				expect(textBox).not.toHaveOwnStyle('margin-top');
 			});
 			it('positions left icons left of node text and vertically centers the text', function () {
 				nodeContent.attr.icon.position = 'left';
@@ -760,8 +843,8 @@ describe('updateNodeContent', function () {
 				});
 			textBox.css('margin-top', '20px');
 			underTest.updateNodeContent(nodeContent);
-			checkNoStyle(underTest, ['background', 'padding', 'min-']);
-			checkNoStyle(textBox, 'margin-top');
+			expect(underTest).not.toHaveOwnStyle(['background', 'padding', 'min-']);
+			expect(textBox).not.toHaveOwnStyle('margin-top');
 
 		});
 	});
