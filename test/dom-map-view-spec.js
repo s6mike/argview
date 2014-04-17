@@ -1032,7 +1032,7 @@ describe('MAPJS.DOMRender', function () {
 			viewPort,
 			mapModel;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
@@ -1182,36 +1182,77 @@ describe('MAPJS.DOMRender', function () {
 					var underTest;
 					beforeEach(function () {
 						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 2});
+						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 3});
+						jQuery('#node_3').addClass('droppable');
 						underTest = stage.children().first();
 						underTest.trigger('mm:start-dragging');
+						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+
+						viewPort.scrollLeft(20);
+						viewPort.scrollTop(10);
+
 					});
 					it('assigns a dragging class when the node is being dragged', function () {
 						expect(underTest.hasClass('dragging')).toBeTruthy();
 					});
-					it('removes the dragging class when dragging is cancelled', function () {
-						underTest.trigger('mm:cancel-dragging');
-						expect(underTest.hasClass('dragging')).toBeFalsy();
+					describe('when dragging is cancelled', function () {
+						beforeEach(function () {
+							underTest.trigger('mm:cancel-dragging');
+						});
+						it('removes the dragging class', function () {
+							expect(underTest.hasClass('dragging')).toBeFalsy();
+						});
+						it('removes the dropppable class', function () {
+							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+						});
 					});
-					it('removes the dragging class when dragging is stopped', function () {
-						underTest.trigger('mm:stop-dragging');
-						expect(underTest.hasClass('dragging')).toBeFalsy();
+					describe('when dragging is cancelled', function () {
+						beforeEach(function () {
+							underTest.trigger('mm:cancel-dragging');
+						});
+						it('removes the dragging class when dragging is stopped', function () {
+							expect(underTest.hasClass('dragging')).toBeFalsy();
+						});
+						it('removes the droppable class when dragging is stopped', function () {
+							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+						});
+					});
+					it('clears the current droppable if drag event does not have a scrieen position', function () {
+						underTest.trigger('mm:drag');
+						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					});
+					it('when dragging works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition', function () {
+						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
+						expect(mapModel.getNodeIdAtPosition).toHaveBeenCalledWith(-160, -75);
+					});
+					it('when dragging over a node, sets draggable class on the node', function () {
+						mapModel.getNodeIdAtPosition.and.returnValue(2);
+
+						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
+						expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
+						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					});
+					it('when dragging and not over a node, removes the draggable class from all nodes', function () {
+						mapModel.getNodeIdAtPosition.and.returnValue();
+
+						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
+						expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
+						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					});
+					it('when dragging and  over itself, removes the draggable class from all nodes', function () {
+						mapModel.getNodeIdAtPosition.and.returnValue(1);
+
+						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
+						expect(jQuery('#node_1').hasClass('droppable')).toBeFalsy();
 					});
 					it('when dragging stops, works out the stage drop position from the page drop position and calls mapModel.dropNode with the stage drop position', function () {
 
-						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
-						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
-
-						viewPort.scrollLeft(20);
-						viewPort.scrollTop(10);
 						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {center: {pageX: 70, pageY: 50}}}));
 						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, false);
 					});
 					it('passes the shift key state when dropped', function () {
-						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
-						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
-
-						viewPort.scrollLeft(20);
-						viewPort.scrollTop(10);
 						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}}));
 						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, true);
 

@@ -876,6 +876,18 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				return layout;
 			};
 		}());
+
+	self.getNodeIdAtPosition = function (x, y) {
+		var isPointOverNode = function (node) { //move to mapModel candidate
+				/*jslint eqeq: true*/
+				return x >= node.x &&
+					y >= node.y &&
+					x <= node.x + node.width &&
+					y <= node.y + node.height;
+			},
+			node = _.find(currentLayout.nodes, isPointOverNode);
+		return node && node.id;
+	};
 	self.dropNode = function (nodeId, x, y, shiftKey) {
 		var rootNode = currentLayout.nodes[idea.id],
 			verticallyClosestNode = {

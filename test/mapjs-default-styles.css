@@ -13,6 +13,9 @@
 	color: #4F4F4F;
 	cursor: hand;
 }
+.mapjs-node.droppable {
+	border: 1px solid red;
+}
 .mapjs-add-link {
 	cursor: crosshair;
 }

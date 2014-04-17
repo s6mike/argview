@@ -1,4 +1,4 @@
-/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
+/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS, observable*/
 describe('MapModel', function () {
 	'use strict';
 	it('should be able to instantiate MapModel', function () {
@@ -1862,6 +1862,37 @@ describe('MapModel', function () {
 			expect(calls).toEqual(['nodeFocusRequested', 'nodeSelectionChanged', 'nodeSelectionChanged']);
 		});
 	});
+
+	describe('getNodeIdAtPosition', function () {
+		var underTest, layout;
+		beforeEach(function () {
+			layout = {
+				nodes: {
+					'1.1': { id: '1.1', x: 0, y: 100, width: 10, height: 10 },
+					2: { id: 2, x: -100, y: 100, width: 10, height: 10, attr: {style: {styleprop: 'oldValue'}}},
+					3: { id: 3, x: -100, y: -100, width: 10, height: 10 }
+				}
+			};
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			});
+			underTest.setIdea(observable({}));
+		});
+
+		describe(' calculates points',
+			[
+				['return false if no node at point', 0, 0, undefined],
+				['return nodeId if smack at centre', 5, 105, '1.1'],
+				['return nodeId if at top left', 0, 100, '1.1'],
+				['return nodeId if at bottom left', -100, -90, 3],
+				['return nodeId if at top right', -100, 110, 2],
+				['return nodeId if at bottom right', -90, 110, 2]
+			], function (x, y, expected) {
+				expect(underTest.getNodeIdAtPosition(x, y)).toEqual(expected);
+			});
+	});
+
+
 	describe('search', function () {
 		var anIdea, underTest;
 		beforeEach(function () {

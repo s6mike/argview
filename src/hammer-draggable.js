@@ -11,7 +11,7 @@ $.fn.simpleDraggableContainer = function () {
 						top: Math.round(parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY / scale),
 						left: Math.round(parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX / scale)
 					};
-				currentDragObject.css(newpos).trigger('mm:drag');
+				currentDragObject.css(newpos).trigger($.Event('mm:drag', {gesture: event.gesture}));
 				event.preventDefault();
 				if (event.gesture) {
 					event.gesture.preventDefault();

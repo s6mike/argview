@@ -722,7 +722,32 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				viewPort.animate(animation, {duration: 100, complete: result.resolve});
 			}
 			return result;
-		};
+		},
+		stagePositionForPointEvent = function (evt) {
+			var dropPosition = evt && evt.gesture && evt.gesture.center,
+				vpOffset = viewPort.offset(),
+				viewportDropCoordinates;
+			if (dropPosition) {
+				viewportDropCoordinates = {
+					x: dropPosition.pageX - vpOffset.left,
+					y: dropPosition.pageY -  vpOffset.top
+				};
+				return viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
+			}
+		},
+		clearCurrentDroppable = function () {
+			if (currentDroppable || currentDroppable === false) {
+				jQuery('.mapjs-node').removeClass('droppable');
+				currentDroppable = undefined;
+			}
+		},
+		showDroppable = function (nodeId) {
+			jQuery('#' + nodeKey(nodeId)).addClass('droppable');
+			currentDroppable = nodeId;
+		},
+		currentDroppable = false;
+
+		/*used for testing */
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var element = jQuery('<div>')
 			.attr({ 'tabindex': 0, 'id': nodeKey(node.id), 'data-mapjs-role': 'node' })
@@ -752,6 +777,24 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			.on('mm:start-dragging', function () {
 				element.addClass('dragging');
 			})
+			.on('mm:drag', function (evt) {
+				var dropCoords = stagePositionForPointEvent(evt),
+					nodeId;
+				if (!dropCoords) {
+					clearCurrentDroppable();
+					return;
+				}
+				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
+				if (!nodeId || nodeId === node.id) {
+					clearCurrentDroppable();
+				}
+				else if (nodeId !== currentDroppable) {
+					clearCurrentDroppable();
+					if (nodeId) {
+						showDroppable(nodeId);
+					}
+				}
+			})
 			.on('hold', function (evt) {
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				mapModel.clickNode(node.id, realEvent);
@@ -771,20 +814,16 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			})
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
-				var dropPosition = evt && evt.gesture && evt.gesture.center,
-					isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
-					vpOffset = viewPort.offset(),
-					viewportDropCoordinates, stageDropCoordinates = { };
-				if (dropPosition) {
-					viewportDropCoordinates = {
-						x: dropPosition.pageX - vpOffset.left,
-						y: dropPosition.pageY -  vpOffset.top
-					};
-					stageDropCoordinates = viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
+				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
+					stageDropCoordinates = stagePositionForPointEvent(evt);
+				clearCurrentDroppable();
+				if (!stageDropCoordinates) {
+					return false;
 				}
 				return mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, !!isShift);
 			})
 			.on('mm:cancel-dragging', function () {
+				clearCurrentDroppable();
 				element.removeClass('dragging');
 			});
 		element.css('min-width', element.css('width'));
