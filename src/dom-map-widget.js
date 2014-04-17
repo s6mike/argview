@@ -72,6 +72,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		}
 	});
 
+
+
 	return this.each(function () {
 		var element = $(this),
 			stage = $('<div>').css({
@@ -89,6 +91,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		}
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
+		} else {
+			element.on('tap', function (event) {
+				mapModel.dispatchEvent('contextMenuRequested', mapModel.getCurrentlySelectedIdeaId(), event.gesture.center.pageX, event.gesture.center.pageY);
+				event.preventDefault();
+				return false;
+			});
 		}
 		MAPJS.DOMRender.viewController(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
