@@ -111,7 +111,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		onIdeaChanged = function () {
 			revertSelectionForUndo = false;
 			revertActivatedForUndo = false;
-			updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
+			self.rebuildRequired();
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -135,6 +135,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	self.analytic = analytic;
 	self.getCurrentlySelectedIdeaId = getCurrentlySelectedIdeaId;
+	self.rebuildRequired = function () {
+		updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
+	};
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
