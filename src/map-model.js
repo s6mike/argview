@@ -924,7 +924,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		} else {
 			idea.startBatch();
 			if (currentLayout.nodes[nodeId].level === 2) {
-				tryFlip(rootNode, nodeBeingDragged, x);
+				result = tryFlip(rootNode, nodeBeingDragged, x);
 			}
 			_.each(idea.sameSideSiblingIds(nodeId), function (id) {
 				var node = currentLayout.nodes[id];
@@ -932,7 +932,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					verticallyClosestNode = node;
 				}
 			});
-			result = idea.positionBefore(nodeId, verticallyClosestNode.id);
+			result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
 			if (shiftKey && validReposition()) {
 				analytic('nodeManuallyPositioned');
 				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
@@ -940,7 +940,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					nodeId,
 					'position',
 					[Math.abs(x - parentNode.x), y - parentNode.y, maxSequence + 1]
-				);
+				) || result;
 			}
 			idea.endBatch();
 
