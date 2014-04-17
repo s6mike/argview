@@ -115,6 +115,11 @@
 	stroke-width: 1.5px;
 	fill: none;
 }
+.mapjs-link-hit {
+	stroke: transparent;
+	stroke-width: 15;
+	cursor: crosshair;
+}
 .mapjs-arrow {
 }
 

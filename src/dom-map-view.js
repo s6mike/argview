@@ -240,13 +240,16 @@ jQuery.fn.updateLink = function () {
 			},
 			conn, position,
 			pathElement = element.find('path.mapjs-link'),
+			hitElement = element.find('path.mapjs-link-hit'),
 			arrowElement = element.find('path.mapjs-arrow'),
 			n = Math.tan(Math.PI / 9),
 			dashes = {
-				dashed: '8, 8'
+				dashed: '8, 8',
+				solid: ''
 			},
 			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color'),
-			fromBox, toBox, changeCheck;
+			fromBox, toBox, changeCheck,
+			d;
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
@@ -274,11 +277,20 @@ jQuery.fn.updateLink = function () {
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
 		}
+		d = 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) +
+				 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top);
 		pathElement.attr({
-			'd': 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) +
-				 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
+			'd': d,
 			'stroke-dasharray': dashes[attrs.lineStyle]
 		}).css('stroke', attrs.color);
+
+		if (hitElement.length === 0) {
+			hitElement = MAPJS.createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
+		}
+		hitElement.attr({
+			'd': d
+		});
+
 		if (attrs.arrow) {
 			if (arrowElement.length === 0) {
 				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
@@ -886,6 +898,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			})
 			.data(attr)
 			.appendTo(stageElement).queueFadeIn(nodeAnimOptions).updateLink();
+		link.find('.mapjs-link-hit').on('tap', function (event) {
+			mapModel.selectLink('mouse', l, { x: event.gesture.center.pageX, y: event.gesture.center.pageY });
+			event.stopPropagation();
+			event.gesture.stopPropagation();
+		});
 		jQuery('#' + nodeKey(l.ideaIdFrom)).add(jQuery('#' + nodeKey(l.ideaIdTo)))
 			.on('mapjs:move mm:drag', function () { link.updateLink(); })
 			.on('mapjs:animatemove', function () { linksForAnimation = linksForAnimation.add(link); });
@@ -916,6 +933,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('mapViewResetRequested', function () {
 		stageElement.data('scale', 1).updateStage();
 		centerViewOn(0, 0);
+	});
+	mapModel.addEventListener('layoutChangeStarting', function () {
+		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
 		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();

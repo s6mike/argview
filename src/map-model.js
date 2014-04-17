@@ -28,6 +28,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		isAddLinkMode,
 		updateCurrentLayout = function (newLayout) {
 			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink, newActive;
+			self.dispatchEvent('layoutChangeStarting');
 			for (nodeId in currentLayout.connectors) {
 				newConnector = newLayout.connectors[nodeId];
 				oldConnector = currentLayout.connectors[nodeId];
