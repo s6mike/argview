@@ -519,9 +519,9 @@ describe('updateLink', function () {
 	it('draws a straight between the borders of two nodes', function () {
 		underTest.updateLink();
 		var path = underTest.find('path');
-		expect(path.length).toBe(1);
-		expect(path.attr('class')).toEqual('mapjs-link');
-		expect(path.attr('d')).toEqual('M100,20L136,120');
+		expect(path.length).toBe(2);
+		expect(path.filter('.mapjs-link').attr('d')).toEqual('M100,20L136,120');
+		expect(path.filter('.mapjs-link-hit').attr('d')).toEqual('M100,20L136,120');
 	});
 	it('positions the link to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateLink();
