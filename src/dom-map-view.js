@@ -597,8 +597,6 @@ MAPJS.DOMRender = {
 	}
 };
 
-
-
 MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	'use strict';
 	var viewPort = stageElement.parent(),
@@ -931,7 +929,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 		centerViewOn(nodeCenterX, nodeCenterY, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
-		stageElement.data('scale', 1).updateStage();
+		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
+		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
+		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
 		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeStarting', function () {
