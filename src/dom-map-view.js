@@ -830,12 +830,18 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
 				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
-					stageDropCoordinates = stagePositionForPointEvent(evt);
+					stageDropCoordinates = stagePositionForPointEvent(evt),
+					dropResult
+					;
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
 					return false;
 				}
-				return mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, !!isShift);
+				dropResult = mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, !!isShift);
+				if (dropResult) {
+					ensureNodeVisible(jQuery('#' + nodeKey(node.id)));
+				}
+				return dropResult;
 			})
 			.on('mm:cancel-dragging', function () {
 				clearCurrentDroppable();
