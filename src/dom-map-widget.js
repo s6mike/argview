@@ -92,9 +92,10 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
 		} else {
-			element.on('tap', function (event) {
+			element.on('doubletap', function (event) {
 				mapModel.dispatchEvent('contextMenuRequested', mapModel.getCurrentlySelectedIdeaId(), event.gesture.center.pageX, event.gesture.center.pageY);
 				event.preventDefault();
+				event.gesture.preventDefault();
 				return false;
 			});
 		}
