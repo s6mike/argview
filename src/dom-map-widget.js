@@ -84,7 +84,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				'width': element.innerWidth(),
 				'height': element.innerHeight(),
 				'scale': 1
-			}).updateStage();
+			}).updateStage(),
+			previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {
 			element.simpleDraggableContainer();
@@ -98,11 +99,24 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				event.gesture.preventDefault();
 				return false;
 			}).on('pinch', function (event) {
+				if (!event || !event.gesture || !event.gesture.scale) {
+					return;
+				}
 				var scale = event.gesture.scale;
+				if (previousPinchScale) {
+					scale = scale / previousPinchScale;
+				}
+				if (Math.abs(scale - 1) < 0.05) {
+					return;
+				}
+				previousPinchScale = event.gesture.scale;
+
 				mapModel.scale('touch', scale, {
 					x: event.gesture.center.pageX - stage.data('offsetX'),
 					y: event.gesture.center.pageY - stage.data('offsetY')
 				});
+			}).on('gestureend', function () {
+				previousPinchScale = false;
 			});
 
 		}
