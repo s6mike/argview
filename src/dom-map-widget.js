@@ -97,7 +97,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 				event.preventDefault();
 				event.gesture.preventDefault();
 				return false;
+			}).on('pinch', function (event) {
+				var scale = event.gesture.scale;
+				mapModel.scale('touch', scale, {
+					x: event.gesture.center.pageX - stage.data('offsetX'),
+					y: event.gesture.center.pageY - stage.data('offsetY')
+				});
 			});
+
 		}
 		MAPJS.DOMRender.viewController(mapModel, stage);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
