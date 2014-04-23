@@ -1467,10 +1467,10 @@ describe('MAPJS.DOMRender', function () {
 			});
 			describe('expands the stage if needed - using a margin', function () {
 				beforeEach(function () {
-					MAPJS.DOMRender.stageMargin = 10;
+					MAPJS.DOMRender.stageMargin = {top: 10, left: 11, bottom: 12, right: 13};
 				});
 				afterEach(function () {
-					MAPJS.DOMRender.stageMargin = 0;
+					MAPJS.DOMRender.stageMargin = false;
 				});
 				it('grows the stage from the top if y would be negative', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
@@ -1480,19 +1480,19 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('grows the stage from the left if x would be negative', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: -230, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
-					expect(stage.data('offsetX')).toBe(240);
-					expect(stage.data('width')).toBe(340);
+					expect(stage.data('offsetX')).toBe(241);
+					expect(stage.data('width')).toBe(341);
 					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min width without touching the offset if the total width would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 90, y: 20, width: 20, height: 10, title: 'zeka', id: 1});
-					expect(stage.data('width')).toBe(320);
+					expect(stage.data('width')).toBe(323);
 					expect(stage.data('offsetX')).toBe(200);
 					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});
 				it('expands the stage min height without touching the offset if the total height would be over the current boundary', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 20, y: 45, width: 20, height: 10, title: 'zeka', id: 1});
-					expect(stage.data('height')).toBe(165);
+					expect(stage.data('height')).toBe(167);
 					expect(stage.data('offsetY')).toBe(100);
 					expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 				});

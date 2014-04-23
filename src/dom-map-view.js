@@ -675,13 +675,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 				stageElement.updateStage();
 			}
 		},
+
 		ensureSpaceForNode = function () {
 			return jQuery(this).each(function () {
 				var node = jQuery(this).data(),
-					margin = MAPJS.DOMRender.stageMargin || 0;
+					margin = MAPJS.DOMRender.stageMargin || {top: 0, left: 0, bottom: 0, right: 0};
 				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
-				ensureSpaceForPoint(node.x - margin, node.y - margin);
-				ensureSpaceForPoint(node.x + node.width + margin, node.y + node.height + margin);
+				ensureSpaceForPoint(node.x - margin.left, node.y - margin.top);
+				ensureSpaceForPoint(node.x + node.width + margin.right, node.y + node.height + margin.bottom);
 			});
 		},
 		centerViewOn = function (x, y, animate)/*in the stage coordinate system*/ {
@@ -718,16 +719,16 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
 				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
 				animation = {},
-				margin = 10;
-			if (nodeTopLeft.x < 0) {
-				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin;
-			} else if (nodeBottomRight.x > viewPort.innerWidth()) {
-				animation.scrollLeft = viewPort.scrollLeft() + nodeBottomRight.x - viewPort.innerWidth() + margin;
+				margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
+			if ((nodeTopLeft.x - margin.left) < 0) {
+				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin.left;
+			} else if ((nodeBottomRight.x + margin.right) > viewPort.innerWidth()) {
+				animation.scrollLeft = viewPort.scrollLeft() + nodeBottomRight.x - viewPort.innerWidth() + margin.right;
 			}
-			if (nodeTopLeft.y < 0) {
-				animation.scrollTop = viewPort.scrollTop() + nodeTopLeft.y - margin;
-			} else if (nodeBottomRight.y > viewPort.innerHeight()) {
-				animation.scrollTop = viewPort.scrollTop() + nodeBottomRight.y - viewPort.innerHeight() + margin;
+			if ((nodeTopLeft.y - margin.top) < 0) {
+				animation.scrollTop = viewPort.scrollTop() + nodeTopLeft.y - margin.top;
+			} else if ((nodeBottomRight.y + margin.bottom) > viewPort.innerHeight()) {
+				animation.scrollTop = viewPort.scrollTop() + nodeBottomRight.y - viewPort.innerHeight() + margin.bottom;
 			}
 			if (_.isEmpty(animation)) {
 				result.resolve();
