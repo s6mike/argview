@@ -597,7 +597,7 @@ MAPJS.DOMRender = {
 	}
 };
 
-MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
+MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		connectorsForAnimation = jQuery(),
@@ -817,17 +817,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 					}
 				}
 			})
-			.on('hold', function (evt) {
-				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
-				mapModel.clickNode(node.id, realEvent);
-				mapModel.dispatchEvent('contextMenuRequested', node.id, evt.gesture.center.pageX, evt.gesture.center.pageY);
-				evt.preventDefault();
-				if (evt.gesture) {
-					evt.gesture.preventDefault();
-					evt.gesture.stopPropagation();
-				}
-				return false;
-			})
 			.on('contextmenu', function (event) {
 				// ugly ugly ugly!
 				mapModel.dispatchEvent('contextMenuRequested', node.id, event.pageX, event.pageY);
@@ -854,6 +843,19 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 				clearCurrentDroppable();
 				element.removeClass('dragging');
 			});
+		if (touchEnabled) {
+			element.on('hold', function (evt) {
+				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
+				mapModel.clickNode(node.id, realEvent);
+				mapModel.dispatchEvent('contextMenuRequested', node.id, evt.gesture.center.pageX, evt.gesture.center.pageY);
+				evt.preventDefault();
+				if (evt.gesture) {
+					evt.gesture.preventDefault();
+					evt.gesture.stopPropagation();
+				}
+				return false;
+			});
+		}
 		element.css('min-width', element.css('width'));
 		MAPJS.DOMRender.addNodeCacheMark(element, node);
 		if (mapModel.isEditingEnabled() && node.level > 1) {

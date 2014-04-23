@@ -1178,6 +1178,44 @@ describe('MAPJS.DOMRender', function () {
 					expect(stage.data('offsetY')).toBe(100);
 					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
 				});
+				describe('holding node action', function () {
+					var underTest, holdEvent;
+					beforeEach(function () {
+						holdEvent = jQuery.Event('hold',
+							{
+								gesture: {
+									center: {pageX: 70, pageY: 50},
+									preventDefault: jasmine.createSpy(),
+									stopPropagation: jasmine.createSpy(),
+									srcEvent: 'the real event'
+								}
+							});
+					});
+					it('is not applicable to non touch devices', function () {
+						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+						underTest = stage.children().first();
+						spyOn(mapModel, 'dispatchEvent').and.callThrough();
+
+						underTest.trigger(holdEvent);
+
+						expect(mapModel.dispatchEvent).not.toHaveBeenCalled();
+						expect(mapModel.clickNode).not.toHaveBeenCalled();
+					});
+					it('on touch devices sends clickNode message to map model and requests the context menu to be shown', function () {
+						stage.remove();
+						stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
+						MAPJS.DOMRender.viewController(mapModel, stage, true);
+						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+						underTest = stage.children().first();
+						spyOn(mapModel, 'dispatchEvent').and.callThrough();
+
+						underTest.trigger(holdEvent);
+
+						expect(mapModel.clickNode).toHaveBeenCalledWith(1, 'the real event');
+						expect(mapModel.dispatchEvent).toHaveBeenCalledWith('contextMenuRequested', 1, 70, 50);
+					});
+
+				});
 				describe('drag and drop features', function () {
 					var underTest;
 					beforeEach(function () {

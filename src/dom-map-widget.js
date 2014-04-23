@@ -120,7 +120,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 			});
 
 		}
-		MAPJS.DOMRender.viewController(mapModel, stage);
+		MAPJS.DOMRender.viewController(mapModel, stage, touchEnabled);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
 				if (actOnKeys) {
