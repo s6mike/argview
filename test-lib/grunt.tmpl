@@ -7,7 +7,6 @@
   <% css.forEach(function(style){ %>
   <link rel="stylesheet" type="text/css" href="<%= style %>">
   <% }) %>
-  <script src="test-lib/bind.js"></script>
   <% with (scripts) { %>
   <% [].concat(polyfills, jasmine, boot, vendor, helpers, src, specs, reporters).forEach(function(script){ %>
   <script type="text/javascript" src="<%= script %>"></script>

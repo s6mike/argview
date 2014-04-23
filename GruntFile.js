@@ -49,6 +49,8 @@ module.exports = function (grunt) {
 				options: {
 					template: 'test-lib/grunt.tmpl',
 					outfile: 'SpecRunner.html',
+					summary: true,
+					display: 'short',
 					keepRunner: true,
 					specs: [
 						'test/*-spec.js',

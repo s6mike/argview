@@ -863,8 +863,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement) {
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
 		var node = jQuery('#' + nodeKey(ideaId));
 		if (isSelected) {
+			node.addClass('selected');
 			ensureNodeVisible(node).then(function () {
-				node.addClass('selected').focus();
+				node.focus();
 			});
 		} else {
 			node.removeClass('selected');

@@ -1376,17 +1376,18 @@ describe('MAPJS.DOMRender', function () {
 							underTest.data('y', nodeY);
 							mapModel.dispatchEvent('nodeSelectionChanged', '11.12', true);
 						});
-						it('does not immediately adds the selected class or focus', function () {
-							expect(underTest.hasClass('selected')).toBeFalsy();
+						it('immediately adds the selected class', function () {
+							expect(underTest.hasClass('selected')).toBeTruthy();
+						});
+						it('does not immediately focus', function () {
 							expect(jQuery.fn.focus).not.toHaveBeenCalled();
 						});
 						it('animates scroll movements to show selected node', function () {
 							expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(viewPort);
 							expect(jQuery.fn.animate.calls.first().args[0]).toEqual(expectedAnimation);
 						});
-						it('sets the selected class and asks for focus once the animation completes', function () {
+						it('asks for focus once the animation completes', function () {
 							jQuery.fn.animate.calls.first().args[1].complete();
-							expect(underTest.hasClass('selected')).toBeTruthy();
 							expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
 						});
 					});
