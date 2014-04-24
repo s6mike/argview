@@ -889,7 +889,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			node = _.find(currentLayout.nodes, isPointOverNode);
 		return node && node.id;
 	};
-	self.dropNode = function (nodeId, x, y, shiftKey) {
+	self.autoPosition = function (nodeId) {
+		return idea.updateAttr(nodeId, 'position', false);
+	};
+	self.positionNodeAt = function (nodeId, x, y, manualPosition) {
 		var rootNode = currentLayout.nodes[idea.id],
 			verticallyClosestNode = {
 				id: null,
@@ -898,17 +901,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			parentIdea = idea.findParent(nodeId),
 			parentNode = currentLayout.nodes[parentIdea.id],
 			nodeBeingDragged = currentLayout.nodes[nodeId],
-			isPointOverNode = function (node) { //move to mapModel candidate
-				/*jslint eqeq: true*/
-				return x >= node.x &&
-					y >= node.y &&
-					x <= node.x + node.width &&
-					y <= node.y + node.height;
-			},
-			canDropOnNode = function (node) {
-				/*jslint eqeq: true*/
-				return nodeId != node.id && isPointOverNode(node);
-			},
 			tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
 				var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
 					flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
@@ -922,43 +914,54 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				return nodeBeingDragged.level === 2 ||
 					((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
 			},
-			potentialDropTarget = _.find(currentLayout.nodes, canDropOnNode),
 			result = false,
-			clone;
-		if (potentialDropTarget) {
-			if (shiftKey) {
-				clone = idea.clone(nodeId);
-				if (clone) {
-					idea.paste(potentialDropTarget.id, clone);
-				}
-				return false;
-			}
-			return idea.changeParent(nodeId, potentialDropTarget.id);
-		} else {
-			idea.startBatch();
-			if (currentLayout.nodes[nodeId].level === 2) {
-				result = tryFlip(rootNode, nodeBeingDragged, x);
-			}
-			_.each(idea.sameSideSiblingIds(nodeId), function (id) {
-				var node = currentLayout.nodes[id];
-				if (y < node.y && node.y < verticallyClosestNode.y) {
-					verticallyClosestNode = node;
-				}
-			});
-			result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
-			if (shiftKey && validReposition()) {
-				analytic('nodeManuallyPositioned');
-				maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
-				result = idea.updateAttr(
-					nodeId,
-					'position',
-					[Math.abs(x - parentNode.x), y - parentNode.y, maxSequence + 1]
-				) || result;
-			}
-			idea.endBatch();
-
+			xOffset;
+		idea.startBatch();
+		if (currentLayout.nodes[nodeId].level === 2) {
+			result = tryFlip(rootNode, nodeBeingDragged, x);
 		}
+		_.each(idea.sameSideSiblingIds(nodeId), function (id) {
+			var node = currentLayout.nodes[id];
+			if (y < node.y && node.y < verticallyClosestNode.y) {
+				verticallyClosestNode = node;
+			}
+		});
+		result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
+		if (manualPosition && validReposition()) {
+			if (x < parentNode.x) {
+				xOffset = parentNode.x - x - nodeBeingDragged.width + parentNode.width; /* negative nodes will get flipped so distance is not correct out of the box */
+			} else {
+				xOffset = x - parentNode.x;
+			}
+			analytic('nodeManuallyPositioned');
+			maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
+			result = idea.updateAttr(
+				nodeId,
+				'position',
+				[xOffset, y - parentNode.y, maxSequence + 1]
+			) || result;
+		}
+		idea.endBatch();
 		return result;
+	};
+	self.dropNode = function (nodeId, dropTargetId, shiftKey) {
+		var clone,
+			parentIdea = idea.findParent(nodeId);
+		if (dropTargetId === nodeId) {
+			return false;
+		}
+		if (shiftKey) {
+			clone = idea.clone(nodeId);
+			if (clone) {
+				idea.paste(dropTargetId, clone);
+			}
+			return false;
+		}
+		if (dropTargetId === parentIdea.id) {
+			return self.autoPosition(nodeId);
+		} else {
+			return idea.changeParent(nodeId, dropTargetId);
+		}
 	};
 	self.setLayoutCalculator = function (newCalculator) {
 		layoutCalculator = newCalculator;

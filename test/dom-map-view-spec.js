@@ -1032,7 +1032,7 @@ describe('MAPJS.DOMRender', function () {
 			viewPort,
 			mapModel;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			MAPJS.DOMRender.viewController(mapModel, stage);
@@ -1178,125 +1178,192 @@ describe('MAPJS.DOMRender', function () {
 					expect(stage.data('offsetY')).toBe(100);
 					expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
 				});
-				describe('holding node action', function () {
-					var underTest, holdEvent;
-					beforeEach(function () {
-						holdEvent = jQuery.Event('hold',
-							{
-								gesture: {
-									center: {pageX: 70, pageY: 50},
-									preventDefault: jasmine.createSpy(),
-									stopPropagation: jasmine.createSpy(),
-									srcEvent: 'the real event'
-								}
-							});
-					});
-					it('is not applicable to non touch devices', function () {
-						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-						underTest = stage.children().first();
-						spyOn(mapModel, 'dispatchEvent').and.callThrough();
-
-						underTest.trigger(holdEvent);
-
-						expect(mapModel.dispatchEvent).not.toHaveBeenCalled();
-						expect(mapModel.clickNode).not.toHaveBeenCalled();
-					});
-					it('on touch devices sends clickNode message to map model and requests the context menu to be shown', function () {
-						stage.remove();
-						stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
-						MAPJS.DOMRender.viewController(mapModel, stage, true);
-						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-						underTest = stage.children().first();
-						spyOn(mapModel, 'dispatchEvent').and.callThrough();
-
-						underTest.trigger(holdEvent);
-
-						expect(mapModel.clickNode).toHaveBeenCalledWith(1, 'the real event');
-						expect(mapModel.dispatchEvent).toHaveBeenCalledWith('contextMenuRequested', 1, 70, 50);
-					});
-
+			});
+			describe('holding node action', function () {
+				var underTest, holdEvent;
+				beforeEach(function () {
+					holdEvent = jQuery.Event('hold',
+						{
+							gesture: {
+								center: {pageX: 70, pageY: 50},
+								preventDefault: jasmine.createSpy(),
+								stopPropagation: jasmine.createSpy(),
+								srcEvent: 'the real event'
+							}
+						});
 				});
-				describe('drag and drop features', function () {
-					var underTest;
+				it('is not applicable to non touch devices', function () {
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+					underTest = stage.children().first();
+					spyOn(mapModel, 'dispatchEvent').and.callThrough();
+
+					underTest.trigger(holdEvent);
+
+					expect(mapModel.dispatchEvent).not.toHaveBeenCalled();
+					expect(mapModel.clickNode).not.toHaveBeenCalled();
+				});
+				it('on touch devices sends clickNode message to map model and requests the context menu to be shown', function () {
+					stage.remove();
+					stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
+					MAPJS.DOMRender.viewController(mapModel, stage, true);
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+					underTest = stage.children().first();
+					spyOn(mapModel, 'dispatchEvent').and.callThrough();
+
+					underTest.trigger(holdEvent);
+
+					expect(mapModel.clickNode).toHaveBeenCalledWith(1, 'the real event');
+					expect(mapModel.dispatchEvent).toHaveBeenCalledWith('contextMenuRequested', 1, 70, 50);
+				});
+
+			});
+			describe('drag and drop features', function () {
+				var underTest, noShift, withShift;
+				beforeEach(function () {
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 2});
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 3});
+					jQuery('#node_3').addClass('droppable');
+					underTest = stage.children().first();
+					underTest.trigger('mm:start-dragging');
+					viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+					stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+
+					viewPort.scrollLeft(20);
+					viewPort.scrollTop(10);
+
+					noShift = {gesture: {center: {pageX: 70, pageY: 50}}};
+					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}};
+				});
+				it('assigns a dragging class when the node is being dragged', function () {
+					expect(underTest.hasClass('dragging')).toBeTruthy();
+				});
+				describe('when dragging is cancelled', function () {
 					beforeEach(function () {
-						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 2});
-						mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 3});
-						jQuery('#node_3').addClass('droppable');
-						underTest = stage.children().first();
-						underTest.trigger('mm:start-dragging');
-						viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
-						stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
-
-						viewPort.scrollLeft(20);
-						viewPort.scrollTop(10);
-
+						underTest.trigger('mm:cancel-dragging');
 					});
-					it('assigns a dragging class when the node is being dragged', function () {
-						expect(underTest.hasClass('dragging')).toBeTruthy();
+					it('removes the dragging class', function () {
+						expect(underTest.hasClass('dragging')).toBeFalsy();
 					});
-					describe('when dragging is cancelled', function () {
-						beforeEach(function () {
-							underTest.trigger('mm:cancel-dragging');
-						});
-						it('removes the dragging class', function () {
-							expect(underTest.hasClass('dragging')).toBeFalsy();
-						});
-						it('removes the dropppable class', function () {
-							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
-						});
-					});
-					describe('when dragging is cancelled', function () {
-						beforeEach(function () {
-							underTest.trigger('mm:cancel-dragging');
-						});
-						it('removes the dragging class when dragging is stopped', function () {
-							expect(underTest.hasClass('dragging')).toBeFalsy();
-						});
-						it('removes the droppable class when dragging is stopped', function () {
-							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
-						});
-					});
-					it('clears the current droppable if drag event does not have a scrieen position', function () {
-						underTest.trigger('mm:drag');
+					it('removes the dropppable class', function () {
 						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 					});
-					it('when dragging works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition', function () {
-						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
+				});
+				describe('when dragging is cancelled', function () {
+					beforeEach(function () {
+						underTest.trigger('mm:cancel-dragging');
+					});
+					it('removes the dragging class when dragging is stopped', function () {
+						expect(underTest.hasClass('dragging')).toBeFalsy();
+					});
+					it('removes the droppable class when dragging is stopped', function () {
+						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					});
+				});
+				it('clears the current droppable if drag event does not have a scrieen position', function () {
+					underTest.trigger('mm:drag');
+					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+				});
+				it('when dragging works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition', function () {
+					underTest.trigger(jQuery.Event('mm:drag', noShift));
+					expect(mapModel.getNodeIdAtPosition).toHaveBeenCalledWith(-160, -75);
+				});
+				it('when dragging over a node, sets draggable class on the node', function () {
+					mapModel.getNodeIdAtPosition.and.returnValue(2);
+
+					underTest.trigger(jQuery.Event('mm:drag', noShift));
+					expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
+					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+				});
+				it('when dragging and not over a node, removes the draggable class from all nodes', function () {
+					mapModel.getNodeIdAtPosition.and.returnValue();
+
+					underTest.trigger(jQuery.Event('mm:drag', noShift));
+					expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
+					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+				});
+				it('when dragging and  over itself, removes the draggable class from all nodes', function () {
+					mapModel.getNodeIdAtPosition.and.returnValue(1);
+
+					underTest.trigger(jQuery.Event('mm:drag', noShift));
+					expect(jQuery('#node_1').hasClass('droppable')).toBeFalsy();
+				});
+				describe('when dragging stops', function () {
+
+					it('calls getNodeIdAtPosition to work out if it got dropped on a node', function () {
+						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 						expect(mapModel.getNodeIdAtPosition).toHaveBeenCalledWith(-160, -75);
 					});
-					it('when dragging over a node, sets draggable class on the node', function () {
-						mapModel.getNodeIdAtPosition.and.returnValue(2);
-
-						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
-						expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
-						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					describe('when dropped on a node', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(2);
+						});
+						it('calls dropNode and passes the dropped node ID', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+							expect(mapModel.dropNode).toHaveBeenCalledWith(1, 2, false);
+						});
+						it('passes shiftKey status', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
+							expect(mapModel.dropNode).toHaveBeenCalledWith(1, 2, true);
+						});
+						it('does not set event result to false by default', function () {
+							var e = jQuery.Event('mm:stop-dragging', withShift);
+							underTest.trigger(e);
+							expect(e.result).toBeUndefined();
+						});
+						it('sets the result to false if dropNode returns false', function () {
+							mapModel.dropNode.and.returnValue(false);
+							var e = jQuery.Event('mm:stop-dragging', withShift);
+							underTest.trigger(e);
+							expect(e.result === false).toBeTruthy();
+						});
 					});
-					it('when dragging and not over a node, removes the draggable class from all nodes', function () {
-						mapModel.getNodeIdAtPosition.and.returnValue();
-
-						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
-						expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
-						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					describe('when dropped on background', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(false);
+							underTest.css({position: 'absolute', top: '123px', left: '112px'});
+						});
+						it('calls positionNode and passed the current (DOM) top and left position', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, false);
+						});
+						it('triggers manual positioning if shift is pressed', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, true);
+						});
+						it('does not set event result to false by default', function () {
+							var e = jQuery.Event('mm:stop-dragging', withShift);
+							underTest.trigger(e);
+							expect(e.result).toBeUndefined();
+						});
+						it('sets the result to false if dropNode returns false', function () {
+							mapModel.positionNodeAt.and.returnValue(false);
+							var e = jQuery.Event('mm:stop-dragging', withShift);
+							underTest.trigger(e);
+							expect(e.result === false).toBeTruthy();
+						});
 					});
-					it('when dragging and  over itself, removes the draggable class from all nodes', function () {
-						mapModel.getNodeIdAtPosition.and.returnValue(1);
-
-						underTest.trigger(jQuery.Event('mm:drag', {gesture: {center: {pageX: 70, pageY: 50}}}));
-						expect(jQuery('#node_1').hasClass('droppable')).toBeFalsy();
-					});
-					it('when dragging stops, works out the stage drop position from the page drop position and calls mapModel.dropNode with the stage drop position', function () {
-
-						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {center: {pageX: 70, pageY: 50}}}));
-						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, false);
-					});
-					it('passes the shift key state when dropped', function () {
-						underTest.trigger(jQuery.Event('mm:stop-dragging', {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}}));
-						expect(mapModel.dropNode).toHaveBeenCalledWith(1, -160, -75, true);
-
+					describe('when dropped on itself', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(1);
+							underTest.css({position: 'absolute', top: '123px', left: '112px'});
+						});
+						it('does not call positionNode and returns false in the event unless shift is pressed', function () {
+							var e = jQuery.Event('mm:stop-dragging', noShift);
+							underTest.trigger(e);
+							expect(e.result === false).toBeTruthy();
+							expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
+							expect(mapModel.dropNode).not.toHaveBeenCalled();
+						});
+						it('triggers manual positioning if shift is pressed', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, true);
+							expect(mapModel.dropNode).not.toHaveBeenCalled();
+						});
 					});
 				});
 			});
+
 		});
 		describe('activatedNodesChanged', function () {
 			var nodes;

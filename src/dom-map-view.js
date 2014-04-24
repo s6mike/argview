@@ -828,13 +828,23 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 				element.removeClass('dragging');
 				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					stageDropCoordinates = stagePositionForPointEvent(evt),
-					dropResult
-					;
+					nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
+					dropResult;
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
 					return false;
 				}
-				dropResult = mapModel.dropNode(node.id, stageDropCoordinates.x, stageDropCoordinates.y, !!isShift);
+				if (nodeAtDrop === node.id) {
+					if (!isShift) {
+						return false;
+					}
+					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
+				}
+				else if (nodeAtDrop) {
+					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
+				} else {
+					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
+				}
 				if (dropResult) {
 					ensureNodeVisible(jQuery('#' + nodeKey(node.id)));
 				}
