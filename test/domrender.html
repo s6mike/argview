@@ -98,7 +98,7 @@
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
 			//	mapModel.setEditingEnabled(false);
-				container.domMapWidget(console, mapModel);
+				container.domMapWidget(console, mapModel, false, imageInsertController);
 				jQuery('body').mapToolbarWidget(mapModel);
 				jQuery('body').attachmentEditorWidget(mapModel);
 				$("[data-mm-action='export-image']").click(function () {

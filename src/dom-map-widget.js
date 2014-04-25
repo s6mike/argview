@@ -23,7 +23,7 @@ jQuery.fn.scrollWhenDragging = function () {
 		});
 	});
 };
-$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
+$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController) {
 	'use strict';
 	var hotkeyEventHandlers = {
 			'return': 'addSiblingIdea',
@@ -92,6 +92,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 		}
 		if (!touchEnabled) {
 			element.scrollWhenDragging(); //no need to do this for touch, this is native
+			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
 				mapModel.dispatchEvent('contextMenuRequested', mapModel.getCurrentlySelectedIdeaId(), event.gesture.center.pageX, event.gesture.center.pageY);
@@ -120,7 +121,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled) {
 			});
 
 		}
-		MAPJS.DOMRender.viewController(mapModel, stage, touchEnabled);
+		MAPJS.DOMRender.viewController(mapModel, stage, touchEnabled, imageInsertController);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
 				if (actOnKeys) {

@@ -973,5 +973,27 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.setLayoutCalculator = function (newCalculator) {
 		layoutCalculator = newCalculator;
 	};
-
+	self.dropImage =  function (dataUrl, imgWidth, imgHeight, x, y) {
+		var nodeId,
+			dropOn = function (ideaId, position) {
+				var scaleX = Math.min(imgWidth, 300) / imgWidth,
+					scaleY = Math.min(imgHeight, 300) / imgHeight,
+					scale = Math.min(scaleX, scaleY),
+					existing = idea.getAttrById(ideaId, 'icon');
+				self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId);
+			},
+			addNew = function () {
+				var newId;
+				idea.startBatch();
+				newId = idea.addSubIdea(currentlySelectedIdeaId);
+				dropOn(newId, 'center');
+				idea.endBatch();
+				self.selectNode(newId);
+			};
+		nodeId = self.getNodeIdAtPosition(x, y);
+		if (nodeId) {
+			return dropOn(nodeId, 'left');
+		}
+		addNew();
+	};
 };

@@ -649,7 +649,7 @@ MAPJS.DOMRender = {
 
 })();
 
-MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled) {
+MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		connectorsForAnimation = jQuery(),
@@ -778,7 +778,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 			return result;
 		},
 		stagePositionForPointEvent = function (evt) {
-			var dropPosition = evt && evt.gesture && evt.gesture.center,
+			var dropPosition = (evt && evt.gesture && evt.gesture.center) || evt,
 				vpOffset = viewPort.offset(),
 				viewportDropCoordinates;
 			if (dropPosition) {
@@ -800,8 +800,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 			currentDroppable = nodeId;
 		},
 		currentDroppable = false;
-
-		/*used for testing */
+	if (imageInsertController) {
+		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
+			var point = stagePositionForPointEvent(evt);
+			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point.x, point.y);
+		});
+	}
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)

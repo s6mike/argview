@@ -1,85 +1,4 @@
 /*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable, window*/
-
-beforeEach(function () {
-	'use strict';
-	jasmine.addMatchers({
-		toHaveBeenCalledOnJQueryObject: function () {
-			return {
-				compare: function (actual, expected) {
-					return {
-						pass: actual.calls && actual.calls.mostRecent() && actual.calls.mostRecent().object[0] === expected[0]
-					};
-				}
-			};
-		},
-		toHaveOwnStyle: function () {
-			var checkStyle = function (element, style) {
-				if (element.attr('style')) {
-					if (_.isArray(style)) {
-						return _.find(style, function (aStyle) { return checkStyle(element, aStyle); });
-					} else {
-						return element.attr('style').indexOf(style) >= 0;
-					}
-				}
-				return false;
-			};
-			return {
-				compare: function (element, styleName) {
-					var result = {
-						pass: checkStyle(element, styleName)
-					};
-					if (result.pass) {
-						result.message = element.attr('style') + ' has own style ' + styleName;
-					} else {
-						result.message = element[0] + ' does not have own style ' + styleName + ' (' + element.attr('style') + ')';
-					}
-					return result;
-				}
-			};
-		}
-	});
-});
-describe('toHaveBeenCalledOnJQueryObject matcher', function () {
-	'use strict';
-	var underTest1, underTest2;
-	beforeEach(function () {
-		underTest1 = jQuery('<div id="fst">').appendTo('body');
-		underTest2 = jQuery('<div id="snd">').appendTo('body');
-		spyOn(jQuery.fn, 'focus');
-	});
-	afterEach(function () {
-		underTest1.remove();
-		underTest2.remove();
-	});
-	it('checks that a function was applied to a jQuery selector by comparing elements', function () {
-		underTest1.focus();
-		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest1);
-		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(jQuery('#fst'));
-		expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(underTest2);
-		expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(jQuery('#snd'));
-	});
-});
-describe('toHaveOwnStyle', function () {
-	'use strict';
-	var underTest;
-	beforeEach(function () {
-		underTest = jQuery('<div id="fst">').appendTo('body');
-	});
-	afterEach(function () {
-		underTest.remove();
-	});
-	it('checks that a function was applied to a jQuery selector by comparing elements', function () {
-		underTest.css('outline', 'none');
-		expect(underTest).toHaveOwnStyle('outline');
-		expect(underTest).not.toHaveOwnStyle('display');
-	});
-	it('checks for any of the styles in the array', function () {
-		underTest.css('outline', 'none');
-		expect(underTest).toHaveOwnStyle(['outline', 'display']);
-		expect(underTest).not.toHaveOwnStyle(['display', 'z-index']);
-	});
-
-});
 describe('updateStage', function () {
 	'use strict';
 	var stage, second;
@@ -1037,12 +956,14 @@ describe('MAPJS.DOMRender', function () {
 	describe('viewController', function () {
 		var stage,
 			viewPort,
-			mapModel;
+			mapModel,
+			imageInsertController;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
+			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
-			MAPJS.DOMRender.viewController(mapModel, stage);
+			MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController);
 			spyOn(jQuery.fn, 'queueFadeIn').and.callThrough();
 		});
 		afterEach(function () {
@@ -2056,6 +1977,16 @@ describe('MAPJS.DOMRender', function () {
 				}
 			);
 
+		});
+		describe('image drag and drop', function () {
+			it('converts event coordinates to stage coordinates and delegates to mapModel.dropImage', function () {
+				viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+				stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+				viewPort.scrollLeft(20);
+				viewPort.scrollTop(10);
+				imageInsertController.dispatchEvent('imageInserted', 'http://url', 666, 777, {pageX: 70, pageY: 50});
+				expect(mapModel.dropImage).toHaveBeenCalledWith('http://url', 666, 777, -160, -75);
+			});
 		});
 	});
 });

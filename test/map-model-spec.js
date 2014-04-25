@@ -1992,4 +1992,77 @@ describe('MapModel', function () {
 			expect(layoutCalculator).toHaveBeenCalled();
 		});
 	});
+	describe('dropImage', function () {
+		var underTest, layout, idea;
+		beforeEach(function () {
+			idea = MAPJS.content({id: 1, title: 'one',
+				attr: {
+					icon: {
+						url: 'http://www.google.com',
+						width: 100,
+						height: 200,
+						position: 'center'
+					}
+				},
+				ideas: {1: {id: 2, title: 'two'}}});
+			layout = { nodes: { 1: { id: 1, x: 0, y: 100, width: 10, height: 10, }, 2: { id: 2, x: -100, y: 100, width: 10, height: 10} } };
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			});
+			underTest.setIdea(idea);
+		});
+		describe('when dropped on a node', function () {
+			it('sets the node icon and by default positions to the left', function () {
+				underTest.dropImage('http://url', 50, 102, -90, 110);
+				expect(idea.findSubIdeaById(2).attr.icon).toEqual({
+					url: 'http://url',
+					width: 50,
+					height: 102,
+					position: 'left'
+				});
+			});
+			it('replaces an existing icon and keeps the position', function () {
+				underTest.dropImage('http://url', 50, 102, 5, 105);
+				expect(idea.attr.icon).toEqual({
+					url: 'http://url',
+					width: 50,
+					height: 102,
+					position: 'center'
+				});
+			});
+			it('scales down huge images to make the view sensible', function () {
+				underTest.dropImage('http://url', 500, 1000, -90, 110);
+				expect(idea.findSubIdeaById(2).attr.icon).toEqual({
+					url: 'http://url',
+					width: 150,
+					height: 300,
+					position: 'left'
+				});
+			});
+		});
+		describe('when not dropped on a node', function () {
+			beforeEach(function () {
+				underTest.dropImage('http://url', 500, 1000, 0, 0);
+			});
+			it('creates a new node with empty title and image when not dropped on a node', function () {
+				var newNode = idea.findSubIdeaById(3);
+				expect(newNode).toBeTruthy();
+				expect(newNode.title).toEqual('');
+				expect(newNode.attr.icon).toEqual({
+					url: 'http://url',
+					width: 150,
+					height: 300,
+					position: 'center'
+				});
+			});
+			it('selects the new node', function () {
+				expect(underTest.getCurrentlySelectedIdeaId()).toBe(3);
+			});
+
+			it('creates a node and adds the image as a batch, so we can undo it', function () {
+				idea.undo();
+				expect(idea.findSubIdeaById(3)).toBeFalsy();
+			});
+		});
+	});
 });
