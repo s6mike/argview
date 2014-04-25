@@ -109,7 +109,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		getCurrentlySelectedIdeaId = function () {
 			return currentlySelectedIdeaId || idea.id;
 		},
+		paused = false,
 		onIdeaChanged = function () {
+			if (paused) {
+				return;
+			}
 			revertSelectionForUndo = false;
 			revertActivatedForUndo = false;
 			self.rebuildRequired();
@@ -125,6 +129,13 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		};
 	observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
+	self.pause = function () {
+		paused = true;
+	};
+	self.resume = function () {
+		paused = false;
+		self.rebuildRequired();
+	};
 	self.getIdea = function () {
 		return idea;
 	};
@@ -142,6 +153,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	this.setIdea = function (anIdea) {
 		if (idea) {
 			idea.removeEventListener('changed', onIdeaChanged);
+			paused = false;
 			setActiveNodes([]);
 			self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			currentlySelectedIdeaId = undefined;

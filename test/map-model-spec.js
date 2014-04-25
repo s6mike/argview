@@ -1950,4 +1950,46 @@ describe('MapModel', function () {
 
 		});
 	});
+	describe('pause and resume', function () {
+		var anIdea, underTest, spy, layoutCalculator;
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'center',
+				ideas: {
+					'-2': {
+						id: 2,
+						title: 'lower left'
+					}
+				}
+			});
+			spy = jasmine.createSpy('nodeTitleChanged');
+			layoutCalculator = jasmine.createSpy('layoutCalculator');
+			layoutCalculator.and.returnValue({nodes: {1: {title: 'center', id: 1}, 2: {title: 'lower left', id: 2}}});
+			underTest = new MAPJS.MapModel(layoutCalculator);
+			underTest.setIdea(anIdea);
+			underTest.addEventListener('nodeTitleChanged', spy);
+			underTest.pause();
+			layoutCalculator.calls.reset();
+		});
+		it('ignores any idea updates while it is paused', function () {
+			anIdea.updateTitle(1, 'new center');
+			expect(layoutCalculator).not.toHaveBeenCalled();
+			expect(spy).not.toHaveBeenCalled();
+		});
+		it('processes all updates when resumed', function () {
+			anIdea.updateTitle(1, 'new center');
+			anIdea.updateTitle(2, 'new lower left');
+			layoutCalculator.and.returnValue({nodes: {1: {title: 'new center', id: 1}, 2: {title: 'new lower left', id: 2}}});
+			underTest.resume();
+			expect(layoutCalculator).toHaveBeenCalled();
+			expect(spy).toHaveBeenCalled();
+		});
+		it('unpauses when a new idea is loaded', function () {
+			anIdea = MAPJS.content({id: 1, title: 'five'});
+			underTest.setIdea(anIdea);
+			anIdea.updateTitle(1, 'new center');
+			expect(layoutCalculator).toHaveBeenCalled();
+		});
+	});
 });
