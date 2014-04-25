@@ -405,7 +405,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
-			self.removeClass('mapsj-node-dark mapjs-node-white mapjs-node-light');
+			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
 			if (fromStyle) {
 				self.css('background-color', fromStyle);
 				self.addClass(foregroundClass(fromStyle));
@@ -559,13 +559,13 @@ jQuery.fn.editNode = function () {
 	return result.promise();
 };
 MAPJS.DOMRender = {
-	nodeCacheMark: function (idea) {
+	nodeCacheMark: function (idea, levelOverride) {
 		'use strict';
 		return {
 			title: idea.title,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
-			level: idea.level
+			level: idea.level || levelOverride
 		};
 	},
 	addNodeCacheMark: function (domNode, idea) {
@@ -574,12 +574,12 @@ MAPJS.DOMRender = {
 	},
 	dimensionProvider: function (idea, level) {
 		'use strict'; /* support multiple stages? */
-		var existing = document.getElementById('node_' + idea.id),
+		var existing = document.getElementById(MAPJS.DOMRender.nodeKey(idea.id)),
 			textBox,
 			result;
 		if (existing) {
 			textBox = jQuery(existing);
-			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea))) {
+			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea, level))) {
 				return _.pick(textBox.data(), 'width', 'height');
 			}
 		}
@@ -594,8 +594,25 @@ MAPJS.DOMRender = {
 	layoutCalculator: function (contentAggregate) {
 		'use strict';
 		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
+	},
+	cleanDOMId: function (s) {
+		'use strict';
+		return s.replace(/\./g, '_');
+	},
+	connectorKey: function (connectorObj) {
+		'use strict';
+		return MAPJS.DOMRender.cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
+	},
+	linkKey: function (linkObj) {
+		'use strict';
+		return MAPJS.DOMRender.cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
+	},
+	nodeKey: function (id) {
+		'use strict';
+		return MAPJS.DOMRender.cleanDOMId('node_' + id);
 	}
 };
+
 
 MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled) {
 	'use strict';
@@ -604,18 +621,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled)
 		linksForAnimation = jQuery(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
 
-	var cleanDOMId = function (s) {
-			return s.replace(/\./g, '_');
-		},
-		connectorKey = function (connectorObj) {
-			return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
-		},
-		linkKey = function (linkObj) {
-			return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
-		},
-		nodeKey = function (id) {
-			return cleanDOMId('node_' + id);
-		},
+	var connectorKey = MAPJS.DOMRender.connectorKey,
+		linkKey = MAPJS.DOMRender.linkKey,
+		nodeKey = MAPJS.DOMRender.nodeKey,
 		stageToViewCoordinates = function (x, y) {
 			var stage = stageElement.data();
 			return {
