@@ -27,20 +27,24 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		horizontalSelectionThreshold = 300,
 		isAddLinkMode,
 		updateCurrentLayout = function (newLayout) {
-			var nodeId, newNode, oldNode, newConnector, oldConnector, linkId, newLink, oldLink, newActive;
 			self.dispatchEvent('layoutChangeStarting');
-			for (nodeId in currentLayout.connectors) {
-				newConnector = newLayout.connectors[nodeId];
-				oldConnector = currentLayout.connectors[nodeId];
+			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
+				var newConnector = newLayout.connectors[connectorId];
 				if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
 					self.dispatchEvent('connectorRemoved', oldConnector);
 				}
-			}
-			for (nodeId in currentLayout.nodes) {
-				oldNode = currentLayout.nodes[nodeId];
-				newNode = newLayout.nodes[nodeId];
+			});
+			_.each(currentLayout.links, function (oldLink, linkId) {
+				var newLink = newLayout.links && newLayout.links[linkId];
+				if (!newLink) {
+					self.dispatchEvent('linkRemoved', oldLink);
+				}
+			});
+			_.each(currentLayout.nodes, function (oldNode, nodeId) {
+				var newNode = newLayout.nodes[nodeId],
+					newActive;
 				if (!newNode) {
-					/*jslint eqeq: true, loopfunc: true*/
+					/*jslint eqeq: true*/
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
@@ -50,10 +54,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					}
 					self.dispatchEvent('nodeRemoved', oldNode, nodeId);
 				}
-			}
-			for (nodeId in newLayout.nodes) {
-				oldNode = currentLayout.nodes[nodeId];
-				newNode = newLayout.nodes[nodeId];
+			});
+
+			_.each(newLayout.nodes, function (newNode, nodeId) {
+				var oldNode = currentLayout.nodes[nodeId];
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode);
 				} else {
@@ -67,17 +71,15 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 						self.dispatchEvent('nodeAttrChanged', newNode);
 					}
 				}
-			}
-			for (nodeId in newLayout.connectors) {
-				newConnector = newLayout.connectors[nodeId];
-				oldConnector = currentLayout.connectors[nodeId];
+			});
+			_.each(newLayout.connectors, function (newConnector, connectorId) {
+				var oldConnector = currentLayout.connectors[connectorId];
 				if (!oldConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
 					self.dispatchEvent('connectorCreated', newConnector);
 				}
-			}
-			for (linkId in newLayout.links) {
-				newLink = newLayout.links[linkId];
-				oldLink = currentLayout.links && currentLayout.links[linkId];
+			});
+			_.each(newLayout.links, function (newLink, linkId) {
+				var oldLink = currentLayout.links && currentLayout.links[linkId];
 				if (oldLink) {
 					if (!_.isEqual(newLink.attr || {}, (oldLink && oldLink.attr) || {})) {
 						self.dispatchEvent('linkAttrChanged', newLink);
@@ -85,14 +87,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				} else {
 					self.dispatchEvent('linkCreated', newLink);
 				}
-			}
-			for (linkId in currentLayout.links) {
-				oldLink = currentLayout.links[linkId];
-				newLink = newLayout.links && newLayout.links[linkId];
-				if (!newLink) {
-					self.dispatchEvent('linkRemoved', oldLink);
-				}
-			}
+			});
 			currentLayout = newLayout;
 			if (!self.isInCollapse) {
 				self.dispatchEvent('layoutChangeComplete');
