@@ -973,7 +973,7 @@ describe('MAPJS.DOMRender', function () {
 		var newElement, oldUpdateNodeContent, idea;
 		beforeEach(function () {
 			oldUpdateNodeContent = jQuery.fn.updateNodeContent;
-			idea = {id: 1, title: 'zeka'};
+			idea = {id: 'foo.1', title: 'zeka'};
 		});
 		afterEach(function () {
 			if (newElement) {
@@ -1013,17 +1013,24 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 			it('looks up a DOM object with the matching node ID and if the node cache mark matches, returns the DOM width without re-applying content', function () {
-				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_1').appendTo('body');
+				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
 				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
 				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 111, height: 222});
 				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
 			});
 			it('ignores DOM objects where the cache mark does not match', function () {
-				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_1').appendTo('body');
+				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
 				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
 				expect(MAPJS.DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalled();
-
+			});
+			it('passes the level as an override when finding the cache mark', function () {
+				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
+				idea.level = 5;
+				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				idea.level = undefined;
+				expect(MAPJS.DOMRender.dimensionProvider(idea, 5)).toEqual({width: 111, height: 222});
+				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
 			});
 		});
 	});
