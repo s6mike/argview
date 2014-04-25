@@ -60,7 +60,8 @@ module.exports = function (grunt) {
 						grunt.option('external-scripts') || 'http://static.mindmup.com/20131204091534/external.js',
 					],
 					helpers: [
-						'test-lib/describe-batch.js'
+						'test-lib/describe-batch.js',
+						'test-lib/jquery-extension-matchers.js'
 					]
 				}
 			}
