@@ -152,6 +152,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 					}
 				}
 			}
+		}).on('wheel mousewheel', function (e) {
+			var scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
+			if (scroll < 0 && element.scrollLeft() === 0) {
+				e.preventDefault();
+			}
+			if (scroll > 0 && (element[0].scrollWidth - element.width() - element.scrollLeft() === 0)) {
+				e.preventDefault();
+			}
 		});
 
 		element.on('keypress', function (evt) {
