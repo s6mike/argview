@@ -776,6 +776,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
 		},
 		ensureNodeVisible = function (domElement) {
+			viewPort.finish();
 			var result = jQuery.Deferred(),
 				node = domElement.data(),
 				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
@@ -946,7 +947,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		if (isSelected) {
 			node.addClass('selected');
 			ensureNodeVisible(node).then(function () {
-				node.focus();
+				/*jslint eqeq:true*/
+				if (mapModel.getCurrentlySelectedIdeaId() == ideaId) {
+					node.focus();
+				}
 			});
 		} else {
 			node.removeClass('selected');

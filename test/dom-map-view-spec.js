@@ -959,7 +959,7 @@ describe('MAPJS.DOMRender', function () {
 			mapModel,
 			imageInsertController;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
@@ -1382,6 +1382,7 @@ describe('MAPJS.DOMRender', function () {
 					beforeEach(function ()  {
 						viewPort.scrollLeft(5);
 						viewPort.scrollTop(3);
+						mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
 						mapModel.dispatchEvent('nodeSelectionChanged', '11.12', true);
 					});
 					it('adds the selected class immediately', function () {
@@ -1413,6 +1414,7 @@ describe('MAPJS.DOMRender', function () {
 						beforeEach(function ()  {
 							underTest.data('x', nodeX);
 							underTest.data('y', nodeY);
+							mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
 							mapModel.dispatchEvent('nodeSelectionChanged', '11.12', true);
 						});
 						it('immediately adds the selected class', function () {
@@ -1428,6 +1430,11 @@ describe('MAPJS.DOMRender', function () {
 						it('asks for focus once the animation completes', function () {
 							jQuery.fn.animate.calls.first().args[1].complete();
 							expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
+						});
+						it('does not ask for focus if it is no longer selected by the time animation completes', function () {
+							mapModel.getCurrentlySelectedIdeaId.and.returnValue('22.12');
+							jQuery.fn.animate.calls.first().args[1].complete();
+							expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(underTest);
 						});
 					});
 				});
