@@ -97,7 +97,6 @@
 				idea = MAPJS.content(test_tree()),
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-			//	mapModel.setEditingEnabled(false);
 				container.domMapWidget(console, mapModel, false, imageInsertController);
 				jQuery('body').mapToolbarWidget(mapModel);
 				jQuery('body').attachmentEditorWidget(mapModel);
@@ -114,6 +113,21 @@
 				});
 				imageInsertController.addEventListener('imageInsertError', function (reason) {
 					console.log('image insert error', reason);
+				});
+				container.on('drop', function (e) {
+					var dataTransfer = e.originalEvent.dataTransfer;
+					e.stopPropagation();
+					e.preventDefault();
+					if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
+						var fileInfo = dataTransfer.files[0];
+						if (/\.mup$/.test(fileInfo.name)) {
+							var oFReader = new FileReader();
+							oFReader.onload = function (oFREvent) {
+								mapModel.setIdea(MAPJS.content(JSON.parse(oFREvent.target.result)));
+							};
+							oFReader.readAsText(fileInfo, 'UTF-8');
+						}
+					}
 				});
 			}());
 		</script>
