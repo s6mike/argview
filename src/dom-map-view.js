@@ -473,8 +473,8 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		setIcon = function (icon) {
 			var textBox = textSpan(),
-				textHeight = textBox.outerHeight(),
-				maxTextWidth = parseInt(textBox.css('max-width'), 10),
+				textHeight,
+				maxTextWidth,
 				padding,
 				selfProps = {
 					'min-height': '',
@@ -489,8 +489,10 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					'margin-left': ''
 				};
 			self.css({padding: ''});
-			padding = parseInt(self.css('padding-left'), 10);
 			if (icon) {
+				padding = parseInt(self.css('padding-left'), 10);
+				textHeight = textBox.outerHeight();
+				maxTextWidth = parseInt(textBox.css('max-width'), 10);
 				_.extend(selfProps, {
 					'background-image': 'url("' + icon.url + '")',
 					'background-repeat': 'no-repeat',
