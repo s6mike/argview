@@ -1,4 +1,41 @@
 /*global jQuery, Color, _, MAPJS, document, window*/
+MAPJS.DOMRender = {
+	nodeCacheMark: function (idea, levelOverride) {
+		'use strict';
+		return {
+			title: idea.title,
+			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
+			collapsed: idea.attr && idea.attr.collapsed,
+			level: idea.level || levelOverride
+		};
+	},
+	addNodeCacheMark: function (domNode, idea) {
+		'use strict';
+		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
+	},
+	dimensionProvider: function (idea, level) {
+		'use strict'; /* support multiple stages? */
+		var textBox = jQuery(document).nodeWithId(idea.id),
+			result;
+		if (textBox && textBox.length > 0) {
+			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea, level))) {
+				return _.pick(textBox.data(), 'width', 'height');
+			}
+		}
+		textBox = jQuery('<div>').addClass('mapjs-node').attr('mapjs-level', level).css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
+		result = {
+			width: textBox.outerWidth(true),
+			height: textBox.outerHeight(true)
+		};
+		textBox.detach();
+		return result;
+	},
+	layoutCalculator: function (contentAggregate) {
+		'use strict';
+		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
+	},
+
+};
 MAPJS.createSVG = function (tag) {
 	'use strict';
 	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
@@ -98,51 +135,146 @@ jQuery.fn.updateStage = function () {
 	this.css(size);
 	return this;
 };
+
+MAPJS.DOMRender.curvedPath = function (parent, child) {
+	'use strict';
+	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
+				childX, childY, childWidth, childHeight) {
+			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
+				parentHorizontalOffset = 1 - childHorizontalOffset;
+			return {
+				from: {
+					x: parentX + parentHorizontalOffset * parentWidth,
+					y: parentY + 0.5 * parentHeight
+				},
+				to: {
+					x: childX + childHorizontalOffset * childWidth,
+					y: childY + 0.5 * childHeight
+				},
+				controlPointOffset: 0
+			};
+		},
+		calculateConnector = function (parent, child) {
+			var tolerance = 10,
+				childHorizontalOffset,
+				childMid = child.top + child.height * 0.5,
+				parentMid = parent.top + parent.height * 0.5;
+			if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
+				return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
+			}
+			childHorizontalOffset = parent.left < child.left ? 0 : 1;
+			return {
+				from: {
+					x: parent.left + 0.5 * parent.width,
+					y: parent.top + 0.5 * parent.height
+				},
+				to: {
+					x: child.left + childHorizontalOffset * child.width,
+					y: child.top + 0.5 * child.height
+				},
+				controlPointOffset: 0.75
+			};
+		},
+		position = {
+			left: Math.min(parent.left, child.left),
+			top: Math.min(parent.top, child.top),
+		},
+		calculatedConnector, offset, maxOffset;
+	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
+	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
+
+	calculatedConnector = calculateConnector(parent, child);
+	offset = calculatedConnector.controlPointOffset * (calculatedConnector.from.y - calculatedConnector.to.y);
+	maxOffset = Math.min(child.height, parent.height) * 1.5;
+	offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+	return {
+		'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
+			'Q' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.to.y - offset - position.top) + ' ' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
+		// 'conn': calculatedConnector,
+		'position': position
+	};
+};
+MAPJS.DOMRender.straightPath = function (parent, child) {
+	'use strict';
+	var calculateConnector = function (parent, child) {
+		var parentPoints = [
+			{
+				x: parent.left + 0.5 * parent.width,
+				y: parent.top
+			},
+			{
+				x: parent.left + parent.width,
+				y: parent.top + 0.5 * parent.height
+			},
+			{
+				x: parent.left + 0.5 * parent.width,
+				y: parent.top + parent.height
+			},
+			{
+				x: parent.left,
+				y: parent.top + 0.5 * parent.height
+			}
+		], childPoints = [
+			{
+				x: child.left + 0.5 * child.width,
+				y: child.top
+			},
+			{
+				x: child.left + child.width,
+				y: child.top + 0.5 * child.height
+			},
+			{
+				x: child.left + 0.5 * child.width,
+				y: child.top + child.height
+			},
+			{
+				x: child.left,
+				y: child.top + 0.5 * child.height
+			}
+		], i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
+		for (i = 0; i < parentPoints.length; i += 1) {
+			for (j = 0; j < childPoints.length; j += 1) {
+				dx = parentPoints[i].x - childPoints[j].x;
+				dy = parentPoints[i].y - childPoints[j].y;
+				current = dx * dx + dy * dy;
+				if (current < min) {
+					bestParent = i;
+					bestChild = j;
+					min = current;
+				}
+			}
+		}
+		return {
+			from: parentPoints[bestParent],
+			to: childPoints[bestChild]
+		};
+	},
+	position = {
+		left: Math.min(parent.left, child.left),
+		top: Math.min(parent.top, child.top),
+	},
+	conn = calculateConnector(parent, child);
+	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
+	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
+
+	return {
+		'd': 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) +
+				 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
+		'conn': conn,
+		'position': position
+	};
+};
+
+MAPJS.DOMRender.nodeConnectorPath = MAPJS.DOMRender.curvedPath;
+MAPJS.DOMRender.linkConnectorPath = MAPJS.DOMRender.straightPath;
+
 jQuery.fn.updateConnector = function () {
 	'use strict';
 	return jQuery.each(this, function () {
 		var	element = jQuery(this),
-			horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
-					childX, childY, childWidth, childHeight) {
-				var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
-					parentHorizontalOffset = 1 - childHorizontalOffset;
-				return {
-					from: {
-						x: parentX + parentHorizontalOffset * parentWidth,
-						y: parentY + 0.5 * parentHeight
-					},
-					to: {
-						x: childX + childHorizontalOffset * childWidth,
-						y: childY + 0.5 * childHeight
-					},
-					controlPointOffset: 0
-				};
-			},
-			calculateConnector = function (parent, child) {
-				var tolerance = 10,
-					childHorizontalOffset,
-					childMid = child.top + child.height * 0.5,
-					parentMid = parent.top + parent.height * 0.5;
-
-				if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
-					return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
-				}
-				childHorizontalOffset = parent.left < child.left ? 0 : 1;
-				return {
-					from: {
-						x: parent.left + 0.5 * parent.width,
-						y: parent.top + 0.5 * parent.height
-					},
-					to: {
-						x: child.left + childHorizontalOffset * child.width,
-						y: child.top + 0.5 * child.height
-					},
-					controlPointOffset: 0.75
-				};
-			},
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			calculatedConnector, from, to, position, offset, maxOffset, pathElement, fromBox, toBox, changeCheck;
+			connection, pathElement, fromBox, toBox, changeCheck;
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
@@ -155,90 +287,26 @@ jQuery.fn.updateConnector = function () {
 		}
 
 		element.data('changeCheck', changeCheck);
-		calculatedConnector = calculateConnector(fromBox, toBox);
-		from = calculatedConnector.from;
-		to = calculatedConnector.to;
-		position = {
-			left: Math.min(fromBox.left, toBox.left),
-			top: Math.min(fromBox.top, toBox.top),
-		};
-		offset = calculatedConnector.controlPointOffset * (from.y - to.y);
-		maxOffset = Math.min(toBox.height, fromBox.height) * 1.5;
+		connection = MAPJS.DOMRender.nodeConnectorPath(fromBox, toBox);
 		pathElement = element.find('path');
-		position.width = Math.max(fromBox.left + fromBox.width, toBox.left + toBox.width, position.left + 1) - position.left;
-		position.height = Math.max(fromBox.top + fromBox.height, toBox.top + toBox.height, position.top + 1) - position.top;
-		element.css(position);
-		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+		element.css(connection.position);
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
 		// if only the relative position changed, do not re-update the curve!!!!
 		pathElement.attr('d',
-			'M' + Math.round(from.x - position.left) + ',' + Math.round(from.y - position.top) +
-			'Q' + Math.round(from.x - position.left) + ',' + Math.round(to.y - offset - position.top) + ' ' + Math.round(to.x - position.left) + ',' + Math.round(to.y - position.top)
+			connection.d
 		);
 	});
 };
+
 jQuery.fn.updateLink = function () {
 	'use strict';
 	return jQuery.each(this, function () {
 		var	element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			calculateConnector = function (parent, child) {
-				var parentPoints = [
-					{
-						x: parent.left + 0.5 * parent.width,
-						y: parent.top
-					},
-					{
-						x: parent.left + parent.width,
-						y: parent.top + 0.5 * parent.height
-					},
-					{
-						x: parent.left + 0.5 * parent.width,
-						y: parent.top + parent.height
-					},
-					{
-						x: parent.left,
-						y: parent.top + 0.5 * parent.height
-					}
-				], childPoints = [
-					{
-						x: child.left + 0.5 * child.width,
-						y: child.top
-					},
-					{
-						x: child.left + child.width,
-						y: child.top + 0.5 * child.height
-					},
-					{
-						x: child.left + 0.5 * child.width,
-						y: child.top + child.height
-					},
-					{
-						x: child.left,
-						y: child.top + 0.5 * child.height
-					}
-				], i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
-				for (i = 0; i < parentPoints.length; i += 1) {
-					for (j = 0; j < childPoints.length; j += 1) {
-						dx = parentPoints[i].x - childPoints[j].x;
-						dy = parentPoints[i].y - childPoints[j].y;
-						current = dx * dx + dy * dy;
-						if (current < min) {
-							bestParent = i;
-							bestChild = j;
-							min = current;
-						}
-					}
-				}
-				return {
-					from: parentPoints[bestParent],
-					to: childPoints[bestChild]
-				};
-			},
-			conn, position,
+			connection,
 			pathElement = element.find('path.mapjs-link'),
 			hitElement = element.find('path.mapjs-link-hit'),
 			arrowElement = element.find('path.mapjs-arrow'),
@@ -248,8 +316,7 @@ jQuery.fn.updateLink = function () {
 				solid: ''
 			},
 			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color'),
-			fromBox, toBox, changeCheck,
-			d;
+			fromBox, toBox, changeCheck;
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
@@ -264,23 +331,14 @@ jQuery.fn.updateLink = function () {
 
 		element.data('changeCheck', changeCheck);
 
-
-		conn = calculateConnector(fromBox, toBox);
-		position = {
-			left: Math.min(fromBox.left, toBox.left),
-			top: Math.min(fromBox.top, toBox.top),
-		};
-		position.width = Math.max(fromBox.left + fromBox.width, toBox.left + toBox.width, position.left + 1) - position.left;
-		position.height = Math.max(fromBox.top + fromBox.height, toBox.top + toBox.height, position.top + 1) - position.top;
-		element.css(position);
+		connection = MAPJS.DOMRender.linkConnectorPath(fromBox, toBox);
+		element.css(connection.position);
 
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
 		}
-		d = 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) +
-				 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top);
 		pathElement.attr({
-			'd': d,
+			'd': connection.d,
 			'stroke-dasharray': dashes[attrs.lineStyle]
 		}).css('stroke', attrs.color);
 
@@ -288,7 +346,7 @@ jQuery.fn.updateLink = function () {
 			hitElement = MAPJS.createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
 		}
 		hitElement.attr({
-			'd': d
+			'd': connection.d
 		});
 
 		if (attrs.arrow) {
@@ -296,28 +354,28 @@ jQuery.fn.updateLink = function () {
 				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 			}
 			var a1x, a1y, a2x, a2y, len = 14, iy, m,
-				dx = conn.to.x - conn.from.x,
-				dy = conn.to.y - conn.from.y;
+				dx = connection.conn.to.x - connection.conn.from.x,
+				dy = connection.conn.to.y - connection.conn.from.y;
 			if (dx === 0) {
 				iy = dy < 0 ? -1 : 1;
-				a1x = conn.to.x + len * Math.sin(n) * iy;
-				a2x = conn.to.x - len * Math.sin(n) * iy;
-				a1y = conn.to.y - len * Math.cos(n) * iy;
-				a2y = conn.to.y - len * Math.cos(n) * iy;
+				a1x = connection.conn.to.x + len * Math.sin(n) * iy;
+				a2x = connection.conn.to.x - len * Math.sin(n) * iy;
+				a1y = connection.conn.to.y - len * Math.cos(n) * iy;
+				a2y = connection.conn.to.y - len * Math.cos(n) * iy;
 			} else {
 				m = dy / dx;
-				if (conn.from.x < conn.to.x) {
+				if (connection.conn.from.x < connection.conn.to.x) {
 					len = -len;
 				}
-				a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a1x = connection.conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a1y = connection.conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a2x = connection.conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+				a2y = connection.conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 			}
 			arrowElement.attr('d',
-				'M' + Math.round(a1x - position.left) + ',' + Math.round(a1y - position.top) +
-				'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top) +
-				'L' + Math.round(a2x - position.left) + ',' + Math.round(a2y - position.top) +
+				'M' + Math.round(a1x - connection.position.left) + ',' + Math.round(a1y - connection.position.top) +
+				'L' + Math.round(connection.conn.to.x - connection.position.left) + ',' + Math.round(connection.conn.to.y - connection.position.top) +
+				'L' + Math.round(a2x - connection.position.left) + ',' + Math.round(a2y - connection.position.top) +
 				'Z')
 				.css('fill', attrs.color)
 				.show();
@@ -558,43 +616,7 @@ jQuery.fn.editNode = function () {
 	}
 	return result.promise();
 };
-MAPJS.DOMRender = {
-	nodeCacheMark: function (idea, levelOverride) {
-		'use strict';
-		return {
-			title: idea.title,
-			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
-			collapsed: idea.attr && idea.attr.collapsed,
-			level: idea.level || levelOverride
-		};
-	},
-	addNodeCacheMark: function (domNode, idea) {
-		'use strict';
-		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
-	},
-	dimensionProvider: function (idea, level) {
-		'use strict'; /* support multiple stages? */
-		var textBox = jQuery(document).nodeWithId(idea.id),
-			result;
-		if (textBox && textBox.length > 0) {
-			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea, level))) {
-				return _.pick(textBox.data(), 'width', 'height');
-			}
-		}
-		textBox = jQuery('<div>').addClass('mapjs-node').attr('mapjs-level', level).css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
-		result = {
-			width: textBox.outerWidth(true),
-			height: textBox.outerHeight(true)
-		};
-		textBox.detach();
-		return result;
-	},
-	layoutCalculator: function (contentAggregate) {
-		'use strict';
-		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
-	},
 
-};
 
 (function () {
 	'use strict';
