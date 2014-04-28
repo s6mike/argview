@@ -959,7 +959,7 @@ describe('MAPJS.DOMRender', function () {
 			mapModel,
 			imageInsertController;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode']));
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
@@ -1031,11 +1031,17 @@ describe('MAPJS.DOMRender', function () {
 					underTest.trigger(event);
 					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
 				});
-				it('forwards the contextMenu event by dispatching it for the mapModel', function () {
+				it('does not forward right-click events to the mapModel clickNode to avoid double processing', function () {
+					var event = jQuery.Event('tap', {gesture: { stopPropagation: jasmine.createSpy(), srcEvent: { button: 1}}});
+					underTest.trigger(event);
+					expect(mapModel.clickNode).not.toHaveBeenCalled();
+				});
+				it('selects the node and forwards the contextMenu event by dispatching it for the mapModel', function () {
 					var spy = jasmine.createSpy();
 					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
 					mapModel.addEventListener('contextMenuRequested', spy);
 					underTest.trigger(event);
+					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12');
 					expect(spy).toHaveBeenCalledWith('11.12', 111, 112);
 					expect(event.isDefaultPrevented()).toBeTruthy();
 
