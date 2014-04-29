@@ -268,7 +268,7 @@ MAPJS.DOMRender.straightPath = function (parent, child) {
 MAPJS.DOMRender.nodeConnectorPath = MAPJS.DOMRender.curvedPath;
 MAPJS.DOMRender.linkConnectorPath = MAPJS.DOMRender.straightPath;
 
-jQuery.fn.updateConnector = function () {
+jQuery.fn.updateConnector = function (canUseData) {
 	'use strict';
 	return jQuery.each(this, function () {
 		var	element = jQuery(this),
@@ -279,8 +279,13 @@ jQuery.fn.updateConnector = function () {
 			element.hide();
 			return;
 		}
-		fromBox = shapeFrom.getBox();
-		toBox = shapeTo.getBox();
+		if (canUseData) {
+			fromBox = shapeFrom.getDataBox();
+			toBox = shapeTo.getDataBox();
+		} else {
+			fromBox = shapeFrom.getBox();
+			toBox = shapeTo.getBox();
+		}
 		changeCheck = {from: fromBox, to: toBox};
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
@@ -680,18 +685,32 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		linksForAnimation = jQuery(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
 
-	var stageToViewCoordinates = function (x, y) {
-			var stage = stageElement.data();
-			return {
-				x: stage.scale * (x + stage.offsetX) - viewPort.scrollLeft(),
-				y: stage.scale * (y + stage.offsetY) - viewPort.scrollTop()
+	var getViewPortDimensions = function () {
+			if (viewPortDimensions) {
+				return viewPortDimensions;
+			}
+			viewPortDimensions =  {
+				left: viewPort.scrollLeft(),
+				top: viewPort.scrollTop(),
+				innerWidth: viewPort.innerWidth(),
+				innerHeight: viewPort.innerHeight()
+			};
+			return viewPortDimensions;
+		},
+		stageToViewCoordinates = function (x, y) {
+			var stage = stageElement.data(),
+				scrollPosition = getViewPortDimensions();
+			return  {
+				x: stage.scale * (x + stage.offsetX) - scrollPosition.left,
+				y: stage.scale * (y + stage.offsetY) - scrollPosition.top
 			};
 		},
 		viewToStageCoordinates = function (x, y) {
-			var stage = stageElement.data();
+			var stage = stageElement.data(),
+				scrollPosition = getViewPortDimensions();
 			return {
-				x: (viewPort.scrollLeft() + x) / stage.scale - stage.offsetX,
-				y: (viewPort.scrollTop() + y) / stage.scale - stage.offsetY
+				x: (scrollPosition.left + x) / stage.scale - stage.offsetX,
+				y: (scrollPosition.top + y) / stage.scale - stage.offsetY
 			};
 		},
 		updateScreenCoordinates = function () {
@@ -739,7 +758,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				stageElement.updateStage();
 			}
 		},
-
 		ensureSpaceForNode = function () {
 			return jQuery(this).each(function () {
 				var node = jQuery(this).data(),
@@ -824,7 +842,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			stageElement.nodeWithId(nodeId).addClass('droppable');
 			currentDroppable = nodeId;
 		},
-		currentDroppable = false;
+		currentDroppable = false,
+		viewPortDimensions;
+	viewPort.on('scroll', function () { viewPortDimensions = undefined; });
 	if (imageInsertController) {
 		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
 			var point = stagePositionForPointEvent(evt);
@@ -962,13 +982,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.nodeWithId(node.id).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
-		var	nodeDom = stageElement.nodeWithId(node.id).data({
+		var	currentViewPortDimensions = getViewPortDimensions(),
+			nodeDom = stageElement.nodeWithId(node.id).data({
 				'x': Math.round(node.x),
 				'y': Math.round(node.y)
 			}).each(ensureSpaceForNode),
 			screenTopLeft = stageToViewCoordinates(Math.round(node.x), Math.round(node.y)),
 			screenBottomRight = stageToViewCoordinates(Math.round(node.x + node.width), Math.round(node.y + node.height));
-		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > viewPort.innerWidth() || screenTopLeft.y > viewPort.innerHeight()) {
+		if (screenBottomRight.x < 0 || screenBottomRight.y < 0 || screenTopLeft.x > currentViewPortDimensions.innerWidth || screenTopLeft.y > currentViewPortDimensions.innerHeight) {
 			nodeDom.each(updateScreenCoordinates);
 		} else {
 			nodeDom.each(animateToPositionCoordinates);
@@ -978,9 +999,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.nodeWithId(n.id).updateNodeContent(n);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector();
+		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
-			.on('mapjs:move mm:drag', function () { element.updateConnector(); })
+			.on('mapjs:move', function () { element.updateConnector(true); })
+			.on('mm:drag', function () { element.updateConnector(); })
 			.on('mapjs:animatemove', function () { connectorsForAnimation = connectorsForAnimation.add(element); });
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
@@ -1024,11 +1046,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
 		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
-		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
 		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
 		centerViewOn(0, 0);
 	});
 	mapModel.addEventListener('layoutChangeStarting', function () {
+		viewPortDimensions = undefined;
 		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
