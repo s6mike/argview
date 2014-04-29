@@ -561,7 +561,11 @@ describe('updateNodeContent', function () {
 		underTest = jQuery('<span>').appendTo('body');
 		nodeContent = {
 			title: 'Hello World!',
-			level: 3
+			level: 3,
+			x: 10,
+			y: 20,
+			width: 30,
+			height: 40
 		};
 	});
 	afterEach(function () {
@@ -570,6 +574,27 @@ describe('updateNodeContent', function () {
 	});
 	it('returns itself to allow chaining', function () {
 		expect(underTest.updateNodeContent(nodeContent)[0]).toEqual(underTest[0]);
+	});
+	describe('dimensions', function () {
+		it('sets the x, y, width, height properties according to node values', function () {
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('x')).toBe(10);
+			expect(underTest.data('y')).toBe(20);
+			expect(underTest.data('width')).toBe(30);
+			expect(underTest.data('height')).toBe(40);
+		});
+		it('rounds x, y, width and height to improve performance', function () {
+			nodeContent = {id: '12', title: 'zeka', x: 10.02, y: 19.99, width: 30.2, height: 40.3};
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('x')).toBe(10);
+			expect(underTest.data('y')).toBe(20);
+			expect(underTest.data('width')).toBe(30);
+			expect(underTest.data('height')).toBe(40);
+		});
+		it('tags the node with a cache mark', function () {
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', icon : undefined, collapsed : undefined });
+		});
 	});
 	describe('node text', function () {
 		it('sets the node title as the DOM span text', function () {
@@ -933,20 +958,20 @@ describe('MAPJS.DOMRender', function () {
 			});
 			it('looks up a DOM object with the matching node ID and if the node cache mark matches, returns the DOM width without re-applying content', function () {
 				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
-				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				newElement.addNodeCacheMark(idea);
 				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 111, height: 222});
 				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
 			});
 			it('ignores DOM objects where the cache mark does not match', function () {
 				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
-				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				newElement.addNodeCacheMark(idea);
 				expect(MAPJS.DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalled();
 			});
 			it('passes the level as an override when finding the cache mark', function () {
 				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
 				idea.level = 5;
-				MAPJS.DOMRender.addNodeCacheMark(newElement, idea);
+				newElement.addNodeCacheMark(idea);
 				idea.level = undefined;
 				expect(MAPJS.DOMRender.dimensionProvider(idea, 5)).toEqual({width: 111, height: 222});
 				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
@@ -975,6 +1000,7 @@ describe('MAPJS.DOMRender', function () {
 				beforeEach(function () {
 					node = {id: '11.12', title: 'zeka', x: 10, y: 20, width: 30, height: 40};
 					spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
+						this.data(node);
 						this.css('height', 40);
 						this.css('width', 30);
 						return this;
@@ -999,22 +1025,6 @@ describe('MAPJS.DOMRender', function () {
 					expect(underTest.css('display')).toBe('block');
 					expect(underTest.css('position')).toBe('absolute');
 				});
-				it('sets the x, y, width, height properties according to node values', function () {
-					expect(underTest.data('x')).toBe(10);
-					expect(underTest.data('y')).toBe(20);
-					expect(underTest.data('width')).toBe(30);
-					expect(underTest.data('height')).toBe(40);
-				});
-				it('rounds x, y, width and height to improve performance', function () {
-					node = {id: '12', title: 'zeka', x: 10.02, y: 19.99, width: 30.2, height: 40.3};
-					mapModel.dispatchEvent('nodeCreated', node);
-					underTest = stage.children('#node_12');
-					expect(underTest.data('x')).toBe(10);
-					expect(underTest.data('y')).toBe(20);
-					expect(underTest.data('width')).toBe(30);
-					expect(underTest.data('height')).toBe(40);
-				});
-
 				it('assigns a mapjs-node css class', function () {
 					expect(underTest.hasClass('mapjs-node')).toBeTruthy();
 				});
@@ -1065,9 +1075,6 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('fixes the width of the node so it does not condense on movements', function () {
 					expect(underTest.css('min-width')).toBe('30px');
-				});
-				it('tags the node with a cache mark', function () {
-					expect(underTest.data('nodeCacheMark')).toEqual({ level: undefined, title : 'zeka', icon : undefined, collapsed : undefined });
 				});
 				it('sets the screen coordinates according to data attributes, ignoring stage zoom and transformations', function () {
 					expect(underTest.css('top')).toBe('20px');
@@ -1341,6 +1348,7 @@ describe('MAPJS.DOMRender', function () {
 				spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
 					this.css('height', 40);
 					this.css('width', 30);
+					this.data(node);
 					return this;
 				});
 				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});

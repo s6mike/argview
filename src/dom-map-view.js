@@ -9,10 +9,7 @@ MAPJS.DOMRender = {
 			level: idea.level || levelOverride
 		};
 	},
-	addNodeCacheMark: function (domNode, idea) {
-		'use strict';
-		domNode.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
-	},
+	dummyTextBox: jQuery('<div>').addClass('mapjs-node').css({position: 'absolute', visibility: 'hidden'}),
 	dimensionProvider: function (idea, level) {
 		'use strict'; /* support multiple stages? */
 		var textBox = jQuery(document).nodeWithId(idea.id),
@@ -22,7 +19,8 @@ MAPJS.DOMRender = {
 				return _.pick(textBox.data(), 'width', 'height');
 			}
 		}
-		textBox = jQuery('<div>').addClass('mapjs-node').attr('mapjs-level', level).css({position: 'absolute', visibility: 'hidden'}).appendTo('body').updateNodeContent(idea);
+		textBox = MAPJS.DOMRender.dummyTextBox;
+		textBox.attr('mapjs-level', level).appendTo('body').updateNodeContent(idea);
 		result = {
 			width: textBox.outerWidth(true),
 			height: textBox.outerHeight(true)
@@ -390,6 +388,12 @@ jQuery.fn.updateLink = function () {
 
 	});
 };
+
+jQuery.fn.addNodeCacheMark = function (idea) {
+	'use strict';
+	this.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
+};
+
 jQuery.fn.updateNodeContent = function (nodeContent) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,
@@ -430,17 +434,19 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		updateText = function (title) {
 			var text = MAPJS.URLHelper.stripLink(title) ||
 					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
-				element = textSpan();
+				element = textSpan(),
+				domElement = element[0];
+
 			element.text(text.trim());
 			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
-			if ((element[0].scrollWidth - 10) > element.outerWidth()) {
-				element.css('max-width', element[0].scrollWidth + 'px');
+			if ((domElement.scrollWidth - 10) > domElement.offsetWidth) {
+				element.css('max-width', domElement.scrollWidth + 'px');
 			}
 			else {
-				var height = element.height();
+				var height = domElement.offsetHeight;
 				element.css('min-width', element.css('max-width'));
-				if (element.height() === height) {
+				if (domElement.offsetHeight === height) {
 					element.css('min-width', '');
 				}
 			}
@@ -536,7 +542,9 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyAttachment();
-	self.attr('mapjs-level', nodeContent.level);
+	self.attr('mapjs-level', nodeContent.level)
+		.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
+		.addNodeCacheMark(nodeContent);
 	setColors();
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
@@ -643,7 +651,6 @@ jQuery.fn.editNode = function () {
 	jQuery.fn.createNode = function (node) {
 		return jQuery('<div>')
 			.attr({'id': nodeKey(node.id), 'tabindex': 0, 'data-mapjs-role': 'node' })
-			.data({'x': Math.round(node.x), 'y': Math.round(node.y), 'width': Math.round(node.width), 'height': Math.round(node.height), 'nodeId': node.id})
 			.css({display: 'block', position: 'absolute'})
 			.addClass('mapjs-node')
 			.appendTo(this);
@@ -959,7 +966,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			});
 		}
 		element.css('min-width', element.css('width'));
-		MAPJS.DOMRender.addNodeCacheMark(element, node);
 		if (mapModel.isEditingEnabled() && node.level > 1) {
 			element.simpleDraggable();
 		}
@@ -1052,7 +1058,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	});
 	mapModel.addEventListener('layoutChangeStarting', function () {
 		viewPortDimensions = undefined;
-		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
+		stageElement.children().finish(nodeAnimOptions.queue);
+		stageElement.finish(nodeAnimOptions.queue);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function () {
 		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
@@ -1072,7 +1079,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.animate({'opacity': 1}, _.extend({
 			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
 		}, nodeAnimOptions));
-		stageElement.children().andSelf().dequeue(nodeAnimOptions.queue);
+		stageElement.children().dequeue(nodeAnimOptions.queue);
+		stageElement.dequeue(nodeAnimOptions.queue);
 	});
 
 	/* editing */
