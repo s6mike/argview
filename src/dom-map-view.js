@@ -803,6 +803,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
 		},
 		ensureNodeVisible = function (domElement) {
+			if (!domElement || domElement.length === 0) {
+				return;
+			}
 			viewPort.finish();
 			var result = jQuery.Deferred(),
 				node = domElement.data(),
@@ -895,6 +898,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
 			.on('mm:start-dragging', function () {
+				mapModel.selectNode(node.id);
 				element.addClass('dragging');
 			})
 			.on('mm:drag', function (evt) {
@@ -942,9 +946,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else {
 					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
-				}
-				if (dropResult) {
-					ensureNodeVisible(stageElement.nodeWithId(node.id));
 				}
 				return dropResult;
 			})
@@ -1077,7 +1078,13 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		connectorsForAnimation = jQuery();
 		linksForAnimation = jQuery();
 		stageElement.animate({'opacity': 1}, _.extend({
-			progress: function () { connectorGroupClone.updateConnector(); linkGroupClone.updateLink(); },
+			progress: function () {
+				connectorGroupClone.updateConnector();
+				linkGroupClone.updateLink();
+			},
+			complete: function () {
+				ensureNodeVisible(stageElement.nodeWithId(mapModel.getCurrentlySelectedIdeaId()));
+			}
 		}, nodeAnimOptions));
 		stageElement.children().dequeue(nodeAnimOptions.queue);
 		stageElement.dequeue(nodeAnimOptions.queue);
