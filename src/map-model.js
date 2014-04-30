@@ -11,6 +11,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			connectors: {}
 		},
 		idea,
+		currentLabelGenerator,
 		isInputEnabled = true,
 		isEditingEnabled = true,
 		currentlySelectedIdeaId,
@@ -26,8 +27,21 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		},
 		horizontalSelectionThreshold = 300,
 		isAddLinkMode,
+		applyLabels = function (newLayout) {
+			if (!currentLabelGenerator) {
+				return;
+			}
+			var labelMap = currentLabelGenerator(idea);
+			_.each(newLayout.nodes, function (node, id) {
+				if (labelMap[id]) {
+					node.label = labelMap[id];
+				}
+			});
+		},
 		updateCurrentLayout = function (newLayout) {
 			self.dispatchEvent('layoutChangeStarting');
+			applyLabels(newLayout);
+
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
 				var newConnector = newLayout.connectors[connectorId];
 				if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
@@ -69,6 +83,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					}
 					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
 						self.dispatchEvent('nodeAttrChanged', newNode);
+					}
+					if (newNode.label !== oldNode.label) {
+						self.dispatchEvent('nodeLabelChanged', newNode);
 					}
 				}
 			});
@@ -998,5 +1015,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return dropOn(nodeId, 'left');
 		}
 		addNew();
+	};
+	self.setLabelGenerator = function (labelGenerator) {
+		currentLabelGenerator = labelGenerator;
+		self.rebuildRequired();
 	};
 };

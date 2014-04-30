@@ -2065,4 +2065,66 @@ describe('MapModel', function () {
 			});
 		});
 	});
+	describe('labels', function () {
+		var underTest, layout, idea, labelGenerator;
+		beforeEach(function () {
+			idea = MAPJS.content({id: 1, title: 'one',
+				attr: {
+					icon: {
+						url: 'http://www.google.com',
+						width: 100,
+						height: 200,
+						position: 'center'
+					}
+				},
+				ideas: {1: {id: 2, title: 'two'}}});
+			layout = { nodes: {
+					1: { id: 1, x: 0, y: 100, width: 10, height: 10, },
+					2: { id: 2, x: -100, y: 100, width: 10, height: 10},
+					3: {id: 3, x: 10, y: 10, width: 100, height: 50 }
+				}
+			};
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			});
+			underTest.setIdea(idea);
+			labelGenerator = jasmine.createSpy('labelGenerator');
+		});
+		describe('setLabelGenerator', function () {
+			beforeEach(function () {
+				labelGenerator.and.returnValue({1: 'l1', 2: 'l2'});
+				underTest.setLabelGenerator(labelGenerator);
+			});
+			it('rebuilds labels for all nodes in layout when generator changed', function () {
+				expect(labelGenerator).toHaveBeenCalledWith(idea);
+				expect(underTest.getCurrentLayout().nodes[1].label).toBe('l1');
+				expect(underTest.getCurrentLayout().nodes[2].label).toBe('l2');
+			});
+			it('clears labels for all nodes in layout when generator removed', function () {
+				underTest.setLabelGenerator();
+				expect(underTest.getCurrentLayout().nodes[1].label).toBeUndefined();
+				expect(underTest.getCurrentLayout().nodes[2].label).toBeUndefined();
+			});
+			it('applies a label generator to all nodes in a layout when the layout changes', function () {
+				labelGenerator.and.returnValue({1: 'p1', 2: 'p2'});
+				idea.dispatchEvent('changed');
+				expect(underTest.getCurrentLayout().nodes[1].label).toBe('p1');
+				expect(underTest.getCurrentLayout().nodes[2].label).toBe('p2');
+			});
+		});
+		describe('nodeLabelChanged event', function () {
+			it('is dispatched only for attributes where labels actually change on node change', function () {
+				var spy;
+				labelGenerator.and.returnValue({1: 'l1', 2: 'l2'});
+				underTest.setLabelGenerator(labelGenerator);
+				labelGenerator.and.returnValue({1: 'x1', 2: 'l2', 3: 'x3'});
+				spy = jasmine.createSpy('nodeLabelChangedListener');
+				underTest.addEventListener('nodeLabelChanged', spy);
+				idea.dispatchEvent('changed');
+				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[1]);
+				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[3]);
+				expect(spy.calls.count()).toBe(2);
+			});
+		});
+	});
 });

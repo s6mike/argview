@@ -888,7 +888,32 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeFalsy();
 			});
 		});
-
+	});
+	describe('label handling', function () {
+		describe('when there is a label', function () {
+			beforeEach(function () {
+				nodeContent.label = 'foo';
+			});
+			it('shows the label element', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('.mapjs-label').is(':visible')).toBeTruthy();
+				expect(underTest.find('.mapjs-label').text()).toEqual('foo');
+			});
+			it('should reuse and show existing element', function () {
+				jQuery('<span class="mapjs-label">hello</span>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('.mapjs-label').length).toBe(1);
+				expect(underTest.find('.mapjs-label').is(':visible')).toBeTruthy();
+				expect(underTest.find('.mapjs-label').text()).toEqual('foo');
+			});
+		});
+		describe('when there is no label', function () {
+			it('hides the label element', function () {
+				jQuery('<span class="mapjs-label">hello</span>').appendTo(underTest);
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('.mapjs-label').is(':visible')).toBeFalsy();
+			});
+		});
 	});
 });
 describe('MAPJS.DOMRender', function () {
@@ -1586,7 +1611,7 @@ describe('MAPJS.DOMRender', function () {
 					});
 			});
 		});
-		_.each(['nodeTitleChanged', 'nodeAttrChanged'], function (eventType) {
+		_.each(['nodeTitleChanged', 'nodeAttrChanged', 'nodeLabelChanged'], function (eventType) {
 			it('updates node content on ' + eventType, function () {
 				var underTest, node;
 				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};

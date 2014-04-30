@@ -417,6 +417,17 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			}
 			element.attr('href', url).show();
 		},
+		applyLabel = function (label) {
+			var element = self.find('.mapjs-label');
+			if (!label) {
+				element.hide();
+				return;
+			}
+			if (element.length === 0) {
+				element = jQuery('<span class="mapjs-label"></span>').appendTo(self);
+			}
+			element.text(label).show();
+		},
 		applyAttachment = function () {
 			var attachment = nodeContent.attr && nodeContent.attr.attachment,
 				element = self.find('a.mapjs-attachment');
@@ -541,6 +552,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		};
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
+	applyLabel(nodeContent.label);
 	applyAttachment();
 	self.attr('mapjs-level', nodeContent.level)
 		.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
@@ -993,7 +1005,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			nodeDom.each(animateToPositionCoordinates);
 		}
 	});
-	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged', function (n) {
+	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged nodeLabelChanged', function (n) {
 		stageElement.nodeWithId(n.id).updateNodeContent(n);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
