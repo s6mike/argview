@@ -13,15 +13,15 @@ describe('MapModel', function () {
 
 		underTest.setInputEnabled(false);
 
-		expect(inputEnabledChangedListener).toHaveBeenCalledWith(false);
+		expect(inputEnabledChangedListener).toHaveBeenCalledWith(false, false);
 	});
-	it('should dispatch inputEnabledChanged event when input is re-enabled', function () {
+	it('should dispatch inputEnabledChanged event when input is re-enabled, passing holdFocus argument if supplied', function () {
 		var underTest = new MAPJS.MapModel(),
 			inputEnabledChangedListener = jasmine.createSpy();
 		underTest.setInputEnabled(false);
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
-		underTest.setInputEnabled(true);
-		expect(inputEnabledChangedListener).toHaveBeenCalledWith(true);
+		underTest.setInputEnabled(true, true);
+		expect(inputEnabledChangedListener).toHaveBeenCalledWith(true, true);
 	});
 	describe('events dispatched by MapModel when idea/layout is changed', function () {
 		var underTest,

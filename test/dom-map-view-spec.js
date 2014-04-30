@@ -984,7 +984,8 @@ describe('MAPJS.DOMRender', function () {
 			mapModel,
 			imageInsertController;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
+			mapModel.getInputEnabled.and.returnValue(true);
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
@@ -1396,10 +1397,7 @@ describe('MAPJS.DOMRender', function () {
 					it('adds the selected class immediately', function () {
 						expect(underTest.hasClass('selected')).toBeTruthy();
 					});
-					it('requests focus for the node immediately', function () {
-						expect(jQuery.fn.focus.calls.count()).toBe(1);
-						expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
-					});
+
 					it('does not animate', function () {
 						expect(jQuery.fn.animate).not.toHaveBeenCalled();
 					});
@@ -1428,21 +1426,9 @@ describe('MAPJS.DOMRender', function () {
 						it('immediately adds the selected class', function () {
 							expect(underTest.hasClass('selected')).toBeTruthy();
 						});
-						it('does not immediately focus', function () {
-							expect(jQuery.fn.focus).not.toHaveBeenCalled();
-						});
 						it('animates scroll movements to show selected node', function () {
 							expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(viewPort);
 							expect(jQuery.fn.animate.calls.first().args[0]).toEqual(expectedAnimation);
-						});
-						it('asks for focus once the animation completes', function () {
-							jQuery.fn.animate.calls.first().args[1].complete();
-							expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
-						});
-						it('does not ask for focus if it is no longer selected by the time animation completes', function () {
-							mapModel.getCurrentlySelectedIdeaId.and.returnValue('22.12');
-							jQuery.fn.animate.calls.first().args[1].complete();
-							expect(jQuery.fn.focus).not.toHaveBeenCalledOnJQueryObject(underTest);
 						});
 					});
 				});

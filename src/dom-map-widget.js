@@ -65,9 +65,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 		},
 		actOnKeys = true,
 		self = this;
-	mapModel.addEventListener('inputEnabledChanged', function (canInput) {
+	mapModel.addEventListener('inputEnabledChanged', function (canInput, holdFocus) {
 		actOnKeys = canInput;
-		if (canInput) {
+		if (canInput && !holdFocus) {
 			self.focus();
 		}
 	});
@@ -131,7 +131,6 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				}
 			});
 		});
-
 		jQuery(document).on('keydown', function (e) {
 			var functions = {
 				'U+003D': 'scaleUp',

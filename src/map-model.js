@@ -168,10 +168,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	this.getEditingEnabled = function () {
 		return isEditingEnabled;
 	};
-	this.setInputEnabled = function (value) {
+	this.setInputEnabled = function (value, holdFocus) {
 		if (isInputEnabled !== value) {
 			isInputEnabled = value;
-			self.dispatchEvent('inputEnabledChanged', value);
+			self.dispatchEvent('inputEnabledChanged', value, !!holdFocus);
 		}
 	};
 	this.getInputEnabled = function () {
