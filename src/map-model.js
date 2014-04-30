@@ -143,6 +143,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.analytic = analytic;
 	self.getCurrentlySelectedIdeaId = getCurrentlySelectedIdeaId;
 	self.rebuildRequired = function () {
+		if (!idea) {
+			return;
+		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
 	};
 	this.setIdea = function (anIdea) {
