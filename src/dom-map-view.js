@@ -419,7 +419,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		},
 		applyLabel = function (label) {
 			var element = self.find('.mapjs-label');
-			if (!label) {
+			if (!label && label !== 0) {
 				element.hide();
 				return;
 			}

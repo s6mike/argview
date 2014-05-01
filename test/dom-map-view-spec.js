@@ -914,6 +914,14 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('.mapjs-label').is(':visible')).toBeFalsy();
 			});
 		});
+		describe('when label is equal to numeric 0', function () {
+			it('hides the label element', function () {
+				nodeContent.label = 0;
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('.mapjs-label').is(':visible')).toBeTruthy();
+				expect(underTest.find('.mapjs-label').text()).toEqual('0');
+			});
+		});
 	});
 });
 describe('MAPJS.DOMRender', function () {
