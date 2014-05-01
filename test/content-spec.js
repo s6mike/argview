@@ -1972,5 +1972,11 @@ describe('content aggregate', function () {
 			content.traverse(function (idea) { result.push(idea.id); });
 			expect(result).toEqual([1, 11, 111, 112, 12, 121, 13]);
 		});
+		it('does a post-order traversal if second argument is true', function () {
+			var content = MAPJS.content({ id: 1, ideas: { '11': {id: 11, ideas: { 1: { id: 111}, 2: {id: 112} } }, '-12': {id: 12, ideas: { 1: {id: 121} } }, '-13' : {id: 13} } }),
+			result = [];
+			content.traverse(function (idea) { result.push(idea.id); }, true);
+			expect(result).toEqual([111, 112, 11, 121, 12, 13, 1]);
+		});
 	});
 });
