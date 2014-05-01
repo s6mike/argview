@@ -33,7 +33,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			}
 			var labelMap = currentLabelGenerator(idea);
 			_.each(newLayout.nodes, function (node, id) {
-				if (labelMap[id]) {
+				if (labelMap[id] || labelMap[id] === 0) {
 					node.label = labelMap[id];
 				}
 			});

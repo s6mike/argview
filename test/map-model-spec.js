@@ -2100,6 +2100,14 @@ describe('MapModel', function () {
 				expect(underTest.getCurrentLayout().nodes[1].label).toBe('l1');
 				expect(underTest.getCurrentLayout().nodes[2].label).toBe('l2');
 			});
+			it('shows numeric 0 labels but not false or empty string or undefined', function () {
+				labelGenerator.and.returnValue({1: false, 2: 0, 3: undefined});
+				idea.dispatchEvent('changed');
+				expect(underTest.getCurrentLayout().nodes[1].label).toBeUndefined();
+				expect(underTest.getCurrentLayout().nodes[2].label).toBe(0);
+				expect(underTest.getCurrentLayout().nodes[3].label).toBeUndefined();
+
+			});
 			it('clears labels for all nodes in layout when generator removed', function () {
 				underTest.setLabelGenerator();
 				expect(underTest.getCurrentLayout().nodes[1].label).toBeUndefined();
