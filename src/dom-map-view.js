@@ -798,7 +798,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 
 			newLeftScroll = stage.scale * (x + stage.offsetX) - viewPortCenter.x;
 			newTopScroll = stage.scale * (y + stage.offsetY) - viewPortCenter.y;
-
+			viewPort.finish();
 			if (animate) {
 				viewPort.animate({
 					scrollLeft: newLeftScroll,
