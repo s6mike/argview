@@ -36,6 +36,28 @@ describe('calculateLayout', function () {
 		expect(result.nodes[22].level).toEqual(3);
 		expect(result.nodes[3].level).toEqual(2);
 	});
+	describe('should store the root node id', function () {
+		it('when it is numeric', function () {
+			var contentAggregate = MAPJS.content({
+					id: 7,
+					title: 'Hello'
+				}),
+				result;
+			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
+			expect(result.rootNodeId).toEqual(7);
+			expect(result.nodes[result.rootNodeId]).not.toBeUndefined();
+		});
+		it('when it is a string', function () {
+			var contentAggregate = MAPJS.content({
+					id: '7.abc',
+					title: 'Hello'
+				}),
+				result;
+			result = MAPJS.calculateLayout(contentAggregate, dimensionProvider);
+			expect(result.rootNodeId).toEqual('7.abc');
+			expect(result.nodes[result.rootNodeId]).not.toBeUndefined();
+		});
+	});
 	it('should place a root node on (margin, margin)', function () {
 		var contentAggregate = MAPJS.content({
 				id: 7,

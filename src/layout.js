@@ -330,6 +330,7 @@ MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 	_.extend(negativeLayout.connectors, layout.connectors);
 	setDefaultStyles(negativeLayout.nodes);
 	negativeLayout.links = MAPJS.layoutLinks(idea, negativeLayout.nodes);
+	negativeLayout.rootNodeId = idea.id;
 	return negativeLayout;
 };
 
