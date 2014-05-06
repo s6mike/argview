@@ -28,6 +28,7 @@ describe('MapModel', function () {
 			anIdea,
 			layoutBefore,
 			layoutAfter,
+			mapViewResetRequestedListener,
 			layoutCalculatorLayout;
 		beforeEach(function () {
 			var layoutCalculator = function () {
@@ -98,7 +99,9 @@ describe('MapModel', function () {
 					}
 				}
 			};
+			mapViewResetRequestedListener = jasmine.createSpy('mapViewResetRequestedListener');
 			underTest = new MAPJS.MapModel(layoutCalculator, ['this will have all text selected']);
+			underTest.addEventListener('mapViewResetRequested', mapViewResetRequestedListener);
 			layoutCalculatorLayout = layoutBefore;
 			anIdea = MAPJS.content({
 				id: 4,
@@ -115,7 +118,11 @@ describe('MapModel', function () {
 				}
 			});
 			underTest.setIdea(anIdea);
+
 			layoutCalculatorLayout = layoutAfter;
+		});
+		it('should dispatch a mapViewResetRequested event when an idea is set', function () {
+			expect(mapViewResetRequestedListener).toHaveBeenCalled();
 		});
 		it('should dispatch nodeCreated event when a node is created because idea is changed', function () {
 			var nodeCreatedListener = jasmine.createSpy();

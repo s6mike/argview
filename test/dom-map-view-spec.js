@@ -1963,6 +1963,51 @@ describe('MAPJS.DOMRender', function () {
 				expect(stage.data('scale')).toBe(0.2);
 			});
 		});
+		describe('mapViewResetRequested', function () {
+			beforeEach(function () {
+				spyOn(jQuery.fn, 'updateStage').and.callThrough();
+				spyOn(jQuery.fn, 'updateConnector').and.callThrough();
+				spyOn(jQuery.fn, 'updateLink').and.callThrough();
+				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+				stage.data({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 400, 'height': 300 }).updateStage();
+				viewPort.scrollLeft(10).scrollTop(10);
+				mapModel.dispatchEvent('nodeCreated', {id: '11.12', title: 'zeka2', x: 100, y: 50, width: 20, height: 10});
+				mapModel.dispatchEvent('nodeCreated', {id: '12.12', title: 'zeka3', x: 200, y: 150, width: 20, height: 10});
+				mapModel.dispatchEvent('nodeCreated', {id: '13.12', title: 'zeka3', x: 300, y: 250, width: 20, height: 10});
+				mapModel.dispatchEvent('connectorCreated', {from: '11.12', to: '12.12'});
+				mapModel.dispatchEvent('connectorCreated', {from: '12.12', to: '13.12'});
+				mapModel.dispatchEvent('linkCreated', {ideaIdFrom: '11.12', ideaIdTo: '13.12', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}});
+				jQuery.fn.updateStage.calls.reset();
+			});
+
+			it('resets stage scale', function () {
+				stage.data({scale: 2}).updateStage();
+				stage.updateStage.calls.reset();
+				mapModel.dispatchEvent('mapViewResetRequested');
+				expect(stage.data('scale')).toBe(1);
+				expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
+			});
+			it('resets stage data', function () {
+				stage.data({'scale': 1, 'height': 500, 'width': 1000, 'offsetX': 20, 'offsetY': 500}).updateStage();
+				mapModel.dispatchEvent('mapViewResetRequested');
+				expect(stage.data()).toEqual({'scale': 1, 'height': 310, 'width': 420, 'offsetX': 100, 'offsetY': 50});
+			});
+			it('should update Connectors', function () {
+				jQuery.fn.updateConnector.calls.reset();
+				mapModel.dispatchEvent('mapViewResetRequested');
+				expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(jQuery('[data-mapjs-role=connector]'));
+			});
+			it('should update Links', function () {
+				jQuery.fn.updateLink.calls.reset();
+				mapModel.dispatchEvent('mapViewResetRequested');
+				expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(jQuery('[data-mapjs-role=link]'));
+			});
+			it('centers the view', function () {
+				mapModel.dispatchEvent('mapViewResetRequested');
+				expect(viewPort.scrollLeft()).toBe(0);
+				expect(viewPort.scrollTop()).toBe(0);
+			});
+		});
 		describe('nodeFocusRequested', function () {
 			beforeEach(function () {
 				spyOn(jQuery.fn, 'updateStage').and.callThrough();
