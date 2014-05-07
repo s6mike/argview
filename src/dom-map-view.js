@@ -32,7 +32,7 @@ MAPJS.DOMRender = {
 		'use strict';
 		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
 	},
-
+	fixedLayout: false
 };
 MAPJS.createSVG = function (tag) {
 	'use strict';
@@ -496,6 +496,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 		setIcon = function (icon) {
 			var textBox = textSpan(),
 				textHeight,
+				textWidth,
 				maxTextWidth,
 				padding,
 				selfProps = {
@@ -514,6 +515,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			if (icon) {
 				padding = parseInt(self.css('padding-left'), 10);
 				textHeight = textBox.outerHeight();
+				textWidth = textBox.outerWidth();
 				maxTextWidth = parseInt(textBox.css('max-width'), 10);
 				_.extend(selfProps, {
 					'background-image': 'url("' + icon.url + '")',
@@ -522,7 +524,14 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					'background-position': 'center center'
 				});
 				if (icon.position === 'top' || icon.position === 'bottom') {
-					selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
+					if (icon.position === 'top') {
+						selfProps['background-position'] = 'center ' + padding + 'px';
+					} else if (MAPJS.DOMRender.fixedLayout) {
+						selfProps['background-position'] = 'center ' + (padding + textHeight) + 'px';
+					} else {
+						selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
+					}
+
 					selfProps['padding-' + icon.position] = icon.height + (padding * 2);
 					selfProps['min-width'] = icon.width;
 					if (icon.width > maxTextWidth) {
@@ -530,7 +539,14 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 					}
 				}
 				else if (icon.position === 'left' || icon.position === 'right') {
-					selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
+					if (icon.position === 'left') {
+						selfProps['background-position'] = padding + 'px center';
+					} else if (MAPJS.DOMRender.fixedLayout) {
+						selfProps['background-position'] = (textWidth + (2 * padding)) + 'px center ';
+					} else {
+						selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
+					}
+
 					selfProps['padding-' + icon.position] = icon.width + (padding * 2);
 					if (icon.height > textHeight) {
 						textProps['margin-top'] =  (icon.height - textHeight) / 2;

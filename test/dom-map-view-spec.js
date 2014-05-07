@@ -696,6 +696,7 @@ describe('updateNodeContent', function () {
 		});
 		describe('when icon is set', function () {
 			beforeEach(function () {
+				MAPJS.DOMRender.fixedLayout = false;
 				nodeContent.attr = {
 					icon: {
 						url: 'http://iconurl/',
@@ -733,10 +734,7 @@ describe('updateNodeContent', function () {
 			it('positions left icons left of node text and vertically centers the text', function () {
 				nodeContent.attr.icon.position = 'left';
 				underTest.updateNodeContent(nodeContent);
-				if (!isHeadless()) {
-					expect(underTest.css('background-position')).toBe('left 5px top 50%');
-				}
-
+				expect(underTest.css('background-position')).toBe('5px 50%');
 				expect(underTest.css('padding-left')).toEqual('410px');
 				expect(textBox.css('margin-top')).toBe('241px');
 			});
@@ -751,13 +749,20 @@ describe('updateNodeContent', function () {
 				expect(underTest.css('padding-right')).toEqual('410px');
 				expect(textBox.css('margin-top')).toBe('241px');
 			});
+			it('positions right icons right of node text and vertically centers the text for a fixed layous', function () {
+				MAPJS.DOMRender.fixedLayout = true;
+				nodeContent.attr.icon.position = 'right';
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.css('background-position')).toBe('170px 50%');
+				expect(underTest.css('padding-right')).toEqual('410px');
+				expect(textBox.css('margin-top')).toBe('241px');
+			});
+
 			it('positions top icons top of node text and horizontally centers the text', function () {
 				nodeContent.attr.icon.position = 'top';
 				underTest.updateNodeContent(nodeContent);
 
-				if (!isHeadless()) {
-					expect(underTest.css('background-position')).toBe('left 50% top 5px');
-				}
+				expect(underTest.css('background-position')).toBe('50% 5px');
 				expect(underTest.css('padding-top')).toEqual('510px');
 				expect(underTest.css('min-width')).toEqual('400px');
 				expect(textBox.css('margin-left')).toBe('120px');
@@ -769,6 +774,15 @@ describe('updateNodeContent', function () {
 				if (!isHeadless()) {
 					expect(underTest.css('background-position')).toBe('left 50% bottom 5px');
 				}
+				expect(underTest.css('padding-bottom')).toEqual('510px');
+				expect(underTest.css('min-width')).toEqual('400px');
+				expect(textBox.css('margin-left')).toBe('120px');
+			});
+			it('positions bottom icons bottom of node text and horizontally centers the text for fixed layout', function () {
+				MAPJS.DOMRender.fixedLayout = true;
+				nodeContent.attr.icon.position = 'bottom';
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.css('background-position')).toBe('50% 23px');
 				expect(underTest.css('padding-bottom')).toEqual('510px');
 				expect(underTest.css('min-width')).toEqual('400px');
 				expect(textBox.css('margin-left')).toBe('120px');
