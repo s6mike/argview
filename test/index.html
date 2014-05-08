@@ -90,10 +90,10 @@
 		<script type="text/javascript" src="../lib/underscore-1.4.4.js"></script>
 		<script type="text/javascript" src="../lib/kinetic-v4.5.4.js"></script>
 		<script src="../lib/color-0.4.1.min.js"></script>
-		<script type="text/javascript" src="../src/kinetic.clip.js"></script>
-		<script type="text/javascript" src="../src/kinetic.idea.js"></script>
-		<script type="text/javascript" src="../src/kinetic.connector.js"></script>
-		<script type="text/javascript" src="../src/kinetic.link.js"></script>
+		<script type="text/javascript" src="../kinetic-src/kinetic.clip.js"></script>
+		<script type="text/javascript" src="../kinetic-src/kinetic.idea.js"></script>
+		<script type="text/javascript" src="../kinetic-src/kinetic.connector.js"></script>
+		<script type="text/javascript" src="../kinetic-src/kinetic.link.js"></script>
 		<script type="text/javascript" src="../src/observable.js"></script>
 		<script type="text/javascript" src="../src/mapjs.js"></script>
 		<script type="text/javascript" src="../src/url-helper.js"></script>
@@ -102,10 +102,9 @@
 		<script type="text/javascript" src="../src/clipboard.js"></script>
 		<script type="text/javascript" src="../src/map-model.js"></script>
 		<script type="text/javascript" src="../src/drag-and-drop.js"></script>
-		<script type="text/javascript" src="../src/kinetic-mediator.js"></script>
+		<script type="text/javascript" src="../kinetic-src/kinetic-mediator.js"></script>
 		<script type="text/javascript" src="../src/map-toolbar-widget.js"></script>
-		<script type="text/javascript" src="../src/png-exporter.js"></script>
-		<script type="text/javascript" src="../src/map-widget.js"></script>
+		<script type="text/javascript" src="../kinetic-src/map-widget.js"></script>
 		<script type="text/javascript" src="../src/link-edit-widget.js"></script>
 		<script type="text/javascript" src="../src/image-drop-widget.js"></script>
 		<script type="text/javascript" src="roy-map.js"></script>
@@ -126,6 +125,10 @@
 				});
 			};
 			(function () {
+        MAPJS.defaultStyles = {
+          root: {background: '#22AAE0'},
+          nonRoot: {background: '#E0E0E0'}
+        };
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),
@@ -151,6 +154,5 @@
 				});
 			}());
 		</script>
-		<script src="perftests.js"></script>
 	</body>
 </html>

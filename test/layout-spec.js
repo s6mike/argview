@@ -190,6 +190,10 @@ describe('calculateLayout', function () {
 		}));
 	});
 	it('should set style using defaults where not defined', function () {
+		MAPJS.defaultStyles = {
+			root: {background: '#FF00FF'},
+			nonRoot: {background: '#FFFF00'}
+		};
 		var contentAggregate = MAPJS.content({
 			id: 1,
 			ideas: {
