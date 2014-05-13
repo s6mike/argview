@@ -597,7 +597,8 @@ jQuery.fn.placeCaretAtEnd = function () {
 };
 jQuery.fn.editNode = function () {
 	'use strict';
-	var textBox = this.find('[data-mapjs-role=title]'),
+	var node = this,
+		textBox = this.find('[data-mapjs-role=title]'),
 		unformattedText = this.data('title'),
 		originalText = textBox.text(),
 		result = jQuery.Deferred(),
@@ -605,6 +606,9 @@ jQuery.fn.editNode = function () {
 			detachListeners();
 			textBox.css('word-break', '');
 			textBox.removeAttr('contenteditable');
+			if (node.attr('mapjs-level') > 1) {
+				node.simpleDraggable();
+			}
 		},
 		finishEditing = function () {
 			if (textBox.text() === unformattedText) {
@@ -657,6 +661,7 @@ jQuery.fn.editNode = function () {
 	if (unformattedText) {
 		textBox.placeCaretAtEnd();
 	}
+	node.simpleDraggable({disable: true});
 	return result.promise();
 };
 

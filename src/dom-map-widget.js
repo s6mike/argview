@@ -1,7 +1,7 @@
 /*jslint nomen: true, newcap: true, browser: true*/
 /*global MAPJS, $, Hammer, _, jQuery*/
 
-jQuery.fn.scrollWhenDragging = function () {
+jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 	/*jslint newcap:true*/
 	'use strict';
 	Hammer(this);
@@ -9,10 +9,12 @@ jQuery.fn.scrollWhenDragging = function () {
 		var element = $(this),
 			dragOrigin;
 		element.on('dragstart', function () {
-			dragOrigin = {
-				top: element.scrollTop(),
-				left: element.scrollLeft()
-			};
+			if (scrollPredicate()) {
+				dragOrigin = {
+					top: element.scrollTop(),
+					left: element.scrollLeft()
+				};
+			}
 		}).on('drag', function (e) {
 			if (e.gesture && dragOrigin) {
 				element.scrollTop(dragOrigin.top - e.gesture.deltaY);
@@ -91,7 +93,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			element.simpleDraggableContainer();
 		}
 		if (!touchEnabled) {
-			element.scrollWhenDragging(); //no need to do this for touch, this is native
+			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
 			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {

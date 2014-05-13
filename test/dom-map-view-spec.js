@@ -140,6 +140,7 @@ describe('editNode', function () {
 		node = jQuery('<div>').data('title', 'some title').appendTo('body');
 		textBox = jQuery('<div>').attr('data-mapjs-role', 'title').text('some old text').appendTo(node);
 		spyOn(jQuery.fn, 'focus').and.callThrough();
+		spyOn(jQuery.fn, 'simpleDraggable').and.callThrough();
 		resolved = jasmine.createSpy('resolved');
 		rejected = jasmine.createSpy('rejected');
 		node.editNode().then(resolved, rejected);
@@ -176,6 +177,10 @@ describe('editNode', function () {
 	it('focuses on the text box', function () {
 		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(textBox);
 	});
+	it('deactivates dragging on the node', function () {
+		expect(jQuery.fn.simpleDraggable).toHaveBeenCalledOnJQueryObject(node);
+		expect(jQuery.fn.simpleDraggable).toHaveBeenCalledWith({disable: true});
+	});
 	it('puts the caret at the end of the textbox', function () {
 		var selection = window.getSelection();
 		expect(selection.type).toEqual('Caret');
@@ -196,6 +201,19 @@ describe('editNode', function () {
 			textBox.trigger('blur');
 			expect(textBox.attr('contenteditable')).toBeFalsy();
 			expect(resolved).toHaveBeenCalledWith('changed text');
+		});
+		it('reactivates dragging when focus is lost if level > 1', function () {
+			node.attr('mapjs-level', 2);
+			jQuery.fn.simpleDraggable.calls.reset();
+			textBox.trigger('blur');
+			expect(jQuery.fn.simpleDraggable).toHaveBeenCalledOnJQueryObject(node);
+			expect(jQuery.fn.simpleDraggable.calls.mostRecent().args).toEqual([]);
+		});
+		it('does not reactivate dragging if level = 1', function () {
+			node.attr('mapjs-level', 1);
+			jQuery.fn.simpleDraggable.calls.reset();
+			textBox.trigger('blur');
+			expect(jQuery.fn.simpleDraggable).not.toHaveBeenCalledOnJQueryObject(node);
 		});
 		it('completes editing when enter is pressed and prevents further keydown event propagation', function () {
 			var event = jQuery.Event('keydown', { which: 13 });
