@@ -43,10 +43,7 @@
 		}).on('mm:start-dragging-shadow', function (event) {
 			var target = $(event.relatedTarget),
 				clone = function () {
-					return target.clone().css({
-						top: target.position().top,
-						left: target.position().left
-					}).addClass('drag-shadow').appendTo(container);
+					return target.clone().addClass('drag-shadow').appendTo(target.parent()).offset(target.offset());
 				};
 			if (!currentDragObject) {
 				currentDragObject = clone();
@@ -78,7 +75,6 @@
 			}
 		}).attr('data-drag-role', 'container');
 	};
-
 
 	var onDrag = function (e) {
 			$(this).trigger(
