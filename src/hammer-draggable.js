@@ -3,7 +3,8 @@
 (function () {
 	'use strict';
 	$.fn.simpleDraggableContainer = function () {
-		var currentDragObject,
+		var container = this,
+			currentDragObject,
 			originalDragObjectPosition,
 			drag = function (event) {
 				if (currentDragObject && event.gesture) {
@@ -39,6 +40,26 @@
 				};
 				$(this).on('drag', drag);
 			}
+		}).on('mm:start-dragging-shadow', function (event) {
+			var target = $(event.relatedTarget),
+				clone = function () {
+					return target.clone().css({
+						top: target.position().top,
+						left: target.position().left
+					}).addClass('drag-shadow').appendTo(container);
+				};
+			if (!currentDragObject) {
+				currentDragObject = clone();
+				originalDragObjectPosition = {
+					top: currentDragObject.css('top'),
+					left: currentDragObject.css('left')
+				};
+				currentDragObject.on('mm:stop-dragging mm:cancel-dragging', function (e) {
+					currentDragObject.remove();
+					target.trigger(e);
+				}).on('mm:drag', function (e) { target.trigger(e); });
+				$(this).on('drag', drag);
+			}
 		}).on('dragend', function (e) {
 			var evt = $.Event('mm:stop-dragging', {gesture: e.gesture});
 			$(this).off('drag', drag);
@@ -60,22 +81,38 @@
 
 
 	var onDrag = function (e) {
-		$(this).trigger(
-			$.Event('mm:start-dragging', {
-				relatedTarget: this
-			})
-		);
-		e.stopPropagation();
-		if (e.gesture) {
-			e.gesture.stopPropagation();
-		}
-	};
-
+			$(this).trigger(
+				$.Event('mm:start-dragging', {
+					relatedTarget: this
+				})
+			);
+			e.stopPropagation();
+			if (e.gesture) {
+				e.gesture.stopPropagation();
+			}
+		}, onShadowDrag = function (e) {
+			$(this).trigger(
+				$.Event('mm:start-dragging-shadow', {
+					relatedTarget: this
+				})
+			);
+			e.stopPropagation();
+			if (e.gesture) {
+				e.gesture.stopPropagation();
+			}
+		};
 	$.fn.simpleDraggable = function (options) {
 		if (!options || !options.disable) {
 			return $(this).on('dragstart', onDrag);
 		} else {
 			return $(this).off('dragstart', onDrag);
+		}
+	};
+	$.fn.shadowDraggable = function (options) {
+		if (!options || !options.disable) {
+			return $(this).on('dragstart', onShadowDrag);
+		} else {
+			return $(this).off('dragstart', onShadowDrag);
 		}
 	};
 })();
