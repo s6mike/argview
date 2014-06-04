@@ -51,10 +51,7 @@
 					left: currentDragObject.css('left')
 				};
 				currentDragObject.on('mm:stop-dragging mm:cancel-dragging', function (e) {
-					if (currentDragObject) {
-						currentDragObject.remove();
-					}
-
+					this.remove();
 					target.trigger(e);
 				}).on('mm:drag', function (e) { target.trigger(e); });
 				$(this).on('drag', drag);
