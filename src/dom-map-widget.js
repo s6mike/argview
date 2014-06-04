@@ -37,6 +37,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'right': 'selectNodeRight',
 			'shift+right': 'activateNodeRight',
 			'shift+left': 'activateNodeLeft',
+			'meta+right ctrl+right meta+left ctrl+left': 'flip',
 			'shift+up': 'activateNodeUp',
 			'shift+down': 'activateNodeDown',
 			'down': 'selectNodeDown',

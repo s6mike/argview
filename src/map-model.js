@@ -351,6 +351,22 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			editNewIdea(newId);
 		}
 	};
+	this.flip = function (source) {
+
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('flip', source);
+		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+			return false;
+		}
+		var node = currentLayout.nodes[currentlySelectedIdeaId];
+		if (!node || node.level !== 2) {
+			return false;
+		}
+
+		return idea.flip(currentlySelectedIdeaId);
+	};
 	this.addSiblingIdeaBefore = function (source) {
 		var newId, parent, contextRank, newRank;
 		if (!isEditingEnabled) {

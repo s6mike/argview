@@ -376,6 +376,53 @@ describe('MapModel', function () {
 			}, [], clipboard);
 			underTest.setIdea(anIdea);
 		});
+		describe('flip', function () {
+			beforeEach(function () {
+				anIdea = MAPJS.content({
+					id: 1,
+					title: 'root',
+					ideas: {
+						10: {
+							id: 2,
+							title: 'child',
+							ideas: {
+								11: { id: 3, title: 'child of child' }
+							}
+						}
+					}
+				});
+				underTest = new MAPJS.MapModel(function () {
+					return {
+						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+					};
+				}, [], clipboard);
+				underTest.setIdea(anIdea);
+				spyOn(anIdea, 'flip');
+			});
+			it('cannot flip the root node', function () {
+				var result = underTest.flip();
+				expect(result).toBeFalsy();
+				expect(anIdea.flip).not.toHaveBeenCalled();
+			});
+			it('attempts to flip level = 2', function () {
+				underTest.selectNode(2);
+				var result = underTest.flip();
+				expect(result).toBeFalsy();
+				expect(anIdea.flip).toHaveBeenCalledWith(2);
+			});
+			it('cannot flip level > 2', function () {
+				underTest.selectNode(3);
+				var result = underTest.flip();
+				expect(result).toBeFalsy();
+				expect(anIdea.flip).not.toHaveBeenCalled();
+			});
+			it('does not die on unexisting node', function () {
+				underTest.selectNode(223);
+				var result = underTest.flip();
+				expect(result).toBeFalsy();
+				expect(anIdea.flip).not.toHaveBeenCalled();
+			});
+		});
 		describe('updateTitle', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'updateTitle');
@@ -1540,7 +1587,7 @@ describe('MapModel', function () {
 			underTest.addEventListener('analytic', analyticListener);
 		});
 		describe('should dispatch analytic event', function () {
-			var allMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
+			var allMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink',
 				'setIcon', 'removeLink'];
@@ -1576,7 +1623,7 @@ describe('MapModel', function () {
 			expect(analyticListener).not.toHaveBeenCalledWith();
 		});
 		describe('when editing is disabled edit methods should not execute ', function () {
-			var editingMethods = ['cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
+			var editingMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
