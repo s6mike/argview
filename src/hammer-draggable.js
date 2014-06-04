@@ -3,8 +3,7 @@
 (function () {
 	'use strict';
 	$.fn.simpleDraggableContainer = function () {
-		var container = this,
-			currentDragObject,
+		var currentDragObject,
 			originalDragObjectPosition,
 			drag = function (event) {
 				if (currentDragObject && event.gesture) {
@@ -52,7 +51,10 @@
 					left: currentDragObject.css('left')
 				};
 				currentDragObject.on('mm:stop-dragging mm:cancel-dragging', function (e) {
-					currentDragObject.remove();
+					if (currentDragObject) {
+						currentDragObject.remove();
+					}
+
 					target.trigger(e);
 				}).on('mm:drag', function (e) { target.trigger(e); });
 				$(this).on('drag', drag);
