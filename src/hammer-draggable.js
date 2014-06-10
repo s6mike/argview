@@ -5,6 +5,7 @@
 	$.fn.simpleDraggableContainer = function () {
 		var currentDragObject,
 			originalDragObjectPosition,
+			container = this,
 			drag = function (event) {
 				if (currentDragObject && event.gesture) {
 					var scale = currentDragObject.parent().data('scale') || 1,
@@ -17,6 +18,8 @@
 					if (event.gesture) {
 						event.gesture.preventDefault();
 					}
+					event.stopPropagation();
+					return false;
 				}
 			},
 			rollback = function () {
@@ -42,7 +45,7 @@
 		}).on('mm:start-dragging-shadow', function (event) {
 			var target = $(event.relatedTarget),
 				clone = function () {
-					return target.clone().addClass('drag-shadow').appendTo(target.parent()).offset(target.offset());
+					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset());
 				};
 			if (!currentDragObject) {
 				currentDragObject = clone();
@@ -82,19 +85,23 @@
 				})
 			);
 			e.stopPropagation();
+			e.preventDefault();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
 			}
+			return false;
 		}, onShadowDrag = function (e) {
 			$(this).trigger(
 				$.Event('mm:start-dragging-shadow', {
 					relatedTarget: this
 				})
 			);
+			e.preventDefault();
 			e.stopPropagation();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
 			}
+			return false;
 		};
 	$.fn.simpleDraggable = function (options) {
 		if (!options || !options.disable) {

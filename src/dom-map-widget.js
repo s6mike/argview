@@ -25,7 +25,7 @@ jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 		});
 	});
 };
-$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController) {
+$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer) {
 	'use strict';
 	var hotkeyEventHandlers = {
 			'return': 'addSiblingIdea',
@@ -88,10 +88,23 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				'height': element.innerHeight(),
 				'scale': 1
 			}).updateStage(),
+			scrollLeftStop,
+		    scrollTopStop,
+			killThem = function () {
+				element.scrollLeft(scrollLeftStop);
+				element.scrollTop(scrollTopStop);
+			},
 			previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {
-			element.simpleDraggableContainer();
+			(dragContainer || element)
+			.on('mm:start-dragging mm:start-dragging-shadow', function () {
+				scrollLeftStop = element.scrollLeft();
+				scrollTopStop = element.scrollTop();
+				element.on('scroll', killThem);
+			}).on('mm:stop-dragging mm:cancel-dragging', function () {
+				element.off('scroll', killThem);
+			}).simpleDraggableContainer();
 		}
 		if (!touchEnabled) {
 			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native

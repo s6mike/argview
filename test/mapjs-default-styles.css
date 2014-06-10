@@ -137,4 +137,6 @@
 }
 .mapjs-arrow {
 }
-
+.drag-shadow {
+	opacity: 0.5;
+}

@@ -140,7 +140,7 @@ describe('editNode', function () {
 		node = jQuery('<div>').data('title', 'some title').appendTo('body');
 		textBox = jQuery('<div>').attr('data-mapjs-role', 'title').text('some old text').appendTo(node);
 		spyOn(jQuery.fn, 'focus').and.callThrough();
-		spyOn(jQuery.fn, 'simpleDraggable').and.callThrough();
+		spyOn(jQuery.fn, 'shadowDraggable').and.callThrough();
 		resolved = jasmine.createSpy('resolved');
 		rejected = jasmine.createSpy('rejected');
 		node.editNode().then(resolved, rejected);
@@ -178,8 +178,8 @@ describe('editNode', function () {
 		expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(textBox);
 	});
 	it('deactivates dragging on the node', function () {
-		expect(jQuery.fn.simpleDraggable).toHaveBeenCalledOnJQueryObject(node);
-		expect(jQuery.fn.simpleDraggable).toHaveBeenCalledWith({disable: true});
+		expect(jQuery.fn.shadowDraggable).toHaveBeenCalledOnJQueryObject(node);
+		expect(jQuery.fn.shadowDraggable).toHaveBeenCalledWith({disable: true});
 	});
 	it('puts the caret at the end of the textbox', function () {
 		var selection = window.getSelection();
@@ -204,16 +204,16 @@ describe('editNode', function () {
 		});
 		it('reactivates dragging when focus is lost if level > 1', function () {
 			node.attr('mapjs-level', 2);
-			jQuery.fn.simpleDraggable.calls.reset();
+			jQuery.fn.shadowDraggable.calls.reset();
 			textBox.trigger('blur');
-			expect(jQuery.fn.simpleDraggable).toHaveBeenCalledOnJQueryObject(node);
-			expect(jQuery.fn.simpleDraggable.calls.mostRecent().args).toEqual([]);
+			expect(jQuery.fn.shadowDraggable).toHaveBeenCalledOnJQueryObject(node);
+			expect(jQuery.fn.shadowDraggable.calls.mostRecent().args).toEqual([]);
 		});
 		it('does not reactivate dragging if level = 1', function () {
 			node.attr('mapjs-level', 1);
-			jQuery.fn.simpleDraggable.calls.reset();
+			jQuery.fn.shadowDraggable.calls.reset();
 			textBox.trigger('blur');
-			expect(jQuery.fn.simpleDraggable).not.toHaveBeenCalledOnJQueryObject(node);
+			expect(jQuery.fn.shadowDraggable).not.toHaveBeenCalledOnJQueryObject(node);
 		});
 		it('completes editing when enter is pressed and prevents further keydown event propagation', function () {
 			var event = jQuery.Event('keydown', { which: 13 });

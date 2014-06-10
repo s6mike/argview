@@ -607,7 +607,7 @@ jQuery.fn.editNode = function () {
 			textBox.css('word-break', '');
 			textBox.removeAttr('contenteditable');
 			if (node.attr('mapjs-level') > 1) {
-				node.simpleDraggable();
+				node.shadowDraggable();
 			}
 		},
 		finishEditing = function () {
@@ -661,7 +661,7 @@ jQuery.fn.editNode = function () {
 	if (unformattedText) {
 		textBox.placeCaretAtEnd();
 	}
-	node.simpleDraggable({disable: true});
+	node.shadowDraggable({disable: true});
 	return result.promise();
 };
 
@@ -997,7 +997,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		}
 		element.css('min-width', element.css('width'));
 		if (mapModel.isEditingEnabled() && node.level > 1) {
-			element.simpleDraggable();
+			element.shadowDraggable();
 		}
 	});
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
