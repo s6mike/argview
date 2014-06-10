@@ -1219,7 +1219,7 @@ describe('MAPJS.DOMRender', function () {
 
 			});
 			describe('drag and drop features', function () {
-				var underTest, noShift, withShift;
+				var underTest, noShift, withShift, outsideViewport;
 				beforeEach(function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 1});
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 1, height: 10, title: 'zeka', id: 2});
@@ -1227,14 +1227,15 @@ describe('MAPJS.DOMRender', function () {
 					jQuery('#node_3').addClass('droppable');
 					underTest = jQuery('#node_1');
 					underTest.trigger('mm:start-dragging');
-					viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
-					stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+					viewPort.css({'width': '1000px', 'height': '500px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+					stage.data({offsetX: 200, offsetY: 100, width: 3000, height: 1500, scale: 2}).updateStage();
 
 					viewPort.scrollLeft(20);
 					viewPort.scrollTop(10);
 
 					noShift = {gesture: {center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446} };
 					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
+					outsideViewport = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 1100, pageY: 446}}};
 				});
 				it('assigns a dragging class when the node is being dragged', function () {
 					expect(underTest.hasClass('dragging')).toBeTruthy();
@@ -1322,7 +1323,6 @@ describe('MAPJS.DOMRender', function () {
 					describe('when level > 1 dropped on background', function () {
 						beforeEach(function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(false);
-//							underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						});
 						it('calls positionNode and passed the current (DOM) top and left position', function () {
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
@@ -1345,8 +1345,6 @@ describe('MAPJS.DOMRender', function () {
 						});
 					});
 					it('does not position node and returns false when when level = 1 dropped on a background', function () {
-						mapModel.getNodeIdAtPosition.and.returnValue(false);
-						underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 						mapModel.positionNodeAt.calls.reset();
 
@@ -1354,10 +1352,16 @@ describe('MAPJS.DOMRender', function () {
 						underTest.trigger('mm:start-dragging');
 
 						var e = jQuery.Event('mm:stop-dragging', noShift);
-						underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
 						underTest.trigger(e);
 						expect(e.result === false).toBeTruthy();
+					});
+					it('does not position node and does not returns false when dropped outside viewport', function () {
+						mapModel.getNodeIdAtPosition.and.returnValue(false);
+						var e = jQuery.Event('mm:stop-dragging', outsideViewport);
+						underTest.trigger(e);
+						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
+						expect(e.result).toBeUndefined();
 					});
 					describe('when dropped on itself', function () {
 						beforeEach(function () {

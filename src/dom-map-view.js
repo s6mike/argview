@@ -857,15 +857,23 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				viewPort.animate(animation, {duration: 100});
 			}
 		},
-		stagePositionForPointEvent = function (evt) {
+		viewportCoordinatesForPointEvent = function (evt) {
 			var dropPosition = (evt && evt.gesture && evt.gesture.center) || evt,
 				vpOffset = viewPort.offset(),
-				viewportDropCoordinates;
+				result;
 			if (dropPosition) {
-				viewportDropCoordinates = {
+				result = {
 					x: dropPosition.pageX - vpOffset.left,
 					y: dropPosition.pageY -  vpOffset.top
 				};
+				if (result.x >= 0 && result.x <= viewPort.innerWidth() && result.y >= 0 && result.y <= viewPort.innerHeight()) {
+					return result;
+				}
+			}
+		},
+		stagePositionForPointEvent = function (evt) {
+			var viewportDropCoordinates = viewportCoordinatesForPointEvent(evt);
+			if (viewportDropCoordinates) {
 				return viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
 			}
 		},
@@ -957,13 +965,13 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				element.removeClass('dragging');
 				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					stageDropCoordinates = stagePositionForPointEvent(evt),
-					nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
-					finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top}),
-					dropResult;
+					nodeAtDrop, finalPosition, dropResult;
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
-					return false;
+					return;
 				}
+				nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y);
+				finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
 				if (nodeAtDrop === node.id) {
 					if (!isShift) {
 						return false;

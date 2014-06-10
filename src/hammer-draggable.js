@@ -66,7 +66,13 @@
 				};
 				currentDragObject.on('mm:stop-dragging mm:cancel-dragging', function (e) {
 					this.remove();
-					target.trigger(e);
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					var evt = $.Event(e.type, {
+						gesture: e.gesture,
+						finalPosition: e.finalPosition
+					});
+					target.trigger(evt);
 				}).on('mm:drag', function (e) { target.trigger(e); });
 				$(this).on('drag', drag);
 			}
