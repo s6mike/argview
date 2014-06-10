@@ -893,6 +893,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node)
 			.on('tap', function (evt) {
+				element.focus();
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				if (realEvent.button) {
 					return;

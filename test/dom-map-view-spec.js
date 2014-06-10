@@ -1101,6 +1101,12 @@ describe('MAPJS.DOMRender', function () {
 					underTest.trigger(event);
 					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
 				});
+				it('focuses the element under test', function () {
+					var event = jQuery.Event('tap');
+					spyOn(jQuery.fn, 'focus');
+					underTest.trigger(event);
+					expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
+				});
 				it('does not forward right-click events to the mapModel clickNode to avoid double processing', function () {
 					var event = jQuery.Event('tap', {gesture: { stopPropagation: jasmine.createSpy(), srcEvent: { button: 1}}});
 					underTest.trigger(event);
