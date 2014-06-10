@@ -7,11 +7,11 @@
 			originalDragObjectPosition,
 			container = this,
 			drag = function (event) {
+
 				if (currentDragObject && event.gesture) {
-					var scale = currentDragObject.parent().data('scale') || 1,
-						newpos = {
-							top: Math.round(parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY / scale),
-							left: Math.round(parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX / scale)
+					var newpos = {
+							top: Math.round(parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY),
+							left: Math.round(parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX)
 						};
 					currentDragObject.css(newpos).trigger($.Event('mm:drag', {gesture: event.gesture}));
 					if (event.gesture) {
@@ -48,7 +48,15 @@
 		}).on('mm:start-dragging-shadow', function (event) {
 			var target = $(event.relatedTarget),
 				clone = function () {
-					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset()).data(target.data()).attr('mapjs-drag-role', 'shadow');
+					var result = target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset()).data(target.data()).attr('mapjs-drag-role', 'shadow'),
+						scale = target.parent().data('scale') || 1;
+					if (scale !== 0) {
+						result.css({
+							'transform': 'scale(' + scale + ')',
+							'transform-origin': 'top left'
+						});
+					}
+					return result;
 				};
 			if (!currentDragObject) {
 				currentDragObject = clone();
@@ -63,9 +71,12 @@
 				$(this).on('drag', drag);
 			}
 		}).on('dragend', function (e) {
-			var evt = $.Event('mm:stop-dragging', {gesture: e.gesture});
 			$(this).off('drag', drag);
 			if (currentDragObject) {
+				var evt = $.Event('mm:stop-dragging', {
+					gesture: e.gesture,
+					finalPosition: currentDragObject.offset()
+				});
 				currentDragObject.trigger(evt);
 				if (evt.result === false) {
 					rollback(e);

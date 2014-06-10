@@ -893,7 +893,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node)
 			.on('tap', function (evt) {
-				element.focus();
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				if (realEvent.button) {
 					return;
@@ -925,7 +924,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
-			.on('mm:start-dragging', function () {
+			.on('mm:start-dragging mm:start-dragging-shadow', function () {
 				mapModel.selectNode(node.id);
 				element.addClass('dragging');
 			})
@@ -959,6 +958,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					stageDropCoordinates = stagePositionForPointEvent(evt),
 					nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
+					finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top}),
 					dropResult;
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
@@ -968,12 +968,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					if (!isShift) {
 						return false;
 					}
-					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
+					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, !!isShift);
 				}
 				else if (nodeAtDrop) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else if (node.level > 1) {
-					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
+					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, !!isShift);
 				} else {
 					dropResult = false;
 				}

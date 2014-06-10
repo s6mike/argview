@@ -1101,12 +1101,6 @@ describe('MAPJS.DOMRender', function () {
 					underTest.trigger(event);
 					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
 				});
-				it('focuses the element under test', function () {
-					var event = jQuery.Event('tap');
-					spyOn(jQuery.fn, 'focus');
-					underTest.trigger(event);
-					expect(jQuery.fn.focus).toHaveBeenCalledOnJQueryObject(underTest);
-				});
 				it('does not forward right-click events to the mapModel clickNode to avoid double processing', function () {
 					var event = jQuery.Event('tap', {gesture: { stopPropagation: jasmine.createSpy(), srcEvent: { button: 1}}});
 					underTest.trigger(event);
@@ -1239,8 +1233,8 @@ describe('MAPJS.DOMRender', function () {
 					viewPort.scrollLeft(20);
 					viewPort.scrollTop(10);
 
-					noShift = {gesture: {center: {pageX: 70, pageY: 50}}};
-					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}};
+					noShift = {gesture: {center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446} };
+					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
 				});
 				it('assigns a dragging class when the node is being dragged', function () {
 					expect(underTest.hasClass('dragging')).toBeTruthy();
@@ -1328,7 +1322,7 @@ describe('MAPJS.DOMRender', function () {
 					describe('when level > 1 dropped on background', function () {
 						beforeEach(function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(false);
-							underTest.css({position: 'absolute', top: '123px', left: '112px'});
+//							underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						});
 						it('calls positionNode and passed the current (DOM) top and left position', function () {
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));

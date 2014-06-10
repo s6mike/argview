@@ -96,7 +96,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 
 		if (!touchEnabled) {
 			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
-			element.on('mousedown', function (e) { e.preventDefault(); if (e.gesture) { e.gesture.preventDefault(); }});
+			element.on('mousedown', function () {
+				element.css('overflow', 'hidden');
+			}).on('mouseup', function () {
+				element.css('overflow', 'auto');
+			});
 			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
