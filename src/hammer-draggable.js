@@ -24,14 +24,18 @@
 			},
 			rollback = function () {
 				var target = currentDragObject; // allow it to be cleared while animating
-				target.animate(originalDragObjectPosition, {
-					complete: function () {
-						target.trigger('mm:cancel-dragging');
-					},
-					progress: function () {
-						target.trigger('mm:drag');
-					}
-				});
+				if (target.attr('mapjs-drag-role') !== 'shadow') {
+					target.animate(originalDragObjectPosition, {
+						complete: function () {
+							target.trigger('mm:cancel-dragging');
+						},
+						progress: function () {
+							target.trigger('mm:drag');
+						}
+					});
+				} else {
+					target.trigger('mm:cancel-dragging');
+				}
 			};
 		return Hammer($(this), {'drag_min_distance': 2}).on('mm:start-dragging', function (event) {
 			if (!currentDragObject) {
@@ -45,7 +49,7 @@
 		}).on('mm:start-dragging-shadow', function (event) {
 			var target = $(event.relatedTarget),
 				clone = function () {
-					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset()).data(target.data());
+					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset()).data(target.data()).attr('mapjs-drag-role', 'shadow');
 				};
 			if (!currentDragObject) {
 				currentDragObject = clone();
