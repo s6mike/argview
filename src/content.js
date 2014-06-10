@@ -231,7 +231,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			var dotIndex = String(id).indexOf('.');
 			return dotIndex > 0 && id.substr(dotIndex + 1);
 		},
-		commandProcessors = {};
+		commandProcessors = {},
+		configuration = {};
+	contentAggregate.setConfiguration = function (config) {
+		configuration = config || {};
+	};
 	contentAggregate.getSessionKey = function () {
 		return sessionKey;
 	};
@@ -397,7 +401,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	commandProcessors.paste = function (originSession, parentIdeaId, jsonToPaste, initialId) {
 		var pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId),
 			cleanUp = function (json) {
-				var result =  _.omit(json, 'ideas', 'id'), index = 1, childKeys, sortedChildKeys;
+				var result =  _.omit(json, 'ideas', 'id', 'attr'), index = 1, childKeys, sortedChildKeys;
+				result.attr = _.omit(json.attr, configuration.nonClonedAttributes);
+				if (_.isEmpty(result.attr)) {
+					delete result.attr;
+				}
 				if (json.ideas) {
 					childKeys = _.groupBy(_.map(_.keys(json.ideas), parseFloat), function (key) { return key > 0; });
 					sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));

@@ -412,6 +412,24 @@ describe('content aggregate', function () {
 				expect(newChildren[3].title).toBe('-1');
 				expect(newChildren[4].title).toBe('-77');
 			});
+			it('should clean up attributes from the list of non cloned recursively', function () {
+				idea.setConfiguration({nonClonedAttributes: ['noncloned', 'xnoncloned']});
+				idea.paste(3, _.extend(toPaste, {
+						attr: { cloned: 'ok', noncloned: 'notok' },
+						ideas: {
+							1: {id: 10, title: 'pastedchild', attr: { xcloned: 'ok', noncloned: 'notok', xnoncloned: 'notok' },
+								ideas: { 1: { id: 11, title: 'childchild', attr: {noncloned: 'notok'} } }
+							}
+						}
+					}
+				));
+				var	pastedRoot = idea.ideas[-10].ideas[1],
+					pastedChild = pastedRoot.ideas[1],
+					childChild = pastedRoot.ideas[1].ideas[1];
+				expect(pastedRoot.attr).toEqual({cloned: 'ok'});
+				expect(pastedChild.attr).toEqual({xcloned: 'ok'});
+				expect(childChild.attr).toBeUndefined();
+			});
 			it('should paste to aggregate root if root ID is given', function () {
 				var result = idea.paste(1, toPaste), newRank;
 				expect(result).toBeTruthy();
@@ -1918,8 +1936,14 @@ describe('content aggregate', function () {
 			var idea, toPaste, result;
 			beforeEach(function () {
 				idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}});
-				toPaste = [{title: 'pasted', id: 1, ideas: {1: { id: 66, title: 'sub sub'}}}, {title: 'pasted2'}];
+				idea.setConfiguration({
+					nonClonedAttributes: ['noncloned']
+				});
+				toPaste = [{title: 'pasted', id: 1, ideas: {1: { id: 66, attr: {cloned: 1, noncloned: 2}, title: 'sub sub'}}}, {title: 'pasted2'}];
 				result = idea.pasteMultiple(3, toPaste);
+			});
+			it('cleans up attributes', function () {
+				expect(idea.ideas[-10].ideas[1].ideas[1].attr).toEqual({cloned: 1});
 			});
 			it('pastes an array of JSONs into the subidea idea by id', function () {
 				expect(idea.ideas[-10].ideas[1].title).toBe('pasted');
