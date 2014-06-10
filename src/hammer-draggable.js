@@ -14,11 +14,9 @@
 							left: Math.round(parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX / scale)
 						};
 					currentDragObject.css(newpos).trigger($.Event('mm:drag', {gesture: event.gesture}));
-					event.preventDefault();
 					if (event.gesture) {
 						event.gesture.preventDefault();
 					}
-					event.stopPropagation();
 					return false;
 				}
 			},
@@ -37,7 +35,8 @@
 					target.trigger($.Event('mm:cancel-dragging', {gesture: e.gesture}));
 				}
 			};
-		return Hammer($(this), {'drag_min_distance': 2}).on('mm:start-dragging', function (event) {
+		Hammer(this, {'drag_min_distance': 2});
+		return this.on('mm:start-dragging', function (event) {
 			if (!currentDragObject) {
 				currentDragObject = $(event.relatedTarget);
 				originalDragObjectPosition = {
@@ -89,8 +88,10 @@
 				})
 			);
 			e.stopPropagation();
+			e.preventDefault();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
+				e.gesture.preventDefault();
 			}
 		}, onShadowDrag = function (e) {
 			$(this).trigger(
@@ -99,8 +100,10 @@
 				})
 			);
 			e.stopPropagation();
+			e.preventDefault();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
+				e.gesture.preventDefault();
 			}
 		};
 	$.fn.simpleDraggable = function (options) {

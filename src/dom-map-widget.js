@@ -88,31 +88,15 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				'height': element.innerHeight(),
 				'scale': 1
 			}).updateStage(),
-			scrollLeftStop,
-		    scrollTopStop,
-		    scrollKilled = false,
-			killThem = function () {
-				element.scrollLeft(scrollLeftStop);
-				element.scrollTop(scrollTopStop);
-			},
 			previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {
-			(dragContainer || element)
-			.on('mm:start-dragging mm:start-dragging-shadow', function () {
-				scrollLeftStop = element.scrollLeft();
-				scrollTopStop = element.scrollTop();
-				scrollKilled = true;
-				element.on('scroll', killThem);
-			}).on('mm:stop-dragging mm:cancel-dragging', function () {
-				scrollKilled = false;
-				element.off('scroll', killThem);
-			}).simpleDraggableContainer();
+			(dragContainer || element).simpleDraggableContainer();
 		}
+
 		if (!touchEnabled) {
-			element.scrollWhenDragging(function () {
-				return !scrollKilled && mapModel.getInputEnabled();
-			}); //no need to do this for touch, this is native
+			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
+			element.on('mousedown', function (e) { e.preventDefault(); if (e.gesture) { e.gesture.preventDefault(); }});
 			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
