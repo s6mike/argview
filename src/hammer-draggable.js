@@ -22,19 +22,19 @@
 					return false;
 				}
 			},
-			rollback = function () {
+			rollback = function (e) {
 				var target = currentDragObject; // allow it to be cleared while animating
 				if (target.attr('mapjs-drag-role') !== 'shadow') {
 					target.animate(originalDragObjectPosition, {
 						complete: function () {
-							target.trigger('mm:cancel-dragging');
+							target.trigger($.Event('mm:cancel-dragging', {gesture: e.gesture}));
 						},
 						progress: function () {
 							target.trigger('mm:drag');
 						}
 					});
 				} else {
-					target.trigger('mm:cancel-dragging');
+					target.trigger($.Event('mm:cancel-dragging', {gesture: e.gesture}));
 				}
 			};
 		return Hammer($(this), {'drag_min_distance': 2}).on('mm:start-dragging', function (event) {
@@ -69,14 +69,14 @@
 			if (currentDragObject) {
 				currentDragObject.trigger(evt);
 				if (evt.result === false) {
-					rollback();
+					rollback(e);
 				}
 				currentDragObject = undefined;
 			}
-		}).on('mouseleave', function () {
+		}).on('mouseleave', function (e) {
 			if (currentDragObject) {
 				$(this).off('drag', drag);
-				rollback();
+				rollback(e);
 				currentDragObject = undefined;
 			}
 		}).attr('data-drag-role', 'container');
