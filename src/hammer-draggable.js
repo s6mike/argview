@@ -45,7 +45,7 @@
 		}).on('mm:start-dragging-shadow', function (event) {
 			var target = $(event.relatedTarget),
 				clone = function () {
-					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset());
+					return target.clone().addClass('drag-shadow').appendTo(container).offset(target.offset()).data(target.data());
 				};
 			if (!currentDragObject) {
 				currentDragObject = clone();
@@ -85,23 +85,19 @@
 				})
 			);
 			e.stopPropagation();
-			e.preventDefault();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
 			}
-			return false;
 		}, onShadowDrag = function (e) {
 			$(this).trigger(
 				$.Event('mm:start-dragging-shadow', {
 					relatedTarget: this
 				})
 			);
-			e.preventDefault();
 			e.stopPropagation();
 			if (e.gesture) {
 				e.gesture.stopPropagation();
 			}
-			return false;
 		};
 	$.fn.simpleDraggable = function (options) {
 		if (!options || !options.disable) {

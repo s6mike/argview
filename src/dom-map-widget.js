@@ -90,6 +90,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			}).updateStage(),
 			scrollLeftStop,
 		    scrollTopStop,
+		    scrollKilled = false,
 			killThem = function () {
 				element.scrollLeft(scrollLeftStop);
 				element.scrollTop(scrollTopStop);
@@ -101,13 +102,17 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			.on('mm:start-dragging mm:start-dragging-shadow', function () {
 				scrollLeftStop = element.scrollLeft();
 				scrollTopStop = element.scrollTop();
+				scrollKilled = true;
 				element.on('scroll', killThem);
 			}).on('mm:stop-dragging mm:cancel-dragging', function () {
+				scrollKilled = false;
 				element.off('scroll', killThem);
 			}).simpleDraggableContainer();
 		}
 		if (!touchEnabled) {
-			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
+			element.scrollWhenDragging(function () {
+				return !scrollKilled && mapModel.getInputEnabled();
+			}); //no need to do this for touch, this is native
 			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
