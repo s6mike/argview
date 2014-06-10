@@ -606,9 +606,7 @@ jQuery.fn.editNode = function () {
 			detachListeners();
 			textBox.css('word-break', '');
 			textBox.removeAttr('contenteditable');
-			if (node.attr('mapjs-level') > 1) {
-				node.shadowDraggable();
-			}
+			node.shadowDraggable();
 		},
 		finishEditing = function () {
 			if (textBox.text() === unformattedText) {
@@ -973,8 +971,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 				else if (nodeAtDrop) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
-				} else {
+				} else if (node.level > 1) {
 					dropResult = mapModel.positionNodeAt(node.id, element.getBox().left, element.getBox().top, !!isShift);
+				} else {
+					dropResult = false;
 				}
 				return dropResult;
 			})
@@ -996,7 +996,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			});
 		}
 		element.css('min-width', element.css('width'));
-		if (mapModel.isEditingEnabled() && node.level > 1) {
+		if (mapModel.isEditingEnabled()) {
 			element.shadowDraggable();
 		}
 	});

@@ -202,18 +202,12 @@ describe('editNode', function () {
 			expect(textBox.attr('contenteditable')).toBeFalsy();
 			expect(resolved).toHaveBeenCalledWith('changed text');
 		});
-		it('reactivates dragging when focus is lost if level > 1', function () {
+		it('reactivates dragging when focus is lost', function () {
 			node.attr('mapjs-level', 2);
 			jQuery.fn.shadowDraggable.calls.reset();
 			textBox.trigger('blur');
 			expect(jQuery.fn.shadowDraggable).toHaveBeenCalledOnJQueryObject(node);
 			expect(jQuery.fn.shadowDraggable.calls.mostRecent().args).toEqual([]);
-		});
-		it('does not reactivate dragging if level = 1', function () {
-			node.attr('mapjs-level', 1);
-			jQuery.fn.shadowDraggable.calls.reset();
-			textBox.trigger('blur');
-			expect(jQuery.fn.shadowDraggable).not.toHaveBeenCalledOnJQueryObject(node);
 		});
 		it('completes editing when enter is pressed and prevents further keydown event propagation', function () {
 			var event = jQuery.Event('keydown', { which: 13 });
@@ -1227,11 +1221,11 @@ describe('MAPJS.DOMRender', function () {
 			describe('drag and drop features', function () {
 				var underTest, noShift, withShift;
 				beforeEach(function () {
-					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 2});
-					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 3});
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 1});
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 1, height: 10, title: 'zeka', id: 2});
+					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 3});
 					jQuery('#node_3').addClass('droppable');
-					underTest = stage.children().first();
+					underTest = jQuery('#node_1');
 					underTest.trigger('mm:start-dragging');
 					viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
 					stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
@@ -1325,7 +1319,7 @@ describe('MAPJS.DOMRender', function () {
 							expect(e.result === false).toBeTruthy();
 						});
 					});
-					describe('when dropped on background', function () {
+					describe('when level > 1 dropped on background', function () {
 						beforeEach(function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(false);
 							underTest.css({position: 'absolute', top: '123px', left: '112px'});
@@ -1349,6 +1343,21 @@ describe('MAPJS.DOMRender', function () {
 							underTest.trigger(e);
 							expect(e.result === false).toBeTruthy();
 						});
+					});
+					it('does not position node and returns false when when level = 1 dropped on a background', function () {
+						mapModel.getNodeIdAtPosition.and.returnValue(false);
+						underTest.css({position: 'absolute', top: '123px', left: '112px'});
+						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+						mapModel.positionNodeAt.calls.reset();
+
+						underTest = jQuery('#node_2');
+						underTest.trigger('mm:start-dragging');
+
+						var e = jQuery.Event('mm:stop-dragging', noShift);
+						underTest.css({position: 'absolute', top: '123px', left: '112px'});
+						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
+						underTest.trigger(e);
+						expect(e.result === false).toBeTruthy();
 					});
 					describe('when dropped on itself', function () {
 						beforeEach(function () {
