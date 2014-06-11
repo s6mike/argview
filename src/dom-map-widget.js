@@ -1,5 +1,5 @@
 /*jslint nomen: true, newcap: true, browser: true*/
-/*global MAPJS, $, Hammer, _, jQuery*/
+/*global MAPJS, $, _, jQuery*/
 
 jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 	/*jslint newcap:true*/
@@ -95,10 +95,15 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 
 		if (!touchEnabled) {
 			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
-			element.on('mousedown', function () {
-				element.css('overflow', 'hidden');
-			}).on('mouseup', function () {
-				element.css('overflow', 'auto');
+			element.on('mousedown', function (e) {
+				if (e.target !== element[0]) {
+					element.css('overflow', 'hidden');
+				}
+			});
+			jQuery(document).on('mouseup', function () {
+				if (element.css('overflow') !== 'auto') {
+					element.css('overflow', 'auto');
+				}
 			});
 			element.imageDropWidget(imageInsertController);
 		} else {
