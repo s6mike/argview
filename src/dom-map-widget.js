@@ -4,7 +4,6 @@
 jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 	/*jslint newcap:true*/
 	'use strict';
-	Hammer(this);
 	return this.each(function () {
 		var element = $(this),
 			dragOrigin;
