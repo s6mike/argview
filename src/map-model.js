@@ -221,7 +221,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			this.toggleAddLinkMode();
 		} else {
 			this.selectNode(id);
-			if (button && isInputEnabled) {
+			if (button && button !== -1 && isInputEnabled) {
 				self.dispatchEvent('contextMenuRequested', id, event.layerX, event.layerY);
 			}
 		}
