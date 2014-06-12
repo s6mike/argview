@@ -566,12 +566,12 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 			self.css(selfProps);
 			textBox.css(textProps);
 		};
+	self.attr('mapjs-level', nodeContent.level);
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyLabel(nodeContent.label);
 	applyAttachment();
-	self.attr('mapjs-level', nodeContent.level)
-		.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
+	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
 	setColors();
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
