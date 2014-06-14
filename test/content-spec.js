@@ -2003,4 +2003,56 @@ describe('content aggregate', function () {
 			expect(result).toEqual([111, 112, 11, 121, 12, 13, 1]);
 		});
 	});
+	describe('resource management', function () {
+		var underTest;
+		beforeEach(function () {
+			underTest = MAPJS.content({title: 'test'});
+		});
+		it('stores a resource without cloning (to save memory) and returns the new resource ID', function () {
+			var arr = [1, 2, 3, 4, 5],
+				result = underTest.storeResource(arr);
+			expect(result).not.toBeUndefined();
+			expect(underTest.resources[result]).toEqual(arr);
+			arr.push(6);
+			expect(underTest.resources[result][5]).toBe(6);
+		});
+		it('retrieves the resource content without cloning (to save memory)', function () {
+			underTest.resources = {abc: [1, 2, 3]};
+			expect(underTest.getResource('abc')).toEqual([1, 2, 3]);
+			underTest.getResource('abc').push(4);
+			expect(underTest.resources.abc[3]).toEqual(4);
+		});
+		it('starts IDs with 1, as a string, without session', function () {
+			expect(underTest.storeResource('xx')).toBe('1');
+		});
+		it('starts with ID 1.sessionId with session', function () {
+			underTest = MAPJS.content({},'sk');
+			expect(underTest.storeResource('xx')).toBe('1.sk');
+		});
+		it('assigns a resource ID using the session key if one is provided', function () {
+			underTest = MAPJS.content({title: 'test'}, 'session1');
+			var key = underTest.storeResource('abc');
+			expect(/\.session1$/.test(key)).toBeTruthy();
+		});
+		it('assigns sequential resource IDs without session', function () {
+			underTest = MAPJS.content({title: 'test', resources: {'5.session1': 'r1', '7.session1': 'r2', '9.session2': 'r3', '10': 'r4'}});
+			var key = underTest.storeResource('abc');
+			expect(key).toEqual('11');
+		});
+		it('assigns sequential resource IDs for the session', function () {
+			underTest = MAPJS.content({title: 'test', resources: {'5.session1': 'r1', '7.session1': 'r2', '9.session2': 'r3', '10': 'r4'}}, 'session1');
+			var key = underTest.storeResource('abc');
+			expect(key).toEqual('8.session1');
+		});
+		it('fires event when resource added without cloning the resource (to save memory)', function () {
+			var arr = [1, 2, 3, 4, 5],
+				listener = jasmine.createSpy('resource'),
+				result;
+			underTest.addEventListener('resourceAdded', listener);
+			result = underTest.storeResource(arr);
+			expect(listener).toHaveBeenCalledWith(result, arr);
+			arr.push(6);
+			expect(listener.calls.mostRecent().args[1][5]).toEqual(6);
+		});
+	});
 });

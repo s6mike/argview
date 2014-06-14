@@ -872,6 +872,35 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		upgrade(contentAggregate);
 		contentAggregate.formatVersion = 2;
 	}
+	contentAggregate.storeResource = function (resourceBody) {
+		var maxIdForSession = function () {
+				if (_.isEmpty(contentAggregate.resources)) {
+					return 0;
+				}
+				var toInt = function (string) {
+						return parseInt(string, 10);
+					},
+					keys = _.keys(contentAggregate.resources),
+					filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\.' + sessionKey + '$'))) : keys,
+					intKeys = _.map(filteredKeys, toInt);
+				return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
+			},
+			nextResourceId = function () {
+				var intId = maxIdForSession() + 1;
+				if (!sessionKey) {
+					return String(intId);
+				}
+				return intId + '.' + sessionKey;
+			},
+			id = nextResourceId();
+		contentAggregate.resources = contentAggregate.resources || {};
+		contentAggregate.resources[id] = resourceBody;
+		contentAggregate.dispatchEvent('resourceAdded', id, resourceBody);
+		return id;
+	};
+	contentAggregate.getResource = function (id) {
+		return contentAggregate.resources && contentAggregate.resources[id];
+	};
 	init(contentAggregate);
 	return contentAggregate;
 };
