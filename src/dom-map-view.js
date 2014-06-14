@@ -394,7 +394,7 @@ jQuery.fn.addNodeCacheMark = function (idea) {
 	this.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
 };
 
-jQuery.fn.updateNodeContent = function (nodeContent) {
+jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,
 		self = jQuery(this),
@@ -518,7 +518,7 @@ jQuery.fn.updateNodeContent = function (nodeContent) {
 				textWidth = textBox.outerWidth();
 				maxTextWidth = parseInt(textBox.css('max-width'), 10);
 				_.extend(selfProps, {
-					'background-image': 'url("' + icon.url + '")',
+					'background-image': 'url("' + (resourceTranslator ? resourceTranslator(icon.url) : icon.url) + '")',
 					'background-repeat': 'no-repeat',
 					'background-size': icon.width + 'px ' + icon.height + 'px',
 					'background-position': 'center center'
@@ -716,7 +716,7 @@ jQuery.fn.editNode = function () {
 
 })();
 
-MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController) {
+MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		connectorsForAnimation = jQuery(),
@@ -899,7 +899,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
-			.updateNodeContent(node)
+			.updateNodeContent(node, resourceTranslator)
 			.on('tap', function (evt) {
 
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
@@ -1037,7 +1037,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		}
 	});
 	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged nodeLabelChanged', function (n) {
-		stageElement.nodeWithId(n.id).updateNodeContent(n);
+		stageElement.nodeWithId(n.id).updateNodeContent(n, resourceTranslator);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
 		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);

@@ -727,6 +727,13 @@ describe('updateNodeContent', function () {
 				expect(underTest.css('background-repeat')).toBe('no-repeat');
 				expect(underTest.css('background-size')).toBe('400px 500px');
 			});
+			it('translates the URL using the resource translator if provided', function () {
+				var translator = jasmine.createSpy('translator');
+				translator.and.returnValue('data:xxx');
+				underTest.updateNodeContent(nodeContent, translator);
+				expect(translator).toHaveBeenCalledWith('http://iconurl/');
+				expect(underTest.css('background-image')).toBe('url(data:xxx)');
+			});
 			it('positions center icons behind text and expands the node if needed to fit the image', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('50% 50%');
@@ -1041,14 +1048,16 @@ describe('MAPJS.DOMRender', function () {
 		var stage,
 			viewPort,
 			mapModel,
-			imageInsertController;
+			imageInsertController,
+			resourceTranslator;
 		beforeEach(function () {
 			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
-			MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController);
+			resourceTranslator = jasmine.createSpy('resourceTranslator');
+			MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
 			spyOn(jQuery.fn, 'queueFadeIn').and.callThrough();
 		});
 		afterEach(function () {
@@ -1089,7 +1098,7 @@ describe('MAPJS.DOMRender', function () {
 					expect(underTest.hasClass('mapjs-node')).toBeTruthy();
 				});
 				it('updates the node content', function () {
-					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledWith(node);
+					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledWith(node, resourceTranslator);
 					expect(jQuery.fn.updateNodeContent).toHaveBeenCalledOnJQueryObject(underTest);
 					expect(jQuery.fn.updateNodeContent.calls.count()).toBe(1);
 				});
@@ -1674,7 +1683,7 @@ describe('MAPJS.DOMRender', function () {
 
 				mapModel.dispatchEvent(eventType, node);
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalledOnJQueryObject(underTest);
-
+				expect(jQuery.fn.updateNodeContent).toHaveBeenCalledWith(node, resourceTranslator);
 			});
 		});
 		describe('nodeEditRequested', function () {
