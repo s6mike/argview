@@ -2008,13 +2008,24 @@ describe('content aggregate', function () {
 		beforeEach(function () {
 			underTest = MAPJS.content({title: 'test'});
 		});
-		it('stores a resource without cloning (to save memory) and returns the new resource ID', function () {
+		it('stores a resource without cloning (to save memory) and returns the new resource ID in the format NUM/UNIQUE-UUID/', function () {
 			var arr = [1, 2, 3, 4, 5],
 				result = underTest.storeResource(arr);
-			expect(result).not.toBeUndefined();
+			expect(result).toMatch(/^[0-9/+\/[a-z0-9-]*\/$/);
 			expect(underTest.resources[result]).toEqual(arr);
 			arr.push(6);
 			expect(underTest.resources[result][5]).toBe(6);
+		});
+		it('generates a unique UUID with every content initialisation to avoid fake cache hits', function () {
+			var secondContent = MAPJS.content({title: 'test'}),
+				firstKey = underTest.storeResource('123'),
+				secondKey = secondContent.storeResource('123');
+			expect(firstKey).not.toEqual(secondKey);
+		});
+		it('appends the session key to the unique ID if session exists', function () {
+			var secondContent = MAPJS.content({title: 'test'}, 'session1'),
+				secondKey = secondContent.storeResource('123');
+			expect(secondKey).toMatch(/^[0-9/+\/[a-z0-9-]*\/session1$/);
 		});
 		it('retrieves the resource content without cloning (to save memory)', function () {
 			underTest.resources = {abc: [1, 2, 3]};
@@ -2023,26 +2034,21 @@ describe('content aggregate', function () {
 			expect(underTest.resources.abc[3]).toEqual(4);
 		});
 		it('starts IDs with 1, as a string, without session', function () {
-			expect(underTest.storeResource('xx')).toBe('1');
+			expect(underTest.storeResource('xx')).toMatch(/^1\//);
 		});
 		it('starts with ID 1.sessionId with session', function () {
-			underTest = MAPJS.content({},'sk');
-			expect(underTest.storeResource('xx')).toBe('1.sk');
-		});
-		it('assigns a resource ID using the session key if one is provided', function () {
-			underTest = MAPJS.content({title: 'test'}, 'session1');
-			var key = underTest.storeResource('abc');
-			expect(/\.session1$/.test(key)).toBeTruthy();
+			underTest = MAPJS.content({}, 'sk');
+			expect(underTest.storeResource('xx')).toMatch(/1\/[0-9a-z-]+\/sk/);
 		});
 		it('assigns sequential resource IDs without session', function () {
-			underTest = MAPJS.content({title: 'test', resources: {'5.session1': 'r1', '7.session1': 'r2', '9.session2': 'r3', '10': 'r4'}});
+			underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}});
 			var key = underTest.storeResource('abc');
-			expect(key).toEqual('11');
+			expect(key).toMatch(/^11\//);
 		});
 		it('assigns sequential resource IDs for the session', function () {
-			underTest = MAPJS.content({title: 'test', resources: {'5.session1': 'r1', '7.session1': 'r2', '9.session2': 'r3', '10': 'r4'}}, 'session1');
+			underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}}, 'session1');
 			var key = underTest.storeResource('abc');
-			expect(key).toEqual('8.session1');
+			expect(key).toMatch(/^8\/[^\/]+\/session1$/);
 		});
 		it('fires event when resource added without cloning the resource (to save memory)', function () {
 			var arr = [1, 2, 3, 4, 5],
