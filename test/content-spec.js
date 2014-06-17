@@ -2051,14 +2051,20 @@ describe('content aggregate', function () {
 			expect(key).toMatch(/^8\/[^\/]+\/session1$/);
 		});
 		it('fires event when resource added without cloning the resource (to save memory)', function () {
+			underTest = MAPJS.content({title: 'A'}, 'session1');
 			var arr = [1, 2, 3, 4, 5],
 				listener = jasmine.createSpy('resource'),
 				result;
 			underTest.addEventListener('resourceAdded', listener);
 			result = underTest.storeResource(arr);
-			expect(listener).toHaveBeenCalledWith(result, arr);
+			expect(listener).toHaveBeenCalledWith(result, arr, 'session1');
 			arr.push(6);
 			expect(listener.calls.mostRecent().args[1][5]).toEqual(6);
+		});
+		it('adds a resource with a particular key if provided', function () {
+			var key = underTest.storeResource('abc');
+			underTest.storeResource('def', key);
+			expect(underTest.getResource(key)).toEqual('def');
 		});
 	});
 });
