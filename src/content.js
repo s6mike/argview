@@ -873,11 +873,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return false;
 	};
-	if (contentAggregate.formatVersion != 2) {
-		upgrade(contentAggregate);
-		contentAggregate.formatVersion = 2;
-	}
-	contentAggregate.storeResource = function (resourceBody, optionalKey) {
+	contentAggregate.storeResource = function (/*resourceBody, optionalKey*/) {
+		return contentAggregate.execCommand('storeResource', arguments);
+	};
+	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
 		var maxIdForSession = function () {
 				if (_.isEmpty(contentAggregate.resources)) {
 					return 0;
@@ -897,12 +896,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			id = optionalKey || nextResourceId();
 		contentAggregate.resources = contentAggregate.resources || {};
 		contentAggregate.resources[id] = resourceBody;
-		contentAggregate.dispatchEvent('resourceAdded', id, resourceBody, sessionKey);
+		contentAggregate.dispatchEvent('resourceAdded', id, resourceBody, originSession);
 		return id;
 	};
 	contentAggregate.getResource = function (id) {
 		return contentAggregate.resources && contentAggregate.resources[id];
 	};
+	if (contentAggregate.formatVersion != 2) {
+		upgrade(contentAggregate);
+		contentAggregate.formatVersion = 2;
+	}
 	init(contentAggregate);
 	return contentAggregate;
 };

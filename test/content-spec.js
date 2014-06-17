@@ -2016,6 +2016,14 @@ describe('content aggregate', function () {
 			arr.push(6);
 			expect(underTest.resources[result][5]).toBe(6);
 		});
+		it('stores a resource using execCommand', function () {
+			var listener = jasmine.createSpy('resource');
+			underTest.addEventListener('resourceAdded', listener);
+			underTest.execCommand('storeResource', ['resbody', 'resurl'], 'remoteSession');
+
+			expect(underTest.resources.resurl).toEqual('resbody');
+			expect(listener).toHaveBeenCalledWith('resurl', 'resbody', 'remoteSession');
+		});
 		it('generates a unique UUID with every content initialisation to avoid fake cache hits', function () {
 			var secondContent = MAPJS.content({title: 'test'}),
 				firstKey = underTest.storeResource('123'),
