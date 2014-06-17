@@ -2018,11 +2018,11 @@ describe('content aggregate', function () {
 		});
 		it('stores a resource using execCommand', function () {
 			var listener = jasmine.createSpy('resource');
-			underTest.addEventListener('resourceAdded', listener);
+			underTest.addEventListener('resourceStored', listener);
 			underTest.execCommand('storeResource', ['resbody', 'resurl'], 'remoteSession');
 
 			expect(underTest.resources.resurl).toEqual('resbody');
-			expect(listener).toHaveBeenCalledWith('resurl', 'resbody', 'remoteSession');
+			expect(listener).toHaveBeenCalledWith('resbody', 'resurl', 'remoteSession');
 		});
 		it('generates a unique UUID with every content initialisation to avoid fake cache hits', function () {
 			var secondContent = MAPJS.content({title: 'test'}),
@@ -2063,11 +2063,11 @@ describe('content aggregate', function () {
 			var arr = [1, 2, 3, 4, 5],
 				listener = jasmine.createSpy('resource'),
 				result;
-			underTest.addEventListener('resourceAdded', listener);
+			underTest.addEventListener('resourceStored', listener);
 			result = underTest.storeResource(arr);
-			expect(listener).toHaveBeenCalledWith(result, arr, 'session1');
+			expect(listener).toHaveBeenCalledWith(arr, result, 'session1');
 			arr.push(6);
-			expect(listener.calls.mostRecent().args[1][5]).toEqual(6);
+			expect(listener.calls.mostRecent().args[0][5]).toEqual(6);
 		});
 		it('adds a resource with a particular key if provided', function () {
 			var key = underTest.storeResource('abc');

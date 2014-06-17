@@ -896,7 +896,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			id = optionalKey || nextResourceId();
 		contentAggregate.resources = contentAggregate.resources || {};
 		contentAggregate.resources[id] = resourceBody;
-		contentAggregate.dispatchEvent('resourceAdded', id, resourceBody, originSession);
+		contentAggregate.dispatchEvent('resourceStored', resourceBody, id, originSession);
 		return id;
 	};
 	contentAggregate.getResource = function (id) {
