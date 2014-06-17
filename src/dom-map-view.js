@@ -896,9 +896,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	viewPort.on('scroll', function () { viewPortDimensions = undefined; });
 	if (imageInsertController) {
 		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
-			var point = stagePositionForPointEvent(evt),
-				translatedUrl = resourceTranslator ? resourceTranslator(dataUrl) : dataUrl;
-			mapModel.dropImage(translatedUrl, imgWidth, imgHeight, point.x, point.y);
+			var point = stagePositionForPointEvent(evt);
+			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point.x, point.y);
 		});
 	}
 	mapModel.addEventListener('nodeCreated', function (node) {

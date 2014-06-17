@@ -39,7 +39,7 @@ MAPJS.getDataURIAndDimensions = function (src, corsProxyUrl) {
 	domImg.src = src;
 	return deferred.promise();
 };
-MAPJS.ImageInsertController = function (corsProxyUrl) {
+MAPJS.ImageInsertController = function (corsProxyUrl, resourceConverter) {
 	'use strict';
 	var self = observable(this),
 		readFileIntoDataUrl = function (fileInfo) {
@@ -57,7 +57,11 @@ MAPJS.ImageInsertController = function (corsProxyUrl) {
 		self.dispatchEvent('imageLoadStarted');
 		MAPJS.getDataURIAndDimensions(dataUrl, corsProxyUrl).then(
 			function (result) {
-				self.dispatchEvent('imageInserted', result.dataUri, result.width, result.height, evt);
+				var storeUrl = result.dataUri;
+				if (resourceConverter) {
+					storeUrl = resourceConverter(storeUrl);
+				}
+				self.dispatchEvent('imageInserted', storeUrl, result.width, result.height, evt);
 			},
 			function (reason) {
 				self.dispatchEvent('imageInsertError', reason);

@@ -2119,14 +2119,13 @@ describe('MAPJS.DOMRender', function () {
 		});
 		describe('image drag and drop', function () {
 			it('converts event coordinates to stage coordinates and delegates to mapModel.dropImage', function () {
-				resourceTranslator.and.returnValue('data://u1');
 				viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
 				stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
 				viewPort.scrollLeft(20);
 				viewPort.scrollTop(10);
 				imageInsertController.dispatchEvent('imageInserted', 'http://url', 666, 777, {pageX: 70, pageY: 50});
-				expect(mapModel.dropImage).toHaveBeenCalledWith('data://u1', 666, 777, -160, -75);
-				expect(resourceTranslator).toHaveBeenCalledWith('http://url');
+				expect(mapModel.dropImage).toHaveBeenCalledWith('http://url', 666, 777, -160, -75);
+				expect(resourceTranslator).not.toHaveBeenCalled();
 			});
 		});
 	});
