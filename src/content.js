@@ -877,6 +877,14 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('storeResource', arguments);
 	};
 	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
+		if (!optionalKey && contentAggregate.resources) {
+			var existingId = _.find(_.keys(contentAggregate.resources), function (key) {
+				return contentAggregate.resources[key] === resourceBody;
+			});
+			if (existingId) {
+				return existingId;
+			}
+		}
 		var maxIdForSession = function () {
 				if (_.isEmpty(contentAggregate.resources)) {
 					return 0;

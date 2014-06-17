@@ -2053,10 +2053,29 @@ describe('content aggregate', function () {
 			var key = underTest.storeResource('abc');
 			expect(key).toMatch(/^11\//);
 		});
-		it('assigns sequential resource IDs for the session', function () {
-			underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}}, 'session1');
-			var key = underTest.storeResource('abc');
-			expect(key).toMatch(/^8\/[^\/]+\/session1$/);
+
+		describe('assigning URLs', function () {
+			var listener;
+			beforeEach(function () {
+				listener = jasmine.createSpy('resource');
+				underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}}, 'session1');
+				underTest.addEventListener('resourceStored', listener);
+			});
+			it('assigns sequential resource IDs for the session if the content does not match', function () {
+				var key = underTest.storeResource('abc');
+				expect(key).toMatch(/^8\/[^\/]+\/session1$/);
+				expect(listener).toHaveBeenCalled();
+			});
+			it('re-assigns the same URL for the same content - without firing an event - if the key is not supplied and the content matches', function () {
+				var key = underTest.storeResource('r3');
+				expect(key).toEqual('9/2/session2');
+				expect(listener).not.toHaveBeenCalled();
+			});
+			it('does not re-assign the same URL for the same content and fires an event if the key is supplied even if the content matches', function () {
+				var key = underTest.storeResource('r3', '6/6/6');
+				expect(key).toEqual('6/6/6');
+				expect(listener).toHaveBeenCalledWith('r3', '6/6/6', 'session1');
+			});
 		});
 		it('fires event when resource added without cloning the resource (to save memory)', function () {
 			underTest = MAPJS.content({title: 'A'}, 'session1');
