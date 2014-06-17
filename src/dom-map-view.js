@@ -1,5 +1,6 @@
 /*global jQuery, Color, _, MAPJS, document, window*/
 MAPJS.DOMRender = {
+	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
 	nodeCacheMark: function (idea, levelOverride) {
 		'use strict';
 		return {
@@ -13,6 +14,9 @@ MAPJS.DOMRender = {
 	dimensionProvider: function (idea, level) {
 		'use strict'; /* support multiple stages? */
 		var textBox = jQuery(document).nodeWithId(idea.id),
+			translateToPixel = function () {
+				return MAPJS.DOMRender.svgPixel;
+			},
 			result;
 		if (textBox && textBox.length > 0) {
 			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea, level))) {
@@ -20,7 +24,7 @@ MAPJS.DOMRender = {
 			}
 		}
 		textBox = MAPJS.DOMRender.dummyTextBox;
-		textBox.attr('mapjs-level', level).appendTo('body').updateNodeContent(idea);
+		textBox.attr('mapjs-level', level).appendTo('body').updateNodeContent(idea, translateToPixel);
 		result = {
 			width: textBox.outerWidth(true),
 			height: textBox.outerHeight(true)
