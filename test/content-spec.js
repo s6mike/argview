@@ -2004,9 +2004,25 @@ describe('content aggregate', function () {
 		});
 	});
 	describe('resource management', function () {
-		var underTest;
+		var underTest, withResources;
 		beforeEach(function () {
 			underTest = MAPJS.content({title: 'test'});
+			withResources = {
+				title: 'test',
+				attr: {icon: {url: '5/1/session1' }},
+				ideas: {
+					1: {
+						attr: {icon: {url: '7/2/session1' }},
+					},
+					2: {
+						attr: {icon: {url: '9/2/session2' }},
+					},
+					3: {
+						attr: {icon: {url: '10' }},
+					}
+				},
+				resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4', '3/3/3': 'toBeRemoved'}
+			};
 		});
 		it('stores a resource without cloning (to save memory) and returns the new resource ID in the format NUM/UNIQUE-UUID/', function () {
 			var arr = [1, 2, 3, 4, 5],
@@ -2049,7 +2065,7 @@ describe('content aggregate', function () {
 			expect(underTest.storeResource('xx')).toMatch(/1\/[0-9a-z-]+\/sk/);
 		});
 		it('assigns sequential resource IDs without session', function () {
-			underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}});
+			underTest = MAPJS.content(withResources);
 			var key = underTest.storeResource('abc');
 			expect(key).toMatch(/^11\//);
 		});
@@ -2058,7 +2074,7 @@ describe('content aggregate', function () {
 			var listener;
 			beforeEach(function () {
 				listener = jasmine.createSpy('resource');
-				underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}}, 'session1');
+				underTest = MAPJS.content(withResources, 'session1');
 				underTest.addEventListener('resourceStored', listener);
 			});
 			it('assigns sequential resource IDs for the session if the content does not match', function () {
@@ -2093,5 +2109,20 @@ describe('content aggregate', function () {
 			underTest.storeResource('def', key);
 			expect(underTest.getResource(key)).toEqual('def');
 		});
+		describe('resource cleanup', function () {
+			beforeEach(function () {
+				underTest = MAPJS.content(withResources, 'session1');
+			});
+			it('does not clean up resources used with attr.icon.url in root', function () {
+				expect(underTest.resources['5/1/session1']).toBe('r1');
+			});
+			it('does not clean up resources used with attr.icon.url in children', function () {
+				expect(underTest.resources['7/2/session1']).toBe('r2');
+			});
+			it('cleans up resources not used in any nodes', function () {
+				expect(underTest.resources['3/3/3']).toBeFalsy();
+			});
+		});
+
 	});
 });
