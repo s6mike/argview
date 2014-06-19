@@ -231,24 +231,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			var dotIndex = String(id).indexOf('.');
 			return dotIndex > 0 && id.substr(dotIndex + 1);
 		},
-		cleanUpResources = function () {
-			if (!contentAggregate.resources) {
-				return;
-			}
-			var unused = {};
-			_.map(contentAggregate.resources, function (value, key) {
-				unused[key] = true;
-			});
-			contentAggregate.traverse(function (idea) {
-				var url = idea && idea.attr && idea.attr.icon && idea.attr.icon.url;
-				if (url) {
-					delete unused[url];
-				}
-			});
-			_.each(unused, function (value, key) {
-				delete contentAggregate.resources[key];
-			});
-		},
 		commandProcessors = {},
 		configuration = {},
 		uniqueResourcePostfix = '/xxxxxxxx-yxxx-yxxx-yxxx-xxxxxxxxxxxx/'.replace(/[xy]/g, function (c) {
@@ -933,6 +915,5 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		contentAggregate.formatVersion = 2;
 	}
 	init(contentAggregate);
-	cleanUpResources(contentAggregate);
 	return contentAggregate;
 };
