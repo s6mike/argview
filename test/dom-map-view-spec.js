@@ -1242,7 +1242,7 @@ describe('MAPJS.DOMRender', function () {
 					viewPort.scrollLeft(20);
 					viewPort.scrollTop(10);
 
-					noShift = {gesture: {center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446} };
+					noShift = {gesture: {center: {pageX: 70, pageY: 50}, deltaX: -30, deltaY: -20}, finalPosition: {left: 614, top: 446} };
 					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
 					outsideViewport = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 1100, pageY: 446}}};
 				});
@@ -1363,7 +1363,18 @@ describe('MAPJS.DOMRender', function () {
 						var e = jQuery.Event('mm:stop-dragging', noShift);
 						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
 						underTest.trigger(e);
-						expect(e.result === false).toBeTruthy();
+						expect(e.result === true).toBeTruthy();
+					});
+					it('scrolls the viewport when level = 1 dropped on a background', function () {
+						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+						underTest = jQuery('#node_2');
+						underTest.trigger('mm:start-dragging');
+						var e = jQuery.Event('mm:stop-dragging', noShift);
+						underTest.trigger(e);
+						viewPort.finish();
+						expect(viewPort.scrollLeft()).toBe(80);
+						expect(viewPort.scrollTop()).toBe(50);
+
 					});
 					it('does not position node and does not returns false when dropped outside viewport', function () {
 						mapModel.getNodeIdAtPosition.and.returnValue(false);

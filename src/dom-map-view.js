@@ -1005,6 +1005,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else if (node.level > 1) {
 					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, !!isShift);
+				} else if (node.level === 1 && evt.gesture) {
+					var vpCenter = stagePointAtViewportCenter();
+					vpCenter.x -= evt.gesture.deltaX || 0;
+					vpCenter.y -= evt.gesture.deltaY || 0;
+					centerViewOn(vpCenter.x, vpCenter.y, true);
+					dropResult = true;
 				} else {
 					dropResult = false;
 				}
