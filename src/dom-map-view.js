@@ -599,7 +599,22 @@ jQuery.fn.placeCaretAtEnd = function () {
         textRange.select();
     }
 };
-jQuery.fn.editNode = function () {
+jQuery.fn.selectAll = function () {
+	'use strict';
+	var el = this[0];
+	if (window.getSelection && document.createRange) {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (document.body.createTextRange) {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.select();
+    }
+};
+jQuery.fn.editNode = function (shouldSelectAll) {
 	'use strict';
 	var node = this,
 		textBox = this.find('[data-mapjs-role=title]'),
@@ -660,7 +675,10 @@ jQuery.fn.editNode = function () {
 		textBox.css('word-break', 'break-all');
 	}
 	textBox.text(unformattedText).attr('contenteditable', true).focus();
-	if (unformattedText) {
+	if (shouldSelectAll) {
+		textBox.selectAll();
+	}
+	else if (unformattedText) {
 		textBox.placeCaretAtEnd();
 	}
 	node.shadowDraggable({disable: true});
@@ -1133,7 +1151,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		var editingElement = stageElement.nodeWithId(nodeId);
 		mapModel.setInputEnabled(false);
 		viewPort.finish(); /* close any pending animations */
-		editingElement.editNode().done(
+		editingElement.editNode(shouldSelectAll).done(
 			function (newText) {
 				mapModel.setInputEnabled(true);
 				mapModel.updateTitle(nodeId, newText, editingNew);
