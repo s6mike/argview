@@ -955,7 +955,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	}
 	mapModel.addEventListener('nodeCreated', function (node) {
 		var currentReorderBoundary,
-			gestureOffset,
 			element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node, resourceTranslator)
@@ -992,24 +991,22 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
-			.on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
-				var gestureCoords = stagePositionForPointEvent(evt),
-					currentBox = element.getBox();
+			.on('mm:start-dragging mm:start-dragging-shadow', function () {
 				mapModel.selectNode(node.id);
 				currentReorderBoundary = mapModel.getReorderBoundary(node.id);
-				gestureOffset = { x: gestureCoords.x - currentBox.left, y: gestureCoords.y - currentBox.top };
 				element.addClass('dragging');
 			})
 			.on('mm:drag', function (evt) {
 				var dropCoords = stagePositionForPointEvent(evt),
+					currentPosition = evt.currentPosition && stagePositionForPointEvent({pageX: evt.currentPosition.left, pageY: evt.currentPosition.top}),
 					nodeId;
 				if (!dropCoords) {
 					clearCurrentDroppable();
 					return;
 				}
-				if (withinReorderBoundary(
+				if (currentPosition && withinReorderBoundary(
 						currentReorderBoundary,
-						{x: dropCoords.x - gestureOffset.x, y: dropCoords.y - gestureOffset.y},
+						currentPosition,
 						node)) {
 					reorderBounds.updateReorderBounds(currentReorderBoundary);
 				} else {
@@ -1056,7 +1053,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				} else if (node.level > 1) {
 					manualPosition = (!!isShift) || !withinReorderBoundary(
 						currentReorderBoundary,
-						{x: stageDropCoordinates.x - gestureOffset.x, y: stageDropCoordinates.y - gestureOffset.y},
+						finalPosition,
 						node);
 					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, manualPosition);
 				} else if (node.level === 1 && evt.gesture) {

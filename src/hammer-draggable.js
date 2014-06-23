@@ -13,7 +13,7 @@
 							top: Math.round(parseInt(originalDragObjectPosition.top, 10) + event.gesture.deltaY),
 							left: Math.round(parseInt(originalDragObjectPosition.left, 10) + event.gesture.deltaX)
 						};
-					currentDragObject.css(newpos).trigger($.Event('mm:drag', {gesture: event.gesture}));
+					currentDragObject.css(newpos).trigger($.Event('mm:drag', {currentPosition: newpos, gesture: event.gesture}));
 					if (event.gesture) {
 						event.gesture.preventDefault();
 					}

@@ -1051,7 +1051,7 @@ describe('MAPJS.DOMRender', function () {
 			imageInsertController,
 			resourceTranslator;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
@@ -1079,7 +1079,7 @@ describe('MAPJS.DOMRender', function () {
 					stage.data('scale', 3);
 
 					mapModel.dispatchEvent('nodeCreated', node);
-					underTest = stage.children().first();
+					underTest = stage.children('[data-mapjs-role=node]').first();
 				});
 				it('sanitises the ID by replacing dots with underscores', function () {
 					expect(underTest.attr('id')).toBe('node_11_12');
@@ -1204,7 +1204,7 @@ describe('MAPJS.DOMRender', function () {
 				});
 				it('is not applicable to non touch devices', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-					underTest = stage.children().first();
+					underTest = stage.children('[data-mapjs-role=node]').first();
 					spyOn(mapModel, 'dispatchEvent').and.callThrough();
 
 					underTest.trigger(holdEvent);
@@ -1217,7 +1217,7 @@ describe('MAPJS.DOMRender', function () {
 					stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 					MAPJS.DOMRender.viewController(mapModel, stage, true);
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
-					underTest = stage.children().first();
+					underTest = stage.children('[data-mapjs-role=node]').first();
 					spyOn(mapModel, 'dispatchEvent').and.callThrough();
 
 					underTest.trigger(holdEvent);
@@ -1228,13 +1228,21 @@ describe('MAPJS.DOMRender', function () {
 
 			});
 			describe('drag and drop features', function () {
-				var underTest, noShift, withShift, outsideViewport;
+				var underTest, noShift, withShift, outsideViewport, reorderBoundary;
 				beforeEach(function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 1});
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 1, height: 10, title: 'zeka', id: 2});
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 3});
 					jQuery('#node_3').addClass('droppable');
 					underTest = jQuery('#node_1');
+					reorderBoundary = {
+						edge: 'left',
+						maxY: 130,
+						minY: 120,
+						x: 110,
+						margin: 10
+					};
+					mapModel.getReorderBoundary.and.returnValue(reorderBoundary);
 					underTest.trigger('mm:start-dragging');
 					viewPort.css({'width': '1000px', 'height': '500px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
 					stage.data({offsetX: 200, offsetY: 100, width: 3000, height: 1500, scale: 2}).updateStage();
@@ -1333,13 +1341,39 @@ describe('MAPJS.DOMRender', function () {
 						beforeEach(function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(false);
 						});
-						it('calls positionNode and passed the current (DOM) top and left position', function () {
+						it('calls positionNode and passes the current (DOM) top and left position', function () {
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, false);
 						});
-						it('triggers manual positioning if shift is pressed', function () {
-							underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
-							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, true);
+						describe('reorder or manual position check', function () {
+							it('does not position manually inside reorder bounds', function () {
+								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeFalsy();
+							});
+							it('forces manual position right of reorder bounds', function () {
+								noShift.finalPosition.left += reorderBoundary.x + reorderBoundary.margin + 1;
+								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							});
+							it('forces manual position left of reorder bounds', function () {
+								noShift.finalPosition.left = reorderBoundary.x - reorderBoundary.margin - 1;
+								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							});
+							it('forces manual position top of reorder bounds', function () {
+								noShift.finalPosition.top = reorderBoundary.minY - 1;
+								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							});
+							it('forces manual position below of reorder bounds', function () {
+								noShift.finalPosition.top = reorderBoundary.maxY + 1;
+								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							});
+							it('forces manual positioning if shift is pressed even within bounds', function () {
+								underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
+								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							});
 						});
 						it('does not set event result to false by default', function () {
 							var e = jQuery.Event('mm:stop-dragging', withShift);
@@ -1463,7 +1497,7 @@ describe('MAPJS.DOMRender', function () {
 				viewPort.scrollTop(80);
 
 				mapModel.dispatchEvent('nodeCreated', node);
-				underTest = stage.children().first();
+				underTest = stage.children('[data-mapjs-role=node]').first();
 				spyOn(jQuery.fn, 'focus').and.callThrough();
 				spyOn(jQuery.fn, 'animate');
 			});
@@ -1537,7 +1571,7 @@ describe('MAPJS.DOMRender', function () {
 			beforeEach(function () {
 				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
 				mapModel.dispatchEvent('nodeCreated', node);
-				underTest = stage.children().first();
+				underTest = stage.children('[data-mapjs-role=node]').first();
 				spyOn(jQuery.fn, 'queueFadeOut');
 			});
 			it('animates a fade-out', function () {
@@ -1551,7 +1585,7 @@ describe('MAPJS.DOMRender', function () {
 				node = {id: 1, title: 'zeka', x: 0, y: 0, width: 20, height: 10};
 				stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150});
 				mapModel.dispatchEvent('nodeCreated', node);
-				underTest = stage.children().first();
+				underTest = stage.children('[data-mapjs-role=node]').first();
 
 				spyOn(jQuery.fn, 'updateStage').and.callThrough();
 			});
@@ -1689,7 +1723,7 @@ describe('MAPJS.DOMRender', function () {
 				var underTest, node;
 				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
 				mapModel.dispatchEvent('nodeCreated', node);
-				underTest = stage.children().first();
+				underTest = stage.children('[data-mapjs-role=node]').first();
 				spyOn(jQuery.fn, 'updateNodeContent');
 
 				mapModel.dispatchEvent(eventType, node);
@@ -1702,7 +1736,7 @@ describe('MAPJS.DOMRender', function () {
 			beforeEach(function () {
 				node = {id: '11', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
 				mapModel.dispatchEvent('nodeCreated', node);
-				underTest = stage.children().first();
+				underTest = stage.children('[data-mapjs-role=node]').first();
 				editDeferred = jQuery.Deferred();
 				spyOn(jQuery.fn, 'focus');
 				spyOn(jQuery.fn, 'finish');

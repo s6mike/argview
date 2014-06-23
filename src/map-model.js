@@ -970,7 +970,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				verticallyClosestNode = node;
 			}
 		});
-		if (!manualPosition) {
+		if (!manualPosition && validReposition()) {
 			self.autoPosition(nodeId);
 		}
 		result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
