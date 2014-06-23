@@ -1254,8 +1254,48 @@ describe('MAPJS.DOMRender', function () {
 					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
 					outsideViewport = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 1100, pageY: 446}}};
 				});
-				it('assigns a dragging class when the node is being dragged', function () {
-					expect(underTest.hasClass('dragging')).toBeTruthy();
+				describe('when dragging', function () {
+					it('assigns a dragging class', function () {
+						expect(underTest.hasClass('dragging')).toBeTruthy();
+					});
+
+					it('clears the current droppable if drag event does not have a scrieen position', function () {
+						underTest.trigger('mm:drag');
+						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+					});
+					it('works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition', function () {
+						underTest.trigger(jQuery.Event('mm:drag', noShift));
+						expect(mapModel.getNodeIdAtPosition).toHaveBeenCalledWith(-160, -75);
+					});
+					describe('when over a node', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(2);
+						});
+						it('sets draggable class on the node', function () {
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
+							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+						});
+					});
+					describe('when over the background', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(false);
+						});
+						it('removes the draggable class from all nodes', function () {
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
+							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
+						});
+					});
+					describe('when over itself', function () {
+						beforeEach(function () {
+							mapModel.getNodeIdAtPosition.and.returnValue(1);
+						});
+						it('removes the draggable class from all nodes', function () {
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(jQuery('#node_1').hasClass('droppable')).toBeFalsy();
+						});
+					});
 				});
 				describe('when dragging is cancelled', function () {
 					beforeEach(function () {
@@ -1268,46 +1308,15 @@ describe('MAPJS.DOMRender', function () {
 						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 					});
 				});
-				describe('when dragging is cancelled', function () {
-					beforeEach(function () {
-						underTest.trigger('mm:cancel-dragging');
-					});
-					it('removes the dragging class when dragging is stopped', function () {
+				describe('when dragging stops', function () {
+					it('removes the dragging class', function () {
+						underTest.trigger('mm:stop-dragging');
 						expect(underTest.hasClass('dragging')).toBeFalsy();
 					});
-					it('removes the droppable class when dragging is stopped', function () {
+					it('removes the droppable class', function () {
+						underTest.trigger('mm:stop-dragging');
 						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 					});
-				});
-				it('clears the current droppable if drag event does not have a scrieen position', function () {
-					underTest.trigger('mm:drag');
-					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
-				});
-				it('when dragging works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition', function () {
-					underTest.trigger(jQuery.Event('mm:drag', noShift));
-					expect(mapModel.getNodeIdAtPosition).toHaveBeenCalledWith(-160, -75);
-				});
-				it('when dragging over a node, sets draggable class on the node', function () {
-					mapModel.getNodeIdAtPosition.and.returnValue(2);
-
-					underTest.trigger(jQuery.Event('mm:drag', noShift));
-					expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
-					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
-				});
-				it('when dragging and not over a node, removes the draggable class from all nodes', function () {
-					mapModel.getNodeIdAtPosition.and.returnValue();
-
-					underTest.trigger(jQuery.Event('mm:drag', noShift));
-					expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
-					expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
-				});
-				it('when dragging and  over itself, removes the draggable class from all nodes', function () {
-					mapModel.getNodeIdAtPosition.and.returnValue(1);
-
-					underTest.trigger(jQuery.Event('mm:drag', noShift));
-					expect(jQuery('#node_1').hasClass('droppable')).toBeFalsy();
-				});
-				describe('when dragging stops', function () {
 
 					it('calls getNodeIdAtPosition to work out if it got dropped on a node', function () {
 						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
