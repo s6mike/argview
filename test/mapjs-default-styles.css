@@ -140,3 +140,8 @@
 .drag-shadow {
 	opacity: 0.5;
 }
+.mapjs-reorder-bounds {
+	stroke-width: 1px;
+	fill: none;
+	stroke: #AAA;
+}

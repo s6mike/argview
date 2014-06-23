@@ -101,7 +101,8 @@
 	var onDrag = function (e) {
 			$(this).trigger(
 				$.Event('mm:start-dragging', {
-					relatedTarget: this
+					relatedTarget: this,
+					gesture: e.gesture
 				})
 			);
 			e.stopPropagation();
@@ -113,7 +114,8 @@
 		}, onShadowDrag = function (e) {
 			$(this).trigger(
 				$.Event('mm:start-dragging-shadow', {
-					relatedTarget: this
+					relatedTarget: this,
+					gesture: e.gesture
 				})
 			);
 			e.stopPropagation();

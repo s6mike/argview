@@ -1,9 +1,10 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider) {
+MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin) {
 	'use strict';
 	var self = this,
 		layoutCalculator = layoutCalculatorArg,
+		reorderMargin = defaultReorderMargin || 20,
 		clipboard = clipboardProvider || new MAPJS.MemoryClipboard(),
 		analytic,
 		currentLayout = {
@@ -983,6 +984,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				'position',
 				[xOffset, y - parentNode.y, maxSequence + 1]
 			) || result;
+		} else if (!manualPosition) {
+			result = result || self.autoPosition(nodeId);
 		}
 		idea.endBatch();
 		return result;
@@ -1035,5 +1038,50 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.setLabelGenerator = function (labelGenerator) {
 		currentLabelGenerator = labelGenerator;
 		self.rebuildRequired();
+	};
+	self.getReorderBoundary = function (nodeId) {
+		var isRoot = function (nodeId) {
+				/*jslint eqeq: true*/
+				return nodeId == idea.id;
+			},
+			isRightHalf = function (nodeId) {
+				return currentLayout.nodes[nodeId].x >= currentLayout.nodes[idea.id].x;
+			},
+			parentIdea,
+			parentNode,
+			tops,
+			bottoms,
+			siblings,
+			result = {};
+		if (isRoot(nodeId)) {
+			return false;
+		}
+		parentIdea = idea.findParent(currentlySelectedIdeaId);
+		parentNode = currentLayout.nodes[parentIdea.id];
+		siblings = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
+			return currentLayout.nodes[id];
+		});
+		if (siblings.length === 0) {
+			return false;
+		}
+		tops = _.map(siblings, function (node) {
+			return node.y;
+		});
+		bottoms = _.map(siblings, function (node) {
+			return node.y + node.height;
+		});
+		result = {
+			'minY': _.min(tops) -  reorderMargin - currentLayout.nodes[nodeId].height,
+			'maxY': _.max(bottoms) +  reorderMargin,
+			'margin': reorderMargin
+		};
+		if (isRightHalf(nodeId)) {
+			result.edge = 'left';
+			result.x = parentNode.x + parentNode.width + reorderMargin;
+		} else {
+			result.edge = 'right';
+			result.x = parentNode.x - reorderMargin;
+		}
+		return result;
 	};
 };

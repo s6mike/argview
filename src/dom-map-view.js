@@ -684,7 +684,25 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 	node.shadowDraggable({disable: true});
 	return result.promise();
 };
-
+jQuery.fn.updateReorderBounds = function (reorderBounds) {
+	'use strict';
+	var element = this,
+		pathElement = element.find('path'),
+		lineHeight = reorderBounds && (reorderBounds.maxY - reorderBounds.minY);
+	if (!lineHeight) {
+		element.hide();
+		return;
+	}
+	element.css({
+		top: reorderBounds.minY,
+		left: reorderBounds.x,
+		height: lineHeight
+	});
+	pathElement.attr('d',
+		'M0,0 L0,' + lineHeight
+	);
+	element.show();
+};
 
 (function () {
 	'use strict';
@@ -735,7 +753,11 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 	jQuery.fn.findLink = function (linkObj) {
 		return this.find('#' + linkKey(linkObj));
 	};
-
+	jQuery.fn.createReorderBounds = function () {
+		var result = MAPJS.createSVG().hide().css('position', 'absolute').appendTo(this);
+		MAPJS.createSVG('path').attr('class', 'mapjs-reorder-bounds').appendTo(result);
+		return result;
+	};
 })();
 
 MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator) {
@@ -743,7 +765,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	var viewPort = stageElement.parent(),
 		connectorsForAnimation = jQuery(),
 		linksForAnimation = jQuery(),
-		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' };
+		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' },
+		reorderBounds = stageElement.createReorderBounds();
 
 	var getViewPortDimensions = function () {
 			if (viewPortDimensions) {
@@ -910,7 +933,19 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			currentDroppable = nodeId;
 		},
 		currentDroppable = false,
-		viewPortDimensions;
+		viewPortDimensions,
+		withinReorderBoundary = function (reorderBoundary, nodePosition, node) {
+			if (!reorderBoundary) {
+				return false;
+			}
+			var nodeX = nodePosition.x;
+			if (reorderBoundary.edge === 'right') {
+				nodeX += node.width;
+			}
+			return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin &&
+				nodePosition.y < reorderBoundary.maxY &&
+				nodePosition.y > reorderBoundary.minY;
+		};
 	viewPort.on('scroll', function () { viewPortDimensions = undefined; });
 	if (imageInsertController) {
 		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
@@ -919,7 +954,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		});
 	}
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var element = stageElement.createNode(node)
+		var currentReorderBoundary,
+			gestureOffset,
+			element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node, resourceTranslator)
 			.on('tap', function (evt) {
@@ -955,8 +992,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
-			.on('mm:start-dragging mm:start-dragging-shadow', function () {
+			.on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
+				var gestureCoords = stagePositionForPointEvent(evt),
+					currentBox = element.getBox();
 				mapModel.selectNode(node.id);
+				currentReorderBoundary = mapModel.getReorderBoundary(node.id);
+				gestureOffset = { x: gestureCoords.x - currentBox.left, y: gestureCoords.y - currentBox.top };
 				element.addClass('dragging');
 			})
 			.on('mm:drag', function (evt) {
@@ -965,6 +1006,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				if (!dropCoords) {
 					clearCurrentDroppable();
 					return;
+				}
+				if (withinReorderBoundary(
+						currentReorderBoundary,
+						{x: dropCoords.x - gestureOffset.x, y: dropCoords.y - gestureOffset.y},
+						node)) {
+					reorderBounds.updateReorderBounds(currentReorderBoundary);
+				} else {
+					reorderBounds.hide();
 				}
 				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
 				if (!nodeId || nodeId === node.id) {
@@ -986,9 +1035,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
+				reorderBounds.hide();
 				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					stageDropCoordinates = stagePositionForPointEvent(evt),
-					nodeAtDrop, finalPosition, dropResult;
+					nodeAtDrop, finalPosition, dropResult, manualPosition;
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
 					return;
@@ -1004,7 +1054,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				else if (nodeAtDrop) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else if (node.level > 1) {
-					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, !!isShift);
+					manualPosition = (!!isShift) || !withinReorderBoundary(
+						currentReorderBoundary,
+						{x: stageDropCoordinates.x - gestureOffset.x, y: stageDropCoordinates.y - gestureOffset.y},
+						node);
+					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, manualPosition);
 				} else if (node.level === 1 && evt.gesture) {
 					var vpCenter = stagePointAtViewportCenter();
 					vpCenter.x -= evt.gesture.deltaX || 0;
@@ -1019,6 +1073,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			.on('mm:cancel-dragging', function () {
 				clearCurrentDroppable();
 				element.removeClass('dragging');
+				reorderBounds.hide();
 			});
 		if (touchEnabled) {
 			element.on('hold', function (evt) {
