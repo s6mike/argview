@@ -754,7 +754,7 @@ jQuery.fn.updateReorderBounds = function (reorderBounds) {
 		return this.find('#' + linkKey(linkObj));
 	};
 	jQuery.fn.createReorderBounds = function () {
-		var result = MAPJS.createSVG().hide().css('position', 'absolute').appendTo(this);
+		var result = MAPJS.createSVG().attr('data-mapjs-role','reorder-bounds').hide().css('position', 'absolute').appendTo(this);
 		MAPJS.createSVG('path').attr('class', 'mapjs-reorder-bounds').appendTo(result);
 		return result;
 	};

@@ -1286,6 +1286,19 @@ describe('MAPJS.DOMRender', function () {
 							expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
 							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 						});
+						it('hides the reorder boundary if current position is above the bounds', function () {
+							noShift.currentPosition = noShift.finalPosition;
+							noShift.currentPosition.top -= 30;
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+						});
+						it('shows the reorder boundary if current position is within the bounds', function () {
+							noShift.currentPosition = noShift.finalPosition;
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).not.toBe('none');
+						});
 					});
 					describe('when over itself', function () {
 						beforeEach(function () {
@@ -1299,6 +1312,7 @@ describe('MAPJS.DOMRender', function () {
 				});
 				describe('when dragging is cancelled', function () {
 					beforeEach(function () {
+						stage.find('[data-mapjs-role=reorder-bounds]').show();
 						underTest.trigger('mm:cancel-dragging');
 					});
 					it('removes the dragging class', function () {
@@ -1307,8 +1321,16 @@ describe('MAPJS.DOMRender', function () {
 					it('removes the dropppable class', function () {
 						expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 					});
+					it('hides reorder bounds', function () {
+						expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+					});
 				});
 				describe('when dragging stops', function () {
+					it('hides reorder bounds', function () {
+						stage.find('[data-mapjs-role=reorder-bounds]').show();
+						underTest.trigger('mm:stop-dragging');
+						expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+					});
 					it('removes the dragging class', function () {
 						underTest.trigger('mm:stop-dragging');
 						expect(underTest.hasClass('dragging')).toBeFalsy();
@@ -1360,22 +1382,22 @@ describe('MAPJS.DOMRender', function () {
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeFalsy();
 							});
 							it('forces manual position right of reorder bounds', function () {
-								noShift.finalPosition.left += reorderBoundary.x + reorderBoundary.margin + 1;
+								noShift.finalPosition.left += 30;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
 							it('forces manual position left of reorder bounds', function () {
-								noShift.finalPosition.left = reorderBoundary.x - reorderBoundary.margin - 1;
+								noShift.finalPosition.left -= 30;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
 							it('forces manual position top of reorder bounds', function () {
-								noShift.finalPosition.top = reorderBoundary.minY - 1;
+								noShift.finalPosition.top -= 30;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
 							it('forces manual position below of reorder bounds', function () {
-								noShift.finalPosition.top = reorderBoundary.maxY + 1;
+								noShift.finalPosition.top += 30;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
