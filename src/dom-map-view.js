@@ -684,24 +684,20 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 	node.shadowDraggable({disable: true});
 	return result.promise();
 };
-jQuery.fn.updateReorderBounds = function (reorderBounds) {
+jQuery.fn.updateReorderBounds = function (reorderBounds, currentPosition, node) {
 	'use strict';
-	var element = this,
-		pathElement = element.find('path'),
-		lineHeight = reorderBounds && (reorderBounds.maxY - reorderBounds.minY);
-	if (!lineHeight) {
+	var element = this;
+	if (!reorderBounds) {
 		element.hide();
 		return;
 	}
-	element.css({
-		top: reorderBounds.minY,
-		left: reorderBounds.x,
-		height: lineHeight
-	});
-	pathElement.attr('d',
-		'M0,0 L0,' + lineHeight
-	);
 	element.show();
+	element.attr('mapjs-edge', reorderBounds.edge);
+	element.css({
+		top: currentPosition.y + node.height / 2 - element.height() / 2,
+		left: reorderBounds.x + (reorderBounds.edge === 'left' ? -1 : 1) * element.width(),
+	});
+
 };
 
 (function () {
@@ -754,8 +750,10 @@ jQuery.fn.updateReorderBounds = function (reorderBounds) {
 		return this.find('#' + linkKey(linkObj));
 	};
 	jQuery.fn.createReorderBounds = function () {
-		var result = MAPJS.createSVG().attr('data-mapjs-role','reorder-bounds').hide().css('position', 'absolute').appendTo(this);
-		MAPJS.createSVG('path').attr('class', 'mapjs-reorder-bounds').appendTo(result);
+		var result = jQuery('<div>').attr({
+			'data-mapjs-role': 'reorder-bounds',
+			'class': 'mapjs-reorder-bounds'
+		}).hide().css('position', 'absolute').appendTo(this);
 		return result;
 	};
 })();
@@ -1009,7 +1007,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 						currentReorderBoundary,
 						currentPosition,
 						node)) {
-					reorderBounds.updateReorderBounds(currentReorderBoundary);
+					reorderBounds.updateReorderBounds(currentReorderBoundary, currentPosition, node);
 				} else {
 					reorderBounds.hide();
 				}
