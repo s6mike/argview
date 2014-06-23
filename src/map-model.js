@@ -970,6 +970,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				verticallyClosestNode = node;
 			}
 		});
+		if (!manualPosition) {
+			self.autoPosition(nodeId);
+		}
 		result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
 		if (manualPosition && validReposition()) {
 			if (x < parentNode.x) {
@@ -984,8 +987,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				'position',
 				[xOffset, y - parentNode.y, maxSequence + 1]
 			) || result;
-		} else if (!manualPosition) {
-			result = result || self.autoPosition(nodeId);
 		}
 		idea.endBatch();
 		return result;
