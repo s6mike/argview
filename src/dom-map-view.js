@@ -1004,7 +1004,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					clearCurrentDroppable();
 					return;
 				}
-				if (currentPosition && withinReorderBoundary(
+				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
+				if (!nodeId && currentPosition && withinReorderBoundary(
 						currentReorderBoundary,
 						currentPosition,
 						node)) {
@@ -1012,7 +1013,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				} else {
 					reorderBounds.hide();
 				}
-				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
 				if (!nodeId || nodeId === node.id) {
 					clearCurrentDroppable();
 				}

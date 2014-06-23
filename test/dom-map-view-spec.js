@@ -1276,6 +1276,11 @@ describe('MAPJS.DOMRender', function () {
 							expect(jQuery('#node_2').hasClass('droppable')).toBeTruthy();
 							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 						});
+						it('hides reorder bounds even when the drag object is within reorder bounds', function () {
+							noShift.currentPosition = noShift.finalPosition;
+							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+						});
 					});
 					describe('when over the background', function () {
 						beforeEach(function () {
