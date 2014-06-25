@@ -1458,11 +1458,15 @@ describe('MAPJS.DOMRender', function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(1);
 							underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						});
-						it('does not call positionNode and returns false in the event unless shift is pressed', function () {
-							var e = jQuery.Event('mm:stop-dragging', noShift);
-							underTest.trigger(e);
-							expect(e.result === false).toBeTruthy();
-							expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
+						it('triggers automatic positioning if within reorder bounds', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, false);
+							expect(mapModel.dropNode).not.toHaveBeenCalled();
+						});
+						it('triggers manual positioning outside of reorder bounds', function () {
+							noShift.finalPosition.left += 60;
+							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
+							expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							expect(mapModel.dropNode).not.toHaveBeenCalled();
 						});
 						it('triggers manual positioning if shift is pressed', function () {

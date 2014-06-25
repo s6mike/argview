@@ -1043,13 +1043,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 				nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y);
 				finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
-				if (nodeAtDrop === node.id) {
-					if (!isShift) {
-						return false;
-					}
-					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, !!isShift);
-				}
-				else if (nodeAtDrop) {
+				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else if (node.level > 1) {
 					manualPosition = (!!isShift) || !withinReorderBoundary(
