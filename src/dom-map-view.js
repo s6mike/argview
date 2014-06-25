@@ -936,11 +936,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			if (!reorderBoundary) {
 				return false;
 			}
+			if (!nodePosition) {
+				return false;
+			}
 			var nodeX = nodePosition.x;
 			if (reorderBoundary.edge === 'right') {
 				nodeX += node.width;
 			}
-			return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin &&
+			return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
 				nodePosition.y < reorderBoundary.maxY &&
 				nodePosition.y > reorderBoundary.minY;
 		};

@@ -1387,12 +1387,12 @@ describe('MAPJS.DOMRender', function () {
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeFalsy();
 							});
 							it('forces manual position right of reorder bounds', function () {
-								noShift.finalPosition.left += 30;
+								noShift.finalPosition.left += 60;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
 							it('forces manual position left of reorder bounds', function () {
-								noShift.finalPosition.left -= 30;
+								noShift.finalPosition.left -= 60;
 								underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 								expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
 							});
