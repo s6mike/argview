@@ -764,7 +764,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		connectorsForAnimation = jQuery(),
 		linksForAnimation = jQuery(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' },
+		reorderBounds = jQuery('<div>');
+	if (mapModel.isEditingEnabled()) {
 		reorderBounds = stageElement.createReorderBounds();
+	}
 
 	var getViewPortDimensions = function () {
 			if (viewPortDimensions) {
@@ -1000,13 +1003,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			.on('mm:drag', function (evt) {
 				var dropCoords = stagePositionForPointEvent(evt),
 					currentPosition = evt.currentPosition && stagePositionForPointEvent({pageX: evt.currentPosition.left, pageY: evt.currentPosition.top}),
-					nodeId;
+					nodeId,
+					hasShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey;
 				if (!dropCoords) {
 					clearCurrentDroppable();
 					return;
 				}
 				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
-				if (!nodeId && currentPosition && withinReorderBoundary(
+				if (!hasShift && !nodeId && currentPosition && withinReorderBoundary(
 						currentReorderBoundary,
 						currentPosition,
 						node)) {

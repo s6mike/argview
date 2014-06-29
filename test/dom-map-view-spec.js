@@ -1053,6 +1053,7 @@ describe('MAPJS.DOMRender', function () {
 		beforeEach(function () {
 			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
 			mapModel.getInputEnabled.and.returnValue(true);
+			mapModel.isEditingEnabled.and.returnValue(true);
 			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
@@ -1249,7 +1250,6 @@ describe('MAPJS.DOMRender', function () {
 
 					viewPort.scrollLeft(20);
 					viewPort.scrollTop(10);
-
 					noShift = {gesture: {center: {pageX: 70, pageY: 50}, deltaX: -30, deltaY: -20}, finalPosition: {left: 614, top: 446} };
 					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
 					outsideViewport = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 1100, pageY: 446}}};
@@ -1279,6 +1279,7 @@ describe('MAPJS.DOMRender', function () {
 						it('hides reorder bounds even when the drag object is within reorder bounds', function () {
 							noShift.currentPosition = noShift.finalPosition;
 							underTest.trigger(jQuery.Event('mm:drag', noShift));
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
 							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
 						});
 					});
@@ -1303,6 +1304,12 @@ describe('MAPJS.DOMRender', function () {
 							underTest.trigger(jQuery.Event('mm:drag', noShift));
 							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
 							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).not.toBe('none');
+						});
+						it('hides the reorder boundary if shift is pressed', function () {
+							withShift.currentPosition = noShift.finalPosition;
+							underTest.trigger(jQuery.Event('mm:drag', withShift));
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
 						});
 					});
 					describe('when over itself', function () {
