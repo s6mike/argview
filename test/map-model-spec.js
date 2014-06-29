@@ -2189,4 +2189,98 @@ describe('MapModel', function () {
 			});
 		});
 	});
+	describe('getReorderBoundary', function () {
+		var underTest, layout, idea, margin;
+		beforeEach(function () {
+			idea = MAPJS.content({
+					id: 1,
+					ideas: {
+						1: {
+							id: 11
+						},
+						2: {
+							id: 12,
+							ideas: {
+								1: {id: 121},
+								2: {id: 122}
+							}
+						},
+						3: {
+							id: 13,
+							ideas: {
+								1: {id: 131}
+							}
+						},
+						'-1': {
+							id: 14,
+							ideas: {
+								1: {id: 141},
+								2: {id: 142}
+							}
+						},
+						'-2': {
+							id: 15
+						},
+						'-3': {
+							id: 16
+						},
+					}
+				});
+			layout = { nodes: {
+					1: { id: 1, x: -50, y: -30, width: 100, height: 60 }, /* ends at x= 50 */
+					11: { id: 11, x: 80, y: -100, width: 10, height: 10},
+					12: { id: 12, x: 70, y: -60, width: 30, height: 10},  /* ends at x=100 */
+					121: { id: 121, x: 115, y: -60, width: 10, height: 11},
+					122: { id: 122, x: 135, y: -30, width: 10, height: 10},
+					13: { id: 13, x: 70, y: 10, width: 30, height: 20},
+					14: { id: 14, x: -100, y: 10, width: 30, height: 10},
+					141: { id: 141, x: -150, y: -20, width: 30, height: 10},
+					142: { id: 142, x: -160, y: 20, width: 30, height: 10},
+					15: { id: 15, x: -80, y: 10, width: 10, height: 10},
+					16: { id: 15, x: -80, y: 30, width: 30, height: 30}
+				}
+			};
+			margin = 20;
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			}, undefined, undefined, margin);
+			underTest.setIdea(idea);
+		});
+		it('returns false for root', function () {
+			expect(underTest.getReorderBoundary(1)).toBeFalsy();
+		});
+		describe('for right nodes', function () {
+			it('matches against the left edge', function () {
+				_.each([121, 11, 12, 122], function (nodeId) {
+					expect(underTest.getReorderBoundary(nodeId).edge).toEqual('left');
+				});
+			});
+			it('returns the right edge of parent + margin', function () {
+				expect(underTest.getReorderBoundary(121).x).toEqual(120);
+				expect(underTest.getReorderBoundary(11).x).toEqual(70);
+			});
+			it('limits the vertical boundary to allow for the current node height on top of same side siblings + margin and below the siblings + margin', function () {
+				expect(_.pick(underTest.getReorderBoundary(121), 'minY', 'maxY')).toEqual({minY: -61, maxY: 0});
+				expect(_.pick(underTest.getReorderBoundary(11), 'minY', 'maxY')).toEqual({minY: -90, maxY: 50});
+			});
+			it('returns falsy if only child', function () {
+				expect(underTest.getReorderBoundary(131)).toBeFalsy();
+			});
+		});
+		describe('for left nodes', function () {
+			it('matches against the right edge', function () {
+				_.each([14, 141, 142, 15, 16], function (nodeId) {
+					expect(underTest.getReorderBoundary(nodeId).edge).toEqual('right');
+				});
+			});
+			it('returns the left edge of parent - margin', function () {
+				expect(underTest.getReorderBoundary(141).x).toEqual(-120);
+				expect(underTest.getReorderBoundary(14).x).toEqual(-70);
+			});
+			it('limits the vertical boundary to allow for the current node height on top of same side siblings + margin and below the siblings + margin', function () {
+				expect(_.pick(underTest.getReorderBoundary(141), 'minY', 'maxY')).toEqual({minY: -10, maxY: 50});
+				expect(_.pick(underTest.getReorderBoundary(15), 'minY', 'maxY')).toEqual({minY: -20, maxY: 80});
+			});
+		});
+	});
 });

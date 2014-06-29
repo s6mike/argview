@@ -1057,7 +1057,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (isRoot(nodeId)) {
 			return false;
 		}
-		parentIdea = idea.findParent(currentlySelectedIdeaId);
+		parentIdea = idea.findParent(nodeId);
 		parentNode = currentLayout.nodes[parentIdea.id];
 		siblings = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
 			return currentLayout.nodes[id];
