@@ -1041,48 +1041,89 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		self.rebuildRequired();
 	};
 	self.getReorderBoundary = function (nodeId) {
-		var isRoot = function (nodeId) {
+		var isRoot = function () {
 				/*jslint eqeq: true*/
 				return nodeId == idea.id;
+			},
+			isFirstLevel = function () {
+				return parentIdea.id === idea.id;
 			},
 			isRightHalf = function (nodeId) {
 				return currentLayout.nodes[nodeId].x >= currentLayout.nodes[idea.id].x;
 			},
+			siblingBoundary = function (siblings, side) {
+				var tops = _.map(siblings, function (node) {
+					return node.y;
+				}),
+				bottoms = _.map(siblings, function (node) {
+					return node.y + node.height;
+				}),
+				result = {
+					'minY': _.min(tops) -  reorderMargin - currentLayout.nodes[nodeId].height,
+					'maxY': _.max(bottoms) +  reorderMargin,
+					'margin': reorderMargin
+				};
+				result.edge = side;
+				if (side === 'left') {
+					result.x = parentNode.x + parentNode.width + reorderMargin;
+				} else {
+					result.x = parentNode.x - reorderMargin;
+				}
+				return result;
+			},
+			parentBoundary = function (side) {
+				var result = {
+					'minY': parentNode.y -  reorderMargin - currentLayout.nodes[nodeId].height,
+					'maxY': parentNode.y + parentNode.height +  reorderMargin,
+					'margin': reorderMargin
+				};
+				result.edge = side;
+				if (side === 'left') {
+					result.x = parentNode.x + parentNode.width + reorderMargin;
+				} else {
+					result.x = parentNode.x - reorderMargin;
+				}
+
+				return result;
+			},
+			otherSideSiblings = function () {
+				var otherSide = _.map(parentIdea.ideas, function (subIdea) {
+					return currentLayout.nodes[subIdea.id];
+				});
+				otherSide = _.without(otherSide, currentLayout.nodes[nodeId]);
+				if (!_.isEmpty(sameSide)) {
+					otherSide = _.difference(otherSide, sameSide);
+				}
+				return otherSide;
+			},
 			parentIdea,
 			parentNode,
-			tops,
-			bottoms,
-			siblings,
-			result = {};
+			boundaries = [],
+			sameSide,
+			opposite,
+			primaryEdge,
+			secondaryEdge;
 		if (isRoot(nodeId)) {
 			return false;
 		}
 		parentIdea = idea.findParent(nodeId);
 		parentNode = currentLayout.nodes[parentIdea.id];
-		siblings = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
+		primaryEdge = isRightHalf(nodeId) ? 'left': 'right';
+		secondaryEdge = isRightHalf(nodeId) ? 'right': 'left';
+		sameSide = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
 			return currentLayout.nodes[id];
 		});
-		if (siblings.length === 0) {
-			return false;
+		if (!_.isEmpty(sameSide)) {
+			boundaries.push(siblingBoundary(sameSide, primaryEdge));
 		}
-		tops = _.map(siblings, function (node) {
-			return node.y;
-		});
-		bottoms = _.map(siblings, function (node) {
-			return node.y + node.height;
-		});
-		result = {
-			'minY': _.min(tops) -  reorderMargin - currentLayout.nodes[nodeId].height,
-			'maxY': _.max(bottoms) +  reorderMargin,
-			'margin': reorderMargin
-		};
-		if (isRightHalf(nodeId)) {
-			result.edge = 'left';
-			result.x = parentNode.x + parentNode.width + reorderMargin;
-		} else {
-			result.edge = 'right';
-			result.x = parentNode.x - reorderMargin;
+		boundaries.push(parentBoundary(primaryEdge));
+		if (isFirstLevel()) {
+			opposite = otherSideSiblings();
+			if (!_.isEmpty(opposite)) {
+				boundaries.push(siblingBoundary(opposite, secondaryEdge));
+			}
+			boundaries.push(parentBoundary(secondaryEdge));
 		}
-		return result;
+		return boundaries;
 	};
 };

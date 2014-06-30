@@ -1236,13 +1236,13 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, level: 2, height: 10, title: 'zeka', id: 3});
 					jQuery('#node_3').addClass('droppable');
 					underTest = jQuery('#node_1');
-					reorderBoundary = {
+					reorderBoundary = [{
 						edge: 'left',
 						maxY: 130,
 						minY: 120,
 						x: 110,
 						margin: 10
-					};
+					}];
 					mapModel.getReorderBoundary.and.returnValue(reorderBoundary);
 					underTest.trigger('mm:start-dragging');
 					viewPort.css({'width': '1000px', 'height': '500px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});

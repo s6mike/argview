@@ -2190,7 +2190,13 @@ describe('MapModel', function () {
 		});
 	});
 	describe('getReorderBoundary', function () {
-		var underTest, layout, idea, margin;
+		var underTest, layout, idea, margin,
+			firstBoundary = function (nodeId) {
+				return underTest.getReorderBoundary(nodeId)[0];
+			},
+			secondBoundary = function (nodeId) {
+				return underTest.getReorderBoundary(nodeId)[1];
+			};
 		beforeEach(function () {
 			idea = MAPJS.content({
 					id: 1,
@@ -2233,6 +2239,7 @@ describe('MapModel', function () {
 					121: { id: 121, x: 115, y: -60, width: 10, height: 11},
 					122: { id: 122, x: 135, y: -30, width: 10, height: 10},
 					13: { id: 13, x: 70, y: 10, width: 30, height: 20},
+					131: {id: 131, x: 120, y: 10, width: 30, height: 20},
 					14: { id: 14, x: -100, y: 10, width: 30, height: 10},
 					141: { id: 141, x: -150, y: -20, width: 30, height: 10},
 					142: { id: 142, x: -160, y: 20, width: 30, height: 10},
@@ -2252,34 +2259,47 @@ describe('MapModel', function () {
 		describe('for right nodes', function () {
 			it('matches against the left edge', function () {
 				_.each([121, 11, 12, 122], function (nodeId) {
-					expect(underTest.getReorderBoundary(nodeId).edge).toEqual('left');
+					expect(firstBoundary(nodeId).edge).toEqual('left');
 				});
 			});
 			it('returns the right edge of parent + margin', function () {
-				expect(underTest.getReorderBoundary(121).x).toEqual(120);
-				expect(underTest.getReorderBoundary(11).x).toEqual(70);
+				expect(firstBoundary(121).x).toEqual(120);
+				expect(firstBoundary(11).x).toEqual(70);
+				expect(secondBoundary(121).x).toEqual(120);
+				expect(secondBoundary(11).x).toEqual(70);
 			});
-			it('limits the vertical boundary to allow for the current node height on top of same side siblings + margin and below the siblings + margin', function () {
-				expect(_.pick(underTest.getReorderBoundary(121), 'minY', 'maxY')).toEqual({minY: -61, maxY: 0});
-				expect(_.pick(underTest.getReorderBoundary(11), 'minY', 'maxY')).toEqual({minY: -90, maxY: 50});
+			it('wraps the first boundary around siblings if it has siblings', function () {
+				expect(_.pick(firstBoundary(121), 'minY', 'maxY')).toEqual({minY: -61, maxY: 0});
+				expect(_.pick(firstBoundary(11), 'minY', 'maxY')).toEqual({minY: -90, maxY: 50});
 			});
-			it('returns falsy if only child', function () {
-				expect(underTest.getReorderBoundary(131)).toBeFalsy();
+			it('wraps the second boundary around parent if node has siblings', function () {
+				expect(_.pick(secondBoundary(121), 'minY', 'maxY')).toEqual({minY: -91, maxY: -30});
+				expect(_.pick(secondBoundary(11), 'minY', 'maxY')).toEqual({minY: -60, maxY: 50});
+			});
+			it('wraps the first boundary around parent if no siblings', function () {
+				expect(_.pick(firstBoundary(131), 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'left', x: 120, minY: -30, maxY: 50});
+				expect(underTest.getReorderBoundary(131).length).toBe(1);
+			});
+			it('wraps the third boundary over other side siblings for level 1 nodes', function () {
+				expect(_.pick(underTest.getReorderBoundary(11)[2], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -20, maxY: 80});
+			});
+			it('wraps the fourth boundary over the other side parent for level 1 nodes', function () {
+				expect(_.pick(underTest.getReorderBoundary(11)[3], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -60, maxY: 50});
 			});
 		});
 		describe('for left nodes', function () {
 			it('matches against the right edge', function () {
 				_.each([14, 141, 142, 15, 16], function (nodeId) {
-					expect(underTest.getReorderBoundary(nodeId).edge).toEqual('right');
+					expect(firstBoundary(nodeId).edge).toEqual('right');
 				});
 			});
 			it('returns the left edge of parent - margin', function () {
-				expect(underTest.getReorderBoundary(141).x).toEqual(-120);
-				expect(underTest.getReorderBoundary(14).x).toEqual(-70);
+				expect(firstBoundary(141).x).toEqual(-120);
+				expect(firstBoundary(14).x).toEqual(-70);
 			});
-			it('limits the vertical boundary to allow for the current node height on top of same side siblings + margin and below the siblings + margin', function () {
-				expect(_.pick(underTest.getReorderBoundary(141), 'minY', 'maxY')).toEqual({minY: -10, maxY: 50});
-				expect(_.pick(underTest.getReorderBoundary(15), 'minY', 'maxY')).toEqual({minY: -20, maxY: 80});
+			it('wraps the first boundary around siblings', function () {
+				expect(_.pick(firstBoundary(141), 'minY', 'maxY')).toEqual({minY: -10, maxY: 50});
+				expect(_.pick(firstBoundary(15), 'minY', 'maxY')).toEqual({minY: -20, maxY: 80});
 			});
 		});
 	});

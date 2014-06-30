@@ -684,18 +684,18 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 	node.shadowDraggable({disable: true});
 	return result.promise();
 };
-jQuery.fn.updateReorderBounds = function (reorderBounds, currentPosition, node) {
+jQuery.fn.updateReorderBounds = function (border, box) {
 	'use strict';
 	var element = this;
-	if (!reorderBounds) {
+	if (!border) {
 		element.hide();
 		return;
 	}
 	element.show();
-	element.attr('mapjs-edge', reorderBounds.edge);
+	element.attr('mapjs-edge', border.edge);
 	element.css({
-		top: currentPosition.y + node.height / 2 - element.height() / 2,
-		left: reorderBounds.x + (reorderBounds.edge === 'left' ? -1 : 1) * element.width(),
+		top: box.y + box.height / 2 - element.height() / 2,
+		left: border.x - (border.edge === 'left' ? element.width() : 0)
 	});
 
 };
@@ -935,20 +935,23 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		},
 		currentDroppable = false,
 		viewPortDimensions,
-		withinReorderBoundary = function (reorderBoundary, nodePosition, node) {
-			if (!reorderBoundary) {
+		withinReorderBoundary = function (boundaries, box) {
+			if (_.isEmpty(boundaries)) {
 				return false;
 			}
-			if (!nodePosition) {
+			if (!box) {
 				return false;
 			}
-			var nodeX = nodePosition.x;
-			if (reorderBoundary.edge === 'right') {
-				nodeX += node.width;
-			}
-			return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
-				nodePosition.y < reorderBoundary.maxY &&
-				nodePosition.y > reorderBoundary.minY;
+			var closeTo = function (reorderBoundary) {
+					var nodeX = box.x;
+					if (reorderBoundary.edge === 'right') {
+						nodeX += box.width;
+					}
+					return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
+						box.y < reorderBoundary.maxY &&
+						box.y > reorderBoundary.minY;
+				};
+			return _.find(boundaries, closeTo);
 		};
 	viewPort.on('scroll', function () { viewPortDimensions = undefined; });
 	if (imageInsertController) {
@@ -1009,12 +1012,13 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					clearCurrentDroppable();
 					return;
 				}
+
 				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
-				if (!hasShift && !nodeId && currentPosition && withinReorderBoundary(
-						currentReorderBoundary,
-						currentPosition,
-						node)) {
-					reorderBounds.updateReorderBounds(currentReorderBoundary, currentPosition, node);
+				if (!hasShift && !nodeId && currentPosition) {
+					currentPosition.width = element.outerWidth();
+					currentPosition.height = element.outerHeight();
+					var border = withinReorderBoundary(currentReorderBoundary, currentPosition);
+					reorderBounds.updateReorderBounds(border, currentPosition);
 				} else {
 					reorderBounds.hide();
 				}
@@ -1050,10 +1054,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else if (node.level > 1) {
-					manualPosition = (!!isShift) || !withinReorderBoundary(
-						currentReorderBoundary,
-						finalPosition,
-						node);
+					finalPosition.width = element.outerWidth();
+					finalPosition.height = element.outerHeight();
+					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
 					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, manualPosition);
 				} else if (node.level === 1 && evt.gesture) {
 					var vpCenter = stagePointAtViewportCenter();
