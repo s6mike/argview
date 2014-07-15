@@ -455,7 +455,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 			element.text(text.trim());
 			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
-			if ((domElement.scrollWidth - 10) > domElement.offsetWidth) {
+			if ((domElement.scrollWidth - 11) > domElement.offsetWidth) {
 				element.css('max-width', domElement.scrollWidth + 'px');
 			}
 			else {
