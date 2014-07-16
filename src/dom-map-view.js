@@ -449,13 +449,14 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 		updateText = function (title) {
 			var text = MAPJS.URLHelper.stripLink(title) ||
 					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
-				element = textSpan(),
-				domElement = element[0];
+					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
+					element = textSpan(),
+					domElement = element[0];
 
 			element.text(text.trim());
 			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
-			if ((domElement.scrollWidth - 11) > domElement.offsetWidth) {
+			if ((domElement.scrollWidth - nodeTextPadding) > domElement.offsetWidth) {
 				element.css('max-width', domElement.scrollWidth + 'px');
 			}
 			else {
