@@ -83,8 +83,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
 				'offsetX': element.innerWidth() / 2,
 				'offsetY': element.innerHeight() / 2,
-				'width': 0,
-				'height': 0,
+				'width': element.innerWidth(),
+				'height': element.innerHeight(),
 				'scale': 1
 			}).updateStage(),
 			previousPinchScale = false;
@@ -144,7 +144,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				}
 			});
 		});
-		jQuery(window).on('orientationchange resize', function () {
+		jQuery(window).on('orientationchange', function () {
 			mapModel.resetView();
 		});
 		jQuery(document).on('keydown', function (e) {

@@ -858,10 +858,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					x: viewPort.innerWidth() / 2,
 					y: viewPort.innerHeight() / 2
 				},
-				newLeftScroll, newTopScroll,
-        margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
+				newLeftScroll, newTopScroll;
 			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
-			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale - margin.left, y + viewPortCenter.y / stage.scale - margin.top);
+			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale, y + viewPortCenter.y / stage.scale);
 
 			newLeftScroll = stage.scale * (x + stage.offsetX) - viewPortCenter.x;
 			newTopScroll = stage.scale * (y + stage.offsetY) - viewPortCenter.y;
