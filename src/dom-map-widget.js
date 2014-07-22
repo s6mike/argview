@@ -83,8 +83,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
 				'offsetX': element.innerWidth() / 2,
 				'offsetY': element.innerHeight() / 2,
-				'width': 0,
-				'height': 0,
+				'width': element.innerWidth() - 20,
+				'height': element.innerHeight() - 20,
 				'scale': 1
 			}).updateStage(),
 			previousPinchScale = false;
