@@ -211,7 +211,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	this.clickNode = function (id, event) {
-		var button = event && event.button;
+		var button = event && event.button && event.button !== -1;
 		if (event && event.altKey) {
 			self.addLink('mouse', id);
 		} else if (event && event.shiftKey) {
