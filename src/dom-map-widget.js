@@ -144,7 +144,13 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				}
 			});
 		});
-		jQuery(window).on('orientationchange resize', function () {
+		if (!touchEnabled) {
+			jQuery(window).on('resize', function () {
+				mapModel.resetView();
+			});
+		}
+
+		jQuery(window).on('orientationchange', function () {
 			mapModel.resetView();
 		});
 		jQuery(document).on('keydown', function (e) {
