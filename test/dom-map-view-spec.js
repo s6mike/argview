@@ -739,7 +739,9 @@ describe('updateNodeContent', function () {
 				expect(underTest.css('background-position')).toBe('50% 50%');
 				expect(underTest.css('min-width')).toEqual('400px');
 				expect(underTest.css('min-height')).toEqual('500px');
-				expect(textBox.css('margin-top')).toBe('241px');
+				if (!isHeadless()) {
+					expect(textBox.css('margin-top')).toBe('241px');
+				}
 			});
 			it('positions center icons behind text and does not expand the node if not needed', function () {
 				nodeContent.attr.icon.width = 5;
@@ -755,7 +757,9 @@ describe('updateNodeContent', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('5px 50%');
 				expect(underTest.css('padding-left')).toEqual('410px');
-				expect(textBox.css('margin-top')).toBe('241px');
+				if (!isHeadless()) {
+					expect(textBox.css('margin-top')).toBe('241px');
+				}
 			});
 			it('positions right icons right of node text and vertically centers the text', function () {
 				nodeContent.attr.icon.position = 'right';
@@ -766,15 +770,19 @@ describe('updateNodeContent', function () {
 				}
 
 				expect(underTest.css('padding-right')).toEqual('410px');
-				expect(textBox.css('margin-top')).toBe('241px');
+				if (!isHeadless()) {
+					expect(textBox.css('margin-top')).toBe('241px');
+				}
 			});
-			it('positions right icons right of node text and vertically centers the text for a fixed layous', function () {
+			it('positions right icons right of node text and vertically centers the text for a fixed layouts', function () {
 				MAPJS.DOMRender.fixedLayout = true;
 				nodeContent.attr.icon.position = 'right';
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('170px 50%');
 				expect(underTest.css('padding-right')).toEqual('410px');
-				expect(textBox.css('margin-top')).toBe('241px');
+				if (!isHeadless()) {
+					expect(textBox.css('margin-top')).toBe('241px');
+				}
 			});
 
 			it('positions top icons top of node text and horizontally centers the text', function () {
@@ -801,7 +809,9 @@ describe('updateNodeContent', function () {
 				MAPJS.DOMRender.fixedLayout = true;
 				nodeContent.attr.icon.position = 'bottom';
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.css('background-position')).toBe('50% 23px');
+				if (!isHeadless()) {
+					expect(underTest.css('background-position')).toBe('50% 23px');
+				}
 				expect(underTest.css('padding-bottom')).toEqual('510px');
 				expect(underTest.css('min-width')).toEqual('400px');
 				expect(textBox.css('margin-left')).toBe('120px');
