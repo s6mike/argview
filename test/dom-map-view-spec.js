@@ -1,4 +1,26 @@
 /*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable, window*/
+describe('innerText', function () {
+  'use strict';
+  var underTest;
+  beforeEach(function() {
+    jQuery.fn.innerText.check = false;
+    underTest = jQuery('<span></span>').appendTo('body');
+    spyOn(jQuery.fn, 'text').and.callThrough();
+  });
+  afterEach(function () {
+    underTest.detach();
+  });
+  it('executes using .text if content does not contain BR elements', function () {
+    underTest.html('does\nthis\nhave\nbreaks');
+    expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
+    expect(jQuery.fn.text).toHaveBeenCalledOnJQueryObject(underTest);
+  });
+  it('removes html tags and replaces BR with newlines if content contains BR elements (broken firefox contenteditable)', function () {
+    underTest.html('does<br>this<br/>ha<a href="">ve</a><br>breaks');
+    expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
+    expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
+  });
+});
 describe('updateStage', function () {
 	'use strict';
 	var stage, second;
@@ -202,6 +224,21 @@ describe('editNode', function () {
 			expect(textBox.attr('contenteditable')).toBeFalsy();
 			expect(resolved).toHaveBeenCalledWith('changed text');
 		});
+    it('consumes multi-line text', function () {
+			textBox.html('changed\ntext');
+			textBox.trigger('blur');
+			expect(resolved).toHaveBeenCalledWith('changed\ntext');
+    });
+    it('consumes broken firefox contenteditable multi-line text', function () {
+			textBox.html('changed<br>text');
+			textBox.trigger('blur');
+			expect(resolved).toHaveBeenCalledWith('changed\ntext');
+    });
+    it('converts text box content to text using innerText', function () {
+      spyOn(jQuery.fn, 'innerText').and.returnValue('hello there');
+			textBox.trigger('blur');
+			expect(resolved).toHaveBeenCalledWith('hello there');
+    });
 		it('reactivates dragging when focus is lost', function () {
 			node.attr('mapjs-level', 2);
 			jQuery.fn.shadowDraggable.calls.reset();

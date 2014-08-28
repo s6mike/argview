@@ -615,6 +615,15 @@ jQuery.fn.selectAll = function () {
         textRange.select();
     }
 };
+jQuery.fn.innerText = function () {
+  'use strict';
+  var htmlContent = this.html(),
+      containsBr = /<br\/?>/.test(htmlContent);
+  if (!containsBr) {
+    return this.text();
+  }
+  return htmlContent.replace(/<br\/?>/gi,'\n').replace(/(<([^>]+)>)/gi, '');
+};
 jQuery.fn.editNode = function (shouldSelectAll) {
 	'use strict';
 	var node = this,
@@ -632,8 +641,9 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 			if (textBox.text() === unformattedText) {
 				return cancelEditing();
 			}
+      var content = textBox.innerText();
 			clear();
-			result.resolve(textBox.text());
+			result.resolve(content);
 		},
 		cancelEditing = function () {
 			clear();
