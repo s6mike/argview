@@ -1126,4 +1126,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		return boundaries;
 	};
+    self.focusAndSelect = function (nodeId) {
+       self.selectNode(nodeId);
+       self.dispatchEvent('nodeFocusRequested', nodeId);
+    };
 };

@@ -2303,4 +2303,40 @@ describe('MapModel', function () {
 			});
 		});
 	});
+    describe('focusAndSelect', function () {
+        var underTest, anIdea, listener;
+		beforeEach(function () {
+				anIdea = MAPJS.content({
+					id: 1,
+					title: 'root',
+					ideas: {
+						10: {
+							id: 2,
+							title: 'child',
+							ideas: {
+								11: { id: 3, title: 'child of child' }
+							}
+						}
+					}
+				});
+				underTest = new MAPJS.MapModel(function () {
+					return {
+						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+					};
+				});
+				underTest.setIdea(anIdea);
+                listener = jasmine.createSpy();
+                underTest.selectNode(1);
+			});
+        it('selects the node', function () {
+            underTest.addEventListener('nodeSelectionChanged', listener);
+            underTest.focusAndSelect(2);
+            expect(listener).toHaveBeenCalledWith(2, true);
+        });
+        it('dispatches nodeFocusRequested for the node', function () {
+            underTest.addEventListener('nodeFocusRequested', listener);
+            underTest.focusAndSelect(2);
+            expect(listener).toHaveBeenCalledWith(2);
+        });
+    });
 });
