@@ -320,7 +320,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			idea.updateLinkAttr(ideaIdFrom, ideaIdTo, 'style', merged);
 		}
 	};
-	this.addSubIdea = function (source, parentId) {
+	this.addSubIdea = function (source, parentId, initialTitle) {
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -329,9 +329,14 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (isInputEnabled) {
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, target);
-				newId = idea.addSubIdea(target);
+                if (initialTitle) {
+                    newId = idea.addSubIdea(target, initialTitle);
+                }
+                else {
+                    newId = idea.addSubIdea(target);
+                }
 			});
-			if (newId) {
+			if (!initialTitle && newId) {
 				editNewIdea(newId);
 			}
 		}
@@ -394,20 +399,25 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			editNewIdea(newId);
 		}
 	};
-	this.addSiblingIdea = function (source) {
-		var newId, nextId, parent, contextRank, newRank;
+	this.addSiblingIdea = function (source, optionalNodeId, optionalInitialText) {
+		var newId, nextId, parent, contextRank, newRank, currentId;
+        currentId = optionalNodeId || currentlySelectedIdeaId;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
-			parent = idea.findParent(currentlySelectedIdeaId) || idea;
+			parent = idea.findParent(currentId) || idea;
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
-				newId = idea.addSubIdea(parent.id);
-				if (newId && currentlySelectedIdeaId !== idea.id) {
-					nextId = idea.nextSiblingId(currentlySelectedIdeaId);
-					contextRank = parent.findChildRankById(currentlySelectedIdeaId);
+                if (optionalInitialText) {
+                    newId = idea.addSubIdea(parent.id, optionalInitialText);
+                } else {
+                    newId = idea.addSubIdea(parent.id);
+                }
+				if (newId && currentId !== idea.id) {
+					nextId = idea.nextSiblingId(currentId);
+					contextRank = parent.findChildRankById(currentId);
 					newRank = parent.findChildRankById(newId);
 					if (contextRank * newRank < 0) {
 						idea.flip(newId);
@@ -417,7 +427,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					}
 				}
 			});
-			if (newId) {
+			if (!optionalInitialText && newId) {
 				editNewIdea(newId);
 			}
 		}

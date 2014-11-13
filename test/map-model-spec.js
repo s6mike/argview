@@ -470,6 +470,13 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
+            it('should add with a title and not invoke editNode if title is supplied', function () {
+                var nodeEditRequestedListener = jasmine.createSpy('node edit requested');
+				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+				underTest.addSubIdea('source', 2, 'initial title');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
+                expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+            });
 		});
 		describe('copy', function () {
 			beforeEach(function () {
@@ -597,10 +604,28 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
+			it('should invoke idea.addSubIdea with a parent of a specified node', function () {
+                var nodeId = anIdea.addSubIdea(2, 'test');
+                anIdea.addSubIdea.calls.reset();
+				underTest.selectNode(1);
+				underTest.addSiblingIdea('keyboard', nodeId);
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2);
+			});
 			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
+            it('should add with a title and not invoke editNode if title is supplied', function () {
+                var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
+                    nodeId = anIdea.addSubIdea(2, 'test');
+                anIdea.addSubIdea.calls.reset();
+				underTest.selectNode(1);
+				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+
+				underTest.addSiblingIdea('keyboard', nodeId, 'initial title');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
+                expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+            });
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);
 				spyOn(anIdea, 'updateAttr').and.callThrough();
