@@ -969,7 +969,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	if (imageInsertController) {
 		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
 			var point = stagePositionForPointEvent(evt);
-			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point.x, point.y);
+			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point && point.x, point && point.y);
 		});
 	}
 	mapModel.addEventListener('nodeCreated', function (node) {
