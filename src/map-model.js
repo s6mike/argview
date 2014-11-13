@@ -113,10 +113,13 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		},
 		revertSelectionForUndo,
 		revertActivatedForUndo,
-		editNewIdea = function (newIdeaId) {
+		selectNewIdea = function (newIdeaId) {
 			revertSelectionForUndo = currentlySelectedIdeaId;
 			revertActivatedForUndo = activatedNodes.slice(0);
 			self.selectNode(newIdeaId);
+		},
+		editNewIdea = function (newIdeaId) {
+            selectNewIdea(newIdeaId);
 			self.editNode(false, true, true);
 		},
 		getCurrentlySelectedIdeaId = function () {
@@ -336,8 +339,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
                     newId = idea.addSubIdea(target);
                 }
 			});
-			if (!initialTitle && newId) {
-				editNewIdea(newId);
+			if (newId) {
+                if (initialTitle) {
+                    selectNewIdea(newId);
+                } else {
+                    editNewIdea(newId);
+                }
 			}
 		}
 
@@ -427,8 +434,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					}
 				}
 			});
-			if (!optionalInitialText && newId) {
-				editNewIdea(newId);
+			if (newId) {
+                if (optionalInitialText) {
+                    selectNewIdea(newId);
+                } else {
+                    editNewIdea(newId);
+                }
 			}
 		}
 	};

@@ -470,12 +470,13 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
-            it('should add with a title and not invoke editNode if title is supplied', function () {
+            it('should add with a title and select but not invoke editNode if title is supplied', function () {
                 var nodeEditRequestedListener = jasmine.createSpy('node edit requested');
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.addSubIdea('source', 2, 'initial title');
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
                 expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+                expect(underTest.getSelectedNodeId()).toBe(3);
             });
 		});
 		describe('copy', function () {
@@ -615,7 +616,7 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
-            it('should add with a title and not invoke editNode if title is supplied', function () {
+            it('should add with a title and select, but not invoke editNode if title is supplied', function () {
                 var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
                     nodeId = anIdea.addSubIdea(2, 'test');
                 anIdea.addSubIdea.calls.reset();
@@ -625,6 +626,7 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea('keyboard', nodeId, 'initial title');
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
                 expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+                expect(underTest.getSelectedNodeId()).toBe(4);
             });
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);
