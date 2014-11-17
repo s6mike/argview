@@ -40,7 +40,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			});
 		},
 		updateCurrentLayout = function (newLayout) {
-			self.dispatchEvent('layoutChangeStarting');
+			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			applyLabels(newLayout);
 
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
