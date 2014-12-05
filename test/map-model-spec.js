@@ -470,14 +470,14 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
-            it('should add with a title and select but not invoke editNode if title is supplied', function () {
-                var nodeEditRequestedListener = jasmine.createSpy('node edit requested');
+			it('should add with a title and select but not invoke editNode if title is supplied', function () {
+				var nodeEditRequestedListener = jasmine.createSpy('node edit requested');
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.addSubIdea('source', 2, 'initial title');
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
-                expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-                expect(underTest.getSelectedNodeId()).toBe(3);
-            });
+				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				expect(underTest.getSelectedNodeId()).toBe(3);
+			});
 		});
 		describe('copy', function () {
 			beforeEach(function () {
@@ -606,8 +606,8 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should invoke idea.addSubIdea with a parent of a specified node', function () {
-                var nodeId = anIdea.addSubIdea(2, 'test');
-                anIdea.addSubIdea.calls.reset();
+				var nodeId = anIdea.addSubIdea(2, 'test');
+				anIdea.addSubIdea.calls.reset();
 				underTest.selectNode(1);
 				underTest.addSiblingIdea('keyboard', nodeId);
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2);
@@ -616,18 +616,18 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
-            it('should add with a title and select, but not invoke editNode if title is supplied', function () {
-                var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
-                    nodeId = anIdea.addSubIdea(2, 'test');
-                anIdea.addSubIdea.calls.reset();
+			it('should add with a title and select, but not invoke editNode if title is supplied', function () {
+				var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
+						nodeId = anIdea.addSubIdea(2, 'test');
+				anIdea.addSubIdea.calls.reset();
 				underTest.selectNode(1);
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 
 				underTest.addSiblingIdea('keyboard', nodeId, 'initial title');
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
-                expect(nodeEditRequestedListener).not.toHaveBeenCalled();
-                expect(underTest.getSelectedNodeId()).toBe(4);
-            });
+				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				expect(underTest.getSelectedNodeId()).toBe(4);
+			});
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
 				underTest.collapse('source', true);
 				spyOn(anIdea, 'updateAttr').and.callThrough();
@@ -1502,7 +1502,7 @@ describe('MapModel', function () {
 						expect(anIdea.mergeAttrProperty).not.toHaveBeenCalled();
 					});
 					it('should not invoke idea if setting the same prop value - this is to prevent roundtrips from the default background and other calculated props in layout', function () {
-                        underTest.updateStyle('source', 'styleprop', 'oldValue');
+						underTest.updateStyle('source', 'styleprop', 'oldValue');
 						expect(anIdea.mergeAttrProperty).not.toHaveBeenCalled();
 					});
 
@@ -2330,40 +2330,119 @@ describe('MapModel', function () {
 			});
 		});
 	});
-    describe('focusAndSelect', function () {
-        var underTest, anIdea, listener;
+	describe('focusAndSelect', function () {
+		var underTest, anIdea, listener;
 		beforeEach(function () {
-				anIdea = MAPJS.content({
-					id: 1,
-					title: 'root',
-					ideas: {
-						10: {
-							id: 2,
-							title: 'child',
-							ideas: {
-								11: { id: 3, title: 'child of child' }
-							}
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'root',
+				ideas: {
+					10: {
+						id: 2,
+						title: 'child',
+						ideas: {
+							11: { id: 3, title: 'child of child' }
 						}
 					}
-				});
-				underTest = new MAPJS.MapModel(function () {
-					return {
-						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
-					};
-				});
-				underTest.setIdea(anIdea);
-                listener = jasmine.createSpy();
-                underTest.selectNode(1);
+				}
 			});
-        it('selects the node', function () {
-            underTest.addEventListener('nodeSelectionChanged', listener);
-            underTest.focusAndSelect(2);
-            expect(listener).toHaveBeenCalledWith(2, true);
-        });
-        it('dispatches nodeFocusRequested for the node', function () {
-            underTest.addEventListener('nodeFocusRequested', listener);
-            underTest.focusAndSelect(2);
-            expect(listener).toHaveBeenCalledWith(2);
-        });
-    });
+			underTest = new MAPJS.MapModel(function () {
+				return {
+					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+				};
+			});
+			underTest.setIdea(anIdea);
+			listener = jasmine.createSpy();
+			underTest.selectNode(1);
+		});
+		it('selects the node', function () {
+			underTest.addEventListener('nodeSelectionChanged', listener);
+			underTest.focusAndSelect(2);
+			expect(listener).toHaveBeenCalledWith(2, true);
+		});
+		it('dispatches nodeFocusRequested for the node', function () {
+			underTest.addEventListener('nodeFocusRequested', listener);
+			underTest.focusAndSelect(2);
+			expect(listener).toHaveBeenCalledWith(2);
+		});
+	});
+	describe('contextForNode', function () {
+		var underTest, anIdea, clipboard,
+				layoutCalculator = function () {
+				return {
+					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+				};
+			};
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'root',
+				ideas: {
+					10: {
+						id: 2,
+						title: '1st child',
+						ideas: {
+							11: { id: 3, title: '1st child of 1st child' },
+							12: { id: 5, title: '2nd child of 1st child' }
+						}
+					},
+					12: {
+						id: 4,
+						title: '2nd child',
+						ideas: {
+							11: { id: 6, title: '1st child of 2nd child' },
+						}
+					}
+				}
+			});
+			clipboard = new MAPJS.MemoryClipboard();
+			underTest = new MAPJS.MapModel(layoutCalculator, undefined, clipboard);
+			underTest.setIdea(anIdea);
+		});
+		it('should be undefined when there is no node for node id', function () {
+			expect(underTest.contextForNode(20)).toBeUndefined();
+		});
+		describe('canPaste', function () {
+			it('should be false when clipboard is empty', function () {
+				expect(underTest.contextForNode(1).canPaste).toBe(false);
+			});
+			describe('when clipboard is not empty', function () {
+				beforeEach(function () {
+					clipboard.put('hoo har');
+				});
+				it('should be true when editingg is enabled', function () {
+					expect(underTest.contextForNode(1).canPaste).toBe(true);
+				});
+				it('should be false when editing is disabled', function () {
+					underTest.setEditingEnabled(false);
+					expect(underTest.contextForNode(1).canPaste).toBe(false);
+				});
+			});
+			describe('hasChildren', function () {
+				it('should be true when the node has children', function () {
+					expect(underTest.contextForNode(1).hasChildren).toBe(true);
+					expect(underTest.contextForNode(2).hasChildren).toBe(true);
+					expect(underTest.contextForNode(4).hasChildren).toBe(true);
+				});
+				it('should be false when the node does not have children', function () {
+					expect(underTest.contextForNode(3).hasChildren).toBe(false);
+					expect(underTest.contextForNode(5).hasChildren).toBe(false);
+					expect(underTest.contextForNode(6).hasChildren).toBe(false);
+				});
+			});
+			describe('hasSiblings', function () {
+				it('should be true when the node has siblings', function () {
+					expect(underTest.contextForNode(2).hasSiblings).toBe(true);
+					expect(underTest.contextForNode(3).hasSiblings).toBe(true);
+					expect(underTest.contextForNode(4).hasSiblings).toBe(true);
+					expect(underTest.contextForNode(5).hasSiblings).toBe(true);
+				});
+				it('should be false when the node does not have siblings', function () {
+					expect(underTest.contextForNode(1).hasSiblings).toBe(false);
+					expect(underTest.contextForNode(6).hasSiblings).toBe(false);
+				});
+
+			});
+		});
+	});
 });
