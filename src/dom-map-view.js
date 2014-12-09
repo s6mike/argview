@@ -769,7 +769,7 @@ jQuery.fn.updateReorderBounds = function (border, box) {
 	};
 })();
 
-MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator) {
+MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator, options) {
 	'use strict';
 	var viewPort = stageElement.parent(),
 		connectorsForAnimation = jQuery(),
@@ -1218,25 +1218,26 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	});
 
 	/* editing */
+	if (!options || !options.inlineEditingDisabled) {
+		mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
+			var editingElement = stageElement.nodeWithId(nodeId);
+			mapModel.setInputEnabled(false);
+			viewPort.finish(); /* close any pending animations */
+			editingElement.editNode(shouldSelectAll).done(
+				function (newText) {
+					mapModel.setInputEnabled(true);
+					mapModel.updateTitle(nodeId, newText, editingNew);
+					editingElement.focus();
 
-	mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
-		var editingElement = stageElement.nodeWithId(nodeId);
-		mapModel.setInputEnabled(false);
-		viewPort.finish(); /* close any pending animations */
-		editingElement.editNode(shouldSelectAll).done(
-			function (newText) {
-				mapModel.setInputEnabled(true);
-				mapModel.updateTitle(nodeId, newText, editingNew);
-				editingElement.focus();
-
-			}).fail(function () {
-				mapModel.setInputEnabled(true);
-				if (editingNew) {
-					mapModel.undo('internal');
-				}
-				editingElement.focus();
-			});
-	});
+				}).fail(function () {
+					mapModel.setInputEnabled(true);
+					if (editingNew) {
+						mapModel.undo('internal');
+					}
+					editingElement.focus();
+				});
+		});
+	}
 	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
 		if (isOn) {
 			stageElement.addClass('mapjs-add-link');

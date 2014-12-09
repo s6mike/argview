@@ -2,7 +2,7 @@
 describe('innerText', function () {
   'use strict';
   var underTest;
-  beforeEach(function() {
+  beforeEach(function () {
     jQuery.fn.innerText.check = false;
     underTest = jQuery('<span></span>').appendTo('body');
     spyOn(jQuery.fn, 'text').and.callThrough();
@@ -1836,10 +1836,35 @@ describe('MAPJS.DOMRender', function () {
 				spyOn(jQuery.fn, 'finish');
 				spyOn(jQuery.fn, 'editNode').and.returnValue(editDeferred.promise());
 			});
+			describe('options', function () {
+				describe('inlineEditingDisabled', function () {
+					beforeEach(function () {
+						viewPort.remove();
+						spyOn(mapModel, 'addEventListener');
+						viewPort = jQuery('<div>').appendTo('body');
+						stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
+						resourceTranslator = jasmine.createSpy('resourceTranslator');
+					});
+					it('should subscribe to mapModel nodeEditRequested event when no options supplied', function () {
+						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
+						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
+					});
+					it('should subscribe to mapModel nodeEditRequested event when no options.inlineEditingDisabled is false', function () {
+						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: false});
+						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
+					});
+					it('should not subscribe to mapModel nodeEditRequested event when true', function () {
+						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: true});
+						expect(mapModel.addEventListener).not.toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
+					});
+				});
+
+			});
 			describe('when editing an existing node', function () {
 				beforeEach(function () {
 					mapModel.dispatchEvent('nodeEditRequested', '11', false, false);
 				});
+
 				it('disables input on mapModel', function () {
 					expect(mapModel.setInputEnabled).toHaveBeenCalledWith(false);
 				});
