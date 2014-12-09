@@ -82,10 +82,10 @@ jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 			to: shapeTo && shapeTo.getBox()
 		};
 	tolerance = tolerance || 1;
-	if (fromBox && toBox && oldBox && oldBox.from.width	=== fromBox.width	&&
-		oldBox.to.width		=== toBox.width		&&
-		oldBox.from.height	=== fromBox.height		&&
-		oldBox.to.height	=== toBox.height		&&
+	if (fromBox && toBox && oldBox && oldBox.from.width === fromBox.width &&
+		oldBox.to.width   === toBox.width   &&
+		oldBox.from.height  === fromBox.height    &&
+		oldBox.to.height  === toBox.height    &&
 		Math.abs(oldBox.from.top - oldBox.to.top - (fromBox.top - toBox.top)) < tolerance &&
 		Math.abs(oldBox.from.left - oldBox.to.left - (fromBox.left - toBox.left)) < tolerance) {
 
@@ -273,7 +273,7 @@ MAPJS.DOMRender.linkConnectorPath = MAPJS.DOMRender.straightPath;
 jQuery.fn.updateConnector = function (canUseData) {
 	'use strict';
 	return jQuery.each(this, function () {
-		var	element = jQuery(this),
+		var element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
 			connection, pathElement, fromBox, toBox, changeCheck;
@@ -310,7 +310,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 jQuery.fn.updateLink = function () {
 	'use strict';
 	return jQuery.each(this, function () {
-		var	element = jQuery(this),
+		var element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
 			connection,
@@ -486,7 +486,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 			return 'mapjs-node-white';
 		},
 		setColors = function () {
-			var fromStyle =	nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background;
+			var fromStyle = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background;
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
@@ -587,42 +587,42 @@ jQuery.fn.placeCaretAtEnd = function () {
 	'use strict';
 	var el = this[0];
 	if (window.getSelection && document.createRange) {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    } else if (document.body.createTextRange) {
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(el);
-        textRange.collapse(false);
-        textRange.select();
-    }
+		var range = document.createRange();
+		range.selectNodeContents(el);
+		range.collapse(false);
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange(range);
+	} else if (document.body.createTextRange) {
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(el);
+		textRange.collapse(false);
+		textRange.select();
+	}
 };
 jQuery.fn.selectAll = function () {
 	'use strict';
 	var el = this[0];
 	if (window.getSelection && document.createRange) {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    } else if (document.body.createTextRange) {
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(el);
-        textRange.select();
-    }
+		var range = document.createRange();
+		range.selectNodeContents(el);
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange(range);
+	} else if (document.body.createTextRange) {
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(el);
+		textRange.select();
+	}
 };
 jQuery.fn.innerText = function () {
-  'use strict';
-  var htmlContent = this.html(),
-      containsBr = /<br\/?>/.test(htmlContent);
-  if (!containsBr) {
-    return this.text();
-  }
-  return htmlContent.replace(/<br\/?>/gi,'\n').replace(/(<([^>]+)>)/gi, '');
+	'use strict';
+	var htmlContent = this.html(),
+			containsBr = /<br\/?>/.test(htmlContent);
+	if (!containsBr) {
+		return this.text();
+	}
+	return htmlContent.replace(/<br\/?>/gi, '\n').replace(/(<([^>]+)>)/gi, '');
 };
 jQuery.fn.editNode = function (shouldSelectAll) {
 	'use strict';
@@ -638,7 +638,7 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 			node.shadowDraggable();
 		},
 		finishEditing = function () {
-      var content = textBox.innerText();
+			var content = textBox.innerText();
 			if (content === unformattedText) {
 				return cancelEditing();
 			}
@@ -869,7 +869,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					y: viewPort.innerHeight() / 2
 				},
 				newLeftScroll, newTopScroll,
-        margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
+				margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
 			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
 			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale - margin.left, y + viewPortCenter.y / stage.scale - margin.top);
 
@@ -1117,7 +1117,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.nodeWithId(node.id).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
-		var	currentViewPortDimensions = getViewPortDimensions(),
+		var currentViewPortDimensions = getViewPortDimensions(),
 			nodeDom = stageElement.nodeWithId(node.id).data({
 				'x': Math.round(node.x),
 				'y': Math.round(node.y)
