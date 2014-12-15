@@ -403,8 +403,8 @@ describe('content aggregate', function () {
 				idea.paste(3, _.extend(toPaste, {ideas: {
 					77: {id: 10, title: '77'},
 					1: { id: 11, title: '1'},
-				    '-77': {id: 12, title: '-77'},
-				    '-1': {id: 13, title: '-1'}
+					'-77': {id: 12, title: '-77'},
+					'-1': {id: 13, title: '-1'}
 				}}));
 				var	newChildren = idea.ideas[-10].ideas[1].ideas;
 				expect(newChildren[1].title).toBe('1');
@@ -2092,6 +2092,46 @@ describe('content aggregate', function () {
 			var key = underTest.storeResource('abc');
 			underTest.storeResource('def', key);
 			expect(underTest.getResource(key)).toEqual('def');
+		});
+	});
+	describe('hasSiblings', function () {
+		var underTest;
+		beforeEach(function () {
+			underTest = MAPJS.content({
+				id: 1,
+				ideas: {
+					1: {
+						id: 2,
+						ideas: {
+							11: {id: 4},
+							12: {id: 5},
+							13: {id: 6}
+						}
+					},
+					'-1': {
+						id: 3,
+						ideas: {
+							21: {id: 7}
+						}
+					}
+				}
+			}, 'session1');
+		});
+		it('should return false if there are no siblings', function () {
+			expect(underTest.hasSiblings(1)).toBeFalsy();
+			expect(underTest.hasSiblings(7)).toBeFalsy();
+		});
+		it('should return false if node id does not exist', function () {
+			expect(underTest.hasSiblings(17)).toBeFalsy();
+		});
+		it('should return true if there are siblings on same side', function () {
+			expect(underTest.hasSiblings(4)).toBeTruthy();
+			expect(underTest.hasSiblings(5)).toBeTruthy();
+			expect(underTest.hasSiblings(6)).toBeTruthy();
+		});
+		it('should return true if siblings are on different sides', function () {
+			expect(underTest.hasSiblings(2)).toBeTruthy();
+			expect(underTest.hasSiblings(3)).toBeTruthy();
 		});
 	});
 });
