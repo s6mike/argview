@@ -665,10 +665,10 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 			} else if (e.which === ESC_KEY_CODE) {
 				cancelEditing();
 				e.stopPropagation();
-			} else if (e.which === TAB_KEY_CODE || (e.which === S_KEY_CODE && (e.metaKey || e.ctrlKey))) {
+			} else if (e.which === TAB_KEY_CODE || (e.which === S_KEY_CODE && (e.metaKey || e.ctrlKey) && !e.altKey)) {
 				finishEditing();
 				e.preventDefault(); /* stop focus on another object */
-			} else if (!e.shiftKey && e.which === Z_KEY_CODE && (e.metaKey || e.ctrlKey)) { /* undo node edit on ctrl+z if text was not changed */
+			} else if (!e.shiftKey && e.which === Z_KEY_CODE && (e.metaKey || e.ctrlKey) && !e.altKey) { /* undo node edit on ctrl+z if text was not changed */
 				if (textBox.text() === unformattedText) {
 					cancelEditing();
 				}
