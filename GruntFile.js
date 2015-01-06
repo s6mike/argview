@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 					],
 					vendor: [
 						'src/mapjs.js',
-						grunt.option('external-scripts') || 'http://static.mindmup.com/20131204091534/external.js',
+						grunt.option('external-scripts') || 'http://d1g6a398qq2djm.cloudfront.net/20141230102849/external.js'
 					],
 					helpers: [
 						'test-lib/describe-batch.js',
