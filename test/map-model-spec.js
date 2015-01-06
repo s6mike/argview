@@ -2386,7 +2386,7 @@ describe('MapModel', function () {
 							12: { id: 5, title: '2nd child of 1st child' }
 						}
 					},
-					12: {
+					'-12': {
 						id: 4,
 						title: '2nd child',
 						ideas: {
@@ -2410,7 +2410,7 @@ describe('MapModel', function () {
 				beforeEach(function () {
 					clipboard.put('hoo har');
 				});
-				it('should be true when editingg is enabled', function () {
+				it('should be true when editing is enabled', function () {
 					expect(underTest.contextForNode(1).canPaste).toBe(true);
 				});
 				it('should be false when editing is disabled', function () {

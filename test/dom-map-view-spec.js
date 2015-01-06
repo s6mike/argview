@@ -1667,6 +1667,42 @@ describe('MAPJS.DOMRender', function () {
 				});
 			});
 		});
+		describe('nodeVisibilityRequested', function () {
+			var underTest;
+			beforeEach(function () {
+				var node = {id: '11.12', title: 'zeka', x: -80, y: -35, width: 30, height: 20};
+				spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
+					this.css('height', 40);
+					this.css('width', 30);
+					this.data(node);
+					return this;
+				});
+				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
+				stage.data({
+					'offsetX': 100,
+					'offsetY': 50,
+					'scale': 2,
+					'width': 500,
+					'height': 500
+				});
+				stage.updateStage();
+				viewPort.scrollLeft(180);
+				viewPort.scrollTop(80);
+				mapModel.dispatchEvent('nodeCreated', node);
+				underTest = stage.children('[data-mapjs-role=node]').first();
+				spyOn(jQuery.fn, 'animate').and.callThrough();
+			});
+			it('should animate scroll movement to show the node', function () {
+				underTest.data('x', -80);
+				underTest.data('y', -20);
+				mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
+				mapModel.dispatchEvent('nodeVisibilityRequested', '11.12');
+				expect(jQuery.fn.animate).toHaveBeenCalledOnJQueryObject(viewPort);
+				expect(jQuery.fn.animate.calls.first().args[0]).toEqual({scrollLeft: 30, scrollTop: 50});
+				expect(viewPort.queue()).toEqual([]);
+			});
+		});
+
 		describe('nodeRemoved', function () {
 			var underTest, node;
 			beforeEach(function () {

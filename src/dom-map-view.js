@@ -1169,6 +1169,15 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.data('scale', targetScale).updateStage();
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
+	mapModel.addEventListener('nodeVisibilityRequested', function (ideaId) {
+		var id = ideaId || mapModel.getCurrentlySelectedIdeaId(),
+				node = stageElement.nodeWithId(id);
+		if (node) {
+			ensureNodeVisible(node);
+			viewPort.finish();
+		}
+
+	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId)  {
 		var node = stageElement.nodeWithId(ideaId).data(),
 			nodeCenterX = node.x + node.width / 2,

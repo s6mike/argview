@@ -910,6 +910,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	contentAggregate.getResource = function (id) {
 		return contentAggregate.resources && contentAggregate.resources[id];
 	};
+	contentAggregate.hasSiblings = function (id) {
+		if (id === contentAggregate.id) {
+			return false;
+		}
+		var parent = contentAggregate.findParent(id);
+		return parent && _.size(parent.ideas) > 1;
+	};
 	if (contentAggregate.formatVersion != 2) {
 		upgrade(contentAggregate);
 		contentAggregate.formatVersion = 2;

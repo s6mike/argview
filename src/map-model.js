@@ -647,7 +647,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.contextForNode = function (nodeId) {
 		var node = self.findIdeaById(nodeId),
 				hasChildren = node && node.ideas && _.size(node.ideas) > 0,
-				hasSiblings = node && idea && ((idea.previousSiblingId && idea.previousSiblingId(nodeId)) || (idea.nextSiblingId && idea.nextSiblingId(nodeId))),
+				hasSiblings = idea.hasSiblings(nodeId),
 				canPaste = node && isEditingEnabled && clipboard && clipboard.get();
 		if (node) {
 			return {'hasChildren': !!hasChildren, 'hasSiblings': !!hasSiblings, 'canPaste': !!canPaste};
