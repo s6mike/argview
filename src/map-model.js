@@ -1161,4 +1161,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		self.selectNode(nodeId);
 		self.dispatchEvent('nodeFocusRequested', nodeId);
 	};
+	self.requestContextMenu = function (eventPointX, eventPointY) {
+		if (isInputEnabled && isEditingEnabled) {
+			self.dispatchEvent('contextMenuRequested', currentlySelectedIdeaId, eventPointX, eventPointY);
+			return true;
+		}
+		return false;
+	};
 };

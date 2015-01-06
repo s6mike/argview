@@ -2445,4 +2445,48 @@ describe('MapModel', function () {
 			});
 		});
 	});
+	describe('requestContextMenu', function () {
+		var underTest, anIdea, listener;
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'root',
+				ideas: {
+					10: {
+						id: 2,
+						title: 'child',
+						ideas: {
+							11: { id: 3, title: 'child of child' }
+						}
+					}
+				}
+			});
+			underTest = new MAPJS.MapModel(function () {
+				return {
+					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+				};
+			});
+			underTest.setIdea(anIdea);
+			listener = jasmine.createSpy('contextMenuRequested');
+			underTest.addEventListener('contextMenuRequested', listener);
+			underTest.selectNode(3);
+		});
+		it('dispatches contextMenuRequested with the currently selected idea and coordinates from the argument', function () {
+			var result = underTest.requestContextMenu(100,300);
+			expect(result).toBeTruthy();
+			expect(listener).toHaveBeenCalledWith(3, 100, 300);
+		});
+		it('does not dispatch event if input is disabled', function () {
+			underTest.setInputEnabled(false);
+			var result = underTest.requestContextMenu(100,300);
+			expect(result).toBeFalsy();
+			expect(listener).not.toHaveBeenCalled();
+		});
+		it('does not dispatch event if editing is disabled', function () {
+			underTest.setEditingEnabled(false);
+			var result = underTest.requestContextMenu(100,300);
+			expect(result).toBeFalsy();
+			expect(listener).not.toHaveBeenCalled();
+		});
+	});
 });

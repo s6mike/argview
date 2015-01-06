@@ -1045,11 +1045,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('contextmenu', function (event) {
-				// ugly ugly ugly!
 				mapModel.selectNode(node.id);
-				mapModel.dispatchEvent('contextMenuRequested', node.id, event.pageX, event.pageY);
-				event.preventDefault();
-				return false;
+				if (mapModel.requestContextMenu(event.pageX, event.pageY)) {
+					event.preventDefault();
+					return false;
+				}
 			})
 			.on('mm:stop-dragging', function (evt) {
 				element.removeClass('dragging');
@@ -1090,13 +1090,14 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			element.on('hold', function (evt) {
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				mapModel.clickNode(node.id, realEvent);
-				mapModel.dispatchEvent('contextMenuRequested', node.id, evt.gesture.center.pageX, evt.gesture.center.pageY);
-				evt.preventDefault();
-				if (evt.gesture) {
-					evt.gesture.preventDefault();
-					evt.gesture.stopPropagation();
+				if (mapModel.requestContextMenu(evt.gesture.center.pageX, evt.gesture.center.pageY)){
+					evt.preventDefault();
+					if (evt.gesture) {
+						evt.gesture.preventDefault();
+						evt.gesture.stopPropagation();
+					}
+					return false;
 				}
-				return false;
 			});
 		}
 		element.css('min-width', element.css('width'));

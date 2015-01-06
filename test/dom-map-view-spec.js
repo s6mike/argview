@@ -1098,7 +1098,7 @@ describe('MAPJS.DOMRender', function () {
 			imageInsertController,
 			resourceTranslator;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			mapModel.isEditingEnabled.and.returnValue(true);
 			imageInsertController = observable({});
@@ -1164,14 +1164,22 @@ describe('MAPJS.DOMRender', function () {
 					expect(mapModel.clickNode).not.toHaveBeenCalled();
 				});
 				it('selects the node and forwards the contextMenu event by dispatching it for the mapModel', function () {
-					var spy = jasmine.createSpy();
+					mapModel.requestContextMenu.and.returnValue(true);
 					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
-					mapModel.addEventListener('contextMenuRequested', spy);
 					underTest.trigger(event);
 					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12');
-					expect(spy).toHaveBeenCalledWith('11.12', 111, 112);
+					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
 					expect(event.isDefaultPrevented()).toBeTruthy();
-
+					expect(event.result).toBe(false);
+				});
+				it('does not prevent the default on context menu if mapModel returns false from the context menu request', function () {
+					mapModel.requestContextMenu.and.returnValue(false);
+					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
+					underTest.trigger(event);
+					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12');
+					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
+					expect(event.isDefaultPrevented()).toBeFalsy();
+					expect(event.result).toBeUndefined();
 				});
 				it('connects the node double-tap event to toggleCollapse if editing is disabled', function () {
 					mapModel.isEditingEnabled.and.returnValue(false);
@@ -1266,12 +1274,11 @@ describe('MAPJS.DOMRender', function () {
 					MAPJS.DOMRender.viewController(mapModel, stage, true);
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
 					underTest = stage.children('[data-mapjs-role=node]').first();
-					spyOn(mapModel, 'dispatchEvent').and.callThrough();
 
 					underTest.trigger(holdEvent);
 
 					expect(mapModel.clickNode).toHaveBeenCalledWith(1, 'the real event');
-					expect(mapModel.dispatchEvent).toHaveBeenCalledWith('contextMenuRequested', 1, 70, 50);
+					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(70, 50);
 				});
 
 			});

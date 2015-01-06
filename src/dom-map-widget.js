@@ -106,10 +106,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
-				mapModel.dispatchEvent('contextMenuRequested', mapModel.getCurrentlySelectedIdeaId(), event.gesture.center.pageX, event.gesture.center.pageY);
-				event.preventDefault();
-				event.gesture.preventDefault();
-				return false;
+				if (mapModel.requestContextMenu(event.gesture.center.pageX, event.gesture.center.pageY)) {
+					event.preventDefault();
+					event.gesture.preventDefault();
+					return false;
+				}
 			}).on('pinch', function (event) {
 				if (!event || !event.gesture || !event.gesture.scale) {
 					return;
