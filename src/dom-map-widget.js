@@ -115,6 +115,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				if (!event || !event.gesture || !event.gesture.scale) {
 					return;
 				}
+				event.preventDefault();
+				event.gesture.preventDefault();
+
 				var scale = event.gesture.scale;
 				if (previousPinchScale) {
 					scale = scale / previousPinchScale;
