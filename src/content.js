@@ -84,7 +84,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 					return [];
 				}
 				var result = [],
-					childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) { return key > 0; }),
+					childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) {
+						return key > 0;
+					}),
 					sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
 				_.each(sortedChildKeys, function (key) {
 					result.push(contentIdea.ideas[key]);
@@ -139,7 +141,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return contentAggregate.id == ideaId ? contentAggregate : contentAggregate.findSubIdeaById(ideaId);
 		},
 		sameSideSiblingRanks = function (parentIdea, ideaRank) {
-			return _(_.map(_.keys(parentIdea.ideas), parseFloat)).reject(function (k) {return k * ideaRank < 0; });
+			return _(_.map(_.keys(parentIdea.ideas), parseFloat)).reject(function (k) {
+				return k * ideaRank < 0;
+			});
 		},
 		sign = function (number) {
 			/* intentionally not returning 0 case, to help with split sorting into 2 groups */
@@ -235,9 +239,39 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		configuration = {},
 		uniqueResourcePostfix = '/xxxxxxxx-yxxx-yxxx-yxxx-xxxxxxxxxxxx/'.replace(/[xy]/g, function (c) {
 			/*jshint bitwise: false*/
+			// jscs:disable
 			var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r&0x3|0x8);
+			// jscs:enable
 			return v.toString(16);
-		}) + (sessionKey || '');
+		}) + (sessionKey || ''),
+		updateAttr = function (object, attrName, attrValue) {
+			var oldAttr;
+			if (!object) {
+				return false;
+			}
+			oldAttr = _.extend({}, object.attr);
+			object.attr = _.extend({}, object.attr);
+			if (!attrValue || attrValue === 'false' || (_.isObject(attrValue) && _.isEmpty(attrValue))) {
+				if (!object.attr[attrName]) {
+					return false;
+				}
+				delete object.attr[attrName];
+			} else {
+				if (_.isEqual(object.attr[attrName], attrValue)) {
+					return false;
+				}
+				object.attr[attrName] = JSON.parse(JSON.stringify(attrValue));
+			}
+			if (_.size(object.attr) === 0) {
+				delete object.attr;
+			}
+			return function () {
+				object.attr = oldAttr;
+			};
+		};
+
+
+
 	contentAggregate.setConfiguration = function (config) {
 		configuration = config || {};
 	};
@@ -249,17 +283,25 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			currentRank,
 			candidateSiblingRanks,
 			siblingsAfter;
-		if (!parentIdea) { return false; }
+		if (!parentIdea) {
+			return false;
+		}
 		currentRank = parentIdea.findChildRankById(subIdeaId);
 		candidateSiblingRanks = sameSideSiblingRanks(parentIdea, currentRank);
-		siblingsAfter = _.reject(candidateSiblingRanks, function (k) { return Math.abs(k) <= Math.abs(currentRank); });
-		if (siblingsAfter.length === 0) { return false; }
+		siblingsAfter = _.reject(candidateSiblingRanks, function (k) {
+			return Math.abs(k) <= Math.abs(currentRank);
+		});
+		if (siblingsAfter.length === 0) {
+			return false;
+		}
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
 	contentAggregate.sameSideSiblingIds = function (subIdeaId) {
 		var parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank = parentIdea.findChildRankById(subIdeaId);
-		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) { return i.id; }), subIdeaId);
+		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) {
+			return i.id;
+		}), subIdeaId);
 	};
 	contentAggregate.getAttrById = function (ideaId, attrName) {
 		var idea = findIdeaById(ideaId);
@@ -270,11 +312,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			currentRank,
 			candidateSiblingRanks,
 			siblingsBefore;
-		if (!parentIdea) { return false; }
+		if (!parentIdea) {
+			return false;
+		}
 		currentRank = parentIdea.findChildRankById(subIdeaId);
 		candidateSiblingRanks = sameSideSiblingRanks(parentIdea, currentRank);
-		siblingsBefore = _.reject(candidateSiblingRanks, function (k) { return Math.abs(k) >= Math.abs(currentRank); });
-		if (siblingsBefore.length === 0) { return false; }
+		siblingsBefore = _.reject(candidateSiblingRanks, function (k) {
+			return Math.abs(k) >= Math.abs(currentRank);
+		});
+		if (siblingsBefore.length === 0) {
+			return false;
+		}
 		return parentIdea.ideas[_.max(siblingsBefore, Math.abs)].id;
 	};
 	contentAggregate.clone = function (subIdeaId) {
@@ -352,8 +400,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return [event.eventMethod].concat(event.eventArgs);
 			});
 			batchUndoFunctions = _.sortBy(
-				_.map(inBatch, function (event) { return event.undoFunction; }),
-				function (f, idx) { return -1 * idx; }
+				_.map(inBatch, function (event) {
+					return event.undoFunction;
+				}),
+				function (f, idx) {
+					return -1 * idx;
+				}
 			);
 			undo = function () {
 				_.each(batchUndoFunctions, function (eventUndo) {
@@ -412,7 +464,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 					delete result.attr;
 				}
 				if (json.ideas) {
-					childKeys = _.groupBy(_.map(_.keys(json.ideas), parseFloat), function (key) { return key > 0; });
+					childKeys = _.groupBy(_.map(_.keys(json.ideas), parseFloat), function (key) {
+						return key > 0;
+					});
 					sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
 					result.ideas = {};
 					_.each(sortedChildKeys, function (key) {
@@ -530,7 +584,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			oldIdea = parent.ideas[oldRank];
 			delete parent.ideas[oldRank];
 			oldLinks = contentAggregate.links;
-			contentAggregate.links = _.reject(contentAggregate.links, function (link) { return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId; });
+			contentAggregate.links = _.reject(contentAggregate.links, function (link) {
+				return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId;
+			});
 			logChange('removeSubIdea', [subIdeaId], function () {
 				parent.ideas[oldRank] = oldIdea;
 				contentAggregate.links = oldLinks;
@@ -617,31 +673,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}, originSession);
 		return true;
 	};
-	var updateAttr = function (object, attrName, attrValue) {
-		var oldAttr;
-		if (!object) {
-			return false;
-		}
-		oldAttr = _.extend({}, object.attr);
-		object.attr = _.extend({}, object.attr);
-		if (!attrValue || attrValue === 'false' || (_.isObject(attrValue) && _.isEmpty(attrValue))) {
-			if (!object.attr[attrName]) {
-				return false;
-			}
-			delete object.attr[attrName];
-		} else {
-			if (_.isEqual(object.attr[attrName], attrValue)) {
-				return false;
-			}
-			object.attr[attrName] = JSON.parse(JSON.stringify(attrValue));
-		}
-		if (_.size(object.attr) === 0) {
-			delete object.attr;
-		}
-		return function () {
-			object.attr = oldAttr;
-		};
-	};
 	contentAggregate.mergeAttrProperty = function (ideaId, attrName, attrPropertyName, attrPropertyValue) {
 		var val = contentAggregate.getAttrById(ideaId, attrName) || {};
 		if (attrPropertyValue) {
@@ -649,7 +680,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		} else {
 			delete val[attrPropertyName];
 		}
-		if (_.isEmpty(val)) { val = false; }
+		if (_.isEmpty(val)) {
+			val = false;
+		}
 		return contentAggregate.updateAttr(ideaId, attrName, val);
 	};
 	contentAggregate.updateAttr = function (ideaId, attrName, attrValue) {
@@ -877,15 +910,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('storeResource', arguments);
 	};
 	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
-		if (!optionalKey && contentAggregate.resources) {
-			var existingId = _.find(_.keys(contentAggregate.resources), function (key) {
-				return contentAggregate.resources[key] === resourceBody;
-			});
-			if (existingId) {
-				return existingId;
-			}
-		}
-		var maxIdForSession = function () {
+		var existingId, id,
+			maxIdForSession = function () {
 				if (_.isEmpty(contentAggregate.resources)) {
 					return 0;
 				}
@@ -900,8 +926,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			nextResourceId = function () {
 				var intId = maxIdForSession() + 1;
 				return intId + uniqueResourcePostfix;
-			},
-			id = optionalKey || nextResourceId();
+			};
+
+		if (!optionalKey && contentAggregate.resources) {
+			existingId = _.find(_.keys(contentAggregate.resources), function (key) {
+				return contentAggregate.resources[key] === resourceBody;
+			});
+			if (existingId) {
+				return existingId;
+			}
+		}
+		id = optionalKey || nextResourceId();
 		contentAggregate.resources = contentAggregate.resources || {};
 		contentAggregate.resources[id] = resourceBody;
 		contentAggregate.dispatchEvent('resourceStored', resourceBody, id, originSession);

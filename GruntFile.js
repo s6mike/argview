@@ -12,6 +12,8 @@ install grunt cli:
 npm install grunt-contrib-jasmine --save-dev
 npm install grunt-notify --save-dev
 npm install grunt-contrib-watch --save-dev
+npm install grunt-jscs --save-dev
+npm install grunt-contrib-jshint --save-dev
 
 */
 
@@ -43,6 +45,16 @@ module.exports = function (grunt) {
 
 			}
 		},
+		jscs: {
+			src: ['src/clipboard.js', 'src/content.js'],
+			options: {
+				config: '.jscsrc',
+				reporter: 'inline'
+			}
+		},
+		jshint: {
+			all: ['src/clipboard.js', 'src/content.js']
+		},
 		jasmine: {
 			all: {
 				src: ['src/*.js'],
@@ -53,7 +65,7 @@ module.exports = function (grunt) {
 					display: 'short',
 					keepRunner: true,
 					specs: [
-						'test/*-spec.js',
+						'test/*-spec.js'
 					],
 					vendor: [
 						'src/mapjs.js',
@@ -67,11 +79,16 @@ module.exports = function (grunt) {
 			}
 		}
 	});
+	grunt.registerTask('checkstyle', ['jshint', 'jscs']);
+	grunt.registerTask('precommit', ['checkstyle', 'jasmine']);
 
 	// Load local tasks.
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-notify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-jscs');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+
 	grunt.event.on('watch', function (action, filepath, target) {
 		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 		var options = grunt.config(['jasmine', 'all']);
