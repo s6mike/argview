@@ -8,10 +8,11 @@ MAPJS.getDataURIAndDimensions = function (src, corsProxyUrl) {
 			if (isDataUri(img.src)) {
 				return img.src;
 			}
-			var canvas = document.createElement('canvas');
+			var canvas = document.createElement('canvas'),
+				ctx;
 			canvas.width = img.width;
 			canvas.height = img.height;
-			var ctx = canvas.getContext('2d');
+			ctx = canvas.getContext('2d');
 			ctx.drawImage(img, 0, 0);
 			return canvas.toDataURL('image/png');
 		},
@@ -71,14 +72,18 @@ MAPJS.ImageInsertController = function (corsProxyUrl, resourceConverter) {
 	self.insertFiles = function (files, evt) {
 		jQuery.each(files, function (idx, fileInfo) {
 			if (/^image\//.test(fileInfo.type)) {
-				jQuery.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) { self.insertDataUrl(dataUrl, evt); });
+				jQuery.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
+					self.insertDataUrl(dataUrl, evt);
+				});
 			}
 		});
 	};
 	self.insertHtmlContent = function (htmlContent, evt) {
 		var images = htmlContent.match(/img[^>]*src="([^"]*)"/);
 		if (images && images.length > 0) {
-			_.each(images.slice(1), function (dataUrl) { self.insertDataUrl(dataUrl, evt); });
+			_.each(images.slice(1), function (dataUrl) {
+				self.insertDataUrl(dataUrl, evt);
+			});
 		}
 	};
 };
