@@ -1,25 +1,25 @@
 /*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable, window*/
 describe('innerText', function () {
-  'use strict';
-  var underTest;
-  beforeEach(function () {
-    jQuery.fn.innerText.check = false;
-    underTest = jQuery('<span></span>').appendTo('body');
-    spyOn(jQuery.fn, 'text').and.callThrough();
-  });
-  afterEach(function () {
-    underTest.detach();
-  });
-  it('executes using .text if content does not contain BR elements', function () {
-    underTest.html('does\nthis\nhave\nbreaks');
-    expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
-    expect(jQuery.fn.text).toHaveBeenCalledOnJQueryObject(underTest);
-  });
-  it('removes html tags and replaces BR with newlines if content contains BR elements (broken firefox contenteditable)', function () {
-    underTest.html('does<br>this<br/>ha<a href="">ve</a><br>breaks');
-    expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
-    expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
-  });
+	'use strict';
+	var underTest;
+	beforeEach(function () {
+		jQuery.fn.innerText.check = false;
+		underTest = jQuery('<span></span>').appendTo('body');
+		spyOn(jQuery.fn, 'text').and.callThrough();
+	});
+	afterEach(function () {
+		underTest.detach();
+	});
+	it('executes using .text if content does not contain BR elements', function () {
+		underTest.html('does\nthis\nhave\nbreaks');
+		expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
+		expect(jQuery.fn.text).toHaveBeenCalledOnJQueryObject(underTest);
+	});
+	it('removes html tags and replaces BR with newlines if content contains BR elements (broken firefox contenteditable)', function () {
+		underTest.html('does<br>this<br/>ha<a href="">ve</a><br>breaks');
+		expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
+		expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
+	});
 });
 describe('updateStage', function () {
 	'use strict';
@@ -174,8 +174,7 @@ describe('editNode', function () {
 		expect(textBox.text()).toEqual('some title');
 	});
 	describe('break word control', function () {
-		it('sets the word break to break-all if the original title is different from the text in the box ' +
-			 ' - this is to avoid long text normally hidden (eg links) messing up the layuot', function () {
+		it('sets the word break to break-all if the original title is different from the text in the box  - this is to avoid long text normally hidden (eg links) messing up the layuot', function () {
 			expect(textBox.css('word-break')).toBe('break-all');
 		});
 
@@ -224,21 +223,21 @@ describe('editNode', function () {
 			expect(textBox.attr('contenteditable')).toBeFalsy();
 			expect(resolved).toHaveBeenCalledWith('changed text');
 		});
-    it('consumes multi-line text', function () {
+		it('consumes multi-line text', function () {
 			textBox.html('changed\ntext');
 			textBox.trigger('blur');
 			expect(resolved).toHaveBeenCalledWith('changed\ntext');
-    });
-    it('consumes broken firefox contenteditable multi-line text', function () {
+		});
+		it('consumes broken firefox contenteditable multi-line text', function () {
 			textBox.html('changed<br>text');
 			textBox.trigger('blur');
 			expect(resolved).toHaveBeenCalledWith('changed\ntext');
-    });
-    it('converts text box content to text using innerText', function () {
-      spyOn(jQuery.fn, 'innerText').and.returnValue('hello there');
+		});
+		it('converts text box content to text using innerText', function () {
+			spyOn(jQuery.fn, 'innerText').and.returnValue('hello there');
 			textBox.trigger('blur');
 			expect(resolved).toHaveBeenCalledWith('hello there');
-    });
+		});
 		it('reactivates dragging when focus is lost', function () {
 			node.attr('mapjs-level', 2);
 			jQuery.fn.shadowDraggable.calls.reset();
@@ -365,10 +364,11 @@ describe('animateConnectorToPosition', function () {
 	});
 	describe('returns false and does not schedule animations if box differences are nor resolvable using simple translation', function () {
 		it('when orientation changes', function () {
-			var fromData = _.clone(from.data());
+			var fromData = _.clone(from.data()),
+				result;
 			from.data(to.data());
 			to.data(fromData);
-			var result = connector.animateConnectorToPosition();
+			result = connector.animateConnectorToPosition();
 			expect(result).toBeFalsy();
 			expect(jQuery.fn.animate).not.toHaveBeenCalled();
 		});
@@ -1621,7 +1621,7 @@ describe('MAPJS.DOMRender', function () {
 			});
 			describe('when selected', function () {
 				describe('when node is visible', function () {
-					beforeEach(function ()  {
+					beforeEach(function () {
 						viewPort.scrollLeft(5);
 						viewPort.scrollTop(3);
 						mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
@@ -1650,7 +1650,7 @@ describe('MAPJS.DOMRender', function () {
 						nodeY = testArgs[2],
 						expectedAnimation = testArgs[3];
 					describe('when ' + caseName + ' of viewport', function () {
-						beforeEach(function ()  {
+						beforeEach(function () {
 							underTest.data('x', nodeX);
 							underTest.data('y', nodeY);
 							mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
@@ -2272,7 +2272,9 @@ describe('MAPJS.DOMRender', function () {
 		describe('nodeFocusRequested', function () {
 			beforeEach(function () {
 				spyOn(jQuery.fn, 'updateStage').and.callThrough();
-				spyOn(jQuery.fn, 'animate').and.callFake(function () { return this; });
+				spyOn(jQuery.fn, 'animate').and.callFake(function () {
+					return this;
+				});
 				viewPort.css({'width': '200', 'height': '100', 'overflow': 'scroll'});
 				stage.data({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 400, 'height': 300 });
 				stage.updateStage();
@@ -2307,9 +2309,9 @@ describe('MAPJS.DOMRender', function () {
 			});
 			describe('expands the stage to enable scrolling to the node point when the node is ', [
 					['left', -50, 50, 140, 50, 440, 300],
-					['top', 100, -40, 100, 85, 400, 335 ],
-					['right', 270, 50, 100, 50, 480, 300 ],
-					['bottom', 100, 230, 100, 50, 400, 335 ]
+					['top', 100, -40, 100, 85, 400, 335],
+					['right', 270, 50, 100, 50, 480, 300],
+					['bottom', 100, 230, 100, 50, 400, 335]
 
 				], function (nodeX, nodeY, expectedStageOffsetX, expectedStageOffsetY, expectedStageWidth, expectedStageHeight) {
 					jQuery('#node_11_12').data({x: nodeX, y: nodeY});
