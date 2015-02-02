@@ -46,14 +46,14 @@ module.exports = function (grunt) {
 			}
 		},
 		jscs: {
-			src: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/hammer-draggable.js', 'src/image-drop-widget.js', 'src/layout.js', 'src/link-edit-widget.js'],
+			src: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/hammer-draggable.js', 'src/image-drop-widget.js', 'src/layout.js', 'src/link-edit-widget.js', 'src/map-model.js'],
 			options: {
 				config: '.jscsrc',
 				reporter: 'inline'
 			}
 		},
 		jshint: {
-			all: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/hammer-draggable.js', 'src/image-drop-widget.js', 'src/layout.js', 'src/link-edit-widget.js']
+			all: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/hammer-draggable.js', 'src/image-drop-widget.js', 'src/layout.js', 'src/link-edit-widget.js', 'src/map-model.js']
 		},
 		jasmine: {
 			all: {

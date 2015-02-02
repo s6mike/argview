@@ -63,7 +63,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					if (nodeId == currentlySelectedIdeaId) {
 						self.selectNode(idea.id);
 					}
-					newActive = _.reject(activatedNodes, function (e) { return e == nodeId; });
+					newActive = _.reject(activatedNodes, function (e) {
+						return e == nodeId;
+					});
 					if (newActive.length !== activatedNodes.length) {
 						setActiveNodes(newActive);
 					}
@@ -334,8 +336,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				ensureNodeIsExpanded(source, target);
 				if (initialTitle) {
 					newId = idea.addSubIdea(target, initialTitle);
-				}
-				else {
+				} else {
 					newId = idea.addSubIdea(target);
 				}
 			});
@@ -358,7 +359,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		var activeNodes = [], newId;
 		analytic('insertIntermediate', source);
-		self.applyToActivated(function (i) { activeNodes.push(i); });
+		self.applyToActivated(function (i) {
+			activeNodes.push(i);
+		});
 		newId = idea.insertIntermediateMultiple(activeNodes);
 		if (newId) {
 			editNewIdea(newId);
@@ -680,13 +683,14 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	self.pasteStyle = function (source) {
-		var clipContents = clipboard.get();
+		var clipContents = clipboard.get(),
+			pastingStyle;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('pasteStyle', source);
 		if (isInputEnabled && clipContents && clipContents[0]) {
-			var pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
+			pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
 			self.applyToActivated(function (id) {
 				idea.updateAttr(id, 'style', pastingStyle);
 			});
@@ -722,8 +726,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			idea.removeSubIdea(nodeId);
 		}
 	};
-	self.moveUp = function (source) { self.moveRelative(source, -1); };
-	self.moveDown = function (source) { self.moveRelative(source, 1); };
+	self.moveUp = function (source) {
+		self.moveRelative(source, -1);
+	};
+	self.moveDown = function (source) {
+		self.moveRelative(source, 1);
+	};
 	self.getSelectedNodeId = function () {
 		return getCurrentlySelectedIdeaId();
 	};
@@ -821,7 +829,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (previousSibling) {
 					method.apply(self, [previousSibling]);
 				} else {
-					if (!currentNode) { return; }
+					if (!currentNode) {
+						return;
+					}
 					nodesAbove = _.reject(nodesWithIDs(), function (node) {
 						return node.y >= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
 					});
@@ -846,7 +856,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (nextSibling) {
 					method.apply(self, [nextSibling]);
 				} else {
-					if (!currentNode) { return; }
+					if (!currentNode) {
+						return;
+					}
 					nodesBelow = _.reject(nodesWithIDs(), function (node) {
 						return node.y <= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
 					});
@@ -870,7 +882,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!parent || !parent.ideas) {
 					return;
 				}
-				siblingIds = _.map(parent.ideas, function (child) { return child.id; });
+				siblingIds = _.map(parent.ideas, function (child) {
+					return child.id;
+				});
 				setActiveNodes(siblingIds);
 			};
 			self.activateNodeAndChildren = function (source) {
@@ -919,10 +933,14 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			};
 			self.isActivated = function (id) {
 				/*jslint eqeq:true*/
-				return _.find(activatedNodes, function (activeId) { return id == activeId; });
+				return _.find(activatedNodes, function (activeId) {
+					return id == activeId;
+				});
 			};
 			self.applyToActivated = function (toApply) {
-				idea.batch(function () {_.each(activatedNodes, toApply); });
+				idea.batch(function () {
+					_.each(activatedNodes, toApply);
+				});
 			};
 			self.everyActivatedIs = function (predicate) {
 				return _.every(activatedNodes, predicate);
@@ -937,7 +955,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 							return node.level == level;
 						}
 					),
-					function (node) {return node.id; }
+					function (node) {
+						return node.id;
+					}
 				);
 				if (!_.isEmpty(toActivate)) {
 					setActiveNodes(toActivate);
@@ -1012,7 +1032,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				xOffset = x - parentNode.x;
 			}
 			analytic('nodeManuallyPositioned');
-			maxSequence = _.max(_.map(parentIdea.ideas, function (i) { return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0; }));
+			maxSequence = _.max(_.map(parentIdea.ideas, function (i) {
+				return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0;
+			}));
 			result = idea.updateAttr(
 				nodeId,
 				'position',
@@ -1139,8 +1161,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		parentIdea = idea.findParent(nodeId);
 		parentNode = currentLayout.nodes[parentIdea.id];
-		primaryEdge = isRightHalf(nodeId) ? 'left': 'right';
-		secondaryEdge = isRightHalf(nodeId) ? 'right': 'left';
+		primaryEdge = isRightHalf(nodeId) ? 'left' : 'right';
+		secondaryEdge = isRightHalf(nodeId) ? 'right' : 'left';
 		sameSide = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
 			return currentLayout.nodes[id];
 		});
