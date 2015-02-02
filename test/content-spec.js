@@ -152,11 +152,15 @@ describe('content aggregate', function () {
 		describe('find', function () {
 			it('returns an array of ideas that match a predicate, sorted by depth. It only returns ID and title', function () {
 				var aggregate = MAPJS.content({id: 5, title: 'I0', ideas: {9: {id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id: 3, title: 'I3'}, '-15': {id: 4, title: 'I4'}}}}});
-				expect(aggregate.find(function (idea) { return idea.id < 3; })).toEqual([{id: 1, title: 'I1'}, {id: 2, title: 'I2'}]);
+				expect(aggregate.find(function (idea) {
+					return idea.id < 3;
+				})).toEqual([{id: 1, title: 'I1'}, {id: 2, title: 'I2'}]);
 			});
 			it('returns an empty array if nothing matches the predicate', function () {
 				var aggregate = MAPJS.content({id: 5, title: 'I0', ideas: {9: {id: 1, title: 'I1', ideas: { '-5': { id: 2, title: 'I2'}, '-10': { id: 3, title: 'I3'}, '-15': {id: 4, title: 'I4'}}}}});
-				expect(aggregate.find(function (idea) { return idea.id > 103; })).toEqual([]);
+				expect(aggregate.find(function (idea) {
+					return idea.id > 103;
+				})).toEqual([]);
 			});
 		});
 		describe('nextSiblingId', function () {
@@ -214,7 +218,9 @@ describe('content aggregate', function () {
 			});
 		});
 		describe('clone', function () {
-			var toClone = function () {return { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}; };
+			var toClone = function () {
+				return { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}};
+			};
 			it('returns a deep clone copy of a subidea by id', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': toClone(), '-10': { id: 3}, '-15' : {id: 4}}});
 				expect(idea.clone(2)).toEqual(toClone());
@@ -232,7 +238,9 @@ describe('content aggregate', function () {
 		describe('sortedSubIdeas', function () {
 			it('sorts children by key, positive first then negative, by absolute value', function () {
 				var aggregate = MAPJS.content({id: 1, title: 'root', ideas: {'-100': {title: '-100'}, '-1': {title: '-1'}, '1': {title: '1'}, '100': {title: '100'}}}),
-					result = _.map(aggregate.sortedSubIdeas(), function (subidea) { return subidea.title; });
+					result = _.map(aggregate.sortedSubIdeas(), function (subidea) {
+						return subidea.title;
+					});
 				expect(result).toEqual(['1', '100', '-1', '-100']);
 			});
 		});
@@ -1521,8 +1529,8 @@ describe('content aggregate', function () {
 			});
 			expect(listener.calls.count()).toBe(1);
 			expect(listener).toHaveBeenCalledWith('batch', [
-				['updateTitle', 1, 'Mix' ],
-				['updateTitle', 1, 'Max' ]
+				['updateTitle', 1, 'Mix'],
+				['updateTitle', 1, 'Max']
 			]);
 		});
 		describe('in local session', function () {
@@ -1539,8 +1547,8 @@ describe('content aggregate', function () {
 				wrapped.endBatch();
 				expect(listener.calls.count()).toBe(1);
 				expect(listener).toHaveBeenCalledWith('batch', [
-					['updateTitle', 1, 'Mix' ],
-					['updateTitle', 1, 'Max' ]
+					['updateTitle', 1, 'Mix'],
+					['updateTitle', 1, 'Max']
 				]);
 			});
 			it('will open a new batch if starting and there is an open one', function () {
@@ -1648,15 +1656,15 @@ describe('content aggregate', function () {
 				listener = jasmine.createSpy();
 				wrapped.addEventListener('changed', listener);
 				wrapped.execCommand('batch', [
-					['updateTitle', 1, 'Mix' ],
-					['updateTitle', 1, 'Max' ]
+					['updateTitle', 1, 'Mix'],
+					['updateTitle', 1, 'Max']
 				], 'session2');
 			});
 			it('sends out a single event for the entire batch', function () {
 				expect(listener.calls.count()).toBe(1);
 				expect(listener).toHaveBeenCalledWith('batch', [
-					['updateTitle', 1, 'Mix' ],
-					['updateTitle', 1, 'Max' ]
+					['updateTitle', 1, 'Mix'],
+					['updateTitle', 1, 'Max']
 				], 'session2');
 			});
 			it('undos an entire batch as a single event', function () {
@@ -1681,8 +1689,8 @@ describe('content aggregate', function () {
 				wrapped.startBatch();
 				wrapped.addSubIdea(1);
 				wrapped.execCommand('batch', [
-					['updateTitle', 1, 'Mix' ],
-					['updateTitle', 1, 'Max' ]
+					['updateTitle', 1, 'Mix'],
+					['updateTitle', 1, 'Max']
 				], 'session2');
 				wrapped.addSubIdea(1);
 				wrapped.endBatch();
@@ -1993,13 +2001,17 @@ describe('content aggregate', function () {
 		it('applies a depth-first, pre-order traversal', function () {
 			var content = MAPJS.content({ id: 1, ideas: { '11': {id: 11, ideas: { 1: { id: 111}, 2: {id: 112} } }, '-12': {id: 12, ideas: { 1: {id: 121} } }, '-13' : {id: 13} } }),
 			result = [];
-			content.traverse(function (idea) { result.push(idea.id); });
+			content.traverse(function (idea) {
+				result.push(idea.id);
+			});
 			expect(result).toEqual([1, 11, 111, 112, 12, 121, 13]);
 		});
 		it('does a post-order traversal if second argument is true', function () {
 			var content = MAPJS.content({ id: 1, ideas: { '11': {id: 11, ideas: { 1: { id: 111}, 2: {id: 112} } }, '-12': {id: 12, ideas: { 1: {id: 121} } }, '-13' : {id: 13} } }),
 			result = [];
-			content.traverse(function (idea) { result.push(idea.id); }, true);
+			content.traverse(function (idea) {
+				result.push(idea.id);
+			}, true);
 			expect(result).toEqual([111, 112, 11, 121, 12, 13, 1]);
 		});
 	});
