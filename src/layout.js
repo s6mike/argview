@@ -20,11 +20,19 @@ MAPJS.calculateFrame = function (nodes, margin) {
 	'use strict';
 	margin = margin || 0;
 	var result = {
-		top: _.min(nodes, function (node) {return node.y; }).y - margin,
-		left: _.min(nodes, function (node) {return node.x; }).x - margin
+		top: _.min(nodes, function (node) {
+			return node.y;
+		}).y - margin,
+		left: _.min(nodes, function (node) {
+			return node.x;
+		}).x - margin
 	};
-	result.width = margin + _.max(_.map(nodes, function (node) { return node.x + node.width; })) - result.left;
-	result.height = margin + _.max(_.map(nodes, function (node) { return node.y + node.height; })) - result.top;
+	result.width = margin + _.max(_.map(nodes, function (node) {
+		return node.x + node.width;
+	})) - result.left;
+	result.height = margin + _.max(_.map(nodes, function (node) {
+		return node.y + node.height;
+	})) - result.top;
 	return result;
 };
 MAPJS.contrastForeground = function (background) {
@@ -218,7 +226,9 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 				tree,
 				oldSpacing,
 				newSpacing,
-				oldPositions = _.map(treeArray, function (t) { return _.pick(t, 'deltaX', 'deltaY'); }),
+				oldPositions = _.map(treeArray, function (t) {
+					return _.pick(t, 'deltaX', 'deltaY');
+				}),
 				referenceTree,
 				alignment;
 			for (i = 0; i < treeArray.length; i += 1) {
@@ -251,7 +261,9 @@ MAPJS.calculateTree = function (content, dimensionProvider, margin, rankAndParen
 		},
 		includedSubIdeaKeys = function () {
 			var allRanks = _.map(_.keys(content.ideas), parseFloat),
-				includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) { return rankAndParentPredicate(rank, content.id); }) : allRanks;
+				includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) {
+					return rankAndParentPredicate(rank, content.id);
+				}) : allRanks;
 			return _.sortBy(includedRanks, Math.abs);
 		},
 		includedSubIdeas = function () {
@@ -313,8 +325,12 @@ MAPJS.calculateLayout = function (idea, dimensionProvider, margin) {
 				node.attr.style = _.extend({}, MAPJS.defaultStyles[(node.level === 1) ? 'root' : 'nonRoot'], node.attr.style);
 			});
 		},
-		positive = function (rank, parentId) { return parentId !== idea.id || rank > 0; },
-		negative = function (rank, parentId) { return parentId !== idea.id || rank < 0; };
+		positive = function (rank, parentId) {
+			return parentId !== idea.id || rank > 0;
+		},
+		negative = function (rank, parentId) {
+			return parentId !== idea.id || rank < 0;
+		};
 	margin = margin || 20;
 	positiveTree = MAPJS.calculateTree(idea, dimensionProvider, margin, positive);
 	negativeTree = MAPJS.calculateTree(idea, dimensionProvider, margin, negative);
