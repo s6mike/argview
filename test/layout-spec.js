@@ -410,7 +410,9 @@ describe('New layout', function () {
 						}
 					}),
 					result;
-				result = MAPJS.calculateTree(content, dimensionProvider, 10, function (rank, parentId) { return parentId !== 11 || rank !== 200; });
+				result = MAPJS.calculateTree(content, dimensionProvider, 10, function (rank, parentId) {
+					return parentId !== 11 || rank !== 200;
+				});
 				expect(result).toEqual(jasmine.objectContaining({
 					id: 11,
 					title: '200x100',
@@ -505,7 +507,7 @@ describe('New layout', function () {
 							ideas: {
 								100: {
 									id: 2,
-									title: '300x80',
+									title: '300x80'
 								},
 								200: {
 									id: 3,
@@ -575,7 +577,7 @@ describe('New layout', function () {
 							ideas: {
 								100: {
 									id: 2,
-									title: '50x10',
+									title: '50x10'
 								},
 								200: {
 									id: 3,
@@ -602,7 +604,7 @@ describe('New layout', function () {
 								100: {
 									id: 2,
 									title: '50x10',
-									attr: { position: [-10, 0, 0] },
+									attr: { position: [-10, 0, 0] }
 								},
 								200: {
 									id: 3,
@@ -680,7 +682,7 @@ describe('New layout', function () {
 							x: -100,
 							y: -50,
 							width: 200,
-							height: 100,
+							height: 100
 						},
 						'2': {
 							id: 2,
@@ -718,7 +720,7 @@ describe('New layout', function () {
 							height: 80,
 							deltaX: 210,
 							deltaY: -10,
-							level: 2,
+							level: 2
 						}),
 						new MAPJS.Tree({
 							id: 3,
@@ -958,7 +960,7 @@ describe('New layout', function () {
 				['should preserve extend with segment of second border if second is longer', [{h: -10, l: 3}], [{h: -20, l: 5}], [{h: -10, l: 3}, {h:  -20, l: 2}]],
 				['should skip second border elements before end of first border', [{h: -10, l: 3}], [{h: -20, l: 1}, {h:  -30, l:  4}], [{h: -10, l: 3}, {h:  -30, l: 2}]],
 				['should skip second border elements aligned with the end of first border', [{h: -10, l: 3}], [{h: -20, l: 3}, {h:  -30, l:  4}], [{h: -10, l: 3}, {h:  -30, l: 4}]],
-				['should skip second border elements aligned with the end of first border', [{h: -10, l: 1}, {h: -20, l: 2}, {h: -30, l: 3}], [{h: -20, l: 4}, {h:  -30, l:  3}, {h:  -50, l:  5 }], [{h: -10, l: 1}, {h:  -20, l: 2}, {h:  -30, l:  3}, {h:  -30, l:  1 }, {h:  -50, l: 5 }]],
+				['should skip second border elements aligned with the end of first border', [{h: -10, l: 1}, {h: -20, l: 2}, {h: -30, l: 3}], [{h: -20, l: 4}, {h:  -30, l:  3}, {h:  -50, l:  5 }], [{h: -10, l: 1}, {h:  -20, l: 2}, {h:  -30, l:  3}, {h:  -30, l:  1 }, {h:  -50, l: 5 }]]
 			],
 			function (firstBorder, secondBorder, expected) {
 				var result;
@@ -1030,8 +1032,8 @@ describe('New layout', function () {
 			result = outline2.stackBelow(outline1, 10);
 
 			expect(result.borders()).toEqual({
-				top : [ { h : -17, l : 57.5 }, { l : 107.5, h : -71 }, { l : 85, h : 37 } ],
-				bottom : [ { l : 30, h : 115 }, { l : 50, h : 115 }, { h : 71, l : 170 } ]
+				top : [{ h : -17, l : 57.5 }, { l : 107.5, h : -71 }, { l : 85, h : 37 }],
+				bottom : [{ l : 30, h : 115 }, { l : 50, h : 115 }, { h : 71, l : 170 }]
 			});
 
 			//
