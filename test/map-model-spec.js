@@ -641,7 +641,7 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea();
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
 			});
-			describe('should add an idea at the same side as the currently selected idea', function ()  {
+			describe('should add an idea at the same side as the currently selected idea', function () {
 				it('adds right-side ideas when currently selected is on the right', function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
@@ -671,7 +671,9 @@ describe('MapModel', function () {
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
-					currentRanks = _.map(anIdea.ideas, function (v, k) { return parseFloat(k); }).sort();
+					currentRanks = _.map(anIdea.ideas, function (v, k) {
+						return parseFloat(k);
+					}).sort();
 
 					anIdea.addSubIdea.calls.reset();
 					underTest.selectNode(2);
@@ -714,7 +716,7 @@ describe('MapModel', function () {
 				underTest.addSiblingIdeaBefore();
 				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
 			});
-			describe('should add an idea at the same side as the currently selected idea', function ()  {
+			describe('should add an idea at the same side as the currently selected idea', function () {
 				it('adds right-side ideas when currently selected is on the right', function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdeaBefore();
@@ -744,7 +746,9 @@ describe('MapModel', function () {
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
-					currentRanks = _.map(anIdea.ideas, function (v, k) { return parseFloat(k); }).sort();
+					currentRanks = _.map(anIdea.ideas, function (v, k) {
+						return parseFloat(k);
+					}).sort();
 
 					underTest.selectNode(3);
 					underTest.addSiblingIdeaBefore();
@@ -995,7 +999,9 @@ describe('MapModel', function () {
 	describe('map scaling and movement', function () {
 		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(function () { return {}; });
+			underTest = new MAPJS.MapModel(function () {
+				return {};
+			});
 			var anIdea = MAPJS.content({
 					id: 1,
 					ideas: {
@@ -1918,8 +1924,12 @@ describe('MapModel', function () {
 			});
 			underTest.setIdea(anIdea);
 			calls = [];
-			nodeSelectionChangedListener = jasmine.createSpy('nodeSelectionChanged').and.callFake(function () {calls.push('nodeSelectionChanged'); });
-			nodeNodeFocusRequestedListener = jasmine.createSpy('nodeFocusRequested').and.callFake(function () {calls.push('nodeFocusRequested'); });
+			nodeSelectionChangedListener = jasmine.createSpy('nodeSelectionChanged').and.callFake(function () {
+				calls.push('nodeSelectionChanged');
+			});
+			nodeNodeFocusRequestedListener = jasmine.createSpy('nodeFocusRequested').and.callFake(function () {
+				calls.push('nodeFocusRequested');
+			});
 			changeListener = jasmine.createSpy('change');
 			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
 			anIdea.addEventListener('changed', changeListener);
@@ -2012,7 +2022,9 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(function () { return []; });
+			underTest = new MAPJS.MapModel(function () {
+				return [];
+			});
 			underTest.setIdea(anIdea);
 		});
 		it('given part of a title, returns a list of nodes with that title flattened to id and title', function () {
@@ -2086,7 +2098,7 @@ describe('MapModel', function () {
 					}
 				},
 				ideas: {1: {id: 2, title: 'two'}}});
-			layout = { nodes: { 1: { id: 1, x: 0, y: 100, width: 10, height: 10, }, 2: { id: 2, x: -100, y: 100, width: 10, height: 10} } };
+			layout = { nodes: { 1: { id: 1, x: 0, y: 100, width: 10, height: 10 }, 2: { id: 2, x: -100, y: 100, width: 10, height: 10} } };
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
@@ -2160,7 +2172,7 @@ describe('MapModel', function () {
 				},
 				ideas: {1: {id: 2, title: 'two'}}});
 			layout = { nodes: {
-					1: { id: 1, x: 0, y: 100, width: 10, height: 10, },
+					1: { id: 1, x: 0, y: 100, width: 10, height: 10 },
 					2: { id: 2, x: -100, y: 100, width: 10, height: 10},
 					3: {id: 3, x: 10, y: 10, width: 100, height: 50 }
 				}
@@ -2256,7 +2268,7 @@ describe('MapModel', function () {
 						},
 						'-3': {
 							id: 16
-						},
+						}
 					}
 				});
 			layout = { nodes: {
@@ -2390,7 +2402,7 @@ describe('MapModel', function () {
 						id: 4,
 						title: '2nd child',
 						ideas: {
-							11: { id: 6, title: '1st child of 2nd child' },
+							11: { id: 6, title: '1st child of 2nd child' }
 						}
 					}
 				}
@@ -2472,19 +2484,19 @@ describe('MapModel', function () {
 			underTest.selectNode(3);
 		});
 		it('dispatches contextMenuRequested with the currently selected idea and coordinates from the argument', function () {
-			var result = underTest.requestContextMenu(100,300);
+			var result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeTruthy();
 			expect(listener).toHaveBeenCalledWith(3, 100, 300);
 		});
 		it('does not dispatch event if input is disabled', function () {
 			underTest.setInputEnabled(false);
-			var result = underTest.requestContextMenu(100,300);
+			var result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
 		it('does not dispatch event if editing is disabled', function () {
 			underTest.setEditingEnabled(false);
-			var result = underTest.requestContextMenu(100,300);
+			var result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
