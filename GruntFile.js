@@ -46,14 +46,14 @@ module.exports = function (grunt) {
 			}
 		},
 		jscs: {
-			src: ['src/clipboard.js', 'src/content.js'],
+			src: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js'],
 			options: {
 				config: '.jscsrc',
 				reporter: 'inline'
 			}
 		},
 		jshint: {
-			all: ['src/clipboard.js', 'src/content.js']
+			all: ['src/clipboard.js', 'src/content.js', 'src/dom-map-view.js']
 		},
 		jasmine: {
 			all: {
