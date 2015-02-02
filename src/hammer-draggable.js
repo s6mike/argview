@@ -73,7 +73,9 @@
 						finalPosition: e.finalPosition
 					});
 					target.trigger(evt);
-				}).on('mm:drag', function (e) { target.trigger(e); });
+				}).on('mm:drag', function (e) {
+					target.trigger(e);
+				});
 				$(this).on('drag', drag);
 			}
 		}).on('dragend', function (e) {
