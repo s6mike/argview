@@ -3,7 +3,9 @@ describe('mapToolbarWidget', function () {
 	'use strict';
 	var mapModel, element;
 	beforeEach(function () {
-		mapModel = new MAPJS.MapModel(function () { return []; });
+		mapModel = new MAPJS.MapModel(function () {
+			return [];
+		});
 		element = jQuery(
 			'<div>' +
 			'<input type="button" class="resetView" value="0"></input>' +
@@ -55,7 +57,11 @@ describe('mapToolbarWidget', function () {
 			spy = jasmine.createSpy('changed');
 		element.mapToolbarWidget(mapModel);
 		input.change(spy);
-		mapModel.getSelectedStyle = function (v) { if (v === 'color') { return 'x'; } };
+		mapModel.getSelectedStyle = function (v) {
+			if (v === 'color') {
+				return 'x';
+			}
+		};
 		mapModel.setIdea(MAPJS.content({}));
 		mapModel.dispatchEvent('nodeSelectionChanged');
 		expect(input.val()).toBe('x');
