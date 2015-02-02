@@ -46,14 +46,14 @@ module.exports = function (grunt) {
 			}
 		},
 		jscs: {
-			src: ['src/*.js'],
+			src: ['src/*.js', 'test/*-spec.js'],
 			options: {
 				config: '.jscsrc',
 				reporter: 'inline'
 			}
 		},
 		jshint: {
-			all: ['src/*.js']
+			all: ['src/*.js', 'test/*-spec.js']
 		},
 		jasmine: {
 			all: {
