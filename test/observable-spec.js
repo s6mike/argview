@@ -33,14 +33,18 @@ describe('Observable', function () {
 		expect(listener).toHaveBeenCalledWith('more', 'params');
 	});
 	it('stops propagation if an event listener returns false', function () {
-		obs.addEventListener('TestEvt', function () {return false; });
+		obs.addEventListener('TestEvt', function () {
+			return false;
+		});
 		obs.addEventListener('TestEvt', listener);
 		obs.dispatchEvent('TestEvt', 'some', 'args');
 		expect(listener).not.toHaveBeenCalledWith();
 	});
 	it('continnues if a listener barfs', function () {
 		var barf = new Error('barf');
-		obs.addEventListener('TestEvt', function () {throw barf; }, 1);
+		obs.addEventListener('TestEvt', function () {
+			throw barf;
+		}, 1);
 		obs.addEventListener('TestEvt', listener);
 		spyOn(console, 'log');
 		try {
@@ -65,9 +69,15 @@ describe('Observable', function () {
 	});
 	it('supports listener priorities', function () {
 		var result = '';
-		obs.addEventListener('TestEvt', function () { result += 'first'; }, 1);
-		obs.addEventListener('TestEvt', function () { result += 'second'; }, 3);
-		obs.addEventListener('TestEvt', function () { result += 'third'; }, 2);
+		obs.addEventListener('TestEvt', function () {
+			result += 'first';
+		}, 1);
+		obs.addEventListener('TestEvt', function () {
+			result += 'second';
+		}, 3);
+		obs.addEventListener('TestEvt', function () {
+			result += 'third';
+		}, 2);
 		obs.dispatchEvent('TestEvt');
 
 		expect(result).toBe('secondthirdfirst');
