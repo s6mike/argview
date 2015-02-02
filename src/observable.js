@@ -1,7 +1,8 @@
 /*global console*/
+/*jshint unused:false */
 var observable = function (base) {
 	'use strict';
-	var listeners = [];
+	var listeners = [], x;
 	base.addEventListener = function (types, listener, priority) {
 		types.split(' ').forEach(function (type) {
 			if (type) {
