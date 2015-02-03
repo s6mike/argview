@@ -53,7 +53,10 @@ module.exports = function (grunt) {
 			}
 		},
 		jshint: {
-			all: ['src/*.js', 'test/*-spec.js']
+			all: ['src/*.js', 'test/*-spec.js'],
+			options: {
+				jshintrc: true
+			}
 		},
 		jasmine: {
 			all: {
