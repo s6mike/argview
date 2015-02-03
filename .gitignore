@@ -7,5 +7,5 @@ lib
 node_modules/
 SpecRunner.html
 .grunt
-
+.sublime*
 

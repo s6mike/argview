@@ -39,7 +39,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				}
 			});
 		},
-		updateCurrentLayout = function (newLayout) {
+		updateCurrentLayout = function (newLayout, sessionId) {
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			applyLabels(newLayout);
 
@@ -69,43 +69,43 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					if (newActive.length !== activatedNodes.length) {
 						setActiveNodes(newActive);
 					}
-					self.dispatchEvent('nodeRemoved', oldNode, nodeId);
+					self.dispatchEvent('nodeRemoved', oldNode, nodeId, sessionId);
 				}
 			});
 
 			_.each(newLayout.nodes, function (newNode, nodeId) {
 				var oldNode = currentLayout.nodes[nodeId];
 				if (!oldNode) {
-					self.dispatchEvent('nodeCreated', newNode);
+					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
 					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y) {
-						self.dispatchEvent('nodeMoved', newNode);
+						self.dispatchEvent('nodeMoved', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
-						self.dispatchEvent('nodeTitleChanged', newNode);
+						self.dispatchEvent('nodeTitleChanged', newNode, sessionId);
 					}
 					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
-						self.dispatchEvent('nodeAttrChanged', newNode);
+						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
 					if (newNode.label !== oldNode.label) {
-						self.dispatchEvent('nodeLabelChanged', newNode);
+						self.dispatchEvent('nodeLabelChanged', newNode, sessionId);
 					}
 				}
 			});
 			_.each(newLayout.connectors, function (newConnector, connectorId) {
 				var oldConnector = currentLayout.connectors[connectorId];
 				if (!oldConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
-					self.dispatchEvent('connectorCreated', newConnector);
+					self.dispatchEvent('connectorCreated', newConnector, sessionId);
 				}
 			});
 			_.each(newLayout.links, function (newLink, linkId) {
 				var oldLink = currentLayout.links && currentLayout.links[linkId];
 				if (oldLink) {
 					if (!_.isEqual(newLink.attr || {}, (oldLink && oldLink.attr) || {})) {
-						self.dispatchEvent('linkAttrChanged', newLink);
+						self.dispatchEvent('linkAttrChanged', newLink, sessionId);
 					}
 				} else {
-					self.dispatchEvent('linkCreated', newLink);
+					self.dispatchEvent('linkCreated', newLink, sessionId);
 				}
 			});
 			currentLayout = newLayout;
@@ -128,13 +128,13 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return currentlySelectedIdeaId || idea.id;
 		},
 		paused = false,
-		onIdeaChanged = function () {
+		onIdeaChanged = function (action, args, sessionId) {
 			if (paused) {
 				return;
 			}
 			revertSelectionForUndo = false;
 			revertActivatedForUndo = false;
-			self.rebuildRequired();
+			self.rebuildRequired(sessionId);
 		},
 		currentlySelectedIdea = function () {
 			return (idea.findSubIdeaById(currentlySelectedIdeaId) || idea);
@@ -165,11 +165,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	self.analytic = analytic;
 	self.getCurrentlySelectedIdeaId = getCurrentlySelectedIdeaId;
-	self.rebuildRequired = function () {
+	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
 		}
-		updateCurrentLayout(self.reactivate(layoutCalculator(idea)));
+		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
 	this.setIdea = function (anIdea) {
 		if (idea) {

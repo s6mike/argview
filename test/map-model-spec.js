@@ -128,9 +128,9 @@ describe('MapModel', function () {
 			var nodeCreatedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeCreated', nodeCreatedListener);
 
-			anIdea.dispatchEvent('changed');
+			anIdea.dispatchEvent('changed', 'updateTitle', ['arg'], 'sessionId');
 
-			expect(nodeCreatedListener).toHaveBeenCalledWith(layoutAfter.nodes[3]);
+			expect(nodeCreatedListener).toHaveBeenCalledWith(layoutAfter.nodes[3], 'sessionId');
 		});
 		it('should dispatch nodeMoved event when a node is moved because idea is changed', function () {
 			var nodeMovedListener = jasmine.createSpy();
@@ -138,7 +138,7 @@ describe('MapModel', function () {
 
 			anIdea.dispatchEvent('changed');
 
-			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2]);
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
 		});
 		it('should dispatch nodeRemoved event when a node is removed because idea is changed', function () {
 			var nodeRemovedListener = jasmine.createSpy();
@@ -146,7 +146,7 @@ describe('MapModel', function () {
 
 			anIdea.dispatchEvent('changed');
 
-			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], '1');
+			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], '1', undefined);
 		});
 		describe('openAttachment', function () {
 			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
@@ -210,7 +210,7 @@ describe('MapModel', function () {
 			var nodeAttrChangedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeAttrChanged', nodeAttrChangedListener);
 			anIdea.dispatchEvent('changed');
-			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9]);
+			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9], undefined);
 		});
 		it('should dispatch linkAttrChanged the style changes is created', function () {
 			var linkAttrChangedListener = jasmine.createSpy();
@@ -218,7 +218,7 @@ describe('MapModel', function () {
 
 			anIdea.dispatchEvent('changed');
 
-			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9']);
+			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9'], undefined);
 		});
 		describe('automatic UI actions', function () {
 			var nodeEditRequestedListener, nodeSelectionChangedListener, activatedNodesChangedListener;
@@ -1795,7 +1795,7 @@ describe('MapModel', function () {
 			expect(linkCreatedListener).toHaveBeenCalledWith({
 				ideaIdFrom: '1',
 				ideaIdTo: '3'
-			});
+			}, undefined);
 			expect(linkCreatedListener).not.toHaveBeenCalledWith({
 				ideaIdFrom: '1',
 				ideaIdTo: '4'
@@ -1861,7 +1861,7 @@ describe('MapModel', function () {
 			expect(linkCreatedListener).toHaveBeenCalledWith({
 				ideaIdFrom: '1',
 				ideaIdTo: '5'
-			});
+			}, undefined);
 		});
 		it('should dispatch linkSelected event when selectLink method is invoked', function () {
 			var linkSelectedListener = jasmine.createSpy('linkSelectedListener');
@@ -2222,8 +2222,8 @@ describe('MapModel', function () {
 				spy = jasmine.createSpy('nodeLabelChangedListener');
 				underTest.addEventListener('nodeLabelChanged', spy);
 				idea.dispatchEvent('changed');
-				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[1]);
-				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[3]);
+				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[1], undefined);
+				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[3], undefined);
 				expect(spy.calls.count()).toBe(2);
 			});
 		});
