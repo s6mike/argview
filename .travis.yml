@@ -1,4 +1,4 @@
 before_script:
   - npm install  grunt-cli
-  - npm install  grunt-contrib-jasmine --save-dev
+  - npm install  
 script: grunt jasmine
