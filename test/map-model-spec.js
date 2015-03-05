@@ -790,14 +790,14 @@ describe('MapModel', function () {
 
 				expect(underTest.selectNode).toHaveBeenCalledWith(1);
 			});
-			it('should add link when in link mode', function () {
+			it('should toggle link when in link mode', function () {
 				spyOn(underTest, 'selectNode');
-				spyOn(underTest, 'addLink');
+				spyOn(underTest, 'toggleLink');
 				underTest.toggleAddLinkMode();
 
 				underTest.clickNode(2);
 
-				expect(underTest.addLink).toHaveBeenCalledWith('mouse', 2);
+				expect(underTest.toggleLink).toHaveBeenCalledWith('mouse', 2);
 				expect(underTest.selectNode).not.toHaveBeenCalled();
 			});
 			it('should select the node and dispatch contextMenuRequested event if node is right clicked', function () {
@@ -821,10 +821,10 @@ describe('MapModel', function () {
 			});
 			it('should not add link if right clicked, should dispatch contextMenuRequested event', function () {
 				underTest.toggleAddLinkMode();
-				spyOn(underTest, 'addLink');
+				spyOn(underTest, 'toggleLink');
 				underTest.clickNode(2, {button: 2, layerX: 100, layerY: 200});
 				expect(contextMenuRequestedListener).toHaveBeenCalledWith(2, 100, 200);
-				expect(underTest.addLink).not.toHaveBeenCalled();
+				expect(underTest.toggleLink).not.toHaveBeenCalled();
 			});
 		});
 		describe('cancelCurrentAction', function () {
@@ -1773,6 +1773,35 @@ describe('MapModel', function () {
 
 			expect(anIdea.addLink).toHaveBeenCalledWith(1, 2);
 		});
+		it('should invoke content.addLink when toggleLink method is invoked', function () {
+			spyOn(anIdea, 'addLink');
+
+			underTest.addLink('source', 2);
+
+			expect(anIdea.addLink).toHaveBeenCalledWith(1, 2);
+		});
+
+		it('should invoke content.removeLink when toggleLink method is called but link already exists', function () {
+			anIdea.addLink(3, 4);
+			underTest.selectNode(4);
+
+			spyOn(anIdea, 'removeLink');
+
+			underTest.toggleLink('source', 3);
+
+			expect(anIdea.removeLink).toHaveBeenCalledWith(3, 4);
+		});
+		it('should invoke content.removeLink when toggleLink method is called but inverse link already exists', function () {
+			anIdea.addLink(3, 4);
+			underTest.selectNode(3);
+
+			spyOn(anIdea, 'removeLink');
+
+			underTest.toggleLink('source', 4);
+
+			expect(anIdea.removeLink).toHaveBeenCalledWith(3, 4);
+		});
+
 		it('should dispatch linkCreated event when a new link is created', function () {
 			var linkCreatedListener = jasmine.createSpy('linkCreated');
 			underTest.addEventListener('linkCreated', linkCreatedListener);
