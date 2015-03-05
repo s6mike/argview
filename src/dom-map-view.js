@@ -142,8 +142,7 @@ jQuery.fn.updateStage = function () {
 
 MAPJS.DOMRender.curvedPath = function (parent, child) {
 	'use strict';
-	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight,
-				childX, childY, childWidth, childHeight) {
+	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight) {
 			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
 				parentHorizontalOffset = 1 - childHorizontalOffset;
 			return {
