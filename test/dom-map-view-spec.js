@@ -20,6 +20,11 @@ describe('innerText', function () {
 		expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks');
 		expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
 	});
+	it('removes html tags and replaces divs with newlines if content contains div elements (broken safari contenteditable)', function () {
+		underTest.html('does<div>this</div><div>ha<a href="">ve</a></div>breaks and spaces');
+		expect(underTest.innerText()).toEqual('does\nthis\nhave\nbreaks and spaces');
+		expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
+	});
 });
 describe('updateStage', function () {
 	'use strict';

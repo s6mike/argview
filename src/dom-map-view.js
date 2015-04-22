@@ -619,11 +619,14 @@ jQuery.fn.selectAll = function () {
 jQuery.fn.innerText = function () {
 	'use strict';
 	var htmlContent = this.html(),
-			containsBr = /<br\/?>/.test(htmlContent);
-	if (!containsBr) {
-		return this.text();
+			containsBr = /<br\/?>/.test(htmlContent),
+			containsDiv = /<div>/.test(htmlContent);
+	if (containsDiv && this[0].innerText) { /* broken safari jquery text */
+		return this[0].innerText.trim();
+	} else if (containsBr) { /*broken firefox innerText */
+		return htmlContent.replace(/<br\/?>/gi, '\n').replace(/(<([^>]+)>)/gi, '');
 	}
-	return htmlContent.replace(/<br\/?>/gi, '\n').replace(/(<([^>]+)>)/gi, '');
+	return this.text();
 };
 jQuery.fn.editNode = function (shouldSelectAll) {
 	'use strict';
