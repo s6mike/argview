@@ -716,7 +716,7 @@ jQuery.fn.updateReorderBounds = function (border, box) {
 (function () {
 	'use strict';
 	var cleanDOMId = function (s) {
-			return s.replace(/\./g, '_');
+			return s.replace(/[^A-Za-z0-9_-]/g, '_');
 		},
 		connectorKey = function (connectorObj) {
 			return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);

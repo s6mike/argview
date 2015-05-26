@@ -1120,7 +1120,7 @@ describe('MAPJS.DOMRender', function () {
 			describe('adds a DIV for the node to the stage', function () {
 				var underTest, node;
 				beforeEach(function () {
-					node = {id: '11.12', title: 'zeka', x: 10, y: 20, width: 30, height: 40};
+					node = {id: '11.12^13#AB-c', title: 'zeka', x: 10, y: 20, width: 30, height: 40};
 					spyOn(jQuery.fn, 'updateNodeContent').and.callFake(function () {
 						this.data(node);
 						this.css('height', 40);
@@ -1134,8 +1134,8 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.dispatchEvent('nodeCreated', node);
 					underTest = stage.children('[data-mapjs-role=node]').first();
 				});
-				it('sanitises the ID by replacing dots with underscores', function () {
-					expect(underTest.attr('id')).toBe('node_11_12');
+				it('sanitises the ID by replacing non alphanumeric chars with underscores', function () {
+					expect(underTest.attr('id')).toBe('node_11_12_13_AB-c');
 				});
 				it('makes the node focusable by adding a tabindex', function () {
 					expect(underTest.attr('tabIndex')).toBe('0');
@@ -1161,7 +1161,7 @@ describe('MAPJS.DOMRender', function () {
 				it('connects the node tap event to mapModel clickNode', function () {
 					var event = jQuery.Event('tap');
 					underTest.trigger(event);
-					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12', event);
+					expect(mapModel.clickNode).toHaveBeenCalledWith('11.12^13#AB-c', event);
 				});
 				it('does not forward right-click events to the mapModel clickNode to avoid double processing', function () {
 					var event = jQuery.Event('tap', {gesture: { stopPropagation: jasmine.createSpy(), srcEvent: { button: 1}}});
@@ -1172,7 +1172,7 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.requestContextMenu.and.returnValue(true);
 					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
 					underTest.trigger(event);
-					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12');
+					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12^13#AB-c');
 					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
 					expect(event.isDefaultPrevented()).toBeTruthy();
 					expect(event.result).toBe(false);
@@ -1181,7 +1181,7 @@ describe('MAPJS.DOMRender', function () {
 					mapModel.requestContextMenu.and.returnValue(false);
 					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
 					underTest.trigger(event);
-					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12');
+					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12^13#AB-c');
 					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
 					expect(event.isDefaultPrevented()).toBeFalsy();
 					expect(event.result).toBeUndefined();
@@ -1201,7 +1201,7 @@ describe('MAPJS.DOMRender', function () {
 				it('connects attachment-click with openAttachment even when editing is disabled', function () {
 					mapModel.isEditingEnabled.and.returnValue(false);
 					underTest.trigger('attachment-click');
-					expect(mapModel.openAttachment).toHaveBeenCalledWith('mouse', '11.12');
+					expect(mapModel.openAttachment).toHaveBeenCalledWith('mouse', '11.12^13#AB-c');
 				});
 				it('fixes the width of the node so it does not condense on movements', function () {
 					expect(underTest.css('min-width')).toBe('30px');
