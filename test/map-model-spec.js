@@ -2459,32 +2459,93 @@ describe('MapModel', function () {
 					expect(underTest.contextForNode(1).canPaste).toBe(false);
 				});
 			});
-			describe('hasChildren', function () {
-				it('should be true when the node has children', function () {
-					expect(underTest.contextForNode(1).hasChildren).toBe(true);
-					expect(underTest.contextForNode(2).hasChildren).toBe(true);
-					expect(underTest.contextForNode(4).hasChildren).toBe(true);
-				});
-				it('should be false when the node does not have children', function () {
-					expect(underTest.contextForNode(3).hasChildren).toBe(false);
-					expect(underTest.contextForNode(5).hasChildren).toBe(false);
-					expect(underTest.contextForNode(6).hasChildren).toBe(false);
-				});
+		});
+		describe('hasChildren', function () {
+			it('should be true when the node has children', function () {
+				expect(underTest.contextForNode(1).hasChildren).toBe(true);
+				expect(underTest.contextForNode(2).hasChildren).toBe(true);
+				expect(underTest.contextForNode(4).hasChildren).toBe(true);
 			});
-			describe('hasSiblings', function () {
-				it('should be true when the node has siblings', function () {
-					expect(underTest.contextForNode(2).hasSiblings).toBe(true);
-					expect(underTest.contextForNode(3).hasSiblings).toBe(true);
-					expect(underTest.contextForNode(4).hasSiblings).toBe(true);
-					expect(underTest.contextForNode(5).hasSiblings).toBe(true);
-				});
-				it('should be false when the node does not have siblings', function () {
-					expect(underTest.contextForNode(1).hasSiblings).toBe(false);
-					expect(underTest.contextForNode(6).hasSiblings).toBe(false);
-				});
-
+			it('should be false when the node does not have children', function () {
+				expect(underTest.contextForNode(3).hasChildren).toBe(false);
+				expect(underTest.contextForNode(5).hasChildren).toBe(false);
+				expect(underTest.contextForNode(6).hasChildren).toBe(false);
 			});
 		});
+		describe('hasSiblings', function () {
+			it('should be true when the node has siblings', function () {
+				expect(underTest.contextForNode(2).hasSiblings).toBe(true);
+				expect(underTest.contextForNode(3).hasSiblings).toBe(true);
+				expect(underTest.contextForNode(4).hasSiblings).toBe(true);
+				expect(underTest.contextForNode(5).hasSiblings).toBe(true);
+			});
+			it('should be false when the node does not have siblings', function () {
+				expect(underTest.contextForNode(1).hasSiblings).toBe(false);
+				expect(underTest.contextForNode(6).hasSiblings).toBe(false);
+			});
+
+		});
+		describe('isRoot', function () {
+			it('should be true when the node is root', function () {
+				expect(underTest.contextForNode(1).isRoot).toBe(true);
+			});
+			it('should be false when the node is not root', function () {
+				expect(underTest.contextForNode(2).isRoot).toBe(false);
+				expect(underTest.contextForNode(3).isRoot).toBe(false);
+				expect(underTest.contextForNode(4).isRoot).toBe(false);
+				expect(underTest.contextForNode(5).isRoot).toBe(false);
+				expect(underTest.contextForNode(6).isRoot).toBe(false);
+			});
+		});
+		describe('canUndo', function () {
+			it('should be false before first change', function () {
+				expect(underTest.contextForNode(1).canUndo).toBe(false);
+			});
+			it('should be true when the idea can run an undo', function () {
+				underTest.updateTitle(1, 'changed');
+				expect(underTest.contextForNode(1).canUndo).toBe(true);
+			});
+			it('should be false when the idea can not run an undo any more', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.undo();
+				expect(underTest.contextForNode(1).canUndo).toBe(false);
+			});
+			it('should be true if there are changes in the queue even after an undo', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.updateTitle(1, 'changed again');
+				underTest.undo();
+				expect(underTest.contextForNode(1).canUndo).toBe(true);
+			});
+		});
+		describe('canRedo', function () {
+			it('should be false before first change', function () {
+				expect(underTest.contextForNode(1).canRedo).toBe(false);
+			});
+			it('should be false before first undo', function () {
+				underTest.updateTitle(1, 'changed');
+				expect(underTest.contextForNode(1).canRedo).toBe(false);
+			});
+			it('should be true when the idea after an undo', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.undo();
+				expect(underTest.contextForNode(1).canRedo).toBe(true);
+			});
+			it('should be false when the idea can not run an redo any more', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.undo();
+				underTest.redo();
+				expect(underTest.contextForNode(1).canRedo).toBe(false);
+			});
+			it('should be true when there are still redos possible in case of multiple operations', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.updateTitle(1, 'changed again');
+				underTest.undo();
+				underTest.undo();
+				underTest.redo();
+				expect(underTest.contextForNode(1).canRedo).toBe(true);
+			});
+		});
+
 	});
 	describe('requestContextMenu', function () {
 		var underTest, anIdea, listener;

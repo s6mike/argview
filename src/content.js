@@ -873,6 +873,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		};
 	}());
 	/* undo/redo */
+	contentAggregate.canUndo = function () {
+		return !!(eventStacks[sessionKey] && eventStacks[sessionKey].length > 0);
+	};
+	contentAggregate.canRedo = function () {
+		return !!(redoStacks[sessionKey] && redoStacks[sessionKey].length > 0);
+	};
 	contentAggregate.undo = function () {
 		return contentAggregate.execCommand('undo', arguments);
 	};

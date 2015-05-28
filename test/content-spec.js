@@ -1518,6 +1518,88 @@ describe('content aggregate', function () {
 			expect(_.size(wrapped.ideas)).toBe(0);
 		});
 	});
+	describe('canUndo', function () {
+		var underTest;
+		beforeEach(function () {
+			underTest = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+		});
+		it('should be false before first change', function () {
+			expect(underTest.canUndo()).toBe(false);
+		});
+		it('should be true when the idea can run an undo', function () {
+			underTest.updateTitle(1, 'changed');
+			expect(underTest.canUndo()).toBe(true);
+		});
+		it('should be false when the idea can not run an undo any more', function () {
+			underTest.updateTitle(1, 'changed');
+			underTest.undo();
+			expect(underTest.canUndo()).toBe(false);
+		});
+		it('should be true if there are changes in the queue even after an undo', function () {
+			underTest.updateTitle(1, 'changed');
+			underTest.updateTitle(1, 'changed again');
+			underTest.undo();
+			expect(underTest.canUndo()).toBe(true);
+		});
+		describe('should not be affected by changes from other sessions', function () {
+			it('does not consider external changes', function () {
+				underTest.execCommand('addSubIdea', [1], 'session2');
+				expect(underTest.canUndo()).toBe(false);
+			});
+			it('does not consider external undos', function () {
+				underTest.updateTitle(1, 'changed');
+				underTest.execCommand('addSubIdea', [1], 'session2');
+				underTest.undo();
+				expect(underTest.canUndo()).toBe(false);
+			});
+		});
+	});
+	describe('canRedo', function () {
+		var underTest;
+		beforeEach(function () {
+			underTest = MAPJS.content({id: 1, title: 'Original'}, 'session1');
+		});
+		it('should be false before first change', function () {
+			expect(underTest.canRedo()).toBe(false);
+		});
+		it('should be false before first undo', function () {
+			underTest.updateTitle(1, 'changed');
+			expect(underTest.canRedo()).toBe(false);
+		});
+		it('should be true when the idea after an undo', function () {
+			underTest.updateTitle(1, 'changed');
+			underTest.undo();
+			expect(underTest.canRedo()).toBe(true);
+		});
+		it('should be false when the idea can not run an redo any more', function () {
+			underTest.updateTitle(1, 'changed');
+			underTest.undo();
+			underTest.redo();
+			expect(underTest.canRedo()).toBe(false);
+		});
+		it('should be true when there are still redos possible in case of multiple operations', function () {
+			underTest.updateTitle(1, 'changed');
+			underTest.updateTitle(1, 'changed again');
+			underTest.undo();
+			underTest.undo();
+			underTest.redo();
+			expect(underTest.canRedo()).toBe(true);
+		});
+		describe('should not be affected by changes from other sessions', function () {
+			it('does not consider external changes', function () {
+				underTest.execCommand('addSubIdea', [1], 'session2');
+				underTest.execCommand('undo', [1], 'session2');
+				expect(underTest.canRedo()).toBe(false);
+			});
+			it('does not consider external redos', function () {
+				underTest.updateTitle(1, 'updated');
+				underTest.undo();
+				underTest.execCommand('redo', [1], 'session2');
+				expect(underTest.canRedo()).toBe(true);
+			});
+		});
+
+	});
 	describe('command batching', function () {
 		it('executes a batch as a shortcut method', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),
