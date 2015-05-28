@@ -664,7 +664,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				canPaste = node && isEditingEnabled && clipboard && clipboard.get();
 		if (node) {
 			return {'hasChildren': !!hasChildren, 'hasSiblings': !!hasSiblings, 'canPaste': !!canPaste,
-				isRoot: idea.id == nodeId, canUndo: idea.canUndo(), canRedo: idea.canRedo()
+				notRoot: idea.id != nodeId, canUndo: idea.canUndo(), canRedo: idea.canRedo()
 			};
 		}
 

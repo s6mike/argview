@@ -2485,16 +2485,16 @@ describe('MapModel', function () {
 			});
 
 		});
-		describe('isRoot', function () {
-			it('should be true when the node is root', function () {
-				expect(underTest.contextForNode(1).isRoot).toBe(true);
+		describe('notRoot', function () {
+			it('should be false when the node is root', function () {
+				expect(underTest.contextForNode(1).notRoot).toBe(false);
 			});
-			it('should be false when the node is not root', function () {
-				expect(underTest.contextForNode(2).isRoot).toBe(false);
-				expect(underTest.contextForNode(3).isRoot).toBe(false);
-				expect(underTest.contextForNode(4).isRoot).toBe(false);
-				expect(underTest.contextForNode(5).isRoot).toBe(false);
-				expect(underTest.contextForNode(6).isRoot).toBe(false);
+			it('should be true when the node is not root', function () {
+				expect(underTest.contextForNode(2).notRoot).toBe(true);
+				expect(underTest.contextForNode(3).notRoot).toBe(true);
+				expect(underTest.contextForNode(4).notRoot).toBe(true);
+				expect(underTest.contextForNode(5).notRoot).toBe(true);
+				expect(underTest.contextForNode(6).notRoot).toBe(true);
 			});
 		});
 		describe('canUndo', function () {
