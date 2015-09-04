@@ -7,11 +7,8 @@
     "url": "https://github.com/mindmup/mapjs.git"
   },
   "keywords": [
-    "daspec",
-    "test",
-    "tdd",
-    "bdd",
-    "specbyexample"
+    "mindmup",
+	"svg"
   ],
   "files": [
     "dist"
@@ -20,7 +17,7 @@
     "url": "https://github.com/mindmup/mapjs/issues"
   },
   "homepage": "https://www.mindmup.com",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "scripts": {
 	"test": "grunt jasmine",
 	"prepublish": "grunt browserify:dependencies dist",
