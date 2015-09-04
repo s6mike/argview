@@ -23,7 +23,7 @@
   "version": "1.0.0",
   "scripts": {
 	"test": "grunt jasmine",
-	"prepublish": "grunt dist",
+	"prepublish": "grunt browserify:dependencies dist",
 	"pretest": "grunt browserify:dependencies"
   },
   "main": "dist/index.js",
