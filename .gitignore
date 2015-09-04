@@ -1,8 +1,6 @@
 .DS_Store
 pub
 lib
-.jscsrc
-.jshintrc
 #grunt and jasmine artificats
 node_modules/
 SpecRunner.html
