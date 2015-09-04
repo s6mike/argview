@@ -47,11 +47,11 @@ Then open test/index.html in a browser.
 
 This library depends on the following projects:
 
-- [JQuery 1.9.0](http://jquery.com/)
-- [Underscore.Js 1.4.3](http://underscorejs.org/)
-- [JQuery HotKeys 0.8](http://jquery.com/)
-- [Hammer.JS JQuery Plugin 1.0.4](http://eightmedia.github.com/hammer.js)
-- [Color JS 0.4.1](https://github.com/harthur/color)
+- [JQuery](http://jquery.com/)
+- [Underscore.Js](http://underscorejs.org/)
+- [JQuery HotKeys](http://jquery.com/)
+- [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
+- [Color JS](https://github.com/harthur/color)
 
 They are automatically downloaded using NPM and can be converted to a single file, `lib/dependencies.js` using the following command:
 
