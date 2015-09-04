@@ -69,7 +69,7 @@ module.exports = function (grunt) {
 					],
 					vendor: [
 						'src/mapjs.js',
-						grunt.option('external-scripts') || 'http://d1g6a398qq2djm.cloudfront.net/20141230102849/external.js'
+						'lib/dependencies.js'
 					],
 					helpers: [
 						'test-lib/describe-batch.js',
@@ -77,10 +77,36 @@ module.exports = function (grunt) {
 					]
 				}
 			}
+		},
+		concat: {
+			dist: {
+				files: {
+					'dist/mindmup-mapjs.js': ['src/mapjs.js', 'src/observable.js', 'src/url-helper.js', 'src/content.js', 'src/layout.js', 'src/clipboard.js', 'src/hammer-draggable.js', 'src/map-model.js', 'src/map-toolbar-widget.js', 'src/link-edit-widget.js', 'src/image-drop-widget.js', 'src/dom-map-view.js', 'src/dom-map-widget.js']
+				}
+			}
+		},
+		uglify: {
+			dist: {
+				options: {
+					sourceMap: true
+				},
+				files: {
+					'dist/mindmup-mapjs.min.js': ['dist/mindmup-mapjs.js'],
+					'dist/index.js': ['dist/npm-dependencies.js', 'dist/mindmup-mapjs.js', 'dist/npm-export.js']
+				}
+			}
+		},
+		browserify: {
+			dependencies: {
+				files: {
+					'lib/dependencies.js': ['dist/browserify-dependencies.js']
+				}
+			}
 		}
 	});
 	grunt.registerTask('checkstyle', ['jshint', 'jscs']);
 	grunt.registerTask('precommit', ['checkstyle', 'jasmine']);
+	grunt.registerTask('dist', ['checkstyle', 'jasmine', 'browserify:dependencies', 'concat:dist', 'uglify:dist']);
 
 	// Load local tasks.
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
@@ -88,7 +114,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-jscs');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-browserify');
 	grunt.event.on('watch', function (action, filepath, target) {
 		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 		var options = grunt.config(['jasmine', 'all']);
