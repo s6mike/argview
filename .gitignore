@@ -6,4 +6,4 @@ node_modules/
 SpecRunner.html
 .grunt
 .sublime*
-
+npm-debug.log
