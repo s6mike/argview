@@ -405,20 +405,23 @@ describe('MapModel', function () {
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
 			it('attempts to flip level = 2', function () {
+				var result;
 				underTest.selectNode(2);
-				var result = underTest.flip();
+				result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).toHaveBeenCalledWith(2);
 			});
 			it('cannot flip level > 2', function () {
+				var result;
 				underTest.selectNode(3);
-				var result = underTest.flip();
+				result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
 			it('does not die on unexisting node', function () {
+				var result;
 				underTest.selectNode(223);
-				var result = underTest.flip();
+				result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
@@ -997,12 +1000,12 @@ describe('MapModel', function () {
 		});
 	});
 	describe('map scaling and movement', function () {
-		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener;
+		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener, anIdea;
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(function () {
 				return {};
 			});
-			var anIdea = MAPJS.content({
+			anIdea = MAPJS.content({
 					id: 1,
 					ideas: {
 						1: { id: 3}
@@ -1432,8 +1435,9 @@ describe('MapModel', function () {
 					expect(underTest.getActivatedNodeIds().sort()).toEqual([2, 3, 4, 5]);
 				});
 				it('should not allow the internal representation ot be mutated', function () {
+					var toMutate;
 					underTest.selectNode(3);
-					var toMutate = underTest.getActivatedNodeIds();
+					toMutate = underTest.getActivatedNodeIds();
 					toMutate.push(42);
 					expect(underTest.getActivatedNodeIds()).toEqual([3]);
 				});
@@ -1575,7 +1579,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('analytic events', function () {
-		var underTest, analyticListener;
+		var underTest, analyticListener, anIdea;
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(function () {
 				return {
@@ -1588,7 +1592,7 @@ describe('MapModel', function () {
 					}
 				};
 			});
-			var anIdea = MAPJS.content({
+			anIdea = MAPJS.content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -1660,9 +1664,10 @@ describe('MapModel', function () {
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
+					var spy = jasmine.createSpy(method);
 					underTest.selectNode(6);
 					underTest.setEditingEnabled(false);
-					var spy = jasmine.createSpy(method);
+
 					underTest.addEventListener('analytic', spy);
 					underTest[method]('source');
 					expect(spy).not.toHaveBeenCalled();
@@ -1676,8 +1681,9 @@ describe('MapModel', function () {
 				'resetView', 'openAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode'];
 			_.each(navigationMethods, function (method) {
 				it(method + ' executes', function () {
-					underTest.setEditingEnabled(false);
 					var spy = jasmine.createSpy(method);
+					underTest.setEditingEnabled(false);
+
 					underTest.addEventListener('analytic', spy);
 					underTest[method]('source');
 					expect(spy).toHaveBeenCalled();
@@ -2430,6 +2436,9 @@ describe('MapModel', function () {
 					'-12': {
 						id: 4,
 						title: '2nd child',
+						attr: {
+							collapsed: true
+						},
 						ideas: {
 							11: { id: 6, title: '1st child of 2nd child' }
 						}
@@ -2443,6 +2452,24 @@ describe('MapModel', function () {
 		it('should be undefined when there is no node for node id', function () {
 			expect(underTest.contextForNode(20)).toBeUndefined();
 		});
+		it('should have canCollapse for expanded nodes with children', function () {
+			expect(underTest.contextForNode(2).canCollapse).toBeTruthy();
+		});
+		it('should not have canExpand for expanded nodes with children', function () {
+			expect(underTest.contextForNode(2).canExpand).toBeFalsy();
+		});
+
+		it('should have canExpand for collapsed nodes with children', function () {
+			expect(underTest.contextForNode(4).canExpand).toBeTruthy();
+		});
+		it('should not have canCollapse for collapsed nodes with children', function () {
+			expect(underTest.contextForNode(4).canCollapse).toBeFalsy();
+		});
+		it('should not have canCollapse or canExpand for nodes without children', function () {
+			expect(underTest.contextForNode(3).canExpand).toBeFalsy();
+			expect(underTest.contextForNode(3).canCollapse).toBeFalsy();
+		});
+
 		describe('canPaste', function () {
 			it('should be false when clipboard is empty', function () {
 				expect(underTest.contextForNode(1).canPaste).toBe(false);
@@ -2579,14 +2606,16 @@ describe('MapModel', function () {
 			expect(listener).toHaveBeenCalledWith(3, 100, 300);
 		});
 		it('does not dispatch event if input is disabled', function () {
+			var result;
 			underTest.setInputEnabled(false);
-			var result = underTest.requestContextMenu(100, 300);
+			result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
 		it('does not dispatch event if editing is disabled', function () {
+			var result;
 			underTest.setEditingEnabled(false);
-			var result = underTest.requestContextMenu(100, 300);
+			result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
