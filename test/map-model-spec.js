@@ -973,6 +973,16 @@ describe('MapModel', function () {
 					position: 'center'
 				});
 			});
+			it('should set the meta-data of the icon if the meta-arg is specified', function () {
+				underTest.setIcon('test', 'http://www.google.com', 100, 200, 'center', 2, {blurb: 'blorb'});
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'icon', {
+					url: 'http://www.google.com',
+					width: 100,
+					height: 200,
+					position: 'center',
+					metaData: {blurb: 'blorb'}
+				});
+			});
 			it('should change the currently selected node icon if no id specified', function () {
 				underTest.setIcon('test', 'http://www.google.com', 100, 200, 'center');
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'icon', {
@@ -2190,6 +2200,16 @@ describe('MapModel', function () {
 			it('creates a node and adds the image as a batch, so we can undo it', function () {
 				idea.undo();
 				expect(idea.findSubIdeaById(3)).toBeFalsy();
+			});
+		});
+		it('adds metadata to the icon if specified', function () {
+			underTest.dropImage('http://url', 500, 1000, 0, 0, {blob: 'blab'});
+			expect(idea.findSubIdeaById(3).attr.icon).toEqual({
+				url: 'http://url',
+				width: 150,
+				height: 300,
+				position: 'center',
+				metaData: {blob: 'blab'}
 			});
 		});
 	});

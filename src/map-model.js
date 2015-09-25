@@ -727,8 +727,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		return node.attr && node.attr.icon;
 	};
-	self.setIcon = function (source, url, imgWidth, imgHeight, position, nodeId) {
-		var nodeIdea;
+	self.setIcon = function (source, url, imgWidth, imgHeight, position, nodeId, metaData) {
+		var nodeIdea, iconObject;
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -739,12 +739,16 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return false;
 		}
 		if (url) {
-			idea.updateAttr(nodeId, 'icon', {
+			iconObject = {
 				url: url,
 				width: imgWidth,
 				height: imgHeight,
 				position: position
-			});
+			};
+			if (metaData) {
+				iconObject.metaData = metaData;
+			}
+			idea.updateAttr(nodeId, 'icon', iconObject);
 		} else if (nodeIdea.title || nodeId === idea.id) {
 			idea.updateAttr(nodeId, 'icon', false);
 		} else {
@@ -1091,14 +1095,14 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.setLayoutCalculator = function (newCalculator) {
 		layoutCalculator = newCalculator;
 	};
-	self.dropImage =  function (dataUrl, imgWidth, imgHeight, x, y) {
+	self.dropImage =  function (dataUrl, imgWidth, imgHeight, x, y, metaData) {
 		var nodeId,
 			dropOn = function (ideaId, position) {
 				var scaleX = Math.min(imgWidth, 300) / imgWidth,
 					scaleY = Math.min(imgHeight, 300) / imgHeight,
 					scale = Math.min(scaleX, scaleY),
 					existing = idea.getAttrById(ideaId, 'icon');
-				self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId);
+				self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId, metaData);
 			},
 			addNew = function () {
 				var newId;
