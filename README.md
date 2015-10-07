@@ -56,4 +56,8 @@ This library depends on the following projects:
 They are automatically downloaded using NPM and can be converted to a single file, `lib/dependencies.js` using the following command:
 
     npm run pretest
+    
+If you don't yet have the (required) grunt executable on your path, you can get one as follows:
+
+    sudo npm install -g grunt-cli
 
