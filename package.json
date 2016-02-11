@@ -33,6 +33,7 @@
     "jquery.hotkeys": "git://github.com/jeresig/jquery.hotkeys"
   },
   "devDependencies": {
+    "es5-shim": "^4.5.2",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.1",
     "grunt-contrib-concat": "^0.5.1",
