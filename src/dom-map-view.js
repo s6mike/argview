@@ -237,38 +237,23 @@ MAPJS.DOMRender.underlinePath = function (parent, child) {
 			top: Math.min(parent.top, child.top)
 		},
 		calculatedConnector, dx, dy,
-		dxIncrement, dyIncrement;
+		dxIncrement, dyIncrement,
+		initialRadius = 10;
 	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
 	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
 	calculatedConnector = calculateConnector(parent, child);
-	dx = calculatedConnector.to.x - calculatedConnector.from.x;
-	dy = calculatedConnector.to.y - calculatedConnector.from.y;
-	dxIncrement = Math.sign(dx) * 10;
-	dyIncrement = Math.sign(dy) * 10;
-	if (Math.abs(dy) < 20) {
-		return {
-			'd': 'M' + Math.floor(calculatedConnector.from.x - position.left) + ',' + Math.floor(calculatedConnector.from.y - position.top) +
-				'q' + Math.floor(dx / 2) + ',0 ' + Math.floor(dx / 2) + ',' + Math.floor(dy / 2) +
-				'q0,' + (dy - Math.floor(dy / 2)) + ' ' + (dx - Math.floor(dx / 2)) + ',' + (dy - Math.floor(dy / 2)) +
-				'h' + calculatedConnector.lineTo.x,
-			// 'conn': calculatedConnector,
-			'position': position
-		};
+	dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x);
+	dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y);
+	dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : dx * 0.5;
+	dyIncrement = (initialRadius < Math.abs(dy * 0.5)) ? initialRadius * Math.sign(dy) : dy * 0.5;
 
-	} else {
-		return {
-			'd': 'M' + Math.floor(calculatedConnector.from.x - position.left) + ',' + Math.floor(calculatedConnector.from.y - position.top) +
-				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-				//'q0,' + Math.floor(dy - dyIncrement) + ' ' + Math.floor(dx - dxIncrement) + ',' + Math.floor(dy - dyIncrement) +
-				'c0,' + Math.floor(dy - (2 * dyIncrement)) + ' ' + Math.floor(dx - (2 * dxIncrement)) + ',' +  Math.floor(dy - dyIncrement) + ' '  + Math.floor(dx - dxIncrement) + ',' + Math.floor(dy - dyIncrement) +
-
-				//'q' + (2 * dxIncrement) + ',' +  Math.floor(dy * 0.5 - dyIncrement) + ' ' + Math.floor(dx * 0.5  - dxIncrement) + ', ' +  Math.floor(dy * 0.5 - dyIncrement) +
-				//'q' + Math.floor(dx * 0.5  - dxIncrement)  + ',' + (2 * dyIncrement) + ' ' + Math.floor(dx * 0.5  - dxIncrement) + ', ' +  Math.floor(dy * 0.5 - dyIncrement) +
-				'h' + calculatedConnector.lineTo.x,
-			// 'conn': calculatedConnector,
-			'position': position
-		};
-	}
+	return {
+		'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+			'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+			'c0,' + (dy - (2 * dyIncrement)) + ' ' + (dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement) +
+			'h' + calculatedConnector.lineTo.x,
+		'position': position
+	};
 };
 
 
