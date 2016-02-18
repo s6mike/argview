@@ -33,8 +33,8 @@
 		<input type="button" class="openAttachment" value="open attachment"></input>
 		<input type="button" class="toggleAddLinkMode" value="add link"></input>
 		Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
-    Frames: <span id="framerate"></span>
-    Cycle: <span id="cyclerate"></span>
+	Frames: <span id="framerate"></span>
+	Cycle: <span id="cyclerate"></span>
 		<div id="linkEditWidget">
 			<input class="delete" type="button" value="Delete"></input>
 			<select class="color">
@@ -62,7 +62,100 @@
 		<script type="text/javascript" src="../src/hammer-draggable.js"></script>
 		<script type="text/javascript" src="../src/dom-map-view.js"></script>
 		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
+		<script type="text/javascript" src="../src/theme.js"></script>
 		<script type="text/javascript" src="roy-map.js"></script>
+		<script id="defaultTheme" type="application/json">
+			{
+				"name": "MindMup Default",
+				"node": {
+					"default": {
+						"cornerRadius": 10.0,
+						"backgroundColor": "#E0E0E0",
+
+						"border": {
+							"type": "surround",
+							"line": {
+								"color": "#707070",
+								"width": 1.0
+							}
+						},
+						"shadow": {
+							"color": "#070707",
+							"opacity": 0.4,
+							"offset": {
+								"width": 2,
+								"height": 2
+							},
+							"radius": 2
+						},
+						"text": {
+							"margin": 5.0,
+							"alignment": "center",
+							"color": "#4F4F4F",
+							"lightColor": "#EEEEEE",
+							"darkColor": "#000000",
+							"lineSpacing": 3.5,
+							"font": {
+								"size": 12,
+								"weight": "semibold"
+							}
+						},
+						"connections": {
+							"default": {
+									"h": "center",
+									"v": "center"
+							},
+							"from": {
+								"horizontal": {
+									"h": "nearest-inset",
+									"v": "center"
+								}
+							}
+						},
+						"decorations": {
+						  "attachment": {
+							"h": "right",
+							"v": "top"
+						  },
+						  "link": {
+							"h": "right",
+							"v": "bottom"
+						  }
+						}
+					},
+					"level 1": {
+						"backgroundColor": "#22AAE0"
+					},
+					"activated": {
+						"border": {
+						  "line": {
+							"color": "#22AAE0"
+						  }
+						}
+					},
+					"selected": {
+						"shadow": {
+							"color": "#000000",
+							"opacity": 0.9
+						}
+					}
+				},
+				"connector": {
+					"default": {
+						"type": "quadratic",
+						"controlPoint": {
+							"above": {"width": 0, "height": 1.75},
+							"below": {"width": 0, "height": 1.75},
+							"horizontal": {"width": 0, "height": 1}
+						},
+						"line": {
+							"color": "#707070",
+							"width": 1.0
+						}
+					}
+				}
+			}
+		</script>
 		<script>
 			jQuery.fn.attachmentEditorWidget = function (mapModel) {
 				'use strict';
@@ -80,6 +173,7 @@
 				});
 			};
 			(function () {
+				MAPJS.DOMRender.theme = new MAPJS.Theme(JSON.parse(defaultTheme.innerHTML));
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),
