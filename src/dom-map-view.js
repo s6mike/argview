@@ -140,6 +140,13 @@ jQuery.fn.updateStage = function () {
 	return this;
 };
 
+MAPJS.DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector, position) {
+	'use strict';
+	if (calculatedConnector.nodeUnderline) {
+		connectorCurve.d += 'M' + (calculatedConnector.nodeUnderline.from.x - position.left) + ',' + (calculatedConnector.nodeUnderline.from.y - position.top) + ' H' + (calculatedConnector.nodeUnderline.to.x - position.left);
+	}
+	return connectorCurve;
+};
 MAPJS.DOMRender.connectorPaths = {
 	'quadratic': function (calculatedConnector, position, parent, child) {
 		'use strict';
@@ -150,7 +157,6 @@ MAPJS.DOMRender.connectorPaths = {
 		return {
 			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
 				'Q' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.to.y - offset - position.top) + ' ' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
-			// 'conn': calculatedConnector,
 			'position': position
 		};
 	},
@@ -159,13 +165,13 @@ MAPJS.DOMRender.connectorPaths = {
 		var initialRadius = 10,
 			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
-			dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : dx * 0.5,
-			dyIncrement = (initialRadius < Math.abs(dy * 0.5)) ? initialRadius * Math.sign(dy) : dy * 0.5;
+			dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : Math.round(dx * 0.5),
+			dyIncrement = (initialRadius < Math.abs(dy * 0.5)) ? initialRadius * Math.sign(dy) : Math.round(dy * 0.5);
 
 		return {
 			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-				'c0,' + (dy - (2 * dyIncrement)) + ' ' + (dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
+				'c0,' + (dy - (2 * dyIncrement)) + ' ' + Math.round(dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
 			'position': position
 		};
 
@@ -183,7 +189,7 @@ MAPJS.DOMRender.connectorPaths = {
 MAPJS.DOMRender.nodeConnectionPointX = {
 	'center': function (node) {
 		'use strict';
-		return node.left + node.width * 0.5;
+		return Math.round(node.left + node.width * 0.5);
 	},
 	'nearest': function (node, relatedNode) {
 		'use strict';
@@ -204,7 +210,7 @@ MAPJS.DOMRender.nodeConnectionPointX = {
 MAPJS.DOMRender.nodeConnectionPointY = {
 	'center': function (node) {
 		'use strict';
-		return node.top + node.height * 0.5;
+		return Math.round(node.top + node.height * 0.5);
 	},
 	'base': function (node) {
 		'use strict';
@@ -232,8 +238,22 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		connectionStyle = theme.attributeValue(['node'], styles, ['connections', 'style'], 'default'),
 		connectionCurveType = theme.attributeValue(['connector'], styles, ['type'], 'quadratic'),
 		controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], 1) - 1,
-		inset = theme.attributeValue(['node'], styles, ['cornerRadius'], 10);
+		inset = theme.attributeValue(['node'], styles, ['cornerRadius'], 10),
+		borderType = theme.attributeValue(['node'], styles, ['border', 'type'], ''),
+		nodeUnderline = false;
 
+	if (borderType === 'underline') {
+		nodeUnderline = {
+			from: {
+				x: child.left,
+				y: child.top + child.height
+			},
+			to: {
+				x: child.left + child.width,
+				y: child.top + child.height
+			}
+		};
+	}
 	return {
 		from: {
 			x: MAPJS.DOMRender.nodeConnectionPointX[connectionPositionFrom.h](parent, child, inset),
@@ -244,7 +264,8 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 			y: MAPJS.DOMRender.nodeConnectionPointY[connectionPositionTo.v](child)
 		},
 		controlPointOffset: controlPointOffset,
-		connectionCurveType: connectionCurveType
+		connectionCurveType: connectionCurveType,
+		nodeUnderline: nodeUnderline
 	};
 };
 
@@ -257,9 +278,9 @@ MAPJS.DOMRender.themePath = function (parent, child) {
 		},
 		calculatedConnector;
 	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
+	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 1;
 	calculatedConnector = MAPJS.DOMRender.calculateConnector(parent, child);
-	return MAPJS.DOMRender.connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child);
+	return MAPJS.DOMRender.appendUnderLine(MAPJS.DOMRender.connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
 };
 
 
