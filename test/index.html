@@ -156,6 +156,84 @@
 				}
 			}
 		</script>
+		<script id="compactTheme" type="application/json">
+			{
+				"name": "MindMup Compact",
+				"layout": "portrait",
+				"node": {
+					"default": {
+						"cornerRadius": 0.0,
+						"backgroundColor": "transparent",
+						"activatedColor": "#22AAE0",
+						"border": {
+							"type": "underline",
+							"line": {
+								"color": "#707070",
+								"width": 1.0
+							}
+						},
+						"shadow": {
+							"color": "transparent"
+						},
+						"text": {
+							"margin": 5.0,
+							"alignment": "center",
+							"color": "#4F4F4F",
+							"lightColor": "#EEEEEE",
+							"darkColor": "#000000",
+							"lineSpacing": 3.5,
+							"font": {
+								"size": 12,
+								"weight": "semibold"
+							}
+						},
+						"connections": {
+							"default": {
+								"h": "nearest",
+								"v": "base"
+							}
+						},
+						"decorations": {
+						  "attachment": {
+							"h": "left",
+							"v": "center"
+						  },
+						  "link": {
+							"h": "left",
+							"v": "center"
+						  }
+						}
+					},
+					"activated": {
+					  "border": {
+						"type": "surround"
+					  }
+					},
+					"selected": {
+						"shadow": {
+							"color": "#000000",
+							"opacity": 0.9,
+							"offset": {
+								"width": 2,
+								"height": 2
+							},
+							"radius": 2
+
+						}
+					}
+				},
+				"connector": {
+					"default": {
+						"type": "s-curve",
+						"line": {
+							"color": "#707070",
+							"width": 1.0
+						}
+					}
+				}
+			}
+
+		</script>
 		<script>
 			jQuery.fn.attachmentEditorWidget = function (mapModel) {
 				'use strict';
@@ -173,7 +251,7 @@
 				});
 			};
 			(function () {
-				MAPJS.DOMRender.theme = new MAPJS.Theme(JSON.parse(defaultTheme.innerHTML));
+				MAPJS.DOMRender.theme = new MAPJS.Theme(JSON.parse(compactTheme.innerHTML));
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),

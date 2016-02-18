@@ -165,8 +165,7 @@ MAPJS.DOMRender.connectorPaths = {
 		return {
 			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-				'c0,' + (dy - (2 * dyIncrement)) + ' ' + (dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement) +
-				'h' + calculatedConnector.lineTo.x,
+				'c0,' + (dy - (2 * dyIncrement)) + ' ' + (dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
 			'position': position
 		};
 
@@ -242,62 +241,14 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		},
 		to: {
 			x: MAPJS.DOMRender.nodeConnectionPointX[connectionPositionTo.h](child, parent, inset),
-			y: MAPJS.DOMRender.nodeConnectionPointY[connectionPositionTo.h](child)
+			y: MAPJS.DOMRender.nodeConnectionPointY[connectionPositionTo.v](child)
 		},
 		controlPointOffset: controlPointOffset,
 		connectionCurveType: connectionCurveType
 	};
 };
 
-MAPJS.DOMRender.curvedPath = function (parent, child) {
-	'use strict';
-	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight) {
-			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
-				parentHorizontalOffset = 1 - childHorizontalOffset;
-			return {
-				from: {
-					x: parentX + parentHorizontalOffset * parentWidth,
-					y: parentY + 0.5 * parentHeight
-				},
-				to: {
-					x: childX + childHorizontalOffset * childWidth,
-					y: childY + 0.5 * childHeight
-				},
-				controlPointOffset: 0
-			};
-		},
-		calculateConnector = function (parent, child) {
-			var tolerance = 10,
-				childHorizontalOffset,
-				childMid = child.top + child.height * 0.5,
-				parentMid = parent.top + parent.height * 0.5;
-			if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
-				return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
-			}
-			childHorizontalOffset = parent.left < child.left ? 0 : 1;
-			return {
-				from: {
-					x: parent.left + 0.5 * parent.width,
-					y: parent.top + 0.5 * parent.height
-				},
-				to: {
-					x: child.left + childHorizontalOffset * child.width,
-					y: child.top + 0.5 * child.height
-				},
-				controlPointOffset: 0.75
-			};
-		},
-		position = {
-			left: Math.min(parent.left, child.left),
-			top: Math.min(parent.top, child.top)
-		},
-		calculatedConnector;
-	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
 
-	calculatedConnector = calculateConnector(parent, child);
-	return MAPJS.DOMRender.connectorPaths.quadratic(calculatedConnector, position, parent, child);
-};
 MAPJS.DOMRender.themePath = function (parent, child) {
 	'use strict';
 	var position = {
@@ -309,58 +260,6 @@ MAPJS.DOMRender.themePath = function (parent, child) {
 	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
 	calculatedConnector = MAPJS.DOMRender.calculateConnector(parent, child);
 	return MAPJS.DOMRender.connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child);
-};
-
-MAPJS.DOMRender.underlinePath = function (parent, child) {
-	'use strict';
-	var	calculateConnector = function (parent, child) {
-			if (parent.left < child.left) {
-				return {
-					from: {
-						x: parent.left + parent.width,
-						y: parent.top + parent.height
-					},
-					to: {
-						x: child.left,
-						y: child.top + child.height
-					},
-					lineTo: {
-						x: child.width
-					},
-					controlPointOffset: 0.75
-				};
-			} else {
-				return {
-					from: {
-						x: parent.left,
-						y: parent.top + parent.height
-					},
-					to: {
-						x: child.left + child.width,
-						y: child.top + child.height
-					},
-					lineTo: {
-						x: -1 * child.width
-					},
-					controlPointOffset: 0.75
-				};
-			}
-		},
-		position = {
-			left: Math.min(parent.left, child.left),
-			top: Math.min(parent.top, child.top)
-		},
-		calculatedConnector, dx, dy,
-		dxIncrement, dyIncrement,
-		initialRadius = 10;
-	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
-	calculatedConnector = calculateConnector(parent, child);
-	dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x);
-	dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y);
-	dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : dx * 0.5;
-	dyIncrement = (initialRadius < Math.abs(dy * 0.5)) ? initialRadius * Math.sign(dy) : dy * 0.5;
-	return MAPJS.DOMRender.connectorPaths['s-curve'](calculatedConnector, position, parent, child);
 };
 
 
