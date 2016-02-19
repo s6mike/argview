@@ -21,7 +21,9 @@ describe('ThemeProcessor', function () {
 					{
 						name: 'default',
 						cornerRadius: 12,
-						backgroundColor: '#E0E0E0'
+						background: {
+							color: '#E0E0E0'
+						}
 					}
 				]
 			});
@@ -105,10 +107,115 @@ describe('ThemeProcessor', function () {
 				theme.node[0].border.line.style = 'dashed';
 				expect(underTest.process(theme).css).toEqual('.mapjs-node{border:1px dashed #707070;}');
 			});
-			it('ignores it in css if the border is underline -- will be handled with a connector', function () {
+			it('sets no border in css if the border is underline -- will be handled with a connector', function () {
 				theme.node[0].border.type = 'underline';
 				result = underTest.process(theme);
-				expect(result.css).toEqual('.mapjs-node{}');
+				expect(result.css).toEqual('.mapjs-node{border:0;}');
+			});
+		});
+
+		describe('background-color', function () {
+			it('should return color when opacity is not defined', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						background: {
+							color: '#22AAE0'
+						}
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{background-color:#22AAE0;}');
+			});
+			it('should return color with opacity when defined', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						background: {
+							color: '#22AAE0',
+							opacity: 0.8
+						}
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{background-color:rgba(34,170,224,0.8);}');
+			});
+			it('should return transparent when opacity is 0', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						background: {
+							color: '#22AAE0',
+							opacity: 0
+						}
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{background-color:transparent;}');
+			});
+			it('should return transparent when no color configured', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						background: {
+						}
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{background-color:transparent;}');
+			});
+
+		});
+		describe('shadow', function () {
+			it('should return a single shadow', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						shadow: [
+							{
+								color: '#22AAE0',
+								opacity: 0.8,
+								offset: {width: 1, height: 2},
+								radius: 3
+							}
+						]
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{box-shadow:1px 2px 3px rgba(34,170,224,0.8);}');
+			});
+			it('should return nultiple shadows as a single box-shadow', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						shadow: [
+							{
+								color: '#22AAE0',
+								opacity: 0.8,
+								offset: {width: 1, height: 2},
+								radius: 3
+							},
+							{
+								color: '#000000',
+								offset: {width: 4, height: 5},
+								radius: 6
+							},
+							{
+								color: '#FF0000',
+								offset: {width: 7, height: 8},
+								radius: 9
+							}
+
+						]
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{box-shadow:1px 2px 3px rgba(34,170,224,0.8),4px 5px 6px #000000,7px 8px 9px #FF0000;}');
+			});
+			it('should return box-shadow none when shadow is transparent', function () {
+				var result = underTest.process({
+					node: [{
+						name: 'default',
+						shadow: [{
+							color: 'transparent'
+						}]
+					}]
+				});
+				expect(result.css).toEqual('.mapjs-node{box-shadow:none;}');
 			});
 		});
 

@@ -1,4 +1,4 @@
-/*global MAPJS, _*/
+/*global MAPJS, _, Color*/
 MAPJS.ThemeProcessor = function () {
 	'use strict';
 	var self = this,
@@ -7,16 +7,39 @@ MAPJS.ThemeProcessor = function () {
 		},
 		cssProp = {
 			cornerRadius: 'border-radius',
+			background: 'background-color',
 			backgroundColor: 'background-color',
-			border: 'border'
+			border: 'border',
+			shadow: 'box-shadow'
+		},
+		colorParser = function (colorObj) {
+			if (!colorObj.color || colorObj.opacity === 0) {
+				return 'transparent';
+			}
+			if (colorObj.opacity) {
+				return 'rgba(' + new Color(colorObj.color).rgbArray().join(',') + ',' + colorObj.opacity + ')';
+			} else {
+				return colorObj.color;
+			}
 		},
 		parsers = {
 			cornerRadius: addPx,
+			background: colorParser,
 			border: function (borderOb) {
 				if (borderOb.type === 'underline') {
-					return false;
+					return '0';
 				}
 				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color;
+			},
+			shadow: function (shadowArray) {
+				var boxshadows = [];
+				if (shadowArray.length === 1 && shadowArray[0].color === 'transparent') {
+					return 'none';
+				}
+				shadowArray.forEach(function (shadow) {
+					boxshadows.push(shadow.offset.width + 'px ' + shadow.offset.height + 'px ' + shadow.radius + 'px ' + colorParser(shadow));
+				});
+				return boxshadows.join(',');
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {

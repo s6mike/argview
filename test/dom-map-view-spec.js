@@ -411,13 +411,13 @@ describe('updateConnector', function () {
 		var path = underTest.find('path');
 		expect(path.length).toBe(1);
 		expect(path.attr('class')).toEqual('mapjs-connector');
-		expect(path.attr('d')).toEqual('M50,20Q50,202 130,142');
+		expect(path.attr('d')).toEqual('M50,20Q50,142 136,142');
 	});
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateConnector();
 		expect(underTest.css('top')).toEqual('100px');
 		expect(underTest.css('left')).toEqual('200px');
-		expect(underTest.css('height')).toEqual('164px');
+		expect(underTest.css('height')).toEqual('166px');
 		expect(underTest.css('width')).toEqual('142px');
 	});
 	it('updates the existing curve if one is present', function () {
@@ -429,13 +429,13 @@ describe('updateConnector', function () {
 
 	it('updates multiple connectors at once', function () {
 		jQuery('[data-role=test-connector]').updateConnector();
-		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 130,142');
-		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
+		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,142 136,142');
+		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,258 80,258');
 	});
 	describe('performance optimisations', function () {
 		it('rounds coordinates', function () {
 			anotherConnector.updateConnector();
-			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 20,258');
+			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,258 80,258');
 		});
 		it('will not update if the shapes have not moved', function () {
 			underTest.updateConnector();
@@ -450,7 +450,7 @@ describe('updateConnector', function () {
 			fromNode.css('top', '50px');
 
 			underTest.updateConnector();
-			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,252 130,192');
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,192 136,192');
 		});
 
 	});

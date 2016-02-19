@@ -63,15 +63,16 @@
 		<script type="text/javascript" src="../src/dom-map-view.js"></script>
 		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
 		<script type="text/javascript" src="../src/theme.js"></script>
+		<script type="text/javascript" src="../src/theme-processor.js"></script>
 		<script type="text/javascript" src="roy-map.js"></script>
 		<script id="defaultTheme" type="application/json">
 			{
 				"name": "MindMup Default",
-				"node": {
-					"default": {
+				"node": [
+					{
+						"name": "default",
 						"cornerRadius": 10.0,
-						"backgroundColor": "#E0E0E0",
-
+						"backgroundColor": '#E0E0E0',
 						"border": {
 							"type": "surround",
 							"line": {
@@ -79,7 +80,7 @@
 								"width": 1.0
 							}
 						},
-						"shadow": {
+						"shadow": [{
 							"color": "#070707",
 							"opacity": 0.4,
 							"offset": {
@@ -87,7 +88,7 @@
 								"height": 2
 							},
 							"radius": 2
-						},
+						}],
 						"text": {
 							"margin": 5.0,
 							"alignment": "center",
@@ -123,23 +124,26 @@
 						  }
 						}
 					},
-					"level_1": {
+					{
+						"name": "level_1",
 						"backgroundColor": "#22AAE0"
 					},
-					"activated": {
+					{
+						"name": "activated",
 						"border": {
 						  "line": {
 							"color": "#22AAE0"
 						  }
 						}
 					},
-					"selected": {
+					{
+						"name": "selected",
 						"shadow": {
 							"color": "#000000",
 							"opacity": 0.9
 						}
 					}
-				},
+				],
 				"connector": {
 					"default": {
 						"type": "quadratic",
@@ -160,21 +164,22 @@
 			{
 				"name": "MindMup Compact",
 				"layout": "portrait",
-				"node": {
-					"default": {
+				"node": [
+					{
+						"name": "default",
 						"cornerRadius": 0.0,
-						"backgroundColor": "transparent",
-						"activatedColor": "#22AAE0",
+						"background": {
+							"color": "#FFFFFF",
+							"opacity": 0.8
+						},
 						"border": {
-							"type": "underline",
-							"line": {
-								"color": "#707070",
-								"width": 1.0
-							}
+							"type": "underline"
 						},
-						"shadow": {
+						"shadow": [
+						{
 							"color": "transparent"
-						},
+						}
+						],
 						"text": {
 							"margin": 5.0,
 							"alignment": "center",
@@ -204,7 +209,8 @@
 						  }
 						}
 					},
-					"level_1": {
+					{
+						"name": "level_1",
 						"connections": {
 							"default": {
 								"h": "nearest",
@@ -212,13 +218,20 @@
 							}
 						}
 					},
-					"activated": {
-					  "border": {
-						"type": "surround"
-					  }
+					{
+						"name": "activated",
+						"border": {
+							"type": "surround",
+							"line": {
+								"color": "#22AAE0",
+								"width": 1.0,
+								"style": "dashed"
+							}
+						}
 					},
-					"selected": {
-						"shadow": {
+					{
+						"name": "selected",
+						"shadow": [{
 							"color": "#000000",
 							"opacity": 0.9,
 							"offset": {
@@ -226,10 +239,108 @@
 								"height": 2
 							},
 							"radius": 2
-
+						}]
+					},
+					{
+						"name": "collapsed",
+						"shadow": [
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 1
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 3
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 4
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 6
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 7
+							},
+							"radius": 0
 						}
+						]
+					},
+					{
+						"name": "collapsed.selected",
+						"shadow": [
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 1
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 3
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 6
+							},
+							"radius": 0
+						},
+						{
+							"color": "#555555",
+							"offset": {
+								"width": 0,
+								"height": 7
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 10
+							},
+							"radius": 0
+						},
+						{
+							"color": "#333333",
+							"offset": {
+								"width": 0,
+								"height": 11
+							},
+							"radius": 0
+						}
+						]
 					}
-				},
+
+				],
 				"connector": {
 					"default": {
 						"type": "compact-s-curve",
@@ -259,7 +370,13 @@
 				});
 			};
 			(function () {
-				MAPJS.DOMRender.theme = new MAPJS.Theme(JSON.parse(compactTheme.innerHTML));
+				var themeJson = JSON.parse(compactTheme.innerHTML),
+					themeProcessor = new MAPJS.ThemeProcessor();
+					processedTheme = themeProcessor.process(themeJson);
+				$('style').text(processedTheme.css).appendTo('body');
+				console.log(processedTheme.css);
+				MAPJS.DOMRender.theme = new MAPJS.Theme(themeJson);
+
 				window.onerror = alert;
 				var container = jQuery('#container'),
 				idea = MAPJS.content(test_tree()),

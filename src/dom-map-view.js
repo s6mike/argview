@@ -245,7 +245,7 @@ MAPJS.DOMRender.nodeConnectionPointY = {
 	},
 	'base': function (node) {
 		'use strict';
-		return node.top + node.height;
+		return node.top + node.height + 1;
 	}
 };
 
@@ -280,11 +280,11 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		nodeUnderline = {
 			from: {
 				x: child.left,
-				y: child.top + child.height
+				y: child.top + child.height + 1
 			},
 			to: {
 				x: child.left + child.width,
-				y: child.top + child.height
+				y: child.top + child.height + 1
 			}
 		};
 	}
@@ -312,7 +312,7 @@ MAPJS.DOMRender.themePath = function (parent, child) {
 		},
 		calculatedConnector;
 	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 1;
+	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 2;
 	calculatedConnector = MAPJS.DOMRender.calculateConnector(parent, child);
 	return MAPJS.DOMRender.appendUnderLine(MAPJS.DOMRender.connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
 };

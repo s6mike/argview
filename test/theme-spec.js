@@ -4,18 +4,21 @@ describe('MAPJS.Theme', function () {
 	var underTest;
 	beforeEach(function () {
 		var theme = {
-			'node': {
-				'default': {
+			'node': [
+				{
+					'name': 'default',
 					'cornerRadius': 10.0,
 					'backgroundColor': 'transparent'
 				},
-				'special': {
+				{
+					'name': 'special',
 					'cornerRadius': 1.0
 				},
-				'sharp': {
+				{
+					'name': 'sharp',
 					'cornerRadius': 0.0
 				}
-			}
+			]
 		};
 		underTest = new MAPJS.Theme(theme);
 	});

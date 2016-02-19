@@ -2,6 +2,7 @@
 MAPJS.Theme = function (themeJson) {
 	'use strict';
 	var self = this,
+		themeDictionary = _.extend({}, themeJson),
 		getElementForPath = function (object, pathArray) {
 			var remaining = pathArray.slice(0),
 				current = object;
@@ -16,7 +17,7 @@ MAPJS.Theme = function (themeJson) {
 			return current;
 		};
 	self.attributeValue = function (prefixes, styles, postfixes, fallback) {
-		var rootElement = getElementForPath(themeJson, prefixes),
+		var rootElement = getElementForPath(themeDictionary, prefixes),
 			merged = {},
 			result;
 		if (!rootElement) {
@@ -31,4 +32,13 @@ MAPJS.Theme = function (themeJson) {
 		}
 		return result;
 	};
+
+	if (themeDictionary && themeDictionary.node && themeDictionary.node.forEach) {
+		themeDictionary.nodeArray = themeDictionary.node;
+		themeDictionary.node = {};
+		themeDictionary.nodeArray.forEach(function (nodeStyle) {
+			themeDictionary.node[nodeStyle.name] = nodeStyle;
+		});
+		delete themeDictionary.nodeArray;
+	}
 };
