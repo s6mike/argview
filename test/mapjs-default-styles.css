@@ -1,15 +1,11 @@
 .mapjs-node {
 	margin: 0;
 	padding: 7px;
-	border-radius: 10px;
-	border: 1px solid #777;
-	box-shadow: 5px 5px 5px rgba(204, 204, 204, 0.8);
 	z-index: 2;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
-	background-color: #E0E0E0;
 	color: #4F4F4F;
 	cursor: hand;
 }
@@ -55,19 +51,11 @@
 }
 .mapjs-node.selected {
 	outline: 0;
-	border: 3px dashed #2E9AFE;
 	margin: -2px;
-	box-shadow: 5px 5px 5px black;
 	z-index: 3;
 }
 .mapjs-node.dragging {
 	opacity: 0.4;
-}
-.mapjs-node.collapsed {
-	box-shadow: 3px 3px 0 #A0A0A0, 4px 4px 0 #333, 6px 6px 0 #707070, 7px 7px 0 #222;
-}
-.mapjs-node.collapsed.selected {
-	box-shadow: 4px 4px 0 #A0A0A0, 5px 5px 0 #333, 8px 8px 0 #707070, 9px 9px 0 #222, 12px 12px 5px black;
 }
 .mapjs-node[mapjs-level="1"] {
 	background-color:#22AAE0;

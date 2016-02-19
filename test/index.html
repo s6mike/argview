@@ -72,7 +72,7 @@
 					{
 						"name": "default",
 						"cornerRadius": 10.0,
-						"backgroundColor": '#E0E0E0',
+						"backgroundColor": "#E0E0E0",
 						"border": {
 							"type": "surround",
 							"line": {
@@ -111,6 +111,10 @@
 									"h": "nearest-inset",
 									"v": "center"
 								}
+							},
+							"to": {
+								"h": "nearest-inset",
+								"v": "center"
 							}
 						},
 						"decorations": {
@@ -138,10 +142,115 @@
 					},
 					{
 						"name": "selected",
-						"shadow": {
+						"shadow": [
+						{
 							"color": "#000000",
-							"opacity": 0.9
+							"opacity": 0.9,
+							"offset": {
+								"width": 2,
+								"height": 2
+							},
+							"radius": 2
 						}
+						]
+					},
+					{
+						"name": "collapsed",
+						"shadow": [
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 1
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 3
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 4
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 6
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 7
+							},
+							"radius": 0
+						}
+						]
+					},
+					{
+						"name": "collapsed.selected",
+						"shadow": [
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 1
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 3
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 6
+							},
+							"radius": 0
+						},
+						{
+							"color": "#555555",
+							"offset": {
+								"width": 0,
+								"height": 7
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
+								"height": 10
+							},
+							"radius": 0
+						},
+						{
+							"color": "#333333",
+							"offset": {
+								"width": 0,
+								"height": 11
+							},
+							"radius": 0
+						}
+						]
 					}
 				],
 				"connector": {
