@@ -10,7 +10,8 @@ MAPJS.ThemeProcessor = function () {
 			background: 'background-color',
 			backgroundColor: 'background-color',
 			border: 'border',
-			shadow: 'box-shadow'
+			shadow: 'box-shadow',
+			text: 'font'
 		},
 		colorParser = function (colorObj) {
 			if (!colorObj.color || colorObj.opacity === 0) {
@@ -21,6 +22,22 @@ MAPJS.ThemeProcessor = function () {
 			} else {
 				return colorObj.color;
 			}
+		},
+		fontWeightParser = function (fontObj) {
+			var weightMap = {
+				'light': '200',
+				'semi-bold': '600'
+			};
+			if (!fontObj || !fontObj.weight) {
+				return 'bold';
+			}
+			return weightMap[fontObj.weight] || fontObj.weight;
+		},
+		fontSizeParser = function (textObj) {
+			var fontSize = (textObj && textObj.font && textObj.font.size) || 12,
+				lineSpacing = (textObj && textObj.lineSpacing) || 3;
+
+			return fontSize + 'pt/' + (lineSpacing + fontSize) + 'pt';
 		},
 		parsers = {
 			cornerRadius: addPx,
@@ -40,6 +57,9 @@ MAPJS.ThemeProcessor = function () {
 					boxshadows.push(shadow.offset.width + 'px ' + shadow.offset.height + 'px ' + shadow.radius + 'px ' + colorParser(shadow));
 				});
 				return boxshadows.join(',');
+			},
+			text: function (textObj) {
+				return 'normal normal ' + fontWeightParser(textObj.font) + ' ' +  fontSizeParser(textObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {

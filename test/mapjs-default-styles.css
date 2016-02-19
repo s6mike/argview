@@ -24,13 +24,15 @@
 	-webkit-user-select: text;
 	-ms-user-select: text;
 }
+.mapjs-node {
+	font-family: -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 15px;
+}
 .mapjs-node span {
 	white-space: pre-wrap;
-	font-family: "Helvetica";
-	font-weight: bold;
-	font-size: 12px;
 	text-align: center;
-	line-height: 150% !important;
 	display: block;
 	max-width: 146px;
 	min-height: 1.5em;

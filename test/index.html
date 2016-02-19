@@ -276,7 +276,7 @@
 				"node": [
 					{
 						"name": "default",
-						"cornerRadius": 0.0,
+						"cornerRadius": 3.0,
 						"background": {
 							"color": "#FFFFFF",
 							"opacity": 0.8
@@ -295,10 +295,10 @@
 							"color": "#4F4F4F",
 							"lightColor": "#EEEEEE",
 							"darkColor": "#000000",
-							"lineSpacing": 3.5,
+							"lineSpacing": 8,
 							"font": {
 								"size": 12,
-								"weight": "semibold"
+								"weight": "light"
 							}
 						},
 						"connections": {
@@ -333,22 +333,48 @@
 							"type": "surround",
 							"line": {
 								"color": "#22AAE0",
-								"width": 1.0,
+								"width": 2.0,
 								"style": "dashed"
 							}
 						}
 					},
 					{
 						"name": "selected",
-						"shadow": [{
-							"color": "#000000",
-							"opacity": 0.9,
+						"shadow": [
+						{
+							"color": "#FFFFFF",
 							"offset": {
-								"width": 2,
-								"height": 2
+								"width": 1,
+								"height": 0
 							},
-							"radius": 2
-						}]
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": -1,
+								"height": 0
+							},
+							"radius": 0
+						},
+						{
+							"color": "#22AAE0",
+							"offset": {
+								"width": 4,
+								"height": 0
+							},
+							"radius": 0
+						},
+						{
+							"color": "#22AAE0",
+							"offset": {
+								"width": -4,
+								"height": 0
+							},
+							"radius": 0
+						}
+
+						]
 					},
 					{
 						"name": "collapsed",
@@ -401,8 +427,32 @@
 						{
 							"color": "#FFFFFF",
 							"offset": {
-								"width": 0,
-								"height": 1
+								"width": 1,
+								"height": 0
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": -1,
+								"height": 0
+							},
+							"radius": 0
+						},
+						{
+							"color": "#22AAE0",
+							"offset": {
+								"width": 4,
+								"height": 0
+							},
+							"radius": 0
+						},
+						{
+							"color": "#22AAE0",
+							"offset": {
+								"width": -4,
+								"height": 0
 							},
 							"radius": 0
 						},
@@ -410,7 +460,23 @@
 							"color": "#888888",
 							"offset": {
 								"width": 0,
+								"height": 1
+							},
+							"radius": 0
+						},
+						{
+							"color": "#FFFFFF",
+							"offset": {
+								"width": 0,
 								"height": 3
+							},
+							"radius": 0
+						},
+						{
+							"color": "#888888",
+							"offset": {
+								"width": 0,
+								"height": 4
 							},
 							"radius": 0
 						},
@@ -423,26 +489,10 @@
 							"radius": 0
 						},
 						{
-							"color": "#555555",
+							"color": "#888888",
 							"offset": {
 								"width": 0,
 								"height": 7
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 0,
-								"height": 10
-							},
-							"radius": 0
-						},
-						{
-							"color": "#333333",
-							"offset": {
-								"width": 0,
-								"height": 11
 							},
 							"radius": 0
 						}
