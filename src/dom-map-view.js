@@ -185,15 +185,23 @@ MAPJS.DOMRender.connectorPaths = {
 			dyIncrement = initialRadius * Math.sign(dy);
 
 		if (initialRadius > Math.abs(dx * 0.5) || initialRadius > Math.abs(dy * 0.5)) {
-			dxIncrement = Math.floor(Math.min(initialRadius, Math.abs(dx)) * Math.sign(dx));
-			dyIncrement = Math.floor(Math.min(initialRadius, Math.abs(dy)) * Math.sign(dy));
+			dxIncrement = Math.round(dx / 2);
 			return {
 				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-					'v' + (dy - dyIncrement) +
-					'h' + (dx - dxIncrement),
+					'l' + dxIncrement + ',0 ' +
+					'l' + (dx - dxIncrement) + ',' + dy,
 				'position': position
 			};
+
+			// dxIncrement = Math.floor(Math.min(initialRadius, Math.abs(dx)) * Math.sign(dx));
+			// dyIncrement = Math.floor(Math.min(initialRadius, Math.abs(dy)) * Math.sign(dy));
+			// return {
+			// 	'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+			// 		'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+			// 		'v' + (dy - dyIncrement) +
+			// 		'h' + (dx - dxIncrement),
+			// 	'position': position
+			// };
 
 		}
 
