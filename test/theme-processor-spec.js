@@ -80,8 +80,30 @@ describe('ThemeProcessor', function () {
 			'}'
 		);
 	});
+	describe('simple props', function () {
+		describe('margin', function () {
+			it('reads it into the padding of the node style and sets margin to 0', function () {
+				var result = underTest.process({node: [{name: 'default', text: {margin: 5}}]});
+				expect(result.css).toEqual('.mapjs-node{padding:5px;}');
+			});
+		});
+	});
 	describe('complex props', function () {
 		var theme, result;
+		describe('font', function () {
+			it('combines line spacing and font styles', function () {
+				var result = underTest.process({node: [{name: 'default',
+						text: {
+							font: {
+								lineSpacing: 8,
+								size: 12,
+								weight: 'light'
+							}
+						}}]});
+				expect(result.css).toEqual('.mapjs-node{font:normal normal bold 12pt/20pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
+			});
+
+		});
 		describe('border', function () {
 			beforeEach(function () {
 				theme = {
@@ -113,7 +135,6 @@ describe('ThemeProcessor', function () {
 				expect(result.css).toEqual('.mapjs-node{border:0;}');
 			});
 		});
-
 		describe('background-color', function () {
 			it('should return color when opacity is not defined', function () {
 				var result = underTest.process({

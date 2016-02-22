@@ -7,11 +7,12 @@ MAPJS.ThemeProcessor = function () {
 		},
 		cssProp = {
 			cornerRadius: 'border-radius',
+			'text.margin': 'padding',
 			background: 'background-color',
 			backgroundColor: 'background-color',
 			border: 'border',
 			shadow: 'box-shadow',
-			text: 'font'
+			'text.font': 'font'
 		},
 		colorParser = function (colorObj) {
 			if (!colorObj.color || colorObj.opacity === 0) {
@@ -41,6 +42,7 @@ MAPJS.ThemeProcessor = function () {
 		},
 		parsers = {
 			cornerRadius: addPx,
+			'text.margin': addPx,
 			background: colorParser,
 			border: function (borderOb) {
 				if (borderOb.type === 'underline') {
@@ -58,12 +60,30 @@ MAPJS.ThemeProcessor = function () {
 				});
 				return boxshadows.join(',');
 			},
-			text: function (textObj) {
+			'text.font': function (textObj) {
 				return 'normal normal ' + fontWeightParser(textObj.font) + ' ' +  fontSizeParser(textObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {
-			var result = [], parser, cssVal;
+			var result = [], parser, cssVal,
+				pushProperties = function (styleObject, keyPrefix) {
+					_.each(styleObject, function (val, propKey) {
+						var key = (keyPrefix || '') + propKey;
+						if (cssProp[key]) {
+							parser = parsers[key] || _.identity;
+							cssVal = parser(val);
+							if (cssVal) {
+								result.push(cssProp[key]);
+								result.push(':');
+								result.push(cssVal);
+								result.push(';');
+							}
+						} else if (_.isObject(val)) {
+							pushProperties(val, key + '.');
+						}
+					});
+
+				};
 			nodeStyleArray.forEach(function (nodeStyle) {
 				result.push('.mapjs-node');
 				if (nodeStyle.name !== 'default') {
@@ -71,18 +91,7 @@ MAPJS.ThemeProcessor = function () {
 					result.push(nodeStyle.name.replace(/\s/g, '_'));
 				}
 				result.push('{');
-				_.each(nodeStyle, function (val, key) {
-					if (cssProp[key]) {
-						parser = parsers[key] || _.identity;
-						cssVal = parser(val);
-						if (cssVal) {
-							result.push(cssProp[key]);
-							result.push(':');
-							result.push(cssVal);
-							result.push(';');
-						}
-					}
-				});
+				pushProperties(nodeStyle);
 				result.push('}');
 			});
 			return result.join('');
