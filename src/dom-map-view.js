@@ -1364,6 +1364,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			progress: function () {
 				connectorGroupClone.updateConnector();
 				linkGroupClone.updateLink();
+			},
+			complete: function () {
+				connectorGroupClone.updateConnector(true);
+				linkGroupClone.updateLink(true);
 			}
 		}, nodeAnimOptions));
 		ensureNodeVisible(stageElement.nodeWithId(mapModel.getCurrentlySelectedIdeaId()));
