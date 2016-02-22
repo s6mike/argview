@@ -1599,8 +1599,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
+			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
-
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
 				var newConnector = newLayout.connectors[connectorId];
 				if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
@@ -1636,7 +1636,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y  || (newLayout.theme !== currentLayout.theme)) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
@@ -1726,6 +1726,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
+		}
+		if (idea.getAttr('theme') !== currentLayout.theme) {
+			self.dispatchEvent('themeChanged', idea.getAttr('theme'));
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
@@ -2776,6 +2779,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		return false;
 	};
+	self.setTheme = function (themeId) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		idea.updateAttr(idea.id, 'theme', themeId);
+	};
 };
 
 /*global jQuery*/
@@ -2975,6 +2984,7 @@ MAPJS.DOMRender = {
 		'use strict';
 		return {
 			title: idea.title,
+			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
 			level: idea.level || levelOverride
@@ -3110,63 +3120,192 @@ jQuery.fn.updateStage = function () {
 	return this;
 };
 
-MAPJS.DOMRender.curvedPath = function (parent, child) {
+MAPJS.DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector, position) {
 	'use strict';
-	var horizontalConnector = function (parentX, parentY, parentWidth, parentHeight, childX, childY, childWidth, childHeight) {
-			var childHorizontalOffset = parentX < childX ? 0.1 : 0.9,
-				parentHorizontalOffset = 1 - childHorizontalOffset;
+	if (calculatedConnector.nodeUnderline) {
+		connectorCurve.d += 'M' + (calculatedConnector.nodeUnderline.from.x - position.left) + ',' + (calculatedConnector.nodeUnderline.from.y - position.top) + ' H' + (calculatedConnector.nodeUnderline.to.x - position.left);
+	}
+	return connectorCurve;
+};
+MAPJS.DOMRender.connectorPaths = {
+	'quadratic': function (calculatedConnector, position, parent, child) {
+		'use strict';
+		var offset = calculatedConnector.controlPointOffset * (calculatedConnector.from.y - calculatedConnector.to.y),
+			maxOffset = Math.min(child.height, parent.height) * 1.5;
+		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+
+		return {
+			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
+				'Q' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.to.y - offset - position.top) + ' ' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
+			'position': position
+		};
+	},
+	's-curve': function (calculatedConnector, position) {
+		'use strict';
+		var initialRadius = 10,
+			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
+			dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : Math.round(dx * 0.5),
+			dyIncrement = (initialRadius < Math.abs(dy * 0.5)) ? initialRadius * Math.sign(dy) : Math.round(dy * 0.5);
+
+		return {
+			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+				'c0,' + (dy - (2 * dyIncrement)) + ' ' + Math.round(dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
+			'position': position
+		};
+
+	},
+	'compact-s-curve': function (calculatedConnector, position) {
+		'use strict';
+		var initialRadius = 10,
+			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
+			dxIncrement = initialRadius * Math.sign(dx),
+			dyIncrement = initialRadius * Math.sign(dy);
+
+		if (initialRadius > Math.abs(dx * 0.5) || initialRadius > Math.abs(dy * 0.5)) {
+			dxIncrement = Math.round(dx / 2);
 			return {
-				from: {
-					x: parentX + parentHorizontalOffset * parentWidth,
-					y: parentY + 0.5 * parentHeight
-				},
-				to: {
-					x: childX + childHorizontalOffset * childWidth,
-					y: childY + 0.5 * childHeight
-				},
-				controlPointOffset: 0
+				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+					'l' + dxIncrement + ',0 ' +
+					'l' + (dx - dxIncrement) + ',' + dy,
+				'position': position
 			};
-		},
-		calculateConnector = function (parent, child) {
+
+			// dxIncrement = Math.floor(Math.min(initialRadius, Math.abs(dx)) * Math.sign(dx));
+			// dyIncrement = Math.floor(Math.min(initialRadius, Math.abs(dy)) * Math.sign(dy));
+			// return {
+			// 	'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+			// 		'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+			// 		'v' + (dy - dyIncrement) +
+			// 		'h' + (dx - dxIncrement),
+			// 	'position': position
+			// };
+
+		}
+
+		return {
+			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+				'v' + (dy - (2 * dyIncrement)) +
+				'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
+				'h' + (dx - (2 * dxIncrement)),
+			'position': position
+		};
+
+	},
+	'straight': function (calculatedConnector, position) {
+		'use strict';
+		return {
+			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) + 'L' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
+			'conn': calculatedConnector,
+			'position': position
+		};
+	}
+};
+
+MAPJS.DOMRender.nodeConnectionPointX = {
+	'center': function (node) {
+		'use strict';
+		return Math.round(node.left + node.width * 0.5);
+	},
+	'nearest': function (node, relatedNode) {
+		'use strict';
+		if (node.left + node.width < relatedNode.left) {
+			return node.left + node.width;
+		}
+		return node.left;
+	},
+	'nearest-inset': function (node, relatedNode, inset) {
+		'use strict';
+		if (node.left + node.width < relatedNode.left) {
+			return node.left + node.width - inset;
+		}
+		return node.left + inset;
+	}
+};
+
+MAPJS.DOMRender.nodeConnectionPointY = {
+	'center': function (node) {
+		'use strict';
+		return Math.round(node.top + node.height * 0.5);
+	},
+	'base': function (node) {
+		'use strict';
+		return node.top + node.height + 1;
+	}
+};
+
+MAPJS.DOMRender.calculateConnector = function (parent, child) {
+	'use strict';
+	var calcChildPosition = function () {
 			var tolerance = 10,
-				childHorizontalOffset,
 				childMid = child.top + child.height * 0.5,
 				parentMid = parent.top + parent.height * 0.5;
 			if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
-				return horizontalConnector(parent.left, parent.top, parent.width, parent.height, child.left, child.top, child.width, child.height);
+				return 'horizontal';
 			}
-			childHorizontalOffset = parent.left < child.left ? 0 : 1;
-			return {
-				from: {
-					x: parent.left + 0.5 * parent.width,
-					y: parent.top + 0.5 * parent.height
-				},
-				to: {
-					x: child.left + childHorizontalOffset * child.width,
-					y: child.top + 0.5 * child.height
-				},
-				controlPointOffset: 0.75
-			};
+			return (childMid < parentMid) ? 'above' : 'below';
 		},
-		position = {
+		childPosition = calcChildPosition(),
+		theme = MAPJS.DOMRender.theme || new MAPJS.Theme({}),
+		fromStyles = ['level_' + parent.level, 'default'],
+		toStyles = ['level_' + child.level, 'default'],
+		connectionPositionDefaultFrom = theme.attributeValue(['node'], fromStyles, ['connections', 'default'], {h: 'center', v: 'center'}),
+		connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], {h: 'center', v: 'center'}),
+		connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
+		connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
+		connectionStyle = theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
+		connectionCurveType = theme.attributeValue(['connector'], toStyles, ['type'], 'quadratic'),
+		controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], 1) - 1,
+		fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
+		toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
+		borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
+		nodeUnderline = false;
+
+	if (borderType === 'underline') {
+		nodeUnderline = {
+			from: {
+				x: child.left,
+				y: child.top + child.height + 1
+			},
+			to: {
+				x: child.left + child.width,
+				y: child.top + child.height + 1
+			}
+		};
+	}
+	return {
+		from: {
+			x: MAPJS.DOMRender.nodeConnectionPointX[connectionPositionFrom.h](parent, child, fromInset),
+			y: MAPJS.DOMRender.nodeConnectionPointY[connectionPositionFrom.v](parent)
+		},
+		to: {
+			x: MAPJS.DOMRender.nodeConnectionPointX[connectionPositionTo.h](child, parent, toInset),
+			y: MAPJS.DOMRender.nodeConnectionPointY[connectionPositionTo.v](child)
+		},
+		controlPointOffset: controlPointOffset,
+		connectionCurveType: connectionCurveType,
+		nodeUnderline: nodeUnderline
+	};
+};
+
+
+MAPJS.DOMRender.themePath = function (parent, child) {
+	'use strict';
+	var position = {
 			left: Math.min(parent.left, child.left),
 			top: Math.min(parent.top, child.top)
 		},
-		calculatedConnector, offset, maxOffset;
+		calculatedConnector;
 	position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top;
-
-	calculatedConnector = calculateConnector(parent, child);
-	offset = calculatedConnector.controlPointOffset * (calculatedConnector.from.y - calculatedConnector.to.y);
-	maxOffset = Math.min(child.height, parent.height) * 1.5;
-	offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-	return {
-		'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
-			'Q' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.to.y - offset - position.top) + ' ' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
-		// 'conn': calculatedConnector,
-		'position': position
-	};
+	position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 2;
+	calculatedConnector = MAPJS.DOMRender.calculateConnector(parent, child);
+	return MAPJS.DOMRender.appendUnderLine(MAPJS.DOMRender.connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
 };
+
+
 MAPJS.DOMRender.straightPath = function (parent, child) {
 	'use strict';
 	var calculateConnector = function (parent, child) {
@@ -3237,7 +3376,7 @@ MAPJS.DOMRender.straightPath = function (parent, child) {
 	};
 };
 
-MAPJS.DOMRender.nodeConnectorPath = MAPJS.DOMRender.curvedPath;
+MAPJS.DOMRender.nodeConnectorPath = MAPJS.DOMRender.themePath;
 MAPJS.DOMRender.linkConnectorPath = MAPJS.DOMRender.straightPath;
 
 jQuery.fn.updateConnector = function (canUseData) {
@@ -3258,11 +3397,12 @@ jQuery.fn.updateConnector = function (canUseData) {
 			fromBox = shapeFrom.getBox();
 			toBox = shapeTo.getBox();
 		}
-		changeCheck = {from: fromBox, to: toBox};
+		fromBox.level = shapeFrom.attr('mapjs-level');
+		toBox.level = shapeTo.attr('mapjs-level');
+		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}
-
 		element.data('changeCheck', changeCheck);
 		connection = MAPJS.DOMRender.nodeConnectorPath(fromBox, toBox);
 		pathElement = element.find('path');
@@ -3860,15 +4000,16 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
 		},
 		ensureNodeVisible = function (domElement) {
+			var node, nodeTopLeft, nodeBottomRight, animation, margin;
 			if (!domElement || domElement.length === 0) {
 				return;
 			}
 			viewPort.finish();
-			var node = domElement.data(),
-				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
-				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
-				animation = {},
-				margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
+			node = domElement.data();
+			nodeTopLeft = stageToViewCoordinates(node.x, node.y);
+			nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
+			animation = {};
+			margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
 			if ((nodeTopLeft.x - margin.left) < 0) {
 				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin.left;
 			} else if ((nodeBottomRight.x + margin.right) > viewPort.innerWidth()) {
@@ -3916,12 +4057,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		currentDroppable = false,
 		viewPortDimensions,
 		withinReorderBoundary = function (boundaries, box) {
-			if (_.isEmpty(boundaries)) {
-				return false;
-			}
-			if (!box) {
-				return false;
-			}
 			var closeTo = function (reorderBoundary) {
 					var nodeX = box.x;
 					if (reorderBoundary.edge === 'right') {
@@ -3931,6 +4066,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 						box.y < reorderBoundary.maxY &&
 						box.y > reorderBoundary.minY;
 				};
+			if (_.isEmpty(boundaries)) {
+				return false;
+			}
+			if (!box) {
+				return false;
+			}
 			return _.find(boundaries, closeTo);
 		};
 
@@ -4024,11 +4165,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('mm:stop-dragging', function (evt) {
+				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition, vpCenter;
 				element.removeClass('dragging');
 				reorderBounds.hide();
-				var isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
-					stageDropCoordinates = stagePositionForPointEvent(evt),
-					nodeAtDrop, finalPosition, dropResult, manualPosition, vpCenter;
+				isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey;
+				stageDropCoordinates = stagePositionForPointEvent(evt);
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
 					return;
@@ -4202,6 +4343,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			progress: function () {
 				connectorGroupClone.updateConnector();
 				linkGroupClone.updateLink();
+			},
+			complete: function () {
+				connectorGroupClone.updateConnector(true);
+				linkGroupClone.updateLink(true);
 			}
 		}, nodeAnimOptions));
 		ensureNodeVisible(stageElement.nodeWithId(mapModel.getCurrentlySelectedIdeaId()));
@@ -4464,4 +4609,203 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			}
 		});
 	});
+};
+
+/*global $, MAPJS*/
+$.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel) {
+	'use strict';
+	var element = $(this),
+		activateTheme =	function (theme) {
+			var themeJson = themeProvider[(theme || 'default')];
+			if (!themeJson) {
+				return;
+			}
+			MAPJS.DOMRender.theme = new MAPJS.Theme(themeJson);
+			element.text(themeProcessor.process(themeJson).css);
+		};
+	activateTheme('default');
+	mapModel.addEventListener('themeChanged', activateTheme);
+	return element;
+};
+
+
+/*global MAPJS, _, Color*/
+MAPJS.ThemeProcessor = function () {
+	'use strict';
+	var self = this,
+		addPx = function (val) {
+			return val + 'px';
+		},
+		cssProp = {
+			cornerRadius: 'border-radius',
+			'text.margin': 'padding',
+			background: 'background-color',
+			backgroundColor: 'background-color',
+			border: 'border',
+			shadow: 'box-shadow',
+			'text.font': 'font',
+			'text.alignment': 'text-align'
+		},
+		colorParser = function (colorObj) {
+			if (!colorObj.color || colorObj.opacity === 0) {
+				return 'transparent';
+			}
+			if (colorObj.opacity) {
+				return 'rgba(' + new Color(colorObj.color).rgbArray().join(',') + ',' + colorObj.opacity + ')';
+			} else {
+				return colorObj.color;
+			}
+		},
+		fontWeightParser = function (fontObj) {
+			var weightMap = {
+				'light': '200',
+				'semi-bold': '600'
+			};
+			if (!fontObj || !fontObj.weight) {
+				return 'bold';
+			}
+			return weightMap[fontObj.weight] || fontObj.weight;
+		},
+		fontSizeParser = function (fontObj) {
+			var fontSize = (fontObj && fontObj.size) || 12,
+				lineSpacing = (fontObj && fontObj.lineSpacing) || 3;
+
+			return fontSize + 'pt/' + (lineSpacing + fontSize) + 'pt';
+		},
+		parsers = {
+			cornerRadius: addPx,
+			'text.margin': addPx,
+			background: colorParser,
+			border: function (borderOb) {
+				if (borderOb.type === 'underline') {
+					return '0';
+				}
+				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color;
+			},
+			shadow: function (shadowArray) {
+				var boxshadows = [];
+				if (shadowArray.length === 1 && shadowArray[0].color === 'transparent') {
+					return 'none';
+				}
+				shadowArray.forEach(function (shadow) {
+					boxshadows.push(shadow.offset.width + 'px ' + shadow.offset.height + 'px ' + shadow.radius + 'px ' + colorParser(shadow));
+				});
+				return boxshadows.join(',');
+			},
+			'text.font': function (fontObj) {
+				return 'normal normal ' + fontWeightParser(fontObj) + ' ' +  fontSizeParser(fontObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
+			}
+		},
+		processNodeStyles = function (nodeStyleArray) {
+			var result = [], parser, cssVal,
+				pushProperties = function (styleObject, keyPrefix) {
+					_.each(styleObject, function (val, propKey) {
+						var key = (keyPrefix || '') + propKey;
+						if (cssProp[key]) {
+							parser = parsers[key] || _.identity;
+							cssVal = parser(val);
+							if (cssVal) {
+								result.push(cssProp[key]);
+								result.push(':');
+								result.push(cssVal);
+								result.push(';');
+							}
+						} else if (_.isObject(val)) {
+							pushProperties(val, key + '.');
+						}
+					});
+				},
+				appendColorVariants = function (styleSelector, nodeStyle) {
+					if (!nodeStyle.text) {
+						return;
+					}
+					if (nodeStyle.text.color) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-light{color:');
+						result.push(nodeStyle.text.color);
+						result.push(';}');
+					}
+					if (nodeStyle.text.lightColor) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-dark{color:');
+						result.push(nodeStyle.text.lightColor);
+						result.push(';}');
+					}
+					if (nodeStyle.text.darkColor) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-white{color:');
+						result.push(nodeStyle.text.darkColor);
+						result.push(';}');
+					}
+
+				};
+			nodeStyleArray.forEach(function (nodeStyle) {
+				var styleSelector = '.mapjs-node';
+				if (nodeStyle.name !== 'default') {
+					styleSelector = styleSelector + '.' + nodeStyle.name.replace(/\s/g, '_');
+				}
+				result.push(styleSelector);
+				result.push('{');
+				pushProperties(nodeStyle);
+				result.push('}');
+
+				appendColorVariants(styleSelector, nodeStyle);
+			});
+			return result.join('');
+		};
+	self.process = function (theme) {
+		var nodeStyles = '';
+		if (theme.node) {
+			nodeStyles = processNodeStyles(theme.node);
+		}
+		return {
+			css: nodeStyles
+		};
+	};
+};
+
+/*global MAPJS, _*/
+MAPJS.Theme = function (themeJson) {
+	'use strict';
+	var self = this,
+		themeDictionary = _.extend({}, themeJson),
+		getElementForPath = function (object, pathArray) {
+			var remaining = pathArray.slice(0),
+				current = object;
+
+			while (remaining.length > 0) {
+				current = current[remaining[0]];
+				if (current === undefined) {
+					return;
+				}
+				remaining = remaining.slice(1);
+			}
+			return current;
+		};
+	self.name = themeJson.name;
+	self.attributeValue = function (prefixes, styles, postfixes, fallback) {
+		var rootElement = getElementForPath(themeDictionary, prefixes),
+			merged = {},
+			result;
+		if (!rootElement) {
+			return fallback;
+		}
+		styles.reverse().forEach(function (style) {
+			merged = _.extend(merged, rootElement[style]);
+		});
+		result = getElementForPath(merged, postfixes);
+		if (result === undefined) {
+			return fallback;
+		}
+		return result;
+	};
+
+	if (themeDictionary && themeDictionary.node && themeDictionary.node.forEach) {
+		themeDictionary.nodeArray = themeDictionary.node;
+		themeDictionary.node = {};
+		themeDictionary.nodeArray.forEach(function (nodeStyle) {
+			themeDictionary.node[nodeStyle.name] = nodeStyle;
+		});
+		delete themeDictionary.nodeArray;
+	}
 };
