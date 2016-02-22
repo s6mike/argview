@@ -34,9 +34,9 @@ MAPJS.ThemeProcessor = function () {
 			}
 			return weightMap[fontObj.weight] || fontObj.weight;
 		},
-		fontSizeParser = function (textObj) {
-			var fontSize = (textObj && textObj.font && textObj.font.size) || 12,
-				lineSpacing = (textObj && textObj.lineSpacing) || 3;
+		fontSizeParser = function (fontObj) {
+			var fontSize = (fontObj && fontObj.size) || 12,
+				lineSpacing = (fontObj && fontObj.lineSpacing) || 3;
 
 			return fontSize + 'pt/' + (lineSpacing + fontSize) + 'pt';
 		},
@@ -60,8 +60,8 @@ MAPJS.ThemeProcessor = function () {
 				});
 				return boxshadows.join(',');
 			},
-			'text.font': function (textObj) {
-				return 'normal normal ' + fontWeightParser(textObj.font) + ' ' +  fontSizeParser(textObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
+			'text.font': function (fontObj) {
+				return 'normal normal ' + fontWeightParser(fontObj) + ' ' +  fontSizeParser(fontObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {

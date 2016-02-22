@@ -95,12 +95,12 @@ describe('ThemeProcessor', function () {
 				var result = underTest.process({node: [{name: 'default',
 						text: {
 							font: {
-								lineSpacing: 8,
-								size: 12,
+								lineSpacing: 5,
+								size: 10,
 								weight: 'light'
 							}
 						}}]});
-				expect(result.css).toEqual('.mapjs-node{font:normal normal bold 12pt/20pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
+				expect(result.css).toEqual('.mapjs-node{font:normal normal 200 10pt/15pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
 			});
 
 		});
