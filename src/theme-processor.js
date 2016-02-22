@@ -12,7 +12,8 @@ MAPJS.ThemeProcessor = function () {
 			backgroundColor: 'background-color',
 			border: 'border',
 			shadow: 'box-shadow',
-			'text.font': 'font'
+			'text.font': 'font',
+			'text.alignment': 'text-align'
 		},
 		colorParser = function (colorObj) {
 			if (!colorObj.color || colorObj.opacity === 0) {
@@ -82,17 +83,42 @@ MAPJS.ThemeProcessor = function () {
 							pushProperties(val, key + '.');
 						}
 					});
+				},
+				appendColorVariants = function (styleSelector, nodeStyle) {
+					if (!nodeStyle.text) {
+						return;
+					}
+					if (nodeStyle.text.color) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-light{color:');
+						result.push(nodeStyle.text.color);
+						result.push(';}');
+					}
+					if (nodeStyle.text.lightColor) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-dark{color:');
+						result.push(nodeStyle.text.lightColor);
+						result.push(';}');
+					}
+					if (nodeStyle.text.darkColor) {
+						result.push(styleSelector);
+						result.push('.mapjs-node-white{color:');
+						result.push(nodeStyle.text.darkColor);
+						result.push(';}');
+					}
 
 				};
 			nodeStyleArray.forEach(function (nodeStyle) {
-				result.push('.mapjs-node');
+				var styleSelector = '.mapjs-node';
 				if (nodeStyle.name !== 'default') {
-					result.push('.');
-					result.push(nodeStyle.name.replace(/\s/g, '_'));
+					styleSelector = styleSelector + '.' + nodeStyle.name.replace(/\s/g, '_');
 				}
+				result.push(styleSelector);
 				result.push('{');
 				pushProperties(nodeStyle);
 				result.push('}');
+
+				appendColorVariants(styleSelector, nodeStyle);
 			});
 			return result.join('');
 		};

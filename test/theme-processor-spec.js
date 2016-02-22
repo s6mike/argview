@@ -80,30 +80,49 @@ describe('ThemeProcessor', function () {
 			'}'
 		);
 	});
-	describe('simple props', function () {
-		describe('margin', function () {
-			it('reads it into the padding of the node style and sets margin to 0', function () {
-				var result = underTest.process({node: [{name: 'default', text: {margin: 5}}]});
-				expect(result.css).toEqual('.mapjs-node{padding:5px;}');
-			});
-		});
-	});
 	describe('complex props', function () {
 		var theme, result;
-		describe('font', function () {
-			it('combines line spacing and font styles', function () {
-				var result = underTest.process({node: [{name: 'default',
-						text: {
-							font: {
-								lineSpacing: 5,
-								size: 10,
-								weight: 'light'
-							}
-						}}]});
-				expect(result.css).toEqual('.mapjs-node{font:normal normal 200 10pt/15pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
+		describe('text', function () {
+			describe('alignment', function () {
+				it('reads it into the text-align', function () {
+					var result = underTest.process({node: [{name: 'default', text: {alignment: 'left'}}]});
+					expect(result.css).toEqual('.mapjs-node{text-align:left;}');
+				});
+			});
+			describe('margin', function () {
+				it('reads it into the padding of the node style and sets margin to 0', function () {
+					var result = underTest.process({node: [{name: 'default', text: {margin: 5}}]});
+					expect(result.css).toEqual('.mapjs-node{padding:5px;}');
+				});
+			});
+			describe('font', function () {
+				it('combines line spacing and font styles', function () {
+					var result = underTest.process({node: [{name: 'default',
+							text: {
+								font: {
+									lineSpacing: 5,
+									size: 10,
+									weight: 'light'
+								}
+							}}]});
+					expect(result.css).toEqual('.mapjs-node{font:normal normal 200 10pt/15pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
+				});
+
+			});
+			describe('regular/dark/light colours', function () {
+				it('converts dark/light/regular into separate styles', function () {
+					var result = underTest.process({node: [{name: 'default',
+							text: {
+								color: '#4F4F4F',
+								lightColor: '#EEEEEE',
+								darkColor: '#000000'
+							}}]});
+					expect(result.css).toEqual('.mapjs-node{}.mapjs-node.mapjs-node-light{color:#4F4F4F;}.mapjs-node.mapjs-node-dark{color:#EEEEEE;}.mapjs-node.mapjs-node-white{color:#000000;}');
+				});
 			});
 
 		});
+
 		describe('border', function () {
 			beforeEach(function () {
 				theme = {
