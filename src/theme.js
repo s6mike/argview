@@ -16,6 +16,7 @@ MAPJS.Theme = function (themeJson) {
 			}
 			return current;
 		};
+	self.name = themeJson.name;
 	self.attributeValue = function (prefixes, styles, postfixes, fallback) {
 		var rootElement = getElementForPath(themeDictionary, prefixes),
 			merged = {},

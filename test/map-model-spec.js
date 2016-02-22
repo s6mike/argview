@@ -148,6 +148,24 @@ describe('MapModel', function () {
 
 			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], '1', undefined);
 		});
+		it('should force nodeMoved events when the layout does not change but the theme changes', function () {
+			layoutCalculatorLayout = _.clone(layoutBefore);
+
+			var nodeMovedListener = jasmine.createSpy();
+			underTest.addEventListener('nodeMoved', nodeMovedListener);
+			anIdea.updateAttr(4, 'theme', 'new-theme');
+
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], undefined);
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[2], undefined);
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[9], undefined);
+		});
+		it('should dispatch themeChanged when the theme changes', function () {
+
+			var listener = jasmine.createSpy('themeChanged');
+			underTest.addEventListener('themeChanged', listener);
+			anIdea.updateAttr(4, 'theme', 'new-theme');
+			expect(listener).toHaveBeenCalledWith('new-theme');
+		});
 		describe('openAttachment', function () {
 			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
 				var attachmentOpenedListener = jasmine.createSpy();
@@ -919,6 +937,19 @@ describe('MapModel', function () {
 				);
 
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'attachment', false);
+			});
+		});
+		describe('setTheme', function () {
+			var attachment;
+			beforeEach(function () {
+				spyOn(anIdea, 'updateAttr');
+				underTest.selectNode(2);
+				attachment = { contentType: 'text/html', content: 'Hello' };
+			});
+			it('should invoke idea.setAttr with root ideaId and theme argument', function () {
+				underTest.setTheme('red');
+
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'theme', 'red');
 			});
 		});
 		describe('insertIntermediate', function () {
@@ -2012,7 +2043,7 @@ describe('MapModel', function () {
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
-			underTest.setIdea(observable({}));
+			underTest.setIdea(observable({getAttr: function () { }}));
 		});
 
 		describe(' calculates points',

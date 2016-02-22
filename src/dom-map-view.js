@@ -5,6 +5,7 @@ MAPJS.DOMRender = {
 		'use strict';
 		return {
 			title: idea.title,
+			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
 			level: idea.level || levelOverride
@@ -419,7 +420,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 		}
 		fromBox.level = shapeFrom.attr('mapjs-level');
 		toBox.level = shapeTo.attr('mapjs-level');
-		changeCheck = {from: fromBox, to: toBox};
+		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}

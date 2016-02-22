@@ -4,6 +4,7 @@ describe('MAPJS.Theme', function () {
 	var underTest;
 	beforeEach(function () {
 		var theme = {
+			name: 'Mike',
 			'node': [
 				{
 					'name': 'default',
@@ -21,6 +22,9 @@ describe('MAPJS.Theme', function () {
 			]
 		};
 		underTest = new MAPJS.Theme(theme);
+	});
+	it('should set the theme name', function () {
+		expect(underTest.name).toEqual('Mike');
 	});
 	describe('attributeValue', function () {
 		it('should return default value for empty theme', function () {

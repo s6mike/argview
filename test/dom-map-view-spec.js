@@ -403,6 +403,9 @@ describe('updateConnector', function () {
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
 		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
+	afterEach(function () {
+		MAPJS.DOMRender.theme = undefined;
+	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
 	});
@@ -443,6 +446,19 @@ describe('updateConnector', function () {
 
 			underTest.updateConnector();
 			expect(underTest.find('path').attr('d')).toBe('');
+		});
+		it('will update if the shapes did not move, but the theme changed', function () {
+			underTest.updateConnector();
+			underTest.find('path').attr('d', '');
+			MAPJS.DOMRender.theme = {
+				name: 'new',
+				attributeValue: function (a1, a2, a3, a4) {
+					return a4;
+				}
+			};
+
+			underTest.updateConnector();
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,142 136,142');
 		});
 		it('will update if the shapes move', function () {
 			underTest.updateConnector();
@@ -625,6 +641,8 @@ describe('updateNodeContent', function () {
 	afterEach(function () {
 		underTest.remove();
 		style.remove();
+		MAPJS.DOMRender.theme = undefined;
+
 	});
 	it('returns itself to allow chaining', function () {
 		expect(underTest.updateNodeContent(nodeContent)[0]).toEqual(underTest[0]);
@@ -646,8 +664,9 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('height')).toBe(40);
 		});
 		it('tags the node with a cache mark', function () {
+			MAPJS.DOMRender.theme = {name: 'blue'};
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', icon : undefined, collapsed : undefined });
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, collapsed : undefined });
 		});
 	});
 	describe('node text', function () {

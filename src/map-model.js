@@ -42,8 +42,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
+			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
-
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
 				var newConnector = newLayout.connectors[connectorId];
 				if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
@@ -79,7 +79,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y  || (newLayout.theme !== currentLayout.theme)) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
@@ -169,6 +169,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
+		}
+		if (idea.getAttr('theme') !== currentLayout.theme) {
+			self.dispatchEvent('themeChanged', idea.getAttr('theme'));
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
@@ -1218,5 +1221,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return true;
 		}
 		return false;
+	};
+	self.setTheme = function (themeId) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		idea.updateAttr(idea.id, 'theme', themeId);
 	};
 };
