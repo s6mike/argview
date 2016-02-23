@@ -340,29 +340,32 @@ describe('animateConnectorToPosition', function () {
 	});
 	describe('optimises connector transformations to simple animations if possible', function () {
 		it('when dataBox and real dom boxes for connecting element have just moved by the same offset', function () {
+			var result;
 			from.data('x', from.data('x') + 20);
 			from.data('y', from.data('y') + 30);
 			to.data('x', to.data('x') + 20);
 			to.data('y', to.data('y') + 30);
-			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
+			result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
 			expect(result).toBeTruthy();
 			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 90, top : 110 }, { duration : 230, queue : 'animQueue'});
 		});
 		it('when the movement difference  is less than threshold (to avoid small rounding errors)', function () {
+			var result;
 			from.data('x', from.data('x') + 22);
 			from.data('y', from.data('y') + 30);
 			to.data('x', to.data('x') + 20);
 			to.data('y', to.data('y') + 33);
-			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' }, 5);
+			result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' }, 5);
 			expect(result).toBeTruthy();
 			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 92, top : 110 }, { duration : 230, queue : 'animQueue'});
 		});
 		it('rounds the coordinates to avoid performance problems', function () {
+			var result;
 			from.data('x', from.data('x') + 20.1);
 			from.data('y', from.data('y') + 30.3);
 			to.data('x', to.data('x') + 20.3);
 			to.data('y', to.data('y') + 30.1);
-			var result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
+			result = connector.animateConnectorToPosition({ duration : 230, queue : 'animQueue' });
 			expect(result).toBeTruthy();
 			expect(jQuery.fn.animate).toHaveBeenCalledWith({ left : 90, top : 110 }, { duration : 230, queue : 'animQueue'});
 		});
@@ -410,11 +413,12 @@ describe('updateConnector', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
 	});
 	it('draws a cubic curve between the centers of two nodes', function () {
+		var path;
 		underTest.updateConnector();
-		var path = underTest.find('path');
+		path = underTest.find('path');
 		expect(path.length).toBe(1);
 		expect(path.attr('class')).toEqual('mapjs-connector');
-		expect(path.attr('d')).toEqual('M50,20Q50,142 136,142');
+		expect(path.attr('d')).toEqual('M50,20Q50,202 140,142');
 	});
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateConnector();
@@ -432,13 +436,13 @@ describe('updateConnector', function () {
 
 	it('updates multiple connectors at once', function () {
 		jQuery('[data-role=test-connector]').updateConnector();
-		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,142 136,142');
-		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,258 80,258');
+		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 140,142');
+		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 30,258');
 	});
 	describe('performance optimisations', function () {
 		it('rounds coordinates', function () {
 			anotherConnector.updateConnector();
-			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,258 80,258');
+			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 30,258');
 		});
 		it('will not update if the shapes have not moved', function () {
 			underTest.updateConnector();
@@ -458,7 +462,7 @@ describe('updateConnector', function () {
 			};
 
 			underTest.updateConnector();
-			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,142 136,142');
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,202 140,142');
 		});
 		it('will update if the shapes move', function () {
 			underTest.updateConnector();
@@ -466,7 +470,7 @@ describe('updateConnector', function () {
 			fromNode.css('top', '50px');
 
 			underTest.updateConnector();
-			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,192 136,192');
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,252 140,192');
 		});
 
 	});
@@ -506,8 +510,9 @@ describe('updateLink', function () {
 		expect(underTest.updateLink()[0]).toEqual(underTest[0]);
 	});
 	it('draws a straight between the borders of two nodes', function () {
+		var path;
 		underTest.updateLink();
-		var path = underTest.find('path');
+		path = underTest.find('path');
 		expect(path.length).toBe(2);
 		expect(path.filter('.mapjs-link').attr('d')).toEqual('M100,20L136,120');
 		expect(path.filter('.mapjs-link-hit').attr('d')).toEqual('M100,20L136,120');
@@ -1188,8 +1193,9 @@ describe('MAPJS.DOMRender', function () {
 					expect(mapModel.clickNode).not.toHaveBeenCalled();
 				});
 				it('selects the node and forwards the contextMenu event by dispatching it for the mapModel', function () {
+					var event;
 					mapModel.requestContextMenu.and.returnValue(true);
-					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
+					event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
 					underTest.trigger(event);
 					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12^13#AB-c');
 					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
@@ -1197,8 +1203,9 @@ describe('MAPJS.DOMRender', function () {
 					expect(event.result).toBe(false);
 				});
 				it('does not prevent the default on context menu if mapModel returns false from the context menu request', function () {
+					var event;
 					mapModel.requestContextMenu.and.returnValue(false);
-					var event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
+					event = jQuery.Event('contextmenu', {pageX: 111, pageY: 112});
 					underTest.trigger(event);
 					expect(mapModel.selectNode).toHaveBeenCalledWith('11.12^13#AB-c');
 					expect(mapModel.requestContextMenu).toHaveBeenCalledWith(111, 112);
@@ -1452,8 +1459,9 @@ describe('MAPJS.DOMRender', function () {
 							expect(e.result).toBeUndefined();
 						});
 						it('sets the result to false if dropNode returns false', function () {
+							var e;
 							mapModel.dropNode.and.returnValue(false);
-							var e = jQuery.Event('mm:stop-dragging', withShift);
+							e = jQuery.Event('mm:stop-dragging', withShift);
 							underTest.trigger(e);
 							expect(e.result === false).toBeTruthy();
 						});
@@ -1502,29 +1510,32 @@ describe('MAPJS.DOMRender', function () {
 							expect(e.result).toBeUndefined();
 						});
 						it('sets the result to false if dropNode returns false', function () {
+							var e;
 							mapModel.positionNodeAt.and.returnValue(false);
-							var e = jQuery.Event('mm:stop-dragging', withShift);
+							e = jQuery.Event('mm:stop-dragging', withShift);
 							underTest.trigger(e);
 							expect(e.result === false).toBeTruthy();
 						});
 					});
 					it('does not position node and returns false when when level = 1 dropped on a background', function () {
+						var e;
 						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 						mapModel.positionNodeAt.calls.reset();
 
 						underTest = jQuery('#node_2');
 						underTest.trigger('mm:start-dragging');
 
-						var e = jQuery.Event('mm:stop-dragging', noShift);
+						e = jQuery.Event('mm:stop-dragging', noShift);
 						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
 						underTest.trigger(e);
 						expect(e.result === true).toBeTruthy();
 					});
 					it('scrolls the viewport when level = 1 dropped on a background', function () {
+						var e;
 						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 						underTest = jQuery('#node_2');
 						underTest.trigger('mm:start-dragging');
-						var e = jQuery.Event('mm:stop-dragging', noShift);
+						e = jQuery.Event('mm:stop-dragging', noShift);
 						underTest.trigger(e);
 						viewPort.finish();
 						expect(viewPort.scrollLeft()).toBe(80);
@@ -1532,8 +1543,9 @@ describe('MAPJS.DOMRender', function () {
 
 					});
 					it('does not position node and does not returns false when dropped outside viewport', function () {
+						var e;
 						mapModel.getNodeIdAtPosition.and.returnValue(false);
-						var e = jQuery.Event('mm:stop-dragging', outsideViewport);
+						e = jQuery.Event('mm:stop-dragging', outsideViewport);
 						underTest.trigger(e);
 						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
 						expect(e.result).toBeUndefined();
