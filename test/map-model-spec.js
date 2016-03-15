@@ -148,17 +148,6 @@ describe('MapModel', function () {
 
 			expect(nodeRemovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], '1', undefined);
 		});
-		it('should force nodeMoved events when the layout does not change but the theme changes', function () {
-			layoutCalculatorLayout = _.clone(layoutBefore);
-
-			var nodeMovedListener = jasmine.createSpy();
-			underTest.addEventListener('nodeMoved', nodeMovedListener);
-			anIdea.updateAttr(4, 'theme', 'new-theme');
-
-			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[1], undefined);
-			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[2], undefined);
-			expect(nodeMovedListener).toHaveBeenCalledWith(layoutBefore.nodes[9], undefined);
-		});
 		it('should dispatch themeChanged when the theme changes', function () {
 
 			var listener = jasmine.createSpy('themeChanged');

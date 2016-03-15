@@ -41,6 +41,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			});
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
+			var layoutCompleteOptions;
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
@@ -79,7 +80,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y  || (newLayout.theme !== currentLayout.theme)) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y || newNode.width !== oldNode.width || newNode.height !== oldNode.height) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
@@ -109,9 +110,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					self.dispatchEvent('linkCreated', newLink, sessionId);
 				}
 			});
+			if (currentLayout.theme != newLayout.theme) {
+				layoutCompleteOptions = {themeChanged: true};
+			}
 			currentLayout = newLayout;
 			if (!self.isInCollapse) {
-				self.dispatchEvent('layoutChangeComplete');
+				self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
 			}
 		},
 		revertSelectionForUndo,

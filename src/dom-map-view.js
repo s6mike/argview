@@ -1336,7 +1336,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
 		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
-		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
 		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
 		centerViewOn(0, 0);
 		viewPort.focus();
@@ -1346,34 +1346,45 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.children().finish(nodeAnimOptions.queue);
 		stageElement.finish(nodeAnimOptions.queue);
 	});
-	mapModel.addEventListener('layoutChangeComplete', function () {
+	mapModel.addEventListener('layoutChangeComplete', function (options) {
 		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
-
-		connectorsForAnimation.each(function () {
-			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
-				connectorGroupClone = connectorGroupClone.add(this);
-			}
-		});
-		linksForAnimation.each(function () {
-			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
-				linkGroupClone = linkGroupClone.add(this);
-			}
-		});
+		if (options && options.themeChanged) {
+			stageElement.children().andSelf().finish(nodeAnimOptions.queue);
+			jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+			jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+		} else {
+			connectorsForAnimation.each(function () {
+				if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+					connectorGroupClone = connectorGroupClone.add(this);
+				}
+			});
+			linksForAnimation.each(function () {
+				if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+					linkGroupClone = linkGroupClone.add(this);
+				}
+			});
+			stageElement.animate({'opacity': 1}, _.extend({
+				progress: function () {
+					connectorGroupClone.updateConnector();
+					linkGroupClone.updateLink();
+				},
+				complete: function () {
+					if (options && options.themeChanged) {
+						jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+						jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+					} else {
+						connectorGroupClone.updateConnector(true);
+						linkGroupClone.updateLink(true);
+					}
+				}
+			}, nodeAnimOptions));
+			stageElement.children().dequeue(nodeAnimOptions.queue);
+			stageElement.dequeue(nodeAnimOptions.queue);
+		}
 		connectorsForAnimation = jQuery();
 		linksForAnimation = jQuery();
-		stageElement.animate({'opacity': 1}, _.extend({
-			progress: function () {
-				connectorGroupClone.updateConnector();
-				linkGroupClone.updateLink();
-			},
-			complete: function () {
-				connectorGroupClone.updateConnector(true);
-				linkGroupClone.updateLink(true);
-			}
-		}, nodeAnimOptions));
+
 		ensureNodeVisible(stageElement.nodeWithId(mapModel.getCurrentlySelectedIdeaId()));
-		stageElement.children().dequeue(nodeAnimOptions.queue);
-		stageElement.dequeue(nodeAnimOptions.queue);
 	});
 
 	/* editing */

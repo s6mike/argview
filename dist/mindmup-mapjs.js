@@ -1598,6 +1598,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			});
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
+			var layoutCompleteOptions;
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
@@ -1636,7 +1637,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y  || (newLayout.theme !== currentLayout.theme)) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y || newNode.width !== oldNode.width || newNode.height !== oldNode.height) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
@@ -1666,9 +1667,17 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					self.dispatchEvent('linkCreated', newLink, sessionId);
 				}
 			});
+			if (currentLayout.theme != newLayout.theme) {
+				layoutCompleteOptions = {themeChanged: true};
+			}
 			currentLayout = newLayout;
 			if (!self.isInCollapse) {
-				self.dispatchEvent('layoutChangeComplete');
+				if (layoutCompleteOptions) {
+					self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
+				} else {
+					self.dispatchEvent('layoutChangeComplete');
+				}
+
 			}
 		},
 		revertSelectionForUndo,
@@ -3253,12 +3262,13 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		fromStyles = ['level_' + parent.level, 'default'],
 		toStyles = ['level_' + child.level, 'default'],
 		connectionPositionDefaultFrom = theme.attributeValue(['node'], fromStyles, ['connections', 'default'], {h: 'center', v: 'center'}),
-		connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], {h: 'center', v: 'center'}),
+		connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], {h: 'nearest-inset', v: 'center'}),
 		connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
 		connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
 		connectionStyle = theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
 		connectionCurveType = theme.attributeValue(['connector'], toStyles, ['type'], 'quadratic'),
-		controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], 1) - 1,
+		controlPointOffsetFallBack = childPosition === 'horizontal' ? 1 : 1.75,
+		controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], controlPointOffsetFallBack) - 1,
 		fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
 		toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
 		borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
@@ -4314,7 +4324,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
 		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
-		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
 		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
 		centerViewOn(0, 0);
 		viewPort.focus();
@@ -4324,34 +4334,45 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.children().finish(nodeAnimOptions.queue);
 		stageElement.finish(nodeAnimOptions.queue);
 	});
-	mapModel.addEventListener('layoutChangeComplete', function () {
+	mapModel.addEventListener('layoutChangeComplete', function (options) {
 		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
-
-		connectorsForAnimation.each(function () {
-			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
-				connectorGroupClone = connectorGroupClone.add(this);
-			}
-		});
-		linksForAnimation.each(function () {
-			if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
-				linkGroupClone = linkGroupClone.add(this);
-			}
-		});
+		if (options && options.themeChanged) {
+			stageElement.children().andSelf().finish(nodeAnimOptions.queue);
+			jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+			jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+		} else {
+			connectorsForAnimation.each(function () {
+				if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+					connectorGroupClone = connectorGroupClone.add(this);
+				}
+			});
+			linksForAnimation.each(function () {
+				if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
+					linkGroupClone = linkGroupClone.add(this);
+				}
+			});
+			stageElement.animate({'opacity': 1}, _.extend({
+				progress: function () {
+					connectorGroupClone.updateConnector();
+					linkGroupClone.updateLink();
+				},
+				complete: function () {
+					if (options && options.themeChanged) {
+						jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
+						jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+					} else {
+						connectorGroupClone.updateConnector(true);
+						linkGroupClone.updateLink(true);
+					}
+				}
+			}, nodeAnimOptions));
+			stageElement.children().dequeue(nodeAnimOptions.queue);
+			stageElement.dequeue(nodeAnimOptions.queue);
+		}
 		connectorsForAnimation = jQuery();
 		linksForAnimation = jQuery();
-		stageElement.animate({'opacity': 1}, _.extend({
-			progress: function () {
-				connectorGroupClone.updateConnector();
-				linkGroupClone.updateLink();
-			},
-			complete: function () {
-				connectorGroupClone.updateConnector(true);
-				linkGroupClone.updateLink(true);
-			}
-		}, nodeAnimOptions));
+
 		ensureNodeVisible(stageElement.nodeWithId(mapModel.getCurrentlySelectedIdeaId()));
-		stageElement.children().dequeue(nodeAnimOptions.queue);
-		stageElement.dequeue(nodeAnimOptions.queue);
 	});
 
 	/* editing */
