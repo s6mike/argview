@@ -25,7 +25,7 @@ MAPJS.DOMRender = {
 			}
 		}
 		textBox = MAPJS.DOMRender.dummyTextBox;
-		textBox.attr('mapjs-level', level).appendTo('body').updateNodeContent(idea, translateToPixel);
+		textBox.appendTo('body').updateNodeContent(idea, translateToPixel, level);
 		result = {
 			width: textBox.outerWidth(true),
 			height: textBox.outerHeight(true)
@@ -175,7 +175,6 @@ MAPJS.DOMRender.connectorPaths = {
 				'c0,' + (dy - (2 * dyIncrement)) + ' ' + Math.round(dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
 			'position': position
 		};
-
 	},
 	'compact-s-curve': function (calculatedConnector, position) {
 		'use strict';
@@ -193,27 +192,15 @@ MAPJS.DOMRender.connectorPaths = {
 					'l' + (dx - dxIncrement) + ',' + dy,
 				'position': position
 			};
-
-			// dxIncrement = Math.floor(Math.min(initialRadius, Math.abs(dx)) * Math.sign(dx));
-			// dyIncrement = Math.floor(Math.min(initialRadius, Math.abs(dy)) * Math.sign(dy));
-			// return {
-			// 	'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-			// 		'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-			// 		'v' + (dy - dyIncrement) +
-			// 		'h' + (dx - dxIncrement),
-			// 	'position': position
-			// };
-
 		}
-
 		return {
-			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-				'v' + (dy - (2 * dyIncrement)) +
-				'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
-				'h' + (dx - (2 * dxIncrement)),
-			'position': position
-		};
+				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+					'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+					'v' + (dy - (2 * dyIncrement)) +
+					'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
+					'h' + (dx - (2 * dxIncrement)),
+				'position': position
+			};
 
 	},
 	'straight': function (calculatedConnector, position) {
@@ -260,17 +247,17 @@ MAPJS.DOMRender.nodeConnectionPointY = {
 
 MAPJS.DOMRender.calculateConnector = function (parent, child) {
 	'use strict';
-	var calcChildPosition = function () {
+	var theme = MAPJS.DOMRender.theme || new MAPJS.Theme({}),
+		calcChildPosition = function () {
 			var tolerance = 10,
-				childMid = child.top + child.height * 0.5,
-				parentMid = parent.top + parent.height * 0.5;
+				childMid = Math.round(child.top + child.height * 0.5),
+				parentMid = Math.round(parent.top + parent.height * 0.5);
 			if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
 				return 'horizontal';
 			}
 			return (childMid < parentMid) ? 'above' : 'below';
 		},
 		childPosition = calcChildPosition(),
-		theme = MAPJS.DOMRender.theme || new MAPJS.Theme({}),
 		fromStyles = ['level_' + parent.level, 'default'],
 		toStyles = ['level_' + child.level, 'default'],
 		connectionPositionDefaultFrom = theme.attributeValue(['node'], fromStyles, ['connections', 'default'], {h: 'center', v: 'center'}),
@@ -285,7 +272,6 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
 		borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
 		nodeUnderline = false;
-
 	if (borderType === 'underline') {
 		nodeUnderline = {
 			from: {
@@ -309,6 +295,7 @@ MAPJS.DOMRender.calculateConnector = function (parent, child) {
 		},
 		controlPointOffset: controlPointOffset,
 		connectionCurveType: connectionCurveType,
+		connectionStyle: connectionStyle,
 		nodeUnderline: nodeUnderline
 	};
 };
@@ -333,37 +320,37 @@ MAPJS.DOMRender.straightPath = function (parent, child) {
 	var calculateConnector = function (parent, child) {
 		var parentPoints = [
 			{
-				x: parent.left + 0.5 * parent.width,
+				x: parent.left + Math.round(0.5 * parent.width),
 				y: parent.top
 			},
 			{
 				x: parent.left + parent.width,
-				y: parent.top + 0.5 * parent.height
+				y: parent.top + Math.round(0.5 * parent.height)
 			},
 			{
-				x: parent.left + 0.5 * parent.width,
+				x: parent.left + Math.round(0.5 * parent.width),
 				y: parent.top + parent.height
 			},
 			{
 				x: parent.left,
-				y: parent.top + 0.5 * parent.height
+				y: parent.top + Math.round(0.5 * parent.height)
 			}
 		], childPoints = [
 			{
-				x: child.left + 0.5 * child.width,
+				x: child.left + Math.round(0.5 * child.width),
 				y: child.top
 			},
 			{
 				x: child.left + child.width,
-				y: child.top + 0.5 * child.height
+				y: child.top + Math.round(0.5 * child.height)
 			},
 			{
-				x: child.left + 0.5 * child.width,
+				x: child.left + Math.round(0.5 * child.width),
 				y: child.top + child.height
 			},
 			{
 				x: child.left,
-				y: child.top + 0.5 * child.height
+				y: child.top + Math.round(0.5 * child.height)
 			}
 		], i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
 		for (i = 0; i < parentPoints.length; i += 1) {
@@ -531,7 +518,7 @@ jQuery.fn.addNodeCacheMark = function (idea) {
 	this.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
 };
 
-jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
+jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedLevel) {
 	'use strict';
 	var MAX_URL_LENGTH = 25,
 		self = jQuery(this),
@@ -617,17 +604,20 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 			}
 			return 'mapjs-node-white';
 		},
-		setColors = function () {
+		setColors = function (colorText) {
 			var fromStyle = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background;
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
 			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
+			self.css({'color': '', 'background-color': ''});
 			if (fromStyle) {
-				self.css('background-color', fromStyle);
-				self.addClass(foregroundClass(fromStyle));
-			} else {
-				self.css('background-color', '');
+				if (colorText) {
+					self.css('color', fromStyle);
+				} else {
+					self.css('background-color', fromStyle);
+					self.addClass(foregroundClass(fromStyle));
+				}
 			}
 		},
 		setIcon = function (icon) {
@@ -672,7 +662,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 					selfProps['padding-' + icon.position] = icon.height + (padding * 2);
 					selfProps['min-width'] = icon.width;
 					if (icon.width > maxTextWidth) {
-						textProps['margin-left'] =  (icon.width - maxTextWidth) / 2;
+						textProps['margin-left'] =  Math.round((icon.width - maxTextWidth) / 2);
 					}
 				} else if (icon.position === 'left' || icon.position === 'right') {
 					if (icon.position === 'left') {
@@ -685,31 +675,46 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator) {
 
 					selfProps['padding-' + icon.position] = icon.width + (padding * 2);
 					if (icon.height > textHeight) {
-						textProps['margin-top'] =  (icon.height - textHeight) / 2;
+						textProps['margin-top'] =  Math.round((icon.height - textHeight) / 2);
 						selfProps['min-height'] = icon.height;
 					}
 				} else {
 					if (icon.height > textHeight) {
-						textProps['margin-top'] =  (icon.height - textHeight) / 2;
+						textProps['margin-top'] =  Math.round((icon.height - textHeight) / 2);
 						selfProps['min-height'] = icon.height;
 					}
 					selfProps['min-width'] = icon.width;
 					if (icon.width > maxTextWidth) {
-						textProps['margin-left'] =  (icon.width - maxTextWidth) / 2;
+						textProps['margin-left'] =  Math.round((icon.width - maxTextWidth) / 2);
 					}
 				}
 			}
 			self.css(selfProps);
 			textBox.css(textProps);
-		};
-	self.attr('mapjs-level', nodeContent.level);
+		},
+		nodeLevel = forcedLevel || nodeContent.level,
+		setLevel = function () {
+			var domElement = self[0];
+			_.each(_.filter(domElement.classList, function (c) {
+				return /^level_.+/.test(c);
+			}), function (c) {
+				domElement.classList.remove(c);
+			});
+			domElement.classList.add('level_' + nodeLevel);
+			self.attr('mapjs-level', nodeLevel);
+		},
+		borderType = MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue && MAPJS.DOMRender.theme.attributeValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		colorText = (borderType === 'underline');
+
+
+	setLevel();
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyLabel(nodeContent.label);
 	applyAttachment();
 	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
-	setColors();
+	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
 	return self;
@@ -839,7 +844,7 @@ jQuery.fn.updateReorderBounds = function (border, box) {
 	element.show();
 	element.attr('mapjs-edge', border.edge);
 	element.css({
-		top: box.y + box.height / 2 - element.height() / 2,
+		top: Math.round(box.y + box.height / 2 - element.height() / 2),
 		left: border.x - (border.edge === 'left' ? element.width() : 0)
 	});
 
@@ -995,8 +1000,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		centerViewOn = function (x, y, animate) { /*in the stage coordinate system*/
 			var stage = stageElement.data(),
 				viewPortCenter = {
-					x: viewPort.innerWidth() / 2,
-					y: viewPort.innerHeight() / 2
+					x: Math.round(viewPort.innerWidth() / 2),
+					y: Math.round(viewPort.innerHeight() / 2)
 				},
 				newLeftScroll, newTopScroll,
 				margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
@@ -1019,7 +1024,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}
 		},
 		stagePointAtViewportCenter = function () {
-			return viewToStageCoordinates(viewPort.innerWidth() / 2, viewPort.innerHeight() / 2);
+			return viewToStageCoordinates(Math.round(viewPort.innerWidth() / 2), Math.round(viewPort.innerHeight() / 2));
 		},
 		ensureNodeVisible = function (domElement) {
 			var node, nodeTopLeft, nodeBottomRight, animation, margin;
@@ -1256,7 +1261,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		var currentViewPortDimensions = getViewPortDimensions(),
 			nodeDom = stageElement.nodeWithId(node.id).data({
 				'x': Math.round(node.x),
-				'y': Math.round(node.y)
+				'y': Math.round(node.y),
+				'width': Math.round(node.width),
+				'height': Math.round(node.height)
 			}).each(ensureSpaceForNode),
 			screenTopLeft = stageToViewCoordinates(Math.round(node.x), Math.round(node.y)),
 			screenBottomRight = stageToViewCoordinates(Math.round(node.x + node.width), Math.round(node.y + node.height));
@@ -1325,8 +1332,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId) {
 		var node = stageElement.nodeWithId(ideaId).data(),
-			nodeCenterX = node.x + node.width / 2,
-			nodeCenterY = node.y + node.height / 2;
+			nodeCenterX = Math.round(node.x + node.width / 2),
+			nodeCenterY = Math.round(node.y + node.height / 2);
 		if (stageElement.data('scale') !== 1) {
 			stageElement.data('scale', 1).updateStage();
 		}
@@ -1336,8 +1343,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
 		stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
-		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
-		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
+		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink(true);
 		centerViewOn(0, 0);
 		viewPort.focus();
 	});
@@ -1350,8 +1357,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
 		if (options && options.themeChanged) {
 			stageElement.children().andSelf().finish(nodeAnimOptions.queue);
-			jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
-			jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
+			jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
+			jQuery(stageElement).find('[data-mapjs-role=link]').updateLink(true);
 		} else {
 			connectorsForAnimation.each(function () {
 				if (!jQuery(this).animateConnectorToPosition(nodeAnimOptions, 2)) {
@@ -1369,13 +1376,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					linkGroupClone.updateLink();
 				},
 				complete: function () {
-					if (options && options.themeChanged) {
-						jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector();
-						jQuery(stageElement).find('[data-mapjs-role=link]').updateLink();
-					} else {
-						connectorGroupClone.updateConnector(true);
-						linkGroupClone.updateLink(true);
-					}
+					connectorGroupClone.updateConnector(true);
+					linkGroupClone.updateLink(true);
 				}
 			}, nodeAnimOptions));
 			stageElement.children().dequeue(nodeAnimOptions.queue);

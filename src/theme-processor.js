@@ -7,6 +7,7 @@ MAPJS.ThemeProcessor = function () {
 		},
 		cssProp = {
 			cornerRadius: 'border-radius',
+			'text.color': 'color',
 			'text.margin': 'padding',
 			background: 'background-color',
 			backgroundColor: 'background-color',

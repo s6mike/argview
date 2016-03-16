@@ -591,7 +591,7 @@ describe('updateLink', function () {
 		it('rounds coordinates', function () {
 			anotherLink.data('arrow', 'true').updateLink();
 			expect(anotherLink.find('path.mapjs-link').attr('d')).toEqual('M50,40L80,230');
-			expect(anotherLink.find('path.mapjs-arrow').attr('d')).toEqual('M82,216L80,230L73,218Z');
+			expect(anotherLink.find('path.mapjs-arrow').attr('d')).toEqual('M83,216L80,230L73,218Z');
 		});
 		it('will not update if the shapes have not moved and attributes have not changed', function () {
 			underTest.updateLink();
@@ -716,6 +716,16 @@ describe('updateNodeContent', function () {
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.attr('mapjs-level')).toBe('3');
 		});
+		it('sets the level class to the node content level', function () {
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('level_3')).toBeTruthy();
+		});
+		it('updates the level class to the forcred level', function () {
+			underTest.updateNodeContent(nodeContent);
+			underTest.updateNodeContent(nodeContent, undefined, 2);
+			expect(underTest.hasClass('level_3')).toBeFalsy();
+			expect(underTest.hasClass('level_2')).toBeTruthy();
+		});
 	});
 	describe('background', function () {
 		it('uses the style from the background if specified', function () {
@@ -726,6 +736,25 @@ describe('updateNodeContent', function () {
 			};
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.css('background-color')).toBe('rgb(103, 101, 119)');
+		});
+		it('uses the style from the background as a text color if the border style is underlined', function () {
+			nodeContent.attr = {
+				style: {
+					background: 'rgb(103, 101, 119)'
+				}
+			};
+			MAPJS.DOMRender.theme = new MAPJS.Theme({
+				node: [{
+					name: 'default',
+					border: {
+						type: 'underline'
+					}
+				}
+				]
+			});
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('color')).toBe('rgb(103, 101, 119)');
+			expect(underTest.css('background-color')).toBe('rgba(0, 0, 0, 0)');
 		});
 		it('sets the mapjs-node-dark class if the tinted background luminosity is < 0.5', function () {
 			nodeContent.attr = { style: { background: 'rgb(3, 3, 3)' } };
@@ -2055,6 +2084,11 @@ describe('MAPJS.DOMRender', function () {
 								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
 							});
 						});
+						it('updates the connector immediately on theme change', function () {
+							mapModel.dispatchEvent('layoutChangeComplete', {themeChanged: true});
+							expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
+							expect(jQuery.fn.updateConnector.calls.mostRecent().args).toEqual([true]);
+						});
 						describe('animating node ' + node, function () {
 							beforeEach(function () {
 								jQuery('#node_1_' + node).trigger('mapjs:animatemove');
@@ -2157,6 +2191,12 @@ describe('MAPJS.DOMRender', function () {
 								expect(jQuery.fn.animateConnectorToPosition).not.toHaveBeenCalled();
 							});
 						});
+						it('updates the connector immediately on theme change', function () {
+							mapModel.dispatchEvent('layoutChangeComplete', {themeChanged: true});
+							expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
+							expect(jQuery.fn.updateLink.calls.mostRecent().args).toEqual([true]);
+						});
+
 						describe('animating node ' + node, function () {
 							beforeEach(function () {
 								jQuery('#node_1_' + node).trigger('mapjs:animatemove');
@@ -2293,11 +2333,13 @@ describe('MAPJS.DOMRender', function () {
 				jQuery.fn.updateConnector.calls.reset();
 				mapModel.dispatchEvent('mapViewResetRequested');
 				expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(jQuery('[data-mapjs-role=connector]'));
+				expect(jQuery.fn.updateConnector.calls.mostRecent().args).toEqual([true]);
 			});
 			it('should update Links', function () {
 				jQuery.fn.updateLink.calls.reset();
 				mapModel.dispatchEvent('mapViewResetRequested');
 				expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(jQuery('[data-mapjs-role=link]'));
+				expect(jQuery.fn.updateLink.calls.mostRecent().args).toEqual([true]);
 			});
 			it('centers the view', function () {
 				mapModel.dispatchEvent('mapViewResetRequested');

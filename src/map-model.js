@@ -41,7 +41,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			});
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
-			var layoutCompleteOptions;
+			var layoutCompleteOptions,
+				themeChanged = (currentLayout.theme != newLayout.theme);
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
@@ -89,6 +90,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
 						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
+					if (newNode.level !== oldNode.level || themeChanged) {
+						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
+					}
 					if (newNode.label !== oldNode.label) {
 						self.dispatchEvent('nodeLabelChanged', newNode, sessionId);
 					}
@@ -110,7 +114,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					self.dispatchEvent('linkCreated', newLink, sessionId);
 				}
 			});
-			if (currentLayout.theme != newLayout.theme) {
+			if (themeChanged) {
 				layoutCompleteOptions = {themeChanged: true};
 			}
 			currentLayout = newLayout;

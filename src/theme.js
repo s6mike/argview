@@ -16,7 +16,16 @@ MAPJS.Theme = function (themeJson) {
 			}
 			return current;
 		};
-	self.name = themeJson.name;
+	self.getFontForStyles = function (themeStyles) {
+		var weight = self.attributeValue(['node'], themeStyles, ['text', 'font', 'weight'], 'semibold'),
+			size = self.attributeValue(['node'], themeStyles, ['text', 'font', 'size'], 12),
+			lineSpacing = self.attributeValue(['node'], themeStyles, ['text', 'font', 'lineSpacing'], 3.5);
+		return {size: size, weight: weight, lineGap: lineSpacing};
+	};
+	self.getNodeMargin = function (themeStyles) {
+		return self.attributeValue(['node'], themeStyles, ['text', 'margin'], 5);
+	};
+	self.name = themeJson && themeJson.name;
 	self.attributeValue = function (prefixes, styles, postfixes, fallback) {
 		var rootElement = getElementForPath(themeDictionary, prefixes),
 			merged = {},
@@ -24,7 +33,7 @@ MAPJS.Theme = function (themeJson) {
 		if (!rootElement) {
 			return fallback;
 		}
-		styles.reverse().forEach(function (style) {
+		styles.slice(0).reverse().forEach(function (style) {
 			merged = _.extend(merged, rootElement[style]);
 		});
 		result = getElementForPath(merged, postfixes);
@@ -33,7 +42,41 @@ MAPJS.Theme = function (themeJson) {
 		}
 		return result;
 	};
-
+	self.nodeTheme = function (styles) {
+		var rootElement = getElementForPath(themeDictionary, ['node']),
+			merged = {},
+			result = {
+				margin: 5,
+				font: {
+					size: 12,
+					weight: 'semibold',
+					linespacing: 3.5
+				},
+				maxWidth: 146,
+				borderType: 'surround',
+				cornerRadius: 5,
+				lineColor: '#707070',
+				text: {
+					color: '#4F4F4F',
+					lightColor: '#EEEEEE',
+					darkColor: '#000000'
+				}
+			};
+		if (!rootElement) {
+			return result;
+		}
+		styles.slice(0).reverse().forEach(function (style) {
+			merged = _.extend(merged, rootElement[style]);
+		});
+		result.margin = getElementForPath(merged, ['text', 'margin']) || result.margin;
+		result.font = _.extend(result.font, getElementForPath(merged, ['text', 'font']));
+		result.text = _.extend(result.text, getElementForPath(merged, ['text']));
+		result.borderType = getElementForPath(merged, ['border', 'type']) || result.borderType;
+		result.backgroundColor = getElementForPath(merged, ['backgroundColor']);
+		result.cornerRadius = getElementForPath(merged, ['cornerRadius']) || result.cornerRadius;
+		result.lineColor = getElementForPath(merged, ['border', 'line', 'color']) || result.lineColor;
+		return result;
+	};
 	if (themeDictionary && themeDictionary.node && themeDictionary.node.forEach) {
 		themeDictionary.nodeArray = themeDictionary.node;
 		themeDictionary.node = {};

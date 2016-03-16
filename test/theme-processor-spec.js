@@ -117,7 +117,7 @@ describe('ThemeProcessor', function () {
 								lightColor: '#EEEEEE',
 								darkColor: '#000000'
 							}}]});
-					expect(result.css).toEqual('.mapjs-node{}.mapjs-node.mapjs-node-light{color:#4F4F4F;}.mapjs-node.mapjs-node-dark{color:#EEEEEE;}.mapjs-node.mapjs-node-white{color:#000000;}');
+					expect(result.css).toEqual('.mapjs-node{color:#4F4F4F;}.mapjs-node.mapjs-node-light{color:#4F4F4F;}.mapjs-node.mapjs-node-dark{color:#EEEEEE;}.mapjs-node.mapjs-node-white{color:#000000;}');
 				});
 			});
 
@@ -219,7 +219,7 @@ describe('ThemeProcessor', function () {
 				});
 				expect(result.css).toEqual('.mapjs-node{box-shadow:1px 2px 3px rgba(34,170,224,0.8);}');
 			});
-			it('should return nultiple shadows as a single box-shadow', function () {
+			it('should return multiple shadows as a single box-shadow', function () {
 				var result = underTest.process({
 					node: [{
 						name: 'default',
