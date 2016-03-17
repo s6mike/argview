@@ -1792,14 +1792,18 @@ describe('MAPJS.DOMRender', function () {
 				spyOn(jQuery.fn, 'updateStage').and.callThrough();
 			});
 			it('sets the new data coordinates', function () {
-				mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
+				mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 200, height: 100, title: 'zeka', id: 1});
 				expect(underTest.data('x')).toBe(20);
 				expect(underTest.data('y')).toBe(-120);
+				expect(underTest.data('width')).toBe(200);
+				expect(underTest.data('height')).toBe(100);
 			});
 			it('rounds the coordinates for performance', function () {
-				mapModel.dispatchEvent('nodeMoved', {x: 20.11, y: -119.99, width: 20, height: 10, title: 'zeka', id: 1});
+				mapModel.dispatchEvent('nodeMoved', {x: 20.11, y: -119.99, width: 200.4, height: 99.8, title: 'zeka', id: 1});
 				expect(underTest.data('x')).toBe(20);
 				expect(underTest.data('y')).toBe(-120);
+				expect(underTest.data('width')).toBe(200);
+				expect(underTest.data('height')).toBe(100);
 			});
 			describe('expands the stage if needed - using a margin', function () {
 				beforeEach(function () {

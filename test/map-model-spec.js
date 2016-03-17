@@ -140,6 +140,26 @@ describe('MapModel', function () {
 
 			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
 		});
+		it('should dispatch nodeMoved event when a node width changes', function () {
+			var nodeMovedListener = jasmine.createSpy();
+			layoutAfter.nodes[2] = _.extend({}, layoutBefore.nodes[2]);
+			layoutAfter.nodes[2].width = 100;
+			underTest.addEventListener('nodeMoved', nodeMovedListener);
+
+			anIdea.dispatchEvent('changed');
+
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
+		});
+		it('should dispatch nodeMoved event when a node height changes', function () {
+			var nodeMovedListener = jasmine.createSpy();
+			layoutAfter.nodes[2] = _.extend({}, layoutBefore.nodes[2]);
+			layoutAfter.nodes[2].height = 100;
+			underTest.addEventListener('nodeMoved', nodeMovedListener);
+
+			anIdea.dispatchEvent('changed');
+
+			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
+		});
 		it('should dispatch nodeRemoved event when a node is removed because idea is changed', function () {
 			var nodeRemovedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeRemoved', nodeRemovedListener);
