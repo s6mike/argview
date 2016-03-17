@@ -4634,7 +4634,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 };
 
 /*global $, MAPJS*/
-$.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel, defaultTheme) {
+$.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel) {
 	'use strict';
 	var element = $(this),
 		activateTheme =	function (theme) {
@@ -4645,8 +4645,7 @@ $.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel, default
 			MAPJS.DOMRender.theme = new MAPJS.Theme(themeJson);
 			element.text(themeProcessor.process(themeJson).css);
 		};
-	defaultTheme = defaultTheme || 'default';
-	activateTheme(defaultTheme);
+	activateTheme('default');
 	mapModel.addEventListener('themeChanged', activateTheme);
 	return element;
 };
