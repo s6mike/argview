@@ -69,7 +69,6 @@ module.exports = function (grunt) {
 					],
 					vendor: [
 						'src/mapjs.js',
-						'lib/dev-dependencies.js',
 						'lib/dependencies.js'
 					],
 					helpers: [
@@ -100,6 +99,7 @@ module.exports = function (grunt) {
 		browserify: {
 			dependencies: {
 				files: {
+
 					'lib/dependencies.js': ['dist/browserify-dependencies.js']
 				}
 			}

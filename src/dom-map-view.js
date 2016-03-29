@@ -174,7 +174,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 			return;
 		}
 		element.data('changeCheck', changeCheck);
-		connection = MAPJS.Connectors.themePath(fromBox, toBox);
+		connection = MAPJS.Connectors.themePath(fromBox, toBox, MAPJS.DOMRender.theme);
 		pathElement = element.find('path');
 		element.css(connection.position);
 		if (pathElement.length === 0) {
