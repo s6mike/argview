@@ -5,4 +5,5 @@ global._ = require('underscore');
 global.Color = require('color');
 global.Hammer = require('jquery-hammerjs/jquery.hammer-full.js');
 require('jquery.hotkeys');
+global.MAPJS = require('mindmup-mapjs-layout');
 

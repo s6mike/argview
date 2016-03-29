@@ -51,7 +51,6 @@
 		<script type="text/javascript" src="../lib/dependencies.js"></script>
 		<script type="text/javascript" src="../src/observable.js"></script>
 		<script type="text/javascript" src="../src/mapjs.js"></script>
-		<script type="text/javascript" src="../src/url-helper.js"></script>
 		<script type="text/javascript" src="../src/content.js"></script>
 		<script type="text/javascript" src="../src/layout.js"></script>
 		<script type="text/javascript" src="../src/clipboard.js"></script>
@@ -62,8 +61,6 @@
 		<script type="text/javascript" src="../src/hammer-draggable.js"></script>
 		<script type="text/javascript" src="../src/dom-map-view.js"></script>
 		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
-		<script type="text/javascript" src="../src/theme.js"></script>
-		<script type="text/javascript" src="../src/theme-processor.js"></script>
 		<script type="text/javascript" src="../src/theme-css-widget.js"></script>
 		<script type="text/javascript" src="roy-map.js"></script>
 		<script id="defaultTheme" type="application/json">
@@ -279,8 +276,8 @@
 						"name": "default",
 						"cornerRadius": 3.0,
 						"background": {
-							"color": "#FF00FF",
-							"opacity": 0.8
+							"color": "transparent",
+							"opacity": 0.0
 						},
 						"border": {
 							"type": "underline"
@@ -537,7 +534,7 @@
 				idea = MAPJS.content(test_tree()),
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				themeProvider = {},
-			
+
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
 				themeProvider.compact = JSON.parse(compactTheme.innerHTML);
 				themeProvider.default = JSON.parse(defaultTheme.innerHTML);
@@ -553,7 +550,7 @@
 				});
 				mapModel.setIdea(idea);
 
-				
+
 				jQuery('#linkEditWidget').linkEditWidget(mapModel);
 				window.mapModel = mapModel;
 				jQuery('.arrow').click(function () {
