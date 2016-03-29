@@ -149,10 +149,6 @@ MAPJS.DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector,
 	return connectorCurve;
 };
 
-
-MAPJS.DOMRender.nodeConnectorPath = MAPJS.connectors.themePath;
-MAPJS.DOMRender.linkConnectorPath = MAPJS.connectors.linkPath;
-
 jQuery.fn.updateConnector = function (canUseData) {
 	'use strict';
 	return jQuery.each(this, function () {
@@ -178,7 +174,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 			return;
 		}
 		element.data('changeCheck', changeCheck);
-		connection = MAPJS.DOMRender.nodeConnectorPath(fromBox, toBox);
+		connection = MAPJS.Connectors.themePath(fromBox, toBox);
 		pathElement = element.find('path');
 		element.css(connection.position);
 		if (pathElement.length === 0) {
@@ -223,7 +219,7 @@ jQuery.fn.updateLink = function () {
 
 		element.data('changeCheck', changeCheck);
 
-		connection = MAPJS.DOMRender.linkConnectorPath(fromBox, toBox);
+		connection = MAPJS.Connectors.linkPath(fromBox, toBox);
 		element.css(connection.position);
 
 		if (pathElement.length === 0) {
