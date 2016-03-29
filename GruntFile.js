@@ -69,6 +69,7 @@ module.exports = function (grunt) {
 					],
 					vendor: [
 						'src/mapjs.js',
+						'lib/dev-dependencies.js',
 						'lib/dependencies.js'
 					],
 					helpers: [

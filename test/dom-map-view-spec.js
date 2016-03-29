@@ -1,4 +1,4 @@
-/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, Color, spyOn, observable, window*/
+/*global MAPJS, jQuery, describe, it, beforeEach, afterEach, _, expect, navigator, jasmine, spyOn, observable, window*/
 describe('innerText', function () {
 	'use strict';
 	var underTest;
@@ -537,7 +537,7 @@ describe('updateLink', function () {
 		/*jslint newcap:true*/
 		underTest.data('color', 'blue').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
-		expect(Color(underTest.find('path.mapjs-link').css('stroke')).hexString()).toBe('#0000FF');
+		expect(MAPJS.colorToRGB(underTest.find('path.mapjs-link').css('stroke'))).toEqual(MAPJS.colorToRGB('#0000FF'));
 	});
 
 	it('updates the existing line if one is present', function () {
@@ -560,7 +560,7 @@ describe('updateLink', function () {
 		/*jslint newcap:true*/
 		underTest.data('arrow', 'true').data('color', '#FF7577').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
-		expect(Color(underTest.find('path.mapjs-arrow').css('fill')).hexString()).toBe('#FF7577');
+		expect(MAPJS.colorToRGB(underTest.find('path.mapjs-arrow').css('fill'))).toEqual(MAPJS.colorToRGB('#FF7577'));
 	});
 	it('hides an existing arrow when the attribute is no longer present', function () {
 		MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
