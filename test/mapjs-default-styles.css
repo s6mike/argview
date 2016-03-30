@@ -72,9 +72,8 @@
 }
 .mapjs-decorations {
 	position: absolute;
-	top: -16px;
-	right: 0;
 	display: block;
+	white-space: nowrap;
 }
 .mapjs-label {
 	background: black;
