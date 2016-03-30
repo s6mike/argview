@@ -967,7 +967,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the link element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-hyperlink').is(':visible')).toBeTruthy();
 			});
 			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -1004,7 +1004,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the paperclip element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-attachment').is(':visible')).toBeTruthy();
 			});
 			it('binds the paperclip click to dispatch an attachment-click event', function () {
 				var listener = jasmine.createSpy('listener');
@@ -1034,7 +1034,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the label element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('.mapjs-label').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] .mapjs-label').is(':visible')).toBeTruthy();
 				expect(underTest.find('.mapjs-label').text()).toEqual('foo');
 			});
 			it('should reuse and show existing element', function () {

@@ -290,6 +290,13 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			}
 			return span;
 		},
+		decorations = function () {
+			var element = self.find('[data-mapjs-role=decorations]');
+			if (element.length === 0) {
+				element = jQuery('<div data-mapjs-role="decorations" class="mapjs-decorations">').appendTo(self);
+			}
+			return element;
+		},
 		applyLinkUrl = function (title) {
 			var url = MAPJS.URLHelper.getLink(title),
 				element = self.find('a.mapjs-hyperlink');
@@ -298,7 +305,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a target="_blank" class="mapjs-hyperlink"></a>').appendTo(self);
+				element = jQuery('<a target="_blank" class="mapjs-hyperlink"></a>').appendTo(decorations());
 			}
 			element.attr('href', url).show();
 		},
@@ -309,7 +316,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<span class="mapjs-label"></span>').appendTo(self);
+				element = jQuery('<span class="mapjs-label"></span>').appendTo(decorations());
 			}
 			element.text(label).show();
 		},
@@ -321,7 +328,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a href="#" class="mapjs-attachment"></a>').appendTo(self).click(function () {
+				element = jQuery('<a href="#" class="mapjs-attachment"></a>').appendTo(decorations()).click(function () {
 					self.trigger('attachment-click');
 				});
 			}

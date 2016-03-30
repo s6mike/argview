@@ -70,39 +70,40 @@
 .mapjs-node-white {
 	color: black;
 }
-.mapjs-label {
-	left: -0.5em;
+.mapjs-decorations {
 	position: absolute;
-	bottom: -0.5em;
+	top: -16px;
+	right: 0;
+	display: block;
+}
+.mapjs-label {
 	background: black;
 	opacity: 0.5;
 	color: white;
+	display: inline-block;
 }
 .mapjs-hyperlink {
-	right: -0.5em;
-	position: absolute;
-	bottom: -0.5em;
 	background-image: url(icon-link-inactive.svg);
-	width: 1.5em;
-	height: 1.5em;
-	background-size: 1.5em;
+	width: 32px;
+	height: 32px;
+	background-size: 32px 32px;
 	background-repeat: no-repeat no-repeat;
+	display: inline-block;
 }
 .mapjs-hyperlink:hover {
 	background-image:url(icon-link-active.svg);
 }
 .mapjs-attachment {
-	right: -5px;
-	position: absolute;
-	top: -15px;
 	background-image: url(icon-paperclip-inactive.svg);
 	width: 16px;
 	height: 32px;
 	background-size: 16px 32px;
 	background-repeat: no-repeat no-repeat;
+	display: inline-block;
 }
 .mapjs-attachment:hover{
 	background-image:url(icon-paperclip-active.svg);
+
 }
 .mapjs-draw-container {
 	position: absolute;
