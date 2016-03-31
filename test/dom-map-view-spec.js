@@ -994,7 +994,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the link element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-hyperlink').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-hyperlink').css('display')).not.toBe('none');
 			});
 			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -1002,10 +1002,10 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('a.mapjs-hyperlink').attr('target')).toEqual('_blank');
 			});
 			it('should reuse and show existing element', function () {
-				jQuery('<a href="#" class="mapjs-link"></a>').appendTo(underTest).hide();
+				jQuery('<a href="#" class="mapjs-hyperlink"></a>').appendTo(underTest).hide();
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.find('a.mapjs-hyperlink').length).toBe(1);
-				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeTruthy();
+				expect(underTest.find('a.mapjs-hyperlink').css('display')).not.toBe('none');
 			});
 			it('sets the whole text with the link as the data title', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -1014,8 +1014,9 @@ describe('updateNodeContent', function () {
 		});
 		describe('when there is no link', function () {
 			it('hides the link element', function () {
+				jQuery('<a href="#" class="mapjs-hyperlink"></a>').appendTo(underTest).show();
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeFalsy();
+				expect(underTest.find('a.mapjs-hyperlink').css('display')).toBe('none');
 			});
 		});
 	});
@@ -1031,7 +1032,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the paperclip element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-attachment').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-attachment').css('display')).not.toBe('none');
 			});
 			it('binds the paperclip click to dispatch an attachment-click event', function () {
 				var listener = jasmine.createSpy('listener');
@@ -1044,7 +1045,7 @@ describe('updateNodeContent', function () {
 				jQuery('<a href="#" class="mapjs-attachment">hello</a>').appendTo(underTest).hide();
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.find('a.mapjs-attachment').length).toBe(1);
-				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
+				expect(underTest.find('a.mapjs-attachment').css('display')).not.toBe('none');
 			});
 		});
 		describe('when there is no attachment', function () {
@@ -1065,8 +1066,9 @@ describe('updateNodeContent', function () {
 				};
 			});
 			it('shows the note decoration element', function () {
+				jQuery('<a href="#" class="mapjs-note"></a>').appendTo(underTest).show();
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-note').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-note').css('display')).not.toBe('none');
 			});
 			it('binds the note decoration to dispatch an note-click event', function () {
 				var listener = jasmine.createSpy('listener');
