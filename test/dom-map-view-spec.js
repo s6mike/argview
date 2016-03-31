@@ -727,6 +727,34 @@ describe('updateNodeContent', function () {
 			expect(underTest.hasClass('level_2')).toBeTruthy();
 		});
 	});
+	describe('setting the colortext attribute', function () {
+		it('sets the mapjs-node-colortext class if the border is underline', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme({
+				node: [{
+					name: 'default',
+					border: {
+						type: 'underline'
+					}
+				}
+				]
+			});
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-node-colortext')).toBeTruthy();
+		});
+		it('clears the colortext class if the border is not underline', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme({
+				node: [{
+					name: 'default',
+					border: {
+					}
+				}
+				]
+			});
+			underTest.addClass('mapjs-node-colortext');
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-node-colortext')).toBeFalsy();
+		});
+	});
 	describe('background', function () {
 		it('uses the style from the background if specified', function () {
 			nodeContent.attr = {
@@ -1042,17 +1070,11 @@ describe('updateNodeContent', function () {
 			});
 			it('binds the note decoration to dispatch an note-click event', function () {
 				var listener = jasmine.createSpy('listener');
-				underTest.on('note-click', listener);
+				underTest.on('decoration-click', listener);
 				underTest.updateNodeContent(nodeContent);
 				underTest.find('a.mapjs-note').click();
 				expect(listener).toHaveBeenCalled();
-			});
-			it('binds the note decoration to dispatch a mouseover event', function () {
-				var listener = jasmine.createSpy('listener');
-				underTest.on('note-hover', listener);
-				underTest.updateNodeContent(nodeContent);
-				underTest.find('a.mapjs-note').trigger('mouseover');
-				expect(listener).toHaveBeenCalled();
+				expect(listener.calls.argsFor(0)[1]).toEqual('note');
 			});
 			it('should reuse and show existing element', function () {
 				jQuery('<a href="#" class="mapjs-note">hello</a>').appendTo(underTest).hide();

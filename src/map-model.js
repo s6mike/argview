@@ -542,6 +542,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
+	this.decorationAction = function (source, nodeId, decorationType) {
+		analytic('decorationAction', source);
+		self.dispatchEvent('decorationActionRequested', nodeId, decorationType);
+	};
 	this.openAttachment = function (source, nodeId) {
 		var node, attachment;
 		analytic('openAttachment', source);

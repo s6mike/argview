@@ -306,7 +306,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a target="_blank" class="mapjs-hyperlink"></a>').appendTo(decorations());
+				element = jQuery('<a target="_blank" class="mapjs-hyperlink icon-hyperlink"></a>').addClass().appendTo(decorations());
 			}
 			element.attr('href', url).show();
 		},
@@ -329,8 +329,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a href="#" class="mapjs-attachment"></a>').appendTo(decorations()).click(function () {
+				element = jQuery('<a href="#" class="mapjs-attachment icon-attachment"></a>').
+					appendTo(decorations()).click(function () {
 					self.trigger('attachment-click');
+					self.trigger('decoration-click', 'attachment');
 				});
 			}
 			element.show();
@@ -343,10 +345,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a href="#" class="mapjs-note"></a>').appendTo(decorations()).click(function () {
-					self.trigger('note-click');
-				}).on('mouseover', function () {
-					self.trigger('note-hover');
+				element = jQuery('<a href="#" class="mapjs-note icon-note"></a>').appendTo(decorations()).click(function () {
+					self.trigger('decoration-click', 'note');
 				});
 			}
 			element.show();
@@ -389,7 +389,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
-			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
+			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light mapjs-node-colortext');
 			self.css({'color': '', 'background-color': ''});
 			if (fromStyle) {
 				if (colorText) {
@@ -398,6 +398,9 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 					self.css('background-color', fromStyle);
 					self.addClass(textColorClasses[MAPJS.foregroundStyle(fromStyle)]);
 				}
+			}
+			if (colorText) {
+				self.addClass('mapjs-node-colortext');
 			}
 		},
 		setIcon = function (icon) {
@@ -944,6 +947,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.on('attachment-click', function () {
 				mapModel.openAttachment('mouse', node.id);
+			})
+			.on('decoration-click', function (evt, decorationType) {
+				mapModel.decorationAction('mouse', node.id, decorationType);
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
