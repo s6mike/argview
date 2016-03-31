@@ -175,6 +175,17 @@ describe('MapModel', function () {
 			anIdea.updateAttr(4, 'theme', 'new-theme');
 			expect(listener).toHaveBeenCalledWith('new-theme');
 		});
+		describe('decorationAction', function () {
+			it('should dispatch decorationActionRequested', function () {
+				var listener = jasmine.createSpy();
+				underTest.addEventListener('decorationActionRequested', listener);
+				anIdea.dispatchEvent('changed');
+
+				underTest.decorationAction('source', 3, 'note');
+
+				expect(listener).toHaveBeenCalledWith(3, 'note');
+			});
+		});
 		describe('openAttachment', function () {
 			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
 				var attachmentOpenedListener = jasmine.createSpy();

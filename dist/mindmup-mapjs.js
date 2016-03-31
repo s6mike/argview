@@ -1725,6 +1725,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
+	this.decorationAction = function (source, nodeId, decorationType) {
+		analytic('decorationAction', source);
+		self.dispatchEvent('decorationActionRequested', nodeId, decorationType);
+	};
 	this.openAttachment = function (source, nodeId) {
 		var node, attachment;
 		analytic('openAttachment', source);
@@ -2621,6 +2625,7 @@ MAPJS.DOMRender = {
 			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
+			note: !!(idea.attr && idea.attr.note),
 			level: idea.level || levelOverride
 		};
 	},
@@ -2903,6 +2908,13 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			}
 			return span;
 		},
+		decorations = function () {
+			var element = self.find('[data-mapjs-role=decorations]');
+			if (element.length === 0) {
+				element = jQuery('<div data-mapjs-role="decorations" class="mapjs-decorations">').appendTo(self);
+			}
+			return element;
+		},
 		applyLinkUrl = function (title) {
 			var url = MAPJS.URLHelper.getLink(title),
 				element = self.find('a.mapjs-hyperlink');
@@ -2911,7 +2923,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a target="_blank" class="mapjs-hyperlink"></a>').appendTo(self);
+				element = jQuery('<a target="_blank" class="mapjs-hyperlink icon-hyperlink"></a>').addClass().appendTo(decorations());
 			}
 			element.attr('href', url).show();
 		},
@@ -2922,7 +2934,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<span class="mapjs-label"></span>').appendTo(self);
+				element = jQuery('<span class="mapjs-label"></span>').appendTo(decorations());
 			}
 			element.text(label).show();
 		},
@@ -2934,8 +2946,24 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				return;
 			}
 			if (element.length === 0) {
-				element = jQuery('<a href="#" class="mapjs-attachment"></a>').appendTo(self).click(function () {
+				element = jQuery('<a href="#" class="mapjs-attachment icon-attachment"></a>').
+					appendTo(decorations()).click(function () {
 					self.trigger('attachment-click');
+					self.trigger('decoration-click', 'attachment');
+				});
+			}
+			element.show();
+		},
+		applyNote = function () {
+			var note = nodeContent.attr && nodeContent.attr.note,
+				element = self.find('a.mapjs-note');
+			if (!note) {
+				element.hide();
+				return;
+			}
+			if (element.length === 0) {
+				element = jQuery('<a href="#" class="mapjs-note icon-note"></a>').appendTo(decorations()).click(function () {
+					self.trigger('decoration-click', 'note');
 				});
 			}
 			element.show();
@@ -2978,7 +3006,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
-			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light');
+			self.removeClass('mapjs-node-dark mapjs-node-white mapjs-node-light mapjs-node-colortext');
 			self.css({'color': '', 'background-color': ''});
 			if (fromStyle) {
 				if (colorText) {
@@ -2987,6 +3015,9 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 					self.css('background-color', fromStyle);
 					self.addClass(textColorClasses[MAPJS.foregroundStyle(fromStyle)]);
 				}
+			}
+			if (colorText) {
+				self.addClass('mapjs-node-colortext');
 			}
 		},
 		setIcon = function (icon) {
@@ -3072,7 +3103,13 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			domElement.classList.add('level_' + nodeLevel);
 			self.attr('mapjs-level', nodeLevel);
 		},
-		borderType = MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue && MAPJS.DOMRender.theme.attributeValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		themeDefault =  function (a, b, c, d) {
+			return d;
+		},
+		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
+		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
+		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
 		colorText = (borderType === 'underline');
 
 
@@ -3080,9 +3117,20 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyLabel(nodeContent.label);
+	applyNote();
 	applyAttachment();
 	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
+	this.css('margin', '0');
+	if (decorationEdge === 'left') {
+		self.css('margin-left', decorations().outerWidth());
+	} else if (decorationEdge === 'right') {
+		self.css('margin-right', decorations().outerWidth());
+	} else if (decorationEdge === 'top') {
+		self.css('margin-top', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+	} else if (decorationEdge === 'bottom') {
+		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+	}
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
@@ -3516,6 +3564,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.on('attachment-click', function () {
 				mapModel.openAttachment('mouse', node.id);
+			})
+			.on('decoration-click', function (evt, decorationType) {
+				mapModel.decorationAction('mouse', node.id, decorationType);
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)

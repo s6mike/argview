@@ -671,7 +671,7 @@ describe('updateNodeContent', function () {
 		it('tags the node with a cache mark', function () {
 			MAPJS.DOMRender.theme = {name: 'blue'};
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, collapsed : undefined });
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined });
 		});
 	});
 	describe('node text', function () {
@@ -725,6 +725,34 @@ describe('updateNodeContent', function () {
 			underTest.updateNodeContent(nodeContent, undefined, 2);
 			expect(underTest.hasClass('level_3')).toBeFalsy();
 			expect(underTest.hasClass('level_2')).toBeTruthy();
+		});
+	});
+	describe('setting the colortext attribute', function () {
+		it('sets the mapjs-node-colortext class if the border is underline', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme({
+				node: [{
+					name: 'default',
+					border: {
+						type: 'underline'
+					}
+				}
+				]
+			});
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-node-colortext')).toBeTruthy();
+		});
+		it('clears the colortext class if the border is not underline', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme({
+				node: [{
+					name: 'default',
+					border: {
+					}
+				}
+				]
+			});
+			underTest.addClass('mapjs-node-colortext');
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('mapjs-node-colortext')).toBeFalsy();
 		});
 	});
 	describe('background', function () {
@@ -879,7 +907,6 @@ describe('updateNodeContent', function () {
 					expect(textBox.css('margin-top')).toBe('241px');
 				}
 			});
-
 			it('positions top icons top of node text and horizontally centers the text', function () {
 				nodeContent.attr.icon.position = 'top';
 				underTest.updateNodeContent(nodeContent);
@@ -967,7 +994,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the link element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-hyperlink').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-hyperlink').is(':visible')).toBeTruthy();
 			});
 			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
 				underTest.updateNodeContent(nodeContent);
@@ -1004,7 +1031,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the paperclip element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('a.mapjs-attachment').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-attachment').is(':visible')).toBeTruthy();
 			});
 			it('binds the paperclip click to dispatch an attachment-click event', function () {
 				var listener = jasmine.createSpy('listener');
@@ -1027,6 +1054,45 @@ describe('updateNodeContent', function () {
 			});
 		});
 	});
+	describe('note handling', function () {
+		describe('when there is a note', function () {
+			beforeEach(function () {
+				nodeContent.attr = {
+					note: {
+						index: 1,
+						text: 'aaaa'
+					}
+				};
+			});
+			it('shows the note decoration element', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-note').is(':visible')).toBeTruthy();
+			});
+			it('binds the note decoration to dispatch an note-click event', function () {
+				var listener = jasmine.createSpy('listener');
+				underTest.on('decoration-click', listener);
+				underTest.updateNodeContent(nodeContent);
+				underTest.find('a.mapjs-note').click();
+				expect(listener).toHaveBeenCalled();
+				expect(listener.calls.argsFor(0)[1]).toEqual('note');
+			});
+			it('should reuse and show existing element', function () {
+				jQuery('<a href="#" class="mapjs-note">hello</a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-note').length).toBe(1);
+				expect(underTest.find('a.mapjs-note').is(':visible')).toBeTruthy();
+			});
+		});
+		describe('when there is no note', function () {
+			it('hides the note element', function () {
+				jQuery('<a href="#" class="mapjs-note">hello</a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-note').is(':visible')).toBeFalsy();
+			});
+		});
+	});
+
+
 	describe('label handling', function () {
 		describe('when there is a label', function () {
 			beforeEach(function () {
@@ -1034,7 +1100,7 @@ describe('updateNodeContent', function () {
 			});
 			it('shows the label element', function () {
 				underTest.updateNodeContent(nodeContent);
-				expect(underTest.find('.mapjs-label').is(':visible')).toBeTruthy();
+				expect(underTest.find('[data-mapjs-role=decorations] .mapjs-label').is(':visible')).toBeTruthy();
 				expect(underTest.find('.mapjs-label').text()).toEqual('foo');
 			});
 			it('should reuse and show existing element', function () {
@@ -1060,6 +1126,138 @@ describe('updateNodeContent', function () {
 				expect(underTest.find('.mapjs-label').text()).toEqual('0');
 			});
 		});
+	});
+	describe('decoration margin handling', function () {
+		it('adds a left margin for decorations when they are on the left', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'left',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-left')).toEqual('100px');
+		});
+		it('adds a right margin for decorations when they are on the right', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'right',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-right')).toEqual('100px');
+		});
+
+		it('adds a top margin for decorations when they are on the top without overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'top',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-top')).toEqual('100px');
+		});
+		it('adds a top margin for decorations when they are on the top with overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'top',
+							overlap: true,
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-top')).toEqual('50px');
+		});
+
+
+		it('adds a bottom margin for decorations when they are on the bottom', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('100px');
+		});
+
+		it('adds a bottom margin for decorations when they are on the bottom with overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							overlap: true,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('50px');
+		});
+
+		it('clears the other margins to ensure stale theme changes are reverted', function () {
+			underTest.css('margin-top', '10px');
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							overlap: true,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('50px');
+			expect(underTest.css('margin-top')).toEqual('0px');
+		});
+
 	});
 });
 describe('MAPJS.DOMRender', function () {
