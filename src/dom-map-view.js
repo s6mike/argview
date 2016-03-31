@@ -466,7 +466,13 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			domElement.classList.add('level_' + nodeLevel);
 			self.attr('mapjs-level', nodeLevel);
 		},
-		borderType = MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue && MAPJS.DOMRender.theme.attributeValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		themeDefault =  function (a, b, c, d) {
+			return d;
+		},
+		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
+		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
+		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
 		colorText = (borderType === 'underline');
 
 
@@ -477,6 +483,15 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	applyAttachment();
 	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
+	if (decorationEdge === 'left') {
+		self.css('margin-left', decorations().outerWidth());
+	} else if (decorationEdge === 'right') {
+		self.css('margin-right', decorations().outerWidth());
+	} else if (decorationEdge === 'top') {
+		self.css('margin-top', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+	} else if (decorationEdge === 'bottom') {
+		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+	}
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();

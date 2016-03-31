@@ -1061,6 +1061,118 @@ describe('updateNodeContent', function () {
 			});
 		});
 	});
+	describe('decoration margin handling', function () {
+		it('adds a left margin for decorations when they are on the left', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'left',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-left')).toEqual('100px');
+		});
+		it('adds a right margin for decorations when they are on the right', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'right',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-right')).toEqual('100px');
+		});
+
+		it('adds a top margin for decorations when they are on the top without overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'top',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-top')).toEqual('100px');
+		});
+		it('adds a top margin for decorations when they are on the top with overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'top',
+							overlap: true,
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-top')).toEqual('50px');
+		});
+
+
+		it('adds a bottom margin for decorations when they are on the bottom', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('100px');
+		});
+
+		it('adds a bottom margin for decorations when they are on the bottom with overlap', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							overlap: true,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('50px');
+		});
+
+
+	});
 });
 describe('MAPJS.DOMRender', function () {
 	'use strict';
