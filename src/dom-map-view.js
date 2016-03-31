@@ -501,6 +501,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	applyAttachment();
 	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
+	this.css('margin', '0');
 	if (decorationEdge === 'left') {
 		self.css('margin-left', decorations().outerWidth());
 	} else if (decorationEdge === 'right') {

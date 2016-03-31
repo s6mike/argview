@@ -879,7 +879,6 @@ describe('updateNodeContent', function () {
 					expect(textBox.css('margin-top')).toBe('241px');
 				}
 			});
-
 			it('positions top icons top of node text and horizontally centers the text', function () {
 				nodeContent.attr.icon.position = 'top';
 				underTest.updateNodeContent(nodeContent);
@@ -1216,6 +1215,26 @@ describe('updateNodeContent', function () {
 			expect(underTest.css('margin-bottom')).toEqual('50px');
 		});
 
+		it('clears the other margins to ensure stale theme changes are reverted', function () {
+			underTest.css('margin-top', '10px');
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 32,
+							overlap: true,
+							edge: 'bottom',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.css('margin-bottom')).toEqual('50px');
+			expect(underTest.css('margin-top')).toEqual('0px');
+		});
 
 	});
 });
