@@ -671,7 +671,7 @@ describe('updateNodeContent', function () {
 		it('tags the node with a cache mark', function () {
 			MAPJS.DOMRender.theme = {name: 'blue'};
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, collapsed : undefined });
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined });
 		});
 	});
 	describe('node text', function () {
@@ -1027,6 +1027,51 @@ describe('updateNodeContent', function () {
 			});
 		});
 	});
+	describe('note handling', function () {
+		describe('when there is a note', function () {
+			beforeEach(function () {
+				nodeContent.attr = {
+					note: {
+						index: 1,
+						text: 'aaaa'
+					}
+				};
+			});
+			it('shows the note decoration element', function () {
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-note').is(':visible')).toBeTruthy();
+			});
+			it('binds the note decoration to dispatch an note-click event', function () {
+				var listener = jasmine.createSpy('listener');
+				underTest.on('note-click', listener);
+				underTest.updateNodeContent(nodeContent);
+				underTest.find('a.mapjs-note').click();
+				expect(listener).toHaveBeenCalled();
+			});
+			it('binds the note decoration to dispatch a mouseover event', function () {
+				var listener = jasmine.createSpy('listener');
+				underTest.on('note-hover', listener);
+				underTest.updateNodeContent(nodeContent);
+				underTest.find('a.mapjs-note').trigger('mouseover');
+				expect(listener).toHaveBeenCalled();
+			});
+			it('should reuse and show existing element', function () {
+				jQuery('<a href="#" class="mapjs-note">hello</a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-note').length).toBe(1);
+				expect(underTest.find('a.mapjs-note').is(':visible')).toBeTruthy();
+			});
+		});
+		describe('when there is no note', function () {
+			it('hides the note element', function () {
+				jQuery('<a href="#" class="mapjs-note">hello</a>').appendTo(underTest).hide();
+				underTest.updateNodeContent(nodeContent);
+				expect(underTest.find('a.mapjs-note').is(':visible')).toBeFalsy();
+			});
+		});
+	});
+
+
 	describe('label handling', function () {
 		describe('when there is a label', function () {
 			beforeEach(function () {

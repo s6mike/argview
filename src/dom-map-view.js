@@ -8,6 +8,7 @@ MAPJS.DOMRender = {
 			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
+			note: !!(idea.attr && idea.attr.note),
 			level: idea.level || levelOverride
 		};
 	},
@@ -334,6 +335,22 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			}
 			element.show();
 		},
+		applyNote = function () {
+			var note = nodeContent.attr && nodeContent.attr.note,
+				element = self.find('a.mapjs-note');
+			if (!note) {
+				element.hide();
+				return;
+			}
+			if (element.length === 0) {
+				element = jQuery('<a href="#" class="mapjs-note"></a>').appendTo(decorations()).click(function () {
+					self.trigger('note-click');
+				}).on('mouseover', function () {
+					self.trigger('note-hover');
+				});
+			}
+			element.show();
+		},
 		updateText = function (title) {
 			var text = MAPJS.URLHelper.stripLink(title) ||
 					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
@@ -480,6 +497,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyLabel(nodeContent.label);
+	applyNote();
 	applyAttachment();
 	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
 		.addNodeCacheMark(nodeContent);
