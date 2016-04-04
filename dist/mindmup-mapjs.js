@@ -2911,7 +2911,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		decorations = function () {
 			var element = self.find('[data-mapjs-role=decorations]');
 			if (element.length === 0) {
-				element = jQuery('<div data-mapjs-role="decorations" class="mapjs-decorations">').appendTo(self);
+				element = jQuery('<div data-mapjs-role="decorations" class="mapjs-decorations">').on('mousedown click', function (e) {
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+				}).appendTo(self);
 			}
 			return element;
 		},
