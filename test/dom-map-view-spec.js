@@ -996,6 +996,16 @@ describe('updateNodeContent', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.find('[data-mapjs-role=decorations] a.mapjs-hyperlink').css('display')).not.toBe('none');
 			});
+			['mousedown', 'click'].forEach(function (eventName) {
+				it('prevents ' + eventName + ' propagation outside the decorations element -- firefox bug fix', function () {
+					var event = jQuery.Event(eventName);
+					underTest.updateNodeContent(nodeContent);
+					underTest.find('[data-mapjs-role=decorations]').trigger(event);
+					expect(event.isDefaultPrevented()).toBeFalsy();
+					expect(event.isPropagationStopped()).toBeTruthy();
+					expect(event.isImmediatePropagationStopped()).toBeTruthy();
+				});
+			});
 			it('sets the href with a blank target on the link element to the hyperlink in node', function () {
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.find('a.mapjs-hyperlink').attr('href')).toEqual('http://www.google.com');
