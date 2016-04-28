@@ -1,16 +1,12 @@
 /*jslint forin: true, nomen: true*/
 /*global _, MAPJS, observable*/
-MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin) {
+MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
 	'use strict';
 	var self = this,
 		layoutCalculator = layoutCalculatorArg,
 		reorderMargin = defaultReorderMargin || 20,
 		clipboard = clipboardProvider || new MAPJS.MemoryClipboard(),
 		analytic,
-		currentLayout = {
-			nodes: {},
-			connectors: {}
-		},
 		idea,
 		currentLabelGenerator,
 		isInputEnabled = true,
@@ -26,7 +22,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			}
 			self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
 		},
-		horizontalSelectionThreshold = 300,
 		isAddLinkMode,
 		applyLabels = function (newLayout) {
 			var labelMap;
@@ -42,6 +37,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		},
 		updateCurrentLayout = function (newLayout, sessionId) {
 			var layoutCompleteOptions,
+				currentLayout = layoutModel.getLayout(),
 				themeChanged = (currentLayout.theme != newLayout.theme);
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			newLayout.theme = idea.getAttr('theme');
@@ -117,7 +113,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			if (themeChanged) {
 				layoutCompleteOptions = {themeChanged: true};
 			}
-			currentLayout = newLayout;
+			layoutModel.setLayout(newLayout);
 			if (!self.isInCollapse) {
 				self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
 			}
@@ -153,7 +149,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			if (node.getAttr('collapsed')) {
 				idea.updateAttr(nodeId, 'collapsed', false);
 			}
-		};
+		},
+		layoutModel = (optional && optional.layoutModel) || new MAPJS.LayoutModel({nodes: {}, connectors: {}});
 	observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
 	self.pause = function () {
@@ -170,7 +167,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		return isEditingEnabled;
 	};
 	self.getCurrentLayout = function () {
-		return currentLayout;
+		return layoutModel.getLayout();
 	};
 	self.analytic = analytic;
 	self.getCurrentlySelectedIdeaId = getCurrentlySelectedIdeaId;
@@ -178,7 +175,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!idea) {
 			return;
 		}
-		if (idea.getAttr('theme') !== currentLayout.theme) {
+		if (idea.getAttr('theme') !== layoutModel.getLayout().theme) {
 			self.dispatchEvent('themeChanged', idea.getAttr('theme'));
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
@@ -255,7 +252,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		return this.getStyleForId(currentlySelectedIdeaId, prop);
 	};
 	this.getStyleForId = function (id, prop) {
-		var node = currentLayout.nodes && currentLayout.nodes[id];
+		var node = layoutModel.getNode(id);
 		return node && node.attr && node.attr.style && node.attr.style[prop];
 	};
 	this.toggleCollapse = function (source) {
@@ -278,7 +275,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 
 		var contextNodeId = getCurrentlySelectedIdeaId(),
 			contextNode = function () {
-				return contextNodeId && currentLayout && currentLayout.nodes && currentLayout.nodes[contextNodeId];
+				return layoutModel.getNode(contextNodeId);
 			},
 			moveNodes = function (nodes, deltaX, deltaY) {
 				if (deltaX || deltaY) {
@@ -305,7 +302,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		newContext = contextNode();
 		if (oldContext && newContext) {
 			moveNodes(
-				currentLayout.nodes,
+				layoutModel.getLayout().nodes,
 				oldContext.x - newContext.x,
 				oldContext.y - newContext.y
 			);
@@ -381,7 +378,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	this.flip = function (source) {
-		var node = currentLayout && currentLayout.nodes && currentLayout.nodes[currentlySelectedIdeaId];
+		var node = layoutModel.getNode(currentlySelectedIdeaId);
 
 		if (!isEditingEnabled) {
 			return false;
@@ -550,7 +547,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		var node, attachment;
 		analytic('openAttachment', source);
 		nodeId = nodeId || currentlySelectedIdeaId;
-		node = currentLayout && currentLayout.nodes && currentLayout.nodes[nodeId];
+		node = layoutModel.getNode(nodeId);
 		attachment = node && node.attr && node.attr.attachment;
 		if (node) {
 			self.dispatchEvent('attachmentOpened', nodeId, attachment);
@@ -736,7 +733,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	self.getIcon = function (nodeId) {
-		var node = currentLayout.nodes[nodeId || currentlySelectedIdeaId];
+		var node = layoutModel.getNode(nodeId || currentlySelectedIdeaId);
 		if (!node) {
 			return false;
 		}
@@ -780,7 +777,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		return getCurrentlySelectedIdeaId();
 	};
 	self.centerOnNode = function (nodeId) {
-		if (!currentLayout.nodes[nodeId]) {
+		if (!layoutModel.getNode(nodeId)) {
 			idea.startBatch();
 			_.each(idea.calculatePath(nodeId), function (parent) {
 				idea.updateAttr(parent.id, 'collapsed', false);
@@ -802,120 +799,24 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	//node activation and selection
 	(function () {
-			var isRootOrRightHalf = function (id) {
-				return currentLayout.nodes[id].x >= currentLayout.nodes[idea.id].x;
-			},
-			isRootOrLeftHalf = function (id) {
-				return currentLayout.nodes[id].x <= currentLayout.nodes[idea.id].x;
-			},
-			nodesWithIDs = function () {
-				return _.map(currentLayout.nodes,
-					function (n, nodeId) {
-						return _.extend({ id: parseInt(nodeId, 10)}, n);
-					});
-			},
-			applyToNodeLeft = function (source, analyticTag, method) {
-				var node,
-					rank,
-					isRoot = currentlySelectedIdeaId === idea.id,
-					targetRank = isRoot ? -Infinity : Infinity;
-				if (!isInputEnabled) {
-					return;
-				}
-				analytic(analyticTag, source);
-				if (isRootOrLeftHalf(currentlySelectedIdeaId)) {
-					node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
-					ensureNodeIsExpanded(source, node.id);
-					for (rank in node.ideas) {
-						rank = parseFloat(rank);
-						if ((isRoot && rank < 0 && rank > targetRank) || (!isRoot && rank > 0 && rank < targetRank)) {
-							targetRank = rank;
-						}
-					}
-					if (targetRank !== Infinity && targetRank !== -Infinity) {
-						method.apply(self, [node.ideas[targetRank].id]);
-					}
-				} else {
-					method.apply(self, [idea.findParent(currentlySelectedIdeaId).id]);
-				}
-			},
-			applyToNodeRight = function (source, analyticTag, method) {
-				var node, rank, minimumPositiveRank = Infinity;
-				if (!isInputEnabled) {
-					return;
-				}
-				analytic(analyticTag, source);
-				if (isRootOrRightHalf(currentlySelectedIdeaId)) {
-					node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
-					ensureNodeIsExpanded(source, node.id);
-					for (rank in node.ideas) {
-						rank = parseFloat(rank);
-						if (rank > 0 && rank < minimumPositiveRank) {
-							minimumPositiveRank = rank;
-						}
-					}
-					if (minimumPositiveRank !== Infinity) {
-						method.apply(self, [node.ideas[minimumPositiveRank].id]);
-					}
-				} else {
-					method.apply(self, [idea.findParent(currentlySelectedIdeaId).id]);
-				}
-			},
-			applyToNodeUp = function (source, analyticTag, method) {
-				var previousSibling = idea.previousSiblingId(currentlySelectedIdeaId),
-					nodesAbove,
-					closestNode,
-					currentNode = currentLayout.nodes[currentlySelectedIdeaId];
-				if (!isInputEnabled) {
-					return;
-				}
-				analytic(analyticTag, source);
-				if (previousSibling) {
-					method.apply(self, [previousSibling]);
-				} else {
-					if (!currentNode) {
+			var applyToNodeDirection = function (source, analyticTag, method, direction) {
+					var relId;
+					if (!isInputEnabled) {
 						return;
 					}
-					nodesAbove = _.reject(nodesWithIDs(), function (node) {
-						return node.y >= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
-					});
-					if (_.size(nodesAbove) === 0) {
-						return;
+					analytic(analyticTag, source);
+					relId = layoutModel['nodeId' + direction](currentlySelectedIdeaId);
+					if (relId) {
+						method.apply(self, [relId]);
 					}
-					closestNode = _.min(nodesAbove, function (node) {
-						return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
-					});
-					method.apply(self, [closestNode.id]);
-				}
-			},
-			applyToNodeDown = function (source, analyticTag, method) {
-				var nextSibling = idea.nextSiblingId(currentlySelectedIdeaId),
-					nodesBelow,
-					closestNode,
-					currentNode = currentLayout.nodes[currentlySelectedIdeaId];
-				if (!isInputEnabled) {
-					return;
-				}
-				analytic(analyticTag, source);
-				if (nextSibling) {
-					method.apply(self, [nextSibling]);
-				} else {
-					if (!currentNode) {
-						return;
-					}
-					nodesBelow = _.reject(nodesWithIDs(), function (node) {
-						return node.y <= currentNode.y || Math.abs(node.x - currentNode.x) > horizontalSelectionThreshold;
-					});
-					if (_.size(nodesBelow) === 0) {
-						return;
-					}
-					closestNode = _.min(nodesBelow, function (node) {
-						return Math.pow(node.x - currentNode.x, 2) + Math.pow(node.y - currentNode.y, 2);
-					});
-					method.apply(self, [closestNode.id]);
-				}
-			},
-			applyFuncs = { 'Left': applyToNodeLeft, 'Up': applyToNodeUp, 'Down': applyToNodeDown, 'Right': applyToNodeRight };
+				},
+				applyFuncs = {};
+
+			['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
+				applyFuncs[direction] = function (source, analyticTag, method) {
+					applyToNodeDirection(source, analyticTag, method, direction);
+				};
+			});
 			self.getActivatedNodeIds = function () {
 				return activatedNodes.slice(0);
 			};
@@ -948,6 +849,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					applyFuncs[position](source, 'selectNode' + position, self.selectNode);
 				};
 			});
+
 			self.toggleActivationOnNode = function (source, nodeId) {
 				analytic('toggleActivated', source);
 				if (!self.isActivated(nodeId)) {
@@ -992,7 +894,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			self.activateLevel = function (source, level) {
 				var toActivate = _.map(
 					_.filter(
-						currentLayout.nodes,
+						layoutModel.getLayout().nodes,
 						function (node) {
 							/*jslint eqeq:true*/
 							return node.level == level;
@@ -1025,21 +927,22 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					x <= node.x + node.width &&
 					y <= node.y + node.height;
 			},
-			node = _.find(currentLayout.nodes, isPointOverNode);
+			node = _.find(layoutModel.getLayout().nodes, isPointOverNode);
 		return node && node.id;
 	};
 	self.autoPosition = function (nodeId) {
 		return idea.updateAttr(nodeId, 'position', false);
 	};
 	self.positionNodeAt = function (nodeId, x, y, manualPosition) {
-		var rootNode = currentLayout.nodes[idea.id],
+		var rootNode = layoutModel.getNode(idea.id),
 			verticallyClosestNode = {
 				id: null,
 				y: Infinity
 			},
 			parentIdea = idea.findParent(nodeId),
-			parentNode = currentLayout.nodes[parentIdea.id],
-			nodeBeingDragged = currentLayout.nodes[nodeId],
+			parentNode = layoutModel.getNode(parentIdea.id),
+			thisNode = layoutModel.getNode(nodeId),
+			nodeBeingDragged = layoutModel.getNode(nodeId),
 			tryFlip = function (rootNode, nodeBeingDragged, nodeDragEndX) {
 				var flipRightToLeft = rootNode.x < nodeBeingDragged.x && nodeDragEndX < rootNode.x,
 					flipLeftToRight = rootNode.x > nodeBeingDragged.x && rootNode.x < nodeDragEndX;
@@ -1056,11 +959,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			result = false,
 			xOffset;
 		idea.startBatch();
-		if (currentLayout.nodes[nodeId].level === 2) {
+		if (thisNode && thisNode.level === 2) {
 			result = tryFlip(rootNode, nodeBeingDragged, x);
 		}
 		_.each(idea.sameSideSiblingIds(nodeId), function (id) {
-			var node = currentLayout.nodes[id];
+			var node = layoutModel.getNode(id);
 			if (y < node.y && node.y < verticallyClosestNode.y) {
 				verticallyClosestNode = node;
 			}
@@ -1138,15 +1041,17 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		self.rebuildRequired();
 	};
 	self.getReorderBoundary = function (nodeId) {
-		var isRoot = function () {
+		var node = layoutModel.getNode(nodeId),
+			rootNode = layoutModel.getNode(idea.id),
+			isRoot = function () {
 				/*jslint eqeq: true*/
 				return nodeId == idea.id;
 			},
 			isFirstLevel = function () {
 				return parentIdea.id === idea.id;
 			},
-			isRightHalf = function (nodeId) {
-				return currentLayout.nodes[nodeId].x >= currentLayout.nodes[idea.id].x;
+			isRightHalf = function () {
+				return node && rootNode && node.x >= rootNode.x;
 			},
 			siblingBoundary = function (siblings, side) {
 				var tops = _.map(siblings, function (node) {
@@ -1156,7 +1061,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 					return node.y + node.height;
 				}),
 				result = {
-					'minY': _.min(tops) -  reorderMargin - currentLayout.nodes[nodeId].height,
+					'minY': _.min(tops) -  reorderMargin - node.height,
 					'maxY': _.max(bottoms) +  reorderMargin,
 					'margin': reorderMargin
 				};
@@ -1170,7 +1075,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			},
 			parentBoundary = function (side) {
 				var result = {
-					'minY': parentNode.y -  reorderMargin - currentLayout.nodes[nodeId].height,
+					'minY': parentNode.y -  reorderMargin - node.height,
 					'maxY': parentNode.y + parentNode.height +  reorderMargin,
 					'margin': reorderMargin
 				};
@@ -1185,9 +1090,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			},
 			otherSideSiblings = function () {
 				var otherSide = _.map(parentIdea.ideas, function (subIdea) {
-					return currentLayout.nodes[subIdea.id];
+					return layoutModel.getNode(subIdea.id);
 				});
-				otherSide = _.without(otherSide, currentLayout.nodes[nodeId]);
+				otherSide = _.without(otherSide, node);
 				if (!_.isEmpty(sameSide)) {
 					otherSide = _.difference(otherSide, sameSide);
 				}
@@ -1204,11 +1109,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return false;
 		}
 		parentIdea = idea.findParent(nodeId);
-		parentNode = currentLayout.nodes[parentIdea.id];
+		parentNode = layoutModel.getNode(parentIdea.id);
 		primaryEdge = isRightHalf(nodeId) ? 'left' : 'right';
 		secondaryEdge = isRightHalf(nodeId) ? 'right' : 'left';
 		sameSide = _.map(idea.sameSideSiblingIds(nodeId), function (id) {
-			return currentLayout.nodes[id];
+			return layoutModel.getNode(id);
 		});
 		if (!_.isEmpty(sameSide)) {
 			boundaries.push(siblingBoundary(sameSide, primaryEdge));

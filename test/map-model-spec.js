@@ -1116,7 +1116,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('Selection', function () {
-		var nodeSelectionChangedListener, anIdea, underTest, layout;
+		var nodeSelectionChangedListener, anIdea, underTest, layout, layoutModel;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -1158,9 +1158,10 @@ describe('MapModel', function () {
 					7: { x:	50, y: -10 }
 				}
 			};
+			layoutModel = new MAPJS.LayoutModel({nodes: {}, connectors: {}});
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
-			});
+			}, undefined, undefined, undefined, {layoutModel: layoutModel});
 			underTest.setIdea(anIdea);
 			nodeSelectionChangedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
@@ -1222,94 +1223,38 @@ describe('MapModel', function () {
 				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
 			});
 		});
-		describe('selectNodeRight', function () {
-			it('should select lowest ranking child when currently selected node is right of central node', function () {
-				underTest.selectNodeRight();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(4, true);
-			});
-			it('should not change selection if input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.selectNodeRight();
-				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
-			});
-			it('should expand and select lowest ranking child when currently selected node is collapsed and to the right of central node', function () {
-				underTest.collapse('source', true);
-				underTest.selectNodeRight();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(4, true);
-				expect(anIdea.getAttr('collapsed')).toBeFalsy();
-			});
-			it('should select parent node when currently selected node left of central node', function () {
-				underTest.selectNode(3);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeRight();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
-			});
-		});
-		describe('selectNodeLeft', function () {
-			it('should select lowest ranking child when currently selected node is left of central node', function () {
-				underTest.selectNodeLeft();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(3, true);
-			});
-			it('should expand the node and select lowest ranking child when selected node is collapsed and left of central node', function () {
-				underTest.collapse('source', true);
-				underTest.selectNodeLeft();
-				expect(anIdea.getAttr('collapsed')).toBeFalsy();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(3, true);
-			});
-			it('should select parent node currently selected node right of central node', function () {
-				underTest.selectNode(5);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeLeft();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
-			});
-			it('should not change selection if input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.selectNodeLeft();
-				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
+		['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
+			describe('selectNode' + direction, function () {
+				var layoutModelMethod = 'nodeId' + direction,
+					modelMethod = 'selectNode' + direction;
+
+				beforeEach(function () {
+					spyOn(layoutModel, layoutModelMethod);
+					layoutModel[layoutModelMethod].and.returnValue(3);
+				});
+				it('should send the selected node id when calling layoutModel', function () {
+					underTest.selectNode(5);
+					underTest[modelMethod]();
+					expect(layoutModel[layoutModelMethod]).toHaveBeenCalledWith(5);
+				});
+				it('should not change selection if input is disabled', function () {
+					underTest.setInputEnabled(false);
+					underTest[modelMethod]();
+					expect(layoutModel[layoutModelMethod]).not.toHaveBeenCalled();
+					expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
+				});
+				it('should not change selection when layoutModel returns falsy', function () {
+					layoutModel[layoutModelMethod].and.returnValue(false);
+					underTest[modelMethod]();
+					expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
+				});
+				it('should select node returned by layoutModel', function () {
+					underTest[modelMethod]();
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(3, true);
+				});
 			});
 		});
-		describe('selectNodeUp', function () {
-			it('should select sibling above', function () {
-				underTest.selectNode(5);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeUp();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(4, true);
-			});
-			it('should select closest node above if no sibling', function () {
-				underTest.selectNode(6);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeUp();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(7, true);
-			});
-			it('should not change selection when input is disabled', function () {
-				underTest.selectNode(6);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.setInputEnabled(false);
-				underTest.selectNodeUp();
-				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
-			});
-		});
-		describe('selectNodeDown', function () {
-			it('should select sibling below when selectNodeDown invoked', function () {
-				underTest.selectNode(4);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeDown();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
-			});
-			it('should select closest node below if no sibling', function () {
-				underTest.selectNode(7);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.selectNodeDown();
-				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(6, true);
-			});
-			it('should not change selection when input is disabled', function () {
-				underTest.selectNode(7);
-				nodeSelectionChangedListener.calls.reset();
-				underTest.setInputEnabled(false);
-				underTest.selectNodeDown();
-				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
-			});
-		});
+
 		describe('multiple node activation', function () {
 			var activatedNodesChangedListener,
 				checkActivated = function (nodeId, previouslySelected) {
@@ -1325,99 +1270,37 @@ describe('MapModel', function () {
 				underTest.addEventListener('activatedNodesChanged', activatedNodesChangedListener);
 			});
 			describe('activating relative to current selection', function () {
-				describe('activateNodeRight', function () {
-					it('should activate lowest ranking child when currently selected node is right of central node', function () {
-						underTest.activateNodeRight();
-						checkActivated(4);
-					});
-					it('should not change activation if input is disabled', function () {
-						underTest.setInputEnabled(false);
-						underTest.activateNodeRight();
-						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
-						expect(underTest.getCurrentlySelectedIdeaId()).toBe(1);
-					});
-					it('should expand and activate lowest ranking child when currently selected node is collapsed and to the right of central node', function () {
-						underTest.collapse('source', true);
-						underTest.activateNodeRight();
-						expect(anIdea.getAttr('collapsed')).toBeFalsy();
-						checkActivated(4);
-					});
-					it('should activate parent node when currently selected node left of central node', function () {
-						underTest.selectNode(3);
-						nodeSelectionChangedListener.calls.reset();
-						underTest.activateNodeRight();
-						checkActivated(1, 3);
-					});
-				});
-				describe('activateNodeLeft', function () {
-					it('should activate lowest ranking child when currently selected node is left of central node', function () {
-						underTest.activateNodeLeft();
-						checkActivated(3);
-					});
-					it('should expand the node and activate lowest ranking child when selected node is collapsed and left of central node', function () {
-						underTest.collapse('source', true);
-						underTest.activateNodeLeft();
-						expect(anIdea.getAttr('collapsed')).toBeFalsy();
-						checkActivated(3);
-					});
-					it('should activate parent node currently selected node right of central node', function () {
-						underTest.selectNode(5);
-						nodeSelectionChangedListener.calls.reset();
-						underTest.activateNodeLeft();
-						checkActivated(1, 5);
-					});
-					it('should not change selection if input is disabled', function () {
-						underTest.setInputEnabled(false);
-						underTest.activateNodeLeft();
-						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
-						expect(underTest.getCurrentlySelectedIdeaId()).toBe(1);
-					});
-				});
-				describe('activateNodeUp', function () {
-					it('should select sibling above', function () {
-						underTest.selectNode(5);
-						underTest.activateNodeUp();
-						checkActivated(4, 5);
-					});
-					it('should select closest node above if no sibling', function () {
-						underTest.selectNode(6);
-						underTest.activateNodeUp();
-						checkActivated(7, 6);
-					});
-					it('should not change activation when input is disabled', function () {
-						underTest.selectNode(6);
-						activatedNodesChangedListener.calls.reset();
-						underTest.setInputEnabled(false);
-						underTest.activateNodeUp();
-						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
-						expect(underTest.getCurrentlySelectedIdeaId()).toBe(6);
-					});
-					it('should process subsequent calls by using the last activated node as a reference', function () {
-						underTest.selectNode(5);
-						underTest.activateNodeUp();
-						underTest.activateNodeUp();
-						expect(underTest.getActivatedNodeIds()).toEqual([5, 4, 3]);
-						expect(underTest.getSelectedNodeId()).toEqual(3);
-					});
-				});
-				describe('activateNodeDown', function () {
-					it('should select sibling below when selectNodeDown invoked', function () {
-						underTest.selectNode(4);
-						underTest.activateNodeDown();
-						checkActivated(5, 4);
-					});
-					it('should select closest node below if no sibling', function () {
-						underTest.selectNode(7);
-						underTest.activateNodeDown();
-						checkActivated(6, 7);
-					});
-					it('should not change activation when input is disabled', function () {
-						underTest.selectNode(7);
-						activatedNodesChangedListener.calls.reset();
-						underTest.setInputEnabled(false);
-						underTest.activateNodeDown();
-						expect(activatedNodesChangedListener).not.toHaveBeenCalled();
-						expect(underTest.getCurrentlySelectedIdeaId()).toBe(7);
+				['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
+					describe('activateNode' + direction, function () {
+						var layoutModelMethod = 'nodeId' + direction,
+							modelMethod = 'activateNode' + direction;
+
+						beforeEach(function () {
+							spyOn(layoutModel, layoutModelMethod);
+							layoutModel[layoutModelMethod].and.returnValue(4);
+						});
+						it('should send the selected node id when calling layoutModel', function () {
+							underTest.selectNode(5);
+							underTest[modelMethod]();
+							expect(layoutModel[layoutModelMethod]).toHaveBeenCalledWith(5);
+						});
+						it('should not change activation if input is disabled', function () {
+							underTest.setInputEnabled(false);
+							underTest[modelMethod]();
+							expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+							expect(underTest.getCurrentlySelectedIdeaId()).toBe(1);
+						});
+						it('should not change activation when layoutModel returns falsy', function () {
+							layoutModel[layoutModelMethod].and.returnValue(false);
+							underTest[modelMethod]();
+							expect(activatedNodesChangedListener).not.toHaveBeenCalled();
+						});
+						it('should activate parent node when currently selected node left of central node', function () {
+							underTest.selectNode(3);
+							nodeSelectionChangedListener.calls.reset();
+							underTest[modelMethod]();
+							checkActivated(4, 3);
+						});
 					});
 				});
 			});
