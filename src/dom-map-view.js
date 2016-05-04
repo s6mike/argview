@@ -36,7 +36,9 @@ MAPJS.DOMRender = {
 	},
 	layoutCalculator: function (contentAggregate) {
 		'use strict';
-		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider);
+		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider, {
+			theme: MAPJS.DOMRender.theme
+		});
 	},
 	fixedLayout: false
 };
