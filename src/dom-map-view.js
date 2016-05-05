@@ -506,10 +506,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			return d;
 		},
 		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], 'surround'),
 		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
 		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
-		colorText = (borderType === 'underline'),
+		colorText = (borderType !== 'surround'),
 		nodeCacheData, offset;
 
 

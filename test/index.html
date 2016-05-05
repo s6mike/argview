@@ -76,23 +76,18 @@
 			{
 				"name": "default",
 				"cornerRadius": 10.0,
-				"backgroundColor": "#E0E0E0",
-				"border": {
-					"type": "surround",
-					"line": {
-						"color": "#707070",
-						"width": 1.0
-					}
+				"background": {
+					"color": "transparent",
+					"opacity": 0.0
 				},
-				"shadow": [{
-					"color": "#070707",
-					"opacity": 0.4,
-					"offset": {
-						"width": 2,
-						"height": 2
-					},
-					"radius": 2
-				}],
+				"border": {
+					"type": "overline"
+				},
+				"shadow": [
+				{
+					"color": "transparent"
+				}
+				],
 				"text": {
 					"margin": 5.0,
 					"alignment": "center",
@@ -254,7 +249,7 @@
 		],
 		"connector": {
 			"default": {
-				"type": "straight",
+				"type": "top-down-s-curve",
 				"line": {
 					"color": "#707070",
 					"width": 1.0
