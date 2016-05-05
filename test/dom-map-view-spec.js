@@ -427,6 +427,14 @@ describe('updateConnector', function () {
 		expect(underTest.css('height')).toEqual('166px');
 		expect(underTest.css('width')).toEqual('142px');
 	});
+	it('positions the connector ising innerRect to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
+		fromNode.data({innerRect: {dx: 10, dy: 5, width: 90, height: 35}});
+		underTest.updateConnector();
+		expect(underTest.css('top')).toEqual('105px');
+		expect(underTest.css('left')).toEqual('210px');
+		expect(underTest.css('height')).toEqual('161px');
+		expect(underTest.css('width')).toEqual('132px');
+	});
 	it('updates the existing curve if one is present', function () {
 		var path = MAPJS.createSVG('path').appendTo(underTest);
 		underTest.updateConnector();
@@ -659,6 +667,10 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('y')).toBe(20);
 			expect(underTest.data('width')).toBe(30);
 			expect(underTest.data('height')).toBe(40);
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(40);
 		});
 		it('rounds x, y, width and height to improve performance', function () {
 			nodeContent = {id: '12', title: 'zeka', x: 10.02, y: 19.99, width: 30.2, height: 40.3};
@@ -1153,9 +1165,13 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '16px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-left')).toEqual('100px');
+			expect(underTest.css('margin-left')).toEqual('16px');
+			expect(underTest.data('innerRect').dx).toBe(16);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(14);
+			expect(underTest.data('innerRect').height).toBe(40);
 		});
 		it('adds a right margin for decorations when they are on the right', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme(
@@ -1170,9 +1186,13 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('width', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('width', '16px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-right')).toEqual('100px');
+			expect(underTest.css('margin-right')).toEqual('16px');
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(14);
+			expect(underTest.data('innerRect').height).toBe(40);
 		});
 
 		it('adds a top margin for decorations when they are on the top without overlap', function () {
@@ -1188,9 +1208,14 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '21px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-top')).toEqual('100px');
+			expect(underTest.css('margin-top')).toEqual('21px');
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(21);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(19);
+
 		});
 		it('adds a top margin for decorations when they are on the top with overlap', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme(
@@ -1206,9 +1231,14 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '22px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-top')).toEqual('50px');
+			expect(underTest.css('margin-top')).toEqual('11px');
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(11);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(29);
+
 		});
 
 
@@ -1225,9 +1255,14 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '21px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-bottom')).toEqual('100px');
+			expect(underTest.css('margin-bottom')).toEqual('21px');
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(19);
+
 		});
 
 		it('adds a bottom margin for decorations when they are on the bottom with overlap', function () {
@@ -1244,9 +1279,14 @@ describe('updateNodeContent', function () {
 					}]
 				}
 			);
-			jQuery('<div data-mapjs-role=decorations>').css('height', '100px').appendTo(underTest);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '22px').appendTo(underTest);
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.css('margin-bottom')).toEqual('50px');
+			expect(underTest.css('margin-bottom')).toEqual('11px');
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(29);
+
 		});
 
 		it('clears the other margins to ensure stale theme changes are reverted', function () {

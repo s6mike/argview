@@ -158,7 +158,16 @@ jQuery.fn.updateConnector = function (canUseData) {
 		var element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			connection, pathElement, fromBox, toBox, changeCheck;
+			connection, pathElement, fromBox, toBox, changeCheck,
+			applyInnerRect = function (shape, box) {
+				var innerRect = shape.data().innerRect;
+				if (innerRect) {
+					box.left += innerRect.dx;
+					box.top += innerRect.dy;
+					box.width = innerRect.width;
+					box.height = innerRect.height;
+				}
+			};
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
@@ -170,6 +179,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 			fromBox = shapeFrom.getBox();
 			toBox = shapeTo.getBox();
 		}
+		applyInnerRect(shapeFrom, fromBox);
+		applyInnerRect(shapeTo, toBox);
 		fromBox.level = shapeFrom.attr('mapjs-level');
 		toBox.level = shapeTo.attr('mapjs-level');
 		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
@@ -498,7 +509,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
 		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
 		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
-		colorText = (borderType === 'underline');
+		colorText = (borderType === 'underline'),
+		nodeCacheData, offset;
 
 
 	setLevel();
@@ -507,18 +519,35 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	applyLabel(nodeContent.label);
 	applyNote();
 	applyAttachment();
-	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
-		.addNodeCacheMark(nodeContent);
+	nodeCacheData = {
+		x: Math.round(nodeContent.x),
+		y: Math.round(nodeContent.y),
+		width: Math.round(nodeContent.width),
+		height: Math.round(nodeContent.height),
+		nodeId: nodeContent.id
+	};
+	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
+	nodeCacheData.innerRect.dx = 0;
+	nodeCacheData.innerRect.dy = 0;
 	this.css('margin', '0');
 	if (decorationEdge === 'left') {
+		nodeCacheData.innerRect.dx = decorations().outerWidth();
+		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
 		self.css('margin-left', decorations().outerWidth());
 	} else if (decorationEdge === 'right') {
+		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
 		self.css('margin-right', decorations().outerWidth());
 	} else if (decorationEdge === 'top') {
-		self.css('margin-top', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		nodeCacheData.innerRect.dy = offset;
+		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+		self.css('margin-top', offset);
 	} else if (decorationEdge === 'bottom') {
+		offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
+		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
 		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
 	}
+	self.data(nodeCacheData).addNodeCacheMark(nodeContent);
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
