@@ -642,6 +642,10 @@ describe('MapModel', function () {
 				spyOn(underTest, 'insertIntermediate');
 				spyOn(underTest, 'addSubIdea');
 				spyOn(underTest, 'addSiblingIdea');
+				spyOn(underTest, 'getStandardReorderBoundary');
+				spyOn(underTest, 'getTopDownReorderBoundary');
+				spyOn(underTest, 'standardPositionNodeAt');
+				spyOn(underTest, 'topDownPositionNodeAt');
 			});
 			describe('insertUp', function () {
 				it('adds a sibling before if layout is standard', function () {
@@ -751,6 +755,34 @@ describe('MapModel', function () {
 					underTest.moveRight('keyboard');
 					expect(underTest.flip).toHaveBeenCalledWith('keyboard');
 					expect(underTest.moveRelative).not.toHaveBeenCalled();
+				});
+			});
+			describe('positionNodeAt', function () {
+				it('delegates to the standard position if required', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.positionNodeAt(1, 2, 3, 4);
+					expect(underTest.standardPositionNodeAt).toHaveBeenCalledWith(1, 2, 3, 4);
+					expect(underTest.topDownPositionNodeAt).not.toHaveBeenCalled();
+				});
+				it('delegates to the top-down position if required', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.positionNodeAt(1, 2, 3, 4);
+					expect(underTest.topDownPositionNodeAt).toHaveBeenCalledWith(1, 2, 3, 4);
+					expect(underTest.standardPositionNodeAt).not.toHaveBeenCalled();
+				});
+			});
+			describe('getReorderBoundary', function () {
+				it('delegates to the standard reorder boundary', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.getReorderBoundary(1);
+					expect(underTest.getStandardReorderBoundary).toHaveBeenCalledWith(1);
+					expect(underTest.getTopDownReorderBoundary).not.toHaveBeenCalled();
+				});
+				it('delegates to the top-down reorder if required', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.getReorderBoundary(1);
+					expect(underTest.getTopDownReorderBoundary).toHaveBeenCalledWith(1);
+					expect(underTest.getStandardReorderBoundary).not.toHaveBeenCalled();
 				});
 			});
 		});

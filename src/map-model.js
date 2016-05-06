@@ -40,9 +40,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				currentLayout = layoutModel.getLayout(),
 				themeChanged = (currentLayout.theme != newLayout.theme);
 
-			if (themeChanged) {
-				self.dispatchEvent('themeChanged', newLayout.theme);
-			}
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			applyLabels(newLayout);
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
@@ -177,6 +174,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
+		}
+		if (layoutModel.getLayout().theme !== (idea.attr && idea.attr.theme)) {
+			self.dispatchEvent('themeChanged', idea.attr && idea.attr.theme);
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
@@ -979,7 +979,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.autoPosition = function (nodeId) {
 		return idea.updateAttr(nodeId, 'position', false);
 	};
-	self.positionNodeAt = function (nodeId, x, y, manualPosition) {
+	self.standardPositionNodeAt = function (nodeId, x, y, manualPosition) {
 		var rootNode = layoutModel.getNode(idea.id),
 			verticallyClosestNode = {
 				id: null,
@@ -1037,6 +1037,38 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		idea.endBatch();
 		return result;
 	};
+	self.topDownPositionNodeAt = function (nodeId, x, y, manualPosition) {
+		var result,
+			parentNode = idea.findParent(nodeId),
+			closestNodeToRight;
+		if (!parentNode) {
+			return false;
+		}
+		if (manualPosition) {
+			return false;
+		}
+		_.each(parentNode.ideas, function (sibling) {
+			var node = layoutModel.getNode(sibling.id);
+			if (sibling.id === nodeId) {
+				return;
+			}
+			if (x < node.x && (!closestNodeToRight || (Math.abs(x - node.x) < Math.abs(x - closestNodeToRight.x)))) {
+				closestNodeToRight = sibling;
+			}
+		});
+		idea.batch(function () {
+			self.autoPosition(nodeId);
+			result = idea.positionBefore(nodeId, closestNodeToRight && closestNodeToRight.id);
+		});
+		return result;
+	};
+	self.positionNodeAt = function (nodeId, x, y, manualPosition) {
+		if (layoutModel.getOrientation() === 'standard') {
+			return self.standardPositionNodeAt(nodeId, x, y, manualPosition);
+		} else {
+			return self.topDownPositionNodeAt(nodeId, x, y, manualPosition);
+		}
+	};
 	self.dropNode = function (nodeId, dropTargetId, shiftKey) {
 		var clone,
 			parentIdea = idea.findParent(nodeId);
@@ -1086,7 +1118,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		currentLabelGenerator = labelGenerator;
 		self.rebuildRequired();
 	};
-	self.getReorderBoundary = function (nodeId) {
+	self.getStandardReorderBoundary = function (nodeId) {
 		var node = layoutModel.getNode(nodeId),
 			rootNode = layoutModel.getNode(idea.id),
 			isRoot = function () {
@@ -1173,6 +1205,37 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			boundaries.push(parentBoundary(secondaryEdge));
 		}
 		return boundaries;
+	};
+	self.getTopDownReorderBoundary = function (nodeId) {
+		var node = layoutModel.getNode(nodeId),
+			parentNode = idea.findParent(nodeId),
+			minX = Infinity, maxX = -Infinity, maxY = -Infinity,
+			tolerance = 10;
+		if (!parentNode) {
+			return [];
+		}
+		_.each(parentNode.ideas, function (subIdea) {
+			var siblingNode = layoutModel.getNode(subIdea.id);
+			if (subIdea.id !== nodeId) {
+				minX = Math.min(siblingNode.x, minX);
+				maxX = Math.max(siblingNode.x + siblingNode.width, maxX);
+				maxY = Math.max(siblingNode.y + siblingNode.height, maxY);
+			}
+		});
+		return ([{
+			minY: node.y - node.height - tolerance,
+			maxY: maxY + tolerance,
+			minX: minX - node.width - tolerance,
+			maxX: maxX + tolerance,
+			edge: 'top'
+		}]);
+	};
+	self.getReorderBoundary = function (nodeId) {
+		if (layoutModel.getOrientation() === 'standard') {
+			return self.getStandardReorderBoundary(nodeId);
+		} else {
+			return self.getTopDownReorderBoundary(nodeId);
+		}
 	};
 	self.focusAndSelect = function (nodeId) {
 		self.selectNode(nodeId);

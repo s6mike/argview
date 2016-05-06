@@ -668,7 +668,7 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 	node.shadowDraggable({disable: true});
 	return result.promise();
 };
-jQuery.fn.updateReorderBounds = function (border, box) {
+jQuery.fn.updateReorderBounds = function (border, box, dropCoords) {
 	'use strict';
 	var element = this;
 	if (!border) {
@@ -677,10 +677,17 @@ jQuery.fn.updateReorderBounds = function (border, box) {
 	}
 	element.show();
 	element.attr('mapjs-edge', border.edge);
-	element.css({
-		top: Math.round(box.y + box.height / 2 - element.height() / 2),
-		left: border.x - (border.edge === 'left' ? element.width() : 0)
-	});
+	if (border.edge === 'top') {
+		element.css({
+			top: border.minY,
+			left: Math.round(dropCoords.x - element.width() / 2)
+		});
+	} else {
+		element.css({
+			top: Math.round(dropCoords.y - element.height() / 2),
+			left: border.x - (border.edge === 'left' ? element.width() : 0)
+		});
+	}
 
 };
 
@@ -923,9 +930,16 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					if (reorderBoundary.edge === 'right') {
 						nodeX += box.width;
 					}
-					return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
-						box.y < reorderBoundary.maxY &&
-						box.y > reorderBoundary.minY;
+					if (reorderBoundary.x && reorderBoundary.margin) {
+						return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
+							box.y < reorderBoundary.maxY &&
+							box.y > reorderBoundary.minY;
+					} else {
+						return box.y < reorderBoundary.maxY &&
+							box.y > reorderBoundary.minY &&
+							box.x < reorderBoundary.maxX &&
+							box.x > reorderBoundary.minX;
+					}
 				};
 			if (_.isEmpty(boundaries)) {
 				return false;
@@ -1008,7 +1022,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					currentPosition.width = element.outerWidth();
 					currentPosition.height = element.outerHeight();
 					border = withinReorderBoundary(currentReorderBoundary, currentPosition);
-					reorderBounds.updateReorderBounds(border, currentPosition);
+					reorderBounds.updateReorderBounds(border, currentPosition, dropCoords);
 				} else {
 					reorderBounds.hide();
 				}
@@ -1046,7 +1060,11 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();
 					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
-					dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, manualPosition);
+					if (manualPosition) {
+						dropResult = mapModel.positionNodeAt(node.id, finalPosition.x, finalPosition.y, manualPosition);
+					} else {
+						dropResult = mapModel.positionNodeAt(node.id, stageDropCoordinates.x, stageDropCoordinates.y, manualPosition);
+					}
 				} else if (node.level === 1 && evt.gesture) {
 					vpCenter = stagePointAtViewportCenter();
 					vpCenter.x -= evt.gesture.deltaX || 0;

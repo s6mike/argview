@@ -26,6 +26,43 @@ describe('innerText', function () {
 		expect(jQuery.fn.text).not.toHaveBeenCalledOnJQueryObject(underTest);
 	});
 });
+describe('updateReorderBounds', function () {
+	'use strict';
+	var underTest;
+	beforeEach(function () {
+		underTest = jQuery('<div>').css({position: 'absolute', width: 6, height: 16}).appendTo('body');
+	});
+	afterEach(function () {
+		underTest.remove();
+	});
+	it('hides the element if the border is not defined', function () {
+		underTest.updateReorderBounds(false, {});
+		expect(underTest.css('display')).toEqual('none');
+	});
+	it('shows the element if the border is defined', function () {
+		underTest.css('display', 'none');
+		underTest.updateReorderBounds({edge: 'top', minY: 10}, {}, {x: 10});
+		expect(underTest.css('display')).not.toEqual('none');
+	});
+	it('shows the top border at drop coordinates x', function () {
+		underTest.updateReorderBounds({edge: 'top', minY: 33}, {}, {x: 10});
+		expect(underTest.attr('mapjs-edge')).toEqual('top');
+		expect(underTest.css('left')).toEqual('7px');
+		expect(underTest.css('top')).toEqual('33px');
+	});
+	it('shows the left border at drop coords (-chevron width, Y)', function () {
+		underTest.updateReorderBounds({edge: 'left', x: 33}, {}, {y: 10});
+		expect(underTest.attr('mapjs-edge')).toEqual('left');
+		expect(underTest.css('top')).toEqual('2px');
+		expect(underTest.css('left')).toEqual('27px');
+	});
+	it('shows the right border at drop coords (0, Y)', function () {
+		underTest.updateReorderBounds({edge: 'right', x: 33}, {}, {y: 10});
+		expect(underTest.attr('mapjs-edge')).toEqual('right');
+		expect(underTest.css('top')).toEqual('2px');
+		expect(underTest.css('left')).toEqual('33px');
+	});
+});
 describe('updateStage', function () {
 	'use strict';
 	var stage, second;
@@ -1656,18 +1693,46 @@ describe('MAPJS.DOMRender', function () {
 							expect(jQuery('#node_2').hasClass('droppable')).toBeFalsy();
 							expect(jQuery('#node_3').hasClass('droppable')).toBeFalsy();
 						});
-						it('hides the reorder boundary if current position is above the bounds', function () {
-							noShift.currentPosition = noShift.finalPosition;
-							noShift.currentPosition.top -= 30;
-							underTest.trigger(jQuery.Event('mm:drag', noShift));
-							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
-							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+						describe('when reorder boundary set with x and margin', function () {
+							it('hides the reorder boundary if current position is above the bounds', function () {
+								noShift.currentPosition = noShift.finalPosition;
+								noShift.currentPosition.top -= 30;
+								underTest.trigger(jQuery.Event('mm:drag', noShift));
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+							});
+							it('shows the reorder boundary if current position is within the bounds', function () {
+								noShift.currentPosition = noShift.finalPosition;
+								underTest.trigger(jQuery.Event('mm:drag', noShift));
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).not.toBe('none');
+							});
 						});
-						it('shows the reorder boundary if current position is within the bounds', function () {
-							noShift.currentPosition = noShift.finalPosition;
-							underTest.trigger(jQuery.Event('mm:drag', noShift));
-							expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
-							expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).not.toBe('none');
+						describe('when reorder boundary set with minX and maxX', function () {
+							beforeEach(function () {
+								/* box position is 112, 123 */
+								reorderBoundary[0] = {
+									edge: 'top',
+									maxY: 130,
+									minY: 120,
+									minX: 110,
+									maxX: 120
+								};
+							});
+							it('hides the reorder boundary if current position is above the bounds', function () {
+								noShift.currentPosition = noShift.finalPosition;
+								noShift.currentPosition.top -= 30;
+								underTest.trigger(jQuery.Event('mm:drag', noShift));
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).toBe('none');
+							});
+							it('shows the reorder boundary if current position is within the bounds', function () {
+								noShift.currentPosition = noShift.finalPosition;
+								underTest.trigger(jQuery.Event('mm:drag', noShift));
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').length).toBeTruthy();
+								expect(stage.find('[data-mapjs-role=reorder-bounds]').css('display')).not.toBe('none');
+							});
+
 						});
 						it('hides the reorder boundary if shift is pressed', function () {
 							withShift.currentPosition = noShift.finalPosition;
@@ -1749,9 +1814,13 @@ describe('MAPJS.DOMRender', function () {
 						beforeEach(function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(false);
 						});
-						it('calls positionNode and passes the current (DOM) top and left position', function () {
+						it('calls positionNode and passes the current drop position if not manual', function () {
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
-							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, false);
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, -160, -75, /*112, 123, */ false);
+						});
+						it('calls positionNode and passes the current DOM position if  manual', function () {
+							underTest.trigger(jQuery.Event('mm:stop-dragging', withShift));
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, true);
 						});
 						describe('reorder or manual position check', function () {
 							it('does not position manually inside reorder bounds', function () {
@@ -1834,15 +1903,15 @@ describe('MAPJS.DOMRender', function () {
 							mapModel.getNodeIdAtPosition.and.returnValue(1);
 							underTest.css({position: 'absolute', top: '123px', left: '112px'});
 						});
-						it('triggers automatic positioning if within reorder bounds', function () {
+						it('triggers automatic positioning to drop coordinates if within reorder bounds', function () {
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
-							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 112, 123, false);
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, -160, -75, /*112, 123,*/ false);
 							expect(mapModel.dropNode).not.toHaveBeenCalled();
 						});
-						it('triggers manual positioning outside of reorder bounds', function () {
+						it('triggers manual positioning to DOM coordinates outside of reorder bounds', function () {
 							noShift.finalPosition.left += 60;
 							underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
-							expect(mapModel.positionNodeAt.calls.mostRecent().args[3]).toBeTruthy();
+							expect(mapModel.positionNodeAt).toHaveBeenCalledWith(1, 142, 123, true);
 							expect(mapModel.dropNode).not.toHaveBeenCalled();
 						});
 						it('triggers manual positioning if shift is pressed', function () {

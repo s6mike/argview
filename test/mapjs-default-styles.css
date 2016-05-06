@@ -146,3 +146,6 @@
 .mapjs-reorder-bounds[mapjs-edge="left"] {
 	background-image:url(chevron-right.svg);
 }
+.mapjs-reorder-bounds[mapjs-edge="top"] {
+	transform: rotate(-90deg);
+}
