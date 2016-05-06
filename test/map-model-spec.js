@@ -172,6 +172,7 @@ describe('MapModel', function () {
 
 			var listener = jasmine.createSpy('themeChanged');
 			underTest.addEventListener('themeChanged', listener);
+			layoutAfter.theme = 'new-theme';
 			anIdea.updateAttr(4, 'theme', 'new-theme');
 			expect(listener).toHaveBeenCalledWith('new-theme');
 		});
@@ -620,6 +621,137 @@ describe('MapModel', function () {
 				underTest.setInputEnabled(false);
 				underTest.moveRelative('keyboard', -1);
 				expect(anIdea.moveRelative).not.toHaveBeenCalled();
+			});
+		});
+		describe('layout-specific movements', function () {
+			var layoutModel, layout;
+			beforeEach(function () {
+				layout = {
+					nodes: {
+						1: { x: 0, y: 10 },
+						2: { x: -10, y: 10, attr: {style: {styleprop: 'oldValue'}}}
+					}
+				};
+				layoutModel = jasmine.createSpyObj('layoutModel', ['getOrientation']);
+				underTest = new MAPJS.MapModel(function () {
+					return JSON.parse(JSON.stringify(layout)); /* deep clone */
+				}, undefined, undefined, undefined, {layoutModel: layoutModel});
+				spyOn(underTest, 'moveRelative');
+				spyOn(underTest, 'flip');
+				spyOn(underTest, 'addSiblingIdeaBefore');
+				spyOn(underTest, 'insertIntermediate');
+				spyOn(underTest, 'addSubIdea');
+				spyOn(underTest, 'addSiblingIdea');
+			});
+			describe('insertUp', function () {
+				it('adds a sibling before if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.insertUp('keyboard');
+					expect(underTest.addSiblingIdeaBefore).toHaveBeenCalledWith('keyboard');
+					expect(underTest.insertIntermediate).not.toHaveBeenCalled();
+				});
+				it('adds an intermediate if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.insertUp('keyboard');
+					expect(underTest.addSiblingIdeaBefore).not.toHaveBeenCalled();
+					expect(underTest.insertIntermediate).toHaveBeenCalledWith('keyboard');
+				});
+			});
+			describe('insertDown', function () {
+				it('adds a sibling after if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.insertDown('keyboard');
+					expect(underTest.addSiblingIdea).toHaveBeenCalledWith('keyboard');
+					expect(underTest.addSubIdea).not.toHaveBeenCalled();
+				});
+				it('adds a child if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.insertDown('keyboard');
+					expect(underTest.addSiblingIdea).not.toHaveBeenCalled();
+					expect(underTest.addSubIdea).toHaveBeenCalledWith('keyboard');
+				});
+			});
+			describe('insertLeft', function () {
+				it('adds an intermediate parent if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.insertLeft('keyboard');
+					expect(underTest.addSiblingIdeaBefore).not.toHaveBeenCalled();
+					expect(underTest.insertIntermediate).toHaveBeenCalledWith('keyboard');
+				});
+				it('adds a sibling idea before the current one if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.insertLeft('keyboard');
+					expect(underTest.addSiblingIdeaBefore).toHaveBeenCalledWith('keyboard');
+					expect(underTest.insertIntermediate).not.toHaveBeenCalled();
+				});
+
+			});
+			describe('insertRight', function () {
+				it('adds a sibling after the current one if the layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.insertRight('keyboard');
+					expect(underTest.addSiblingIdea).toHaveBeenCalledWith('keyboard');
+					expect(underTest.addSubIdea).not.toHaveBeenCalled();
+				});
+				it('adds a sub idea if the layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.insertRight('keyboard');
+					expect(underTest.addSiblingIdea).not.toHaveBeenCalled();
+					expect(underTest.addSubIdea).toHaveBeenCalledWith('keyboard');
+				});
+
+			});
+			describe('moveUp', function () {
+				it('moves relative if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.moveUp('keyboard');
+					expect(underTest.moveRelative).toHaveBeenCalledWith('keyboard', -1);
+				});
+				it('does nothing if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.moveUp('keyboard');
+					expect(underTest.moveRelative).not.toHaveBeenCalled();
+				});
+			});
+			describe('moveDown', function () {
+				it('moves relative if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.moveDown('keyboard');
+					expect(underTest.moveRelative).toHaveBeenCalledWith('keyboard', 1);
+				});
+				it('does nothing if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.moveDown('keyboard');
+					expect(underTest.moveRelative).not.toHaveBeenCalled();
+				});
+			});
+			describe('moveLeft', function () {
+				it('moves relative if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.moveLeft('keyboard');
+					expect(underTest.moveRelative).toHaveBeenCalledWith('keyboard', -1);
+					expect(underTest.flip).not.toHaveBeenCalled();
+				});
+				it('tries to flip if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.moveLeft('keyboard');
+					expect(underTest.flip).toHaveBeenCalledWith('keyboard');
+					expect(underTest.moveRelative).not.toHaveBeenCalled();
+				});
+			});
+			describe('moveRight', function () {
+				it('moves relative if layout is top-down', function () {
+					layoutModel.getOrientation.and.returnValue('top-down');
+					underTest.moveRight('keyboard');
+					expect(underTest.moveRelative).toHaveBeenCalledWith('keyboard', 1);
+					expect(underTest.flip).not.toHaveBeenCalled();
+				});
+				it('tries to flip if layout is standard', function () {
+					layoutModel.getOrientation.and.returnValue('standard');
+					underTest.moveRight('keyboard');
+					expect(underTest.flip).toHaveBeenCalledWith('keyboard');
+					expect(underTest.moveRelative).not.toHaveBeenCalled();
+				});
 			});
 		});
 		describe('redo', function () {

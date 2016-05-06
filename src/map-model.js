@@ -39,8 +39,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			var layoutCompleteOptions,
 				currentLayout = layoutModel.getLayout(),
 				themeChanged = (currentLayout.theme != newLayout.theme);
+
+			if (themeChanged) {
+				self.dispatchEvent('themeChanged', newLayout.theme);
+			}
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
-			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
 				var newConnector = newLayout.connectors[connectorId];
@@ -174,9 +177,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
-		}
-		if (idea.getAttr('theme') !== layoutModel.getLayout().theme) {
-			self.dispatchEvent('themeChanged', idea.getAttr('theme'));
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
@@ -767,11 +767,57 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			idea.removeSubIdea(nodeId);
 		}
 	};
+	self.insertUp = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSiblingIdeaBefore(source);
+		} else {
+			self.insertIntermediate(source);
+		}
+	};
+	self.insertDown = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSiblingIdea(source);
+		} else {
+			self.addSubIdea(source);
+		}
+	};
+	self.insertLeft = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.insertIntermediate(source);
+		} else {
+			self.addSiblingIdeaBefore(source);
+		}
+	};
+	self.insertRight = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSubIdea(source);
+		} else {
+			self.addSiblingIdea(source);
+		}
+	};
 	self.moveUp = function (source) {
-		self.moveRelative(source, -1);
+		if (layoutModel.getOrientation() === 'standard') {
+			self.moveRelative(source, -1);
+		}
 	};
 	self.moveDown = function (source) {
-		self.moveRelative(source, 1);
+		if (layoutModel.getOrientation() === 'standard') {
+			self.moveRelative(source, 1);
+		}
+	};
+	self.moveLeft = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.flip(source);
+		} else {
+			self.moveRelative(source, -1);
+		}
+	};
+	self.moveRight = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.flip(source);
+		} else {
+			self.moveRelative(source, 1);
+		}
 	};
 	self.getSelectedNodeId = function () {
 		return getCurrentlySelectedIdeaId();

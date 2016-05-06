@@ -1222,8 +1222,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			var layoutCompleteOptions,
 				currentLayout = layoutModel.getLayout(),
 				themeChanged = (currentLayout.theme != newLayout.theme);
+
+			if (themeChanged) {
+				self.dispatchEvent('themeChanged', newLayout.theme);
+			}
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
-			newLayout.theme = idea.getAttr('theme');
 			applyLabels(newLayout);
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
 				var newConnector = newLayout.connectors[connectorId];
@@ -1357,9 +1360,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.rebuildRequired = function (sessionId) {
 		if (!idea) {
 			return;
-		}
-		if (idea.getAttr('theme') !== layoutModel.getLayout().theme) {
-			self.dispatchEvent('themeChanged', idea.getAttr('theme'));
 		}
 		updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId);
 	};
@@ -1950,11 +1950,57 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			idea.removeSubIdea(nodeId);
 		}
 	};
+	self.insertUp = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSiblingIdeaBefore(source);
+		} else {
+			self.insertIntermediate(source);
+		}
+	};
+	self.insertDown = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSiblingIdea(source);
+		} else {
+			self.addSubIdea(source);
+		}
+	};
+	self.insertLeft = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.insertIntermediate(source);
+		} else {
+			self.addSiblingIdeaBefore(source);
+		}
+	};
+	self.insertRight = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.addSubIdea(source);
+		} else {
+			self.addSiblingIdea(source);
+		}
+	};
 	self.moveUp = function (source) {
-		self.moveRelative(source, -1);
+		if (layoutModel.getOrientation() === 'standard') {
+			self.moveRelative(source, -1);
+		}
 	};
 	self.moveDown = function (source) {
-		self.moveRelative(source, 1);
+		if (layoutModel.getOrientation() === 'standard') {
+			self.moveRelative(source, 1);
+		}
+	};
+	self.moveLeft = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.flip(source);
+		} else {
+			self.moveRelative(source, -1);
+		}
+	};
+	self.moveRight = function (source) {
+		if (layoutModel.getOrientation() === 'standard') {
+			self.flip(source);
+		} else {
+			self.moveRelative(source, 1);
+		}
 	};
 	self.getSelectedNodeId = function () {
 		return getCurrentlySelectedIdeaId();
@@ -2680,7 +2726,16 @@ jQuery.fn.updateConnector = function (canUseData) {
 		var element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			connection, pathElement, fromBox, toBox, changeCheck;
+			connection, pathElement, fromBox, toBox, changeCheck,
+			applyInnerRect = function (shape, box) {
+				var innerRect = shape.data().innerRect;
+				if (innerRect) {
+					box.left += innerRect.dx;
+					box.top += innerRect.dy;
+					box.width = innerRect.width;
+					box.height = innerRect.height;
+				}
+			};
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
 			return;
@@ -2692,6 +2747,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 			fromBox = shapeFrom.getBox();
 			toBox = shapeTo.getBox();
 		}
+		applyInnerRect(shapeFrom, fromBox);
+		applyInnerRect(shapeTo, toBox);
 		fromBox.level = shapeFrom.attr('mapjs-level');
 		toBox.level = shapeTo.attr('mapjs-level');
 		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
@@ -3017,10 +3074,11 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			return d;
 		},
 		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], ''),
+		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], 'surround'),
 		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
 		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
-		colorText = (borderType === 'underline');
+		colorText = (borderType !== 'surround'),
+		nodeCacheData, offset;
 
 
 	setLevel();
@@ -3029,18 +3087,35 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	applyLabel(nodeContent.label);
 	applyNote();
 	applyAttachment();
-	self.data({'x': Math.round(nodeContent.x), 'y': Math.round(nodeContent.y), 'width': Math.round(nodeContent.width), 'height': Math.round(nodeContent.height), 'nodeId': nodeContent.id})
-		.addNodeCacheMark(nodeContent);
+	nodeCacheData = {
+		x: Math.round(nodeContent.x),
+		y: Math.round(nodeContent.y),
+		width: Math.round(nodeContent.width),
+		height: Math.round(nodeContent.height),
+		nodeId: nodeContent.id
+	};
+	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
+	nodeCacheData.innerRect.dx = 0;
+	nodeCacheData.innerRect.dy = 0;
 	this.css('margin', '0');
 	if (decorationEdge === 'left') {
+		nodeCacheData.innerRect.dx = decorations().outerWidth();
+		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
 		self.css('margin-left', decorations().outerWidth());
 	} else if (decorationEdge === 'right') {
+		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
 		self.css('margin-right', decorations().outerWidth());
 	} else if (decorationEdge === 'top') {
-		self.css('margin-top', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		nodeCacheData.innerRect.dy = offset;
+		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+		self.css('margin-top', offset);
 	} else if (decorationEdge === 'bottom') {
+		offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
+		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
 		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
 	}
+	self.data(nodeCacheData).addNodeCacheMark(nodeContent);
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
@@ -3792,16 +3867,20 @@ jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, resourceTranslator, centerSelectedNodeOnOrientationChange, options) {
 	'use strict';
 	var hotkeyEventHandlers = {
-			'return': 'addSiblingIdea',
-			'shift+return': 'addSiblingIdeaBefore',
+			'return': 'insertDown',
+			'shift+return': 'insertUp',
+			'shift+tab': 'insertLeft',
+			'tab insert': 'insertRight',
 			'del backspace': 'removeSubIdea',
-			'tab insert': 'addSubIdea',
 			'left': 'selectNodeLeft',
 			'up': 'selectNodeUp',
 			'right': 'selectNodeRight',
 			'shift+right': 'activateNodeRight',
 			'shift+left': 'activateNodeLeft',
-			'meta+right ctrl+right meta+left ctrl+left': 'flip',
+			'meta+right ctrl+right': 'moveRight',
+			'meta+left ctrl+left': 'moveLeft',
+			'meta+up ctrl+up': 'moveUp',
+			'meta+down ctrl+down': 'moveDown',
 			'shift+up': 'activateNodeUp',
 			'shift+down': 'activateNodeDown',
 			'down': 'selectNodeDown',
@@ -3811,13 +3890,10 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'p meta+v ctrl+v': 'paste',
 			'y meta+c ctrl+c': 'copy',
 			'u meta+z ctrl+z': 'undo',
-			'shift+tab': 'insertIntermediate',
 			'Esc 0 meta+0 ctrl+0': 'resetView',
 			'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
 			'meta+plus ctrl+plus z': 'scaleUp',
 			'meta+minus ctrl+minus shift+z': 'scaleDown',
-			'meta+up ctrl+up': 'moveUp',
-			'meta+down ctrl+down': 'moveDown',
 			'ctrl+shift+v meta+shift+v': 'pasteStyle',
 			'Esc': 'cancelCurrentAction'
 		},
