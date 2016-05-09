@@ -9,6 +9,9 @@
 	color: #4F4F4F;
 	cursor: hand;
 }
+.mapjs-node:focus {
+	outline: none;
+}
 .mapjs-node.droppable {
 	border: 1px solid red;
 }
@@ -38,37 +41,11 @@
 	min-width: 1em;
 	outline: none;
 }
-.mapjs-node.activated {
-	outline: 0;
-	border: 3px dashed #2E9AFE;
-	margin: -2px;
-}
-.mapjs-node:focus {
-	outline: 0;
-	border: 3px dashed green;
-	margin: -2px;
-	box-shadow: 5px 5px 5px green;
-	z-index: 3;
-}
-.mapjs-node.selected {
-	outline: 0;
-	margin: -2px;
-	z-index: 3;
-}
 .mapjs-node.dragging {
 	opacity: 0.4;
 }
 .mapjs-node[mapjs-level="1"] {
 	background-color:#22AAE0;
-}
-.mapjs-node-light {
-	color: #4F4F4F;
-}
-.mapjs-node-dark {
-	color: #EEEEEE;
-}
-.mapjs-node-white {
-	color: black;
 }
 .mapjs-decorations {
 	position: absolute;

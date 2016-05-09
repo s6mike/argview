@@ -3160,7 +3160,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
 	nodeCacheData.innerRect.dx = 0;
 	nodeCacheData.innerRect.dy = 0;
-	this.css('margin', '0');
+	this.css('margin', '');
 	if (decorationEdge === 'left') {
 		nodeCacheData.innerRect.dx = decorations().outerWidth();
 		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
@@ -3172,7 +3172,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
 		nodeCacheData.innerRect.dy = offset;
 		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
-		self.css('margin-top', offset);
+		if (offset) {
+			self.css('margin-top', offset);
+		}
+
 	} else if (decorationEdge === 'bottom') {
 		offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
 		nodeCacheData.innerRect.height = nodeCacheData.height - offset;

@@ -1254,6 +1254,29 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('innerRect').height).toBe(19);
 
 		});
+		it('clears a top margin for decorations when the node does not have decorations', function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme(
+				{
+					node: [{
+						name: 'default',
+						decorations: {
+							height: 0,
+							edge: 'top',
+							position: 'center'
+						}
+					}]
+				}
+			);
+			jQuery('<div data-mapjs-role=decorations>').css('height', '0').appendTo(underTest);
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.attr('style')).toBeFalsy();
+			expect(underTest.data('innerRect').dx).toBe(0);
+			expect(underTest.data('innerRect').dy).toBe(0);
+			expect(underTest.data('innerRect').width).toBe(30);
+			expect(underTest.data('innerRect').height).toBe(40);
+
+		});
+
 		it('adds a top margin for decorations when they are on the top with overlap', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme(
 				{
