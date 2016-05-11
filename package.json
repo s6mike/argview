@@ -29,7 +29,7 @@
     "jquery": "^2.1.4",
     "jquery-hammerjs": "^1.1.3",
     "jquery.hotkeys": "git://github.com/jeresig/jquery.hotkeys",
-    "mindmup-mapjs-layout": "^1.3.5",
+    "mindmup-mapjs-layout": "^1.3.6",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
