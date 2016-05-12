@@ -1064,9 +1064,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			}
 		});
 		idea.batch(function () {
-			var closestNode = (closestNodeToRight && closestNodeToRight.id && idea.findChildRankById(closestNodeToRight.id) < 0) ? closestNodeToLeft : closestNodeToRight,
-				closestNodeRank = closestNode && closestNode.id && idea.findChildRankById(closestNode.id),
-				shouldFlip = closestNodeRank && (idea.findChildRankById(nodeId) * closestNodeRank < 0);
+			var useLeftNode = !!(closestNodeToRight && closestNodeToRight.id && idea.findChildRankById(closestNodeToRight.id) < 0),
+				closestNode = useLeftNode ? closestNodeToLeft : closestNodeToRight,
+				shouldFlip = (useLeftNode == (idea.findChildRankById(nodeId) > 0));
 			self.autoPosition(nodeId);
 			if (shouldFlip) {
 				idea.flip(nodeId);
