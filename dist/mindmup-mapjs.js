@@ -131,14 +131,16 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return false;
 			};
 			contentIdea.sortedSubIdeas = function () {
+				var result = [],
+					childKeys,
+					sortedChildKeys;
 				if (!contentIdea.ideas) {
 					return [];
 				}
-				var result = [],
-					childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) {
-						return key > 0;
-					}),
-					sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
+				childKeys = _.groupBy(_.map(_.keys(contentIdea.ideas), parseFloat), function (key) {
+					return key > 0;
+				});
+				sortedChildKeys = _.sortBy(childKeys[true], Math.abs).concat(_.sortBy(childKeys[false], Math.abs));
 				_.each(sortedChildKeys, function (key) {
 					result.push(contentIdea.ideas[key]);
 				});
@@ -158,11 +160,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return contentIdea;
 		},
 		maxKey = function (kvMap, sign) {
+			var currentKeys;
 			sign = sign || 1;
 			if (_.size(kvMap) === 0) {
 				return 0;
 			}
-			var currentKeys = _.keys(kvMap);
+			currentKeys = _.keys(kvMap);
 			currentKeys.push(0); /* ensure at least 0 is there for negative ranks */
 			return _.max(_.map(currentKeys, parseFloat), function (x) {
 				return x * sign;
@@ -268,9 +271,10 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			delete parentIdea.ideas[oldRank];
 		},
 		upgrade = function (idea) {
+			var collapsed;
 			if (idea.style) {
 				idea.attr = {};
-				var collapsed = idea.style.collapsed;
+				collapsed = idea.style.collapsed;
 				delete idea.style.collapsed;
 				idea.attr.style = idea.style;
 				if (collapsed) {
@@ -495,8 +499,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 	};
 	contentAggregate.pasteMultiple = function (parentIdeaId, jsonArrayToPaste) {
+		var results;
 		contentAggregate.startBatch();
-		var results = _.map(jsonArrayToPaste, function (json) {
+		results = _.map(jsonArrayToPaste, function (json) {
 			return contentAggregate.paste(parentIdeaId, json);
 		});
 		contentAggregate.endBatch();
@@ -620,8 +625,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return idea.id;
 	};
 	contentAggregate.removeMultiple = function (subIdeaIdArray) {
+		var results;
 		contentAggregate.startBatch();
-		var results = _.map(subIdeaIdArray, contentAggregate.removeSubIdea);
+		results = _.map(subIdeaIdArray, contentAggregate.removeSubIdea);
 		contentAggregate.endBatch();
 		return results;
 	};
@@ -647,8 +653,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return false;
 	};
 	contentAggregate.insertIntermediateMultiple = function (idArray) {
+		var newId;
 		contentAggregate.startBatch();
-		var newId = contentAggregate.insertIntermediate(idArray[0]);
+		newId = contentAggregate.insertIntermediate(idArray[0]);
 		_.each(idArray.slice(1), function (id) {
 			contentAggregate.changeParent(id, newId);
 		});
@@ -659,10 +666,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('insertIntermediate', arguments);
 	};
 	commandProcessors.insertIntermediate = function (originSession, inFrontOfIdeaId, title, optionalNewId) {
+		var childRank, oldIdea, newIdea, parentIdea;
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
-		var childRank, oldIdea, newIdea, parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
+		parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
 		if (!parentIdea) {
 			return false;
 		}
@@ -747,25 +755,70 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return !!undoAction;
 	};
-	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
+	contentAggregate.getOrderedSiblingRanks = function (ideaId, options) {
 		var parentIdea = contentAggregate.findParent(ideaId),
-			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
-			siblingRanks = currentRank && _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs),
-			currentIndex = siblingRanks && siblingRanks.indexOf(currentRank),
-			/* we call positionBefore, so movement down is actually 2 spaces, not 1 */
-			newIndex = currentIndex + (relativeMovement > 0 ? relativeMovement + 1 : relativeMovement),
-			beforeSibling = (newIndex >= 0) && parentIdea && siblingRanks && parentIdea.ideas[siblingRanks[newIndex]];
-		if (newIndex < 0 || !parentIdea) {
+			currentRank = parentIdea && parentIdea.findChildRankById(ideaId);
+		if (!currentRank) {
 			return false;
 		}
-		return contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
+		if (options && options.ignoreRankSide) {
+			return _.sortBy(_.map(_.keys(parentIdea.ideas), parseFloat));
+		} else {
+			return _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs);
+		}
+	};
+	contentAggregate.moveRelative = function (ideaId, relativeMovement, options) {
+		var parentIdea = contentAggregate.findParent(ideaId),
+			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
+			siblingRanks = contentAggregate.getOrderedSiblingRanks(ideaId, options),
+			currentIndex = siblingRanks && siblingRanks.indexOf(currentRank),
+			calcNewIndex = function () {
+				var calcIndex = currentIndex + (relativeMovement > 0 ? relativeMovement + 1 : relativeMovement);
+				if (options && options.ignoreRankSide) {
+					if (currentRank < 0) {
+						calcIndex = currentIndex + (relativeMovement < 0 ? relativeMovement - 1 : relativeMovement);
+						if (siblingRanks[calcIndex] > 0) {
+							calcIndex = calcIndex + 1;
+						}
+					} else if (siblingRanks[calcIndex] < 0) {
+						calcIndex = calcIndex - 1;
+					}
+				}
+				return calcIndex;
+
+			},
+			/* we call positionBefore, so movement down is actually 2 spaces, not 1 */
+			newIndex = calcNewIndex(),
+			beforeRank = newIndex >= 0 && siblingRanks && siblingRanks.length && siblingRanks[newIndex],
+			beforeSibling = beforeRank && parentIdea && parentIdea.ideas[beforeRank],
+			shouldNotPosition = function () {
+				if (!parentIdea) {
+					return false;
+				}
+				if (options && options.ignoreRankSide && currentRank < 0) {
+					return newIndex	> (siblingRanks.length - 1);
+				}
+				return (newIndex < 0);
+			}, result;
+		if (shouldNotPosition()) {
+			return false;
+		}
+		contentAggregate.startBatch();
+		//handle reordering on top down maps where moving from positive to negative or vice versa
+		if (options && options.ignoreRankSide && beforeRank && beforeSibling && ((beforeRank * currentRank) < 0)) {
+			contentAggregate.flip(ideaId);
+		}
+		result =  contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
+		contentAggregate.endBatch();
+		return result;
 	};
 	contentAggregate.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
 		return contentAggregate.execCommand('positionBefore', arguments);
 	};
 	commandProcessors.positionBefore = function (originSession, ideaId, positionBeforeIdeaId, parentIdea) {
-		parentIdea = parentIdea || contentAggregate;
 		var newRank, afterRank, siblingRanks, candidateSiblings, beforeRank, maxRank, currentRank;
+		parentIdea = parentIdea || contentAggregate;
+
 		currentRank = parentIdea.findChildRankById(ideaId);
 		if (!currentRank) {
 			return _.reduce(
@@ -934,8 +987,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('undo', arguments);
 	};
 	commandProcessors.undo = function (originSession) {
-		contentAggregate.endBatch();
 		var topEvent;
+		contentAggregate.endBatch();
 		topEvent = eventStacks[originSession] && eventStacks[originSession].pop();
 		if (topEvent && topEvent.undoFunction) {
 			topEvent.undoFunction();
@@ -952,8 +1005,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('redo', arguments);
 	};
 	commandProcessors.redo = function (originSession) {
-		contentAggregate.endBatch();
 		var topEvent;
+		contentAggregate.endBatch();
 		topEvent = redoStacks[originSession] && redoStacks[originSession].pop();
 		if (topEvent) {
 			isRedoInProgress = true;
@@ -969,15 +1022,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
 		var existingId, id,
 			maxIdForSession = function () {
-				if (_.isEmpty(contentAggregate.resources)) {
-					return 0;
-				}
 				var toInt = function (string) {
 						return parseInt(string, 10);
 					},
-					keys = _.keys(contentAggregate.resources),
-					filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys,
-					intKeys = _.map(filteredKeys, toInt);
+					keys, filteredKeys, intKeys;
+
+				if (_.isEmpty(contentAggregate.resources)) {
+					return 0;
+				}
+				keys = _.keys(contentAggregate.resources);
+				filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys;
+				intKeys = _.map(filteredKeys, toInt);
 				return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
 			},
 			nextResourceId = function () {
@@ -1003,10 +1058,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.resources && contentAggregate.resources[id];
 	};
 	contentAggregate.hasSiblings = function (id) {
+		var parent;
 		if (id === contentAggregate.id) {
 			return false;
 		}
-		var parent = contentAggregate.findParent(id);
+		parent = contentAggregate.findParent(id);
 		return parent && _.size(parent.ideas) > 1;
 	};
 	if (contentAggregate.formatVersion != 2) {
@@ -1830,12 +1886,16 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	self.moveRelative = function (source, relativeMovement) {
+		var options;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('moveRelative', source);
 		if (isInputEnabled) {
-			idea.moveRelative(currentlySelectedIdeaId, relativeMovement);
+			if (layoutModel.getOrientation() === 'top-down') {
+				options = {ignoreRankSide: true};
+			}
+			idea.moveRelative(currentlySelectedIdeaId, relativeMovement, options);
 		}
 	};
 	self.cut = function (source) {
@@ -2223,7 +2283,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.topDownPositionNodeAt = function (nodeId, x, y, manualPosition) {
 		var result,
 			parentNode = idea.findParent(nodeId),
-			closestNodeToRight;
+			closestNodeToRight, closestNodeToLeft;
 		if (!parentNode) {
 			return false;
 		}
@@ -2235,13 +2295,22 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			if (sibling.id === nodeId) {
 				return;
 			}
-			if (x < node.x && (!closestNodeToRight || (Math.abs(x - node.x) < Math.abs(x - closestNodeToRight.x)))) {
+			if (x < node.x && (!closestNodeToRight || (Math.abs(x - node.x) < Math.abs(x - layoutModel.getNode(closestNodeToRight.id).x)))) {
 				closestNodeToRight = sibling;
+			}
+			if (x > (node.x + node.width) && (!closestNodeToLeft || (Math.abs(x - node.x) < Math.abs(x - layoutModel.getNode(closestNodeToLeft.id).x)))) {
+				closestNodeToLeft = sibling;
 			}
 		});
 		idea.batch(function () {
+			var useLeftNode = !!(closestNodeToRight && closestNodeToRight.id && idea.findChildRankById(closestNodeToRight.id) < 0),
+				closestNode = useLeftNode ? closestNodeToLeft : closestNodeToRight,
+				shouldFlip = (useLeftNode == (idea.findChildRankById(nodeId) > 0));
 			self.autoPosition(nodeId);
-			result = idea.positionBefore(nodeId, closestNodeToRight && closestNodeToRight.id);
+			if (shouldFlip) {
+				idea.flip(nodeId);
+			}
+			result = idea.positionBefore(nodeId, closestNode && closestNode.id);
 		});
 		return result;
 	};
