@@ -704,18 +704,62 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return !!undoAction;
 	};
-	contentAggregate.moveRelative = function (ideaId, relativeMovement) {
+	contentAggregate.getOrderedSiblingRanks = function (ideaId, options) {
 		var parentIdea = contentAggregate.findParent(ideaId),
-			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
-			siblingRanks = currentRank && _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs),
-			currentIndex = siblingRanks && siblingRanks.indexOf(currentRank),
-			/* we call positionBefore, so movement down is actually 2 spaces, not 1 */
-			newIndex = currentIndex + (relativeMovement > 0 ? relativeMovement + 1 : relativeMovement),
-			beforeSibling = (newIndex >= 0) && parentIdea && siblingRanks && parentIdea.ideas[siblingRanks[newIndex]];
-		if (newIndex < 0 || !parentIdea) {
+			currentRank = parentIdea && parentIdea.findChildRankById(ideaId);
+		if (!currentRank) {
 			return false;
 		}
-		return contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
+		if (options && options.ignoreRankSide) {
+			return _.sortBy(_.map(_.keys(parentIdea.ideas), parseFloat));
+		} else {
+			return _.sortBy(sameSideSiblingRanks(parentIdea, currentRank), Math.abs);
+		}
+	};
+	contentAggregate.moveRelative = function (ideaId, relativeMovement, options) {
+		var parentIdea = contentAggregate.findParent(ideaId),
+			currentRank = parentIdea && parentIdea.findChildRankById(ideaId),
+			siblingRanks = contentAggregate.getOrderedSiblingRanks(ideaId, options),
+			currentIndex = siblingRanks && siblingRanks.indexOf(currentRank),
+			calcNewIndex = function () {
+				var calcIndex = currentIndex + (relativeMovement > 0 ? relativeMovement + 1 : relativeMovement);
+				if (options && options.ignoreRankSide) {
+					if (currentRank < 0) {
+						calcIndex = currentIndex + (relativeMovement < 0 ? relativeMovement - 1 : relativeMovement);
+						if (siblingRanks[calcIndex] > 0) {
+							calcIndex = calcIndex + 1;
+						}
+					} else if (siblingRanks[calcIndex] < 0) {
+						calcIndex = calcIndex - 1;
+					}
+				}
+				return calcIndex;
+
+			},
+			/* we call positionBefore, so movement down is actually 2 spaces, not 1 */
+			newIndex = calcNewIndex(),
+			beforeRank = newIndex >= 0 && siblingRanks && siblingRanks.length && siblingRanks[newIndex],
+			beforeSibling = beforeRank && parentIdea && parentIdea.ideas[beforeRank],
+			shouldNotPosition = function () {
+				if (!parentIdea) {
+					return false;
+				}
+				if (options && options.ignoreRankSide && currentRank < 0) {
+					return newIndex	> (siblingRanks.length - 1);
+				}
+				return (newIndex < 0);
+			}, result;
+		if (shouldNotPosition()) {
+			return false;
+		}
+		contentAggregate.startBatch();
+		//handle reordering on top down maps where moving from positive to negative or vice versa
+		if (options && options.ignoreRankSide && beforeRank && beforeSibling && ((beforeRank * currentRank) < 0)) {
+			contentAggregate.flip(ideaId);
+		}
+		result =  contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
+		contentAggregate.endBatch();
+		return result;
 	};
 	contentAggregate.positionBefore = function (ideaId, positionBeforeIdeaId, parentIdea) {
 		return contentAggregate.execCommand('positionBefore', arguments);

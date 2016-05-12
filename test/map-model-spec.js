@@ -615,7 +615,7 @@ describe('MapModel', function () {
 			});
 			it('should invoke idea.moveRelative passing the argument', function () {
 				underTest.moveRelative('keyboard', -1);
-				expect(anIdea.moveRelative).toHaveBeenCalledWith(123, -1);
+				expect(anIdea.moveRelative).toHaveBeenCalledWith(123, -1, undefined);
 			});
 			it('should not invoke idea.moveRelative when input is disabled', function () {
 				underTest.setInputEnabled(false);

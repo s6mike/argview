@@ -647,12 +647,16 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	self.moveRelative = function (source, relativeMovement) {
+		var options;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('moveRelative', source);
 		if (isInputEnabled) {
-			idea.moveRelative(currentlySelectedIdeaId, relativeMovement);
+			if (layoutModel.getOrientation() === 'top-down') {
+				options = {ignoreRankSide: true};
+			}
+			idea.moveRelative(currentlySelectedIdeaId, relativeMovement, options);
 		}
 	};
 	self.cut = function (source) {
@@ -1040,7 +1044,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.topDownPositionNodeAt = function (nodeId, x, y, manualPosition) {
 		var result,
 			parentNode = idea.findParent(nodeId),
-			closestNodeToRight;
+			closestNodeToRight, closestNodeToLeft;
 		if (!parentNode) {
 			return false;
 		}
@@ -1052,13 +1056,22 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			if (sibling.id === nodeId) {
 				return;
 			}
-			if (x < node.x && (!closestNodeToRight || (Math.abs(x - node.x) < Math.abs(x - closestNodeToRight.x)))) {
+			if (x < node.x && (!closestNodeToRight || (Math.abs(x - node.x) < Math.abs(x - layoutModel.getNode(closestNodeToRight.id).x)))) {
 				closestNodeToRight = sibling;
+			}
+			if (x > (node.x + node.width) && (!closestNodeToLeft || (Math.abs(x - node.x) < Math.abs(x - layoutModel.getNode(closestNodeToLeft.id).x)))) {
+				closestNodeToLeft = sibling;
 			}
 		});
 		idea.batch(function () {
+			var closestNode = (closestNodeToRight && closestNodeToRight.id && idea.findChildRankById(closestNodeToRight.id) < 0) ? closestNodeToLeft : closestNodeToRight,
+				closestNodeRank = closestNode && closestNode.id && idea.findChildRankById(closestNode.id),
+				shouldFlip = closestNodeRank && (idea.findChildRankById(nodeId) * closestNodeRank < 0);
 			self.autoPosition(nodeId);
-			result = idea.positionBefore(nodeId, closestNodeToRight && closestNodeToRight.id);
+			if (shouldFlip) {
+				idea.flip(nodeId);
+			}
+			result = idea.positionBefore(nodeId, closestNode && closestNode.id);
 		});
 		return result;
 	};

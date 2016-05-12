@@ -1,6 +1,13 @@
 /*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
 describe('content aggregate', function () {
 	'use strict';
+	var ideaIdsByRank = function (ideas) {
+			var map = {};
+			_.map(ideas, function (val, key) {
+				map[key] = val.id;
+			});
+			return map;
+		};
 	describe('content wapper', function () {
 		it('automatically assigns IDs to ideas without IDs', function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
@@ -1081,70 +1088,326 @@ describe('content aggregate', function () {
 				expect(idea.ideas[newRank]).toBeUndefined();
 			});
 		});
-		describe('moveRelative', function () {
-			it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
-				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15 : {id: 4}}}),
-					result = idea.moveRelative(4, -1),
-					newKey;
-				expect(result).toBeTruthy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
-				expect(newKey).toBeLessThan(10);
-				expect(newKey).not.toBeLessThan(5);
+		describe('getOrderedSiblingRanks', function () {
+			var options, idea;
+			beforeEach(function () {
+				idea = MAPJS.content({id: 1, ideas: { '-5': { id: 20}, '-10': { id: 30}, '-15' : {id: 40}, '5': { id: 2}, '10': { id: 3}, '15' : {id: 4}}});
 			});
-			it('moves an idea before its immediate previous sibling for negative nodes', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
-					result = idea.moveRelative(4, -1),
-					newKey;
-				expect(result).toBeTruthy();
-				expect(idea.ideas[-5].id).toBe(2);
-				expect(idea.ideas[-10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
-				expect(newKey).toBeLessThan(-5);
-				expect(newKey).not.toBeLessThan(-10);
+			describe('when no options are supplied', function () {
+				beforeEach(function () {
+					options = undefined;
+				});
+				it('returns other positive ranks for nodeid of positive rank', function () {
+					expect(idea.getOrderedSiblingRanks(2, options)).toEqual([5, 10, 15]);
+				});
+				it('returns other negative ranks for nodeid of negative rank', function () {
+					expect(idea.getOrderedSiblingRanks(20, options)).toEqual([-5, -10, -15]);
+				});
+				it('returns falsy of nodeid not found', function () {
+					expect(idea.getOrderedSiblingRanks(5, options)).toBeFalsy();
+				});
 			});
-			it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}}),
-					result = idea.moveRelative(2, 1),
-					newKey;
-				expect(result).toBeTruthy();
-				expect(idea.ideas[15].id).toBe(4);
-				expect(idea.ideas[10].id).toBe(3);
-				newKey = idea.findChildRankById(2);
-				expect(newKey).toBeLessThan(15);
-				expect(newKey).not.toBeLessThan(10);
-			});
-			it('moves an idea before its immediate following sibling for negative nodes', function () {
-				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}}),
-					result = idea.moveRelative(2, 1),
-					newKey;
-				expect(result).toBeTruthy();
-				expect(idea.ideas[-15].id).toBe(4);
-				expect(idea.ideas[-10].id).toBe(3);
-				newKey = idea.findChildRankById(2);
-				expect(newKey).toBeLessThan(-10);
-				expect(newKey).not.toBeLessThan(-15);
-			});
-			it('moves to top', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(3, -1)).toBeTruthy();
-				expect(idea.findChildRankById(3)).toBeLessThan(5);
+			describe('when ignoreRankSide option is supplied', function () {
+				beforeEach(function () {
+					options = {ignoreRankSide: true};
+				});
+				it('returns both positive and negative ranks for nodeid of positive rank', function () {
+					expect(idea.getOrderedSiblingRanks(2, options)).toEqual([-15, -10, -5, 5, 10, 15]);
+				});
+				it('returns both positive and negative ranks for nodeid of negative rank', function () {
+					expect(idea.getOrderedSiblingRanks(20, options)).toEqual([-15, -10, -5, 5, 10, 15]);
+				});
+				it('returns falsy of nodeid not found', function () {
+					expect(idea.getOrderedSiblingRanks(5, options)).toBeFalsy();
+				});
 			});
 
-			it('does nothing if already on top and movement negative', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(2, -1)).toBeFalsy();
-				expect(idea.findChildRankById(2)).toBe(5);
+		});
+		describe('moveRelative', function () {
+			var options, idea;
+			describe('when no options are supplied', function () {
+				beforeEach(function () {
+					options = undefined;
+				});
+				describe('for positive ranks larger numbers are ranked later', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15 : {id: 4}}});
+					});
+					it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
+						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
+					});
+					it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
+						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
+					});
+					it('moves to top', function () {
+						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
+					});
+					it('does nothing if already on top and movement negative', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+					it('fails if no idea', function () {
+						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
+					});
+					it('does nothing if no idea', function () {
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+					it('moves to bottom', function () {
+						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '25': 3, '15': 4});
+					});
+					it('does nothing if already on bottom and movement positive', function () {
+						expect(idea.moveRelative(15, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+
+				});
+				describe('for negative ranks, larger numbers are ranked earlier', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2}, '-10': { id: 3}, '-15' : {id: 4}}});
+					});
+					it('moves an idea before its immediate previous sibling', function () {
+						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-7.5': 4});
+					});
+					it('moves an idea after its immediate following sibling', function () {
+						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-12.5': 2, '-10': 3, '-15': 4});
+					});
+					it('moves to top', function () {
+						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-2.5': 3, '-15': 4});
+					});
+					it('does nothing if already on top and movement negative', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+					});
+					it('fails if no idea', function () {
+						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
+					});
+					it('does nothing if no idea', function () {
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+					});
+					it('moves to bottom', function () {
+						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-25': 3, '-15': 4});
+					});
+					it('does nothing if already on bottom and movement positive', function () {
+						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+					});
+				});
+				describe('when there mixed positive and negative ranks, ordering of each side is considered separate', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: { '-5': { id: 20}, '-10': { id: 30}, '-15' : {id: 40}, '5': { id: 2}, '10': { id: 3}, '15' : {id: 4}}});
+					});
+					it('moves negative ideas to top', function () {
+						expect(idea.moveRelative(30, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-2.5': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					});
+					it('does nothing if negative already on top and movement negative', function () {
+						expect(idea.moveRelative(20, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					});
+					it('does nothing if negative already on bottom and movement positive', function () {
+						expect(idea.moveRelative(40, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					});
+					it('does nothing if positive already on top and movement negative', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					});
+					it('does nothing if positive already on bottom and movement positive', function () {
+						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					});
+
+				});
 			});
-			it('fails if no idea', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(10, 1)).toBeFalsy();
-			});
-			it('moves to bottom', function () {
-				var idea = MAPJS.content({id: 1, ideas: { 5: { id: 2}, 10: { id: 3}, 15 : {id: 4}}});
-				expect(idea.moveRelative(3, 1)).toBeTruthy();
-				expect(idea.findChildRankById(3)).toBeGreaterThan(15);
+			describe('when ignoreRankSide option is supplied', function () {
+				beforeEach(function () {
+					options = {ignoreRankSide: true};
+				});
+				describe('for positive ranks larger numbers are ranked later', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15 : {id: 4}}});
+					});
+					it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
+						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
+					});
+					it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
+						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
+					});
+					it('moves to top', function () {
+						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
+					});
+					it('does nothing if already on top and movement negative', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+					it('fails if no idea', function () {
+						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
+					});
+					it('does nothing if no idea', function () {
+						idea.moveRelative(10, 1, options);
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+					it('moves to bottom', function () {
+						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '25': 3, '15': 4});
+					});
+					it('does nothing if already on bottom and movement positive', function () {
+						expect(idea.moveRelative(15, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+					});
+
+				});
+				describe('for negative ranks, larger numbers are ranked later', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: {
+							'-15' : {id: 4},
+							'-10': { id: 3},
+							'-5': { id: 2}
+						}});
+					});
+					it('should move an idea before its immediate previous sibling', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15': 4,
+							'-12.5': 2,
+							'-10': 3
+						});
+					});
+					it('moves an idea after its immediate following sibling', function () {
+						expect(idea.moveRelative(4, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-10': 3,
+							'-7.5': 4,
+							'-5': 2
+						});
+					});
+					it('moves to top', function () {
+						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-25': 3,
+							'-15': 4,
+							'-5': 2
+						});
+					});
+					it('does nothing if already on top and movement negative', function () {
+						expect(idea.moveRelative(4, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15' : 4,
+							'-10': 3,
+							'-5': 2
+						});
+					});
+					it('fails if no idea', function () {
+						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
+					});
+					it('does nothing if no idea', function () {
+						idea.moveRelative(10, 1, options);
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15' : 4,
+							'-10': 3,
+							'-5': 2
+						});
+					});
+					it('moves to bottom', function () {
+						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15' : 4,
+							'-5': 2,
+							'-2.5': 3
+						});
+					});
+					it('does nothing if already on bottom and movement positive', function () {
+						expect(idea.moveRelative(2, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15' : 4,
+							'-10': 3,
+							'-5': 2
+						});
+					});
+				});
+				describe('when there mixed positive and negative ranks, ordering of each side is considered separate', function () {
+					beforeEach(function () {
+						idea = MAPJS.content({id: 1, ideas: {
+							'-15' : {id: 40},
+							'-10': { id: 30},
+							'-5': { id: 20},
+							'5': { id: 2},
+							'10': { id: 3},
+							'15' : {id: 4}
+						}});
+					});
+					it('moves negative ideas to top', function () {
+						expect(idea.moveRelative(30, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-25': 30,
+							'-15': 40,
+							'-5': 20,
+							'5': 2,
+							'10': 3,
+							'15': 4
+						});
+					});
+					it('does nothing if negative already on top and movement negative', function () {
+						expect(idea.moveRelative(40, -1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15': 40,
+							'-10': 30,
+							'-5': 20,
+							'5': 2,
+							'10': 3,
+							'15': 4
+						});
+					});
+					it('does nothing if positive already on bottom and movement positive', function () {
+						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15': 40,
+							'-10': 30,
+							'-5': 20,
+							'5': 2,
+							'10': 3,
+							'15': 4
+						});
+					});
+					it('should move positive before negative when movement negative', function () {
+						expect(idea.moveRelative(2, -1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15': 40,
+							'-10': 30,
+							'-7.5': 2,
+							'-5': 20,
+							'10': 3,
+							'15': 4
+						});
+					});
+					it('should move negative before positive when movement positive', function () {
+						expect(idea.moveRelative(20, 1, options)).toBeTruthy();
+						expect(ideaIdsByRank(idea.ideas)).toEqual({
+							'-15': 40,
+							'-10': 30,
+							'5': 2,
+							'7.5': 20,
+							'10': 3,
+							'15': 4
+						});
+					});
+					// it('does nothing if positive already on bottom and movement positive', function () {
+					// 	expect(idea.moveRelative(4, 1, options)).toBeFalsy();
+					// 	expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+					// });
+
+				});
 			});
 		});
 		describe('positionBefore', function () {
