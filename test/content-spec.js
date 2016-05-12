@@ -353,30 +353,30 @@ describe('content aggregate', function () {
 			});
 		});
 		describe('paste', function () {
-			var idea, toPaste;
+			var idea, toPaste, result;
 			beforeEach(function () {
 				idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}});
 				toPaste = {title: 'pasted', id: 1};
 			});
 			it('should create a new child and paste cloned contents', function () {
-				var result = idea.paste(3, toPaste);
+				result = idea.paste(3, toPaste);
 				expect(result).toBeTruthy();
 				expect(idea.ideas[-10].ideas[1]).toEqual(jasmine.objectContaining({title: 'pasted'}));
 			});
 			describe('when no ID provided', function () {
 				it('should reassign IDs based on next available ID in the aggregate', function () {
-					var result = idea.paste(3, toPaste);
+					result = idea.paste(3, toPaste);
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe(5);
 				});
 				it('should append session key if given when re-assigning', function () {
 					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
-					var result = idea.paste(3, toPaste);
+					result = idea.paste(3, toPaste);
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe('5.sess');
 				});
 				it('should reassign IDs recursively based on next available ID in the aggregate', function () {
-					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
+					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe(5);
 					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(6);
@@ -384,43 +384,45 @@ describe('content aggregate', function () {
 			});
 			describe('when ID is provided', function () {
 				it('should reassign IDs based on provided ID for the root of the pasted hierarchy', function () {
-					var result = idea.paste(3, toPaste, 777);
+					result = idea.paste(3, toPaste, 777);
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe(777);
 				});
 				it('should use session key from provided ID', function () {
 					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
-					var result = idea.paste(3, toPaste, '778.sess2');
+					result = idea.paste(3, toPaste, '778.sess2');
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe('778.sess2');
 				});
 				it('should reassign IDs recursively based', function () {
-					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), 779);
+					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), 779);
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe(779);
 					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(780);
 				});
 				it('should keep session ID when reassigning recursively', function () {
-					var result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), '781.abc');
+					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), '781.abc');
 					expect(result).toBeTruthy();
 					expect(idea.ideas[-10].ideas[1].id).toBe('781.abc');
 					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe('782.abc');
 				});
 			});
 			it('should reorder children by absolute rank, positive first then negative', function () {
+				var	newChildren;
 				idea.paste(3, _.extend(toPaste, {ideas: {
 					77: {id: 10, title: '77'},
 					1: { id: 11, title: '1'},
 					'-77': {id: 12, title: '-77'},
 					'-1': {id: 13, title: '-1'}
 				}}));
-				var	newChildren = idea.ideas[-10].ideas[1].ideas;
+				newChildren = idea.ideas[-10].ideas[1].ideas;
 				expect(newChildren[1].title).toBe('1');
 				expect(newChildren[2].title).toBe('77');
 				expect(newChildren[3].title).toBe('-1');
 				expect(newChildren[4].title).toBe('-77');
 			});
 			it('should clean up attributes from the list of non cloned recursively', function () {
+				var	pastedRoot, pastedChild, childChild;
 				idea.setConfiguration({nonClonedAttributes: ['noncloned', 'xnoncloned']});
 				idea.paste(3, _.extend(toPaste, {
 						attr: { cloned: 'ok', noncloned: 'notok' },
@@ -431,9 +433,9 @@ describe('content aggregate', function () {
 						}
 					}
 				));
-				var	pastedRoot = idea.ideas[-10].ideas[1],
-					pastedChild = pastedRoot.ideas[1],
-					childChild = pastedRoot.ideas[1].ideas[1];
+				pastedRoot = idea.ideas[-10].ideas[1];
+				pastedChild = pastedRoot.ideas[1];
+				childChild = pastedRoot.ideas[1].ideas[1];
 				expect(pastedRoot.attr).toEqual({cloned: 'ok'});
 				expect(pastedChild.attr).toEqual({xcloned: 'ok'});
 				expect(childChild.attr).toBeUndefined();
@@ -786,8 +788,9 @@ describe('content aggregate', function () {
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', '3.sess'], 'sess');
 			});
 			it('fires the generated ID in the event if the ID was not supplied', function () {
+				var	newId;
 				idea.insertIntermediate(2, 'Steve');
-				var	newId = idea.ideas[77].id;
+				newId = idea.ideas[77].id;
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', newId]);
 			});
 			it('fails if argument idea does not exist', function () {
@@ -2069,8 +2072,9 @@ describe('content aggregate', function () {
 				expect(result).toEqual(5);
 			});
 			it('batches the operation', function () {
+				var oldIdea;
 				idea.undo();
-				var oldIdea = idea.ideas[88].ideas[99];
+				oldIdea = idea.ideas[88].ideas[99];
 				expect(_.size(idea.ideas)).toBe(2);
 				expect(_.size(oldIdea.ideas)).toBe(0);
 				expect(oldIdea).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
@@ -2143,8 +2147,9 @@ describe('content aggregate', function () {
 			expect(underTest.storeResource('xx')).toMatch(/1\/[0-9a-z-]+\/sk/);
 		});
 		it('assigns sequential resource IDs without session', function () {
+			var key;
 			underTest = MAPJS.content({title: 'test', resources: {'5/1/session1': 'r1', '7/2/session1': 'r2', '9/2/session2': 'r3', '10': 'r4'}});
-			var key = underTest.storeResource('abc');
+			key = underTest.storeResource('abc');
 			expect(key).toMatch(/^11\//);
 		});
 
@@ -2172,10 +2177,11 @@ describe('content aggregate', function () {
 			});
 		});
 		it('fires event when resource added without cloning the resource (to save memory)', function () {
-			underTest = MAPJS.content({title: 'A'}, 'session1');
 			var arr = [1, 2, 3, 4, 5],
-				listener = jasmine.createSpy('resource'),
+				listener,
 				result;
+			underTest = MAPJS.content({title: 'A'}, 'session1');
+			listener = jasmine.createSpy('resource');
 			underTest.addEventListener('resourceStored', listener);
 			result = underTest.storeResource(arr);
 			expect(listener).toHaveBeenCalledWith(arr, result, 'session1');
