@@ -521,6 +521,59 @@ describe('MapModel', function () {
 				expect(underTest.getSelectedNodeId()).toBe(3);
 			});
 		});
+		describe('addGroupSubidea', function () {
+			beforeEach(function () {
+				spyOn(anIdea, 'addSubIdea').and.callThrough();
+				underTest.selectNode(1);
+			});
+			it('should add a node to represent the group with currently selected idea as parentId', function () {
+				underTest.addGroupSubidea();
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'group');
+			});
+			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
+				underTest.addGroupSubidea('source', 555);
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(555, 'group');
+			});
+
+			it('should add a node with the group node as parentId, as a batched event', function () {
+				anIdea.addSubIdea.and.returnValues(22, 33);
+				spyOn(anIdea, 'dispatchEvent');
+
+				underTest.addGroupSubidea();
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith(22);
+			});
+			it('should add a node with the group node  as a batched event', function () {
+				spyOn(anIdea, 'dispatchEvent');
+
+				underTest.addGroupSubidea();
+				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+			});
+			it('should edit the child node of the group node', function () {
+				var listener = jasmine.createSpy('nodeEditRequested');
+
+				anIdea.addSubIdea.and.returnValues(22, 33);
+				underTest.addEventListener('nodeEditRequested', listener);
+
+				underTest.addGroupSubidea();
+				expect(listener.calls.count()).toBe(1);
+				expect(listener).toHaveBeenCalledWith(33, true, true);
+			});
+			it('should not invoke idea.addSubIdea when input is disabled', function () {
+				underTest.setInputEnabled(false);
+				underTest.addGroupSubidea();
+				expect(anIdea.addSubIdea).not.toHaveBeenCalled();
+			});
+			it('should expand the parent node when addSubIdea is called, as a batched event', function () {
+				underTest.selectNode(1);
+				underTest.collapse('source', true);
+				spyOn(anIdea, 'updateAttr').and.callThrough();
+				spyOn(anIdea, 'dispatchEvent');
+				underTest.addGroupSubidea();
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
+				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+			});
+
+		});
 		describe('copy', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'cloneMultiple').and.returnValue('CLONE');

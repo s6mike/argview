@@ -360,6 +360,24 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
+	self.addGroupSubidea = function (source, parentId) {
+		var target = parentId || currentlySelectedIdeaId, newGroupId, newId;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('addGroupSubidea', source);
+		if (isInputEnabled) {
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, target);
+				newGroupId = idea.addSubIdea(target, 'group');
+				newId = newGroupId && idea.addSubIdea(newGroupId);
+			});
+			if (newId) {
+				editNewIdea(newId);
+			}
+		}
+
+	};
 	this.insertIntermediate = function (source) {
 		var activeNodes = [], newId;
 		if (!isEditingEnabled) {
