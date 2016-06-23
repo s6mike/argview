@@ -39,7 +39,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
-					contentIdea.ideas[parseFloat(key)] = init(value, originSession);
+					if (value.attr && value.attr.group && _.isEmpty(value.ideas)) {
+						delete contentIdea.ideas[key];
+					} else {
+						contentIdea.ideas[parseFloat(key)] = init(value, originSession);
+					}
+
 				});
 			}
 			if (!contentIdea.title) {
@@ -63,6 +68,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
 					return result || idea.findSubIdeaById(childIdeaId);
 				}, undefined);
+			};
+			contentIdea.isEmptyGroup = function () {
+				return contentIdea !== contentAggregate && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
 			};
 			contentIdea.find = function (predicate) {
 				var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];

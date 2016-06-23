@@ -34,6 +34,59 @@ describe('content aggregate', function () {
 			var wrapped = MAPJS.content({id: 55, title: 'My Idea', ideas: { 1: {title: 'My First Subidea', meta: {newAttr: 'new_val'}}}});
 			expect(wrapped.ideas[1].meta.newAttr).toBe('new_val');
 		});
+		it('removes any nodes that are groups without children', function () {
+			var wrapped = MAPJS.content({
+				id: 1,
+				title: 'My Idea',
+				ideas: {
+					1: {
+						title: 'My group Subidea',
+						attr: {
+							group: true
+						}
+					},
+					2: {
+						title: 'My non group Subidea'
+					}
+				}
+			});
+			expect(wrapped.ideas[1]).toBeFalsy();
+			expect(wrapped.ideas[2]).toBeTruthy();
+		});
+		it('preserves any nodes that are groups with children', function () {
+			var wrapped = MAPJS.content({
+				id: 1,
+				title: 'My Idea',
+				ideas: {
+					1: {
+						title: 'My group Subidea',
+						attr: {
+							group: true
+						},
+						ideas: {
+							3: {
+								title: 'My group Subidea child'
+							}
+						}
+					},
+					2: {
+						title: 'My non group Subidea'
+					}
+				}
+			});
+			expect(_.size(wrapped.ideas)).toBe(2);
+		});
+		it('preserves root node that is a group without children', function () {
+			var wrapped = MAPJS.content({
+				id: 1,
+				title: 'My Idea',
+				attr: {
+					group: true
+				}
+			});
+			expect(wrapped.attr.group).toBeTruthy();
+		});
+
 		it('normalises all ranks to floats to avoid selection problems with x.0', function () {
 			var wrapped = MAPJS.content({id: 55, ideas: { '2.0': {id: 2}, 3.0: {id: 3}, '-4.0': {id: 4}}});
 			expect(wrapped.ideas[2.0].id).toBe(2);
@@ -92,7 +145,47 @@ describe('content aggregate', function () {
 				});
 			});
 		});
+		describe('isEmptyGroup', function () {
+			var wrapped;
+			beforeEach(function () {
+				wrapped = MAPJS.content({
+					id: 1,
+					title: 'My Idea',
+					ideas: {
+						1: {
+							title: 'My group Subidea',
+							attr: {
+								group: true
+							},
+							ideas: {
+								3: {
+									title: 'My group Subidea child'
+								}
+							}
+						},
+						2: {
+							title: 'My non group Subidea'
+						}
+					}
+				});
+			});
+			it('should be truthy if the node is a group without child nodes', function () {
+				wrapped.ideas[1].ideas[3].attr = {group: true};
+				expect(wrapped.ideas[1].ideas[3].isEmptyGroup()).toBeTruthy();
+			});
+			it('should be falsy if the node is not a group', function () {
+				expect(wrapped.ideas[1].ideas[3].isEmptyGroup()).toBeFalsy();
+			});
+			it('should be falsy if the node is a group with child nodes', function () {
+				expect(wrapped.ideas[1].isEmptyGroup()).toBeFalsy();
+			});
+			it('should be falsy if the root node is a group without child nodes', function () {
+				wrapped.ideas = {};
+				wrapped.attr = {group: true};
+				expect(wrapped.isEmptyGroup()).toBeFalsy();
+			});
 
+		});
 		describe('getAttr', function () {
 			it('returns false if the attribute is not defined', function () {
 				var wrapped = MAPJS.content({});
