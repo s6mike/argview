@@ -360,8 +360,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
-	self.addGroupSubidea = function (source, parentId) {
-		var target = parentId || currentlySelectedIdeaId, newGroupId, newId;
+	self.addGroupSubidea = function (source, options) {
+		var parentId = options && options.parentId,
+			group = (options && options.group) || true,
+			target = parentId || currentlySelectedIdeaId, newGroupId, newId;
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -372,6 +374,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				newGroupId = idea.addSubIdea(target, 'group');
 				if (newGroupId) {
 					idea.updateAttr(newGroupId, 'contentLocked', true);
+					idea.updateAttr(newGroupId, 'group', group);
 					newId = idea.addSubIdea(newGroupId);
 				}
 			});

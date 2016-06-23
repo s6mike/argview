@@ -546,8 +546,24 @@ describe('MapModel', function () {
 				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
 				expect(anIdea.getAttrById(groupId, 'contentLocked')).toBeTruthy();
 			});
+			it('should add a group attribute to the group node', function () {
+				var groupId;
+
+				underTest.addGroupSubidea();
+
+				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				expect(anIdea.getAttrById(groupId, 'group')).toBeTruthy();
+			});
+			it('should add a typed group attribute to the group node', function () {
+				var groupId;
+
+				underTest.addGroupSubidea('source', {group: 'supporting'});
+
+				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				expect(anIdea.getAttrById(groupId, 'group')).toEqual('supporting');
+			});
 			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
-				underTest.addGroupSubidea('source', 555);
+				underTest.addGroupSubidea('source', {parentId: 555});
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(555, 'group');
 			});
 
