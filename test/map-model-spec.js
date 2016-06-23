@@ -221,8 +221,16 @@ describe('MapModel', function () {
 			it('should not dispatch nodeEditRequested when input is disabled', function () {
 				var nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
-				underTest.selectNode(1);
+				underTest.selectNode(anIdea.id);
 				underTest.setInputEnabled(false);
+				underTest.editNode('toolbar', true);
+				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+			});
+			it('should not dispatch nodeEditRequested when node is contentLocked', function () {
+				var nodeEditRequestedListener = jasmine.createSpy();
+				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+				anIdea.updateAttr(anIdea.id, 'contentLocked', true);
+				underTest.selectNode(anIdea.id);
 				underTest.editNode('toolbar', true);
 				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 			});
@@ -529,6 +537,14 @@ describe('MapModel', function () {
 			it('should add a node to represent the group with currently selected idea as parentId', function () {
 				underTest.addGroupSubidea();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'group');
+			});
+			it('should add a contentLocked attribute to the group node', function () {
+				var groupId;
+
+				underTest.addGroupSubidea();
+
+				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				expect(anIdea.getAttrById(groupId, 'contentLocked')).toBeTruthy();
 			});
 			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
 				underTest.addGroupSubidea('source', 555);
