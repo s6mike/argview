@@ -9,6 +9,7 @@ MAPJS.DOMRender = {
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
 			note: !!(idea.attr && idea.attr.note),
+			styles:  MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles(idea.level  || levelOverride, idea.attr),
 			level: idea.level || levelOverride
 		};
 	},
@@ -181,8 +182,12 @@ jQuery.fn.updateConnector = function (canUseData) {
 		}
 		applyInnerRect(shapeFrom, fromBox);
 		applyInnerRect(shapeTo, toBox);
+		/*
 		fromBox.level = shapeFrom.attr('mapjs-level');
 		toBox.level = shapeTo.attr('mapjs-level');
+		*/
+		fromBox.styles = shapeFrom.data('styles');
+		toBox.styles = shapeTo.data('styles');
 		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
@@ -492,28 +497,32 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			textBox.css(textProps);
 		},
 		nodeLevel = forcedLevel || nodeContent.level,
-		setLevel = function () {
-			var domElement = self[0];
-			_.each(_.filter(domElement.classList, function (c) {
-				return /^level_.+/.test(c);
-			}), function (c) {
-				domElement.classList.remove(c);
-			});
-			domElement.classList.add('level_' + nodeLevel);
+		setStyles = function () {
+			var domElement = self[0],
+				toRemove = _.filter(domElement.classList, function (c) {
+					return /^level_.+/.test(c) ||  /^attr_.+/.test(c);
+				});
+			domElement.classList.remove.apply(domElement.classList, toRemove);
+			domElement.classList.add.apply(domElement.classList, effectiveStyles);
 			self.attr('mapjs-level', nodeLevel);
 		},
 		themeDefault =  function (a, b, c, d) {
 			return d;
 		},
+		styleDefault = function () {
+			return ['default'];
+		},
 		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], 'surround'),
-		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
-		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
+		nodeStyles = ( MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles) || styleDefault,
+		effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
+		borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
+		decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
+		decorationOverlap = attrValue(['node'], effectiveStyles, ['decorations', 'overlap'], ''),
 		colorText = (borderType !== 'surround'),
 		nodeCacheData, offset;
 
 
-	setLevel();
+	setStyles();
 	updateText(nodeContent.title);
 	applyLinkUrl(nodeContent.title);
 	applyLabel(nodeContent.label);
@@ -524,7 +533,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		y: Math.round(nodeContent.y),
 		width: Math.round(nodeContent.width),
 		height: Math.round(nodeContent.height),
-		nodeId: nodeContent.id
+		nodeId: nodeContent.id,
+		styles: effectiveStyles
 	};
 	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
 	nodeCacheData.innerRect.dx = 0;

@@ -437,14 +437,20 @@ describe('updateConnector', function () {
 	'use strict';
 	var underTest, fromNode, toNode, third, anotherConnector;
 	beforeEach(function () {
-		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
-		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
+		fromNode = jQuery('<div>').attr('id', 'node_fr').data('styles', ['funky']).css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
+		toNode = jQuery('<div>').attr('id', 'node_to').data('styles', ['bleak']).css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
 		underTest = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
 		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
 	afterEach(function () {
 		MAPJS.DOMRender.theme = undefined;
+	});
+	it('calls themePath with styles', function () {
+		spyOn(MAPJS.Connectors, 'themePath').and.callThrough();
+		underTest.updateConnector();
+		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[0].styles).toEqual(['funky']);
+		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[1].styles).toEqual(['bleak']);
 	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
@@ -697,6 +703,14 @@ describe('updateNodeContent', function () {
 	it('returns itself to allow chaining', function () {
 		expect(underTest.updateNodeContent(nodeContent)[0]).toEqual(underTest[0]);
 	});
+	describe('styles', function () {
+		it('sets the data styles from the theme', function () {
+			nodeContent.attr = { group: 'blue' };
+			MAPJS.DOMRender.theme = new MAPJS.Theme({});
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('styles')).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
+		});
+	});
 	describe('dimensions', function () {
 		it('sets the x, y, width, height properties according to node values', function () {
 			underTest.updateNodeContent(nodeContent);
@@ -718,9 +732,9 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('height')).toBe(40);
 		});
 		it('tags the node with a cache mark', function () {
-			MAPJS.DOMRender.theme = {name: 'blue'};
+			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'blue'});
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined });
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, styles: [ 'level_3', 'default' ], title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined });
 		});
 	});
 	describe('node text', function () {
@@ -760,10 +774,26 @@ describe('updateNodeContent', function () {
 		});
 
 	});
-	describe('setting the level', function () {
+	describe('setting the styles', function () {
+		beforeEach(function () {
+			MAPJS.DOMRender.theme = new MAPJS.Theme({});
+		});
 		it('sets the level attribute to the node content level', function () {
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.attr('mapjs-level')).toBe('3');
+		});
+		it('sets the group attributes', function () {
+			nodeContent.attr = { group: 'blue'};
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('attr_group_blue')).toBeTruthy();
+		});
+		it('removes old attr classes', function () {
+			nodeContent.attr = { group: 'blue'};
+			underTest.updateNodeContent(nodeContent);
+			nodeContent.attr = { group: 'red'};
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.hasClass('attr_group_blue')).toBeFalsy();
+			expect(underTest.hasClass('attr_group_red')).toBeTruthy();
 		});
 		it('sets the level class to the node content level', function () {
 			underTest.updateNodeContent(nodeContent);
@@ -1376,21 +1406,24 @@ describe('MAPJS.DOMRender', function () {
 	'use strict';
 	describe('nodeCacheMark', function () {
 
-		describe('returns the same value for two nodes if they have the same title, icon sizes, levels and positions, and collapsed attribute', [
+		describe('returns the same value for two nodes if they have the same title, icon sizes, levels and positions, groups and collapsed attribute', [
 				['no icons, just titles', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2}}],
 				['titles and collapsed', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
-				['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}]
+				['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}],
+				['titles and groups', {level: 1, title: 'zeka', x: 1, attr: {group: 'xx', ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, group: 'xx'}}]
 			], function (first, second) {
 				expect(MAPJS.DOMRender.nodeCacheMark(first)).toEqual(MAPJS.DOMRender.nodeCacheMark(second));
 			});
 		describe('returns different values for two nodes if they differ in the', [
 				['titles', {title: 'zeka'}, {title: 'zeka2'}],
 				['levels', {title: 'zeka', level: 2}, {title: 'zeka', level: 1}],
+				['groups', {title: 'zeka', level: 3, attr: {group: 's1'}}, {title: 'zeka', level: 3, attr: { group: 's2' }}],
 				['collapsed', {title: 'zeka', attr: {collapsed: true}}, {title: 'zeka', attr: {collapsed: false}}],
 				['icon width', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 101, height: 120, position: 'top'}}}],
 				['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
 				['icon position', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'left'} }}, {title: 'zeka', attr: {icon: {width: 100, height: 120, position: 'top'}}}]
 			], function (first, second) {
+				MAPJS.DOMRender.theme = new MAPJS.Theme({});
 				expect(MAPJS.DOMRender.nodeCacheMark(first)).not.toEqual(MAPJS.DOMRender.nodeCacheMark(second));
 			});
 	});
