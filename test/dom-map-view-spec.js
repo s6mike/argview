@@ -734,7 +734,7 @@ describe('updateNodeContent', function () {
 		it('tags the node with a cache mark', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'blue'});
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, styles: [ 'level_3', 'default' ], title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined });
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, styles: ['level_3', 'default'], title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined});
 		});
 	});
 	describe('node text', function () {

@@ -513,7 +513,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			return ['default'];
 		},
 		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		nodeStyles = ( MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles) || styleDefault,
+		nodeStyles = (MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles) || styleDefault,
 		effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
 		borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
 		decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
