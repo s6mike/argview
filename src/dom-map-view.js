@@ -1,4 +1,4 @@
-/*global jQuery, _, MAPJS, document, window*/
+/*global jQuery, _, MAPJS, document, window, console*/
 MAPJS.DOMRender = {
 	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
 	nodeCacheMark: function (idea, levelOverride) {
@@ -519,15 +519,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
 		decorationOverlap = attrValue(['node'], effectiveStyles, ['decorations', 'overlap'], ''),
 		colorText = (borderType !== 'surround'),
-		nodeCacheData, offset;
+		nodeCacheData, offset,
+		isGroup = nodeContent.attr && nodeContent.attr.group;
 
 
-	setStyles();
-	updateText(nodeContent.title);
-	applyLinkUrl(nodeContent.title);
-	applyLabel(nodeContent.label);
-	applyNote();
-	applyAttachment();
 	nodeCacheData = {
 		x: Math.round(nodeContent.x),
 		y: Math.round(nodeContent.y),
@@ -536,30 +531,47 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		nodeId: nodeContent.id,
 		styles: effectiveStyles
 	};
+
 	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
 	nodeCacheData.innerRect.dx = 0;
 	nodeCacheData.innerRect.dy = 0;
-	this.css('margin', '');
-	if (decorationEdge === 'left') {
-		nodeCacheData.innerRect.dx = decorations().outerWidth();
-		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
-		self.css('margin-left', decorations().outerWidth());
-	} else if (decorationEdge === 'right') {
-		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
-		self.css('margin-right', decorations().outerWidth());
-	} else if (decorationEdge === 'top') {
-		offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
-		nodeCacheData.innerRect.dy = offset;
-		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
-		if (offset) {
-			self.css('margin-top', offset);
-		}
 
-	} else if (decorationEdge === 'bottom') {
-		offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
-		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
-		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+
+	if (isGroup) {
+		this.css({margin: '', width: nodeContent.width, height: nodeContent.height});
+		console.log('forcing group width', nodeContent.width);
+		updateText('');
+	} else {
+		updateText(nodeContent.title);
+		applyLinkUrl(nodeContent.title);
+		applyLabel(nodeContent.label);
+		applyNote();
+		applyAttachment();
+		this.css({margin: '', width: '', height: ''});
+		if (decorationEdge === 'left') {
+			nodeCacheData.innerRect.dx = decorations().outerWidth();
+			nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
+			self.css('margin-left', decorations().outerWidth());
+		} else if (decorationEdge === 'right') {
+			nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
+			self.css('margin-right', decorations().outerWidth());
+		} else if (decorationEdge === 'top') {
+			offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+			nodeCacheData.innerRect.dy = offset;
+			nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+			if (offset) {
+				self.css('margin-top', offset);
+			}
+
+		} else if (decorationEdge === 'bottom') {
+			offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
+			nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+			self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		}
 	}
+	setStyles();
+
+
 	self.data(nodeCacheData).addNodeCacheMark(nodeContent);
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);

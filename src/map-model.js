@@ -77,17 +77,17 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y || newNode.width !== oldNode.width || newNode.height !== oldNode.height) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
+					}
+					if ((newNode.width !== oldNode.width || newNode.height !== oldNode.height) ||
+						(newNode.level !== oldNode.level) ||
+						(!_.isEqual(newNode.attr || {}, oldNode.attr || {})) ||
+						themeChanged) {
+						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
 						self.dispatchEvent('nodeTitleChanged', newNode, sessionId);
-					}
-					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
-						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
-					}
-					if (newNode.level !== oldNode.level || themeChanged) {
-						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
 					if (newNode.label !== oldNode.label) {
 						self.dispatchEvent('nodeLabelChanged', newNode, sessionId);

@@ -1048,6 +1048,26 @@ describe('updateNodeContent', function () {
 			expect(underTest.hasClass('collapsed')).toBeFalsy();
 		});
 	});
+	describe('groups', function () {
+		it('forces width and height', function () {
+			nodeContent.attr = {group: true};
+			nodeContent.width = 400;
+			nodeContent.height = 200;
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest[0].style.width).toEqual('400px');
+			expect(underTest[0].style.height).toEqual('200px');
+		});
+		it('clears the content', function () {
+			var textBox = jQuery('<span data-mapjs-role="title" class="test-max-width"></span>').appendTo(underTest);
+			textBox.text('bla bla');
+			underTest.children('span').text('bla bla');
+			nodeContent.attr = {group: true};
+			nodeContent.width = 400;
+			nodeContent.height = 200;
+			underTest.updateNodeContent(nodeContent);
+			expect(textBox.text()).toEqual('');
+		});
+	});
 	describe('hyperlink handling', function () {
 		var textBox;
 		beforeEach(function () {
