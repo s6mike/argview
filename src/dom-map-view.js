@@ -1,4 +1,4 @@
-/*global jQuery, _, MAPJS, document, window, console*/
+/*global jQuery, _, MAPJS, document, window*/
 MAPJS.DOMRender = {
 	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
 	nodeCacheMark: function (idea, levelOverride) {
@@ -539,7 +539,6 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 
 	if (isGroup) {
 		this.css({margin: '', width: nodeContent.width, height: nodeContent.height});
-		console.log('forcing group width', nodeContent.width);
 		updateText('');
 	} else {
 		updateText(nodeContent.title);

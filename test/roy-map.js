@@ -1,4 +1,332 @@
+function second_tree() {
+return {
+  "title": "Mindmup",
+  "id": 1,
+  "formatVersion": 2,
+  "ideas": {
+    "1": {
+      "title": "group",
+      "id": 2,
+      "attr": {
+        "contentLocked": true,
+        "group": true
+      },
+      "ideas": {
+        "1": {
+          "title": "inside group 1",
+          "id": 3
+        },
+        "2": {
+          "title": "inside group ",
+          "id": 4
+        },
+        "3": {
+          "title": "inside group",
+          "id": 5,
+          "ideas": {
+            "1": {
+              "title": "hellp there",
+              "id": 21
+            }
+          }
+        },
+        "4": {
+          "title": "group",
+          "id": 11,
+          "attr": {
+            "contentLocked": true,
+            "group": true
+          },
+          "ideas": {
+            "1": {
+              "title": "child 1",
+              "id": 12
+            },
+            "2": {
+              "title": "child 2",
+              "id": 14
+            },
+            "3": {
+              "title": "child 3",
+              "id": 15
+            },
+            "4": {
+              "title": "group",
+              "id": 17,
+              "attr": {
+                "contentLocked": true,
+                "group": true
+              },
+              "ideas": {
+                "1": {
+                  "title": "sub-child group",
+                  "id": 18
+                },
+                "2": {
+                  "title": "another sibling",
+                  "id": 19,
+                  "ideas": {
+                    "1": {
+                      "title": "hi there",
+                      "id": 22
+                    },
+                    "2": {
+                      "title": "another hi",
+                      "id": 24
+                    },
+                    "3": {
+                      "title": "bongo bongo",
+                      "id": 25
+                    },
+                    "4": {
+                      "title": "yellow bongo",
+                      "id": 26
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "2": {
+      "title": "group",
+      "id": 7,
+      "attr": {
+        "contentLocked": true,
+        "group": true
+      },
+      "ideas": {
+        "1": {
+          "title": "inside another group",
+          "id": 8,
+          "ideas": {
+            "1": {
+              "title": "another",
+              "id": 9
+            }
+          }
+        },
+        "2": {
+          "title": "another 2",
+          "id": 10
+        }
+      }
+    },
+    "-1": {
+      "title": "outside group",
+      "id": 6
+    }
+  },
+  "links": [
+    {
+      "ideaIdFrom": "125.gd20db7a726965d1",
+      "ideaIdTo": 194,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed",
+          "arrow": true
+        }
+      }
+    },
+    {
+      "ideaIdFrom": "136.gd1eef329c80e5a1bd",
+      "ideaIdTo": 26,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed",
+          "arrow": true
+        }
+      }
+    }
+  ],
+  "attr": {
+    "style": {
+      "background": "#000000"
+    },
+    "progress-statuses": {
+      "": {
+        "description": "Not Started",
+        "priority": 1,
+        "style": {
+          "background": false
+        }
+      },
+      "passing": {
+        "description": "Done",
+        "style": {
+          "background": "#00CC00"
+        }
+      },
+      "under-review": {
+        "description": "Under review",
+        "style": {
+          "background": "#00CCFF"
+        }
+      },
+      "in-progress": {
+        "description": "In Progress",
+        "priority": 3,
+        "style": {
+          "background": "#FFCC00"
+        }
+      },
+      "blocked": {
+        "description": "Blocked",
+        "priority": 4,
+        "style": {
+          "background": "#990033"
+        }
+      },
+      "parked": {
+        "description": "Parked",
+        "priority": 2,
+        "style": {
+          "background": "#FF3300"
+        }
+      }
+    },
+    "progress": "parked",
+    "theme": "topdown"
+  }
+}
+};
 function test_tree() {
+	return {
+  "title": "Mindmup",
+  "id": 1,
+  "formatVersion": 2,
+  "ideas": {
+    "1": {
+      "title": "group",
+      "id": 2,
+      "attr": {
+        "contentLocked": true,
+        "group": true
+      },
+      "ideas": {
+        "1": {
+          "title": "inside group 1",
+          "id": 3
+        },
+        "2": {
+          "title": "inside group ",
+          "id": 4
+        },
+        "3": {
+          "title": "inside group",
+          "id": 5
+        }
+      }
+    },
+    "2": {
+      "title": "group",
+      "id": 7,
+      "attr": {
+        "contentLocked": true,
+        "group": true
+      },
+      "ideas": {
+        "1": {
+          "title": "inside another group",
+          "id": 8,
+          "ideas": {
+            "1": {
+              "title": "another",
+              "id": 9
+            }
+          }
+        },
+        "2": {
+          "title": "another 2",
+          "id": 10
+        }
+      }
+    },
+    "-1": {
+      "title": "outside group",
+      "id": 6
+    }
+  },
+  "links": [
+    {
+      "ideaIdFrom": "125.gd20db7a726965d1",
+      "ideaIdTo": 194,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed",
+          "arrow": true
+        }
+      }
+    },
+    {
+      "ideaIdFrom": "136.gd1eef329c80e5a1bd",
+      "ideaIdTo": 26,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed",
+          "arrow": true
+        }
+      }
+    }
+  ],
+  "attr": {
+    "style": {
+      "background": "#000000"
+    },
+    "progress-statuses": {
+      "": {
+        "description": "Not Started",
+        "priority": 1,
+        "style": {
+          "background": false
+        }
+      },
+      "passing": {
+        "description": "Done",
+        "style": {
+          "background": "#00CC00"
+        }
+      },
+      "under-review": {
+        "description": "Under review",
+        "style": {
+          "background": "#00CCFF"
+        }
+      },
+      "in-progress": {
+        "description": "In Progress",
+        "priority": 3,
+        "style": {
+          "background": "#FFCC00"
+        }
+      },
+      "blocked": {
+        "description": "Blocked",
+        "priority": 4,
+        "style": {
+          "background": "#990033"
+        }
+      },
+      "parked": {
+        "description": "Parked",
+        "priority": 2,
+        "style": {
+          "background": "#FF3300"
+        }
+      }
+    },
+    "progress": "parked",
+    "theme": "topdown"
+  }
+}
+}
+function xtest_tree() {
 	return {
 		"title": "Mindmup",
 		"id": 1,
