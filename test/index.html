@@ -107,7 +107,7 @@
 						"v": "base"
 					},
 					"from": {
-						"horizontal": {
+						"below": {
 							"h": "center",
 							"v": "base"
 						}
@@ -250,7 +250,21 @@
 			{
 				"name": "attr_group",
 				"connections": {
-					"childstyle": "no-connector" 
+					"childstyle": "no-connector",
+					"default": {
+						"h": "center",
+						"v": "base"
+					},
+					"from": {
+						"below": {
+							"h": "center",
+							"v": "base"
+						}
+					},
+					"to": {
+						"h": "center",
+						"v": "top"
+					}
 				}
 			}
 		],
@@ -265,7 +279,6 @@
 			"no-connector": {
 				"type": "no-connector"
 			}
-
 		}
 	}
 </script>
