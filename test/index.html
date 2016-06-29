@@ -249,7 +249,21 @@
 			},
 			{
 				"name": "attr_group",
+				"cornerRadius": 10.0,
+				"text": {
+					"margin": 0.0,
+					"alignment": "center",
+					"color": "#4F4F4F",
+					"lightColor": "#EEEEEE",
+					"darkColor": "#000000",
+					"font": {
+						"lineSpacing": 2.5,
+						"size": 9,
+						"weight": "bold"
+					}
+				},
 				"connections": {
+					"style": "green",
 					"childstyle": "no-connector",
 					"default": {
 						"h": "center",
@@ -266,18 +280,38 @@
 						"v": "top"
 					}
 				}
+			},
+			{
+				"name": "attr_group.activated",
+				"background": {
+					"color": "#00FF00",
+					"opacity": 0.3
+				}
 			}
 		],
 		"connector": {
 			"default": {
 				"type": "top-down-s-curve",
+				"overline": true,
 				"line": {
 					"color": "#707070",
-					"width": 2.0
+					"width": 1.0
 				}
 			},
 			"no-connector": {
-				"type": "no-connector"
+				"type": "no-connector",
+				"line": {
+					"color": "#707070",
+					"width": 0.0
+				}
+			},
+			"green": {
+				"type": "top-down-s-curve",
+				"overline": true,
+				"line": {
+					"color": "#00FF00",
+					"width": 2.0
+				}
 			}
 		}
 	}

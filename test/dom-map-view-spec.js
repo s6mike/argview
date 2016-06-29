@@ -452,6 +452,23 @@ describe('updateConnector', function () {
 		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[0].styles).toEqual(['funky']);
 		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[1].styles).toEqual(['bleak']);
 	});
+	describe('should set the path attributes', function () {
+		var path;
+		beforeEach(function () {
+			spyOn(MAPJS.Connectors, 'themePath').and.returnValue({'d': 'Z', color: 'black', width: 3.0, position: {top: 0}});
+			underTest.updateConnector();
+			path = underTest.find('path');
+		});
+		it('sets the stroke of the path from the connector color', function () {
+			expect(path.attr('stroke')).toEqual('black');
+		});
+		it('sets the stroke-width from the connector width', function () {
+			expect(path.attr('stroke-width')).toEqual('3');
+		});
+		it('sets the path fill to transparent', function () {
+			expect(path.attr('fill')).toEqual('transparent');
+		});
+	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateConnector()[0]).toEqual(underTest[0]);
 	});
@@ -527,7 +544,9 @@ describe('updateConnector', function () {
 	});
 	it('does not die if one of the shapes is no longer present', function () {
 		fromNode.remove();
-		underTest.updateConnector();
+		expect(function () {
+			underTest.updateConnector();
+		}).not.toThrowError();
 	});
 	it('does not die if nodeFrom gets cleared out', function () {
 		underTest.data('nodeFrom', false);
@@ -626,7 +645,10 @@ describe('updateLink', function () {
 	});
 	it('does not die if one of the shapes is no longer present', function () {
 		fromNode.remove();
-		underTest.updateLink();
+		expect(function () {
+			underTest.updateLink();
+		}).not.toThrowError();
+
 	});
 	it('does not die if nodeFrom gets cleared out', function () {
 		underTest.data('nodeFrom', false);
@@ -2815,4 +2837,46 @@ describe('MAPJS.DOMRender', function () {
 			});
 		});
 	});
+});
+describe('setThemeClassList', function () {
+	'use strict';
+	var underTest, domElement;
+	beforeEach(function () {
+		underTest = jQuery('<div>').appendTo('body');
+		domElement = underTest[0];
+		domElement.classList.add.apply(domElement.classList, ['level_2', 'attr_foo']);
+	});
+	afterEach(function () {
+		underTest.remove();
+	});
+	it('should remove theme classes that are already set on the element', function () {
+		underTest.setThemeClassList([]);
+		expect(underTest.attr('class')).toEqual('');
+	});
+	it('should remove theme classes if no array is supplied', function () {
+		underTest.setThemeClassList();
+		expect(underTest.attr('class')).toEqual('');
+	});
+	it('should not remove non theme classes that are already set on the element', function () {
+		domElement.classList.add.apply(domElement.classList, ['foo', 'bar']);
+		underTest.setThemeClassList([]);
+		expect(underTest.attr('class')).toEqual('foo bar');
+	});
+	it('should not add the default class', function () {
+		underTest.setThemeClassList(['default']);
+		expect(underTest.attr('class')).toEqual('');
+
+	});
+	it('should add theme classes to the element', function () {
+		underTest.setThemeClassList(['level_3', 'attr_bar']);
+		expect(underTest.attr('class')).toEqual('level_3 attr_bar');
+		expect(underTest.hasClass('level_3')).toBeTruthy();
+		expect(underTest.hasClass('attr_bar')).toBeTruthy();
+	});
+	it('should not duplicate classes on the element', function () {
+		underTest.setThemeClassList(['level_2', 'attr_bar']);
+		expect(underTest.attr('class')).toEqual('level_2 attr_bar');
+
+	});
+
 });

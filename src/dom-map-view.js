@@ -1,4 +1,22 @@
 /*global jQuery, _, MAPJS, document, window*/
+
+jQuery.fn.setThemeClassList = function (classList) {
+	'use strict';
+	var domElement = this[0],
+		filterClasses = function (classes) {
+			return _.filter(classes, function (c) {
+				return /^level_.+/.test(c) ||  /^attr_.+/.test(c);
+			});
+		},
+		toRemove = filterClasses(domElement.classList),
+		toAdd = classList && classList.length && filterClasses(classList);
+	domElement.classList.remove.apply(domElement.classList, toRemove);
+	if (toAdd && toAdd.length) {
+		domElement.classList.add.apply(domElement.classList, toAdd);
+	}
+	return this;
+};
+
 MAPJS.DOMRender = {
 	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
 	nodeCacheMark: function (idea, levelOverride) {
@@ -199,10 +217,14 @@ jQuery.fn.updateConnector = function (canUseData) {
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
+
 		// if only the relative position changed, do not re-update the curve!!!!
-		pathElement.attr('d',
-			connection.d
-		);
+		pathElement.attr({
+			'd': connection.d,
+			'stroke': connection.color,
+			'stroke-width': connection.width,
+			fill: 'transparent'
+		});
 	});
 };
 
@@ -497,15 +519,6 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			textBox.css(textProps);
 		},
 		nodeLevel = forcedLevel || nodeContent.level,
-		setStyles = function () {
-			var domElement = self[0],
-				toRemove = _.filter(domElement.classList, function (c) {
-					return /^level_.+/.test(c) ||  /^attr_.+/.test(c);
-				});
-			domElement.classList.remove.apply(domElement.classList, toRemove);
-			domElement.classList.add.apply(domElement.classList, effectiveStyles);
-			self.attr('mapjs-level', nodeLevel);
-		},
 		themeDefault =  function (a, b, c, d) {
 			return d;
 		},
@@ -568,7 +581,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
 		}
 	}
-	setStyles();
+
+	self.setThemeClassList(effectiveStyles).attr('mapjs-level', nodeLevel);
 
 
 	self.data(nodeCacheData).addNodeCacheMark(nodeContent);

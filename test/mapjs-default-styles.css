@@ -87,11 +87,6 @@
 	padding: 0px;
 	z-index: 1;
 }
-.mapjs-connector {
-	stroke-width: 1px;
-	fill: none;
-	stroke: #888;
-}
 .mapjs-link {
 	stroke-width: 1.5px;
 	fill: none;
