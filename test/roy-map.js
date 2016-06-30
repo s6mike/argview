@@ -205,7 +205,7 @@ function test_tree() {
       "id": 2,
       "attr": {
         "contentLocked": true,
-        "group": true
+        "group": "supporting"
       },
       "ideas": {
         "1": {
@@ -227,7 +227,7 @@ function test_tree() {
       "id": 7,
       "attr": {
         "contentLocked": true,
-        "group": true
+        "group": "opposing"
       },
       "ideas": {
         "1": {
@@ -322,7 +322,7 @@ function test_tree() {
       }
     },
     "progress": "parked",
-    "theme": "topdown"
+    "theme": "argumentMapping"
   }
 }
 }

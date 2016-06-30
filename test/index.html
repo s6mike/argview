@@ -5,48 +5,59 @@
 	</head>
 	<body>
 		<style>
+			body {
+				margin: 0;
+			}
+			#testcontrols {
+				height: 50px;
+				overflow-y: scroll;
+				padding: 5px;
+			}
 			#container {
 				background-color: #FFFFFF;
 
-				height: 100%;
+				height: calc(100% - 60px);
 				width: 100%;
 				border: 1px dashed black;
 			}
-		</style>
 
-		<input type="button" class="resetView" value="0"></input>
-		<input type="button" class="scaleUp" value="+"></input>
-		<input type="button" class="scaleDown" value="-"></input>
-		<input type="button" class="addSubIdea" value="add"></input>
-		<input type="button" onclick="mapModel.addGroupSubidea()" value="add group"></input>
-		<input type="button" class="editNode" value="edit"></input>
-		<input type="button" class="removeSubIdea" value="delete"></input>
-		<input type="button" class="insertIntermediate" value="insert parent"></input>
-		<input type="button" class="toggleCollapse" value="exp/col"></input>
-		<input type="button" onclick="mapModel.setInputEnabled(false)" value="disable"></input>
-		<input type="button" onclick="mapModel.setInputEnabled(true)" value="enable"></input>
-		<input type="button" class="undo" value="undo"></input>
-		<input type="button" class="redo" value="redo"></input>
-		<input type="button" data-mm-action="export-image" value="Export To Image"/>
-		<input type="button" class="cut" value="cut"></input>
-		<input type="button" class="copy" value="copy"></input>
-		<input type="button" class="paste" value="paste"></input>
-		<input type="button" class="openAttachment" value="open attachment"></input>
-		<input type="button" class="toggleAddLinkMode" value="add link"></input>
-		Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
-	Frames: <span id="framerate"></span>
-	Cycle: <span id="cyclerate"></span>
-		<div id="linkEditWidget">
-			<input class="delete" type="button" value="Delete"></input>
-			<select class="color">
-				<option value="red">Red</option>
-				<option value="blue">Blue</option>
-			</select>
-			<select class="lineStyle">
-				<option value="solid">Solid</option>
-				<option value="dashed">Dashed</option>
-			</select>
-			<button class="arrow">Arrow</button>
+		</style>
+		<div id="testcontrols">
+			<input type="button" class="resetView" value="0"></input>
+			<input type="button" class="scaleUp" value="+"></input>
+			<input type="button" class="scaleDown" value="-"></input>
+			<input type="button" class="addSubIdea" value="add"></input>
+			<input type="button" onclick="mapModel.addGroupSubidea('click', {group:'supporting'})" value="supporting group"></input>
+			<input type="button" onclick="mapModel.addGroupSubidea('click', {group:'opposing'})" value="opposing group"></input>
+			<input type="button" class="editNode" value="edit"></input>
+			<input type="button" class="removeSubIdea" value="delete"></input>
+			<input type="button" class="insertIntermediate" value="insert parent"></input>
+			<input type="button" class="toggleCollapse" value="exp/col"></input>
+			<input type="button" onclick="mapModel.setInputEnabled(false)" value="disable"></input>
+			<input type="button" onclick="mapModel.setInputEnabled(true)" value="enable"></input>
+			<input type="button" class="undo" value="undo"></input>
+			<input type="button" class="redo" value="redo"></input>
+			<input type="button" data-mm-action="export-image" value="Export To Image"/>
+			<input type="button" class="cut" value="cut"></input>
+			<input type="button" class="copy" value="copy"></input>
+			<input type="button" class="paste" value="paste"></input>
+			<input type="button" class="openAttachment" value="open attachment"></input>
+			<input type="button" class="toggleAddLinkMode" value="add link"></input>
+			Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
+			Frames: <span id="framerate"></span>
+			Cycle: <span id="cyclerate"></span>
+			<div id="linkEditWidget">
+				<input class="delete" type="button" value="Delete"></input>
+				<select class="color">
+					<option value="red">Red</option>
+					<option value="blue">Blue</option>
+				</select>
+				<select class="lineStyle">
+					<option value="solid">Solid</option>
+					<option value="dashed">Dashed</option>
+				</select>
+				<button class="arrow">Arrow</button>
+			</div>
 		</div>
 		<div id="container"></div>
 		<script type="text/javascript" src="../lib/dependencies.js"></script>
@@ -63,503 +74,10 @@
 		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
 		<script type="text/javascript" src="../src/theme-css-widget.js"></script>
 		<script type="text/javascript" src="roy-map.js"></script>
-<script id="topdownTheme" type="text/json">
-	{
-		"name": "MindMup Top Down Straight Lines",
-		"layout": {
-			"orientation": "top-down",
-			"spacing": {
-				"h": 10,
-				"v": 100
-			}
-		},
-		"node": [
-			{
-				"name": "default",
-				"cornerRadius": 5.0,
-				"background": {
-					"color": "transparent",
-					"opacity": 0.0
-				},
-				"border": {
-					"type": "overline"
-				},
-				"shadow": [
-				{
-					"color": "transparent"
-				}
-				],
-				"text": {
-					"margin": 5.0,
-					"alignment": "center",
-					"color": "#4F4F4F",
-					"lightColor": "#EEEEEE",
-					"darkColor": "#000000",
-					"font": {
-						"lineSpacing": 2.5,
-						"size": 9,
-						"weight": "bold"
-					}
-				},
-				"connections": {
-					"default": {
-						"h": "center",
-						"v": "base"
-					},
-					"from": {
-						"below": {
-							"h": "center",
-							"v": "base"
-						}
-					},
-					"to": {
-						"h": "center",
-						"v": "top"
-					}
-				},
-				"decorations": {
-					"height": 32,
-					"edge": "right",
-					"overlap": true,
-					"position": "center"
-				}
-			},
-			{
-				"name": "activated",
-				"border": {
-					"type": "surround",
-					"line": {
-						"color": "#22AAE0",
-						"width": 2.0,
-						"style": "dashed"
-					}
-				}
-			},
-			{
-				"name": "selected",
-				"shadow": [
-				{
-					"color": "#000000",
-					"opacity": 0.9,
-					"offset": {
-						"width": 2,
-						"height": 2
-					},
-					"radius": 2
-				}
-				]
-			},
-			{
-				"name": "collapsed",
-				"shadow": [
-				{
-					"color": "#888888",
-					"offset": {
-						"width": 0,
-						"height": 1
-					},
-					"radius": 0
-				},
-				{
-					"color": "#FFFFFF",
-					"offset": {
-						"width": 0,
-						"height": 3
-					},
-					"radius": 0
-				},
-				{
-					"color": "#888888",
-					"offset": {
-						"width": 0,
-						"height": 4
-					},
-					"radius": 0
-				},
-				{
-					"color": "#FFFFFF",
-					"offset": {
-						"width": 0,
-						"height": 6
-					},
-					"radius": 0
-				},
-				{
-					"color": "#888888",
-					"offset": {
-						"width": 0,
-						"height": 7
-					},
-					"radius": 0
-				}
-				]
-			},
-			{
-				"name": "collapsed.selected",
-				"shadow": [
-				{
-					"color": "#FFFFFF",
-					"offset": {
-						"width": 0,
-						"height": 1
-					},
-					"radius": 0
-				},
-				{
-					"color": "#888888",
-					"offset": {
-						"width": 0,
-						"height": 3
-					},
-					"radius": 0
-				},
-				{
-					"color": "#FFFFFF",
-					"offset": {
-						"width": 0,
-						"height": 6
-					},
-					"radius": 0
-				},
-				{
-					"color": "#555555",
-					"offset": {
-						"width": 0,
-						"height": 7
-					},
-					"radius": 0
-				},
-				{
-					"color": "#FFFFFF",
-					"offset": {
-						"width": 0,
-						"height": 10
-					},
-					"radius": 0
-				},
-				{
-					"color": "#333333",
-					"offset": {
-						"width": 0,
-						"height": 11
-					},
-					"radius": 0
-				}
-				]
-			},
-			{
-				"name": "attr_group",
-				"cornerRadius": 10.0,
-				"text": {
-					"margin": 0.0,
-					"alignment": "center",
-					"color": "#4F4F4F",
-					"lightColor": "#EEEEEE",
-					"darkColor": "#000000",
-					"font": {
-						"lineSpacing": 2.5,
-						"size": 9,
-						"weight": "bold"
-					}
-				},
-				"connections": {
-					"style": "green",
-					"childstyle": "no-connector",
-					"default": {
-						"h": "center",
-						"v": "base"
-					},
-					"from": {
-						"below": {
-							"h": "center",
-							"v": "base"
-						}
-					},
-					"to": {
-						"h": "center",
-						"v": "top"
-					}
-				}
-			},
-			{
-				"name": "attr_group.activated",
-				"background": {
-					"color": "#00FF00",
-					"opacity": 0.3
-				}
-			}
-		],
-		"connector": {
-			"default": {
-				"type": "top-down-s-curve",
-				"line": {
-					"color": "#707070",
-					"width": 1.0
-				}
-			},
-			"no-connector": {
-				"type": "no-connector",
-				"line": {
-					"color": "#707070",
-					"width": 0.0
-				}
-			},
-			"green": {
-				"type": "top-down-s-curve",
-				"line": {
-					"color": "#00FF00",
-					"width": 2.0
-				}
-			},
-			"no-connector.green": {
-				"type": "no-connector",
-				"line": {
-					"color": "#FF0000",
-					"width": 4.0
-				}
-			}
-		}
-	}
-</script>
-
-		<script id="compactTheme" type="application/json">
-			{
-				"name": "MindMup Compact",
-				"node": [
-					{
-						"name": "default",
-						"cornerRadius": 3.0,
-						"background": {
-							"color": "transparent",
-							"opacity": 0.0
-						},
-						"border": {
-							"type": "underline"
-						},
-						"shadow": [
-						{
-							"color": "transparent"
-						}
-						],
-						"text": {
-							"margin": 5.0,
-							"alignment": "left",
-							"color": "#4F4F4F",
-							"lightColor": "#EEEEEE",
-							"darkColor": "#000000",
-							"font": {
-								"lineSpacing": 8,
-								"size": 12,
-								"weight": "light"
-							}
-						},
-						"connections": {
-							"default": {
-								"h": "nearest",
-								"v": "base"
-							}
-						},
-						"decorations": {
-							"height": 32,
-							"edge": "top",
-							"overlap": false,
-							"position": "center"
-						}
-					},
-					{
-						"name": "level_1",
-						"connections": {
-							"default": {
-								"h": "nearest",
-								"v": "center"
-							}
-						}
-					},
-					{
-						"name": "activated",
-						"border": {
-							"type": "surround",
-							"line": {
-								"color": "#22AAE0",
-								"width": 2.0,
-								"style": "dashed"
-							}
-						}
-					},
-					{
-						"name": "selected",
-						"shadow": [
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 1,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": -1,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#22AAE0",
-							"offset": {
-								"width": 4,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#22AAE0",
-							"offset": {
-								"width": -4,
-								"height": 0
-							},
-							"radius": 0
-						}
-
-						]
-					},
-					{
-						"name": "collapsed",
-						"shadow": [
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 1
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 0,
-								"height": 3
-							},
-							"radius": 0
-						},
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 4
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 0,
-								"height": 6
-							},
-							"radius": 0
-						},
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 7
-							},
-							"radius": 0
-						}
-						]
-					},
-					{
-						"name": "collapsed.selected",
-						"shadow": [
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 1,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": -1,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#22AAE0",
-							"offset": {
-								"width": 4,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#22AAE0",
-							"offset": {
-								"width": -4,
-								"height": 0
-							},
-							"radius": 0
-						},
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 1
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 0,
-								"height": 3
-							},
-							"radius": 0
-						},
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 4
-							},
-							"radius": 0
-						},
-						{
-							"color": "#FFFFFF",
-							"offset": {
-								"width": 0,
-								"height": 6
-							},
-							"radius": 0
-						},
-						{
-							"color": "#888888",
-							"offset": {
-								"width": 0,
-								"height": 7
-							},
-							"radius": 0
-						}
-						]
-					}
-
-				],
-				"connector": {
-					"default": {
-						"type": "compact-s-curve",
-						"line": {
-							"color": "#707070",
-							"width": 1.0
-						}
-					}
-				}
-			}
-
-		</script>
+		<script type="text/javascript" src="themes/compact.js"></script>
+		<script type="text/javascript" src="themes/top-down-simple.js"></script>
+		<script type="text/javascript" src="themes/argument-mapping.js"></script>
+		<script type="text/javascript" src="themes/v1.js"></script>
 		<style id="themecss">
 		</style>
 		<script>
@@ -585,8 +103,6 @@
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				themeProvider = MAPJS.Themes,
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-				themeProvider.compact = JSON.parse(compactTheme.innerHTML);
-				themeProvider.topdown = JSON.parse(topdownTheme.innerHTML);
 				$('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel);
 				container.domMapWidget(console, mapModel, false, imageInsertController);
 				jQuery('body').mapToolbarWidget(mapModel);
