@@ -584,11 +584,11 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 
 	self.setThemeClassList(effectiveStyles).attr('mapjs-level', nodeLevel);
 
-
 	self.data(nodeCacheData).addNodeCacheMark(nodeContent);
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
+	self.trigger('mapjs:resize');
 	return self;
 };
 jQuery.fn.placeCaretAtEnd = function () {
@@ -1173,6 +1173,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
 			.on('mapjs:move', function () {
+				element.updateConnector(true);
+			})
+			.on('mapjs:resize', function () {
 				element.updateConnector(true);
 			})
 			.on('mm:drag', function () {
