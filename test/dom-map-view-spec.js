@@ -522,12 +522,7 @@ describe('updateConnector', function () {
 		it('will update if the shapes did not move, but the theme changed', function () {
 			underTest.updateConnector();
 			underTest.find('path').attr('d', '');
-			MAPJS.DOMRender.theme = {
-				name: 'new',
-				attributeValue: function (a1, a2, a3, a4) {
-					return a4;
-				}
-			};
+			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'new'});
 
 			underTest.updateConnector();
 			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,202 140,142');
