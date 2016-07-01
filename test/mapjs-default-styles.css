@@ -37,9 +37,12 @@
 	white-space: pre-wrap;
 	display: block;
 	max-width: 146px;
-	min-height: 1.5em;
+	min-height: 1em;
 	min-width: 1em;
 	outline: none;
+}
+.mapjs-node.attr_group span {
+	min-height: 1.5em;
 }
 .mapjs-node.dragging {
 	opacity: 0.4;
