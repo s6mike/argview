@@ -535,6 +535,55 @@ describe('MapModel', function () {
 				expect(underTest.getSelectedNodeId()).toBe(3);
 			});
 		});
+		describe('insertIntermediateGroup', function () {
+			describe('when a node is selected', function () {
+				beforeEach(function () {
+					underTest = new MAPJS.MapModel(
+						function () {
+							return {};
+						},
+						['What', 'a', 'beautiful', 'idea!']
+					);
+					underTest.setIdea(anIdea);
+					spyOn(Math, 'random').and.returnValue(0.6);
+					underTest.selectNode(2);
+					spyOn(anIdea, 'insertIntermediateMultiple');
+				});
+
+				it('should invoke idea.insertIntermediate with the id of the selected node', function () {
+					underTest.insertIntermediateGroup();
+					expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2], {title: 'group', attr: { group: true, contentLocked: true}});
+				});
+				it('should invoke idea.insertIntermediate with the ids of all active nodes of the selected node', function () {
+					underTest.activateNode('test', 3);
+					underTest.insertIntermediateGroup();
+					expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2, 3], {title: 'group', attr: { group: true, contentLocked: true}});
+				});
+
+				it('should not invoke anything if input is disabled', function () {
+					underTest.setInputEnabled(false);
+					underTest.insertIntermediateGroup();
+					expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
+				});
+				it('should pass on group attributes', function () {
+					underTest.activateNode('test', 3);
+					underTest.insertIntermediateGroup('test', { group: 'blue' });
+					expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2, 3], {title: 'group', attr: { group: 'blue', contentLocked: true } });
+				});
+				it('should not invoke idea.insertIntermediate when root is selected', function () {
+					underTest.selectNode(anIdea.id);
+					underTest.insertIntermediateGroup('test', { group: 'blue' });
+					expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
+				});
+			});
+
+			it('should not invoke idea.insertIntermediate when nothing is selected', function () {
+				spyOn(anIdea, 'insertIntermediateMultiple');
+				underTest.insertIntermediateGroup();
+				expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
+			});
+
+		});
 		describe('addGroupSubidea', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'addSubIdea').and.callThrough();

@@ -609,10 +609,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		}
 		return false;
 	};
-	contentAggregate.insertIntermediateMultiple = function (idArray) {
+	contentAggregate.insertIntermediateMultiple = function (idArray, ideaOptions) {
 		var newId;
 		contentAggregate.startBatch();
-		newId = contentAggregate.insertIntermediate(idArray[0]);
+		newId = contentAggregate.insertIntermediate(idArray[0], ideaOptions && ideaOptions.title);
+		if (ideaOptions && ideaOptions.attr) {
+			Object.keys(ideaOptions.attr).forEach(function (key) {
+				contentAggregate.updateAttr(newId, key, ideaOptions.attr[key]);
+			});
+		}
 		_.each(idArray.slice(1), function (id) {
 			contentAggregate.changeParent(id, newId);
 		});

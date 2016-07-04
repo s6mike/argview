@@ -2435,7 +2435,16 @@ describe('content aggregate', function () {
 				expect(_.size(oldIdea.ideas)).toBe(0);
 				expect(oldIdea).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
 				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
-
+			});
+			it('assigns attributes to new node', function () {
+				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id: 3, title: 'also', ideas: { 99: {id: 4, title: 'under'}}}}});
+				result = idea.insertIntermediateMultiple([4, 2], { attr: {group: 'blue'}});
+				expect(idea.findSubIdeaById(result).attr).toEqual({group: 'blue'});
+			});
+			it('assigns title to new node', function () {
+				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id: 3, title: 'also', ideas: { 99: {id: 4, title: 'under'}}}}});
+				result = idea.insertIntermediateMultiple([4, 2], { title: 'tom'});
+				expect(idea.findSubIdeaById(result).title).toEqual('tom');
 			});
 		});
 	});

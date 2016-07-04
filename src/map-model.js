@@ -384,6 +384,21 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
+	this.insertIntermediateGroup = function (source, options) {
+		var activeNodes = [],
+			group = (options && options.group) || true;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+			return false;
+		}
+		analytic('insertIntermediate', source);
+		self.applyToActivated(function (i) {
+			activeNodes.push(i);
+		});
+		idea.insertIntermediateMultiple(activeNodes, { title: 'group', attr: {group: group, contentLocked: true}});
+	};
 	this.insertIntermediate = function (source) {
 		var activeNodes = [], newId;
 		if (!isEditingEnabled) {
