@@ -209,9 +209,9 @@ MAPJS.Themes.v1 = {
 			'default': {
 				'type': 'quadratic',
 				'controlPoint': {
-					'above': {'width': 0, 'height': 1.5},
-					'below': {'width': 0, 'height': 1.5},
-					'horizontal': {'width': 0, 'height': 1}
+					'above': {'width': 0, 'height': 0.75},
+					'below': {'width': 0, 'height': 0.75},
+					'horizontal': {'width': 0, 'height': 0}
 				},
 				'line': {
 					'color': '#707070',
