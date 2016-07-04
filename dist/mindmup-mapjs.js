@@ -90,7 +90,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
-					contentIdea.ideas[parseFloat(key)] = init(value, originSession);
+					if (value.attr && value.attr.group && _.isEmpty(value.ideas)) {
+						delete contentIdea.ideas[key];
+					} else {
+						contentIdea.ideas[parseFloat(key)] = init(value, originSession);
+					}
+
 				});
 			}
 			if (!contentIdea.title) {
@@ -114,6 +119,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
 					return result || idea.findSubIdeaById(childIdeaId);
 				}, undefined);
+			};
+			contentIdea.isEmptyGroup = function () {
+				return contentIdea !== contentAggregate && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
 			};
 			contentIdea.find = function (predicate) {
 				var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
@@ -1316,17 +1324,17 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!oldNode) {
 					self.dispatchEvent('nodeCreated', newNode, sessionId);
 				} else {
-					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y || newNode.width !== oldNode.width || newNode.height !== oldNode.height) {
+					if (newNode.x !== oldNode.x || newNode.y !== oldNode.y) {
 						self.dispatchEvent('nodeMoved', newNode, sessionId);
+					}
+					if ((newNode.width !== oldNode.width || newNode.height !== oldNode.height) ||
+						(newNode.level !== oldNode.level) ||
+						(!_.isEqual(newNode.attr || {}, oldNode.attr || {})) ||
+						themeChanged) {
+						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
 					if (newNode.title !== oldNode.title) {
 						self.dispatchEvent('nodeTitleChanged', newNode, sessionId);
-					}
-					if (!_.isEqual(newNode.attr || {}, oldNode.attr || {})) {
-						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
-					}
-					if (newNode.level !== oldNode.level || themeChanged) {
-						self.dispatchEvent('nodeAttrChanged', newNode, sessionId);
 					}
 					if (newNode.label !== oldNode.label) {
 						self.dispatchEvent('nodeLabelChanged', newNode, sessionId);
@@ -1599,6 +1607,30 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 
 	};
+	self.addGroupSubidea = function (source, options) {
+		var parentId = options && options.parentId,
+			group = (options && options.group) || true,
+			target = parentId || currentlySelectedIdeaId, newGroupId, newId;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('addGroupSubidea', source);
+		if (isInputEnabled) {
+			idea.batch(function () {
+				ensureNodeIsExpanded(source, target);
+				newGroupId = idea.addSubIdea(target, 'group');
+				if (newGroupId) {
+					idea.updateAttr(newGroupId, 'contentLocked', true);
+					idea.updateAttr(newGroupId, 'group', group);
+					newId = idea.addSubIdea(newGroupId);
+				}
+			});
+			if (newId) {
+				editNewIdea(newId);
+			}
+		}
+
+	};
 	this.insertIntermediate = function (source) {
 		var activeNodes = [], newId;
 		if (!isEditingEnabled) {
@@ -1724,7 +1756,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	this.editNode = function (source, shouldSelectAll, editingNew) {
-		var title;
+		var title, currentIdea;
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -1734,7 +1766,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isInputEnabled) {
 			return false;
 		}
-		title = currentlySelectedIdea().title;
+		currentIdea = currentlySelectedIdea();
+		if (currentIdea.attr && currentIdea.attr.contentLocked) {
+			return false;
+		}
+		title = currentIdea.title;
 		if (_.include(selectAllTitles, title)) { // === 'Press Space or double-click to edit') {
 			shouldSelectAll = true;
 		}
@@ -2699,6 +2735,24 @@ jQuery.fn.imageDropWidget = function (imageInsertController) {
 };
 
 /*global jQuery, _, MAPJS, document, window*/
+
+jQuery.fn.setThemeClassList = function (classList) {
+	'use strict';
+	var domElement = this[0],
+		filterClasses = function (classes) {
+			return _.filter(classes, function (c) {
+				return /^level_.+/.test(c) ||  /^attr_.+/.test(c);
+			});
+		},
+		toRemove = filterClasses(domElement.classList),
+		toAdd = classList && classList.length && filterClasses(classList);
+	domElement.classList.remove.apply(domElement.classList, toRemove);
+	if (toAdd && toAdd.length) {
+		domElement.classList.add.apply(domElement.classList, toAdd);
+	}
+	return this;
+};
+
 MAPJS.DOMRender = {
 	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
 	nodeCacheMark: function (idea, levelOverride) {
@@ -2709,6 +2763,7 @@ MAPJS.DOMRender = {
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
 			note: !!(idea.attr && idea.attr.note),
+			styles:  MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles(idea.level  || levelOverride, idea.attr),
 			level: idea.level || levelOverride
 		};
 	},
@@ -2881,8 +2936,12 @@ jQuery.fn.updateConnector = function (canUseData) {
 		}
 		applyInnerRect(shapeFrom, fromBox);
 		applyInnerRect(shapeTo, toBox);
+		/*
 		fromBox.level = shapeFrom.attr('mapjs-level');
 		toBox.level = shapeTo.attr('mapjs-level');
+		*/
+		fromBox.styles = shapeFrom.data('styles');
+		toBox.styles = shapeTo.data('styles');
 		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
@@ -2894,10 +2953,14 @@ jQuery.fn.updateConnector = function (canUseData) {
 		if (pathElement.length === 0) {
 			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
+
 		// if only the relative position changed, do not re-update the curve!!!!
-		pathElement.attr('d',
-			connection.d
-		);
+		pathElement.attr({
+			'd': connection.d,
+			'stroke': connection.color,
+			'stroke-width': connection.width,
+			fill: 'transparent'
+		});
 	});
 };
 
@@ -3192,68 +3255,76 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			textBox.css(textProps);
 		},
 		nodeLevel = forcedLevel || nodeContent.level,
-		setLevel = function () {
-			var domElement = self[0];
-			_.each(_.filter(domElement.classList, function (c) {
-				return /^level_.+/.test(c);
-			}), function (c) {
-				domElement.classList.remove(c);
-			});
-			domElement.classList.add('level_' + nodeLevel);
-			self.attr('mapjs-level', nodeLevel);
-		},
 		themeDefault =  function (a, b, c, d) {
 			return d;
 		},
+		styleDefault = function () {
+			return ['default'];
+		},
 		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		borderType = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['border', 'type'], 'surround'),
-		decorationEdge = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'edge'], ''),
-		decorationOverlap = attrValue(['node'], ['level_' + nodeLevel, 'default'], ['decorations', 'overlap'], ''),
+		nodeStyles = (MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles) || styleDefault,
+		effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
+		borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
+		decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
+		decorationOverlap = attrValue(['node'], effectiveStyles, ['decorations', 'overlap'], ''),
 		colorText = (borderType !== 'surround'),
-		nodeCacheData, offset;
+		nodeCacheData, offset,
+		isGroup = nodeContent.attr && nodeContent.attr.group;
 
 
-	setLevel();
-	updateText(nodeContent.title);
-	applyLinkUrl(nodeContent.title);
-	applyLabel(nodeContent.label);
-	applyNote();
-	applyAttachment();
 	nodeCacheData = {
 		x: Math.round(nodeContent.x),
 		y: Math.round(nodeContent.y),
 		width: Math.round(nodeContent.width),
 		height: Math.round(nodeContent.height),
-		nodeId: nodeContent.id
+		nodeId: nodeContent.id,
+		styles: effectiveStyles
 	};
+
 	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
 	nodeCacheData.innerRect.dx = 0;
 	nodeCacheData.innerRect.dy = 0;
-	this.css('margin', '');
-	if (decorationEdge === 'left') {
-		nodeCacheData.innerRect.dx = decorations().outerWidth();
-		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
-		self.css('margin-left', decorations().outerWidth());
-	} else if (decorationEdge === 'right') {
-		nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
-		self.css('margin-right', decorations().outerWidth());
-	} else if (decorationEdge === 'top') {
-		offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
-		nodeCacheData.innerRect.dy = offset;
-		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
-		if (offset) {
-			self.css('margin-top', offset);
-		}
 
-	} else if (decorationEdge === 'bottom') {
-		offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
-		nodeCacheData.innerRect.height = nodeCacheData.height - offset;
-		self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+
+	if (isGroup) {
+		this.css({margin: '', width: nodeContent.width, height: nodeContent.height});
+		updateText('');
+	} else {
+		updateText(nodeContent.title);
+		applyLinkUrl(nodeContent.title);
+		applyLabel(nodeContent.label);
+		applyNote();
+		applyAttachment();
+		this.css({margin: '', width: '', height: ''});
+		if (decorationEdge === 'left') {
+			nodeCacheData.innerRect.dx = decorations().outerWidth();
+			nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
+			self.css('margin-left', decorations().outerWidth());
+		} else if (decorationEdge === 'right') {
+			nodeCacheData.innerRect.width = nodeCacheData.width - decorations().outerWidth();
+			self.css('margin-right', decorations().outerWidth());
+		} else if (decorationEdge === 'top') {
+			offset = (decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+			nodeCacheData.innerRect.dy = offset;
+			nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+			if (offset) {
+				self.css('margin-top', offset);
+			}
+
+		} else if (decorationEdge === 'bottom') {
+			offset = decorations().outerHeight() * (decorationOverlap ? 0.5 : 1);
+			nodeCacheData.innerRect.height = nodeCacheData.height - offset;
+			self.css('margin-bottom', decorations().outerHeight() * (decorationOverlap ? 0.5 : 1));
+		}
 	}
+
+	self.setThemeClassList(effectiveStyles).attr('mapjs-level', nodeLevel);
+
 	self.data(nodeCacheData).addNodeCacheMark(nodeContent);
 	setColors(colorText);
 	setIcon(nodeContent.attr && nodeContent.attr.icon);
 	setCollapseClass();
+	self.trigger('mapjs:resize');
 	return self;
 };
 jQuery.fn.placeCaretAtEnd = function () {
@@ -3838,6 +3909,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
 			.on('mapjs:move', function () {
+				element.updateConnector(true);
+			})
+			.on('mapjs:resize', function () {
 				element.updateConnector(true);
 			})
 			.on('mm:drag', function () {
