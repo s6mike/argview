@@ -478,7 +478,7 @@ describe('updateConnector', function () {
 		path = underTest.find('path');
 		expect(path.length).toBe(1);
 		expect(path.attr('class')).toEqual('mapjs-connector');
-		expect(path.attr('d')).toEqual('M50,20Q50,202 140,142');
+		expect(path.attr('d')).toEqual('M50,20Q50,190 140,142');
 	});
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateConnector();
@@ -504,13 +504,13 @@ describe('updateConnector', function () {
 
 	it('updates multiple connectors at once', function () {
 		jQuery('[data-role=test-connector]').updateConnector();
-		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,202 140,142');
-		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 30,258');
+		expect(underTest.find('path').attr('d')).toEqual('M50,20Q50,190 140,142');
+		expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,306 30,258');
 	});
 	describe('performance optimisations', function () {
 		it('rounds coordinates', function () {
 			anotherConnector.updateConnector();
-			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,318 30,258');
+			expect(anotherConnector.find('path').attr('d')).toEqual('M50,20Q50,306 30,258');
 		});
 		it('will not update if the shapes have not moved', function () {
 			underTest.updateConnector();
@@ -525,7 +525,7 @@ describe('updateConnector', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'new'});
 
 			underTest.updateConnector();
-			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,202 140,142');
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,190 140,142');
 		});
 		it('will update if the shapes move', function () {
 			underTest.updateConnector();
@@ -533,7 +533,7 @@ describe('updateConnector', function () {
 			fromNode.css('top', '50px');
 
 			underTest.updateConnector();
-			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,252 140,192');
+			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,240 140,192');
 		});
 
 	});
