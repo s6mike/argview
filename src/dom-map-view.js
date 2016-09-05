@@ -1081,7 +1081,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('mm:stop-dragging', function (evt) {
-				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition, vpCenter;
+				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition;
 				element.removeClass('dragging');
 				reorderBounds.hide();
 				isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey;
@@ -1094,7 +1094,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
-				} else if (node.level > 1) {
+				} else {
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();
 					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
@@ -1103,14 +1103,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					} else {
 						dropResult = mapModel.positionNodeAt(node.id, stageDropCoordinates.x, stageDropCoordinates.y, manualPosition);
 					}
-				} else if (node.level === 1 && evt.gesture) {
-					vpCenter = stagePointAtViewportCenter();
-					vpCenter.x -= evt.gesture.deltaX || 0;
-					vpCenter.y -= evt.gesture.deltaY || 0;
-					centerViewOn(vpCenter.x, vpCenter.y, true);
-					dropResult = true;
-				} else {
-					dropResult = false;
 				}
 				return dropResult;
 			})

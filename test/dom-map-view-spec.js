@@ -74,7 +74,6 @@ describe('updateStage', function () {
 		stage.remove();
 		second.remove();
 	});
-
 	it('applies width and height by adding subtracting offset from data width', function () {
 		stage.data({width: 200, height: 100, offsetX: 50, offsetY: 10}).updateStage();
 		expect(stage.css('width')).toBe('150px');
@@ -1958,30 +1957,21 @@ describe('MAPJS.DOMRender', function () {
 							expect(e.result === false).toBeTruthy();
 						});
 					});
-					it('does not position node and returns false when when level = 1 dropped on a background', function () {
+					it('manually positions level 1 nodes when dropped on a background', function () {
 						var e;
+
 						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
 						mapModel.positionNodeAt.calls.reset();
 
 						underTest = jQuery('#node_2');
+						mapModel.getReorderBoundary.and.returnValue(false);
 						underTest.trigger('mm:start-dragging');
 
 						e = jQuery.Event('mm:stop-dragging', noShift);
-						expect(mapModel.positionNodeAt).not.toHaveBeenCalled();
+						mapModel.positionNodeAt.and.returnValue(true);
 						underTest.trigger(e);
-						expect(e.result === true).toBeTruthy();
-					});
-					it('scrolls the viewport when level = 1 dropped on a background', function () {
-						var e;
-						underTest.trigger(jQuery.Event('mm:stop-dragging', noShift));
-						underTest = jQuery('#node_2');
-						underTest.trigger('mm:start-dragging');
-						e = jQuery.Event('mm:stop-dragging', noShift);
-						underTest.trigger(e);
-						viewPort.finish();
-						expect(viewPort.scrollLeft()).toBe(80);
-						expect(viewPort.scrollTop()).toBe(50);
-
+						expect(mapModel.positionNodeAt).toHaveBeenCalledWith(2, 112, 123, true);
+						expect(e.result).toBe(true);
 					});
 					it('does not position node and does not returns false when dropped outside viewport', function () {
 						var e;

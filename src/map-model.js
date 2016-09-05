@@ -1027,10 +1027,19 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		return idea.updateAttr(nodeId, 'position', false);
 	};
 	self.standardPositionNodeAt = function (nodeId, x, y, manualPosition) {
-		var rootNode = layoutModel.getNode(idea.id),
-			verticallyClosestNode = {
-				id: null,
-				y: Infinity
+		var rootNode = layoutModel.getNode(layoutModel.getNode(nodeId).rootId),
+			getVerticallyClosestNode = function () {
+				var verticallyClosestNode = {
+					id: null,
+					y: Infinity
+				};
+				_.each(idea.sameSideSiblingIds(nodeId), function (id) {
+					var node = layoutModel.getNode(id);
+					if (y < node.y && node.y < verticallyClosestNode.y) {
+						verticallyClosestNode = node;
+					}
+				});
+				return verticallyClosestNode;
 			},
 			parentIdea = idea.findParent(nodeId),
 			parentNode = layoutModel.getNode(parentIdea.id),
@@ -1044,42 +1053,57 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				}
 				return false;
 			},
-			maxSequence = 1,
 			validReposition = function () {
-				return nodeBeingDragged.level === 2 ||
+				return nodeBeingDragged.level <= 2 ||
 					((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
 			},
 			result = false,
-			xOffset;
+			getMaxSequence = function () {
+				if (_.isEmpty(parentIdea.ideas)) {
+					return 0;
+				}
+				return _.max(_.map(parentIdea.ideas, function (i) {
+					return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0;
+				})) || 0;
+			},
+			manuallyPositionSubNode = function () {
+				var xOffset;
+				if (x < parentNode.x) {
+					xOffset = parentNode.x - x - nodeBeingDragged.width + parentNode.width; /* negative nodes will get flipped so distance is not correct out of the box */
+				} else {
+					xOffset = x - parentNode.x;
+				}
+				analytic('nodeManuallyPositioned');
+				return idea.updateAttr(
+					nodeId,
+					'position',
+					[xOffset, y - parentNode.y, getMaxSequence() + 1]
+				);
+			},
+			manuallyPositionRootNode = function () {
+				return idea.updateAttr(
+					nodeId,
+					'position',
+					[x, y, getMaxSequence() + 1]
+				);
+			};
+
 		idea.startBatch();
 		if (thisNode && thisNode.level === 2) {
 			result = tryFlip(rootNode, nodeBeingDragged, x);
 		}
-		_.each(idea.sameSideSiblingIds(nodeId), function (id) {
-			var node = layoutModel.getNode(id);
-			if (y < node.y && node.y < verticallyClosestNode.y) {
-				verticallyClosestNode = node;
-			}
-		});
 		if (!manualPosition && validReposition()) {
 			self.autoPosition(nodeId);
 		}
-		result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
+		if (nodeBeingDragged.level > 1) {
+			result = idea.positionBefore(nodeId, getVerticallyClosestNode().id) || result;
+		}
 		if (manualPosition && validReposition()) {
-			if (x < parentNode.x) {
-				xOffset = parentNode.x - x - nodeBeingDragged.width + parentNode.width; /* negative nodes will get flipped so distance is not correct out of the box */
+			if (nodeBeingDragged.level === 1) {
+				result = manuallyPositionRootNode();
 			} else {
-				xOffset = x - parentNode.x;
+				result = manuallyPositionSubNode() || result;
 			}
-			analytic('nodeManuallyPositioned');
-			maxSequence = _.max(_.map(parentIdea.ideas, function (i) {
-				return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0;
-			}));
-			result = idea.updateAttr(
-				nodeId,
-				'position',
-				[xOffset, y - parentNode.y, maxSequence + 1]
-			) || result;
 		}
 		idea.endBatch();
 		return result;
@@ -1176,14 +1200,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	self.getStandardReorderBoundary = function (nodeId) {
 		var node = layoutModel.getNode(nodeId),
-			rootNode = layoutModel.getNode(idea.id),
-			isRoot = function () {
-				/*jslint eqeq: true*/
-				return nodeId == idea.id;
-			},
-			isFirstLevel = function () {
-				return parentIdea.id === idea.id;
-			},
+			rootNode = layoutModel.getNode(node && node.rootId),
 			isRightHalf = function () {
 				return node && rootNode && node.x >= rootNode.x;
 			},
@@ -1239,7 +1256,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			opposite,
 			primaryEdge,
 			secondaryEdge;
-		if (isRoot(nodeId)) {
+		if (node.level === 1) {
 			return false;
 		}
 		parentIdea = idea.findParent(nodeId);
@@ -1253,7 +1270,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			boundaries.push(siblingBoundary(sameSide, primaryEdge));
 		}
 		boundaries.push(parentBoundary(primaryEdge));
-		if (isFirstLevel()) {
+		if (node.level === 2) {
 			opposite = otherSideSiblings();
 			if (!_.isEmpty(opposite)) {
 				boundaries.push(siblingBoundary(opposite, secondaryEdge));
@@ -1287,6 +1304,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}]);
 	};
 	self.getReorderBoundary = function (nodeId) {
+
 		if (layoutModel.getOrientation() === 'standard') {
 			return self.getStandardReorderBoundary(nodeId);
 		} else {

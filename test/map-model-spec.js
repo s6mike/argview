@@ -926,6 +926,34 @@ describe('MapModel', function () {
 				});
 			});
 		});
+		describe('standardPositionNodeAt', function () {
+			beforeEach(function () {
+				anIdea = MAPJS.content({
+					id: 1,
+					title: 'root',
+					ideas: {
+						10: {
+							id: 2,
+							title: 'child',
+							ideas: {
+								11: { id: 3, title: 'child of child' }
+							}
+						}
+					}
+				});
+				underTest = new MAPJS.MapModel(function () {
+					return {
+						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+					};
+				}, [], clipboard);
+				underTest.setIdea(anIdea);
+			});
+			it('assigns position for root nodes', function () {
+				underTest.standardPositionNodeAt(1, 2, 3, true);
+				expect(anIdea.attr.position).toEqual([2, 3, 1]);
+			});
+		});
+
 		describe('redo', function () {
 			beforeEach(function () {
 				underTest.selectNode(123);
@@ -2565,18 +2593,18 @@ describe('MapModel', function () {
 					}
 				});
 			layout = { nodes: {
-					1: { id: 1, x: -50, y: -30, width: 100, height: 60 }, /* ends at x= 50 */
-					11: { id: 11, x: 80, y: -100, width: 10, height: 10},
-					12: { id: 12, x: 70, y: -60, width: 30, height: 10},  /* ends at x=100 */
-					121: { id: 121, x: 115, y: -60, width: 10, height: 11},
-					122: { id: 122, x: 135, y: -30, width: 10, height: 10},
-					13: { id: 13, x: 70, y: 10, width: 30, height: 20},
-					131: {id: 131, x: 120, y: 10, width: 30, height: 20},
-					14: { id: 14, x: -100, y: 10, width: 30, height: 10},
-					141: { id: 141, x: -150, y: -20, width: 30, height: 10},
-					142: { id: 142, x: -160, y: 20, width: 30, height: 10},
-					15: { id: 15, x: -80, y: 10, width: 10, height: 10},
-					16: { id: 15, x: -80, y: 30, width: 30, height: 30}
+					1: { id: 1, x: -50, y: -30, width: 100, height: 60, level: 1, rootId: 1 }, /* ends at x= 50 */
+					11: { id: 11, x: 80, y: -100, width: 10, height: 10, level: 2, rootId: 1},
+					12: { id: 12, x: 70, y: -60, width: 30, height: 10, level: 2, rootId: 1},  /* ends at x=100 */
+					121: { id: 121, x: 115, y: -60, width: 10, height: 11, level: 3, rootId: 1},
+					122: { id: 122, x: 135, y: -30, width: 10, height: 10, level: 3, rootId: 1},
+					13: { id: 13, x: 70, y: 10, width: 30, height: 20, level: 2, rootId: 1},
+					131: {id: 131, x: 120, y: 10, width: 30, height: 20, level: 3, rootId: 1},
+					14: { id: 14, x: -100, y: 10, width: 30, height: 10, level: 2, rootId: 1},
+					141: { id: 141, x: -150, y: -20, width: 30, height: 10, level: 3, rootId: 1},
+					142: { id: 142, x: -160, y: 20, width: 30, height: 10, level: 3, rootId: 1},
+					15: { id: 15, x: -80, y: 10, width: 10, height: 10, level: 2, rootId: 1},
+					16: { id: 15, x: -80, y: 30, width: 30, height: 30, level: 2, rootId: 1}
 				}
 			};
 			margin = 20;
