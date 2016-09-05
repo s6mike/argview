@@ -190,11 +190,11 @@ return {
       }
     },
     "progress": "parked",
-    "theme": "topdown"
+    "theme": "default"
   }
 }
 };
-function test_tree() {
+function test_treex() {
 	return {
   "title": "Mindmup",
   "id": 1,
@@ -326,7 +326,7 @@ function test_tree() {
   }
 }
 }
-function xtest_tree() {
+function test_tree() {
 	return {
 		"title": "Mindmup",
 		"id": 1,
