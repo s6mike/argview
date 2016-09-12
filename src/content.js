@@ -1,6 +1,6 @@
 /*jslint eqeq: true, forin: true, nomen: true*/
 /*jshint unused:false, loopfunc:true */
-/*global _, MAPJS, observable, console*/
+/*global _, MAPJS, observable*/
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
 	var cachedId,
@@ -173,7 +173,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		isRedoInProgress = false,
 		batches = {},
 		notifyChange = function (method, args, originSession) {
-			console.log('changed', method, args);
 			if (originSession) {
 				contentAggregate.dispatchEvent('changed', method, args, originSession);
 			} else {
@@ -208,7 +207,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}
 			}
 			if (isRedoInProgress) {
-				console.log('changed', 'redo', undefined, originSession);
 				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
 			} else {
 				notifyChange(method, args, originSession);
