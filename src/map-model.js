@@ -467,6 +467,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
 			parent = idea.findParent(currentId) || idea;
+			if (idea.formatVersion >= 3 && parent.id === idea.id) {
+				return false;
+			}
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
 				if (optionalInitialText) {
@@ -1327,5 +1330,43 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return false;
 		}
 		idea.updateAttr(idea.id, 'theme', themeId);
+	};
+	self.makeSelectedNodeRoot = function () {
+
+		var nodeId = self.getSelectedNodeId(),
+			clone, newId;
+		if (!nodeId || idea.isRootNode(nodeId)) {
+			return false;
+		}
+
+		clone = idea.clone(nodeId);
+		idea.batch(function () {
+			newId = idea.paste('root', clone);
+			idea.removeSubIdea(nodeId);
+		});
+		if (newId) {
+			self.selectNode(newId);
+		}
+	};
+	self.insertRoot = function (source, initialTitle) {
+		var newId;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('addRootNode', source);
+		if (isInputEnabled) {
+			if (initialTitle) {
+				newId = idea.addSubIdea(idea.id, initialTitle);
+			} else {
+				newId = idea.addSubIdea(idea.id);
+			}
+			if (newId) {
+				if (initialTitle) {
+					selectNewIdea(newId);
+				} else {
+					editNewIdea(newId);
+				}
+			}
+		}
 	};
 };

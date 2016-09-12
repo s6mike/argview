@@ -1,6 +1,6 @@
 /*jslint eqeq: true, forin: true, nomen: true*/
 /*jshint unused:false, loopfunc:true */
-/*global _, MAPJS, observable*/
+/*global _, MAPJS, observable, console*/
 MAPJS.content = function (contentAggregate, sessionKey) {
 	'use strict';
 	var cachedId,
@@ -128,9 +128,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return x * sign;
 			});
 		},
+		isRootNode = function (id) {
+			if (contentAggregate.formatVersion && contentAggregate.formatVersion >= 3) {
+				return !!_.find(contentAggregate.ideas, function (idea) {
+					return idea.id === id;
+				});
+			}
+			return id == contentAggregate.id;
+		},
 		nextChildRank = function (parentIdea) {
 			var newRank, counts, childRankSign = 1;
-			if (parentIdea.id == contentAggregate.id) {
+			if (isRootNode(parentIdea.id)) {
 				counts = _.countBy(parentIdea.ideas, function (v, k) {
 					return k < 0;
 				});
@@ -165,6 +173,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		isRedoInProgress = false,
 		batches = {},
 		notifyChange = function (method, args, originSession) {
+			console.log('changed', method, args);
 			if (originSession) {
 				contentAggregate.dispatchEvent('changed', method, args, originSession);
 			} else {
@@ -199,6 +208,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}
 			}
 			if (isRedoInProgress) {
+				console.log('changed', 'redo', undefined, originSession);
 				contentAggregate.dispatchEvent('changed', 'redo', undefined, originSession);
 			} else {
 				notifyChange(method, args, originSession);
@@ -1027,7 +1037,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		parent = contentAggregate.findParent(id);
 		return parent && _.size(parent.ideas) > 1;
 	};
-	if (contentAggregate.formatVersion != 2) {
+	contentAggregate.isRootNode = function (id) {
+		return isRootNode(id);
+	};
+
+	if (!contentAggregate.formatVersion || contentAggregate.formatVersion < 2) {
 		upgrade(contentAggregate);
 		contentAggregate.formatVersion = 2;
 	}

@@ -316,6 +316,9 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
 			});
+			it('when the map is a multi root map, it shoudl add sibling idea as sub idea if the selected node is one of the  root nodes', function () {
+
+			});
 			it('should deactivate nodes that are removed', function () {
 				layoutCalculatorLayout = JSON.parse(JSON.stringify(layoutCalculatorLayout));
 				delete layoutCalculatorLayout.nodes[3];
@@ -2906,4 +2909,16 @@ describe('MapModel', function () {
 			expect(listener).not.toHaveBeenCalled();
 		});
 	});
+	describe('makeSelectedNodeRoot', function () {
+		it('should create a clone of the selected node and insert as a root node', function () {
+
+		});
+	});
+	describe('insertRoot', function () {
+		it('insert a new root node', function () {
+
+		});
+
+	});
+
 });
