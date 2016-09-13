@@ -322,8 +322,7 @@ jQuery.fn.addNodeCacheMark = function (idea) {
 
 jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedLevel) {
 	'use strict';
-	var MAX_URL_LENGTH = 25,
-		self = jQuery(this),
+	var self = jQuery(this),
 		textSpan = function () {
 			var span = self.find('[data-mapjs-role=title]');
 			if (span.length === 0) {
@@ -395,8 +394,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			element.show();
 		},
 		updateText = function (title) {
-			var text = MAPJS.URLHelper.stripLink(title) ||
-					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
+			var text = MAPJS.formattedNodeTitle(title, 25),
 					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
 					element = textSpan(),
 					domElement = element[0],
