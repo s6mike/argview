@@ -1342,6 +1342,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		clone = idea.clone(nodeId);
 		idea.batch(function () {
 			newId = idea.paste('root', clone);
+			idea.updateAttr(newId, 'position', false);
 			idea.removeSubIdea(nodeId);
 		});
 		if (newId) {
