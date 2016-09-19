@@ -49,6 +49,67 @@ var observable = function (base) {
 	return base;
 };
 
+/*global MAPJS, _*/
+MAPJS.contentUpgrade = function (content) {
+	'use strict';
+	var upgradeV2 = function () {
+			var doUpgrade = function (idea) {
+					var collapsed;
+
+					if (idea.style) {
+						idea.attr = {};
+						collapsed = idea.style.collapsed;
+						delete idea.style.collapsed;
+						idea.attr.style = idea.style;
+						if (collapsed) {
+							idea.attr.collapsed = collapsed;
+						}
+						delete idea.style;
+					}
+					if (idea.ideas) {
+						_.each(idea.ideas, doUpgrade);
+					}
+				};
+			if (content.formatVersion && content.formatVersion >= 2) {
+				return;
+			}
+			doUpgrade(content);
+			content.formatVersion = 2;
+		},
+		upgradeV3 = function () {
+			var doUpgrade = function () {
+					var rootAttrKeys = ['theme', 'measurements-config', 'storyboards'],
+						oldRootAttr = (content && content.attr) || {},
+						newRootAttr = _.pick(oldRootAttr, rootAttrKeys),
+						newRootNodeAttr = _.omit(oldRootAttr, rootAttrKeys),
+						firstLevel = (content && content.ideas),
+						newRoot = {
+							id: content.id,
+							title: content.title,
+							attr: newRootNodeAttr
+						};
+					if (firstLevel) {
+						newRoot.ideas = firstLevel;
+					}
+					content.id = 'root';
+					content.ideas = {
+						1: newRoot
+					};
+					delete content.title;
+					content.attr = newRootAttr;
+				};
+			if (content.formatVersion && content.formatVersion >= 3) {
+				return;
+			}
+			doUpgrade();
+			content.formatVersion = 3;
+		};
+
+	upgradeV2();
+	upgradeV3();
+	return content;
+};
+
 /*jslint eqeq: true, forin: true, nomen: true*/
 /*jshint unused:false, loopfunc:true */
 /*global _, MAPJS, observable*/
@@ -83,6 +144,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return cachedId;
 		},
 		init = function (contentIdea, originSession) {
+			var initOfRoot = contentIdea.id === contentAggregate.id;
 			if (!contentIdea.id) {
 				contentIdea.id = nextId(originSession);
 			} else {
@@ -90,7 +152,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
-					if (value.attr && value.attr.group && _.isEmpty(value.ideas)) {
+					if (!initOfRoot && value.attr && value.attr.group && _.isEmpty(value.ideas)) {
 						delete contentIdea.ideas[key];
 					} else {
 						contentIdea.ideas[parseFloat(key)] = init(value, originSession);
@@ -121,7 +183,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}, undefined);
 			};
 			contentIdea.isEmptyGroup = function () {
-				return contentIdea !== contentAggregate && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
+				return !contentAggregate.isRootNode(contentIdea.id) && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
 			};
 			contentIdea.find = function (predicate) {
 				var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
@@ -155,13 +217,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return result;
 			};
 			contentIdea.traverse = function (iterator, postOrder) {
-				if (!postOrder) {
+				if (!postOrder && contentIdea !== contentAggregate) {
 					iterator(contentIdea);
 				}
 				_.each(contentIdea.sortedSubIdeas(), function (subIdea) {
 					subIdea.traverse(iterator, postOrder);
 				});
-				if (postOrder) {
+				if (postOrder && contentIdea !== contentAggregate) {
 					iterator(contentIdea);
 				}
 			};
@@ -179,9 +241,14 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return x * sign;
 			});
 		},
+		isRootNode = function (id) {
+			return !!_.find(contentAggregate.ideas, function (idea) {
+				return idea.id === id;
+			});
+		},
 		nextChildRank = function (parentIdea) {
 			var newRank, counts, childRankSign = 1;
-			if (parentIdea.id == contentAggregate.id) {
+			if (isRootNode(parentIdea.id)) {
 				counts = _.countBy(parentIdea.ideas, function (v, k) {
 					return k < 0;
 				});
@@ -277,22 +344,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		reorderChild = function (parentIdea, newRank, oldRank) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
-		},
-		upgrade = function (idea) {
-			var collapsed;
-			if (idea.style) {
-				idea.attr = {};
-				collapsed = idea.style.collapsed;
-				delete idea.style.collapsed;
-				idea.attr.style = idea.style;
-				if (collapsed) {
-					idea.attr.collapsed = collapsed;
-				}
-				delete idea.style;
-			}
-			if (idea.ideas) {
-				_.each(idea.ideas, upgrade);
-			}
 		},
 		sessionFromId = function (id) {
 			var dotIndex = String(id).indexOf('.');
@@ -396,7 +447,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return _.map(subIdeaIdArray, contentAggregate.clone);
 	};
 	contentAggregate.calculatePath = function (ideaId, currentPath, potentialParent) {
-		if (contentAggregate.id == ideaId) {
+		if (contentAggregate.isRootNode(ideaId)) {
 			return [];
 		}
 		currentPath = currentPath || [contentAggregate];
@@ -428,6 +479,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
+		if (contentAggregate.isRootNode(subIdeaId)) {
+			return false;
+		}
 		if (parentIdea.containsDirectChild(subIdeaId)) {
 			return parentIdea;
 		}
@@ -563,15 +617,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('flip', arguments);
 	};
 	commandProcessors.flip = function (originSession, ideaId) {
-		var newRank, maxRank, currentRank = contentAggregate.findChildRankById(ideaId);
+		var newRank, maxRank,
+			parentIdea = contentAggregate.findParent(ideaId),
+			currentRank = parentIdea && contentAggregate.isRootNode(parentIdea.id) &&  parentIdea.findChildRankById(ideaId);
 		if (!currentRank) {
 			return false;
 		}
-		maxRank = maxKey(contentAggregate.ideas, -1 * sign(currentRank));
+		maxRank = maxKey(parentIdea.ideas, -1 * sign(currentRank));
 		newRank = maxRank - 10 * sign(currentRank);
-		reorderChild(contentAggregate, newRank, currentRank);
+		reorderChild(parentIdea, newRank, currentRank);
 		logChange('flip', [ideaId], function () {
-			reorderChild(contentAggregate, currentRank, newRank);
+			reorderChild(parentIdea, currentRank, newRank);
 		}, originSession);
 		return true;
 	};
@@ -643,22 +699,30 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
-		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea, oldLinks;
-		if (parent) {
-			oldRank = parent.findChildRankById(subIdeaId);
-			oldIdea = parent.ideas[oldRank];
-			delete parent.ideas[oldRank];
-			oldLinks = contentAggregate.links;
-			contentAggregate.links = _.reject(contentAggregate.links, function (link) {
-				return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId;
-			});
-			logChange('removeSubIdea', [subIdeaId], function () {
-				parent.ideas[oldRank] = oldIdea;
-				contentAggregate.links = oldLinks;
-			}, originSession);
-			return true;
+		var parent, oldRank, oldIdea, oldLinks;
+
+		if (contentAggregate.isRootNode(subIdeaId)) {
+			if (_.size(contentAggregate.ideas) > 1) {
+				parent = contentAggregate;
+			}
+		} else {
+			parent = contentAggregate.findParent(subIdeaId);
 		}
-		return false;
+		if (!parent) {
+			return false;
+		}
+		oldRank = parent.findChildRankById(subIdeaId);
+		oldIdea = parent.ideas[oldRank];
+		delete parent.ideas[oldRank];
+		oldLinks = contentAggregate.links;
+		contentAggregate.links = _.reject(contentAggregate.links, function (link) {
+			return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId;
+		});
+		logChange('removeSubIdea', [subIdeaId], function () {
+			parent.ideas[oldRank] = oldIdea;
+			contentAggregate.links = oldLinks;
+		}, originSession);
+		return true;
 	};
 	contentAggregate.insertIntermediateMultiple = function (idArray, ideaOptions) {
 		var newId;
@@ -683,7 +747,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
-		parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
+		if (contentAggregate.isRootNode(inFrontOfIdeaId)) {
+			parentIdea = contentAggregate;
+		} else {
+			parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
+		}
 		if (!parentIdea) {
 			return false;
 		}
@@ -712,7 +780,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('changeParent', arguments);
 	};
 	commandProcessors.changeParent = function (originSession, ideaId, newParentId) {
-		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId), oldPosition;
+		var oldParent, oldRank, newRank, idea, oldPosition,
+			parent = findIdeaById(newParentId);
 		if (ideaId == newParentId) {
 			return false;
 		}
@@ -729,7 +798,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (parent.containsDirectChild(ideaId)) {
 			return false;
 		}
-		oldParent = contentAggregate.findParent(ideaId);
+		if (contentAggregate.isRootNode(ideaId)) {
+			oldParent = contentAggregate;
+		} else {
+			oldParent = contentAggregate.findParent(ideaId);
+		}
 		if (!oldParent) {
 			return false;
 		}
@@ -1072,16 +1145,24 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	contentAggregate.hasSiblings = function (id) {
 		var parent;
-		if (id === contentAggregate.id) {
+		if (contentAggregate.isRootNode(id)) {
 			return false;
 		}
 		parent = contentAggregate.findParent(id);
 		return parent && _.size(parent.ideas) > 1;
 	};
-	if (contentAggregate.formatVersion != 2) {
-		upgrade(contentAggregate);
-		contentAggregate.formatVersion = 2;
-	}
+	contentAggregate.isRootNode = function (id) {
+		return isRootNode(id);
+	};
+	contentAggregate.getDefaultRootId = function () {
+		var rootNodes = contentAggregate && _.values(contentAggregate.ideas);
+		return rootNodes && rootNodes.length && rootNodes[0].id;
+	};
+	MAPJS.contentUpgrade(contentAggregate);
+	// if (!contentAggregate.formatVersion || contentAggregate.formatVersion < 2) {
+	// 	upgrade(contentAggregate);
+	// 	contentAggregate.formatVersion = 2;
+	// }
 	init(contentAggregate);
 	return contentAggregate;
 };
@@ -1443,7 +1524,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		idea = anIdea;
 		idea.addEventListener('changed', onIdeaChanged);
 		onIdeaChanged();
-		self.selectNode(idea.id, true);
+		self.selectNode(idea.getDefaultRootId(), true);
 		self.dispatchEvent('mapViewResetRequested');
 	};
 	this.setEditingEnabled = function (value) {
@@ -1642,7 +1723,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
 			return false;
 		}
 		analytic('insertIntermediate', source);
@@ -1656,7 +1737,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled) {
 			return false;
 		}
 		analytic('insertIntermediate', source);
@@ -1675,7 +1756,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return false;
 		}
 		analytic('flip', source);
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
 			return false;
 		}
 		if (!node || node.level !== 2) {
@@ -1693,9 +1774,15 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isInputEnabled) {
 			return false;
 		}
-		parent = idea.findParent(currentlySelectedIdeaId) || idea;
+		if (idea.isRootNode(currentlySelectedIdeaId)) {
+			parent = idea;
+		} else {
+			parent = idea.findParent(currentlySelectedIdeaId);
+		}
 		idea.batch(function () {
-			ensureNodeIsExpanded(source, parent.id);
+			if (parent !== idea) {
+				ensureNodeIsExpanded(source, parent.id);
+			}
 			newId = idea.addSubIdea(parent.id);
 			if (newId && currentlySelectedIdeaId !== idea.id) {
 				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
@@ -1718,9 +1805,16 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
-			parent = idea.findParent(currentId) || idea;
+
+			if (idea.isRootNode(currentId)) {
+				parent = idea;
+			} else {
+				parent = idea.findParent(currentId);
+			}
 			idea.batch(function () {
-				ensureNodeIsExpanded(source, parent.id);
+				if (parent !== idea) {
+					ensureNodeIsExpanded(source, parent.id);
+				}
 				if (optionalInitialText) {
 					newId = idea.addSubIdea(parent.id, optionalInitialText);
 				} else {
@@ -1982,7 +2076,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				canPaste: !!canPaste,
-				notRoot: idea.id != nodeId,
+				notRoot: !idea.isRootNode(nodeId),
 				canUndo: idea.canUndo(),
 				canRedo: idea.canRedo(),
 				canCollapse: hasChildren && !isCollapsed,
@@ -2279,10 +2373,19 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		return idea.updateAttr(nodeId, 'position', false);
 	};
 	self.standardPositionNodeAt = function (nodeId, x, y, manualPosition) {
-		var rootNode = layoutModel.getNode(idea.id),
-			verticallyClosestNode = {
-				id: null,
-				y: Infinity
+		var rootNode = layoutModel.getNode(layoutModel.getNode(nodeId).rootId),
+			getVerticallyClosestNode = function () {
+				var verticallyClosestNode = {
+					id: null,
+					y: Infinity
+				};
+				_.each(idea.sameSideSiblingIds(nodeId), function (id) {
+					var node = layoutModel.getNode(id);
+					if (y < node.y && node.y < verticallyClosestNode.y) {
+						verticallyClosestNode = node;
+					}
+				});
+				return verticallyClosestNode;
 			},
 			parentIdea = idea.findParent(nodeId),
 			parentNode = layoutModel.getNode(parentIdea.id),
@@ -2296,42 +2399,57 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				}
 				return false;
 			},
-			maxSequence = 1,
 			validReposition = function () {
-				return nodeBeingDragged.level === 2 ||
+				return nodeBeingDragged.level <= 2 ||
 					((nodeBeingDragged.x - parentNode.x) * (x - parentNode.x) > 0);
 			},
 			result = false,
-			xOffset;
+			getMaxSequence = function () {
+				if (_.isEmpty(parentIdea.ideas)) {
+					return 0;
+				}
+				return _.max(_.map(parentIdea.ideas, function (i) {
+					return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0;
+				})) || 0;
+			},
+			manuallyPositionSubNode = function () {
+				var xOffset;
+				if (x < parentNode.x) {
+					xOffset = parentNode.x - x - nodeBeingDragged.width + parentNode.width; /* negative nodes will get flipped so distance is not correct out of the box */
+				} else {
+					xOffset = x - parentNode.x;
+				}
+				analytic('nodeManuallyPositioned');
+				return idea.updateAttr(
+					nodeId,
+					'position',
+					[xOffset, y - parentNode.y, getMaxSequence() + 1]
+				);
+			},
+			manuallyPositionRootNode = function () {
+				return idea.updateAttr(
+					nodeId,
+					'position',
+					[x, y, getMaxSequence() + 1]
+				);
+			};
+
 		idea.startBatch();
 		if (thisNode && thisNode.level === 2) {
 			result = tryFlip(rootNode, nodeBeingDragged, x);
 		}
-		_.each(idea.sameSideSiblingIds(nodeId), function (id) {
-			var node = layoutModel.getNode(id);
-			if (y < node.y && node.y < verticallyClosestNode.y) {
-				verticallyClosestNode = node;
-			}
-		});
 		if (!manualPosition && validReposition()) {
 			self.autoPosition(nodeId);
 		}
-		result = idea.positionBefore(nodeId, verticallyClosestNode.id) || result;
+		if (nodeBeingDragged.level > 1) {
+			result = idea.positionBefore(nodeId, getVerticallyClosestNode().id) || result;
+		}
 		if (manualPosition && validReposition()) {
-			if (x < parentNode.x) {
-				xOffset = parentNode.x - x - nodeBeingDragged.width + parentNode.width; /* negative nodes will get flipped so distance is not correct out of the box */
+			if (nodeBeingDragged.level === 1) {
+				result = manuallyPositionRootNode();
 			} else {
-				xOffset = x - parentNode.x;
+				result = manuallyPositionSubNode() || result;
 			}
-			analytic('nodeManuallyPositioned');
-			maxSequence = _.max(_.map(parentIdea.ideas, function (i) {
-				return (i.id !== nodeId && i.attr && i.attr.position && i.attr.position[2]) || 0;
-			}));
-			result = idea.updateAttr(
-				nodeId,
-				'position',
-				[xOffset, y - parentNode.y, maxSequence + 1]
-			) || result;
 		}
 		idea.endBatch();
 		return result;
@@ -2428,14 +2546,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	self.getStandardReorderBoundary = function (nodeId) {
 		var node = layoutModel.getNode(nodeId),
-			rootNode = layoutModel.getNode(idea.id),
-			isRoot = function () {
-				/*jslint eqeq: true*/
-				return nodeId == idea.id;
-			},
-			isFirstLevel = function () {
-				return parentIdea.id === idea.id;
-			},
+			rootNode = layoutModel.getNode(node && node.rootId),
 			isRightHalf = function () {
 				return node && rootNode && node.x >= rootNode.x;
 			},
@@ -2491,7 +2602,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			opposite,
 			primaryEdge,
 			secondaryEdge;
-		if (isRoot(nodeId)) {
+		if (node.level === 1) {
 			return false;
 		}
 		parentIdea = idea.findParent(nodeId);
@@ -2505,7 +2616,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			boundaries.push(siblingBoundary(sameSide, primaryEdge));
 		}
 		boundaries.push(parentBoundary(primaryEdge));
-		if (isFirstLevel()) {
+		if (node.level === 2) {
 			opposite = otherSideSiblings();
 			if (!_.isEmpty(opposite)) {
 				boundaries.push(siblingBoundary(opposite, secondaryEdge));
@@ -2539,6 +2650,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}]);
 	};
 	self.getReorderBoundary = function (nodeId) {
+
 		if (layoutModel.getOrientation() === 'standard') {
 			return self.getStandardReorderBoundary(nodeId);
 		} else {
@@ -2562,13 +2674,43 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		idea.updateAttr(idea.id, 'theme', themeId);
 	};
+	self.makeSelectedNodeRoot = function () {
+		var nodeId = self.getSelectedNodeId();
+		if (!nodeId || idea.isRootNode(nodeId)) {
+			return false;
+		}
+		if (isInputEnabled && isEditingEnabled) {
+			return idea.changeParent(nodeId, 'root');
+		}
+	};
+	self.insertRoot = function (source, initialTitle) {
+		var newId;
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('addRootNode', source);
+		if (isInputEnabled) {
+			if (initialTitle) {
+				newId = idea.addSubIdea(idea.id, initialTitle);
+			} else {
+				newId = idea.addSubIdea(idea.id);
+			}
+			if (newId) {
+				if (initialTitle) {
+					selectNewIdea(newId);
+				} else {
+					editNewIdea(newId);
+				}
+			}
+		}
+	};
 };
 
 /*global jQuery*/
 jQuery.fn.mapToolbarWidget = function (mapModel) {
 	'use strict';
 	var clickMethodNames = ['insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo',
-			'copy', 'cut', 'paste', 'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon'],
+			'copy', 'cut', 'paste', 'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
 		changeMethodNames = ['updateStyle'];
 	return this.each(function () {
 		var element = jQuery(this), preventRoundtrip = false;
@@ -3078,8 +3220,7 @@ jQuery.fn.addNodeCacheMark = function (idea) {
 
 jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedLevel) {
 	'use strict';
-	var MAX_URL_LENGTH = 25,
-		self = jQuery(this),
+	var self = jQuery(this),
 		textSpan = function () {
 			var span = self.find('[data-mapjs-role=title]');
 			if (span.length === 0) {
@@ -3151,8 +3292,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			element.show();
 		},
 		updateText = function (title) {
-			var text = MAPJS.URLHelper.stripLink(title) ||
-					(title.length < MAX_URL_LENGTH ? title : (title.substring(0, MAX_URL_LENGTH) + '...')),
+			var text = MAPJS.formattedNodeTitle(title, 25),
 					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
 					element = textSpan(),
 					domElement = element[0],
@@ -3837,7 +3977,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('mm:stop-dragging', function (evt) {
-				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition, vpCenter;
+				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition;
 				element.removeClass('dragging');
 				reorderBounds.hide();
 				isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey;
@@ -3850,7 +3990,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
-				} else if (node.level > 1) {
+				} else {
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();
 					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
@@ -3859,14 +3999,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 					} else {
 						dropResult = mapModel.positionNodeAt(node.id, stageDropCoordinates.x, stageDropCoordinates.y, manualPosition);
 					}
-				} else if (node.level === 1 && evt.gesture) {
-					vpCenter = stagePointAtViewportCenter();
-					vpCenter.x -= evt.gesture.deltaX || 0;
-					vpCenter.y -= evt.gesture.deltaY || 0;
-					centerViewOn(vpCenter.x, vpCenter.y, true);
-					dropResult = true;
-				} else {
-					dropResult = false;
 				}
 				return dropResult;
 			})

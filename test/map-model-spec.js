@@ -331,6 +331,79 @@ describe('MapModel', function () {
 				anIdea.removeSubIdea(2);
 				expect(underTest.getActivatedNodeIds()).toEqual([1]);
 			});
+			describe('when the currently selected node is removed in a multi-root map', function () {
+				beforeEach(function () {
+					anIdea = MAPJS.content({
+						formatVersion: 3,
+						id: 'root',
+						ideas: {
+							1: {
+								id: 1,
+								ideas: {
+									7: {
+										id: 2
+									},
+									8: {
+										id: 3
+									}
+								}
+							},
+							5: {
+								id: 5,
+								ideas: {
+									6: {
+										id: 6
+									},
+									7: {
+										id: 7
+									}
+								}
+							}
+						}
+					});
+					layoutBefore = {
+						nodes: {
+							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
+							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
+							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 },
+							5: { x: 49, y: 20, title: '5', id: 5, rootId: 5 },
+							6: { x: 49, y: 20, title: '6', id: 6, rootId: 5 },
+							7: { x: 49, y: 20, title: '7', id: 7, rootId: 5 }
+						}
+					};
+					layoutCalculatorLayout = layoutBefore;
+					underTest.setIdea(anIdea);
+					underTest.selectNode(6);
+					nodeSelectionChangedListener.calls.reset();
+				});
+				it('when the currently selected node is removed, selects its root if still in layout', function () {
+					layoutCalculatorLayout = {
+						nodes: {
+							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
+							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
+							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 },
+							5: { x: 49, y: 20, title: '5', id: 5, rootId: 5 },
+							7: { x: 49, y: 20, title: '7', id: 7, rootId: 5 }
+						}
+					};
+					anIdea.removeSubIdea(6);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(6, false);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
+				});
+				it('when the currently selected node is removed, selects default root if direct root is no longer in layout', function () {
+					layoutCalculatorLayout = {
+						nodes: {
+							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
+							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
+							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 }
+						}
+					};
+					anIdea.removeSubIdea(6);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(6, false);
+					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
+				});
+			});
+
 		});
 		describe('focus/edit automatic control', function () {
 			var nodeEditRequestedListener,
@@ -1386,11 +1459,25 @@ describe('MapModel', function () {
 				underTest.setIcon('test', false, 100, 200, 'center', 2);
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'icon', false);
 			});
-			it('should drop the node when dropping the icon if the node has no text', function () {
+			it('should drop the node when dropping the icon if the node has no text or children', function () {
 				var newId = anIdea.addSubIdea(1);
 				underTest.setIcon('test', false, 100, 200, 'center', newId);
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
 				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(newId);
+			});
+			it('should not drop the node if it has some text', function () {
+				var newId = anIdea.addSubIdea(1);
+				anIdea.updateTitle(newId, 'blah');
+				underTest.setIcon('test', false, 100, 200, 'center', newId);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
+				expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
+			});
+			it('should not drop the node if it has children', function () {
+				var newId = anIdea.addSubIdea(1);
+				anIdea.addSubIdea(newId);
+				underTest.setIcon('test', false, 100, 200, 'center', newId);
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
+				expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
 			});
 		});
 	});
@@ -1398,12 +1485,31 @@ describe('MapModel', function () {
 		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener, anIdea;
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(function () {
-				return {};
+				return {
+					nodes: {
+						1: {id: 1, rootId: 1},
+						2: {id: 2, rootId: 2},
+						3: {id: 3, rootId: 1},
+						4: {id: 4, rootId: 2}
+					}
+				};
 			});
 			anIdea = MAPJS.content({
-					id: 1,
+					formatVersion: 3,
+					id: 'root',
 					ideas: {
-						1: { id: 3}
+						1: {
+							id: 1,
+							ideas: {
+								1: { id: 3}
+							}
+						},
+						2: {
+							id: 2,
+							ideas: {
+								4: {id: 4}
+							}
+						}
 					}
 				});
 			underTest.setIdea(anIdea);
@@ -1420,13 +1526,31 @@ describe('MapModel', function () {
 			underTest.scaleUp('toolbar');
 			expect(mapScaleChangedListener).toHaveBeenCalledWith(1.25, undefined);
 		});
-		it('should select center node and dispatch mapViewResetRequested when resetView is called', function () {
-			underTest.selectNode(3);
-			nodeSelectionChangedListener.calls.reset();
-			underTest.resetView();
-			expect(mapViewResetRequestedListener).toHaveBeenCalled();
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(anIdea.id, true);
+		describe('resetView', function () {
+			it('should select the local root node and dispatch mapViewResetRequested when resetView is called', function () {
+				underTest.selectNode(3);
+				nodeSelectionChangedListener.calls.reset();
+				underTest.resetView();
+				expect(mapViewResetRequestedListener).toHaveBeenCalled();
+				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
+			});
+			it('should just dispatch mapViewResetRequested if a root node is selected', function () {
+				underTest.selectNode(2);
+				nodeSelectionChangedListener.calls.reset();
+				underTest.resetView();
+				expect(mapViewResetRequestedListener).toHaveBeenCalled();
+				expect(nodeSelectionChangedListener).not.toHaveBeenCalled();
+			});
+			it('should select default root if the selected one is no longer in the layout', function () {
+				underTest.selectNode(5);
+				nodeSelectionChangedListener.calls.reset();
+				spyOn(anIdea, 'getDefaultRootId').and.returnValue(2);
+				underTest.resetView();
+				expect(mapViewResetRequestedListener).toHaveBeenCalled();
+				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(2, true);
+			});
 		});
+
 		it('should dispatch mapScaleChanged event with 0.8 and no zoom point when scaleDown method is invoked', function () {
 			underTest.scaleDown('toolbar');
 			expect(mapScaleChangedListener).toHaveBeenCalledWith(0.8, undefined);
