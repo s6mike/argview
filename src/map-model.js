@@ -404,7 +404,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
+		if (!isInputEnabled) {
 			return false;
 		}
 		analytic('insertIntermediate', source);

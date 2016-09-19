@@ -1331,10 +1331,10 @@ describe('MapModel', function () {
 				underTest.insertIntermediate();
 				expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2, 3]);
 			});
-			it('should not invoke idea.insertIntermediate when nothing is selected', function () {
+			it('should invoke idea.insertIntermediate when a root node is selected', function () {
 				spyOn(anIdea, 'insertIntermediateMultiple');
 				underTest.insertIntermediate();
-				expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
+				expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([1]);
 			});
 			it('should not invoke anything if input is disabled', function () {
 				init();

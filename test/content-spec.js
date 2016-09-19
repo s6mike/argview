@@ -905,9 +905,12 @@ describe('content aggregate', function () {
 				expect(idea.insertIntermediate(22, 'Steve')).toBeFalsy();
 				expect(listener).not.toHaveBeenCalled();
 			});
-			it('fails if idea has no parent', function () {
-				expect(idea.insertIntermediate(1, 'Steve')).toBeFalsy();
-				expect(listener).not.toHaveBeenCalled();
+			it('inserts a root node if the  if idea is a root node', function () {
+				var newId = idea.insertIntermediate(1, 'Steve');
+				expect(newId).toBeTruthy();
+				expect(idea.ideas[1].id).toEqual(newId);
+				expect(idea.ideas[1].title).toEqual('Steve');
+				expect(idea.ideas[1].ideas[1].id).toEqual(1);
 			});
 			it('pops an event to undo stack if successful', function () {
 				idea.insertIntermediate(2, 'Steve');

@@ -635,7 +635,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (contentAggregate.id == inFrontOfIdeaId) {
 			return false;
 		}
-		parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
+		if (contentAggregate.isRootNode(inFrontOfIdeaId)) {
+			parentIdea = contentAggregate;
+		} else {
+			parentIdea = contentAggregate.findParent(inFrontOfIdeaId);
+		}
 		if (!parentIdea) {
 			return false;
 		}
