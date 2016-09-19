@@ -1138,6 +1138,18 @@ describe('content aggregate', function () {
 				idea.undo();
 				expect(idea.ideas[1].ideas[5]).toEqual(jasmine.objectContaining({id: 2}));
 			});
+			it('should remove a root node if there is more than one', function () {
+				var idea = MAPJS.content({id: 'root', formatVersion: 3, ideas: {5: {id: 1}, 15: {id: 2}}});
+				expect(idea.removeSubIdea(1)).toBeTruthy();
+				expect(_.size(idea.ideas)).toEqual(1);
+				expect(_.size(idea.ideas[15])).toBeTruthy();
+			});
+			it('should not remove a root node if there is only one', function () {
+				var idea = MAPJS.content({id: 'root', formatVersion: 3, ideas: {5: {id: 1}}});
+				expect(idea.removeSubIdea(1)).toBeFalsy();
+				expect(_.size(idea.ideas)).toEqual(1);
+				expect(_.size(idea.ideas[5])).toBeTruthy();
+			});
 		});
 		describe('flip', function () {
 			it('assigns the idea the largest positive rank if the current rank was negative', function () {

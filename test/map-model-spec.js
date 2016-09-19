@@ -316,9 +316,6 @@ describe('MapModel', function () {
 					expect(activatedNodesChangedListener).toHaveBeenCalledWith([3], []);
 				});
 			});
-			it('when the map is a multi root map, it shoudl add sibling idea as sub idea if the selected node is one of the  root nodes', function () {
-
-			});
 			it('should deactivate nodes that are removed', function () {
 				layoutCalculatorLayout = JSON.parse(JSON.stringify(layoutCalculatorLayout));
 				delete layoutCalculatorLayout.nodes[3];
@@ -988,9 +985,10 @@ describe('MapModel', function () {
 				underTest.addSiblingIdea('keyboard', nodeId);
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2);
 			});
-			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
-				underTest.addSiblingIdea();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
+			it('it should add sibling idea as a new root node if the selected node is one of the  root nodes', function () {
+				underTest.addSiblingIdea('keyboard', 1, 'new root?');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith('root', 'new root?');
+				expect(_.size(anIdea.ideas)).toEqual(2);
 			});
 			it('should add with a title and select, but not invoke editNode if title is supplied', function () {
 				var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
@@ -1008,9 +1006,20 @@ describe('MapModel', function () {
 				underTest.collapse('source', true);
 				spyOn(anIdea, 'updateAttr').and.callThrough();
 				spyOn(anIdea, 'dispatchEvent');
+
+				underTest.selectNode(2);
 				underTest.addSiblingIdea();
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+			});
+			it('should not expand the parent node if it is the aggregate root', function () {
+				anIdea.attr.collapsed =  true;
+				spyOn(anIdea, 'updateAttr').and.callThrough();
+				spyOn(anIdea, 'dispatchEvent');
+
+				underTest.selectNode(1);
+				underTest.addSiblingIdea();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -1030,16 +1039,6 @@ describe('MapModel', function () {
 					underTest.addSiblingIdea();
 
 					expect(anIdea.ideas[1].findChildRankById(4) < 0).toBeTruthy();
-				});
-				it('toggles left-right if adding sibling to the center idea', function () {
-					underTest.selectNode(1);
-					underTest.addSiblingIdea();
-					underTest.selectNode(1);
-					underTest.addSiblingIdea();
-
-					expect(anIdea.ideas[1].findChildRankById(3) < 0).toBeTruthy();
-					expect(anIdea.ideas[1].findChildRankById(4) > 0).toBeTruthy();
-
 				});
 			});
 			describe('inserting ideas in the middle of existing ideas', function () {
@@ -1075,17 +1074,27 @@ describe('MapModel', function () {
 				underTest.addSiblingIdeaBefore();
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
-			it('should invoke idea.addSubIdea with a root node if root is currently selected (root has no parent or siblings)', function () {
-				underTest.addSiblingIdeaBefore();
-				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
+			it('it should add sibling idea as a new root node if the selected node is one of the root nodes', function () {
+				underTest.addSiblingIdeaBefore('keyboard');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith('root');
+				expect(_.size(anIdea.ideas)).toEqual(2);
 			});
 			it('should expand the parent node if it is collapsed, as a batched event', function () {
+				underTest.selectNode(1);
 				underTest.collapse('source', true);
+				underTest.selectNode(2);
 				spyOn(anIdea, 'updateAttr').and.callThrough();
 				spyOn(anIdea, 'dispatchEvent');
 				underTest.addSiblingIdeaBefore();
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+			});
+			it('should expand the parent node if it is the map root', function () {
+				anIdea.attr.collapsed = true;
+				spyOn(anIdea, 'updateAttr').and.callThrough();
+				spyOn(anIdea, 'dispatchEvent');
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.updateAttr).not.toHaveBeenCalled();
 			});
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -1105,16 +1114,6 @@ describe('MapModel', function () {
 					underTest.addSiblingIdeaBefore();
 
 					expect(anIdea.ideas[1].findChildRankById(4) < 0).toBeTruthy();
-				});
-				it('toggles left-right if adding sibling to the center idea', function () {
-					underTest.selectNode(1);
-					underTest.addSiblingIdeaBefore();
-					underTest.selectNode(1);
-					underTest.addSiblingIdeaBefore();
-
-					expect(anIdea.ideas[1].findChildRankById(3) < 0).toBeTruthy();
-					expect(anIdea.ideas[1].findChildRankById(4) > 0).toBeTruthy();
-
 				});
 			});
 			describe('inserting ideas in the middle of existing ideas', function () {
@@ -2911,13 +2910,76 @@ describe('MapModel', function () {
 			expect(listener).not.toHaveBeenCalled();
 		});
 	});
-	describe('makeSelectedNodeRoot', function () {
-		it('should create a clone of the selected node and insert as a root node', function () {
+	describe('root node operations', function () {
+		var underTest, anIdea;
+		beforeEach(function () {
+			anIdea = MAPJS.content({
+				id: 1,
+				title: 'root',
+				ideas: {
+					10: {
+						id: 2,
+						title: 'child',
+						ideas: {
+							11: { id: 3, title: 'child of child' }
+						}
+					}
+				}
+			});
+			underTest = new MAPJS.MapModel(function () {
+				return {
+					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+				};
+			});
+			underTest.setIdea(anIdea);
+		});
+		describe('makeSelectedNodeRoot', function () {
+			beforeEach(function () {
+				spyOn(anIdea, 'changeParent').and.callThrough();
+			});
+			it('should change the parent of the selected node to the content aggregate root node', function () {
+				underTest.selectNode(2);
+				underTest.makeSelectedNodeRoot();
+				expect(anIdea.changeParent).toHaveBeenCalledWith(2, 'root');
+			});
+			it('should not change the parent of a node that is alread a root node', function () {
+				underTest.selectNode(1);
+				underTest.makeSelectedNodeRoot();
+				expect(anIdea.changeParent).not.toHaveBeenCalled();
+			});
+			it('should change the parent of the selected node expec when input is disabled', function () {
+				underTest.selectNode(2);
+				underTest.setInputEnabled(false);
+				underTest.makeSelectedNodeRoot();
+				expect(anIdea.changeParent).not.toHaveBeenCalled();
+			});
+			it('should change the parent of the selected node expec when editing is disabled', function () {
+				underTest.selectNode(2);
+				underTest.setEditingEnabled(false);
+				underTest.makeSelectedNodeRoot();
+				expect(anIdea.changeParent).not.toHaveBeenCalled();
+			});
 
 		});
-	});
-	describe('insertRoot', function () {
-		it('insert a new root node', function () {
+		describe('insertRoot', function () {
+			var nodeEditRequestedListener;
+			beforeEach(function () {
+				nodeEditRequestedListener = jasmine.createSpy('node edit requested');
+				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
+				spyOn(anIdea, 'addSubIdea').and.callThrough();
+			});
+			it('inserts a new root node as a sub idea of the aggregate root node', function () {
+				underTest.insertRoot('source');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith('root');
+				expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true, true);
+				expect(underTest.getSelectedNodeId()).toBe(4);
+			});
+			it('should add with a title and select but not invoke editNode if title is supplied', function () {
+				underTest.insertRoot('source', 'initial title');
+				expect(anIdea.addSubIdea).toHaveBeenCalledWith('root', 'initial title');
+				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
+				expect(underTest.getSelectedNodeId()).toBe(4);
+			});
 
 		});
 

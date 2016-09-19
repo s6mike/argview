@@ -587,22 +587,30 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
-		var parent = contentAggregate.findParent(subIdeaId), oldRank, oldIdea, oldLinks;
-		if (parent) {
-			oldRank = parent.findChildRankById(subIdeaId);
-			oldIdea = parent.ideas[oldRank];
-			delete parent.ideas[oldRank];
-			oldLinks = contentAggregate.links;
-			contentAggregate.links = _.reject(contentAggregate.links, function (link) {
-				return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId;
-			});
-			logChange('removeSubIdea', [subIdeaId], function () {
-				parent.ideas[oldRank] = oldIdea;
-				contentAggregate.links = oldLinks;
-			}, originSession);
-			return true;
+		var parent, oldRank, oldIdea, oldLinks;
+
+		if (contentAggregate.isRootNode(subIdeaId)) {
+			if (_.size(contentAggregate.ideas) > 1) {
+				parent = contentAggregate;
+			}
+		} else {
+			parent = contentAggregate.findParent(subIdeaId);
 		}
-		return false;
+		if (!parent) {
+			return false;
+		}
+		oldRank = parent.findChildRankById(subIdeaId);
+		oldIdea = parent.ideas[oldRank];
+		delete parent.ideas[oldRank];
+		oldLinks = contentAggregate.links;
+		contentAggregate.links = _.reject(contentAggregate.links, function (link) {
+			return link.ideaIdFrom == subIdeaId || link.ideaIdTo == subIdeaId;
+		});
+		logChange('removeSubIdea', [subIdeaId], function () {
+			parent.ideas[oldRank] = oldIdea;
+			contentAggregate.links = oldLinks;
+		}, originSession);
+		return true;
 	};
 	contentAggregate.insertIntermediateMultiple = function (idArray, ideaOptions) {
 		var newId;

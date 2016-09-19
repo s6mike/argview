@@ -441,9 +441,15 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isInputEnabled) {
 			return false;
 		}
-		parent = idea.findParent(currentlySelectedIdeaId) || idea.findSubIdeaById(idea.getDefaultRootId());
+		if (idea.isRootNode(currentlySelectedIdeaId)) {
+			parent = idea;
+		} else {
+			parent = idea.findParent(currentlySelectedIdeaId);
+		}
 		idea.batch(function () {
-			ensureNodeIsExpanded(source, parent.id);
+			if (parent !== idea) {
+				ensureNodeIsExpanded(source, parent.id);
+			}
 			newId = idea.addSubIdea(parent.id);
 			if (newId && currentlySelectedIdeaId !== idea.id) {
 				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
@@ -468,12 +474,14 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (isInputEnabled) {
 
 			if (idea.isRootNode(currentId)) {
-				parent = idea.findSubIdeaById(currentId);
+				parent = idea;
 			} else {
 				parent = idea.findParent(currentId);
 			}
 			idea.batch(function () {
-				ensureNodeIsExpanded(source, parent.id);
+				if (parent !== idea) {
+					ensureNodeIsExpanded(source, parent.id);
+				}
 				if (optionalInitialText) {
 					newId = idea.addSubIdea(parent.id, optionalInitialText);
 				} else {
@@ -1334,21 +1342,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		idea.updateAttr(idea.id, 'theme', themeId);
 	};
 	self.makeSelectedNodeRoot = function () {
-
-		var nodeId = self.getSelectedNodeId(),
-			clone, newId;
+		var nodeId = self.getSelectedNodeId();
 		if (!nodeId || idea.isRootNode(nodeId)) {
 			return false;
 		}
-
-		clone = idea.clone(nodeId);
-		idea.batch(function () {
-			newId = idea.paste('root', clone);
-			idea.updateAttr(newId, 'position', false);
-			idea.removeSubIdea(nodeId);
-		});
-		if (newId) {
-			self.selectNode(newId);
+		if (isInputEnabled && isEditingEnabled) {
+			return idea.changeParent(nodeId, 'root');
 		}
 	};
 	self.insertRoot = function (source, initialTitle) {
