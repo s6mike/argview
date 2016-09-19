@@ -664,7 +664,8 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('changeParent', arguments);
 	};
 	commandProcessors.changeParent = function (originSession, ideaId, newParentId) {
-		var oldParent, oldRank, newRank, idea, parent = findIdeaById(newParentId), oldPosition;
+		var oldParent, oldRank, newRank, idea, oldPosition,
+			parent = findIdeaById(newParentId);
 		if (ideaId == newParentId) {
 			return false;
 		}
@@ -681,7 +682,11 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (parent.containsDirectChild(ideaId)) {
 			return false;
 		}
-		oldParent = contentAggregate.findParent(ideaId);
+		if (contentAggregate.isRootNode(ideaId)) {
+			oldParent = contentAggregate;
+		} else {
+			oldParent = contentAggregate.findParent(ideaId);
+		}
 		if (!oldParent) {
 			return false;
 		}

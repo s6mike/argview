@@ -1095,6 +1095,35 @@ describe('content aggregate', function () {
 				expect(idea.containsDirectChild(4)).toBeFalsy();
 				expect(idea.ideas[1].ideas[9].containsDirectChild(4)).toBeTruthy();
 			});
+			it('should make a root node the child of the target', function () {
+				idea = MAPJS.content({
+					id: 'root',
+					formatVersion: 3,
+					ideas: {
+						1: {id: 1},
+						2: {id: 2}
+					}
+				});
+				idea.changeParent(2, 1);
+				expect(_.size(idea.ideas)).toBe(1);
+				expect(idea.ideas[1].containsDirectChild(2)).toBeTruthy();
+			});
+			it('should not make a root node the child of one of its sub nodes', function () {
+				idea = MAPJS.content({
+					id: 'root',
+					formatVersion: 3,
+					ideas: {
+						1: {id: 1, ideas: {
+							1: {id: 2, ideas: {
+								1: {id: 3}
+							}}
+						}}
+					}
+				});
+				expect(idea.changeParent(1, 3)).toBeFalsy();
+				expect(_.size(idea.ideas)).toBe(1);
+				expect(idea.ideas[1].id).toEqual(1);
+			});
 		});
 		describe('removeSubIdea', function () {
 			it('removes a child idea matching the provided id', function () {
