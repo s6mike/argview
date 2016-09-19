@@ -191,7 +191,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		idea = anIdea;
 		idea.addEventListener('changed', onIdeaChanged);
 		onIdeaChanged();
-		self.selectNode(idea.id, true);
+		self.selectNode(idea.getDefaultRootId(), true);
 		self.dispatchEvent('mapViewResetRequested');
 	};
 	this.setEditingEnabled = function (value) {
@@ -390,7 +390,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
 			return false;
 		}
 		analytic('insertIntermediate', source);
@@ -404,7 +404,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
 			return false;
 		}
 		analytic('insertIntermediate', source);
@@ -423,7 +423,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return false;
 		}
 		analytic('flip', source);
-		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
+		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
 			return false;
 		}
 		if (!node || node.level !== 2) {
@@ -441,7 +441,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		if (!isInputEnabled) {
 			return false;
 		}
-		parent = idea.findParent(currentlySelectedIdeaId) || idea;
+		parent = idea.findParent(currentlySelectedIdeaId) || idea.findSubIdeaById(idea.getDefaultRootId());
 		idea.batch(function () {
 			ensureNodeIsExpanded(source, parent.id);
 			newId = idea.addSubIdea(parent.id);
@@ -466,9 +466,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		analytic('addSiblingIdea', source);
 		if (isInputEnabled) {
-			parent = idea.findParent(currentId) || idea;
-			if (idea.formatVersion >= 3 && parent.id === idea.id) {
-				return false;
+
+			if (idea.isRootNode(currentId)) {
+				parent = idea.findSubIdeaById(currentId);
+			} else {
+				parent = idea.findParent(currentId);
 			}
 			idea.batch(function () {
 				ensureNodeIsExpanded(source, parent.id);
@@ -733,7 +735,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				canPaste: !!canPaste,
-				notRoot: idea.id != nodeId,
+				notRoot: !idea.isRootNode(nodeId),
 				canUndo: idea.canUndo(),
 				canRedo: idea.canRedo(),
 				canCollapse: hasChildren && !isCollapsed,

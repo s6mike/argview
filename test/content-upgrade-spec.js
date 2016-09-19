@@ -28,7 +28,7 @@ describe('content upgrade', function () {
 			var content = {id: 1, title: 'hello'};
 			MAPJS.contentUpgrade(content);
 			expect(content.ideas).toEqual({
-				1: {id: 1, title: 'hello', attr: {}, ideas: {}}
+				1: {id: 1, title: 'hello', attr: {}}
 			});
 		});
 		it('should change the root node to have id of "root"', function () {

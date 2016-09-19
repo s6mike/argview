@@ -103,7 +103,7 @@
 			(function () {
 				window.onerror = alert;
 				var container = jQuery('#container'),
-				idea = MAPJS.content(MAPJS.contentUpgrade(test_tree())),
+				idea = MAPJS.content(test_tree()),
 				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
 				themeProvider = MAPJS.Themes,
 				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);

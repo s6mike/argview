@@ -31,13 +31,15 @@ MAPJS.contentUpgrade = function (content) {
 						oldRootAttr = (content && content.attr) || {},
 						newRootAttr = _.pick(oldRootAttr, rootAttrKeys),
 						newRootNodeAttr = _.omit(oldRootAttr, rootAttrKeys),
-						firstLevel = (content && content.ideas) || {},
+						firstLevel = (content && content.ideas),
 						newRoot = {
 							id: content.id,
 							title: content.title,
-							ideas: firstLevel,
 							attr: newRootNodeAttr
 						};
+					if (firstLevel) {
+						newRoot.ideas = firstLevel;
+					}
 					content.id = 'root';
 					content.ideas = {
 						1: newRoot

@@ -179,7 +179,7 @@ describe('MapModel', function () {
 			var listener = jasmine.createSpy('themeChanged');
 			underTest.addEventListener('themeChanged', listener);
 			layoutAfter.theme = 'new-theme';
-			anIdea.updateAttr(4, 'theme', 'new-theme');
+			anIdea.updateAttr(anIdea.id, 'theme', 'new-theme');
 			expect(listener).toHaveBeenCalledWith('new-theme');
 		});
 		describe('decorationAction', function () {
@@ -574,7 +574,7 @@ describe('MapModel', function () {
 					expect(anIdea.insertIntermediateMultiple).toHaveBeenCalledWith([2, 3], {title: 'group', attr: { group: 'blue', contentLocked: true } });
 				});
 				it('should not invoke idea.insertIntermediate when root is selected', function () {
-					underTest.selectNode(anIdea.id);
+					underTest.selectNode(anIdea.getDefaultRootId());
 					underTest.insertIntermediateGroup('test', { group: 'blue' });
 					expect(anIdea.insertIntermediateMultiple).not.toHaveBeenCalled();
 				});
@@ -946,14 +946,14 @@ describe('MapModel', function () {
 				});
 				underTest = new MAPJS.MapModel(function () {
 					return {
-						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
+						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
 					};
 				}, [], clipboard);
 				underTest.setIdea(anIdea);
 			});
 			it('assigns position for root nodes', function () {
 				underTest.standardPositionNodeAt(1, 2, 3, true);
-				expect(anIdea.attr.position).toEqual([2, 3, 1]);
+				expect(anIdea.findSubIdeaById(1).attr.position).toEqual([2, 3, 1]);
 			});
 		});
 
@@ -1021,7 +1021,7 @@ describe('MapModel', function () {
 				it('adds right-side ideas when currently selected is on the right', function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
-					expect(anIdea.findChildRankById(3) > 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(3) > 0).toBeTruthy();
 				});
 				it('adds left-side ideas when currently selected is on the left', function () {
 					underTest.selectNode(1);
@@ -1029,7 +1029,7 @@ describe('MapModel', function () {
 					underTest.selectNode(3);
 					underTest.addSiblingIdea();
 
-					expect(anIdea.findChildRankById(4) < 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(4) < 0).toBeTruthy();
 				});
 				it('toggles left-right if adding sibling to the center idea', function () {
 					underTest.selectNode(1);
@@ -1037,8 +1037,8 @@ describe('MapModel', function () {
 					underTest.selectNode(1);
 					underTest.addSiblingIdea();
 
-					expect(anIdea.findChildRankById(3) < 0).toBeTruthy();
-					expect(anIdea.findChildRankById(4) > 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(3) < 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(4) > 0).toBeTruthy();
 
 				});
 			});
@@ -1047,7 +1047,7 @@ describe('MapModel', function () {
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
-					currentRanks = _.map(anIdea.ideas, function (v, k) {
+					currentRanks = _.map(anIdea.ideas[1].ideas, function (v, k) {
 						return parseFloat(k);
 					}).sort();
 
@@ -1056,11 +1056,11 @@ describe('MapModel', function () {
 					underTest.addSiblingIdea();
 				});
 				it('should not change ranks of siblings', function () {
-					expect(anIdea.findChildRankById(2)).toBe(currentRanks[0]);
-					expect(anIdea.findChildRankById(3)).toBe(currentRanks[1]);
+					expect(anIdea.ideas[1].findChildRankById(2)).toBe(currentRanks[0]);
+					expect(anIdea.ideas[1].findChildRankById(3)).toBe(currentRanks[1]);
 				});
 				it('should add an idea directly below the currently selected idea ID', function () {
-					var newRank = anIdea.findChildRankById(4);
+					var newRank = anIdea.ideas[1].findChildRankById(4);
 					expect(newRank > currentRanks[0]).toBeTruthy();
 					expect(newRank < currentRanks[1]).toBeTruthy();
 				});
@@ -1096,7 +1096,7 @@ describe('MapModel', function () {
 				it('adds right-side ideas when currently selected is on the right', function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdeaBefore();
-					expect(anIdea.findChildRankById(3) > 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(3) > 0).toBeTruthy();
 				});
 				it('adds left-side ideas when currently selected is on the left', function () {
 					underTest.selectNode(1);
@@ -1104,7 +1104,7 @@ describe('MapModel', function () {
 					underTest.selectNode(3);
 					underTest.addSiblingIdeaBefore();
 
-					expect(anIdea.findChildRankById(4) < 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(4) < 0).toBeTruthy();
 				});
 				it('toggles left-right if adding sibling to the center idea', function () {
 					underTest.selectNode(1);
@@ -1112,8 +1112,8 @@ describe('MapModel', function () {
 					underTest.selectNode(1);
 					underTest.addSiblingIdeaBefore();
 
-					expect(anIdea.findChildRankById(3) < 0).toBeTruthy();
-					expect(anIdea.findChildRankById(4) > 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(3) < 0).toBeTruthy();
+					expect(anIdea.ideas[1].findChildRankById(4) > 0).toBeTruthy();
 
 				});
 			});
@@ -1122,7 +1122,7 @@ describe('MapModel', function () {
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
-					currentRanks = _.map(anIdea.ideas, function (v, k) {
+					currentRanks = _.map(anIdea.ideas[1].ideas, function (v, k) {
 						return parseFloat(k);
 					}).sort();
 
@@ -1130,11 +1130,11 @@ describe('MapModel', function () {
 					underTest.addSiblingIdeaBefore();
 				});
 				it('should not change ranks of siblings', function () {
-					expect(anIdea.findChildRankById(2)).toBe(currentRanks[0]);
-					expect(anIdea.findChildRankById(3)).toBe(currentRanks[1]);
+					expect(anIdea.ideas[1].findChildRankById(2)).toBe(currentRanks[0]);
+					expect(anIdea.ideas[1].findChildRankById(3)).toBe(currentRanks[1]);
 				});
 				it('should add an idea directly below the currently selected idea ID', function () {
-					var newRank = anIdea.findChildRankById(4);
+					var newRank = anIdea.ideas[1].findChildRankById(4);
 					expect(newRank > currentRanks[0]).toBeTruthy();
 					expect(newRank < currentRanks[1]).toBeTruthy();
 				});
@@ -1304,7 +1304,7 @@ describe('MapModel', function () {
 			it('should invoke idea.setAttr with root ideaId and theme argument', function () {
 				underTest.setTheme('red');
 
-				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'theme', 'red');
+				expect(anIdea.updateAttr).toHaveBeenCalledWith(anIdea.id, 'theme', 'red');
 			});
 		});
 		describe('insertIntermediate', function () {
@@ -1426,7 +1426,7 @@ describe('MapModel', function () {
 			nodeSelectionChangedListener.calls.reset();
 			underTest.resetView();
 			expect(mapViewResetRequestedListener).toHaveBeenCalled();
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
+			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(anIdea.id, true);
 		});
 		it('should dispatch mapScaleChanged event with 0.8 and no zoom point when scaleDown method is invoked', function () {
 			underTest.scaleDown('toolbar');
@@ -2281,7 +2281,9 @@ describe('MapModel', function () {
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
-			underTest.setIdea(observable({getAttr: function () { }}));
+			underTest.setIdea(observable({getAttr: function () { }, getDefaultRootId: function () {
+				return '1.1';
+			}}));
 		});
 
 		describe(' calculates points',
@@ -2430,7 +2432,7 @@ describe('MapModel', function () {
 			});
 			it('replaces an existing icon and keeps the position', function () {
 				underTest.dropImage('http://url', 50, 102, 5, 105);
-				expect(idea.attr.icon).toEqual({
+				expect(idea.findSubIdeaById(1).attr.icon).toEqual({
 					url: 'http://url',
 					width: 50,
 					height: 102,

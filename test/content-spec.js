@@ -9,13 +9,20 @@ describe('content aggregate', function () {
 			return map;
 		};
 	describe('content wapper', function () {
+		it('automatically upgrades to v3 structure', function () {
+			var wrapped = MAPJS.content({title: 'My Idea'});
+			expect(wrapped.id).toBe('root');
+			expect(wrapped.title).toBe('');
+			expect(_.size(wrapped.ideas)).toBe(1);
+			expect(wrapped.ideas[1].title).toBe('My Idea');
+		});
 		it('automatically assigns IDs to ideas without IDs', function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
-			expect(wrapped.id).toBe(1);
+			expect(wrapped.ideas[1].id).toBe(1);
 		});
 		it('appends session ID after ID when generating', function () {
 			var wrapped = MAPJS.content({title: 'My Idea'}, 'sessionkey');
-			expect(wrapped.id).toBe('1.sessionkey');
+			expect(wrapped.ideas[1].id).toBe('1.sessionkey');
 		});
 		it('initialises missing titles with a blank string - so the rest of the code can always expect a string', function () {
 			var wrapped = MAPJS.content({});
@@ -24,15 +31,15 @@ describe('content aggregate', function () {
 		});
 		it('does not touch any IDs already assigned', function () {
 			var wrapped = MAPJS.content({id: 22, title: 'My Idea', ideas: { 1: {id: 23, title: 'My First Subidea'}}});
-			expect(wrapped.ideas[1].id).toBe(23);
+			expect(wrapped.ideas[1].ideas[1].id).toBe(23);
 		});
 		it('skips over any IDs already assigned while adding new IDs', function () {
 			var wrapped = MAPJS.content({id: 55, title: 'My Idea', ideas: { 1: {title: 'My First Subidea'}}});
-			expect(wrapped.ideas[1].id).toBe(56);
+			expect(wrapped.ideas[1].ideas[1].id).toBe(56);
 		});
 		it('preserves any meta data stored in JSON while wrapping', function () {
 			var wrapped = MAPJS.content({id: 55, title: 'My Idea', ideas: { 1: {title: 'My First Subidea', meta: {newAttr: 'new_val'}}}});
-			expect(wrapped.ideas[1].meta.newAttr).toBe('new_val');
+			expect(wrapped.ideas[1].ideas[1].meta.newAttr).toBe('new_val');
 		});
 		it('removes any nodes that are groups without children', function () {
 			var wrapped = MAPJS.content({
@@ -50,8 +57,8 @@ describe('content aggregate', function () {
 					}
 				}
 			});
-			expect(wrapped.ideas[1]).toBeFalsy();
-			expect(wrapped.ideas[2]).toBeTruthy();
+			expect(wrapped.ideas[1].ideas[1]).toBeFalsy();
+			expect(wrapped.ideas[1].ideas[2]).toBeTruthy();
 		});
 		it('preserves any nodes that are groups with children', function () {
 			var wrapped = MAPJS.content({
@@ -74,7 +81,7 @@ describe('content aggregate', function () {
 					}
 				}
 			});
-			expect(_.size(wrapped.ideas)).toBe(2);
+			expect(_.size(wrapped.ideas[1].ideas)).toBe(2);
 		});
 		it('preserves root node that is a group without children', function () {
 			var wrapped = MAPJS.content({
@@ -84,19 +91,20 @@ describe('content aggregate', function () {
 					group: true
 				}
 			});
-			expect(wrapped.attr.group).toBeTruthy();
+			expect(wrapped.ideas[1].attr.group).toBeTruthy();
 		});
 
 		it('normalises all ranks to floats to avoid selection problems with x.0', function () {
 			var wrapped = MAPJS.content({id: 55, ideas: { '2.0': {id: 2}, 3.0: {id: 3}, '-4.0': {id: 4}}});
-			expect(wrapped.ideas[2.0].id).toBe(2);
-			expect(wrapped.ideas[3].id).toBe(3);
-			expect(wrapped.ideas[-4].id).toBe(4);
+			expect(wrapped.ideas[1].ideas[2.0].id).toBe(2);
+			expect(wrapped.ideas[1].ideas[3].id).toBe(3);
+			expect(wrapped.ideas[1].ideas[-4].id).toBe(4);
 		});
 		describe('path retrieval', function () {
 
 			var wrapped, i111, i11;
 			beforeEach(function () {
+
 				i111 = {
 					id: 111,
 					ideas: {
@@ -126,9 +134,9 @@ describe('content aggregate', function () {
 					expect(wrapped.calculatePath(1)).toEqual([]);
 				});
 				it('should path to the root node', function () {
-					expect(wrapped.calculatePath(11)).toEqual([wrapped]);
-					expect(wrapped.calculatePath(111)).toEqual([i11, wrapped]);
-					expect(wrapped.calculatePath(1111)).toEqual([i111, i11, wrapped]);
+					expect(wrapped.calculatePath(11)).toEqual([wrapped.ideas[1], wrapped]);
+					expect(wrapped.calculatePath(111)).toEqual([i11, wrapped.ideas[1], wrapped]);
+					expect(wrapped.calculatePath(1111)).toEqual([i111, i11, wrapped.ideas[1], wrapped]);
 				});
 				it('should return false if the node does not exist', function () {
 					expect(wrapped.calculatePath(123)).toBeFalsy();
@@ -170,38 +178,38 @@ describe('content aggregate', function () {
 				});
 			});
 			it('should be truthy if the node is a group without child nodes', function () {
-				wrapped.ideas[1].ideas[3].attr = {group: true};
-				expect(wrapped.ideas[1].ideas[3].isEmptyGroup()).toBeTruthy();
+				wrapped.ideas[1].ideas[1].ideas[3].attr = {group: true};
+				expect(wrapped.ideas[1].ideas[1].ideas[3].isEmptyGroup()).toBeTruthy();
 			});
 			it('should be falsy if the node is not a group', function () {
-				expect(wrapped.ideas[1].ideas[3].isEmptyGroup()).toBeFalsy();
+				expect(wrapped.ideas[1].ideas[1].ideas[3].isEmptyGroup()).toBeFalsy();
 			});
 			it('should be falsy if the node is a group with child nodes', function () {
-				expect(wrapped.ideas[1].isEmptyGroup()).toBeFalsy();
+				expect(wrapped.ideas[1].ideas[1].isEmptyGroup()).toBeFalsy();
 			});
 			it('should be falsy if the root node is a group without child nodes', function () {
-				wrapped.ideas = {};
-				wrapped.attr = {group: true};
-				expect(wrapped.isEmptyGroup()).toBeFalsy();
+				wrapped.ideas[1].ideas = {};
+				wrapped.ideas[1].attr = {group: true};
+				expect(wrapped.ideas[1].isEmptyGroup()).toBeFalsy();
 			});
 
 		});
 		describe('getAttr', function () {
 			it('returns false if the attribute is not defined', function () {
 				var wrapped = MAPJS.content({});
-				expect(wrapped.getAttr('xx')).toBeFalsy();
+				expect(wrapped.ideas[1].getAttr('xx')).toBeFalsy();
 			});
 			it('returns the attribute if defined', function () {
 				var wrapped = MAPJS.content({attr: {xx: 'yellow'}});
-				expect(wrapped.getAttr('xx')).toBe('yellow');
+				expect(wrapped.ideas[1].getAttr('xx')).toBe('yellow');
 			});
 		});
 		describe('findChildRankById', function () {
 			var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15: {id: 4, title: 'I4'}}});
 			it('returns the key in the parent idea list of an idea by its id', function () {
-				expect(idea.findChildRankById(2)).toEqual(5);
-				expect(idea.findChildRankById(3)).toEqual(10);
-				expect(idea.findChildRankById(4)).toEqual(15);
+				expect(idea.ideas[1].findChildRankById(2)).toEqual(5);
+				expect(idea.ideas[1].findChildRankById(3)).toEqual(10);
+				expect(idea.ideas[1].findChildRankById(4)).toEqual(15);
 			});
 			it('returns false/NaN if no such child exists', function () {
 				expect(idea.findChildRankById('xxx')).toBeFalsy();
@@ -210,7 +218,7 @@ describe('content aggregate', function () {
 		describe('findParent', function () {
 			var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2', ideas: {8: {id: 8}}}, 10: { id: 3, title: 'I3'}, 15 : {id: 4, title: 'I4'}}});
 			it('returns the parent idea by child id', function () {
-				expect(idea.findParent(2)).toBe(idea);
+				expect(idea.findParent(2)).toBe(idea.ideas[1]);
 				expect(idea.findParent(8)).toEqual(jasmine.objectContaining({id: 2}));
 			});
 			it('returns false if no such child exists', function () {
@@ -235,7 +243,7 @@ describe('content aggregate', function () {
 			});
 			it('returns undefined if it matches the ID itself - to avoid false positives in parent search', function () {
 				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15 : {id: 4, title: 'I4'}}});
-				expect(idea.findSubIdeaById(1)).toBeFalsy();
+				expect(idea.ideas[1].findSubIdeaById(1)).toBeFalsy();
 			});
 			it('returns undefined if no immediate child or any indirect child matches the ID', function () {
 				var idea = MAPJS.content({id: 1, title: 'I1', ideas: { 5: { id: 2, title: 'I2'}, 10: { id: 3, title: 'I3'}, 15 : {id: 4, title: 'I4'}}});
@@ -328,7 +336,7 @@ describe('content aggregate', function () {
 			});
 			it('clones the aggregate if no subidea given', function () {
 				var idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}});
-				expect(idea.clone().id).toBe(1);
+				expect(idea.clone().ideas[1].id).toBe(1);
 			});
 			it('clones the aggregate if aggregate ID given', function () {
 				var idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}});
@@ -338,7 +346,7 @@ describe('content aggregate', function () {
 		describe('sortedSubIdeas', function () {
 			it('sorts children by key, positive first then negative, by absolute value', function () {
 				var aggregate = MAPJS.content({id: 1, title: 'root', ideas: {'-100': {title: '-100'}, '-1': {title: '-1'}, '1': {title: '1'}, '100': {title: '100'}}}),
-					result = _.map(aggregate.sortedSubIdeas(), function (subidea) {
+					result = _.map(aggregate.ideas[1].sortedSubIdeas(), function (subidea) {
 						return subidea.title;
 					});
 				expect(result).toEqual(['1', '100', '-1', '-100']);
@@ -461,50 +469,50 @@ describe('content aggregate', function () {
 			it('should create a new child and paste cloned contents', function () {
 				result = idea.paste(3, toPaste);
 				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].ideas[1]).toEqual(jasmine.objectContaining({title: 'pasted'}));
+				expect(idea.ideas[1].ideas[-10].ideas[1]).toEqual(jasmine.objectContaining({title: 'pasted'}));
 			});
 			describe('when no ID provided', function () {
 				it('should reassign IDs based on next available ID in the aggregate', function () {
 					result = idea.paste(3, toPaste);
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe(5);
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe(5);
 				});
 				it('should append session key if given when re-assigning', function () {
 					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
 					result = idea.paste(3, toPaste);
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe('5.sess');
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe('5.sess');
 				});
 				it('should reassign IDs recursively based on next available ID in the aggregate', function () {
 					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}));
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe(5);
-					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(6);
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe(5);
+					expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].id).toBe(6);
 				});
 			});
 			describe('when ID is provided', function () {
 				it('should reassign IDs based on provided ID for the root of the pasted hierarchy', function () {
 					result = idea.paste(3, toPaste, 777);
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe(777);
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe(777);
 				});
 				it('should use session key from provided ID', function () {
 					idea = MAPJS.content({id: 1, ideas: {'-10': { id: 3}, '-15' : {id: 4}}}, 'sess');
 					result = idea.paste(3, toPaste, '778.sess2');
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe('778.sess2');
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe('778.sess2');
 				});
 				it('should reassign IDs recursively based', function () {
 					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), 779);
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe(779);
-					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(780);
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe(779);
+					expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].id).toBe(780);
 				});
 				it('should keep session ID when reassigning recursively', function () {
 					result = idea.paste(3, _.extend(toPaste, {ideas: {1: { id: 66, title: 'sub sub'}}}), '781.abc');
 					expect(result).toBeTruthy();
-					expect(idea.ideas[-10].ideas[1].id).toBe('781.abc');
-					expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe('782.abc');
+					expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe('781.abc');
+					expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].id).toBe('782.abc');
 				});
 			});
 			it('should reorder children by absolute rank, positive first then negative', function () {
@@ -515,7 +523,7 @@ describe('content aggregate', function () {
 					'-77': {id: 12, title: '-77'},
 					'-1': {id: 13, title: '-1'}
 				}}));
-				newChildren = idea.ideas[-10].ideas[1].ideas;
+				newChildren = idea.ideas[1].ideas[-10].ideas[1].ideas;
 				expect(newChildren[1].title).toBe('1');
 				expect(newChildren[2].title).toBe('77');
 				expect(newChildren[3].title).toBe('-1');
@@ -533,7 +541,7 @@ describe('content aggregate', function () {
 						}
 					}
 				));
-				pastedRoot = idea.ideas[-10].ideas[1];
+				pastedRoot = idea.ideas[1].ideas[-10].ideas[1];
 				pastedChild = pastedRoot.ideas[1];
 				childChild = pastedRoot.ideas[1].ideas[1];
 				expect(pastedRoot.attr).toEqual({cloned: 'ok'});
@@ -543,9 +551,9 @@ describe('content aggregate', function () {
 			it('should paste to aggregate root if root ID is given', function () {
 				var result = idea.paste(1, toPaste), newRank;
 				expect(result).toBeTruthy();
-				newRank = idea.findChildRankById(5);
+				newRank = idea.ideas[1].findChildRankById(5);
 				expect(newRank).toBeTruthy();
-				expect(idea.ideas[newRank]).toEqual(jasmine.objectContaining({title: 'pasted'}));
+				expect(idea.ideas[1].ideas[newRank]).toEqual(jasmine.objectContaining({title: 'pasted'}));
 			});
 			it('should fail if invalid idea id', function () {
 				var result = idea.paste(-3, toPaste);
@@ -583,7 +591,7 @@ describe('content aggregate', function () {
 			it('pushes an event on the undo stack if successful', function () {
 				idea.paste(3, toPaste);
 				idea.undo();
-				expect(idea.ideas[-10].ideas).toEqual({});
+				expect(idea.ideas[1].ideas[-10].ideas).toEqual({});
 			});
 		});
 		describe('updateAttr', function () {
@@ -591,13 +599,13 @@ describe('content aggregate', function () {
 				var aggregate = MAPJS.content({id: 71, title: 'My Idea'}),
 					result = aggregate.updateAttr(71, 'newAttr', 'newValue');
 				expect(result).toBeTruthy();
-				expect(aggregate.getAttr('newAttr')).toBe('newValue');
+				expect(aggregate.ideas[1].getAttr('newAttr')).toBe('newValue');
 			});
 			it('should allow a set attr to be set on the child', function () {
 				var aggregate = MAPJS.content({id: 1, ideas: { 5: { id: 2}}}),
 					result = aggregate.updateAttr(2, 'newAttr', 'newValue');
 				expect(result).toBeTruthy();
-				expect(aggregate.ideas[5].getAttr('newAttr')).toBe('newValue');
+				expect(aggregate.ideas[1].ideas[5].getAttr('newAttr')).toBe('newValue');
 			});
 			it('clones attr when setting to a new object to prevent stale references', function () {
 				var oldAttr = {},
@@ -609,28 +617,28 @@ describe('content aggregate', function () {
 				var aggregate = MAPJS.content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
 					result = aggregate.updateAttr(1, 'newAttr', false);
 				expect(result).toBeTruthy();
-				expect(aggregate.attr.newAttr).toBeUndefined();
-				expect(aggregate.attr.keptAttr).toBe('oldValue');
+				expect(aggregate.ideas[1].attr.newAttr).toBeUndefined();
+				expect(aggregate.ideas[1].attr.keptAttr).toBe('oldValue');
 			});
 			it('should remove attrs which have been set to empty hash', function () {
 				var aggregate = MAPJS.content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
 					result = aggregate.updateAttr(1, 'newAttr', {});
 				expect(result).toBeTruthy();
-				expect(aggregate.attr.newAttr).toBeUndefined();
-				expect(aggregate.attr.keptAttr).toBe('oldValue');
+				expect(aggregate.ideas[1].attr.newAttr).toBeUndefined();
+				expect(aggregate.ideas[1].attr.keptAttr).toBe('oldValue');
 			});
 			it('should remove attrs which have been set to false - as a string', function () {
 				var aggregate = MAPJS.content({id: 1, attr: {keptAttr: 'oldValue', newAttr: 'value'}}),
 					result = aggregate.updateAttr(1, 'newAttr', 'false');
 				expect(result).toBeTruthy();
-				expect(aggregate.attr.newAttr).toBeUndefined();
-				expect(aggregate.attr.keptAttr).toBe('oldValue');
+				expect(aggregate.ideas[1].attr.newAttr).toBeUndefined();
+				expect(aggregate.ideas[1].attr.keptAttr).toBe('oldValue');
 			});
 			it('should remove attr hash when no attrs are left in the object', function () {
 				var aggregate = MAPJS.content({id: 1, attr: {newAttr: 'value'}}),
 					result = aggregate.updateAttr(1, 'newAttr', false);
 				expect(result).toBeTruthy();
-				expect(aggregate.attr).toBeUndefined();
+				expect(aggregate.ideas[1].attr).toBeUndefined();
 			});
 			it('fires an event matching the method call when the attr changes', function () {
 				var listener = jasmine.createSpy('attr_listener'),
@@ -686,13 +694,13 @@ describe('content aggregate', function () {
 				var aggregate = MAPJS.content({id: 71, attr: {'newAttr': 'oldValue'}});
 				aggregate.updateAttr(71, 'newAttr', 'newValue');
 				aggregate.undo();
-				expect(aggregate.getAttr('newAttr')).toBe('oldValue');
+				expect(aggregate.ideas[1].getAttr('newAttr')).toBe('oldValue');
 			});
 			it('should undo attr deletion if successful', function () {
 				var aggregate = MAPJS.content({id: 71, attr: {'newAttr': 'oldValue'}});
 				aggregate.updateAttr(71, 'newAttr', false);
 				aggregate.undo();
-				expect(aggregate.getAttr('newAttr')).toBe('oldValue');
+				expect(aggregate.ideas[1].getAttr('newAttr')).toBe('oldValue');
 			});
 			it('deep clones complex objects to prevent outside changes', function () {
 				var aggregate = MAPJS.content({id: 71}),
@@ -700,8 +708,8 @@ describe('content aggregate', function () {
 				aggregate.updateAttr(71, 'new', attrOb);
 				attrOb.background  = 'white';
 				attrOb.sub.subsub = 1;
-				expect(aggregate.getAttr('new').background).toBe('yellow');
-				expect(aggregate.getAttr('new').sub.subsub).toBe(0);
+				expect(aggregate.ideas[1].getAttr('new').background).toBe('yellow');
+				expect(aggregate.ideas[1].getAttr('new').sub.subsub).toBe(0);
 			});
 		});
 		_.each(['updateTitle', 'initialiseTitle'], function (cmd) {
@@ -710,20 +718,20 @@ describe('content aggregate', function () {
 					var first = MAPJS.content({id: 71, title: 'My Idea'}),
 						firstSucceeded = first[cmd](71, 'Updated');
 					expect(firstSucceeded).toBeTruthy();
-					expect(first.title).toBe('Updated');
+					expect(first.ideas[1].title).toBe('Updated');
 				});
 				it('changes the title of the current idea only if it matches ID in command even if given as a string  (DOM/_.js quirk workaround)', function () {
 					var first = MAPJS.content({id: 71.5, title: 'My Idea'}),
 						firstSucceeded = first[cmd]('71.5', 'Updated');
 					expect(firstSucceeded).toBeTruthy();
-					expect(first.title).toBe('Updated');
+					expect(first.ideas[1].title).toBe('Updated');
 				});
 				it('fails if the aggregate does not contain the target ID', function () {
 					var second = MAPJS.content({id: 72, title: 'Untouched'}),
 						listener = jasmine.createSpy('title_listener');
 					second.addEventListener('changed', listener);
 					expect(second[cmd](71, 'Updated')).toBeFalsy();
-					expect(second.title).toBe('Untouched');
+					expect(second.ideas[1].title).toBe('Untouched');
 					expect(listener).not.toHaveBeenCalled();
 				});
 				it('fails if the title is the same', function () {
@@ -738,7 +746,7 @@ describe('content aggregate', function () {
 									ideas: {  1: {id: 2, title: 'My First Subidea', ideas: {1: {id: 3, title: 'My First sub-sub-idea'}}}}}),
 						result = ideas[cmd](3, 'Updated');
 					expect(result).toBeTruthy();
-					expect(ideas.ideas[1].ideas[1].title).toBe('Updated');
+					expect(ideas.ideas[1].ideas[1].ideas[1].title).toBe('Updated');
 					expect(ideas[cmd]('Non Existing', 'XX')).toBeFalsy();
 				});
 				it('fires an event matching the method call when the title changes', function () {
@@ -759,7 +767,7 @@ describe('content aggregate', function () {
 					var wrapped = MAPJS.content({id: 71, title: 'My Idea'});
 					wrapped[cmd](71, 'Updated');
 					wrapped.undo();
-					expect(wrapped.title).toBe('My Idea');
+					expect(wrapped.ideas[1].title).toBe('My Idea');
 				});
 			});
 		});
@@ -779,27 +787,27 @@ describe('content aggregate', function () {
 				});
 				it('retro-fits it into the batch', function () {
 					content.undo();
-					expect(content.title).toBe('new title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('new title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 				it('adds itself to the redo stack for the previous command', function () {
 					content.undo();
 					content.redo();
-					expect(content.ideas[1].title).toBe('should be batched');
-					expect(content.title).toBe('batched new title');
+					expect(content.ideas[1].ideas[1].title).toBe('should be batched');
+					expect(content.ideas[1].title).toBe('batched new title');
 				});
 				it('does not mess up the undo stack for earlier commands', function () {
 					content.undo();
 					content.undo();
-					expect(content.title).toBe('old title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('old title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 				it('does not mess up the redo stack for earlier commands', function () {
 					content.undo();
 					content.undo();
 					content.redo();
-					expect(content.title).toBe('new title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('new title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 			});
 
@@ -813,26 +821,26 @@ describe('content aggregate', function () {
 				});
 				it('retro-fits it into the batch', function () {
 					content.undo();
-					expect(content.title).toBe('new title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('new title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 				it('adds itself to the redo stack for the previous command', function () {
 					content.undo();
 					content.redo();
-					expect(content.ideas[1].title).toBe('should be batched');
+					expect(content.ideas[1].ideas[1].title).toBe('should be batched');
 				});
 				it('does not mess up the undo stack for earlier commands', function () {
 					content.undo();
 					content.undo();
-					expect(content.title).toBe('old title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('old title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 				it('does not mess up the redo stack for earlier commands', function () {
 					content.undo();
 					content.undo();
 					content.redo();
-					expect(content.title).toBe('new title');
-					expect(content.ideas).toEqual({});
+					expect(content.ideas[1].title).toBe('new title');
+					expect(content.ideas[1].ideas).toEqual({});
 				});
 
 			});
@@ -850,20 +858,20 @@ describe('content aggregate', function () {
 			it('adds an idea between the argument idea and its parent, keeping the same rank for the new node and reassigning rank of 1 to the argument', function () {
 				var result = idea.insertIntermediate(2, 'Steve');
 				expect(result).toBeTruthy();
-				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 3, title: 'Steve'}));
-				expect(_.size(idea.ideas)).toBe(1);
-				expect(_.size(idea.ideas[77].ideas)).toBe(1);
-				expect(idea.ideas[77].ideas[1]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
+				expect(idea.ideas[1].ideas[77]).toEqual(jasmine.objectContaining({id: 3, title: 'Steve'}));
+				expect(_.size(idea.ideas[1].ideas)).toBe(1);
+				expect(_.size(idea.ideas[1].ideas[77].ideas)).toBe(1);
+				expect(idea.ideas[1].ideas[77].ideas[1]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 			it('assigns an ID automatically if not provided', function () {
 				var result = idea.insertIntermediate(2, 'Steve');
 				expect(result).toBeTruthy();
-				expect(idea.ideas[77].id).not.toBeNull();
+				expect(idea.ideas[1].ideas[77].id).not.toBeNull();
 			});
 			it('assigns the provided ID if argument given', function () {
 				var result = idea.insertIntermediate(2, 'Steve', 777);
 				expect(result).toBeTruthy();
-				expect(idea.ideas[77].id).toBe(777);
+				expect(idea.ideas[1].ideas[77].id).toBe(777);
 			});
 			it('does not mess up automatic ID for nodes after operation when ID is provided', function () {
 				idea.addSubIdea(2, 'x');
@@ -874,7 +882,7 @@ describe('content aggregate', function () {
 			it('fails if the ID is provided and it already exists', function () {
 				var result = idea.insertIntermediate(2, 'Steve', 2);
 				expect(result).toBeFalsy();
-				expect(idea.ideas[77].id).toBe(2);
+				expect(idea.ideas[1].ideas[77].id).toBe(2);
 			});
 			it('fires an event matching the method call when the operation succeeds', function () {
 				idea.insertIntermediate(2, 'Steve');
@@ -890,7 +898,7 @@ describe('content aggregate', function () {
 			it('fires the generated ID in the event if the ID was not supplied', function () {
 				var	newId;
 				idea.insertIntermediate(2, 'Steve');
-				newId = idea.ideas[77].id;
+				newId = idea.ideas[1].ideas[77].id;
 				expect(listener).toHaveBeenCalledWith('insertIntermediate', [2, 'Steve', newId]);
 			});
 			it('fails if argument idea does not exist', function () {
@@ -904,14 +912,14 @@ describe('content aggregate', function () {
 			it('pops an event to undo stack if successful', function () {
 				idea.insertIntermediate(2, 'Steve');
 				idea.undo();
-				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
+				expect(idea.ideas[1].ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 		});
 		describe('addSubIdea', function () {
 			it('adds a sub-idea to the idea in the argument', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'}),
 					succeeded = idea.addSubIdea(71, 'New idea'),
-					asArray = _.toArray(idea.ideas);
+					asArray = _.toArray(idea.ideas[1].ideas);
 				expect(succeeded).toBeTruthy();
 				expect(asArray.length).toBe(1);
 				expect(asArray[0].title).toBe('New idea');
@@ -920,12 +928,12 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'});
 				idea.addSubIdea(71, 'First idea');
 				idea.addSubIdea(71, 'Second idea');
-				expect(_.size(idea.ideas)).toBe(2);
+				expect(_.size(idea.ideas[1].ideas)).toBe(2);
 			});
 			it('assigns the next available ID to the new idea if the ID was not provided', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'});
 				idea.addSubIdea(71);
-				expect(_.toArray(idea.ideas)[0].id).toBe(72);
+				expect(_.toArray(idea.ideas[1].ideas)[0].id).toBe(72);
 			});
 			it('returns the assigned ID if successful', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'}),
@@ -935,12 +943,12 @@ describe('content aggregate', function () {
 			it('appends the session key if given', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'}, 'session');
 				idea.addSubIdea(71);
-				expect(_.toArray(idea.ideas)[0].id).toBe('72.session');
+				expect(_.toArray(idea.ideas[1].ideas)[0].id).toBe('72.session');
 			});
 			it('uses the provided ID if one is provided', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'});
 				idea.addSubIdea(71, 'T', 555);
-				expect(_.toArray(idea.ideas)[0].id).toBe(555);
+				expect(_.toArray(idea.ideas[1].ideas)[0].id).toBe(555);
 			});
 			it('does not mess up automatic ID for nodes after operation when ID is provided', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'});
@@ -953,24 +961,24 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'}),
 					result = idea.addSubIdea(71, 'X', 71);
 				expect(result).toBeFalsy();
-				expect(_.size(idea.ideas)).toBe(0);
+				expect(_.size(idea.ideas[1].ideas)).toBe(0);
 			});
 			it('assigns the first subidea the rank of 1', function () {
 				var idea = MAPJS.content({id: 71, title: 'My Idea'});
 				idea.addSubIdea(71);
-				expect(idea.findChildRankById(72)).toBe(1);
+				expect(idea.ideas[1].findChildRankById(72)).toBe(1);
 			});
 			it('when adding nodes to 2nd level items and more, adds a node at a rank greater than any of its siblings', function () {
 				var idea = MAPJS.content({id: 1, ideas: {1: {id: 5, ideas: {5: {id: 2}, 10: { id: 3}, 15 : {id: 4}}}}});
 				idea.addSubIdea(5, 'x');
-				expect(idea.ideas[1].findChildRankById(6)).not.toBeLessThan(15);
+				expect(idea.ideas[1].ideas[1].findChildRankById(6)).not.toBeLessThan(15);
 			});
 			it('propagates to children if it does not match the requested id, succeeding if any child ID matches', function () {
 				var ideas = MAPJS.content({id: 1, title: 'My Idea',
 					ideas: {1: {id: 2, title: 'My First Subidea', ideas: {1: {id: 3, title: 'My First sub-sub-idea'}}}}}),
 					result = ideas.addSubIdea(3, 'New New');
 				expect(result).toBeTruthy();
-				expect(ideas.ideas[1].ideas[1].ideas[1].title).toBe('New New');
+				expect(ideas.ideas[1].ideas[1].ideas[1].ideas[1].title).toBe('New New');
 			});
 			it('fails if no child ID in hierarchy matches requested id', function () {
 				var ideas = MAPJS.content({id: 1, title: 'My Idea',
@@ -995,7 +1003,7 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 4, ideas: {1: {id: 5, title: 'My Idea'}}});
 				idea.addSubIdea(4, 'New');
 				idea.undo();
-				expect(idea.ideas[1]).toEqual(jasmine.objectContaining({id: 5, title: 'My Idea'}));
+				expect(idea.ideas[1].ideas[1]).toEqual(jasmine.objectContaining({id: 5, title: 'My Idea'}));
 				expect(_.size(idea.ideas)).toBe(1);
 			});
 			it('takes negative rank items as absolute while calculating new rank ID (bug resurrection test)', function () {
@@ -1013,27 +1021,27 @@ describe('content aggregate', function () {
 					var idea = MAPJS.content({id: 1});
 					idea.addSubIdea(1, 'new');
 					idea.addSubIdea(1, 'new');
-					expect(idea.findChildRankById(3)).toBeLessThan(0);
+					expect(idea.ideas[1].findChildRankById(3)).toBeLessThan(0);
 				});
 				it('adds a negative rank if there are more positive ranks than negative', function () {
 					var idea = MAPJS.content({id: 1, title: 'I1', ideas: {5: {id: 2, title: 'I2'}, 10: {id: 3, title: 'I3'}, '-15': {id: 4, title: 'I4'}}});
 					idea.addSubIdea(1);
-					expect(idea.findChildRankById(5)).toBeLessThan(0);
+					expect(idea.ideas[1].findChildRankById(5)).toBeLessThan(0);
 				});
 				it('adds a positive rank if there are less or equal positive ranks than negative', function () {
 					var idea = MAPJS.content({id: 1, title: 'I1', ideas: {5: {id: 2, title: 'I2'}, '-15': {id: 4, title: 'I4'}}});
 					idea.addSubIdea(1);
-					expect(idea.findChildRankById(5)).not.toBeLessThan(0);
+					expect(idea.ideas[1].findChildRankById(5)).not.toBeLessThan(0);
 				});
 				it('when adding positive rank nodes, adds a node at a rank greater than any of its siblings', function () {
 					var idea = MAPJS.content({id: 1, ideas: {'-3': {id: 5}, '-5': {id: 2}, 10: {id: 3}, 15 : {id: 4}}});
 					idea.addSubIdea(1, 'x');
-					expect(idea.findChildRankById(6)).not.toBeLessThan(15);
+					expect(idea.ideas[1].findChildRankById(6)).not.toBeLessThan(15);
 				});
 				it('when adding negative rank nodes, adds a node at a rank lesser than any of its siblings', function () {
 					var idea = MAPJS.content({id: 1, ideas: {'-3': {id: 5}, '-5': {id: 2}, 10: {id: 3}, 15: {id: 4}, 20: {id: 6}}});
 					idea.addSubIdea(1, 'x');
-					expect(idea.findChildRankById(7)).toBeLessThan(-5);
+					expect(idea.ideas[1].findChildRankById(7)).toBeLessThan(-5);
 				});
 			});
 		});
@@ -1045,15 +1053,15 @@ describe('content aggregate', function () {
 			it('removes an idea from its parent and reassings to another parent', function () {
 				var result = idea.changeParent(4, 5);
 				expect(result).toBeTruthy();
-				expect(idea.containsDirectChild(4)).toBeTruthy();
-				expect(idea.ideas[9].containsDirectChild(4)).toBeFalsy();
+				expect(idea.ideas[1].containsDirectChild(4)).toBeTruthy();
+				expect(idea.ideas[1].ideas[9].containsDirectChild(4)).toBeFalsy();
 			});
 			it('fails if no such idea exists to remove', function () {
 				expect(idea.changeParent(14, 5)).toBeFalsy();
 			});
 			it('fails if no such new parent exists', function () {
 				expect(idea.changeParent(4, 11)).toBeFalsy();
-				expect(idea.ideas[9].ideas[-15].id).toBe(4);
+				expect(idea.ideas[1].ideas[9].ideas[-15].id).toBe(4);
 			});
 			it('fires an event matching the method call when a parent is changed', function () {
 				var listener = jasmine.createSpy('changeParent');
@@ -1085,23 +1093,23 @@ describe('content aggregate', function () {
 				idea.changeParent(4, 5);
 				idea.undo();
 				expect(idea.containsDirectChild(4)).toBeFalsy();
-				expect(idea.ideas[9].containsDirectChild(4)).toBeTruthy();
+				expect(idea.ideas[1].ideas[9].containsDirectChild(4)).toBeTruthy();
 			});
 		});
 		describe('removeSubIdea', function () {
 			it('removes a child idea matching the provided id', function () {
 				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				expect(idea.removeSubIdea(2)).toBeTruthy();
-				expect(_.size(idea.ideas)).toBe(2);
-				expect(idea.ideas[10].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
+				expect(_.size(idea.ideas[1].ideas)).toBe(2);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
 			});
 			it('delegates to children if no immediate child matches id', function () {
 				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
 				expect(idea.removeSubIdea(3)).toBeTruthy();
-				expect(_.size(idea.ideas[9].ideas)).toBe(2);
-				expect(idea.ideas[9].ideas[-5].id).toBe(2);
-				expect(idea.ideas[9].ideas[-15].id).toBe(4);
+				expect(_.size(idea.ideas[1].ideas[9].ideas)).toBe(2);
+				expect(idea.ideas[1].ideas[9].ideas[-5].id).toBe(2);
+				expect(idea.ideas[1].ideas[9].ideas[-15].id).toBe(4);
 			});
 			it('fails if no immediate child matches id', function () {
 				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}}),
@@ -1128,7 +1136,7 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 1, ideas: {5: {id: 2}, 10: {id: 3}, 15: {id: 4}}});
 				idea.removeSubIdea(2);
 				idea.undo();
-				expect(idea.ideas[5]).toEqual(jasmine.objectContaining({id: 2}));
+				expect(idea.ideas[1].ideas[5]).toEqual(jasmine.objectContaining({id: 2}));
 			});
 		});
 		describe('flip', function () {
@@ -1136,17 +1144,17 @@ describe('content aggregate', function () {
 				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}}),
 					result = idea.flip(2);
 				expect(result).toBeTruthy();
-				expect(idea.ideas[10].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
-				expect(idea.findChildRankById(2)).not.toBeLessThan(15);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
+				expect(idea.ideas[1].findChildRankById(2)).not.toBeLessThan(15);
 			});
 			it('assigns the idea the smallest negative rank if the current rank was positive', function () {
 				var idea = MAPJS.content({id: 1, ideas: {'-5': {id: 2}, 10: {id: 3}, 15: {id: 4}}}),
 					result = idea.flip(3);
 				expect(result).toBeTruthy();
-				expect(idea.ideas['-5'].id).toBe(2);
-				expect(idea.ideas[15].id).toBe(4);
-				expect(idea.findChildRankById(3)).toBeLessThan(-5);
+				expect(idea.ideas[1].ideas['-5'].id).toBe(2);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
+				expect(idea.ideas[1].findChildRankById(3)).toBeLessThan(-5);
 			});
 			it('fails if called on idea that was not a child of the aggregate root', function () {
 				var idea = MAPJS.content({id: 0, ideas: {9: {id: 1, ideas: {'-5': {id: 2}, '-10': {id: 3}, '-15': {id: 4}}}}});
@@ -1177,8 +1185,8 @@ describe('content aggregate', function () {
 				idea.flip(2);
 				newRank = idea.findChildRankById(2);
 				idea.undo();
-				expect(idea.findChildRankById(2)).toBe(-5);
-				expect(idea.ideas[newRank]).toBeUndefined();
+				expect(idea.ideas[1].findChildRankById(2)).toBe(-5);
+				expect(idea.ideas[1].ideas[newRank]).toBeUndefined();
 			});
 		});
 		describe('getOrderedSiblingRanks', function () {
@@ -1228,33 +1236,33 @@ describe('content aggregate', function () {
 					});
 					it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
 						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
 					});
 					it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
 						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
 					});
 					it('moves to top', function () {
 						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
 					});
 					it('does nothing if already on top and movement negative', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 					it('fails if no idea', function () {
 						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
 					});
 					it('does nothing if no idea', function () {
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 					it('moves to bottom', function () {
 						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '25': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '25': 3, '15': 4});
 					});
 					it('does nothing if already on bottom and movement positive', function () {
 						expect(idea.moveRelative(15, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 
 				});
@@ -1264,33 +1272,33 @@ describe('content aggregate', function () {
 					});
 					it('moves an idea before its immediate previous sibling', function () {
 						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-7.5': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-10': 3, '-7.5': 4});
 					});
 					it('moves an idea after its immediate following sibling', function () {
 						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-12.5': 2, '-10': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-12.5': 2, '-10': 3, '-15': 4});
 					});
 					it('moves to top', function () {
 						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-2.5': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-2.5': 3, '-15': 4});
 					});
 					it('does nothing if already on top and movement negative', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
 					});
 					it('fails if no idea', function () {
 						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
 					});
 					it('does nothing if no idea', function () {
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
 					});
 					it('moves to bottom', function () {
 						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-25': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-25': 3, '-15': 4});
 					});
 					it('does nothing if already on bottom and movement positive', function () {
 						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 2, '-10': 3, '-15': 4});
 					});
 				});
 				describe('when there mixed positive and negative ranks, ordering of each side is considered separate', function () {
@@ -1299,23 +1307,23 @@ describe('content aggregate', function () {
 					});
 					it('moves negative ideas to top', function () {
 						expect(idea.moveRelative(30, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-2.5': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 20, '-2.5': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
 					});
 					it('does nothing if negative already on top and movement negative', function () {
 						expect(idea.moveRelative(20, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
 					});
 					it('does nothing if negative already on bottom and movement positive', function () {
 						expect(idea.moveRelative(40, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
 					});
 					it('does nothing if positive already on top and movement negative', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
 					});
 					it('does nothing if positive already on bottom and movement positive', function () {
 						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
 					});
 
 				});
@@ -1330,34 +1338,34 @@ describe('content aggregate', function () {
 					});
 					it('if movement is negative, moves an idea relative to its immediate previous siblings', function () {
 						expect(idea.moveRelative(4, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '7.5': 4});
 					});
 					it('if movement is positive, moves an idea relative to its immediate following siblings', function () {
 						expect(idea.moveRelative(2, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'12.5': 2, '10': 3, '15': 4});
 					});
 					it('moves to top', function () {
 						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '2.5': 3, '15': 4});
 					});
 					it('does nothing if already on top and movement negative', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 					it('fails if no idea', function () {
 						expect(idea.moveRelative(10, 1, options)).toBeFalsy();
 					});
 					it('does nothing if no idea', function () {
 						idea.moveRelative(10, 1, options);
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 					it('moves to bottom', function () {
 						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '25': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '25': 3, '15': 4});
 					});
 					it('does nothing if already on bottom and movement positive', function () {
 						expect(idea.moveRelative(15, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({'5': 2, '10': 3, '15': 4});
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({'5': 2, '10': 3, '15': 4});
 					});
 
 				});
@@ -1371,7 +1379,7 @@ describe('content aggregate', function () {
 					});
 					it('should move an idea before its immediate previous sibling', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15': 4,
 							'-12.5': 2,
 							'-10': 3
@@ -1379,7 +1387,7 @@ describe('content aggregate', function () {
 					});
 					it('moves an idea after its immediate following sibling', function () {
 						expect(idea.moveRelative(4, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-10': 3,
 							'-7.5': 4,
 							'-5': 2
@@ -1387,7 +1395,7 @@ describe('content aggregate', function () {
 					});
 					it('moves to top', function () {
 						expect(idea.moveRelative(3, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-25': 3,
 							'-15': 4,
 							'-5': 2
@@ -1395,7 +1403,7 @@ describe('content aggregate', function () {
 					});
 					it('does nothing if already on top and movement negative', function () {
 						expect(idea.moveRelative(4, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15' : 4,
 							'-10': 3,
 							'-5': 2
@@ -1406,7 +1414,7 @@ describe('content aggregate', function () {
 					});
 					it('does nothing if no idea', function () {
 						idea.moveRelative(10, 1, options);
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15' : 4,
 							'-10': 3,
 							'-5': 2
@@ -1414,7 +1422,7 @@ describe('content aggregate', function () {
 					});
 					it('moves to bottom', function () {
 						expect(idea.moveRelative(3, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15' : 4,
 							'-5': 2,
 							'-2.5': 3
@@ -1422,7 +1430,7 @@ describe('content aggregate', function () {
 					});
 					it('does nothing if already on bottom and movement positive', function () {
 						expect(idea.moveRelative(2, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15' : 4,
 							'-10': 3,
 							'-5': 2
@@ -1442,7 +1450,7 @@ describe('content aggregate', function () {
 					});
 					it('moves negative ideas to top', function () {
 						expect(idea.moveRelative(30, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-25': 30,
 							'-15': 40,
 							'-5': 20,
@@ -1453,7 +1461,7 @@ describe('content aggregate', function () {
 					});
 					it('does nothing if negative already on top and movement negative', function () {
 						expect(idea.moveRelative(40, -1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15': 40,
 							'-10': 30,
 							'-5': 20,
@@ -1464,7 +1472,7 @@ describe('content aggregate', function () {
 					});
 					it('does nothing if positive already on bottom and movement positive', function () {
 						expect(idea.moveRelative(4, 1, options)).toBeFalsy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15': 40,
 							'-10': 30,
 							'-5': 20,
@@ -1475,7 +1483,7 @@ describe('content aggregate', function () {
 					});
 					it('should move positive before negative when movement negative', function () {
 						expect(idea.moveRelative(2, -1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15': 40,
 							'-10': 30,
 							'-7.5': 2,
@@ -1486,7 +1494,7 @@ describe('content aggregate', function () {
 					});
 					it('should move negative before positive when movement positive', function () {
 						expect(idea.moveRelative(20, 1, options)).toBeTruthy();
-						expect(ideaIdsByRank(idea.ideas)).toEqual({
+						expect(ideaIdsByRank(idea.ideas[1].ideas)).toEqual({
 							'-15': 40,
 							'-10': 30,
 							'5': 2,
@@ -1495,11 +1503,6 @@ describe('content aggregate', function () {
 							'15': 4
 						});
 					});
-					// it('does nothing if positive already on bottom and movement positive', function () {
-					// 	expect(idea.moveRelative(4, 1, options)).toBeFalsy();
-					// 	expect(ideaIdsByRank(idea.ideas)).toEqual({'-5': 20, '-10': 30, '-15': 40, '5': 2, '10': 3, '15': 4});
-					// });
-
 				});
 			});
 		});
@@ -1507,7 +1510,7 @@ describe('content aggregate', function () {
 			it('prevents a node to be reordered into itself, if is it already in the right position (production bugcheck)', function () {
 				var idea = MAPJS.content({id: 1, ideas: {1: {id: 2}, 2: {id: 4}, 3: {id: 6}, 4: {id: 8}, '-1': {id: 3}, '-2': {id: 5}, '-3': {id: 7}, '-4': {id: 9}}});
 				expect(idea.positionBefore(5, 7)).toBeFalsy();
-				expect(_.size(idea.ideas)).toBe(8);
+				expect(_.size(idea.ideas[1].ideas)).toBe(8);
 			});
 			it('ignores different sign ranks when ordering', function () {
 				var idea = MAPJS.content({id: 1, ideas: {'-0.25': {id: 24}, '-10.25': {id: 32}, '0.0625': {id: 5}, '0.03125': {id: 6}, '1.0625': {id: 7}}});
@@ -1520,9 +1523,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(4, 3),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
+				expect(idea.ideas[1].ideas[5].id).toBe(2);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				newKey = idea.ideas[1].findChildRankById(4);
 				expect(newKey).toBeLessThan(10);
 				expect(newKey).not.toBeLessThan(5);
 			});
@@ -1532,9 +1535,9 @@ describe('content aggregate', function () {
 				spyOn(idea, 'dispatchEvent');
 				result = idea.positionBefore(3, 3);
 				expect(result).toBeFalsy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[12].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
+				expect(idea.ideas[1].ideas[5].id).toBe(2);
+				expect(idea.ideas[1].ideas[12].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if the idea should be ordered in the same place', function () {
@@ -1543,9 +1546,9 @@ describe('content aggregate', function () {
 				spyOn(idea, 'dispatchEvent');
 				result = idea.positionBefore(3, 4);
 				expect(result).toBeFalsy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[12].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
+				expect(idea.ideas[1].ideas[5].id).toBe(2);
+				expect(idea.ideas[1].ideas[12].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if it cannot find appropriate idea to reorder', function () {
@@ -1585,7 +1588,7 @@ describe('content aggregate', function () {
 				spyOn(idea, 'dispatchEvent');
 				result = idea.positionBefore(6, 3);
 				expect(result).toBe(false);
-				expect(idea.ideas[10].ideas.NaN).not.toBeDefined();
+				expect(idea.ideas[1].ideas[10].ideas.NaN).not.toBeDefined();
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('orders negative ideas as negative ranks', function () {
@@ -1593,9 +1596,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(4, 3),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[-5].id).toBe(2);
-				expect(idea.ideas[-10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
+				expect(idea.ideas[1].ideas[-5].id).toBe(2);
+				expect(idea.ideas[1].ideas[-10].id).toBe(3);
+				newKey = idea.ideas[1].findChildRankById(4);
 				expect(newKey).not.toBeLessThan(-10);
 				expect(newKey).toBeLessThan(-5);
 			});
@@ -1604,9 +1607,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(4, 2),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
+				expect(idea.ideas[1].ideas[5].id).toBe(2);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				newKey = idea.ideas[1].findChildRankById(4);
 				expect(newKey).toBeLessThan(5);
 			});
 			it('gives the idea the largest positive rank if the boundary idea was not defined and current rank was positive', function () {
@@ -1614,9 +1617,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(2),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[10].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
-				newKey = idea.findChildRankById(2);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
+				newKey = idea.ideas[1].findChildRankById(2);
 				expect(newKey).not.toBeLessThan(15);
 			});
 			it('fails if the boundary idea was not defined and child was already last', function () {
@@ -1625,9 +1628,9 @@ describe('content aggregate', function () {
 				spyOn(idea, 'dispatchEvent');
 				result = idea.positionBefore(4);
 				expect(result).toBeFalsy();
-				expect(idea.ideas[5].id).toBe(2);
-				expect(idea.ideas[10].id).toBe(3);
-				expect(idea.ideas[15].id).toBe(4);
+				expect(idea.ideas[1].ideas[5].id).toBe(2);
+				expect(idea.ideas[1].ideas[10].id).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('puts the child closest to zero from the - side if the boundary idea was the smallest negative', function () {
@@ -1635,9 +1638,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(4, 2),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[-5].id).toBe(2);
-				expect(idea.ideas[-10].id).toBe(3);
-				newKey = idea.findChildRankById(4);
+				expect(idea.ideas[1].ideas[-5].id).toBe(2);
+				expect(idea.ideas[1].ideas[-10].id).toBe(3);
+				newKey = idea.ideas[1].findChildRankById(4);
 				expect(newKey).not.toBeLessThan(-5);
 				expect(newKey).toBeLessThan(0);
 			});
@@ -1646,9 +1649,9 @@ describe('content aggregate', function () {
 					result = idea.positionBefore(2),
 					newKey;
 				expect(result).toBeTruthy();
-				expect(idea.ideas[-10].id).toBe(3);
-				expect(idea.ideas[-15].id).toBe(4);
-				newKey = idea.findChildRankById(2);
+				expect(idea.ideas[1].ideas[-10].id).toBe(3);
+				expect(idea.ideas[1].ideas[-15].id).toBe(4);
+				newKey = idea.ideas[1].findChildRankById(2);
 				expect(newKey).toBeLessThan(-15);
 			});
 			it('fails if the boundary idea was not defined and child was already last with negative ranks', function () {
@@ -1657,9 +1660,9 @@ describe('content aggregate', function () {
 				spyOn(idea, 'dispatchEvent');
 				result = idea.positionBefore(4);
 				expect(result).toBeFalsy();
-				expect(idea.ideas[-5].id).toBe(2);
-				expect(idea.ideas[-10].id).toBe(3);
-				expect(idea.ideas[-15].id).toBe(4);
+				expect(idea.ideas[1].ideas[-5].id).toBe(2);
+				expect(idea.ideas[1].ideas[-10].id).toBe(3);
+				expect(idea.ideas[1].ideas[-15].id).toBe(4);
 				expect(idea.dispatchEvent).not.toHaveBeenCalled();
 			});
 			it('fails if the boundary idea was not defined and child was already last in its group (positive/negative)', function () {
@@ -1675,7 +1678,7 @@ describe('content aggregate', function () {
 					child,
 					newKey;
 				expect(result).toBeTruthy();
-				child = idea.ideas[9];
+				child = idea.ideas[1].ideas[9];
 				expect(child.ideas[-5].id).toBe(2);
 				expect(child.ideas[-10].id).toBe(3);
 				newKey = child.findChildRankById(4);
@@ -1736,9 +1739,9 @@ describe('content aggregate', function () {
 				idea.positionBefore(4, 3);
 				newKey = idea.findChildRankById(4);
 				idea.undo();
-				expect(idea.ideas[15].id).toBe(4);
-				expect(idea.ideas[newKey]).toBeUndefined();
-				expect(_.size(idea.ideas)).toBe(3);
+				expect(idea.ideas[1].ideas[15].id).toBe(4);
+				expect(idea.ideas[1].ideas[newKey]).toBeUndefined();
+				expect(_.size(idea.ideas[1].ideas)).toBe(3);
 			});
 		});
 	});
@@ -1749,7 +1752,7 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			result = wrapped.redo();
 			expect(result).toBeTruthy();
-			expect(wrapped.title).toBe('First');
+			expect(wrapped.ideas[1].title).toBe('First');
 		});
 		it('fails if there is nothing to undo', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}), result;
@@ -1764,7 +1767,7 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			result = wrapped.redo();
 			expect(result).toBeTruthy();
-			expect(wrapped.title).toBe('Second');
+			expect(wrapped.ideas[1].title).toBe('Second');
 		});
 		it('fires a change event if it succeeds', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),
@@ -1790,7 +1793,7 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			wrapped.updateTitle(1, 'Second');
 			wrapped.redo();
-			expect(wrapped.title).toBe('Second');
+			expect(wrapped.ideas[1].title).toBe('Second');
 		});
 		it('shortcut method only redos undos from current session', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
@@ -1799,8 +1802,8 @@ describe('content aggregate', function () {
 			wrapped.undo();
 			wrapped.execCommand('undo', [1], 'session2');
 			wrapped.redo();
-			expect(wrapped.title).toBe('First');
-			expect(_.size(wrapped.ideas)).toBe(0);
+			expect(wrapped.ideas[1].title).toBe('First');
+			expect(_.size(wrapped.ideas[1].ideas)).toBe(0);
 		});
 		it('command processor redos undos from the given session', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
@@ -1809,8 +1812,8 @@ describe('content aggregate', function () {
 			wrapped.execCommand('undo', [1], 'session2');
 			wrapped.undo();
 			wrapped.execCommand('redo', [], 'session2');
-			expect(wrapped.title).toBe('Original');
-			expect(_.size(wrapped.ideas)).toBe(1);
+			expect(wrapped.ideas[1].title).toBe('Original');
+			expect(_.size(wrapped.ideas[1].ideas)).toBe(1);
 		});
 	});
 	describe('undo', function () {
@@ -1818,14 +1821,14 @@ describe('content aggregate', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
 			expect(wrapped.undo()).toBeTruthy();
-			expect(wrapped.title).toBe('Original');
+			expect(wrapped.ideas[1].title).toBe('Original');
 		});
 		it('undos the top event from the stack', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'});
 			wrapped.updateTitle(1, 'First');
 			wrapped.updateTitle(1, 'Second');
 			wrapped.undo();
-			expect(wrapped.title).toBe('First');
+			expect(wrapped.ideas[1].title).toBe('First');
 		});
 
 		it('multiple changes stack on the undo stack in the order of recency', function () {
@@ -1834,7 +1837,7 @@ describe('content aggregate', function () {
 			wrapped.updateTitle(1, 'Second');
 			wrapped.undo();
 			wrapped.undo();
-			expect(wrapped.title).toBe('Original');
+			expect(wrapped.ideas[1].title).toBe('Original');
 		});
 		it('fires a change event if it succeeds', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}),
@@ -1864,8 +1867,8 @@ describe('content aggregate', function () {
 			wrapped.updateTitle(1, 'First');
 			wrapped.execCommand('addSubIdea', [1], 'session2');
 			wrapped.undo();
-			expect(wrapped.title).toBe('Original');
-			expect(_.size(wrapped.ideas)).toBe(1);
+			expect(wrapped.ideas[1].title).toBe('Original');
+			expect(_.size(wrapped.ideas[1].ideas)).toBe(1);
 		});
 		it('command processor undos events caused by the provided session', function () {
 			var wrapped = MAPJS.content({id: 1, title: 'Original'}, 'session1');
@@ -1873,8 +1876,8 @@ describe('content aggregate', function () {
 			wrapped.updateTitle(1, 'First');
 			wrapped.execCommand('undo', [1], 'session2');
 			wrapped.undo();
-			expect(wrapped.title).toBe('Original');
-			expect(_.size(wrapped.ideas)).toBe(0);
+			expect(wrapped.ideas[1].title).toBe('Original');
+			expect(_.size(wrapped.ideas[1].ideas)).toBe(0);
 		});
 	});
 	describe('canUndo', function () {
@@ -2056,13 +2059,13 @@ describe('content aggregate', function () {
 
 				wrapped.undo();
 
-				expect(wrapped.title).toBe('Original');
+				expect(wrapped.ideas[1].title).toBe('Original');
 				expect(listener.calls.count()).toBe(2);
 			});
 			it('undos an open batch as a separate event', function () {
 				wrapped.undo();
 
-				expect(wrapped.title).toBe('Original');
+				expect(wrapped.ideas[1].title).toBe('Original');
 				expect(listener.calls.count()).toBe(2);
 			});
 			it('redos an entire batch', function () {
@@ -2071,14 +2074,14 @@ describe('content aggregate', function () {
 
 				wrapped.redo();
 
-				expect(wrapped.title).toBe('Max');
+				expect(wrapped.ideas[1].title).toBe('Max');
 			});
 			it('redos an open batch', function () {
 				wrapped.undo();
 
 				wrapped.redo();
 
-				expect(wrapped.title).toBe('Max');
+				expect(wrapped.ideas[1].title).toBe('Max');
 			});
 			it('redos in correct order', function () {
 				var newId = wrapped.addSubIdea(1, 'Hello World');
@@ -2111,7 +2114,7 @@ describe('content aggregate', function () {
 			it('undos an entire batch as a single event', function () {
 				wrapped.execCommand('undo', [], 'session2');
 
-				expect(wrapped.title).toBe('Original');
+				expect(wrapped.ideas[1].title).toBe('Original');
 				expect(listener.calls.count()).toBe(2);
 			});
 			it('redos an entire batch as a single event', function () {
@@ -2119,7 +2122,7 @@ describe('content aggregate', function () {
 
 				wrapped.execCommand('redo', [], 'session2');
 
-				expect(wrapped.title).toBe('Max');
+				expect(wrapped.ideas[1].title).toBe('Max');
 				expect(listener.calls.count()).toBe(3);
 			});
 		});
@@ -2139,13 +2142,13 @@ describe('content aggregate', function () {
 			describe('tracks batches for each session separately', function () {
 				it('undos local batches without messing up remote batches', function () {
 					wrapped.undo();
-					expect(_.size(wrapped.ideas)).toBe(0);
-					expect(wrapped.title).toBe('Max');
+					expect(_.size(wrapped.ideas[1].ideas)).toBe(0);
+					expect(wrapped.ideas[1].title).toBe('Max');
 				});
 				it('undos remote batches without messing up local batches', function () {
 					wrapped.execCommand('undo', [], 'session2');
-					expect(_.size(wrapped.ideas)).toBe(2);
-					expect(wrapped.title).toBe('Original');
+					expect(_.size(wrapped.ideas[1].ideas)).toBe(2);
+					expect(wrapped.ideas[1].title).toBe('Original');
 				});
 			});
 		});
@@ -2324,26 +2327,26 @@ describe('content aggregate', function () {
 	describe('support for multiple versions', function () {
 		it('should append current format version', function () {
 			var wrapped = MAPJS.content({title: 'My Idea'});
-			expect(wrapped.formatVersion).toBe(2);
+			expect(wrapped.formatVersion).toBe(3);
 		});
 		it('should upgrade from version 1 by splitting background and collapsed', function () {
 			var wrapped = MAPJS.content({title: 'My Idea', style: {background: 'black', collapsed: true}});
-
-			expect(wrapped.style).toBeUndefined();
-			expect(wrapped.attr.style.background).toBe('black');
-			expect(wrapped.attr.style.collapsed).toBeUndefined();
-			expect(wrapped.attr.collapsed).toBe(true);
-		});
-		it('should upgrade recursively', function () {
-			var wrapped = MAPJS.content({title: 'asdf', ideas: { 1: {title: 'My Idea', style: {background: 'black', collapsed: true}}}});
 
 			expect(wrapped.ideas[1].style).toBeUndefined();
 			expect(wrapped.ideas[1].attr.style.background).toBe('black');
 			expect(wrapped.ideas[1].attr.style.collapsed).toBeUndefined();
 			expect(wrapped.ideas[1].attr.collapsed).toBe(true);
 		});
-		it('should not upgrade if formatVersion is 2', function () {
-			var wrapped = MAPJS.content({title: 'My Idea', attr: { style: {background: 'black'}, collapsed: true }, formatVersion: 2});
+		it('should upgrade recursively', function () {
+			var wrapped = MAPJS.content({title: 'asdf', ideas: { 1: {title: 'My Idea', style: {background: 'black', collapsed: true}}}});
+
+			expect(wrapped.ideas[1].ideas[1].style).toBeUndefined();
+			expect(wrapped.ideas[1].ideas[1].attr.style.background).toBe('black');
+			expect(wrapped.ideas[1].ideas[1].attr.style.collapsed).toBeUndefined();
+			expect(wrapped.ideas[1].ideas[1].attr.collapsed).toBe(true);
+		});
+		it('should not upgrade if formatVersion is 3', function () {
+			var wrapped = MAPJS.content({title: 'My Idea', attr: { style: {background: 'black'}, collapsed: true }, formatVersion: 3});
 
 			expect(wrapped.attr.style).toEqual({background: 'black'});
 			expect(wrapped.attr.collapsed).toEqual(true);
@@ -2354,10 +2357,10 @@ describe('content aggregate', function () {
 			it('should return an array of cloned ideas when given an array of idea IDs', function () {
 				var idea = MAPJS.content({id: 1, ideas: { '-5': { id: 2, title: 'copy me', attr: {background: 'red'}, ideas: {'5': {id: 66, title: 'hey there'}}}, '-10': { id: 3}, '-15' : {id: 4}}}),
 				result = idea.cloneMultiple([2, 3]);
-				expect(result[0]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-5'])));
-				expect(result[0]).not.toBe(idea.ideas['-5']);
-				expect(result[1]).toEqual(JSON.parse(JSON.stringify(idea.ideas['-10'])));
-				expect(result[1]).not.toBe(idea.ideas['-10']);
+				expect(result[0]).toEqual(JSON.parse(JSON.stringify(idea.ideas[1].ideas['-5'])));
+				expect(result[0]).not.toBe(idea.ideas[1].ideas['-5']);
+				expect(result[1]).toEqual(JSON.parse(JSON.stringify(idea.ideas[1].ideas['-10'])));
+				expect(result[1]).not.toBe(idea.ideas[1].ideas['-10']);
 			});
 		});
 		describe('removeMultiple', function () {
@@ -2367,15 +2370,15 @@ describe('content aggregate', function () {
 				result = idea.removeMultiple([2, 3, 6]);
 			});
 			it('removes subideas given as an array of IDs', function () {
-				expect(_.size(idea.ideas[9].ideas)).toBe(1);
-				expect(idea.ideas[9].ideas[-15].id).toBe(4);
+				expect(_.size(idea.ideas[1].ideas[9].ideas)).toBe(1);
+				expect(idea.ideas[1].ideas[9].ideas[-15].id).toBe(4);
 			});
 			it('batches the removal', function () {
 				idea.undo();
-				expect(_.size(idea.ideas[9].ideas)).toBe(3);
-				expect(idea.ideas[9].ideas[-15].id).toBe(4);
-				expect(idea.ideas[9].ideas[-5].id).toBe(2);
-				expect(idea.ideas[9].ideas[-10].id).toBe(3);
+				expect(_.size(idea.ideas[1].ideas[9].ideas)).toBe(3);
+				expect(idea.ideas[1].ideas[9].ideas[-15].id).toBe(4);
+				expect(idea.ideas[1].ideas[9].ideas[-5].id).toBe(2);
+				expect(idea.ideas[1].ideas[9].ideas[-10].id).toBe(3);
 			});
 			it('returns an array of removal results', function () {
 				expect(result).toEqual([true, true, false]);
@@ -2392,19 +2395,19 @@ describe('content aggregate', function () {
 				result = idea.pasteMultiple(3, toPaste);
 			});
 			it('cleans up attributes', function () {
-				expect(idea.ideas[-10].ideas[1].ideas[1].attr).toEqual({cloned: 1});
+				expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].attr).toEqual({cloned: 1});
 			});
 			it('pastes an array of JSONs into the subidea idea by id', function () {
-				expect(idea.ideas[-10].ideas[1].title).toBe('pasted');
-				expect(idea.ideas[-10].ideas[1].id).toBe(5);
-				expect(idea.ideas[-10].ideas[1].ideas[1].title).toBe('sub sub');
-				expect(idea.ideas[-10].ideas[1].ideas[1].id).toBe(6);
-				expect(idea.ideas[-10].ideas[2].title).toBe('pasted2');
-				expect(idea.ideas[-10].ideas[2].id).toBe(7);
+				expect(idea.ideas[1].ideas[-10].ideas[1].title).toBe('pasted');
+				expect(idea.ideas[1].ideas[-10].ideas[1].id).toBe(5);
+				expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].title).toBe('sub sub');
+				expect(idea.ideas[1].ideas[-10].ideas[1].ideas[1].id).toBe(6);
+				expect(idea.ideas[1].ideas[-10].ideas[2].title).toBe('pasted2');
+				expect(idea.ideas[1].ideas[-10].ideas[2].id).toBe(7);
 			});
 			it('batches the paste', function () {
 				idea.undo();
-				expect(idea.ideas[-10].ideas).toEqual({});
+				expect(idea.ideas[1].ideas[-10].ideas).toEqual({});
 			});
 			it('returns an array of pasting results', function () {
 				expect(result).toEqual([5, 7]);
@@ -2417,9 +2420,9 @@ describe('content aggregate', function () {
 				result = idea.insertIntermediateMultiple([4, 2]);
 			});
 			it('adds an idea in front of first provided idea in array and reparents all other ideas', function () {
-				var newIdea = idea.ideas[88].ideas[99];
+				var newIdea = idea.ideas[1].ideas[88].ideas[99];
 				expect(newIdea.id).toEqual(5);
-				expect(_.size(idea.ideas)).toBe(1);
+				expect(_.size(idea.ideas[1].ideas)).toBe(1);
 				expect(_.size(newIdea.ideas)).toBe(2);
 				expect(newIdea.ideas[1]).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
 				expect(newIdea.ideas[2]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
@@ -2430,11 +2433,11 @@ describe('content aggregate', function () {
 			it('batches the operation', function () {
 				var oldIdea;
 				idea.undo();
-				oldIdea = idea.ideas[88].ideas[99];
-				expect(_.size(idea.ideas)).toBe(2);
+				oldIdea = idea.ideas[1].ideas[88].ideas[99];
+				expect(_.size(idea.ideas[1].ideas)).toBe(2);
 				expect(_.size(oldIdea.ideas)).toBe(0);
 				expect(oldIdea).toEqual(jasmine.objectContaining({id: 4, title: 'under'}));
-				expect(idea.ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
+				expect(idea.ideas[1].ideas[77]).toEqual(jasmine.objectContaining({id: 2, title: 'Moved'}));
 			});
 			it('assigns attributes to new node', function () {
 				idea = MAPJS.content({id: 1, ideas: {77: {id: 2, title: 'Moved'}, 88: {id: 3, title: 'also', ideas: { 99: {id: 4, title: 'under'}}}}});

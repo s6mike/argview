@@ -32,6 +32,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return cachedId;
 		},
 		init = function (contentIdea, originSession) {
+			var initOfRoot = contentIdea.id === contentAggregate.id;
 			if (!contentIdea.id) {
 				contentIdea.id = nextId(originSession);
 			} else {
@@ -39,7 +40,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			}
 			if (contentIdea.ideas) {
 				_.each(contentIdea.ideas, function (value, key) {
-					if (value.attr && value.attr.group && _.isEmpty(value.ideas)) {
+					if (!initOfRoot && value.attr && value.attr.group && _.isEmpty(value.ideas)) {
 						delete contentIdea.ideas[key];
 					} else {
 						contentIdea.ideas[parseFloat(key)] = init(value, originSession);
@@ -70,7 +71,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				}, undefined);
 			};
 			contentIdea.isEmptyGroup = function () {
-				return contentIdea !== contentAggregate && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
+				return !contentAggregate.isRootNode(contentIdea.id) && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
 			};
 			contentIdea.find = function (predicate) {
 				var current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
@@ -104,13 +105,13 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 				return result;
 			};
 			contentIdea.traverse = function (iterator, postOrder) {
-				if (!postOrder) {
+				if (!postOrder && contentIdea !== contentAggregate) {
 					iterator(contentIdea);
 				}
 				_.each(contentIdea.sortedSubIdeas(), function (subIdea) {
 					subIdea.traverse(iterator, postOrder);
 				});
-				if (postOrder) {
+				if (postOrder && contentIdea !== contentAggregate) {
 					iterator(contentIdea);
 				}
 			};
@@ -129,12 +130,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			});
 		},
 		isRootNode = function (id) {
-			if (contentAggregate.formatVersion && contentAggregate.formatVersion >= 3) {
-				return !!_.find(contentAggregate.ideas, function (idea) {
-					return idea.id === id;
-				});
-			}
-			return id == contentAggregate.id;
+			return !!_.find(contentAggregate.ideas, function (idea) {
+				return idea.id === id;
+			});
 		},
 		nextChildRank = function (parentIdea) {
 			var newRank, counts, childRankSign = 1;
@@ -234,22 +232,6 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		reorderChild = function (parentIdea, newRank, oldRank) {
 			parentIdea.ideas[newRank] = parentIdea.ideas[oldRank];
 			delete parentIdea.ideas[oldRank];
-		},
-		upgrade = function (idea) {
-			var collapsed;
-			if (idea.style) {
-				idea.attr = {};
-				collapsed = idea.style.collapsed;
-				delete idea.style.collapsed;
-				idea.attr.style = idea.style;
-				if (collapsed) {
-					idea.attr.collapsed = collapsed;
-				}
-				delete idea.style;
-			}
-			if (idea.ideas) {
-				_.each(idea.ideas, upgrade);
-			}
 		},
 		sessionFromId = function (id) {
 			var dotIndex = String(id).indexOf('.');
@@ -353,7 +335,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return _.map(subIdeaIdArray, contentAggregate.clone);
 	};
 	contentAggregate.calculatePath = function (ideaId, currentPath, potentialParent) {
-		if (contentAggregate.id == ideaId) {
+		if (contentAggregate.isRootNode(ideaId)) {
 			return [];
 		}
 		currentPath = currentPath || [contentAggregate];
@@ -385,6 +367,9 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
+		if (contentAggregate.isRootNode(subIdeaId)) {
+			return false;
+		}
 		if (parentIdea.containsDirectChild(subIdeaId)) {
 			return parentIdea;
 		}
@@ -520,15 +505,17 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		return contentAggregate.execCommand('flip', arguments);
 	};
 	commandProcessors.flip = function (originSession, ideaId) {
-		var newRank, maxRank, currentRank = contentAggregate.findChildRankById(ideaId);
+		var newRank, maxRank,
+			parentIdea = contentAggregate.findParent(ideaId),
+			currentRank = parentIdea && contentAggregate.isRootNode(parentIdea.id) &&  parentIdea.findChildRankById(ideaId);
 		if (!currentRank) {
 			return false;
 		}
-		maxRank = maxKey(contentAggregate.ideas, -1 * sign(currentRank));
+		maxRank = maxKey(parentIdea.ideas, -1 * sign(currentRank));
 		newRank = maxRank - 10 * sign(currentRank);
-		reorderChild(contentAggregate, newRank, currentRank);
+		reorderChild(parentIdea, newRank, currentRank);
 		logChange('flip', [ideaId], function () {
-			reorderChild(contentAggregate, currentRank, newRank);
+			reorderChild(parentIdea, currentRank, newRank);
 		}, originSession);
 		return true;
 	};
@@ -1029,7 +1016,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	};
 	contentAggregate.hasSiblings = function (id) {
 		var parent;
-		if (id === contentAggregate.id) {
+		if (contentAggregate.isRootNode(id)) {
 			return false;
 		}
 		parent = contentAggregate.findParent(id);
@@ -1038,11 +1025,15 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 	contentAggregate.isRootNode = function (id) {
 		return isRootNode(id);
 	};
-
-	if (!contentAggregate.formatVersion || contentAggregate.formatVersion < 2) {
-		upgrade(contentAggregate);
-		contentAggregate.formatVersion = 2;
-	}
+	contentAggregate.getDefaultRootId = function () {
+		var rootNodes = contentAggregate && _.values(contentAggregate.ideas);
+		return rootNodes && rootNodes.length && rootNodes[0].id;
+	};
+	MAPJS.contentUpgrade(contentAggregate);
+	// if (!contentAggregate.formatVersion || contentAggregate.formatVersion < 2) {
+	// 	upgrade(contentAggregate);
+	// 	contentAggregate.formatVersion = 2;
+	// }
 	init(contentAggregate);
 	return contentAggregate;
 };
