@@ -2883,7 +2883,27 @@ describe('MapModel', function () {
 			expect(underTest.contextForNode(3).canExpand).toBeFalsy();
 			expect(underTest.contextForNode(3).canCollapse).toBeFalsy();
 		});
-
+		describe('notLastRoot', function () {
+			describe('when there is a single root', function () {
+				it('should be true if selected node is not root', function () {
+					expect(underTest.contextForNode(2).notLastRoot).toBeTruthy();
+				});
+				it('should be false if selected node is a root node', function () {
+					expect(underTest.contextForNode(1).notLastRoot).toBeFalsy();
+				});
+			});
+			describe('when there are multiple roots', function () {
+				beforeEach(function () {
+					anIdea.addSubIdea('root', 'new root');
+				});
+				it('should be true if selected node is not root', function () {
+					expect(underTest.contextForNode(2).notLastRoot).toBeTruthy();
+				});
+				it('should be true if selected node is a root node', function () {
+					expect(underTest.contextForNode(1).notLastRoot).toBeTruthy();
+				});
+			});
+		});
 		describe('canPaste', function () {
 			it('should be false when clipboard is empty', function () {
 				expect(underTest.contextForNode(1).canPaste).toBe(false);

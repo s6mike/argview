@@ -741,15 +741,18 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.contextForNode = function (nodeId) {
 		var node = self.findIdeaById(nodeId),
 				hasChildren = node && node.ideas && _.size(node.ideas) > 0,
+				rootCount = _.size(idea.ideas),
 				hasSiblings = idea.hasSiblings(nodeId),
 				isCollapsed = node && node.getAttr('collapsed'),
-				canPaste = node && isEditingEnabled && clipboard && clipboard.get();
+				canPaste = node && isEditingEnabled && clipboard && clipboard.get(),
+				isRoot = idea.isRootNode(nodeId);
 		if (node) {
 			return {
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				canPaste: !!canPaste,
-				notRoot: !idea.isRootNode(nodeId),
+				notRoot: !isRoot,
+				notLastRoot: !isRoot || (rootCount > 1),
 				canUndo: idea.canUndo(),
 				canRedo: idea.canRedo(),
 				canCollapse: hasChildren && !isCollapsed,
