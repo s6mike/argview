@@ -1393,7 +1393,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				if (!newNode) {
 					/*jslint eqeq: true*/
 					if (nodeId == currentlySelectedIdeaId) {
-						self.selectNode(idea.id);
+						if (newLayout.nodes[oldNode.rootId]) {
+							self.selectNode(oldNode.rootId);
+						} else {
+							self.selectNode(idea.getDefaultRootId());
+						}
 					}
 					newActive = _.reject(activatedNodes, function (e) {
 						return e == nodeId;
@@ -1463,7 +1467,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			self.editNode(false, true, true);
 		},
 		getCurrentlySelectedIdeaId = function () {
-			return currentlySelectedIdeaId || idea.id;
+			return currentlySelectedIdeaId || idea.getDefaultRootId();
 		},
 		paused = false,
 		onIdeaChanged = function (action, args, sessionId) {
@@ -1784,7 +1788,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				ensureNodeIsExpanded(source, parent.id);
 			}
 			newId = idea.addSubIdea(parent.id);
-			if (newId && currentlySelectedIdeaId !== idea.id) {
+			if (newId) {
 				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
 				newRank = parent.findChildRankById(newId);
 				if (contextRank * newRank < 0) {
@@ -1820,7 +1824,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				} else {
 					newId = idea.addSubIdea(parent.id);
 				}
-				if (newId && currentId !== idea.id) {
+				if (newId) {
 					nextId = idea.nextSiblingId(currentId);
 					contextRank = parent.findChildRankById(currentId);
 					newRank = parent.findChildRankById(newId);
@@ -1921,8 +1925,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	this.resetView = function (source) {
+		var selectedNode = layoutModel.getNode(currentlySelectedIdeaId),
+			localRoot = (selectedNode && selectedNode.rootId) || idea.getDefaultRootId();
 		if (isInputEnabled) {
-			self.selectNode(idea.id);
+			self.selectNode(localRoot);
 			self.dispatchEvent('mapViewResetRequested');
 			analytic('resetView', source);
 		}
@@ -2062,7 +2068,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			clipboard.put(idea.cloneMultiple(activeNodeIds));
 			idea.removeMultiple(activeNodeIds);
 			firstLiveParent = _.find(parents, idea.findSubIdeaById);
-			self.selectNode(firstLiveParent || idea.id);
+			self.selectNode(firstLiveParent || idea.getDefaultRootId());
 		}
 	};
 	self.contextForNode = function (nodeId) {
@@ -2154,10 +2160,11 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				iconObject.metaData = metaData;
 			}
 			idea.updateAttr(nodeId, 'icon', iconObject);
-		} else if (nodeIdea.title || nodeId === idea.id) {
-			idea.updateAttr(nodeId, 'icon', false);
 		} else {
-			idea.removeSubIdea(nodeId);
+			idea.updateAttr(nodeId, 'icon', false);
+			if (!nodeIdea.title && _.size(nodeIdea.ideas) === 0) {
+				idea.removeSubIdea(nodeId);
+			}
 		}
 	};
 	self.insertUp = function (source) {
