@@ -17,7 +17,7 @@
     "url": "https://github.com/mindmup/mapjs/issues"
   },
   "homepage": "https://www.mindmup.com",
-  "version": "1.8.4",
+  "version": "1.9.0",
   "scripts": {
     "test": "grunt jasmine",
     "prepublish": "grunt browserify:dependencies dist",
