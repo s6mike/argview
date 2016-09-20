@@ -2,5 +2,5 @@
 var jQuery = $ = require('jquery'),
 	_ = require('underscore'),
 	Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
-	MAPJS = require('mindmup-mapjs-layout');
+	MAPJS = _.extend({}, require('mindmup-mapjs-layout'), require('mindmup-mapjs-model'));
 require('jquery.hotkeys');
