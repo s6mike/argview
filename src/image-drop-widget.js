@@ -1,4 +1,4 @@
-/*global observable, jQuery, FileReader, Image, MAPJS, document, _ */
+/*global jQuery, FileReader, Image, MAPJS, document, _ */
 MAPJS.getDataURIAndDimensions = function (src, corsProxyUrl) {
 	'use strict';
 	var isDataUri = function (string) {
@@ -42,7 +42,7 @@ MAPJS.getDataURIAndDimensions = function (src, corsProxyUrl) {
 };
 MAPJS.ImageInsertController = function (corsProxyUrl, resourceConverter) {
 	'use strict';
-	var self = observable(this),
+	var self = MAPJS.observable(this),
 		readFileIntoDataUrl = function (fileInfo) {
 			var loader = jQuery.Deferred(),
 				fReader = new FileReader();

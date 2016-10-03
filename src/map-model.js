@@ -1,5 +1,5 @@
 /*jslint forin: true, nomen: true*/
-/*global _, MAPJS, observable*/
+/*global _, MAPJS*/
 MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
 	'use strict';
 	var self = this,
@@ -155,7 +155,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			}
 		},
 		layoutModel = (optional && optional.layoutModel) || new MAPJS.LayoutModel({nodes: {}, connectors: {}});
-	observable(this);
+	MAPJS.observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
 	self.pause = function () {
 		paused = true;

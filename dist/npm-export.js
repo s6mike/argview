@@ -1,3 +1,2 @@
-/*global module, MAPJS, observable*/
-MAPJS.observable = observable;
+/*global module, MAPJS*/
 module.exports = MAPJS;

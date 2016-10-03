@@ -1,10 +1,10 @@
-/*global $, describe, it, expect, beforeEach, MAPJS, jasmine, observable */
+/*global $, describe, it, expect, beforeEach, MAPJS, jasmine */
 describe('themeCssWidget', function () {
 	'use strict';
 	var template = '<span></span>',
 		underTest, mapModel, themeProvider, themeProcessor;
 	beforeEach(function () {
-		mapModel = observable({});
+		mapModel = MAPJS.observable({});
 		themeProcessor = jasmine.createSpyObj('themeProcessor', ['process']);
 		themeProvider = {
 			default: {name: 'default'},

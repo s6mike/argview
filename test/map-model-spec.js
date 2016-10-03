@@ -1,4 +1,4 @@
-/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS, observable*/
+/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
 describe('MapModel', function () {
 	'use strict';
 	it('should be able to instantiate MapModel', function () {
@@ -2404,7 +2404,7 @@ describe('MapModel', function () {
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
-			underTest.setIdea(observable({getAttr: function () { }, getDefaultRootId: function () {
+			underTest.setIdea(MAPJS.observable({getAttr: function () { }, getDefaultRootId: function () {
 				return '1.1';
 			}}));
 		});
