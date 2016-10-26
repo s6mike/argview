@@ -39,12 +39,12 @@ MAPJS.Themes.argumentMapping = {
 			},
 			'connections': {
 				'default': {
-					'h': 'center',
+					'h': 'center-separated',
 					'v': 'base'
 				},
 				'from': {
 					'horizontal': {
-						'h': 'center',
+						'h': 'center-separated',
 						'v': 'base'
 					}
 				},
@@ -308,7 +308,7 @@ MAPJS.Themes.argumentMapping = {
 	],
 	'connector': {
 		'default': {
-			'type': 'top-down-s-curve',
+			'type': 'vertical-quadratic-s-curve',
 			'line': {
 				'color': '#707070',
 				'width': 1.0
@@ -322,14 +322,14 @@ MAPJS.Themes.argumentMapping = {
 			}
 		},
 		'supporting-group': {
-			'type': 'top-down-s-curve',
+			'type': 'vertical-quadratic-s-curve',
 			'line': {
 				'color': '#00FF00',
 				'width': 3.0
 			}
 		},
 		'opposing-group': {
-			'type': 'top-down-s-curve',
+			'type': 'vertical-quadratic-s-curve',
 			'line': {
 				'color': '#FF0000',
 				'width': 3.0
