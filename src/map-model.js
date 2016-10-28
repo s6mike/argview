@@ -1217,8 +1217,9 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 		addNew();
 	};
-	self.setLabelGenerator = function (labelGenerator) {
+	self.setLabelGenerator = function (labelGenerator, labelGeneratorName) {
 		currentLabelGenerator = labelGenerator;
+		self.dispatchEvent('labelGeneratorChange', labelGeneratorName, !!labelGenerator);
 		self.rebuildRequired();
 	};
 	self.getStandardReorderBoundary = function (nodeId) {

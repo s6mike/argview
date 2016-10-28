@@ -2404,9 +2404,12 @@ describe('MapModel', function () {
 			underTest = new MAPJS.MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
-			underTest.setIdea(MAPJS.observable({getAttr: function () { }, getDefaultRootId: function () {
-				return '1.1';
-			}}));
+			underTest.setIdea(MAPJS.observable({
+				getAttr: function () { },
+				getDefaultRootId: function () {
+					return '1.1';
+				}
+			}));
 		});
 
 		describe(' calculates points',
@@ -2633,9 +2636,16 @@ describe('MapModel', function () {
 			labelGenerator = jasmine.createSpy('labelGenerator');
 		});
 		describe('setLabelGenerator', function () {
+			var labelGeneratorChangeListener;
 			beforeEach(function () {
+				labelGeneratorChangeListener = jasmine.createSpy('labelGeneratorChangeListener');
 				labelGenerator.and.returnValue({1: 'l1', 2: 'l2'});
+				underTest.addEventListener('labelGeneratorChange', labelGeneratorChangeListener);
 				underTest.setLabelGenerator(labelGenerator);
+			});
+			it('dispatches a labelGeneratorChangeListener event when labelGenerator set', function () {
+				underTest.setLabelGenerator(labelGenerator, 'ididit');
+				expect(labelGeneratorChangeListener).toHaveBeenCalledWith('ididit', true);
 			});
 			it('rebuilds labels for all nodes in layout when generator changed', function () {
 				expect(labelGenerator).toHaveBeenCalledWith(idea);
@@ -2654,6 +2664,10 @@ describe('MapModel', function () {
 				underTest.setLabelGenerator();
 				expect(underTest.getCurrentLayout().nodes[1].label).toBeUndefined();
 				expect(underTest.getCurrentLayout().nodes[2].label).toBeUndefined();
+			});
+			it('dispatches a labelGeneratorChangeListener event when labelGenerator set', function () {
+				underTest.setLabelGenerator(false, 'ididit');
+				expect(labelGeneratorChangeListener).toHaveBeenCalledWith('ididit', false);
 			});
 			it('applies a label generator to all nodes in a layout when the layout changes', function () {
 				labelGenerator.and.returnValue({1: 'p1', 2: 'p2'});
