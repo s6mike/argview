@@ -1,4 +1,4 @@
-/*global jQuery, _, MAPJS, document, window*/
+/*global jQuery, _, MAPJS, document, window, console*/
 
 jQuery.fn.setThemeClassList = function (classList) {
 	'use strict';
@@ -23,6 +23,7 @@ MAPJS.DOMRender = {
 		'use strict';
 		return {
 			title: idea.title,
+			width: idea.attr && idea.attr.style && idea.attr.style.width,
 			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
@@ -398,14 +399,18 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
 					element = textSpan(),
 					domElement = element[0],
+					preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width,
 					height;
 
 			element.text(text.trim());
 			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
+			if (preferredWidth) {
+				element.css({'max-width': preferredWidth, 'min-width': preferredWidth});
+			}
 			if ((domElement.scrollWidth - nodeTextPadding) > domElement.offsetWidth) {
 				element.css('max-width', domElement.scrollWidth + 'px');
-			} else {
+			} else if (!preferredWidth) {
 				height = domElement.offsetHeight;
 				element.css('min-width', element.css('max-width'));
 				if (domElement.offsetHeight === height) {
@@ -984,9 +989,61 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				return false;
 			}
 			return _.find(boundaries, closeTo);
+		},
+		allowResizing = function (element, nodeId) {
+			var initialPosition,
+				nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
+				initialWidth,
+				minAllowedWidth = 50,
+				initialStyle,
+				calcDragWidth = function (evt) {
+					var pos = stagePositionForPointEvent(evt),
+						dx = pos && initialPosition && (pos.x - initialPosition.x),
+						dragWidth = dx && Math.max(minAllowedWidth, (initialWidth + dx));
+					return dragWidth;
+				},
+				dragHandle = jQuery('<i>').addClass('icon-resize-node').shadowDraggable().on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
+					mapModel.selectNode(nodeId);
+					initialPosition = stagePositionForPointEvent(evt);
+					initialWidth = element.find('span').innerWidth();
+					initialStyle = {
+						'span.max-width': element.find('span').css('max-width'),
+						'node.min-width': element.css('min-width'),
+						'span.min-width': element.find('span').css('min-width')
+					};
+					console.log('mm:start-dragging', 'initialPosition', initialPosition);
+				}).on('mm:stop-dragging mm:cancel-dragging', function (evt) {
+					var dragWidth = element.find('span').outerWidth();
+					element.find('span').css({'max-width': initialStyle['span.max-width'], 'min-width': initialStyle['span.min-width']});
+					element.css('min-width', initialStyle['node.min-width']);
+					if (evt) {
+						evt.stopPropagation();
+					}
+					if (evt && evt.gesture) {
+						evt.gesture.stopPropagation();
+					}
+					element.trigger(jQuery.Event('mm:resize', {nodeWidth: dragWidth}));
+				}).on('mm:drag', function (evt) {
+					var dragWidth = calcDragWidth(evt);
+					if (dragWidth) {
+						element.find('span').css({'max-width': dragWidth, 'min-width': dragWidth});
+						element.css('min-width', element.find('span').outerWidth());
+						if (element.find('span')[0].scrollWidth > element.find('span')[0].offsetWidth) {
+							dragWidth = element.find('span')[0].scrollWidth;
+							element.find('span').css({'max-width': dragWidth, 'min-width': dragWidth});
+							element.css('min-width', element.find('span').outerWidth());
+						}
+					}
+					if (evt) {
+						evt.stopPropagation();
+					}
+					if (evt && evt.gesture) {
+						evt.gesture.stopPropagation();
+					}
+				});
+			dragHandle.appendTo(element);
+			return element;
 		};
-
-
 	viewPort.on('scroll', function () {
 		viewPortDimensions = undefined;
 	});
@@ -1037,10 +1094,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
-			.on('mm:start-dragging mm:start-dragging-shadow', function () {
-				mapModel.selectNode(node.id);
-				currentReorderBoundary = mapModel.getReorderBoundary(node.id);
-				element.addClass('dragging');
+			.on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
+				if (evt && evt.relatedTarget === this) {
+					mapModel.selectNode(node.id);
+					currentReorderBoundary = mapModel.getReorderBoundary(node.id);
+					element.addClass('dragging');
+				}
 			})
 			.on('mm:drag', function (evt) {
 				var dropCoords = stagePositionForPointEvent(evt),
@@ -1108,7 +1167,10 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				clearCurrentDroppable();
 				element.removeClass('dragging');
 				reorderBounds.hide();
+			}).on('mm:resize', function (event) {
+				mapModel.setNodeWidth('mouse', node.id, event.nodeWidth);
 			});
+		allowResizing(element, node.id);
 		if (touchEnabled) {
 			element.on('hold', function (evt) {
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;

@@ -9,6 +9,17 @@
 	color: #4F4F4F;
 	cursor: hand;
 }
+.mapjs-node .icon-resize-node {
+	position: absolute;
+	height: 100%;
+	width: 20px;
+	right: -10px;
+	top: 0;
+	display: block;
+	background-color: pink;
+	opacity: 0.5;
+	cursor: ew-resize;
+}
 .mapjs-node:focus {
 	outline: none;
 }
