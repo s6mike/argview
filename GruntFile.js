@@ -81,7 +81,7 @@ module.exports = function (grunt) {
 		concat: {
 			dist: {
 				files: {
-					'dist/mindmup-mapjs.js': ['src/mapjs.js', 'src/observable.js', 'src/url-helper.js', 'src/content-upgrade.js', 'src/content.js', 'src/layout.js', 'src/clipboard.js', 'src/hammer-draggable.js', 'src/map-model.js', 'src/map-toolbar-widget.js', 'src/link-edit-widget.js', 'src/image-drop-widget.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/theme-css-widget.js', 'src/theme-processor.js', 'src/theme.js']
+					'dist/mindmup-mapjs.js': ['src/mapjs.js', 'src/observable.js', 'src/url-helper.js', 'src/content-upgrade.js', 'src/content.js', 'src/layout.js', 'src/clipboard.js', 'src/hammer-draggable.js', 'src/map-model.js', 'src/map-toolbar-widget.js', 'src/link-edit-widget.js', 'src/image-drop-widget.js', 'src/dom-map-view.js', 'src/dom-map-widget.js', 'src/theme-css-widget.js', 'src/node-resize-widget.js', 'src/theme-processor.js', 'src/theme.js']
 				}
 			}
 		},

@@ -1,4 +1,4 @@
-/*global jQuery, _, MAPJS, document, window, console*/
+/*global jQuery, _, MAPJS, document, window*/
 
 jQuery.fn.setThemeClassList = function (classList) {
 	'use strict';
@@ -989,60 +989,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				return false;
 			}
 			return _.find(boundaries, closeTo);
-		},
-		allowResizing = function (element, nodeId) {
-			var initialPosition,
-				nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
-				initialWidth,
-				minAllowedWidth = 50,
-				initialStyle,
-				calcDragWidth = function (evt) {
-					var pos = stagePositionForPointEvent(evt),
-						dx = pos && initialPosition && (pos.x - initialPosition.x),
-						dragWidth = dx && Math.max(minAllowedWidth, (initialWidth + dx));
-					return dragWidth;
-				},
-				dragHandle = jQuery('<i>').addClass('icon-resize-node').shadowDraggable().on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
-					mapModel.selectNode(nodeId);
-					initialPosition = stagePositionForPointEvent(evt);
-					initialWidth = element.find('span').innerWidth();
-					initialStyle = {
-						'span.max-width': element.find('span').css('max-width'),
-						'node.min-width': element.css('min-width'),
-						'span.min-width': element.find('span').css('min-width')
-					};
-					console.log('mm:start-dragging', 'initialPosition', initialPosition);
-				}).on('mm:stop-dragging mm:cancel-dragging', function (evt) {
-					var dragWidth = element.find('span').outerWidth();
-					element.find('span').css({'max-width': initialStyle['span.max-width'], 'min-width': initialStyle['span.min-width']});
-					element.css('min-width', initialStyle['node.min-width']);
-					if (evt) {
-						evt.stopPropagation();
-					}
-					if (evt && evt.gesture) {
-						evt.gesture.stopPropagation();
-					}
-					element.trigger(jQuery.Event('mm:resize', {nodeWidth: dragWidth}));
-				}).on('mm:drag', function (evt) {
-					var dragWidth = calcDragWidth(evt);
-					if (dragWidth) {
-						element.find('span').css({'max-width': dragWidth, 'min-width': dragWidth});
-						element.css('min-width', element.find('span').outerWidth());
-						if (element.find('span')[0].scrollWidth > element.find('span')[0].offsetWidth) {
-							dragWidth = element.find('span')[0].scrollWidth;
-							element.find('span').css({'max-width': dragWidth, 'min-width': dragWidth});
-							element.css('min-width', element.find('span').outerWidth());
-						}
-					}
-					if (evt) {
-						evt.stopPropagation();
-					}
-					if (evt && evt.gesture) {
-						evt.gesture.stopPropagation();
-					}
-				});
-			dragHandle.appendTo(element);
-			return element;
 		};
 	viewPort.on('scroll', function () {
 		viewPortDimensions = undefined;
@@ -1058,6 +1004,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node, resourceTranslator)
+			.nodeResizeWidget(node.id, mapModel, stagePositionForPointEvent)
 			.on('tap', function (evt) {
 
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
@@ -1170,7 +1117,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}).on('mm:resize', function (event) {
 				mapModel.setNodeWidth('mouse', node.id, event.nodeWidth);
 			});
-		allowResizing(element, node.id);
 		if (touchEnabled) {
 			element.on('hold', function (evt) {
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;

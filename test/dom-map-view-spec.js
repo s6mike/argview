@@ -750,7 +750,7 @@ describe('updateNodeContent', function () {
 		it('tags the node with a cache mark', function () {
 			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'blue'});
 			underTest.updateNodeContent(nodeContent);
-			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, styles: ['level_3', 'default'], title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined});
+			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, width: undefined, styles: ['level_3', 'default'], title : 'Hello World!', theme: 'blue', icon : undefined, note: false, collapsed : undefined});
 		});
 	});
 	describe('node text', function () {
@@ -1737,7 +1737,7 @@ describe('MAPJS.DOMRender', function () {
 						margin: 10
 					}];
 					mapModel.getReorderBoundary.and.returnValue(reorderBoundary);
-					underTest.trigger('mm:start-dragging');
+					underTest.trigger(jQuery.Event('mm:start-dragging', {relatedTarget: underTest[0]}));
 					viewPort.css({'width': '1000px', 'height': '500px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
 					stage.data({offsetX: 200, offsetY: 100, width: 3000, height: 1500, scale: 2}).updateStage();
 
