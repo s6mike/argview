@@ -20,9 +20,9 @@ jQuery.fn.nodeResizeWidget = function (nodeId, mapModel, stagePositionForPointEv
 				initialPosition = stagePositionForPointEvent(evt);
 				initialWidth = nodeTextElement.innerWidth();
 				initialStyle = {
-					'span.max-width': nodeTextElement.css('max-width'),
 					'node.min-width': element.css('min-width'),
-					'span.min-width': nodeTextElement.css('min-width')
+					'span.min-width': nodeTextElement.css('min-width'),
+					'span.max-width': nodeTextElement.css('max-width')
 				};
 			}).on('mm:stop-dragging mm:cancel-dragging', function (evt) {
 				var dragWidth = nodeTextElement.outerWidth();
