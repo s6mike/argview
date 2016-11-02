@@ -1535,7 +1535,7 @@ describe('MAPJS.DOMRender', function () {
 			imageInsertController,
 			resourceTranslator;
 		beforeEach(function () {
-			mapModel = MAPJS.observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu']));
+			mapModel = MAPJS.observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			mapModel.isEditingEnabled.and.returnValue(true);
 			imageInsertController = MAPJS.observable({});
@@ -1746,6 +1746,10 @@ describe('MAPJS.DOMRender', function () {
 					noShift = {gesture: {center: {pageX: 70, pageY: 50}, deltaX: -30, deltaY: -20}, finalPosition: {left: 614, top: 446} };
 					withShift = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 70, pageY: 50}}, finalPosition: {left: 614, top: 446}};
 					outsideViewport = {gesture: {srcEvent: {shiftKey: true}, center: {pageX: 1100, pageY: 446}}};
+				});
+				it('should set node width when resized', function () {
+					underTest.trigger(jQuery.Event('mm:resize', {nodeWidth: 120}));
+					expect(mapModel.setNodeWidth).toHaveBeenCalledWith('mouse', 1, 120);
 				});
 				describe('when dragging', function () {
 					it('assigns a dragging class', function () {
