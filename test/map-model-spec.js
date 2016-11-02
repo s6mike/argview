@@ -1379,6 +1379,13 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(anIdea.id, 'theme', 'red');
 			});
 		});
+		describe('setNodeWidth', function () {
+			it('should set the width property of the idea style attribute', function () {
+				spyOn(anIdea, 'mergeAttrProperty');
+				underTest.setNodeWidth('mouse', 2, 200);
+				expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'width', 200);
+			});
+		});
 		describe('insertIntermediate', function () {
 			var init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(

@@ -1480,6 +1480,37 @@ describe('MAPJS.DOMRender', function () {
 			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 456, height: 789});
 			expect(jQuery('.mapjs-node').length).toBe(0);
 		});
+		describe('when ideas has a width attribute', function () {
+			beforeEach(function () {
+				newElement = jQuery('<style type="text/css">.mapjs-node span { min-height:789px; display: inline-block;}</style>').appendTo('body');
+			});
+			it('should use the width if greater than than the text width', function () {
+				idea.attr = {
+					style: {
+						width: 500
+					}
+				};
+				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
+			});
+			it('should use the width if greater than than the max unwrappable text width', function () {
+				idea.attr = {
+					style: {
+						width: 500
+					}
+				};
+				idea.title = 'some short words are in this title that is still a quite long piece of text';
+				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
+			});
+			it('should use max unwrappable text width if greater than the prefferred width', function () {
+				idea.attr = {
+					style: {
+						width: 500
+					}
+				};
+				idea.title = 'someWshortWwordsWareWinWthisWtitleWthatWisWstillWaWquiteWlongWpieceWofWtext';
+				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 608, height: 789});
+			});
+		});
 		it('takes level into consideration when calculating node dimensions', function () {
 			newElement = jQuery('<style type="text/css">' +
 								'.mapjs-node { width:356px !important; min-height:389px !important} ' +

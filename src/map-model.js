@@ -1,5 +1,5 @@
 /*jslint forin: true, nomen: true*/
-/*global _, MAPJS, console*/
+/*global _, MAPJS*/
 MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
 	'use strict';
 	var self = this,
@@ -1362,7 +1362,6 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		}
 	};
 	self.setNodeWidth = function (source, id, width) {
-		console.log('setNodeWidth', id, width);
 		idea.mergeAttrProperty(id, 'style', 'width', width);
 	};
 	self.insertRoot = function (source, initialTitle) {
