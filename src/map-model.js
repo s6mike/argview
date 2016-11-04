@@ -1364,6 +1364,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.setNodeWidth = function (source, id, width) {
 		idea.mergeAttrProperty(id, 'style', 'width', width);
 	};
+	self.unsetSelectedNodeWidth = function () {
+		var id = self.getSelectedNodeId();
+		idea.mergeAttrProperty(id, 'style', 'width', false);
+	};
 	self.insertRoot = function (source, initialTitle) {
 		var newId;
 		if (!isEditingEnabled) {

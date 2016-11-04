@@ -1386,6 +1386,14 @@ describe('MapModel', function () {
 				expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'width', 200);
 			});
 		});
+		describe('unsetSelectedNodeWidth', function () {
+			it('should unset the width property of the idea style attribute', function () {
+				spyOn(anIdea, 'mergeAttrProperty');
+				underTest.selectNode(2);
+				underTest.unsetSelectedNodeWidth('menu');
+				expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'width', false);
+			});
+		});
 		describe('insertIntermediate', function () {
 			var init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(

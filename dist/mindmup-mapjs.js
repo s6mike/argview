@@ -1527,6 +1527,13 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return idea.changeParent(nodeId, 'root');
 		}
 	};
+	self.setNodeWidth = function (source, id, width) {
+		idea.mergeAttrProperty(id, 'style', 'width', width);
+	};
+	self.unsetSelectedNodeWidth = function () {
+		var id = self.getSelectedNodeId();
+		idea.mergeAttrProperty(id, 'style', 'width', false);
+	};
 	self.insertRoot = function (source, initialTitle) {
 		var newId;
 		if (!isEditingEnabled) {
@@ -1765,6 +1772,7 @@ MAPJS.DOMRender = {
 		'use strict';
 		return {
 			title: idea.title,
+			width: idea.attr && idea.attr.style && idea.attr.style.width,
 			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
 			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
 			collapsed: idea.attr && idea.attr.collapsed,
@@ -2140,14 +2148,18 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
 					element = textSpan(),
 					domElement = element[0],
+					preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width,
 					height;
 
 			element.text(text.trim());
 			self.data('title', title);
 			element.css({'max-width': '', 'min-width': ''});
+			if (preferredWidth) {
+				element.css({'max-width': preferredWidth, 'min-width': preferredWidth});
+			}
 			if ((domElement.scrollWidth - nodeTextPadding) > domElement.offsetWidth) {
 				element.css('max-width', domElement.scrollWidth + 'px');
-			} else {
+			} else if (!preferredWidth) {
 				height = domElement.offsetHeight;
 				element.css('min-width', element.css('max-width'));
 				if (domElement.offsetHeight === height) {
@@ -2727,8 +2739,6 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}
 			return _.find(boundaries, closeTo);
 		};
-
-
 	viewPort.on('scroll', function () {
 		viewPortDimensions = undefined;
 	});
@@ -2743,6 +2753,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node, resourceTranslator)
+			.nodeResizeWidget(node.id, mapModel, stagePositionForPointEvent)
 			.on('tap', function (evt) {
 
 				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
@@ -2779,10 +2790,12 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			})
 			.each(ensureSpaceForNode)
 			.each(updateScreenCoordinates)
-			.on('mm:start-dragging mm:start-dragging-shadow', function () {
-				mapModel.selectNode(node.id);
-				currentReorderBoundary = mapModel.getReorderBoundary(node.id);
-				element.addClass('dragging');
+			.on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
+				if (evt && evt.relatedTarget === this) {
+					mapModel.selectNode(node.id);
+					currentReorderBoundary = mapModel.getReorderBoundary(node.id);
+					element.addClass('dragging');
+				}
 			})
 			.on('mm:drag', function (evt) {
 				var dropCoords = stagePositionForPointEvent(evt),
@@ -2850,6 +2863,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				clearCurrentDroppable();
 				element.removeClass('dragging');
 				reorderBounds.hide();
+			}).on('mm:resize', function (event) {
+				mapModel.setNodeWidth('mouse', node.id, event.nodeWidth);
 			});
 		if (touchEnabled) {
 			element.on('hold', function (evt) {
@@ -3292,3 +3307,62 @@ $.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel) {
 	return element;
 };
 
+
+/*global jQuery*/
+jQuery.fn.nodeResizeWidget = function (nodeId, mapModel, stagePositionForPointEvent) {
+	'use strict';
+	return this.each(function () {
+		var element = jQuery(this),
+			nodeTextElement = element.find('span'),
+			nodeTextDOM = nodeTextElement[0],
+			initialPosition,
+			initialWidth,
+			minAllowedWidth = 50,
+			initialStyle,
+			calcDragWidth = function (evt) {
+				var pos = stagePositionForPointEvent(evt),
+					dx = pos && initialPosition && (pos.x - initialPosition.x),
+					dragWidth = dx && Math.max(minAllowedWidth, (initialWidth + dx));
+				return dragWidth;
+			},
+			dragHandle = jQuery('<div>').addClass('resize-node').shadowDraggable().on('mm:start-dragging mm:start-dragging-shadow', function (evt) {
+				mapModel.selectNode(nodeId);
+				initialPosition = stagePositionForPointEvent(evt);
+				initialWidth = nodeTextElement.innerWidth();
+				initialStyle = {
+					'node.min-width': element.css('min-width'),
+					'span.min-width': nodeTextElement.css('min-width'),
+					'span.max-width': nodeTextElement.css('max-width')
+				};
+			}).on('mm:stop-dragging mm:cancel-dragging', function (evt) {
+				var dragWidth = nodeTextElement.outerWidth();
+				nodeTextElement.css({'max-width': initialStyle['span.max-width'], 'min-width': initialStyle['span.min-width']});
+				element.css('min-width', initialStyle['node.min-width']);
+				if (evt) {
+					evt.stopPropagation();
+				}
+				if (evt && evt.gesture) {
+					evt.gesture.stopPropagation();
+				}
+				element.trigger(jQuery.Event('mm:resize', {nodeWidth: dragWidth}));
+			}).on('mm:drag', function (evt) {
+				var dragWidth = calcDragWidth(evt);
+				if (dragWidth) {
+					nodeTextElement.css({'max-width': dragWidth, 'min-width': dragWidth});
+					element.css('min-width', nodeTextElement.outerWidth());
+					if (nodeTextDOM.scrollWidth > nodeTextDOM.offsetWidth) {
+						dragWidth = nodeTextDOM.scrollWidth;
+						nodeTextElement.css({'max-width': dragWidth, 'min-width': dragWidth});
+						element.css('min-width', nodeTextElement.outerWidth());
+					}
+				}
+				if (evt) {
+					evt.stopPropagation();
+				}
+				if (evt && evt.gesture) {
+					evt.gesture.stopPropagation();
+				}
+			});
+		dragHandle.appendTo(element);
+	});
+};
