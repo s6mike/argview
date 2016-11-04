@@ -743,6 +743,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				hasChildren = node && node.ideas && _.size(node.ideas) > 0,
 				rootCount = _.size(idea.ideas),
 				hasSiblings = idea.hasSiblings(nodeId),
+				hasPreferredWidth = node && node.attr && node.attr.style && node.attr.style.width,
 				isCollapsed = node && node.getAttr('collapsed'),
 				canPaste = node && isEditingEnabled && clipboard && clipboard.get(),
 				isRoot = idea.isRootNode(nodeId);
@@ -750,6 +751,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			return {
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
+				hasPreferredWidth: !!hasPreferredWidth,
 				canPaste: !!canPaste,
 				notRoot: !isRoot,
 				notLastRoot: !isRoot || (rootCount > 1),

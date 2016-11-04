@@ -2933,6 +2933,19 @@ describe('MapModel', function () {
 				});
 			});
 		});
+		describe('hasPreferredWidth', function () {
+			it('should be true if selected node has width style', function () {
+				anIdea.mergeAttrProperty(2, 'style', 'width', 20);
+				expect(underTest.contextForNode(2).hasPreferredWidth).toBeTruthy();
+			});
+			it('should be false if selected node has non-width style', function () {
+				anIdea.mergeAttrProperty(2, 'style', 'height', 20);
+				expect(underTest.contextForNode(2).hasPreferredWidth).toBeFalsy();
+			});
+			it('should be false if selected node has no style', function () {
+				expect(underTest.contextForNode(2).hasPreferredWidth).toBeFalsy();
+			});
+		});
 		describe('canPaste', function () {
 			it('should be false when clipboard is empty', function () {
 				expect(underTest.contextForNode(1).canPaste).toBe(false);
