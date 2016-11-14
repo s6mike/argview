@@ -1309,18 +1309,24 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		var node = layoutModel.getNode(nodeId),
 			parentNode = idea.findParent(nodeId),
 			minX = Infinity, maxX = -Infinity, maxY = -Infinity,
-			tolerance = 10;
+			tolerance = 10,
+			hasSiblings = false;
 		if (!parentNode) {
 			return [];
 		}
 		_.each(parentNode.ideas, function (subIdea) {
 			var siblingNode = layoutModel.getNode(subIdea.id);
-			if (subIdea.id !== nodeId) {
+
+			if (siblingNode && subIdea.id !== nodeId) {
+				hasSiblings = true;
 				minX = Math.min(siblingNode.x, minX);
 				maxX = Math.max(siblingNode.x + siblingNode.width, maxX);
 				maxY = Math.max(siblingNode.y + siblingNode.height, maxY);
 			}
 		});
+		if (!hasSiblings) {
+			return [];
+		}
 		return ([{
 			minY: node.y - node.height - tolerance,
 			maxY: maxY + tolerance,

@@ -2706,13 +2706,99 @@ describe('MapModel', function () {
 			});
 		});
 	});
-	describe('getReorderBoundary', function () {
+	describe('getTopDownReorderBoundary', function () {
+		var idea, layout, underTest, margin;
+		beforeEach(function () {
+			idea = MAPJS.content({
+					formatVersion: 3,
+					id: 'root',
+					ideas: {
+						1: {
+							id: 1,
+							ideas: {
+								1: {
+									id: 11,
+									ideas: {
+										1: {id: 111}
+									}
+								},
+								2: {
+									id: 12,
+									ideas: {
+										1: {id: 121},
+										2: {id: 122}
+									}
+								},
+								3: {
+									id: 13,
+									ideas: {
+										1: {id: 131},
+										2: {id: 132} //empty group node - not in layout
+									}
+								}
+							}
+						},
+						2: {
+							id: 2
+						}
+					}
+				});
+			layout = { nodes: {
+					1: { id: 1, x: -50, y: -30, width: 100, height: 60, level: 1, rootId: 1 },
+					11: { id: 11, x: -60, y: 50, width: 10, height: 10, level: 2, rootId: 1},
+					111: { id: 111, x: -60, y: 90, width: 10, height: 11, level: 3, rootId: 1},
+					12: { id: 12, x: -25, y: 50, width: 30, height: 15, level: 2, rootId: 1},
+					121: { id: 121, x: -30, y: 90, width: 8, height: 11, level: 3, rootId: 1},
+					122: { id: 122, x: -2, y: 90, width: 12, height: 10, level: 3, rootId: 1},
+					13: { id: 13, x: 30, y: 50, width: 30, height: 20, level: 2, rootId: 1},
+					131: {id: 131, x: 30, y: 90, width: 30, height: 20, level: 3, rootId: 1},
+					2: { id: 2, x: 200, y: -30, width: 100, height: 60, level: 1, rootId: 2 }
+				}
+			};
+			margin = 20;
+			underTest = new MAPJS.MapModel(function () {
+				return JSON.parse(JSON.stringify(layout)); /* deep clone */
+			}, undefined, undefined, margin);
+			underTest.setIdea(idea);
+
+		});
+		it('returns empty array for root', function () {
+			expect(underTest.getTopDownReorderBoundary(1)).toEqual([]);
+		});
+		describe('nodes with multiple siblings', function () {
+			it('should return reorder boundary when it is the tallest node', function () {
+				expect(underTest.getTopDownReorderBoundary(13)).toEqual([{minX: -100, maxX: 15, minY: 20, maxY: 75, edge: 'top'}]);
+			});
+			it('should return reorder boundary when it is the shortest node', function () {
+				expect(underTest.getTopDownReorderBoundary(11)).toEqual([{minX: -45, maxX: 70, minY: 30, maxY: 80, edge: 'top'}]);
+			});
+			it('should return reorder boundary when it is the in the center', function () {
+				expect(underTest.getTopDownReorderBoundary(12)).toEqual([{minX: -100, maxX: 70, minY: 25, maxY: 80, edge: 'top'}]);
+			});
+		});
+		describe('nodes with a single sibling', function () {
+			it('should return reorder boundary when it is on the left', function () {
+				expect(underTest.getTopDownReorderBoundary(121)).toEqual([{minX: -20, maxX: 20, minY: 69, maxY: 110, edge: 'top'}]);
+			});
+			it('should return reorder boundary when it is on the right', function () {
+				expect(underTest.getTopDownReorderBoundary(122)).toEqual([{minX: -52, maxX: -12, minY: 70, maxY: 111, edge: 'top'}]);
+			});
+		});
+		it('should return empty array for nodes with no siblings', function () {
+			expect(underTest.getTopDownReorderBoundary(111)).toEqual([]);
+		});
+		it('should ignore nodes that are not in layout', function () {
+			expect(underTest.getTopDownReorderBoundary(131)).toEqual([]);
+		});
+
+	});
+	describe('getStandardReorderBoundary', function () {
 		var underTest, layout, idea, margin,
 			firstBoundary = function (nodeId) {
-				return underTest.getReorderBoundary(nodeId)[0];
+				return underTest.getStandardReorderBoundary(nodeId)[0];
 			},
 			secondBoundary = function (nodeId) {
-				return underTest.getReorderBoundary(nodeId)[1];
+				return underTest.getStandardReorderBoundary(nodeId)[1];
 			};
 		beforeEach(function () {
 			idea = MAPJS.content({
@@ -2771,7 +2857,7 @@ describe('MapModel', function () {
 			underTest.setIdea(idea);
 		});
 		it('returns false for root', function () {
-			expect(underTest.getReorderBoundary(1)).toBeFalsy();
+			expect(underTest.getStandardReorderBoundary(1)).toBeFalsy();
 		});
 		describe('for right nodes', function () {
 			it('matches against the left edge', function () {
@@ -2795,13 +2881,13 @@ describe('MapModel', function () {
 			});
 			it('wraps the first boundary around parent if no siblings', function () {
 				expect(_.pick(firstBoundary(131), 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'left', x: 120, minY: -30, maxY: 50});
-				expect(underTest.getReorderBoundary(131).length).toBe(1);
+				expect(underTest.getStandardReorderBoundary(131).length).toBe(1);
 			});
 			it('wraps the third boundary over other side siblings for level 1 nodes', function () {
-				expect(_.pick(underTest.getReorderBoundary(11)[2], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -20, maxY: 80});
+				expect(_.pick(underTest.getStandardReorderBoundary(11)[2], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -20, maxY: 80});
 			});
 			it('wraps the fourth boundary over the other side parent for level 1 nodes', function () {
-				expect(_.pick(underTest.getReorderBoundary(11)[3], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -60, maxY: 50});
+				expect(_.pick(underTest.getStandardReorderBoundary(11)[3], 'edge', 'x', 'minY', 'maxY')).toEqual({edge: 'right', x: -70, minY: -60, maxY: 50});
 			});
 		});
 		describe('for left nodes', function () {
