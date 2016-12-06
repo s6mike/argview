@@ -774,6 +774,10 @@ describe('MapModel', function () {
 					underTest.paste('keyboard');
 					expect(anIdea.pasteMultiple).not.toHaveBeenCalled();
 				});
+				it('returns the result of pasteMultiple', function () {
+					anIdea.pasteMultiple.and.returnValue([101]);
+					expect(underTest.paste('keyboard')).toEqual([101]);
+				});
 			});
 		});
 		describe('cut', function () {

@@ -788,6 +788,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				self.selectNode(result[0]);
 			}
 		}
+		return result;
 	};
 	self.pasteStyle = function (source) {
 		var clipContents = clipboard.get(),
