@@ -1030,6 +1030,33 @@ describe('MapModel', function () {
 				expect(anIdea.findSubIdeaById(1).attr.position).toEqual([2, 3, 1]);
 			});
 		});
+		describe('topDownPositionNodeAt', function () {
+			beforeEach(function () {
+				anIdea = MAPJS.content({
+					id: 1,
+					title: 'root',
+					ideas: {
+						10: {
+							id: 2,
+							title: 'child',
+							ideas: {
+								11: { id: 3, title: 'child of child' }
+							}
+						}
+					}
+				});
+				underTest = new MAPJS.MapModel(function () {
+					return {
+						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
+					};
+				}, [], clipboard);
+				underTest.setIdea(anIdea);
+			});
+			it('assigns position for root nodes', function () {
+				underTest.topDownPositionNodeAt(1, 2, 3, true);
+				expect(anIdea.findSubIdeaById(1).attr.position).toEqual([2, 3, 1]);
+			});
+		});
 
 		describe('redo', function () {
 			beforeEach(function () {
