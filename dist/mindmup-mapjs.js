@@ -1303,11 +1303,26 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.topDownPositionNodeAt = function (nodeId, x, y, manualPosition) {
 		var result,
 			parentNode = idea.findParent(nodeId),
-			closestNodeToRight, closestNodeToLeft;
-		if (!parentNode) {
-			return false;
-		}
+			nodeBeingDragged = layoutModel.getNode(nodeId),
+			closestNodeToRight, closestNodeToLeft,
+			isRoot = function () {
+				return nodeBeingDragged.level <= 2;
+			},
+			manuallyPositionRootNode = function () {
+				return idea.updateAttr(
+					nodeId,
+					'position',
+					[x, y, 1]
+				);
+			};
 		if (manualPosition) {
+			if (isRoot()) {
+				return manuallyPositionRootNode();
+			} else {
+				return false;
+			}
+		}
+		if (!parentNode) {
 			return false;
 		}
 		_.each(parentNode.ideas, function (sibling) {
