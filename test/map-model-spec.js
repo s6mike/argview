@@ -1056,6 +1056,97 @@ describe('MapModel', function () {
 				underTest.topDownPositionNodeAt(1, 2, 3, true);
 				expect(anIdea.findSubIdeaById(1).attr.position).toEqual([2, 3, 1]);
 			});
+			it('reorders groups to right most if requested - bug resurrection check', function () {
+				var topDownIdea =  MAPJS.content({
+						'id': 'root',
+						'formatVersion': 3,
+						'ideas': {
+							'1': {
+								'id': 1,
+								'ideas': {
+									'41': {
+										'id': 2,
+										'ideas': {
+											'1': {
+												'id': 3
+											}
+										}
+									},
+									'51': {
+										'id': 4,
+										'ideas': {
+											'1': {
+												'id': 5
+											}
+										}
+									}
+								}
+							}
+						}
+					}),
+					layout = {
+						'orientation': 'top-down',
+						'nodes': {
+							'1': {
+								'level': 1,
+								'title': 'root',
+								'width': 59,
+								'height': 50,
+								'id': 1,
+								'x': -29,
+								'y': -98,
+								'rootId': 1
+							},
+							'2': {
+								'level': 2,
+								'title': '',
+								'width': 122,
+								'height': 16,
+								'id': 2,
+								'x': -132,
+								'y': 52,
+								'rootId': 1
+							},
+							'3': {
+								'level': 2,
+								'title': 'child 1',
+								'width': 51,
+								'height': 30,
+								'id': 3,
+								'x': -132,
+								'y': 68,
+								'rootId': 1
+							},
+							'4': {
+								'level': 2,
+								'title': '',
+								'width': 122,
+								'height': 16,
+								'id': 4,
+								'x': 10,
+								'y': 52,
+								'rootId': 1
+							},
+							'5': {
+								'level': 2,
+								'title': 'child 2',
+								'width': 51,
+								'height': 30,
+								'id': 5,
+								'x': 10,
+								'y': 68,
+								'rootId': 1
+							}
+						}
+					};
+
+				underTest = new MAPJS.MapModel(function () {
+					return layout;
+				}, [], clipboard);
+				underTest.setIdea(topDownIdea);
+				underTest.topDownPositionNodeAt(2, 146, 52, false);
+				expect(topDownIdea.ideas[1].findChildRankById(2)).toBeGreaterThan(topDownIdea.ideas[1].findChildRankById(4));
+			});
 		});
 
 		describe('redo', function () {
