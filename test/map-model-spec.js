@@ -482,7 +482,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('methods delegating to idea', function () {
-		var anIdea, underTest, clipboard;
+		var anIdea, underTest, clipboard, layout;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -494,11 +494,10 @@ describe('MapModel', function () {
 					}
 				}
 			});
+			layout = {nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1, attr: {style: {styleprop: 'oldValue'}}}}};
 			clipboard = jasmine.createSpyObj('clipboard', ['get', 'put']);
 			underTest = new MAPJS.MapModel(function () {
-				return {
-					nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
-				};
+				return layout;
 			}, [], clipboard);
 			underTest.setIdea(anIdea);
 		});
@@ -607,6 +606,36 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 				expect(underTest.getSelectedNodeId()).toBe(3);
 			});
+			describe('when the orientation is top-down', function () {
+				beforeEach(function () {
+					layout.orientation = 'top-down';
+					spyOn(anIdea, 'flip').and.callThrough();
+					spyOn(anIdea, 'dispatchEvent').and.callThrough();
+				});
+				it('should flip the new node to a positive rank if the rank is negative', function () {
+					underTest.addSubIdea();
+					expect(anIdea.flip).toHaveBeenCalledWith(3);
+					expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+					expect(anIdea.findSubIdeaById(1).findChildRankById(3)).toEqual(20);
+				});
+				it('should not flip the new node if the rank is already positive', function () {
+					anIdea.addSubIdea(1);
+					anIdea.flip.calls.reset();
+					underTest.addSubIdea();
+					expect(anIdea.flip).not.toHaveBeenCalled();
+					expect(anIdea.findSubIdeaById(1).findChildRankById(4)).toEqual(11);
+				});
+			});
+			describe('when the orientation is standard', function () {
+				it('should not try to flip the node even when the new rank is negative', function () {
+					layout.orientation = 'standard';
+					spyOn(anIdea, 'flip').and.callThrough();
+					underTest.addSubIdea();
+					expect(anIdea.flip).not.toHaveBeenCalled();
+					expect(anIdea.findSubIdeaById(1).findChildRankById(3)).toEqual(-1);
+				});
+			});
+
 		});
 		describe('insertIntermediateGroup', function () {
 			describe('when a node is selected', function () {
@@ -732,6 +761,37 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
+
+			describe('when the orientation is top-down', function () {
+				beforeEach(function () {
+					layout.orientation = 'top-down';
+					spyOn(anIdea, 'flip').and.callThrough();
+					spyOn(anIdea, 'dispatchEvent').and.callThrough();
+				});
+				it('should flip the new node to a positive rank if the rank is negative', function () {
+					underTest.addGroupSubidea('source', {group: 'supporting'});
+					expect(anIdea.flip).toHaveBeenCalledWith(3);
+					expect(anIdea.dispatchEvent.calls.count()).toBe(1);
+					expect(anIdea.findSubIdeaById(1).findChildRankById(3)).toEqual(20);
+				});
+				it('should not flip the new node if the rank is already positive', function () {
+					anIdea.addSubIdea(1);
+					anIdea.flip.calls.reset();
+					underTest.addGroupSubidea('source', {group: 'supporting'});
+					expect(anIdea.flip).not.toHaveBeenCalled();
+					expect(anIdea.findSubIdeaById(1).findChildRankById(4)).toEqual(11);
+				});
+			});
+			describe('when the orientation is standard', function () {
+				it('should not try to flip the node even when the new rank is negative', function () {
+					layout.orientation = 'standard';
+					spyOn(anIdea, 'flip').and.callThrough();
+					underTest.addGroupSubidea('source', {group: 'supporting'});
+					expect(anIdea.flip).not.toHaveBeenCalled();
+					expect(anIdea.findSubIdeaById(1).findChildRankById(3)).toEqual(-1);
+				});
+			});
+
 
 		});
 		describe('copy', function () {
@@ -1031,16 +1091,23 @@ describe('MapModel', function () {
 			});
 		});
 		describe('topDownPositionNodeAt', function () {
+			var listener;
 			beforeEach(function () {
 				anIdea = MAPJS.content({
-					id: 1,
-					title: 'root',
+					formatVersion: 3,
+					id: 'root',
 					ideas: {
-						10: {
-							id: 2,
-							title: 'child',
+						1: {
+							id: 1,
+							title: 'parent',
 							ideas: {
-								11: { id: 3, title: 'child of child' }
+								10: {
+									id: 2,
+									title: 'child',
+									ideas: {
+										11: { id: 3, title: 'child of child' }
+									}
+								}
 							}
 						}
 					}
@@ -1051,10 +1118,18 @@ describe('MapModel', function () {
 					};
 				}, [], clipboard);
 				underTest.setIdea(anIdea);
+				listener = jasmine.createSpy('onChange');
+				anIdea.addEventListener('changed', listener);
 			});
-			it('assigns position for root nodes', function () {
+			it('manually assigns position for root nodes', function () {
 				underTest.topDownPositionNodeAt(1, 2, 3, true);
 				expect(anIdea.findSubIdeaById(1).attr.position).toEqual([2, 3, 1]);
+			});
+			it('disconnects and repositions non-roots when manual positioning requested', function () {
+				underTest.topDownPositionNodeAt(3, 2, 3, true);
+				expect(anIdea.findSubIdeaById(3).attr.position).toEqual([2, 3, 1]);
+				expect(anIdea.findParent(3)).toBeFalsy();
+				expect(listener.calls.count()).toEqual(1);
 			});
 			it('reorders groups to right most if requested - bug resurrection check', function () {
 				var topDownIdea =  MAPJS.content({
@@ -3305,7 +3380,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('root node operations', function () {
-		var underTest, anIdea;
+		var underTest, anIdea, changeListener, layout;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -3320,16 +3395,20 @@ describe('MapModel', function () {
 					}
 				}
 			});
+			layout = {
+				nodes: {1: {level: 1}, 2: {level: 2, x: 100, y: 200}, 3: {level: 3}}
+			};
 			underTest = new MAPJS.MapModel(function () {
-				return {
-					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
-				};
+				return layout;
 			});
 			underTest.setIdea(anIdea);
+			changeListener = jasmine.createSpy('onChanged');
+			anIdea.addEventListener('changed', changeListener);
 		});
 		describe('makeSelectedNodeRoot', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'changeParent').and.callThrough();
+				spyOn(anIdea, 'updateAttr').and.callThrough();
 			});
 			it('should change the parent of the selected node to the content aggregate root node', function () {
 				underTest.selectNode(2);
@@ -3352,6 +3431,18 @@ describe('MapModel', function () {
 				underTest.setEditingEnabled(false);
 				underTest.makeSelectedNodeRoot();
 				expect(anIdea.changeParent).not.toHaveBeenCalled();
+			});
+			describe('when layout is top-down', function () {
+				beforeEach(function () {
+					layout.orientation = 'top-down';
+				});
+				it('should set the position as a batch while changing the parent', function () {
+					underTest.selectNode(2);
+					underTest.makeSelectedNodeRoot();
+					expect(changeListener.calls.count()).toEqual(1);
+					expect(anIdea.findParent(2)).toBeFalsy();
+					expect(anIdea.findSubIdeaById(2).getAttr('position')).toEqual([100, 200, 1]);
+				});
 			});
 
 		});

@@ -154,6 +154,22 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				idea.updateAttr(nodeId, 'collapsed', false);
 			}
 		},
+		addSubIdeaToTargetNode = function (source, targetId, initialTitle) {
+			var newId,
+				targetNode = idea.findSubIdeaById(targetId) || idea;
+			ensureNodeIsExpanded(source, targetId);
+			if (initialTitle) {
+				newId = idea.addSubIdea(targetId, initialTitle);
+			} else {
+				newId = idea.addSubIdea(targetId);
+			}
+			if (layoutModel.getOrientation() === 'top-down') {
+				if (targetNode.findChildRankById(newId) < 0) {
+					idea.flip(newId);
+				}
+			}
+			return newId;
+		},
 		layoutModel = (optional && optional.layoutModel) || new MAPJS.LayoutModel({nodes: {}, connectors: {}});
 	MAPJS.observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
@@ -347,12 +363,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		analytic('addSubIdea', source);
 		if (isInputEnabled) {
 			idea.batch(function () {
-				ensureNodeIsExpanded(source, target);
-				if (initialTitle) {
-					newId = idea.addSubIdea(target, initialTitle);
-				} else {
-					newId = idea.addSubIdea(target);
-				}
+				newId = addSubIdeaToTargetNode(source, target, initialTitle);
 			});
 			if (newId) {
 				if (initialTitle) {
@@ -367,15 +378,15 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	self.addGroupSubidea = function (source, options) {
 		var parentId = options && options.parentId,
 			group = (options && options.group) || true,
-			target = parentId || currentlySelectedIdeaId, newGroupId, newId;
+			target = parentId || currentlySelectedIdeaId,
+			newGroupId, newId;
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('addGroupSubidea', source);
 		if (isInputEnabled) {
 			idea.batch(function () {
-				ensureNodeIsExpanded(source, target);
-				newGroupId = idea.addSubIdea(target, 'group');
+				newGroupId = addSubIdeaToTargetNode(source, target, 'group');
 				if (newGroupId) {
 					idea.updateAttr(newGroupId, 'contentLocked', true);
 					idea.updateAttr(newGroupId, 'group', group);
@@ -1140,7 +1151,7 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			nodeBeingDragged = layoutModel.getNode(nodeId),
 			closestNodeToRight, closestNodeToLeft,
 			isRoot = function () {
-				return nodeBeingDragged.level <= 2;
+				return nodeBeingDragged.level < 2;
 			},
 			manuallyPositionRootNode = function () {
 				return idea.updateAttr(
@@ -1153,7 +1164,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			if (isRoot()) {
 				return manuallyPositionRootNode();
 			} else {
-				return false;
+				return idea.batch(function () {
+					idea.changeParent(nodeId, 'root');
+					return manuallyPositionRootNode();
+				});
 			}
 		}
 		if (!parentNode) {
@@ -1377,12 +1391,20 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 		idea.updateAttr(idea.id, 'theme', themeId);
 	};
 	self.makeSelectedNodeRoot = function () {
-		var nodeId = self.getSelectedNodeId();
+		var nodeId = self.getSelectedNodeId(),
+			node = nodeId && layoutModel.getNode(nodeId);
 		if (!nodeId || idea.isRootNode(nodeId)) {
 			return false;
 		}
 		if (isInputEnabled && isEditingEnabled) {
-			return idea.changeParent(nodeId, 'root');
+			return idea.batch(function () {
+				var result;
+				result = idea.changeParent(nodeId, 'root');
+				if (layoutModel.getOrientation() === 'top-down') {
+					result = idea.updateAttr(nodeId, 'position', [node.x, node.y, 1]);
+				}
+				return result;
+			});
 		}
 	};
 	self.setNodeWidth = function (source, id, width) {
