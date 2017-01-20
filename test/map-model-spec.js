@@ -3396,7 +3396,7 @@ describe('MapModel', function () {
 				}
 			});
 			layout = {
-				nodes: {1: {level: 1}, 2: {level: 2, x: 100, y: 200}, 3: {level: 3}}
+				nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, x: 100, y: 200, rootId: 1}, 3: {level: 3, rootId: 1}}
 			};
 			underTest = new MAPJS.MapModel(function () {
 				return layout;
@@ -3435,13 +3435,24 @@ describe('MapModel', function () {
 			describe('when layout is top-down', function () {
 				beforeEach(function () {
 					layout.orientation = 'top-down';
+					layout.nodes[1].x = 50;
+					layout.nodes[1].y = 60;
+					underTest.selectNode(2);
 				});
 				it('should set the position as a batch while changing the parent', function () {
-					underTest.selectNode(2);
 					underTest.makeSelectedNodeRoot();
 					expect(changeListener.calls.count()).toEqual(1);
 					expect(anIdea.findParent(2)).toBeFalsy();
-					expect(anIdea.findSubIdeaById(2).getAttr('position')).toEqual([100, 200, 1]);
+					expect(anIdea.getAttrById(2, 'position')).toEqual([100, 200, 1]);
+				});
+				it('should fix the parent position as well if it was not set before', function () {
+					underTest.makeSelectedNodeRoot();
+					expect(anIdea.getAttrById(1, 'position')).toEqual([50, 60, 1]);
+				});
+				it('should not update the parent position if it was already set', function () {
+					anIdea.updateAttr(1, 'position', [1, 1, 4]);
+					underTest.makeSelectedNodeRoot();
+					expect(anIdea.getAttrById(1, 'position')).toEqual([1, 1, 4]);
 				});
 			});
 

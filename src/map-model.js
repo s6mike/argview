@@ -170,6 +170,12 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 			}
 			return newId;
 		},
+		setNodePositionFromCurrentLayout = function (nodeId) {
+			var node = nodeId && layoutModel.getNode(nodeId);
+			if (node) {
+				idea.updateAttr(nodeId, 'position', [node.x, node.y, 1]);
+			}
+		},
 		layoutModel = (optional && optional.layoutModel) || new MAPJS.LayoutModel({nodes: {}, connectors: {}});
 	MAPJS.observable(this);
 	analytic = self.dispatchEvent.bind(self, 'analytic', 'mapModel');
@@ -1392,7 +1398,8 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 	};
 	self.makeSelectedNodeRoot = function () {
 		var nodeId = self.getSelectedNodeId(),
-			node = nodeId && layoutModel.getNode(nodeId);
+			node = nodeId && layoutModel.getNode(nodeId),
+			oldRootId = node && node.rootId;
 		if (!nodeId || idea.isRootNode(nodeId)) {
 			return false;
 		}
@@ -1401,7 +1408,10 @@ MAPJS.MapModel = function (layoutCalculatorArg, selectAllTitles, clipboardProvid
 				var result;
 				result = idea.changeParent(nodeId, 'root');
 				if (layoutModel.getOrientation() === 'top-down') {
-					result = idea.updateAttr(nodeId, 'position', [node.x, node.y, 1]);
+					if (!idea.getAttrById(oldRootId, 'position')) {
+						setNodePositionFromCurrentLayout(oldRootId);
+					}
+					setNodePositionFromCurrentLayout(nodeId);
 				}
 				return result;
 			});
