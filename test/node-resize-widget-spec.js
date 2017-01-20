@@ -19,15 +19,16 @@ describe('nodeResizeWidget', function () {
 
 		element = jQuery(
 			'<div>' +
-				'<span>Some</span>' +
+				'<span id="content" data-mapjs-role="title">Some</span>' +
+				'<span id="another">else</span>' +
 			'</div>'
 		).css({'min-width': 150});
-		element.find('span').css({'min-width': 120, 'max-width': 120, 'display': 'inline-block'});
-
+		textElement = element.find('#content');
+		textElement.css({'min-width': 120, 'max-width': 120, 'display': 'inline-block'});
 		spyOn(jQuery.fn, 'shadowDraggable').and.callThrough();
 		element.appendTo('body');
 		underTest = element.nodeResizeWidget('1.a', mapModel, stagePositionForPointEvent);
-		textElement = element.find('span');
+
 	});
 	afterEach(function () {
 		element.detach();
@@ -58,6 +59,10 @@ describe('nodeResizeWidget', function () {
 			it('should alter the text area min-width when the node is dragged right', function () {
 				dragHandle.trigger(jQuery.Event('mm:drag', eventForX(130)));
 				expect(textElement.css('min-width')).toEqual('130px');
+			});
+			it('should not modify any other text spans when the node is dragged right', function () {
+				dragHandle.trigger(jQuery.Event('mm:drag', eventForX(130)));
+				expect(element.find('#another').attr('style')).toBeFalsy();
 			});
 			it('should alter the text area max-width when the node is dragged right', function () {
 				dragHandle.trigger(jQuery.Event('mm:drag', eventForX(130)));

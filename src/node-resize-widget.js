@@ -3,7 +3,7 @@ jQuery.fn.nodeResizeWidget = function (nodeId, mapModel, stagePositionForPointEv
 	'use strict';
 	return this.each(function () {
 		var element = jQuery(this),
-			nodeTextElement = element.find('span'),
+			nodeTextElement = element.find('span[data-mapjs-role=title]'),
 			nodeTextDOM = nodeTextElement[0],
 			initialPosition,
 			initialWidth,
