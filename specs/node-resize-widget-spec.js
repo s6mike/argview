@@ -1,16 +1,18 @@
-/*global beforeEach, describe, afterEach, expect, it, jQuery, jasmine, spyOn*/
+/*global beforeEach, describe, afterEach, expect, it,jasmine, spyOn, require */
+const jQuery = require('jquery');
+require('../dist/index');
 describe('nodeResizeWidget', function () {
 	'use strict';
-	var element, mapModel, stagePositionForPointEvent, underTest, textElement,
-		eventForX = function (x) {
-			return {
-				x: x,
-				stopPropagation: jasmine.createSpy('stopPropagation'),
-				gesture: {
-					stopPropagation: jasmine.createSpy('stopGesturePropagation')
-				}
-			};
+	let element, mapModel, stagePositionForPointEvent, underTest, textElement;
+	const eventForX = function (x) {
+		return {
+			x: x,
+			stopPropagation: jasmine.createSpy('stopPropagation'),
+			gesture: {
+				stopPropagation: jasmine.createSpy('stopGesturePropagation')
+			}
 		};
+	};
 	beforeEach(function () {
 		mapModel = jasmine.createSpyObj('mapModel', ['selectNode']);
 		stagePositionForPointEvent = jasmine.createSpy('stagePositionForPointEvent').and.callFake(function (evt) {
@@ -37,7 +39,7 @@ describe('nodeResizeWidget', function () {
 		expect(underTest).toBe(element);
 	});
 	describe('should create a drag handle', function () {
-		var dragHandle;
+		let dragHandle;
 		beforeEach(function () {
 			dragHandle = underTest.find('div.resize-node');
 		});
@@ -112,12 +114,12 @@ describe('nodeResizeWidget', function () {
 				});
 			});
 			it('should call event stopPropagation', function () {
-				var evt = eventForX(20);
+				const evt = eventForX(20);
 				dragHandle.trigger(jQuery.Event('mm:drag', evt));
 				expect(evt.stopPropagation).toHaveBeenCalled();
 			});
 			it('should call event gesture stopPropagation', function () {
-				var evt = eventForX(20);
+				const evt = eventForX(20);
 				dragHandle.trigger(jQuery.Event('mm:drag', evt));
 				expect(evt.gesture.stopPropagation).toHaveBeenCalled();
 			});
@@ -127,7 +129,7 @@ describe('nodeResizeWidget', function () {
 			['mm:cancel-dragging', 'cancelled']
 		].forEach(function (args) {
 			describe('when dragging is ' + args[1], function () {
-				var evtX20;
+				let evtX20;
 				beforeEach(function () {
 					evtX20 = eventForX(20);
 					dragHandle.trigger(jQuery.Event('mm:start-dragging-shadow', eventForX(120)));
@@ -158,7 +160,7 @@ describe('nodeResizeWidget', function () {
 					expect(mapModel.selectNode).toHaveBeenCalledWith('1.a');
 				});
 				it('should trigger an mm:resize event', function () {
-					var listener = jasmine.createSpy('listener');
+					const listener = jasmine.createSpy('listener');
 					underTest.on('mm:resize', listener);
 					dragHandle.trigger(jQuery.Event(args[0], eventForX(130)));
 					expect(listener).toHaveBeenCalled();

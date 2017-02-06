@@ -1,4 +1,5 @@
-/*global  _, beforeEach, jasmine*/
+/*global beforeEach, jasmine, require */
+const _ = require('underscore');
 beforeEach(function () {
 	'use strict';
 	jasmine.addMatchers({
@@ -12,10 +13,12 @@ beforeEach(function () {
 			};
 		},
 		toHaveOwnStyle: function () {
-			var checkStyle = function (element, style) {
+			const checkStyle = function (element, style) {
 				if (element.attr('style')) {
 					if (_.isArray(style)) {
-						return _.find(style, function (aStyle) { return checkStyle(element, aStyle); });
+						return _.find(style, function (aStyle) {
+							return checkStyle(element, aStyle);
+						});
 					} else {
 						return element.attr('style').indexOf(style) >= 0;
 					}
@@ -24,7 +27,7 @@ beforeEach(function () {
 			};
 			return {
 				compare: function (element, styleName) {
-					var result = {
+					const result = {
 						pass: checkStyle(element, styleName)
 					};
 					if (result.pass) {

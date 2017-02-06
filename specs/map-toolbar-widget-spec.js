@@ -1,7 +1,10 @@
-/*global _, jasmine,beforeEach, describe, expect, it, jQuery, spyOn, MAPJS*/
+/*global jasmine, beforeEach, describe, expect, it, spyOn, require*/
+const _ = require('underscore'),
+	MAPJS = require('../dist/index'),
+	jQuery = require('jquery');
 describe('mapToolbarWidget', function () {
 	'use strict';
-	var mapModel, element;
+	let mapModel, element;
 	beforeEach(function () {
 		mapModel = new MAPJS.MapModel(function () {
 			return [];
@@ -29,14 +32,12 @@ describe('mapToolbarWidget', function () {
 		element.appendTo('body');
 	});
 	it('should be used as a jquery plugin', function () {
-		var result;
-
-		result = element.mapToolbarWidget(mapModel);
+		const result = element.mapToolbarWidget(mapModel);
 
 		expect(result).toBe(element);
 	});
 	it('should invoke underlying method on map model when button is clicked', function () {
-		var methods = ['scaleUp', 'scaleDown', 'removeSubIdea', 'editNode', 'addSubIdea', 'insertIntermediate', 'addSiblingIdea', 'undo', 'redo', 'cut', 'copy', 'paste', 'openAttachment', 'resetView'];
+		const methods = ['scaleUp', 'scaleDown', 'removeSubIdea', 'editNode', 'addSubIdea', 'insertIntermediate', 'addSiblingIdea', 'undo', 'redo', 'cut', 'copy', 'paste', 'openAttachment', 'resetView'];
 		_.each(methods, function (method) {
 			spyOn(mapModel, method);
 			element.mapToolbarWidget(mapModel);
@@ -53,7 +54,7 @@ describe('mapToolbarWidget', function () {
 		expect(mapModel.updateStyle).toHaveBeenCalledWith('toolbar', 'color', 'yellow');
 	});
 	it('updates mm-target-property values on selection change', function () {
-		var input = element.find('.updateStyle'),
+		const input = element.find('.updateStyle'),
 			spy = jasmine.createSpy('changed');
 		element.mapToolbarWidget(mapModel);
 		input.change(spy);

@@ -1,14 +1,16 @@
-/*global _, beforeEach, describe, expect, it, jasmine, spyOn, MAPJS*/
+/*global beforeEach, describe, expect, it, jasmine, spyOn, require */
+const MAPJS = require('../dist/index'),
+	_ = require('underscore');
 describe('MapModel', function () {
 	'use strict';
+	let layoutCalculator, underTest;
 	it('should be able to instantiate MapModel', function () {
-		var layoutCalculator,
-			underTest = new MAPJS.MapModel(layoutCalculator);
+		underTest = new MAPJS.MapModel(layoutCalculator);
 		expect(underTest).not.toBeUndefined();
 	});
 	it('should dispatch inputEnabledChanged event when input is disabled', function () {
-		var underTest = new MAPJS.MapModel(),
-			inputEnabledChangedListener = jasmine.createSpy();
+		const inputEnabledChangedListener = jasmine.createSpy();
+		underTest = new MAPJS.MapModel();
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
 
 		underTest.setInputEnabled(false);
@@ -16,24 +18,25 @@ describe('MapModel', function () {
 		expect(inputEnabledChangedListener).toHaveBeenCalledWith(false, false);
 	});
 	it('should dispatch inputEnabledChanged event when input is re-enabled, passing holdFocus argument if supplied', function () {
-		var underTest = new MAPJS.MapModel(),
-			inputEnabledChangedListener = jasmine.createSpy();
+		const inputEnabledChangedListener = jasmine.createSpy();
+		underTest = new MAPJS.MapModel();
+
 		underTest.setInputEnabled(false);
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
 		underTest.setInputEnabled(true, true);
 		expect(inputEnabledChangedListener).toHaveBeenCalledWith(true, true);
 	});
 	describe('events dispatched by MapModel when idea/layout is changed', function () {
-		var underTest,
+		let underTest,
 			anIdea,
 			layoutBefore,
 			layoutAfter,
 			mapViewResetRequestedListener,
 			layoutCalculatorLayout;
 		beforeEach(function () {
-			var layoutCalculator = function () {
-					return layoutCalculatorLayout;
-				};
+			layoutCalculator = function () {
+				return layoutCalculatorLayout;
+			};
 			layoutBefore = {
 				nodes: {
 					1: {
@@ -125,7 +128,7 @@ describe('MapModel', function () {
 			expect(mapViewResetRequestedListener).toHaveBeenCalled();
 		});
 		it('should dispatch nodeCreated event when a node is created because idea is changed', function () {
-			var nodeCreatedListener = jasmine.createSpy();
+			const nodeCreatedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeCreated', nodeCreatedListener);
 
 			anIdea.dispatchEvent('changed', 'updateTitle', ['arg'], 'sessionId');
@@ -133,7 +136,7 @@ describe('MapModel', function () {
 			expect(nodeCreatedListener).toHaveBeenCalledWith(layoutAfter.nodes[3], 'sessionId');
 		});
 		it('should dispatch nodeMoved event when a node is moved because idea is changed', function () {
-			var nodeMovedListener = jasmine.createSpy();
+			const nodeMovedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeMoved', nodeMovedListener);
 
 			anIdea.dispatchEvent('changed');
@@ -141,7 +144,7 @@ describe('MapModel', function () {
 			expect(nodeMovedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
 		});
 		it('should dispatch nodeAttrChanged event when a node width changes', function () {
-			var nodeMovedListener = jasmine.createSpy('nodeMoved'),
+			const nodeMovedListener = jasmine.createSpy('nodeMoved'),
 				nodeAttrChangedListener = jasmine.createSpy('nodeAttrChanged');
 			layoutAfter.nodes[2] = _.extend({}, layoutBefore.nodes[2]);
 			layoutAfter.nodes[2].width = 100;
@@ -154,7 +157,7 @@ describe('MapModel', function () {
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
 		});
 		it('should dispatch nodeAttrChanged event when a node height changes', function () {
-			var nodeMovedListener = jasmine.createSpy('nodeMoved'),
+			const nodeMovedListener = jasmine.createSpy('nodeMoved'),
 				nodeAttrChangedListener = jasmine.createSpy('nodeAttrChanged');
 			layoutAfter.nodes[2] = _.extend({}, layoutBefore.nodes[2]);
 			layoutAfter.nodes[2].height = 100;
@@ -167,7 +170,7 @@ describe('MapModel', function () {
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[2], undefined);
 		});
 		it('should dispatch nodeRemoved event when a node is removed because idea is changed', function () {
-			var nodeRemovedListener = jasmine.createSpy();
+			const nodeRemovedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeRemoved', nodeRemovedListener);
 
 			anIdea.dispatchEvent('changed');
@@ -176,7 +179,7 @@ describe('MapModel', function () {
 		});
 		it('should dispatch themeChanged when the theme changes', function () {
 
-			var listener = jasmine.createSpy('themeChanged');
+			const listener = jasmine.createSpy('themeChanged');
 			underTest.addEventListener('themeChanged', listener);
 			layoutAfter.theme = 'new-theme';
 			anIdea.updateAttr(anIdea.id, 'theme', 'new-theme');
@@ -184,7 +187,7 @@ describe('MapModel', function () {
 		});
 		describe('decorationAction', function () {
 			it('should dispatch decorationActionRequested', function () {
-				var listener = jasmine.createSpy();
+				const listener = jasmine.createSpy();
 				underTest.addEventListener('decorationActionRequested', listener);
 				anIdea.dispatchEvent('changed');
 
@@ -195,7 +198,7 @@ describe('MapModel', function () {
 		});
 		describe('openAttachment', function () {
 			it('should dispatch attachmentOpened event when openAttachment is invoked', function () {
-				var attachmentOpenedListener = jasmine.createSpy();
+				const attachmentOpenedListener = jasmine.createSpy();
 				underTest.addEventListener('attachmentOpened', attachmentOpenedListener);
 				anIdea.dispatchEvent('changed');
 
@@ -204,7 +207,7 @@ describe('MapModel', function () {
 				expect(attachmentOpenedListener).toHaveBeenCalledWith(3, 'hello');
 			});
 			it('should use currently selected node if no node id specified', function () {
-				var attachmentOpenedListener = jasmine.createSpy();
+				const attachmentOpenedListener = jasmine.createSpy();
 				underTest.addEventListener('attachmentOpened', attachmentOpenedListener);
 				underTest.selectNode(3);
 				anIdea.dispatchEvent('changed');
@@ -216,7 +219,7 @@ describe('MapModel', function () {
 		});
 		describe('editNode', function () {
 			it('should dispatch nodeEditRequested when a request to edit node is made', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
+				const nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.selectNode(1);
 
@@ -225,7 +228,7 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).toHaveBeenCalledWith(1, true, false);
 			});
 			it('should not dispatch nodeEditRequested when input is disabled', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
+				const nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.selectNode(anIdea.id);
 				underTest.setInputEnabled(false);
@@ -233,7 +236,7 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 			});
 			it('should not dispatch nodeEditRequested when node is contentLocked', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
+				const nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				anIdea.updateAttr(anIdea.id, 'contentLocked', true);
 				underTest.selectNode(anIdea.id);
@@ -241,7 +244,7 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 			});
 			it('should select all text when the current text of root node is one of our defaults', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
+				const nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.selectNode(4);
 
@@ -250,7 +253,7 @@ describe('MapModel', function () {
 				expect(nodeEditRequestedListener).toHaveBeenCalledWith(4, true, false);
 			});
 			it('should select all text when the current text of child node is one of our defaults', function () {
-				var nodeEditRequestedListener = jasmine.createSpy();
+				const nodeEditRequestedListener = jasmine.createSpy();
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.selectNode(6);
 
@@ -260,13 +263,13 @@ describe('MapModel', function () {
 			});
 		});
 		it('should dispatch nodeAttrChanged the style changes is created', function () {
-			var nodeAttrChangedListener = jasmine.createSpy();
+			const nodeAttrChangedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeAttrChanged', nodeAttrChangedListener);
 			anIdea.dispatchEvent('changed');
 			expect(nodeAttrChangedListener).toHaveBeenCalledWith(layoutAfter.nodes[9], undefined);
 		});
 		it('should dispatch linkAttrChanged the style changes is created', function () {
-			var linkAttrChangedListener = jasmine.createSpy();
+			const linkAttrChangedListener = jasmine.createSpy();
 			underTest.addEventListener('linkAttrChanged', linkAttrChangedListener);
 
 			anIdea.dispatchEvent('changed');
@@ -274,7 +277,7 @@ describe('MapModel', function () {
 			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9'], undefined);
 		});
 		describe('automatic UI actions', function () {
-			var nodeEditRequestedListener, nodeSelectionChangedListener, activatedNodesChangedListener;
+			let nodeEditRequestedListener, nodeSelectionChangedListener, activatedNodesChangedListener;
 			beforeEach(function () {
 				nodeEditRequestedListener = jasmine.createSpy();
 				nodeSelectionChangedListener = jasmine.createSpy();
@@ -406,18 +409,10 @@ describe('MapModel', function () {
 
 		});
 		describe('focus/edit automatic control', function () {
-			var nodeEditRequestedListener,
-				nodeMovedListener,
-				nodeSelectionChangedListener;
-			beforeEach(function () {
-				nodeMovedListener = jasmine.createSpy();
-				nodeEditRequestedListener = jasmine.createSpy();
-				nodeSelectionChangedListener = jasmine.createSpy();
-			});
 			describe('automatic positioning', function () {
 				it('moves the map to keep selected node in the same position on the screen when updating attributes', function () {
-					var layoutCalculatorLayout,
-						layoutCalculator = function () {
+					let layoutCalculatorLayout;
+					const layoutCalculator = function () {
 							return layoutCalculatorLayout;
 						},
 						layoutBefore = {
@@ -482,7 +477,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('methods delegating to idea', function () {
-		var anIdea, underTest, clipboard, layout;
+		let anIdea, underTest, clipboard, layout;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -525,28 +520,25 @@ describe('MapModel', function () {
 				spyOn(anIdea, 'flip');
 			});
 			it('cannot flip the root node', function () {
-				var result = underTest.flip();
+				const result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
 			it('attempts to flip level = 2', function () {
-				var result;
 				underTest.selectNode(2);
-				result = underTest.flip();
+				const result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).toHaveBeenCalledWith(2);
 			});
 			it('cannot flip level > 2', function () {
-				var result;
 				underTest.selectNode(3);
-				result = underTest.flip();
+				const result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
 			it('does not die on unexisting node', function () {
-				var result;
 				underTest.selectNode(223);
-				result = underTest.flip();
+				const result = underTest.flip();
 				expect(result).toBeFalsy();
 				expect(anIdea.flip).not.toHaveBeenCalled();
 			});
@@ -599,7 +591,7 @@ describe('MapModel', function () {
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
 			it('should add with a title and select but not invoke editNode if title is supplied', function () {
-				var nodeEditRequestedListener = jasmine.createSpy('node edit requested');
+				const nodeEditRequestedListener = jasmine.createSpy('node edit requested');
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
 				underTest.addSubIdea('source', 2, 'initial title');
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(2, 'initial title');
@@ -696,27 +688,23 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1, 'group');
 			});
 			it('should add a contentLocked attribute to the group node', function () {
-				var groupId;
 
 				underTest.addGroupSubidea();
 
-				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				const groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
 				expect(anIdea.getAttrById(groupId, 'contentLocked')).toBeTruthy();
 			});
 			it('should add a group attribute to the group node', function () {
-				var groupId;
 
 				underTest.addGroupSubidea();
 
-				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				const groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
 				expect(anIdea.getAttrById(groupId, 'group')).toBeTruthy();
 			});
 			it('should add a typed group attribute to the group node', function () {
-				var groupId;
-
 				underTest.addGroupSubidea('source', {group: 'supporting'});
 
-				groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
+				const groupId = anIdea.addSubIdea.calls.mostRecent().args[0];
 				expect(anIdea.getAttrById(groupId, 'group')).toEqual('supporting');
 			});
 			it('should invoke idea.addSubIdea with argument idea as parentId if provided', function () {
@@ -738,7 +726,7 @@ describe('MapModel', function () {
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
 			it('should edit the child node of the group node', function () {
-				var listener = jasmine.createSpy('nodeEditRequested');
+				const listener = jasmine.createSpy('nodeEditRequested');
 
 				anIdea.addSubIdea.and.returnValues(22, 33);
 				underTest.addEventListener('nodeEditRequested', listener);
@@ -818,7 +806,7 @@ describe('MapModel', function () {
 		});
 		describe('paste', function () {
 			describe('single nodes', function () {
-				var toPaste;
+				let toPaste;
 				beforeEach(function () {
 					toPaste = [{title: 'clone'}];
 					clipboard.get.and.returnValue(toPaste);
@@ -841,7 +829,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('cut', function () {
-			var toPaste;
+			let toPaste;
 			beforeEach(function () {
 				toPaste = [{title: 'clone'}];
 				spyOn(anIdea, 'cloneMultiple').and.returnValue(toPaste);
@@ -901,7 +889,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('layout-specific movements', function () {
-			var layoutModel, layout;
+			let layoutModel, layout;
 			beforeEach(function () {
 				layout = {
 					nodes: {
@@ -1091,7 +1079,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('topDownPositionNodeAt', function () {
-			var listener;
+			let listener;
 			beforeEach(function () {
 				anIdea = MAPJS.content({
 					formatVersion: 3,
@@ -1132,7 +1120,7 @@ describe('MapModel', function () {
 				expect(listener.calls.count()).toEqual(1);
 			});
 			it('reorders groups to right most if requested - bug resurrection check', function () {
-				var topDownIdea =  MAPJS.content({
+				const topDownIdea =  MAPJS.content({
 						'id': 'root',
 						'formatVersion': 3,
 						'ideas': {
@@ -1249,7 +1237,7 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith(1);
 			});
 			it('should invoke idea.addSubIdea with a parent of a specified node', function () {
-				var nodeId = anIdea.addSubIdea(2, 'test');
+				const nodeId = anIdea.addSubIdea(2, 'test');
 				anIdea.addSubIdea.calls.reset();
 				underTest.selectNode(1);
 				underTest.addSiblingIdea('keyboard', nodeId);
@@ -1261,8 +1249,8 @@ describe('MapModel', function () {
 				expect(_.size(anIdea.ideas)).toEqual(2);
 			});
 			it('should add with a title and select, but not invoke editNode if title is supplied', function () {
-				var nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
-						nodeId = anIdea.addSubIdea(2, 'test');
+				const nodeEditRequestedListener = jasmine.createSpy('node edit requested'),
+					nodeId = anIdea.addSubIdea(2, 'test');
 				anIdea.addSubIdea.calls.reset();
 				underTest.selectNode(1);
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);
@@ -1312,7 +1300,7 @@ describe('MapModel', function () {
 				});
 			});
 			describe('inserting ideas in the middle of existing ideas', function () {
-				var currentRanks;
+				let currentRanks;
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
@@ -1329,7 +1317,7 @@ describe('MapModel', function () {
 					expect(anIdea.ideas[1].findChildRankById(3)).toBe(currentRanks[1]);
 				});
 				it('should add an idea directly below the currently selected idea ID', function () {
-					var newRank = anIdea.ideas[1].findChildRankById(4);
+					const newRank = anIdea.ideas[1].findChildRankById(4);
 					expect(newRank > currentRanks[0]).toBeTruthy();
 					expect(newRank < currentRanks[1]).toBeTruthy();
 				});
@@ -1387,7 +1375,7 @@ describe('MapModel', function () {
 				});
 			});
 			describe('inserting ideas in the middle of existing ideas', function () {
-				var currentRanks;
+				let currentRanks;
 				beforeEach(function () {
 					underTest.selectNode(2);
 					underTest.addSiblingIdea();
@@ -1403,14 +1391,14 @@ describe('MapModel', function () {
 					expect(anIdea.ideas[1].findChildRankById(3)).toBe(currentRanks[1]);
 				});
 				it('should add an idea directly below the currently selected idea ID', function () {
-					var newRank = anIdea.ideas[1].findChildRankById(4);
+					const newRank = anIdea.ideas[1].findChildRankById(4);
 					expect(newRank > currentRanks[0]).toBeTruthy();
 					expect(newRank < currentRanks[1]).toBeTruthy();
 				});
 			});
 		});
 		describe('clickNode', function () {
-			var contextMenuRequestedListener, activatedNodesChangedListener;
+			let contextMenuRequestedListener, activatedNodesChangedListener;
 			beforeEach(function () {
 				contextMenuRequestedListener = jasmine.createSpy('contextMenuRequestedListener');
 				underTest.addEventListener('contextMenuRequested', contextMenuRequestedListener);
@@ -1473,7 +1461,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('cancelCurrentAction', function () {
-			var addLinkModeListener;
+			let addLinkModeListener;
 			beforeEach(function () {
 				addLinkModeListener = jasmine.createSpy('addLinkModeToggled');
 				underTest.addEventListener('addLinkModeToggled', addLinkModeListener);
@@ -1490,7 +1478,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('updateLinkStyle', function () {
-			var anIdea, underTest;
+			let anIdea, underTest;
 			beforeEach(function () {
 				anIdea = MAPJS.content({
 					id: 1,
@@ -1539,7 +1527,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('setAttachment', function () {
-			var attachment;
+			let attachment;
 			beforeEach(function () {
 				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(2);
@@ -1564,11 +1552,9 @@ describe('MapModel', function () {
 			});
 		});
 		describe('setTheme', function () {
-			var attachment;
 			beforeEach(function () {
 				spyOn(anIdea, 'updateAttr');
 				underTest.selectNode(2);
-				attachment = { contentType: 'text/html', content: 'Hello' };
 			});
 			it('should invoke idea.setAttr with root ideaId and theme argument', function () {
 				underTest.setTheme('red');
@@ -1592,7 +1578,7 @@ describe('MapModel', function () {
 			});
 		});
 		describe('insertIntermediate', function () {
-			var init = function (intermediaryArray) {
+			const init = function (intermediaryArray) {
 				underTest = new MAPJS.MapModel(
 					function () {
 						return {};
@@ -1672,20 +1658,20 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'icon', false);
 			});
 			it('should drop the node when dropping the icon if the node has no text or children', function () {
-				var newId = anIdea.addSubIdea(1);
+				const newId = anIdea.addSubIdea(1);
 				underTest.setIcon('test', false, 100, 200, 'center', newId);
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
 				expect(anIdea.removeSubIdea).toHaveBeenCalledWith(newId);
 			});
 			it('should not drop the node if it has some text', function () {
-				var newId = anIdea.addSubIdea(1);
+				const newId = anIdea.addSubIdea(1);
 				anIdea.updateTitle(newId, 'blah');
 				underTest.setIcon('test', false, 100, 200, 'center', newId);
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
 				expect(anIdea.removeSubIdea).not.toHaveBeenCalled();
 			});
 			it('should not drop the node if it has children', function () {
-				var newId = anIdea.addSubIdea(1);
+				const newId = anIdea.addSubIdea(1);
 				anIdea.addSubIdea(newId);
 				underTest.setIcon('test', false, 100, 200, 'center', newId);
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(newId, 'icon', false);
@@ -1694,7 +1680,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('map scaling and movement', function () {
-		var underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener, anIdea;
+		let underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener, anIdea;
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(function () {
 				return {
@@ -1707,23 +1693,23 @@ describe('MapModel', function () {
 				};
 			});
 			anIdea = MAPJS.content({
-					formatVersion: 3,
-					id: 'root',
-					ideas: {
-						1: {
-							id: 1,
-							ideas: {
-								1: { id: 3}
-							}
-						},
-						2: {
-							id: 2,
-							ideas: {
-								4: {id: 4}
-							}
+				formatVersion: 3,
+				id: 'root',
+				ideas: {
+					1: {
+						id: 1,
+						ideas: {
+							1: { id: 3}
+						}
+					},
+					2: {
+						id: 2,
+						ideas: {
+							4: {id: 4}
 						}
 					}
-				});
+				}
+			});
 			underTest.setIdea(anIdea);
 			mapScaleChangedListener = jasmine.createSpy('mapScaleChanged');
 			mapViewResetRequestedListener = jasmine.createSpy('mapViewReset');
@@ -1786,7 +1772,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('Selection', function () {
-		var nodeSelectionChangedListener, anIdea, underTest, layout, layoutModel;
+		let nodeSelectionChangedListener, anIdea, underTest, layout, layoutModel;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -1810,7 +1796,7 @@ describe('MapModel', function () {
 					2: {
 						id: 5,
 						title: 'lower right',
-						ideas : {
+						ideas: {
 							1: { id: 6, title: 'cousin below' },
 							2: { id: 7, title: 'cousin benson', ideas: {1: {id: 8, title: 'child of cousin benson'}}}
 						}
@@ -1837,7 +1823,7 @@ describe('MapModel', function () {
 			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
 		});
 		it('should select the intermediate when it is inserted', function () {
-			var newId;
+			let newId;
 			anIdea.addEventListener('changed', function (evt, args) {
 				if (evt === 'insertIntermediate') {
 					newId = args[2];
@@ -1895,7 +1881,7 @@ describe('MapModel', function () {
 		});
 		['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
 			describe('selectNode' + direction, function () {
-				var layoutModelMethod = 'nodeId' + direction,
+				const layoutModelMethod = 'nodeId' + direction,
 					modelMethod = 'selectNode' + direction;
 
 				beforeEach(function () {
@@ -1926,14 +1912,14 @@ describe('MapModel', function () {
 		});
 
 		describe('multiple node activation', function () {
-			var activatedNodesChangedListener,
-				checkActivated = function (nodeId, previouslySelected) {
-					previouslySelected = previouslySelected || 1;
-					expect(activatedNodesChangedListener).toHaveBeenCalledWith([nodeId], []);
-					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(previouslySelected, false);
-					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(nodeId, true);
-					expect(underTest.getActivatedNodeIds()).toEqual([previouslySelected, nodeId]);
-				};
+			let activatedNodesChangedListener;
+			const checkActivated = function (nodeId, previouslySelected) {
+				previouslySelected = previouslySelected || 1;
+				expect(activatedNodesChangedListener).toHaveBeenCalledWith([nodeId], []);
+				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(previouslySelected, false);
+				expect(nodeSelectionChangedListener).toHaveBeenCalledWith(nodeId, true);
+				expect(underTest.getActivatedNodeIds()).toEqual([previouslySelected, nodeId]);
+			};
 
 			beforeEach(function () {
 				activatedNodesChangedListener = jasmine.createSpy();
@@ -1942,7 +1928,7 @@ describe('MapModel', function () {
 			describe('activating relative to current selection', function () {
 				['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
 					describe('activateNode' + direction, function () {
-						var layoutModelMethod = 'nodeId' + direction,
+						const layoutModelMethod = 'nodeId' + direction,
 							modelMethod = 'activateNode' + direction;
 
 						beforeEach(function () {
@@ -2049,15 +2035,14 @@ describe('MapModel', function () {
 					expect(underTest.getActivatedNodeIds().sort()).toEqual([2, 3, 4, 5]);
 				});
 				it('should not allow the internal representation ot be mutated', function () {
-					var toMutate;
 					underTest.selectNode(3);
-					toMutate = underTest.getActivatedNodeIds();
+					const toMutate = underTest.getActivatedNodeIds();
 					toMutate.push(42);
 					expect(underTest.getActivatedNodeIds()).toEqual([3]);
 				});
 			});
 			describe('actions on activated nodes', function () {
-				var changedListener;
+				let changedListener;
 				beforeEach(function () {
 					underTest.selectNode(1);
 					spyOn(anIdea, 'updateAttr').and.callThrough();
@@ -2105,12 +2090,11 @@ describe('MapModel', function () {
 						spyOn(anIdea, 'mergeAttrProperty').and.callThrough();
 					});
 					it('should invoke idea.mergeAttrProperty for all activated nodes when toggleCollapse is called as a batch', function () {
-						var i;
 						underTest.selectNode(3);
 						underTest.activateSiblingNodes();
 						changedListener.calls.reset();
 						underTest.updateStyle('source', 'styleprop', 'styleval');
-						for (i = 2; i <= 5; i++) {
+						for (let i = 2; i <= 5; i++) {
 							expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(i, 'style', 'styleprop', 'styleval');
 						}
 						expect(changedListener.calls.count()).toBe(1);
@@ -2132,7 +2116,7 @@ describe('MapModel', function () {
 
 				});
 				describe('pasteStyle', function () {
-					var toPaste;
+					let toPaste;
 					beforeEach(function () {
 						toPaste = {title: 'c', attr: {style: {color: 'red'}}};
 						spyOn(anIdea, 'clone').and.returnValue(toPaste);
@@ -2141,12 +2125,11 @@ describe('MapModel', function () {
 						underTest.selectNode(2);
 					});
 					it('should invoke paste style on all activated nodes', function () {
-						var i;
 						underTest.selectNode(3);
 						underTest.activateSiblingNodes();
 						changedListener.calls.reset();
 						underTest.pasteStyle('keyboard');
-						for (i = 2; i <= 5; i++) {
+						for (let i = 2; i <= 5; i++) {
 							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', toPaste.attr.style);
 						}
 						expect(changedListener.calls.count()).toBe(1);
@@ -2167,14 +2150,13 @@ describe('MapModel', function () {
 						underTest.selectNode(321);
 					});
 					it('should invoke idea.removeSubIdea on all activated nodes as one batch', function () {
-						var i;
 						underTest.selectNode(3);
 						underTest.activateSiblingNodes();
 						changedListener.calls.reset();
 
 						underTest.removeSubIdea('toolbar');
 
-						for (i = 2; i <= 5; i++) {
+						for (let i = 2; i <= 5; i++) {
 							expect(anIdea.removeSubIdea).toHaveBeenCalledWith(i);
 						}
 					});
@@ -2193,7 +2175,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('analytic events', function () {
-		var underTest, analyticListener, anIdea;
+		let underTest, analyticListener, anIdea;
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(function () {
 				return {
@@ -2225,7 +2207,7 @@ describe('MapModel', function () {
 					2: {
 						id: 5,
 						title: 'lower right',
-						ideas : {
+						ideas: {
 							1: {
 								id: 6
 							}
@@ -2238,13 +2220,13 @@ describe('MapModel', function () {
 			underTest.addEventListener('analytic', analyticListener);
 		});
 		describe('should dispatch analytic event', function () {
-			var allMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
+			const allMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink',
 				'setIcon', 'removeLink'];
 			_.each(allMethods, function (method) {
 				it('when ' + method + ' method is invoked', function () {
-					var spy = jasmine.createSpy(method);
+					const spy = jasmine.createSpy(method);
 					underTest.addEventListener('analytic', spy);
 					underTest[method]('source');
 					expect(spy).toHaveBeenCalledWith('mapModel', method, 'source');
@@ -2274,11 +2256,11 @@ describe('MapModel', function () {
 			expect(analyticListener).not.toHaveBeenCalledWith();
 		});
 		describe('when editing is disabled edit methods should not execute ', function () {
-			var editingMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
+			const editingMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
-					var spy = jasmine.createSpy(method);
+					const spy = jasmine.createSpy(method);
 					underTest.selectNode(6);
 					underTest.setEditingEnabled(false);
 
@@ -2290,12 +2272,12 @@ describe('MapModel', function () {
 
 		});
 		describe('when editing is disabled navigational methods should still execute ', function () {
-			var navigationMethods = ['scaleUp', 'scaleDown', 'move', 'collapse',
+			const navigationMethods = ['scaleUp', 'scaleDown', 'move', 'collapse',
 				'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode'];
 			_.each(navigationMethods, function (method) {
 				it(method + ' executes', function () {
-					var spy = jasmine.createSpy(method);
+					const spy = jasmine.createSpy(method);
 					underTest.setEditingEnabled(false);
 
 					underTest.addEventListener('analytic', spy);
@@ -2307,7 +2289,7 @@ describe('MapModel', function () {
 
 	});
 	describe('getSelectedStyle', function () {
-		var anIdea = MAPJS.content({ id: 1, style: {'v': 'x'}, ideas : {7: {id: 2, style: {'v': 'y'}}}}),
+		const anIdea = MAPJS.content({ id: 1, style: {'v': 'x'}, ideas: {7: {id: 2, style: {'v': 'y'}}}}),
 			layoutCalculator = function () {
 				return {
 					nodes: {
@@ -2327,8 +2309,7 @@ describe('MapModel', function () {
 						}
 					}
 				};
-			},
-			underTest;
+			};
 		beforeEach(function () {
 			underTest = new MAPJS.MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
@@ -2342,36 +2323,34 @@ describe('MapModel', function () {
 		});
 	});
 	describe('Links', function () {
-		var anIdea = MAPJS.content({
-				id: 1,
-				title: '1',
-				ideas : {
-					7: {
-						id: 2,
-						title: '2',
-						ideas: {
-							77: {
-								id: 3,
-								title: '3'
-							},
-							88: {
-								id: 4,
-								title: '4'
-							},
-							99: {
-								id: 5,
-								title: '5'
-							}
+		const anIdea = MAPJS.content({
+			id: 1,
+			title: '1',
+			ideas: {
+				7: {
+					id: 2,
+					title: '2',
+					ideas: {
+						77: {
+							id: 3,
+							title: '3'
+						},
+						88: {
+							id: 4,
+							title: '4'
+						},
+						99: {
+							id: 5,
+							title: '5'
 						}
 					}
-				},
-				links: [{
-					ideaIdFrom: 1,
-					ideaIdTo: 4
-				}]
-			}),
-			layoutCalculator,
-			underTest;
+				}
+			},
+			links: [{
+				ideaIdFrom: 1,
+				ideaIdTo: 4
+			}]
+		});
 		beforeEach(function () {
 			layoutCalculator = jasmine.createSpy();
 			layoutCalculator.and.returnValue({
@@ -2423,7 +2402,7 @@ describe('MapModel', function () {
 		});
 
 		it('should dispatch linkCreated event when a new link is created', function () {
-			var linkCreatedListener = jasmine.createSpy('linkCreated');
+			const linkCreatedListener = jasmine.createSpy('linkCreated');
 			underTest.addEventListener('linkCreated', linkCreatedListener);
 			layoutCalculator.and.returnValue({
 				nodes: {},
@@ -2451,7 +2430,7 @@ describe('MapModel', function () {
 			});
 		});
 		it('should dispatch linkRemoved event when a link is removed', function () {
-			var linkRemovedListener = jasmine.createSpy('linkRemovedListener');
+			const linkRemovedListener = jasmine.createSpy('linkRemovedListener');
 			underTest.addEventListener('linkRemoved', linkRemovedListener);
 			layoutCalculator.and.returnValue({
 				nodes: {},
@@ -2471,7 +2450,7 @@ describe('MapModel', function () {
 			});
 		});
 		it('should be able to add two links', function () {
-			var linkCreatedListener = jasmine.createSpy('linkCreated');
+			const linkCreatedListener = jasmine.createSpy('linkCreated');
 			underTest.addEventListener('linkCreated', linkCreatedListener);
 			layoutCalculator.and.returnValue({
 				nodes: {},
@@ -2513,7 +2492,7 @@ describe('MapModel', function () {
 			}, undefined);
 		});
 		it('should dispatch linkSelected event when selectLink method is invoked', function () {
-			var linkSelectedListener = jasmine.createSpy('linkSelectedListener');
+			const linkSelectedListener = jasmine.createSpy('linkSelectedListener');
 			underTest.addEventListener('linkSelected', linkSelectedListener);
 
 			underTest.selectLink('source', { ideaIdFrom: 1, ideaIdTo: 4 }, { x: 100, y: 100 });
@@ -2522,7 +2501,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('focusOn', function () {
-		var nodeSelectionChangedListener, anIdea, underTest, layout, changeListener, nodeNodeFocusRequestedListener, calls;
+		let nodeSelectionChangedListener, anIdea, underTest, layout, changeListener, nodeNodeFocusRequestedListener, calls;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -2547,7 +2526,7 @@ describe('MapModel', function () {
 						id: 5,
 						title: 'lower right',
 						attr: {collapsed: true},
-						ideas : {
+						ideas: {
 							1: { id: 6, title: 'cousin below' },
 							2: {
 								id: 7,
@@ -2604,7 +2583,7 @@ describe('MapModel', function () {
 	});
 
 	describe('getNodeIdAtPosition', function () {
-		var underTest, layout;
+		let underTest, layout;
 		beforeEach(function () {
 			layout = {
 				nodes: {
@@ -2639,7 +2618,7 @@ describe('MapModel', function () {
 
 
 	describe('search', function () {
-		var anIdea, underTest;
+		let anIdea, underTest;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -2664,7 +2643,7 @@ describe('MapModel', function () {
 						id: 5,
 						title: 'lower right',
 						attr: {collapsed: true},
-						ideas : {
+						ideas: {
 							1: { id: 6, title: 'cousin below' },
 							2: {
 								id: 7,
@@ -2698,7 +2677,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('pause and resume', function () {
-		var anIdea, underTest, spy, layoutCalculator;
+		let anIdea, underTest, spy, layoutCalculator;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -2740,7 +2719,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('dropImage', function () {
-		var underTest, layout, idea;
+		let underTest, layout, idea;
 		beforeEach(function () {
 			idea = MAPJS.content({id: 1, title: 'one',
 				attr: {
@@ -2792,7 +2771,7 @@ describe('MapModel', function () {
 				underTest.dropImage('http://url', 500, 1000, 0, 0);
 			});
 			it('creates a new node with empty title and image when not dropped on a node', function () {
-				var newNode = idea.findSubIdeaById(3);
+				const newNode = idea.findSubIdeaById(3);
 				expect(newNode).toBeTruthy();
 				expect(newNode.title).toEqual('');
 				expect(newNode.attr.icon).toEqual({
@@ -2823,7 +2802,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('labels', function () {
-		var underTest, layout, idea, labelGenerator;
+		let underTest, layout, idea, labelGenerator;
 		beforeEach(function () {
 			idea = MAPJS.content({id: 1, title: 'one',
 				attr: {
@@ -2835,7 +2814,8 @@ describe('MapModel', function () {
 					}
 				},
 				ideas: {1: {id: 2, title: 'two'}}});
-			layout = { nodes: {
+			layout = {
+				nodes: {
 					1: { id: 1, x: 0, y: 100, width: 10, height: 10 },
 					2: { id: 2, x: -100, y: 100, width: 10, height: 10},
 					3: {id: 3, x: 10, y: 10, width: 100, height: 50 }
@@ -2848,7 +2828,7 @@ describe('MapModel', function () {
 			labelGenerator = jasmine.createSpy('labelGenerator');
 		});
 		describe('setLabelGenerator', function () {
-			var labelGeneratorChangeListener;
+			let labelGeneratorChangeListener;
 			beforeEach(function () {
 				labelGeneratorChangeListener = jasmine.createSpy('labelGeneratorChangeListener');
 				labelGenerator.and.returnValue({1: 'l1', 2: 'l2'});
@@ -2890,11 +2870,10 @@ describe('MapModel', function () {
 		});
 		describe('nodeLabelChanged event', function () {
 			it('is dispatched only for attributes where labels actually change on node change', function () {
-				var spy;
 				labelGenerator.and.returnValue({1: 'l1', 2: 'l2'});
 				underTest.setLabelGenerator(labelGenerator);
 				labelGenerator.and.returnValue({1: 'x1', 2: 'l2', 3: 'x3'});
-				spy = jasmine.createSpy('nodeLabelChangedListener');
+				const spy = jasmine.createSpy('nodeLabelChangedListener');
 				underTest.addEventListener('nodeLabelChanged', spy);
 				idea.dispatchEvent('changed');
 				expect(spy).toHaveBeenCalledWith(underTest.getCurrentLayout().nodes[1], undefined);
@@ -2904,43 +2883,44 @@ describe('MapModel', function () {
 		});
 	});
 	describe('getTopDownReorderBoundary', function () {
-		var idea, layout, underTest, margin;
+		let idea, layout, underTest, margin;
 		beforeEach(function () {
 			idea = MAPJS.content({
-					formatVersion: 3,
-					id: 'root',
-					ideas: {
-						1: {
-							id: 1,
-							ideas: {
-								1: {
-									id: 11,
-									ideas: {
-										1: {id: 111}
-									}
-								},
-								2: {
-									id: 12,
-									ideas: {
-										1: {id: 121},
-										2: {id: 122}
-									}
-								},
-								3: {
-									id: 13,
-									ideas: {
-										1: {id: 131},
-										2: {id: 132} //empty group node - not in layout
-									}
+				formatVersion: 3,
+				id: 'root',
+				ideas: {
+					1: {
+						id: 1,
+						ideas: {
+							1: {
+								id: 11,
+								ideas: {
+									1: {id: 111}
+								}
+							},
+							2: {
+								id: 12,
+								ideas: {
+									1: {id: 121},
+									2: {id: 122}
+								}
+							},
+							3: {
+								id: 13,
+								ideas: {
+									1: {id: 131},
+									2: {id: 132} //empty group node - not in layout
 								}
 							}
-						},
-						2: {
-							id: 2
 						}
+					},
+					2: {
+						id: 2
 					}
-				});
-			layout = { nodes: {
+				}
+			});
+			layout = {
+				nodes: {
 					1: { id: 1, x: -50, y: -30, width: 100, height: 60, level: 1, rootId: 1 },
 					11: { id: 11, x: -60, y: 50, width: 10, height: 10, level: 2, rootId: 1},
 					111: { id: 111, x: -60, y: 90, width: 10, height: 11, level: 3, rootId: 1},
@@ -2990,8 +2970,8 @@ describe('MapModel', function () {
 
 	});
 	describe('getStandardReorderBoundary', function () {
-		var underTest, layout, idea, margin,
-			firstBoundary = function (nodeId) {
+		let idea, margin, layout;
+		const firstBoundary = function (nodeId) {
 				return underTest.getStandardReorderBoundary(nodeId)[0];
 			},
 			secondBoundary = function (nodeId) {
@@ -2999,40 +2979,41 @@ describe('MapModel', function () {
 			};
 		beforeEach(function () {
 			idea = MAPJS.content({
-					id: 1,
-					ideas: {
-						1: {
-							id: 11
-						},
-						2: {
-							id: 12,
-							ideas: {
-								1: {id: 121},
-								2: {id: 122}
-							}
-						},
-						3: {
-							id: 13,
-							ideas: {
-								1: {id: 131}
-							}
-						},
-						'-1': {
-							id: 14,
-							ideas: {
-								1: {id: 141},
-								2: {id: 142}
-							}
-						},
-						'-2': {
-							id: 15
-						},
-						'-3': {
-							id: 16
+				id: 1,
+				ideas: {
+					1: {
+						id: 11
+					},
+					2: {
+						id: 12,
+						ideas: {
+							1: {id: 121},
+							2: {id: 122}
 						}
+					},
+					3: {
+						id: 13,
+						ideas: {
+							1: {id: 131}
+						}
+					},
+					'-1': {
+						id: 14,
+						ideas: {
+							1: {id: 141},
+							2: {id: 142}
+						}
+					},
+					'-2': {
+						id: 15
+					},
+					'-3': {
+						id: 16
 					}
-				});
-			layout = { nodes: {
+				}
+			});
+			layout = {
+				nodes: {
 					1: { id: 1, x: -50, y: -30, width: 100, height: 60, level: 1, rootId: 1 }, /* ends at x= 50 */
 					11: { id: 11, x: 80, y: -100, width: 10, height: 10, level: 2, rootId: 1},
 					12: { id: 12, x: 70, y: -60, width: 30, height: 10, level: 2, rootId: 1},  /* ends at x=100 */
@@ -3104,7 +3085,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('focusAndSelect', function () {
-		var underTest, anIdea, listener;
+		let underTest, anIdea, listener;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -3140,12 +3121,12 @@ describe('MapModel', function () {
 		});
 	});
 	describe('contextForNode', function () {
-		var underTest, anIdea, clipboard,
-				layoutCalculator = function () {
-				return {
-					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
-				};
+		let underTest, anIdea, clipboard;
+		const layoutCalculator = function () {
+			return {
+				nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
 			};
+		};
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -3334,7 +3315,7 @@ describe('MapModel', function () {
 
 	});
 	describe('requestContextMenu', function () {
-		var underTest, anIdea, listener;
+		let underTest, anIdea, listener;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -3360,27 +3341,25 @@ describe('MapModel', function () {
 			underTest.selectNode(3);
 		});
 		it('dispatches contextMenuRequested with the currently selected idea and coordinates from the argument', function () {
-			var result = underTest.requestContextMenu(100, 300);
+			const result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeTruthy();
 			expect(listener).toHaveBeenCalledWith(3, 100, 300);
 		});
 		it('does not dispatch event if input is disabled', function () {
-			var result;
 			underTest.setInputEnabled(false);
-			result = underTest.requestContextMenu(100, 300);
+			const result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
 		it('does not dispatch event if editing is disabled', function () {
-			var result;
 			underTest.setEditingEnabled(false);
-			result = underTest.requestContextMenu(100, 300);
+			const result = underTest.requestContextMenu(100, 300);
 			expect(result).toBeFalsy();
 			expect(listener).not.toHaveBeenCalled();
 		});
 	});
 	describe('root node operations', function () {
-		var underTest, anIdea, changeListener, layout;
+		let underTest, anIdea, changeListener, layout;
 		beforeEach(function () {
 			anIdea = MAPJS.content({
 				id: 1,
@@ -3458,7 +3437,7 @@ describe('MapModel', function () {
 
 		});
 		describe('insertRoot', function () {
-			var nodeEditRequestedListener;
+			let nodeEditRequestedListener;
 			beforeEach(function () {
 				nodeEditRequestedListener = jasmine.createSpy('node edit requested');
 				underTest.addEventListener('nodeEditRequested', nodeEditRequestedListener);

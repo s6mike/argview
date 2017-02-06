@@ -1,7 +1,7 @@
 /*global jQuery, describe, it, beforeEach, afterEach, expect, spyOn*/
 describe('toHaveBeenCalledOnJQueryObject matcher', function () {
 	'use strict';
-	var underTest1, underTest2;
+	let underTest1, underTest2;
 	beforeEach(function () {
 		underTest1 = jQuery('<div id="fst">').appendTo('body');
 		underTest2 = jQuery('<div id="snd">').appendTo('body');
@@ -21,7 +21,7 @@ describe('toHaveBeenCalledOnJQueryObject matcher', function () {
 });
 describe('toHaveOwnStyle', function () {
 	'use strict';
-	var underTest;
+	let underTest;
 	beforeEach(function () {
 		underTest = jQuery('<div id="fst">').appendTo('body');
 	});

@@ -1,7 +1,8 @@
-/*global describe, it, expect, MAPJS, beforeEach*/
+/*global describe, it, expect, beforeEach, require */
+const MAPJS = require('../dist/index');
 describe('MAPJS.MemoryClipboard', function () {
 	'use strict';
-	var underTest;
+	let underTest;
 	beforeEach(function () {
 		underTest = new MAPJS.MemoryClipboard();
 	});
@@ -27,7 +28,7 @@ describe('MAPJS.MemoryClipboard', function () {
 
 	});
 	it('deep clones the object when stored', function () {
-		var content = [1, 2, 'c', {d: 1}];
+		const content = [1, 2, 'c', {d: 1}];
 		underTest.put(content);
 		content[0] = 2;
 
@@ -35,7 +36,7 @@ describe('MAPJS.MemoryClipboard', function () {
 	});
 	it('deep clones the object when retrieved', function () {
 		underTest.put([1, 2, 'c', {d: 1}]);
-		var retrieved = underTest.get();
+		const retrieved = underTest.get();
 		retrieved[0] = 2;
 
 		expect(underTest.get()).toEqual([1, 2, 'c', {d: 1}]);
