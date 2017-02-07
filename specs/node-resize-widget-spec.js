@@ -1,6 +1,6 @@
 /*global beforeEach, describe, afterEach, expect, it,jasmine, spyOn, require */
 const jQuery = require('jquery');
-require('../dist/index');
+require('../src/node-resize-widget');
 describe('nodeResizeWidget', function () {
 	'use strict';
 	let element, mapModel, stagePositionForPointEvent, underTest, textElement;

@@ -1,12 +1,15 @@
 /*global jasmine, beforeEach, describe, expect, it, spyOn, require*/
 const _ = require('underscore'),
-	MAPJS = require('../dist/index'),
+	MapModel = require('../src/map-model'),
+	content = require('mindmup-mapjs-model').content,
 	jQuery = require('jquery');
+
+require('../src/map-toolbar-widget');
 describe('mapToolbarWidget', function () {
 	'use strict';
 	let mapModel, element;
 	beforeEach(function () {
-		mapModel = new MAPJS.MapModel(function () {
+		mapModel = new MapModel(function () {
 			return [];
 		});
 		element = jQuery(
@@ -63,7 +66,7 @@ describe('mapToolbarWidget', function () {
 				return 'x';
 			}
 		};
-		mapModel.setIdea(MAPJS.content({}));
+		mapModel.setIdea(content({}));
 		mapModel.dispatchEvent('nodeSelectionChanged');
 		expect(input.val()).toBe('x');
 		expect(spy).toHaveBeenCalled();

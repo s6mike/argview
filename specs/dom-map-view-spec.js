@@ -1,7 +1,15 @@
 /*global describe, it, beforeEach, afterEach, expect, navigator, jasmine, spyOn, window, document, require */
-const MAPJS = require('../dist/index'),
-	jQuery = require('jquery'),
-	_ = require('underscore');
+const jQuery = require('jquery'),
+	_ = require('underscore'),
+	createSVG = require('../src/create-svg'),
+	DOMRender = require('../src/dom-render'),
+	Theme = require('mindmup-mapjs-layout').Theme,
+	colorToRGB = require('mindmup-mapjs-layout').colorToRGB,
+	observable = require('mindmup-mapjs-model').observable,
+	Connectors = require('mindmup-mapjs-layout').Connectors;
+
+require('../src/dom-map-view');
+
 describe('innerText', function () {
 	'use strict';
 	let underTest;
@@ -441,23 +449,23 @@ describe('updateConnector', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').data('styles', ['funky']).css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').data('styles', ['bleak']).css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
+		underTest = createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
-		anotherConnector = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
+		anotherConnector = createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
 	afterEach(function () {
-		MAPJS.DOMRender.theme = undefined;
+		DOMRender.theme = undefined;
 	});
 	it('calls themePath with styles', function () {
-		spyOn(MAPJS.Connectors, 'themePath').and.callThrough();
+		spyOn(Connectors, 'themePath').and.callThrough();
 		underTest.updateConnector();
-		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[0].styles).toEqual(['funky']);
-		expect(MAPJS.Connectors.themePath.calls.mostRecent().args[1].styles).toEqual(['bleak']);
+		expect(Connectors.themePath.calls.mostRecent().args[0].styles).toEqual(['funky']);
+		expect(Connectors.themePath.calls.mostRecent().args[1].styles).toEqual(['bleak']);
 	});
 	describe('should set the path attributes', function () {
 		let path;
 		beforeEach(function () {
-			spyOn(MAPJS.Connectors, 'themePath').and.returnValue({'d': 'Z', color: 'black', width: 3.0, position: {top: 0}});
+			spyOn(Connectors, 'themePath').and.returnValue({'d': 'Z', color: 'black', width: 3.0, position: {top: 0}});
 			underTest.updateConnector();
 			path = underTest.find('path');
 		});
@@ -497,7 +505,7 @@ describe('updateConnector', function () {
 		expect(underTest.css('width')).toEqual('132px');
 	});
 	it('updates the existing curve if one is present', function () {
-		const path = MAPJS.createSVG('path').appendTo(underTest);
+		const path = createSVG('path').appendTo(underTest);
 		underTest.updateConnector();
 		expect(underTest.find('path').length).toBe(1);
 		expect(underTest.find('path')[0]).toEqual(path[0]);
@@ -523,7 +531,7 @@ describe('updateConnector', function () {
 		it('will update if the shapes did not move, but the theme changed', function () {
 			underTest.updateConnector();
 			underTest.find('path').attr('d', '');
-			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'new'});
+			DOMRender.theme = new Theme({name: 'new'});
 
 			underTest.updateConnector();
 			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,190 140,142');
@@ -568,9 +576,9 @@ describe('updateLink', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
+		underTest = createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
-		anotherLink = MAPJS.createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
+		anotherLink = createSVG().appendTo('body').attr('data-role', 'test-link').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
 	it('returns itself for chaining', function () {
 		expect(underTest.updateLink()[0]).toEqual(underTest[0]);
@@ -602,11 +610,11 @@ describe('updateLink', function () {
 		/*jslint newcap:true*/
 		underTest.data('color', 'blue').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
-		expect(MAPJS.colorToRGB(underTest.find('path.mapjs-link').css('stroke'))).toEqual(MAPJS.colorToRGB('#0000FF'));
+		expect(colorToRGB(underTest.find('path.mapjs-link').css('stroke'))).toEqual(colorToRGB('#0000FF'));
 	});
 
 	it('updates the existing line if one is present', function () {
-		path = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(underTest);
+		path = createSVG('path').attr('class', 'mapjs-link').appendTo(underTest);
 		underTest.updateLink();
 		expect(underTest.find('path.mapjs-link').length).toBe(1);
 		expect(underTest.find('path.mapjs-link')[0]).toEqual(path[0]);
@@ -616,7 +624,7 @@ describe('updateLink', function () {
 		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('inline');
 	});
 	it('updates an existing arrow if one is present', function () {
-		path = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
+		path = createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
 		underTest.data('arrow', 'true').updateLink();
 		expect(underTest.find('path.mapjs-arrow').length).toBe(1);
 		expect(underTest.find('path.mapjs-arrow')[0]).toEqual(path[0]);
@@ -625,10 +633,10 @@ describe('updateLink', function () {
 		/*jslint newcap:true*/
 		underTest.data('arrow', 'true').data('color', '#FF7577').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
-		expect(MAPJS.colorToRGB(underTest.find('path.mapjs-arrow').css('fill'))).toEqual(MAPJS.colorToRGB('#FF7577'));
+		expect(colorToRGB(underTest.find('path.mapjs-arrow').css('fill'))).toEqual(colorToRGB('#FF7577'));
 	});
 	it('hides an existing arrow when the attribute is no longer present', function () {
-		MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
+		createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
 		underTest.updateLink();
 		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('none');
 	});
@@ -714,7 +722,7 @@ describe('updateNodeContent', function () {
 	afterEach(function () {
 		underTest.remove();
 		style.remove();
-		MAPJS.DOMRender.theme = undefined;
+		DOMRender.theme = undefined;
 
 	});
 	it('returns itself to allow chaining', function () {
@@ -723,7 +731,7 @@ describe('updateNodeContent', function () {
 	describe('styles', function () {
 		it('sets the data styles from the theme', function () {
 			nodeContent.attr = { group: 'blue' };
-			MAPJS.DOMRender.theme = new MAPJS.Theme({});
+			DOMRender.theme = new Theme({});
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.data('styles')).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
 		});
@@ -749,7 +757,7 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('height')).toBe(40);
 		});
 		it('tags the node with a cache mark', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme({name: 'blue'});
+			DOMRender.theme = new Theme({name: 'blue'});
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, width: undefined, styles: ['level_3', 'default'], title: 'Hello World!', theme: 'blue', icon: undefined, note: false, collapsed: undefined});
 		});
@@ -793,7 +801,7 @@ describe('updateNodeContent', function () {
 	});
 	describe('setting the styles', function () {
 		beforeEach(function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme({});
+			DOMRender.theme = new Theme({});
 		});
 		it('sets the level attribute to the node content level', function () {
 			underTest.updateNodeContent(nodeContent);
@@ -825,7 +833,7 @@ describe('updateNodeContent', function () {
 	});
 	describe('setting the colortext attribute', function () {
 		it('sets the mapjs-node-colortext class if the border is underline', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme({
+			DOMRender.theme = new Theme({
 				node: [{
 					name: 'default',
 					border: {
@@ -838,7 +846,7 @@ describe('updateNodeContent', function () {
 			expect(underTest.hasClass('mapjs-node-colortext')).toBeTruthy();
 		});
 		it('clears the colortext class if the border is not underline', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme({
+			DOMRender.theme = new Theme({
 				node: [{
 					name: 'default',
 					border: {
@@ -867,7 +875,7 @@ describe('updateNodeContent', function () {
 					background: 'rgb(103, 101, 119)'
 				}
 			};
-			MAPJS.DOMRender.theme = new MAPJS.Theme({
+			DOMRender.theme = new Theme({
 				node: [{
 					name: 'default',
 					border: {
@@ -927,7 +935,7 @@ describe('updateNodeContent', function () {
 		});
 		describe('when icon is set', function () {
 			beforeEach(function () {
-				MAPJS.DOMRender.fixedLayout = false;
+				DOMRender.fixedLayout = false;
 				nodeContent.attr = {
 					icon: {
 						url: 'http://iconurl/',
@@ -994,7 +1002,7 @@ describe('updateNodeContent', function () {
 				}
 			});
 			it('positions right icons right of node text and vertically centers the text for a fixed layouts', function () {
-				MAPJS.DOMRender.fixedLayout = true;
+				DOMRender.fixedLayout = true;
 				nodeContent.attr.icon.position = 'right';
 				underTest.updateNodeContent(nodeContent);
 				expect(underTest.css('background-position')).toBe('170px 50%');
@@ -1024,7 +1032,7 @@ describe('updateNodeContent', function () {
 				expect(textBox.css('margin-left')).toBe('120px');
 			});
 			it('positions bottom icons bottom of node text and horizontally centers the text for fixed layout', function () {
-				MAPJS.DOMRender.fixedLayout = true;
+				DOMRender.fixedLayout = true;
 				nodeContent.attr.icon.position = 'bottom';
 				underTest.updateNodeContent(nodeContent);
 				if (!isHeadless()) {
@@ -1257,7 +1265,7 @@ describe('updateNodeContent', function () {
 	});
 	describe('decoration margin handling', function () {
 		it('adds a left margin for decorations when they are on the left', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1278,7 +1286,7 @@ describe('updateNodeContent', function () {
 			expect(underTest.data('innerRect').height).toBe(40);
 		});
 		it('adds a right margin for decorations when they are on the right', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1300,7 +1308,7 @@ describe('updateNodeContent', function () {
 		});
 
 		it('adds a top margin for decorations when they are on the top without overlap', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1322,7 +1330,7 @@ describe('updateNodeContent', function () {
 
 		});
 		it('clears a top margin for decorations when the node does not have decorations', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1345,7 +1353,7 @@ describe('updateNodeContent', function () {
 		});
 
 		it('adds a top margin for decorations when they are on the top with overlap', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1370,7 +1378,7 @@ describe('updateNodeContent', function () {
 
 
 		it('adds a bottom margin for decorations when they are on the bottom', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1393,7 +1401,7 @@ describe('updateNodeContent', function () {
 		});
 
 		it('adds a bottom margin for decorations when they are on the bottom with overlap', function () {
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1418,7 +1426,7 @@ describe('updateNodeContent', function () {
 
 		it('clears the other margins to ensure stale theme changes are reverted', function () {
 			underTest.css('margin-top', '10px');
-			MAPJS.DOMRender.theme = new MAPJS.Theme(
+			DOMRender.theme = new Theme(
 				{
 					node: [{
 						name: 'default',
@@ -1439,7 +1447,7 @@ describe('updateNodeContent', function () {
 
 	});
 });
-describe('MAPJS.DOMRender', function () {
+describe('DOMRender', function () {
 	'use strict';
 	describe('nodeCacheMark', function () {
 
@@ -1449,7 +1457,7 @@ describe('MAPJS.DOMRender', function () {
 			['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}],
 			['titles and groups', {level: 1, title: 'zeka', x: 1, attr: {group: 'xx', ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, group: 'xx'}}]
 		], function (first, second) {
-			expect(MAPJS.DOMRender.nodeCacheMark(first)).toEqual(MAPJS.DOMRender.nodeCacheMark(second));
+			expect(DOMRender.nodeCacheMark(first)).toEqual(DOMRender.nodeCacheMark(second));
 		});
 		describe('returns different values for two nodes if they differ in the', [
 			['titles', {title: 'zeka'}, {title: 'zeka2'}],
@@ -1460,8 +1468,8 @@ describe('MAPJS.DOMRender', function () {
 			['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
 			['icon position', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'left'} }}, {title: 'zeka', attr: {icon: {width: 100, height: 120, position: 'top'}}}]
 		], function (first, second) {
-			MAPJS.DOMRender.theme = new MAPJS.Theme({});
-			expect(MAPJS.DOMRender.nodeCacheMark(first)).not.toEqual(MAPJS.DOMRender.nodeCacheMark(second));
+			DOMRender.theme = new Theme({});
+			expect(DOMRender.nodeCacheMark(first)).not.toEqual(DOMRender.nodeCacheMark(second));
 		});
 	});
 	describe('dimensionProvider', function () {
@@ -1478,7 +1486,7 @@ describe('MAPJS.DOMRender', function () {
 		});
 		it('calculates the width and height of node by drawing an invisible box with .mapjs-node and detaching it after', function () {
 			newElement = jQuery('<style type="text/css">.mapjs-node { width:456px !important; min-height:789px !important}</style>').appendTo('body');
-			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 456, height: 789});
+			expect(DOMRender.dimensionProvider(idea)).toEqual({width: 456, height: 789});
 			expect(jQuery('.mapjs-node').length).toBe(0);
 		});
 		describe('when ideas has a width attribute', function () {
@@ -1491,7 +1499,7 @@ describe('MAPJS.DOMRender', function () {
 						width: 500
 					}
 				};
-				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
+				expect(DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
 			});
 			it('should use the width if greater than than the max unwrappable text width', function () {
 				idea.attr = {
@@ -1500,7 +1508,7 @@ describe('MAPJS.DOMRender', function () {
 					}
 				};
 				idea.title = 'some short words are in this title that is still a quite long piece of text';
-				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
+				expect(DOMRender.dimensionProvider(idea)).toEqual({width: 500, height: 789});
 			});
 			it('should use max unwrappable text width if greater than the prefferred width', function () {
 				idea.attr = {
@@ -1509,7 +1517,7 @@ describe('MAPJS.DOMRender', function () {
 					}
 				};
 				idea.title = 'someWshortWwordsWareWinWthisWtitleWthatWisWstillWaWquiteWlongWpieceWofWtext';
-				expect(MAPJS.DOMRender.dimensionProvider(idea).width).toBeGreaterThan(500);
+				expect(DOMRender.dimensionProvider(idea).width).toBeGreaterThan(500);
 			});
 		});
 		it('takes level into consideration when calculating node dimensions', function () {
@@ -1517,8 +1525,8 @@ describe('MAPJS.DOMRender', function () {
 								'.mapjs-node { width:356px !important; min-height:389px !important} ' +
 								'.mapjs-node[mapjs-level="1"] { width:456px !important; min-height:789px !important} ' +
 								'</style>').appendTo('body');
-			expect(MAPJS.DOMRender.dimensionProvider(idea, 1)).toEqual({width: 456, height: 789});
-			expect(MAPJS.DOMRender.dimensionProvider(idea, 2)).toEqual({width: 356, height: 389});
+			expect(DOMRender.dimensionProvider(idea, 1)).toEqual({width: 456, height: 789});
+			expect(DOMRender.dimensionProvider(idea, 2)).toEqual({width: 356, height: 389});
 
 		});
 		it('applies the updateNodeContent function while calculating dimensions', function () {
@@ -1527,7 +1535,7 @@ describe('MAPJS.DOMRender', function () {
 				this.css('height', '786px');
 				return this;
 			};
-			expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 654, height: 786});
+			expect(DOMRender.dimensionProvider(idea)).toEqual({width: 654, height: 786});
 		});
 		describe('caching', function () {
 			beforeEach(function () {
@@ -1541,13 +1549,13 @@ describe('MAPJS.DOMRender', function () {
 			it('looks up a DOM object with the matching node ID and if the node cache mark matches, returns the DOM width without re-applying content', function () {
 				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
 				newElement.addNodeCacheMark(idea);
-				expect(MAPJS.DOMRender.dimensionProvider(idea)).toEqual({width: 111, height: 222});
+				expect(DOMRender.dimensionProvider(idea)).toEqual({width: 111, height: 222});
 				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
 			});
 			it('ignores DOM objects where the cache mark does not match', function () {
 				newElement = jQuery('<div>').data({width: 111, height: 222}).attr('id', 'node_foo_1').appendTo('body');
 				newElement.addNodeCacheMark(idea);
-				expect(MAPJS.DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
+				expect(DOMRender.dimensionProvider(_.extend(idea, {title: 'not zeka'}))).toEqual({width: 654, height: 786});
 				expect(jQuery.fn.updateNodeContent).toHaveBeenCalled();
 			});
 			it('passes the level as an override when finding the cache mark', function () {
@@ -1555,7 +1563,7 @@ describe('MAPJS.DOMRender', function () {
 				idea.level = 5;
 				newElement.addNodeCacheMark(idea);
 				idea.level = undefined;
-				expect(MAPJS.DOMRender.dimensionProvider(idea, 5)).toEqual({width: 111, height: 222});
+				expect(DOMRender.dimensionProvider(idea, 5)).toEqual({width: 111, height: 222});
 				expect(jQuery.fn.updateNodeContent).not.toHaveBeenCalled();
 			});
 		});
@@ -1567,14 +1575,14 @@ describe('MAPJS.DOMRender', function () {
 			imageInsertController,
 			resourceTranslator;
 		beforeEach(function () {
-			mapModel = MAPJS.observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			mapModel.isEditingEnabled.and.returnValue(true);
-			imageInsertController = MAPJS.observable({});
+			imageInsertController = observable({});
 			viewPort = jQuery('<div>').appendTo('body');
 			stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 			resourceTranslator = jasmine.createSpy('resourceTranslator');
-			MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
+			DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
 			spyOn(jQuery.fn, 'queueFadeIn').and.callThrough();
 		});
 		afterEach(function () {
@@ -1741,7 +1749,7 @@ describe('MAPJS.DOMRender', function () {
 				it('on touch devices sends clickNode message to map model and requests the context menu to be shown', function () {
 					stage.remove();
 					stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
-					MAPJS.DOMRender.viewController(mapModel, stage, true);
+					DOMRender.viewController(mapModel, stage, true);
 					mapModel.dispatchEvent('nodeCreated', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
 					underTest = stage.children('[data-mapjs-role=node]').first();
 
@@ -2239,10 +2247,10 @@ describe('MAPJS.DOMRender', function () {
 			});
 			describe('expands the stage if needed - using a margin', function () {
 				beforeEach(function () {
-					MAPJS.DOMRender.stageMargin = {top: 10, left: 11, bottom: 12, right: 13};
+					DOMRender.stageMargin = {top: 10, left: 11, bottom: 12, right: 13};
 				});
 				afterEach(function () {
-					MAPJS.DOMRender.stageMargin = false;
+					DOMRender.stageMargin = false;
 				});
 				it('grows the stage from the top if y would be negative', function () {
 					mapModel.dispatchEvent('nodeMoved', {x: 20, y: -120, width: 20, height: 10, title: 'zeka', id: 1});
@@ -2390,15 +2398,15 @@ describe('MAPJS.DOMRender', function () {
 						resourceTranslator = jasmine.createSpy('resourceTranslator');
 					});
 					it('should subscribe to mapModel nodeEditRequested event when no options supplied', function () {
-						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
+						DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator);
 						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 					it('should subscribe to mapModel nodeEditRequested event when no options.inlineEditingDisabled is false', function () {
-						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: false});
+						DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: false});
 						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 					it('should not subscribe to mapModel nodeEditRequested event when true', function () {
-						MAPJS.DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: true});
+						DOMRender.viewController(mapModel, stage, false, imageInsertController, resourceTranslator, {inlineEditingDisabled: true});
 						expect(mapModel.addEventListener).not.toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 				});

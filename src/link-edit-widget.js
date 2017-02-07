@@ -2,10 +2,11 @@
 jQuery.fn.linkEditWidget = function (mapModel) {
 	'use strict';
 	return this.each(function () {
-		var element = jQuery(this), currentLink, width, height, colorElement, lineStyleElement, arrowElement;
-		colorElement = element.find('.color');
-		lineStyleElement = element.find('.lineStyle');
-		arrowElement = element.find('.arrow');
+		const element = jQuery(this),
+			colorElement = element.find('.color'),
+			lineStyleElement = element.find('.lineStyle'),
+			arrowElement = element.find('.arrow');
+		let currentLink, width, height;
 		mapModel.addEventListener('linkSelected', function (link, selectionPoint, linkStyle) {
 			currentLink = link;
 			element.show();

@@ -1,13 +1,16 @@
-/*global $, MAPJS*/
+/*global require */
+const $ = require('jquery'),
+	Theme = require('mindmup-mapjs-layout').Theme,
+	DOMRender = require('./dom-render');
 $.fn.themeCssWidget = function (themeProvider, themeProcessor, mapModel) {
 	'use strict';
-	var element = $(this),
+	const element = $(this),
 		activateTheme =	function (theme) {
-			var themeJson = themeProvider[(theme || 'default')];
+			const themeJson = themeProvider[(theme || 'default')];
 			if (!themeJson) {
 				return;
 			}
-			MAPJS.DOMRender.theme = new MAPJS.Theme(themeJson);
+			DOMRender.theme = new Theme(themeJson);
 			element.text(themeProcessor.process(themeJson).css);
 		};
 	activateTheme('default');

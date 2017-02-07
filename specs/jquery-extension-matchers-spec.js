@@ -1,4 +1,5 @@
-/*global jQuery, describe, it, beforeEach, afterEach, expect, spyOn*/
+/*global describe, it, beforeEach, afterEach, expect, spyOn, require */
+const jQuery = require('jquery');
 describe('toHaveBeenCalledOnJQueryObject matcher', function () {
 	'use strict';
 	let underTest1, underTest2;

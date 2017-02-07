@@ -1,7 +1,6 @@
-/* global module, require */
+/* global module */
 // Karma configuration
 // Generated on Mon Jan 09 2017 02:10:18 GMT+0100 (CET)
-const webpack = require('webpack');
 module.exports = function (config) {
 	'use strict';
 	config.set({
@@ -33,12 +32,7 @@ module.exports = function (config) {
 		},
 
 		webpack: {
-			devtool: 'inline-source-map',
-			plugins: [new webpack.ProvidePlugin({
-				$: 'jquery',
-				jQuery: 'jquery',
-				_: 'underscore'
-			})]
+			devtool: 'inline-source-map'
 		},
 
 		webpackMiddleware: {

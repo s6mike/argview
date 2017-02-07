@@ -1,11 +1,13 @@
-/*global jQuery*/
+/*global require */
+const jQuery = require('jquery');
 jQuery.fn.mapToolbarWidget = function (mapModel) {
 	'use strict';
-	var clickMethodNames = ['insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo',
+	const clickMethodNames = ['insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo',
 			'copy', 'cut', 'paste', 'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
 		changeMethodNames = ['updateStyle'];
 	return this.each(function () {
-		var element = jQuery(this), preventRoundtrip = false;
+		const element = jQuery(this);
+		let preventRoundtrip = false;
 		mapModel.addEventListener('nodeSelectionChanged', function () {
 			preventRoundtrip = true;
 			element.find('.updateStyle[data-mm-target-property]').val(function () {
@@ -28,7 +30,7 @@ jQuery.fn.mapToolbarWidget = function (mapModel) {
 				if (preventRoundtrip) {
 					return;
 				}
-				var tool = jQuery(this);
+				const tool = jQuery(this);
 				if (tool.data('mm-target-property')) {
 					mapModel[methodName]('toolbar', tool.data('mm-target-property'), tool.val());
 				}

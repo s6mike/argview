@@ -1,8 +1,36 @@
-/*global jQuery, _, MAPJS, document, window*/
+/*global document, window, require */
+const jQuery = require('jquery'),
+	_ = require('underscore'),
+	DOMRender = require('./dom-render'),
+	Connectors = require('mindmup-mapjs-layout').Connectors,
+	URLHelper = require('mindmup-mapjs-model').URLHelper,
+	foregroundStyle = require('mindmup-mapjs-layout').foregroundStyle,
+	formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
+	createSVG = require('./create-svg'),
+	cleanDOMId = function (s) {
+		'use strict';
+		return s.replace(/[^A-Za-z0-9_-]/g, '_');
+	},
+	connectorKey = function (connectorObj) {
+		'use strict';
+		return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
+	},
+	linkKey = function (linkObj) {
+		'use strict';
+		return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
+	},
+	nodeKey = function (id) {
+		'use strict';
+		return cleanDOMId('node_' + id);
+	};
+
+
+require('./hammer-draggable');
+require('./node-resize-widget');
 
 jQuery.fn.setThemeClassList = function (classList) {
 	'use strict';
-	var domElement = this[0],
+	const domElement = this[0],
 		filterClasses = function (classes) {
 			return _.filter(classes, function (c) {
 				return /^level_.+/.test(c) ||  /^attr_.+/.test(c);
@@ -17,58 +45,9 @@ jQuery.fn.setThemeClassList = function (classList) {
 	return this;
 };
 
-MAPJS.DOMRender = {
-	svgPixel: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
-	nodeCacheMark: function (idea, levelOverride) {
-		'use strict';
-		return {
-			title: idea.title,
-			width: idea.attr && idea.attr.style && idea.attr.style.width,
-			theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name,
-			icon: idea.attr && idea.attr.icon && _.pick(idea.attr.icon, 'width', 'height', 'position'),
-			collapsed: idea.attr && idea.attr.collapsed,
-			note: !!(idea.attr && idea.attr.note),
-			styles:  MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles(idea.level  || levelOverride, idea.attr),
-			level: idea.level || levelOverride
-		};
-	},
-	dummyTextBox: jQuery('<div>').addClass('mapjs-node').css({position: 'absolute', visibility: 'hidden'}),
-	dimensionProvider: function (idea, level) {
-		'use strict'; /* support multiple stages? */
-		var textBox = jQuery(document).nodeWithId(idea.id),
-			translateToPixel = function () {
-				return MAPJS.DOMRender.svgPixel;
-			},
-			result;
-		if (textBox && textBox.length > 0) {
-			if (_.isEqual(textBox.data('nodeCacheMark'), MAPJS.DOMRender.nodeCacheMark(idea, level))) {
-				return _.pick(textBox.data(), 'width', 'height');
-			}
-		}
-		textBox = MAPJS.DOMRender.dummyTextBox;
-		textBox.appendTo('body').updateNodeContent(idea, translateToPixel, level);
-		result = {
-			width: textBox.outerWidth(true),
-			height: textBox.outerHeight(true)
-		};
-		textBox.detach();
-		return result;
-	},
-	layoutCalculator: function (contentAggregate) {
-		'use strict';
-		return MAPJS.calculateLayout(contentAggregate, MAPJS.DOMRender.dimensionProvider, {
-			theme: MAPJS.DOMRender.theme
-		});
-	},
-	fixedLayout: false
-};
-MAPJS.createSVG = function (tag) {
-	'use strict';
-	return jQuery(document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg'));
-};
 jQuery.fn.getBox = function () {
 	'use strict';
-	var domShape = this && this[0];
+	const domShape = this && this[0];
 	if (!domShape) {
 		return false;
 	}
@@ -81,7 +60,7 @@ jQuery.fn.getBox = function () {
 };
 jQuery.fn.getDataBox = function () {
 	'use strict';
-	var domShapeData = this.data();
+	const domShapeData = this.data();
 	if (domShapeData && domShapeData.width && domShapeData.height) {
 		return {
 			top: domShapeData.y,
@@ -96,7 +75,7 @@ jQuery.fn.getDataBox = function () {
 
 jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 	'use strict';
-	var element = jQuery(this),
+	const element = jQuery(this),
 		shapeFrom = element.data('nodeFrom'),
 		shapeTo = element.data('nodeTo'),
 		fromBox = shapeFrom && shapeFrom.getDataBox(),
@@ -123,7 +102,7 @@ jQuery.fn.animateConnectorToPosition = function (animationOptions, tolerance) {
 };
 jQuery.fn.queueFadeOut = function (options) {
 	'use strict';
-	var element = this;
+	const element = this;
 	return element.fadeOut(_.extend({
 		complete: function () {
 			if (element.is(':focus')) {
@@ -135,7 +114,7 @@ jQuery.fn.queueFadeOut = function (options) {
 };
 jQuery.fn.queueFadeIn = function (options) {
 	'use strict';
-	var element = this;
+	const element = this;
 	return element
 		.css('opacity', 0)
 		.animate(
@@ -148,7 +127,7 @@ jQuery.fn.queueFadeIn = function (options) {
 
 jQuery.fn.updateStage = function () {
 	'use strict';
-	var data = this.data(),
+	const data = this.data(),
 		size = {
 			'min-width': Math.round(data.width - data.offsetX),
 			'min-height': Math.round(data.height - data.offsetY),
@@ -164,7 +143,7 @@ jQuery.fn.updateStage = function () {
 	return this;
 };
 
-MAPJS.DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector, position) {
+DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector, position) {
 	'use strict';
 	if (calculatedConnector.nodeUnderline) {
 		connectorCurve.d += 'M' + (calculatedConnector.nodeUnderline.from.x - position.left) + ',' + (calculatedConnector.nodeUnderline.from.y - position.top) + ' H' + (calculatedConnector.nodeUnderline.to.x - position.left);
@@ -175,12 +154,13 @@ MAPJS.DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector,
 jQuery.fn.updateConnector = function (canUseData) {
 	'use strict';
 	return jQuery.each(this, function () {
-		var element = jQuery(this),
+		let connection = false, pathElement, fromBox, toBox, changeCheck = false;
+		const element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			connection, pathElement, fromBox, toBox, changeCheck,
+
 			applyInnerRect = function (shape, box) {
-				var innerRect = shape.data().innerRect;
+				const innerRect = shape.data().innerRect;
 				if (innerRect) {
 					box.left += innerRect.dx;
 					box.top += innerRect.dy;
@@ -207,16 +187,16 @@ jQuery.fn.updateConnector = function (canUseData) {
 		*/
 		fromBox.styles = shapeFrom.data('styles');
 		toBox.styles = shapeTo.data('styles');
-		changeCheck = {from: fromBox, to: toBox, theme: MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.name };
+		changeCheck = {from: fromBox, to: toBox, theme: DOMRender.theme &&  DOMRender.theme.name };
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}
 		element.data('changeCheck', changeCheck);
-		connection = MAPJS.Connectors.themePath(fromBox, toBox, MAPJS.DOMRender.theme);
+		connection = Connectors.themePath(fromBox, toBox, DOMRender.theme);
 		pathElement = element.find('path');
 		element.css(connection.position);
 		if (pathElement.length === 0) {
-			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
+			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
 
 		// if only the relative position changed, do not re-update the curve!!!!
@@ -232,20 +212,20 @@ jQuery.fn.updateConnector = function (canUseData) {
 jQuery.fn.updateLink = function () {
 	'use strict';
 	return jQuery.each(this, function () {
-		var element = jQuery(this),
+		const element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-			connection,
-			pathElement = element.find('path.mapjs-link'),
-			hitElement = element.find('path.mapjs-link-hit'),
-			arrowElement = element.find('path.mapjs-arrow'),
 			n = Math.tan(Math.PI / 9),
 			dashes = {
 				dashed: '8, 8',
 				solid: ''
 			},
-			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color'),
-			fromBox, toBox, changeCheck,
+			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color');
+		let connection = false,
+			pathElement = element.find('path.mapjs-link'),
+			hitElement = element.find('path.mapjs-link-hit'),
+			arrowElement = element.find('path.mapjs-arrow'),
+			fromBox = false, toBox = false, changeCheck = false,
 			a1x, a1y, a2x, a2y, len, iy, m, dx, dy;
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
@@ -261,11 +241,11 @@ jQuery.fn.updateLink = function () {
 
 		element.data('changeCheck', changeCheck);
 
-		connection = MAPJS.Connectors.linkPath(fromBox, toBox);
+		connection = Connectors.linkPath(fromBox, toBox);
 		element.css(connection.position);
 
 		if (pathElement.length === 0) {
-			pathElement = MAPJS.createSVG('path').attr('class', 'mapjs-link').appendTo(element);
+			pathElement = createSVG('path').attr('class', 'mapjs-link').appendTo(element);
 		}
 		pathElement.attr({
 			'd': connection.d,
@@ -273,7 +253,7 @@ jQuery.fn.updateLink = function () {
 		}).css('stroke', attrs.color);
 
 		if (hitElement.length === 0) {
-			hitElement = MAPJS.createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
+			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
 		}
 		hitElement.attr({
 			'd': connection.d
@@ -281,7 +261,7 @@ jQuery.fn.updateLink = function () {
 
 		if (attrs.arrow) {
 			if (arrowElement.length === 0) {
-				arrowElement = MAPJS.createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
+				arrowElement = createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 			}
 			len = 14;
 			dx = connection.conn.to.x - connection.conn.from.x;
@@ -318,21 +298,21 @@ jQuery.fn.updateLink = function () {
 
 jQuery.fn.addNodeCacheMark = function (idea) {
 	'use strict';
-	this.data('nodeCacheMark', MAPJS.DOMRender.nodeCacheMark(idea));
+	this.data('nodeCacheMark', DOMRender.nodeCacheMark(idea));
 };
 
 jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedLevel) {
 	'use strict';
-	var self = jQuery(this),
+	const self = jQuery(this),
 		textSpan = function () {
-			var span = self.find('[data-mapjs-role=title]');
+			let span = self.find('[data-mapjs-role=title]');
 			if (span.length === 0) {
 				span = jQuery('<span>').attr('data-mapjs-role', 'title').appendTo(self);
 			}
 			return span;
 		},
 		decorations = function () {
-			var element = self.find('[data-mapjs-role=decorations]');
+			let element = self.find('[data-mapjs-role=decorations]');
 			if (element.length === 0) {
 				element = jQuery('<div data-mapjs-role="decorations" class="mapjs-decorations">').on('mousedown click', function (e) {
 					e.stopPropagation();
@@ -342,8 +322,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			return element;
 		},
 		applyLinkUrl = function (title) {
-			var url = MAPJS.URLHelper.getLink(title),
-				element = self.find('a.mapjs-hyperlink');
+			const url = URLHelper.getLink(title);
+			let element = self.find('a.mapjs-hyperlink');
 			if (!url) {
 				element.hide();
 				return;
@@ -354,7 +334,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			element.attr('href', url).show();
 		},
 		applyLabel = function (label) {
-			var element = self.find('.mapjs-label');
+			let element = self.find('.mapjs-label');
 			if (!label && label !== 0) {
 				element.hide();
 				return;
@@ -365,8 +345,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			element.text(label).show();
 		},
 		applyAttachment = function () {
-			var attachment = nodeContent.attr && nodeContent.attr.attachment,
-				element = self.find('a.mapjs-attachment');
+			const attachment = nodeContent.attr && nodeContent.attr.attachment;
+			let element = self.find('a.mapjs-attachment');
 			if (!attachment) {
 				element.hide();
 				return;
@@ -374,15 +354,15 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			if (element.length === 0) {
 				element = jQuery('<a href="#" class="mapjs-attachment icon-attachment"></a>').
 					appendTo(decorations()).click(function () {
-					self.trigger('attachment-click');
-					self.trigger('decoration-click', 'attachment');
-				});
+						self.trigger('attachment-click');
+						self.trigger('decoration-click', 'attachment');
+					});
 			}
 			element.show();
 		},
 		applyNote = function () {
-			var note = nodeContent.attr && nodeContent.attr.note,
-				element = self.find('a.mapjs-note');
+			const note = nodeContent.attr && nodeContent.attr.note;
+			let element = self.find('a.mapjs-note');
 			if (!note) {
 				element.hide();
 				return;
@@ -395,12 +375,12 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			element.show();
 		},
 		updateText = function (title) {
-			var text = MAPJS.formattedNodeTitle(title, 25),
-					nodeTextPadding = MAPJS.DOMRender.nodeTextPadding || 11,
-					element = textSpan(),
-					domElement = element[0],
-					preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width,
-					height;
+			const text = formattedNodeTitle(title, 25),
+				nodeTextPadding = DOMRender.nodeTextPadding || 11,
+				element = textSpan(),
+				domElement = element[0],
+				preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width;
+			let height;
 
 			element.text(text.trim());
 			self.data('title', title);
@@ -426,12 +406,12 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			}
 		},
 		setColors = function (colorText) {
-			var fromStyle = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background,
-				textColorClasses = {
-					'color': 'mapjs-node-light',
-					'lightColor': 'mapjs-node-dark',
-					'darkColor': 'mapjs-node-white'
-				};
+			let fromStyle = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.background;
+			const textColorClasses = {
+				'color': 'mapjs-node-light',
+				'lightColor': 'mapjs-node-dark',
+				'darkColor': 'mapjs-node-white'
+			};
 			if (fromStyle === 'false' || fromStyle === 'transparent') {
 				fromStyle = false;
 			}
@@ -442,7 +422,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 					self.css('color', fromStyle);
 				} else {
 					self.css('background-color', fromStyle);
-					self.addClass(textColorClasses[MAPJS.foregroundStyle(fromStyle)]);
+					self.addClass(textColorClasses[foregroundStyle(fromStyle)]);
 				}
 			}
 			if (colorText) {
@@ -450,11 +430,11 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			}
 		},
 		setIcon = function (icon) {
-			var textBox = textSpan(),
-				textHeight,
+			let textHeight,
 				textWidth,
 				maxTextWidth,
-				padding,
+				padding;
+			const textBox = textSpan(),
 				selfProps = {
 					'min-height': '',
 					'min-width': '',
@@ -482,7 +462,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				if (icon.position === 'top' || icon.position === 'bottom') {
 					if (icon.position === 'top') {
 						selfProps['background-position'] = 'center ' + padding + 'px';
-					} else if (MAPJS.DOMRender.fixedLayout) {
+					} else if (DOMRender.fixedLayout) {
 						selfProps['background-position'] = 'center ' + (padding + textHeight) + 'px';
 					} else {
 						selfProps['background-position'] = 'center ' + icon.position + ' ' + padding + 'px';
@@ -496,7 +476,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				} else if (icon.position === 'left' || icon.position === 'right') {
 					if (icon.position === 'left') {
 						selfProps['background-position'] = padding + 'px center';
-					} else if (MAPJS.DOMRender.fixedLayout) {
+					} else if (DOMRender.fixedLayout) {
 						selfProps['background-position'] = (textWidth + (2 * padding)) + 'px center ';
 					} else {
 						selfProps['background-position'] = icon.position + ' ' + padding + 'px center';
@@ -528,25 +508,28 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 		styleDefault = function () {
 			return ['default'];
 		},
-		attrValue = (MAPJS.DOMRender.theme && MAPJS.DOMRender.theme.attributeValue) || themeDefault,
-		nodeStyles = (MAPJS.DOMRender.theme &&  MAPJS.DOMRender.theme.nodeStyles) || styleDefault,
+		attrValue = (DOMRender.theme && DOMRender.theme.attributeValue) || themeDefault,
+		nodeStyles = (DOMRender.theme &&  DOMRender.theme.nodeStyles) || styleDefault,
 		effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
 		borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
 		decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
 		decorationOverlap = attrValue(['node'], effectiveStyles, ['decorations', 'overlap'], ''),
 		colorText = (borderType !== 'surround'),
-		nodeCacheData, offset,
-		isGroup = nodeContent.attr && nodeContent.attr.group;
+		isGroup = nodeContent.attr && nodeContent.attr.group,
+		nodeCacheData = {
+			x: Math.round(nodeContent.x),
+			y: Math.round(nodeContent.y),
+			width: Math.round(nodeContent.width),
+			height: Math.round(nodeContent.height),
+			nodeId: nodeContent.id,
+			styles: effectiveStyles
+		};
 
 
-	nodeCacheData = {
-		x: Math.round(nodeContent.x),
-		y: Math.round(nodeContent.y),
-		width: Math.round(nodeContent.width),
-		height: Math.round(nodeContent.height),
-		nodeId: nodeContent.id,
-		styles: effectiveStyles
-	};
+	let offset;
+
+
+
 
 	nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
 	nodeCacheData.innerRect.dx = 0;
@@ -596,8 +579,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 };
 jQuery.fn.placeCaretAtEnd = function () {
 	'use strict';
-	var el = this[0],
-		range, sel, textRange;
+	const el = this[0];
+	let range, sel, textRange;
 	if (window.getSelection && document.createRange) {
 		range = document.createRange();
 		range.selectNodeContents(el);
@@ -614,8 +597,8 @@ jQuery.fn.placeCaretAtEnd = function () {
 };
 jQuery.fn.selectAll = function () {
 	'use strict';
-	var el = this[0],
-		range, sel, textRange;
+	const el = this[0];
+	let range, sel, textRange;
 	if (window.getSelection && document.createRange) {
 		range = document.createRange();
 		range.selectNodeContents(el);
@@ -630,9 +613,9 @@ jQuery.fn.selectAll = function () {
 };
 jQuery.fn.innerText = function () {
 	'use strict';
-	var htmlContent = this.html(),
-			containsBr = /<br\/?>/.test(htmlContent),
-			containsDiv = /<div>/.test(htmlContent);
+	const htmlContent = this.html(),
+		containsBr = /<br\/?>/.test(htmlContent),
+		containsDiv = /<div>/.test(htmlContent);
 	if (containsDiv && this[0].innerText) { /* broken safari jquery text */
 		return this[0].innerText.trim();
 	} else if (containsBr) { /*broken firefox innerText */
@@ -642,21 +625,21 @@ jQuery.fn.innerText = function () {
 };
 jQuery.fn.editNode = function (shouldSelectAll) {
 	'use strict';
-	var node = this,
+	const node = this,
 		textBox = this.find('[data-mapjs-role=title]'),
 		unformattedText = this.data('title'),
 		originalText = textBox.text(),
 		result = jQuery.Deferred(),
 		clear = function () {
-			detachListeners();
+			detachListeners(); //eslint-disable-line no-use-before-define
 			textBox.css('word-break', '');
 			textBox.removeAttr('contenteditable');
 			node.shadowDraggable();
 		},
 		finishEditing = function () {
-			var content = textBox.innerText();
+			const content = textBox.innerText();
 			if (content === unformattedText) {
-				return cancelEditing();
+				return cancelEditing(); //eslint-disable-line no-use-before-define
 			}
 			clear();
 			result.resolve(content);
@@ -667,7 +650,7 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 			result.reject();
 		},
 		keyboardEvents = function (e) {
-			var ENTER_KEY_CODE = 13,
+			const ENTER_KEY_CODE = 13,
 				ESC_KEY_CODE = 27,
 				TAB_KEY_CODE = 9,
 				S_KEY_CODE = 83,
@@ -711,7 +694,7 @@ jQuery.fn.editNode = function (shouldSelectAll) {
 };
 jQuery.fn.updateReorderBounds = function (border, box, dropCoords) {
 	'use strict';
-	var element = this;
+	const element = this;
 	if (!border) {
 		element.hide();
 		return;
@@ -732,69 +715,63 @@ jQuery.fn.updateReorderBounds = function (border, box, dropCoords) {
 
 };
 
-(function () {
+jQuery.fn.createNode = function (node) {
 	'use strict';
-	var cleanDOMId = function (s) {
-			return s.replace(/[^A-Za-z0-9_-]/g, '_');
-		},
-		connectorKey = function (connectorObj) {
-			return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
-		},
-		linkKey = function (linkObj) {
-			return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
-		},
-		nodeKey = function (id) {
-			return cleanDOMId('node_' + id);
-		};
-
-	jQuery.fn.createNode = function (node) {
-		return jQuery('<div>')
-			.attr({'id': nodeKey(node.id), 'tabindex': 0, 'data-mapjs-role': 'node' })
-			.css({display: 'block', position: 'absolute'})
-			.addClass('mapjs-node')
-			.appendTo(this);
-	};
-	jQuery.fn.createConnector = function (connector) {
-		return MAPJS.createSVG()
-			.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
-			.data({'nodeFrom': this.nodeWithId(connector.from), 'nodeTo': this.nodeWithId(connector.to)})
-			.appendTo(this);
-	};
-	jQuery.fn.createLink = function (l) {
-		var defaults = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
-		return MAPJS.createSVG()
-			.attr({
-				'id': linkKey(l),
-				'data-mapjs-role': 'link',
-				'class': 'mapjs-draw-container'
-			})
-			.data({'nodeFrom': this.nodeWithId(l.ideaIdFrom), 'nodeTo': this.nodeWithId(l.ideaIdTo) })
-			.data(defaults)
-			.appendTo(this);
-	};
-	jQuery.fn.nodeWithId = function (id) {
-		return this.find('#' + nodeKey(id));
-	};
-	jQuery.fn.findConnector = function (connectorObj) {
-		return this.find('#' + connectorKey(connectorObj));
-	};
-	jQuery.fn.findLink = function (linkObj) {
-		return this.find('#' + linkKey(linkObj));
-	};
-	jQuery.fn.createReorderBounds = function () {
-		var result = jQuery('<div>').attr({
-			'data-mapjs-role': 'reorder-bounds',
-			'class': 'mapjs-reorder-bounds'
-		}).hide().css('position', 'absolute').appendTo(this);
-		return result;
-	};
-})();
-
-MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator, options) {
+	return jQuery('<div>')
+		.attr({'id': nodeKey(node.id), 'tabindex': 0, 'data-mapjs-role': 'node' })
+		.css({display: 'block', position: 'absolute'})
+		.addClass('mapjs-node')
+		.appendTo(this);
+};
+jQuery.fn.createConnector = function (connector) {
 	'use strict';
-	var viewPort = stageElement.parent(),
+	return createSVG()
+		.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
+		.data({'nodeFrom': this.nodeWithId(connector.from), 'nodeTo': this.nodeWithId(connector.to)})
+		.appendTo(this);
+};
+jQuery.fn.createLink = function (l) {
+	'use strict';
+	const defaults = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
+	return createSVG()
+		.attr({
+			'id': linkKey(l),
+			'data-mapjs-role': 'link',
+			'class': 'mapjs-draw-container'
+		})
+	.data({'nodeFrom': this.nodeWithId(l.ideaIdFrom), 'nodeTo': this.nodeWithId(l.ideaIdTo) })
+		.data(defaults)
+		.appendTo(this);
+};
+jQuery.fn.nodeWithId = function (id) {
+	'use strict';
+	return this.find('#' + nodeKey(id));
+};
+jQuery.fn.findConnector = function (connectorObj) {
+	'use strict';
+	return this.find('#' + connectorKey(connectorObj));
+};
+jQuery.fn.findLink = function (linkObj) {
+	'use strict';
+	return this.find('#' + linkKey(linkObj));
+};
+jQuery.fn.createReorderBounds = function () {
+	'use strict';
+	const result = jQuery('<div>').attr({
+		'data-mapjs-role': 'reorder-bounds',
+		'class': 'mapjs-reorder-bounds'
+	}).hide().css('position', 'absolute').appendTo(this);
+	return result;
+};
+
+DOMRender.viewController = function (mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator, options) {
+	'use strict';
+	let currentDroppable = false,
 		connectorsForAnimation = jQuery(),
 		linksForAnimation = jQuery(),
+		viewPortDimensions;
+
+	const viewPort = stageElement.parent(),
 		nodeAnimOptions = { duration: 400, queue: 'nodeQueue', easing: 'linear' },
 		reorderBounds = mapModel.isEditingEnabled() ? stageElement.createReorderBounds() : jQuery('<div>'),
 		getViewPortDimensions = function () {
@@ -810,7 +787,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			return viewPortDimensions;
 		},
 		stageToViewCoordinates = function (x, y) {
-			var stage = stageElement.data(),
+			const stage = stageElement.data(),
 				scrollPosition = getViewPortDimensions();
 			return {
 				x: stage.scale * (x + stage.offsetX) - scrollPosition.left,
@@ -818,7 +795,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			};
 		},
 		viewToStageCoordinates = function (x, y) {
-			var stage = stageElement.data(),
+			const stage = stageElement.data(),
 				scrollPosition = getViewPortDimensions();
 			return {
 				x: (scrollPosition.left + x) / stage.scale - stage.offsetX,
@@ -826,17 +803,17 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			};
 		},
 		updateScreenCoordinates = function () {
-			var element = jQuery(this);
+			const element = jQuery(this);
 			element.css({
 				'left': element.data('x'),
-				'top' : element.data('y')
+				'top': element.data('y')
 			}).trigger('mapjs:move');
 		},
 		animateToPositionCoordinates = function () {
-			var element = jQuery(this);
+			const element = jQuery(this);
 			element.clearQueue(nodeAnimOptions.queue).animate({
 				'left': element.data('x'),
-				'top' : element.data('y'),
+				'top': element.data('y'),
 				'opacity': 1 /* previous animation can be cancelled with clearqueue, so ensure it gets visible */
 			}, _.extend({
 				complete: function () {
@@ -846,8 +823,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}, nodeAnimOptions)).trigger('mapjs:animatemove');
 		},
 		ensureSpaceForPoint = function (x, y) {/* in stage coordinates */
-			var stage = stageElement.data(),
-				dirty = false;
+			const stage = stageElement.data();
+			let dirty = false;
 			if (x < -1 * stage.offsetX) {
 				stage.width =  stage.width - stage.offsetX - x;
 				stage.offsetX = -1 * x;
@@ -872,21 +849,22 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		},
 		ensureSpaceForNode = function () {
 			return jQuery(this).each(function () {
-				var node = jQuery(this).data(),
-					margin = MAPJS.DOMRender.stageMargin || {top: 0, left: 0, bottom: 0, right: 0};
+				const node = jQuery(this).data(),
+					margin = DOMRender.stageMargin || {top: 0, left: 0, bottom: 0, right: 0};
 				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
 				ensureSpaceForPoint(node.x - margin.left, node.y - margin.top);
 				ensureSpaceForPoint(node.x + node.width + margin.right, node.y + node.height + margin.bottom);
 			});
 		},
 		centerViewOn = function (x, y, animate) { /*in the stage coordinate system*/
-			var stage = stageElement.data(),
+			const stage = stageElement.data(),
 				viewPortCenter = {
 					x: Math.round(viewPort.innerWidth() / 2),
 					y: Math.round(viewPort.innerHeight() / 2)
 				},
-				newLeftScroll, newTopScroll,
-				margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
+				margin = DOMRender.stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
+			let newLeftScroll = false, newTopScroll = false;
+
 			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
 			ensureSpaceForPoint(x + viewPortCenter.x / stage.scale - margin.left, y + viewPortCenter.y / stage.scale - margin.top);
 
@@ -909,16 +887,15 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			return viewToStageCoordinates(Math.round(viewPort.innerWidth() / 2), Math.round(viewPort.innerHeight() / 2));
 		},
 		ensureNodeVisible = function (domElement) {
-			var node, nodeTopLeft, nodeBottomRight, animation, margin;
 			if (!domElement || domElement.length === 0) {
 				return;
 			}
 			viewPort.finish();
-			node = domElement.data();
-			nodeTopLeft = stageToViewCoordinates(node.x, node.y);
-			nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height);
-			animation = {};
-			margin = MAPJS.DOMRender.stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
+			const node = domElement.data(),
+				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
+				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
+				animation = {},
+				margin = DOMRender.stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
 			if ((nodeTopLeft.x - margin.left) < 0) {
 				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin.left;
 			} else if ((nodeBottomRight.x + margin.right) > viewPort.innerWidth()) {
@@ -934,9 +911,9 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}
 		},
 		viewportCoordinatesForPointEvent = function (evt) {
-			var dropPosition = (evt && evt.gesture && evt.gesture.center) || evt,
-				vpOffset = viewPort.offset(),
-				result;
+			const dropPosition = (evt && evt.gesture && evt.gesture.center) || evt,
+				vpOffset = viewPort.offset();
+			let result;
 			if (dropPosition) {
 				result = {
 					x: dropPosition.pageX - vpOffset.left,
@@ -948,7 +925,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			}
 		},
 		stagePositionForPointEvent = function (evt) {
-			var viewportDropCoordinates = viewportCoordinatesForPointEvent(evt);
+			const viewportDropCoordinates = viewportCoordinatesForPointEvent(evt);
 			if (viewportDropCoordinates) {
 				return viewToStageCoordinates(viewportDropCoordinates.x, viewportDropCoordinates.y);
 			}
@@ -963,25 +940,23 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			stageElement.nodeWithId(nodeId).addClass('droppable');
 			currentDroppable = nodeId;
 		},
-		currentDroppable = false,
-		viewPortDimensions,
 		withinReorderBoundary = function (boundaries, box) {
-			var closeTo = function (reorderBoundary) {
-					var nodeX = box.x;
-					if (reorderBoundary.edge === 'right') {
-						nodeX += box.width;
-					}
-					if (reorderBoundary.x && reorderBoundary.margin) {
-						return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
-							box.y < reorderBoundary.maxY &&
-							box.y > reorderBoundary.minY;
-					} else {
-						return box.y < reorderBoundary.maxY &&
-							box.y > reorderBoundary.minY &&
-							box.x < reorderBoundary.maxX &&
-							box.x > reorderBoundary.minX;
-					}
-				};
+			const closeTo = function (reorderBoundary) {
+				let nodeX = box.x;
+				if (reorderBoundary.edge === 'right') {
+					nodeX += box.width;
+				}
+				if (reorderBoundary.x && reorderBoundary.margin) {
+					return Math.abs(nodeX - reorderBoundary.x) < reorderBoundary.margin * 2 &&
+						box.y < reorderBoundary.maxY &&
+						box.y > reorderBoundary.minY;
+				} else {
+					return box.y < reorderBoundary.maxY &&
+						box.y > reorderBoundary.minY &&
+						box.x < reorderBoundary.maxX &&
+						box.x > reorderBoundary.minX;
+				}
+			};
 			if (_.isEmpty(boundaries)) {
 				return false;
 			}
@@ -995,19 +970,19 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	});
 	if (imageInsertController) {
 		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
-			var point = stagePositionForPointEvent(evt);
+			const point = stagePositionForPointEvent(evt);
 			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point && point.x, point && point.y);
 		});
 	}
 	mapModel.addEventListener('nodeCreated', function (node) {
-		var currentReorderBoundary,
-			element = stageElement.createNode(node)
+		let currentReorderBoundary;
+		const element = stageElement.createNode(node)
 			.queueFadeIn(nodeAnimOptions)
 			.updateNodeContent(node, resourceTranslator)
 			.nodeResizeWidget(node.id, mapModel, stagePositionForPointEvent)
 			.on('tap', function (evt) {
 
-				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
+				const realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				if (realEvent.button && realEvent.button !== -1) {
 					return;
 				}
@@ -1049,17 +1024,17 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('mm:drag', function (evt) {
-				var dropCoords = stagePositionForPointEvent(evt),
+				const dropCoords = stagePositionForPointEvent(evt),
 					currentPosition = evt.currentPosition && stagePositionForPointEvent({pageX: evt.currentPosition.left, pageY: evt.currentPosition.top}),
-					nodeId,
 					hasShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
-					border;
+					nodeId = dropCoords && mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
+				let border;
 				if (!dropCoords) {
 					clearCurrentDroppable();
 					return;
 				}
 
-				nodeId = mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
+
 				if (!hasShift && !nodeId && currentPosition) {
 					currentPosition.width = element.outerWidth();
 					currentPosition.height = element.outerHeight();
@@ -1085,17 +1060,19 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 				}
 			})
 			.on('mm:stop-dragging', function (evt) {
-				var isShift, stageDropCoordinates, nodeAtDrop, finalPosition, dropResult, manualPosition;
 				element.removeClass('dragging');
 				reorderBounds.hide();
-				isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey;
-				stageDropCoordinates = stagePositionForPointEvent(evt);
+				let dropResult, manualPosition;
+				const isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
+					stageDropCoordinates = stagePositionForPointEvent(evt),
+					nodeAtDrop = stageDropCoordinates && mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
+					finalPosition = evt.finalPosition && stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
+
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
 					return;
 				}
-				nodeAtDrop = mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y);
-				finalPosition = stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
+
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else {
@@ -1119,7 +1096,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 			});
 		if (touchEnabled) {
 			element.on('hold', function (evt) {
-				var realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
+				const realEvent = (evt.gesture && evt.gesture.srcEvent) || evt;
 				mapModel.clickNode(node.id, realEvent);
 				if (mapModel.requestContextMenu(evt.gesture.center.pageX, evt.gesture.center.pageY)) {
 					evt.preventDefault();
@@ -1137,7 +1114,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		}
 	});
 	mapModel.addEventListener('nodeSelectionChanged', function (ideaId, isSelected) {
-		var node = stageElement.nodeWithId(ideaId);
+		const node = stageElement.nodeWithId(ideaId);
 		if (isSelected) {
 			node.addClass('selected');
 			ensureNodeVisible(node);
@@ -1149,7 +1126,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.nodeWithId(node.id).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
-		var currentViewPortDimensions = getViewPortDimensions(),
+		const currentViewPortDimensions = getViewPortDimensions(),
 			nodeDom = stageElement.nodeWithId(node.id).data({
 				'x': Math.round(node.x),
 				'y': Math.round(node.y),
@@ -1168,7 +1145,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.nodeWithId(n.id).updateNodeContent(n, resourceTranslator);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		var element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
+		const element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
 			.on('mapjs:move', function () {
 				element.updateConnector(true);
@@ -1187,7 +1164,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.findConnector(connector).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		var link = stageElement.createLink(l).queueFadeIn(nodeAnimOptions).updateLink();
+		const link = stageElement.createLink(l).queueFadeIn(nodeAnimOptions).updateLink();
 		link.find('.mapjs-link-hit').on('tap', function (event) {
 			mapModel.selectLink('mouse', l, { x: event.gesture.center.pageX, y: event.gesture.center.pageY });
 			event.stopPropagation();
@@ -1206,7 +1183,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.findLink(l).queueFadeOut(nodeAnimOptions);
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
-		var currentScale = stageElement.data('scale'),
+		const currentScale = stageElement.data('scale'),
 			targetScale = Math.max(Math.min(currentScale * scaleMultiplier, 5), 0.2),
 			currentCenter = stagePointAtViewportCenter();
 		if (currentScale === targetScale) {
@@ -1216,8 +1193,8 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		centerViewOn(currentCenter.x, currentCenter.y);
 	});
 	mapModel.addEventListener('nodeVisibilityRequested', function (ideaId) {
-		var id = ideaId || mapModel.getCurrentlySelectedIdeaId(),
-				node = stageElement.nodeWithId(id);
+		const id = ideaId || mapModel.getCurrentlySelectedIdeaId(),
+			node = stageElement.nodeWithId(id);
 		if (node) {
 			ensureNodeVisible(node);
 			viewPort.finish();
@@ -1225,7 +1202,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId) {
-		var node = stageElement.nodeWithId(ideaId).data(),
+		const node = stageElement.nodeWithId(ideaId).data(),
 			nodeCenterX = Math.round(node.x + node.width / 2),
 			nodeCenterY = Math.round(node.y + node.height / 2);
 		if (stageElement.data('scale') !== 1) {
@@ -1248,7 +1225,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		stageElement.finish(nodeAnimOptions.queue);
 	});
 	mapModel.addEventListener('layoutChangeComplete', function (options) {
-		var connectorGroupClone = jQuery(), linkGroupClone = jQuery();
+		let connectorGroupClone = jQuery(), linkGroupClone = jQuery();
 		if (options && options.themeChanged) {
 			stageElement.children().andSelf().finish(nodeAnimOptions.queue);
 			jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
@@ -1286,7 +1263,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 	/* editing */
 	if (!options || !options.inlineEditingDisabled) {
 		mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
-			var editingElement = stageElement.nodeWithId(nodeId);
+			const editingElement = stageElement.nodeWithId(nodeId);
 			mapModel.setInputEnabled(false);
 			viewPort.finish(); /* close any pending animations */
 			editingElement.editNode(shouldSelectAll).done(
@@ -1312,7 +1289,7 @@ MAPJS.DOMRender.viewController = function (mapModel, stageElement, touchEnabled,
 		}
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
-		var  attr = _.extend({arrow: false}, l.attr && l.attr.style);
+		const attr = _.extend({arrow: false}, l.attr && l.attr.style);
 		stageElement.findLink(l).data(attr).updateLink();
 	});
 

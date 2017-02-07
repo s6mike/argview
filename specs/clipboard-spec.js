@@ -1,10 +1,10 @@
 /*global describe, it, expect, beforeEach, require */
-const MAPJS = require('../dist/index');
+const MemoryClipboard = require('../src/clipboard');
 describe('MAPJS.MemoryClipboard', function () {
 	'use strict';
 	let underTest;
 	beforeEach(function () {
-		underTest = new MAPJS.MemoryClipboard();
+		underTest = new MemoryClipboard();
 	});
 	it('returns undefined if nothing is saved', function () {
 		expect(underTest.get()).toBeUndefined();

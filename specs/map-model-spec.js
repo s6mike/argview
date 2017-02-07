@@ -1,16 +1,20 @@
 /*global beforeEach, describe, expect, it, jasmine, spyOn, require */
-const MAPJS = require('../dist/index'),
-	_ = require('underscore');
+const MapModel = require('../src/map-model'),
+	MemoryClipboard = require('../src/clipboard'),
+	_ = require('underscore'),
+	content = require('mindmup-mapjs-model').content,
+	observable = require('mindmup-mapjs-model').observable,
+	LayoutModel = require('mindmup-mapjs-layout').LayoutModel;
 describe('MapModel', function () {
 	'use strict';
 	let layoutCalculator, underTest;
 	it('should be able to instantiate MapModel', function () {
-		underTest = new MAPJS.MapModel(layoutCalculator);
+		underTest = new MapModel(layoutCalculator);
 		expect(underTest).not.toBeUndefined();
 	});
 	it('should dispatch inputEnabledChanged event when input is disabled', function () {
 		const inputEnabledChangedListener = jasmine.createSpy();
-		underTest = new MAPJS.MapModel();
+		underTest = new MapModel();
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
 
 		underTest.setInputEnabled(false);
@@ -19,7 +23,7 @@ describe('MapModel', function () {
 	});
 	it('should dispatch inputEnabledChanged event when input is re-enabled, passing holdFocus argument if supplied', function () {
 		const inputEnabledChangedListener = jasmine.createSpy();
-		underTest = new MAPJS.MapModel();
+		underTest = new MapModel();
 
 		underTest.setInputEnabled(false);
 		underTest.addEventListener('inputEnabledChanged', inputEnabledChangedListener);
@@ -103,10 +107,10 @@ describe('MapModel', function () {
 				}
 			};
 			mapViewResetRequestedListener = jasmine.createSpy('mapViewResetRequestedListener');
-			underTest = new MAPJS.MapModel(layoutCalculator, ['this will have all text selected']);
+			underTest = new MapModel(layoutCalculator, ['this will have all text selected']);
 			underTest.addEventListener('mapViewResetRequested', mapViewResetRequestedListener);
 			layoutCalculatorLayout = layoutBefore;
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 4,
 				title: 'this will have all text selected',
 				ideas: {
@@ -282,7 +286,7 @@ describe('MapModel', function () {
 				nodeEditRequestedListener = jasmine.createSpy();
 				nodeSelectionChangedListener = jasmine.createSpy();
 				activatedNodesChangedListener = jasmine.createSpy();
-				anIdea = MAPJS.content({
+				anIdea = content({
 					id: 1,
 					ideas: {
 						7: {
@@ -336,7 +340,7 @@ describe('MapModel', function () {
 			});
 			describe('when the currently selected node is removed in a multi-root map', function () {
 				beforeEach(function () {
-					anIdea = MAPJS.content({
+					anIdea = content({
 						formatVersion: 3,
 						id: 'root',
 						ideas: {
@@ -443,8 +447,8 @@ describe('MapModel', function () {
 								}
 							}
 						},
-						anIdea = MAPJS.content({title: 'ttt', attr: { collapsed: true}}),
-						underTest = new MAPJS.MapModel(layoutCalculator),
+						anIdea = content({title: 'ttt', attr: { collapsed: true}}),
+						underTest = new MapModel(layoutCalculator),
 						calls  = []; /* can't use a spy because args are passed by ref, so test can't check for canges in the same object*/
 					layoutCalculatorLayout = layoutBefore;
 					underTest.setIdea(anIdea);
@@ -479,7 +483,7 @@ describe('MapModel', function () {
 	describe('methods delegating to idea', function () {
 		let anIdea, underTest, clipboard, layout;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -491,14 +495,14 @@ describe('MapModel', function () {
 			});
 			layout = {nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1, attr: {style: {styleprop: 'oldValue'}}}}};
 			clipboard = jasmine.createSpyObj('clipboard', ['get', 'put']);
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return layout;
 			}, [], clipboard);
 			underTest.setIdea(anIdea);
 		});
 		describe('flip', function () {
 			beforeEach(function () {
-				anIdea = MAPJS.content({
+				anIdea = content({
 					id: 1,
 					title: 'root',
 					ideas: {
@@ -511,7 +515,7 @@ describe('MapModel', function () {
 						}
 					}
 				});
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return {
 						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
 					};
@@ -632,7 +636,7 @@ describe('MapModel', function () {
 		describe('insertIntermediateGroup', function () {
 			describe('when a node is selected', function () {
 				beforeEach(function () {
-					underTest = new MAPJS.MapModel(
+					underTest = new MapModel(
 						function () {
 							return {};
 						},
@@ -898,7 +902,7 @@ describe('MapModel', function () {
 					}
 				};
 				layoutModel = jasmine.createSpyObj('layoutModel', ['getOrientation']);
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return JSON.parse(JSON.stringify(layout)); /* deep clone */
 				}, undefined, undefined, undefined, {layoutModel: layoutModel});
 				spyOn(underTest, 'moveRelative');
@@ -1053,7 +1057,7 @@ describe('MapModel', function () {
 		});
 		describe('standardPositionNodeAt', function () {
 			beforeEach(function () {
-				anIdea = MAPJS.content({
+				anIdea = content({
 					id: 1,
 					title: 'root',
 					ideas: {
@@ -1066,7 +1070,7 @@ describe('MapModel', function () {
 						}
 					}
 				});
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return {
 						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
 					};
@@ -1081,7 +1085,7 @@ describe('MapModel', function () {
 		describe('topDownPositionNodeAt', function () {
 			let listener;
 			beforeEach(function () {
-				anIdea = MAPJS.content({
+				anIdea = content({
 					formatVersion: 3,
 					id: 'root',
 					ideas: {
@@ -1100,7 +1104,7 @@ describe('MapModel', function () {
 						}
 					}
 				});
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return {
 						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
 					};
@@ -1120,7 +1124,7 @@ describe('MapModel', function () {
 				expect(listener.calls.count()).toEqual(1);
 			});
 			it('reorders groups to right most if requested - bug resurrection check', function () {
-				const topDownIdea =  MAPJS.content({
+				const topDownIdea =  content({
 						'id': 'root',
 						'formatVersion': 3,
 						'ideas': {
@@ -1203,7 +1207,7 @@ describe('MapModel', function () {
 						}
 					};
 
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return layout;
 				}, [], clipboard);
 				underTest.setIdea(topDownIdea);
@@ -1480,7 +1484,7 @@ describe('MapModel', function () {
 		describe('updateLinkStyle', function () {
 			let anIdea, underTest;
 			beforeEach(function () {
-				anIdea = MAPJS.content({
+				anIdea = content({
 					id: 1,
 					title: 'root',
 					ideas: {
@@ -1498,7 +1502,7 @@ describe('MapModel', function () {
 						ideaIdTo: 3
 					}]
 				});
-				underTest = new MAPJS.MapModel(function () {
+				underTest = new MapModel(function () {
 					return {
 						nodes: {2: {attr: {style: {styleprop: 'oldValue'}}}}
 					};
@@ -1579,7 +1583,7 @@ describe('MapModel', function () {
 		});
 		describe('insertIntermediate', function () {
 			const init = function (intermediaryArray) {
-				underTest = new MAPJS.MapModel(
+				underTest = new MapModel(
 					function () {
 						return {};
 					},
@@ -1682,7 +1686,7 @@ describe('MapModel', function () {
 	describe('map scaling and movement', function () {
 		let underTest, mapScaleChangedListener, mapMoveRequestedListener, mapViewResetRequestedListener, nodeSelectionChangedListener, anIdea;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return {
 					nodes: {
 						1: {id: 1, rootId: 1},
@@ -1692,7 +1696,7 @@ describe('MapModel', function () {
 					}
 				};
 			});
-			anIdea = MAPJS.content({
+			anIdea = content({
 				formatVersion: 3,
 				id: 'root',
 				ideas: {
@@ -1774,7 +1778,7 @@ describe('MapModel', function () {
 	describe('Selection', function () {
 		let nodeSelectionChangedListener, anIdea, underTest, layout, layoutModel;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -1814,8 +1818,8 @@ describe('MapModel', function () {
 					7: { x:	50, y: -10 }
 				}
 			};
-			layoutModel = new MAPJS.LayoutModel({nodes: {}, connectors: {}});
-			underTest = new MAPJS.MapModel(function () {
+			layoutModel = new LayoutModel({nodes: {}, connectors: {}});
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			}, undefined, undefined, undefined, {layoutModel: layoutModel});
 			underTest.setIdea(anIdea);
@@ -2177,7 +2181,7 @@ describe('MapModel', function () {
 	describe('analytic events', function () {
 		let underTest, analyticListener, anIdea;
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return {
 					nodes: {
 						1: { x: 0 },
@@ -2188,7 +2192,7 @@ describe('MapModel', function () {
 					}
 				};
 			});
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -2289,7 +2293,7 @@ describe('MapModel', function () {
 
 	});
 	describe('getSelectedStyle', function () {
-		const anIdea = MAPJS.content({ id: 1, style: {'v': 'x'}, ideas: {7: {id: 2, style: {'v': 'y'}}}}),
+		const anIdea = content({ id: 1, style: {'v': 'x'}, ideas: {7: {id: 2, style: {'v': 'y'}}}}),
 			layoutCalculator = function () {
 				return {
 					nodes: {
@@ -2311,7 +2315,7 @@ describe('MapModel', function () {
 				};
 			};
 		beforeEach(function () {
-			underTest = new MAPJS.MapModel(layoutCalculator);
+			underTest = new MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
 		});
 		it('retrieves root node style by default', function () {
@@ -2323,7 +2327,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('Links', function () {
-		const anIdea = MAPJS.content({
+		const anIdea = content({
 			id: 1,
 			title: '1',
 			ideas: {
@@ -2362,7 +2366,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(layoutCalculator);
+			underTest = new MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
 		});
 		it('should invoke content.addLink when addLink method is invoked', function () {
@@ -2503,7 +2507,7 @@ describe('MapModel', function () {
 	describe('focusOn', function () {
 		let nodeSelectionChangedListener, anIdea, underTest, layout, changeListener, nodeNodeFocusRequestedListener, calls;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -2547,7 +2551,7 @@ describe('MapModel', function () {
 					5: { x: 10, y: 30 }
 				}
 			};
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
 			underTest.setIdea(anIdea);
@@ -2592,10 +2596,10 @@ describe('MapModel', function () {
 					3: { id: 3, x: -100, y: -100, width: 10, height: 10 }
 				}
 			};
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
-			underTest.setIdea(MAPJS.observable({
+			underTest.setIdea(observable({
 				getAttr: function () { },
 				getDefaultRootId: function () {
 					return '1.1';
@@ -2620,7 +2624,7 @@ describe('MapModel', function () {
 	describe('search', function () {
 		let anIdea, underTest;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -2655,7 +2659,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return [];
 			});
 			underTest.setIdea(anIdea);
@@ -2679,7 +2683,7 @@ describe('MapModel', function () {
 	describe('pause and resume', function () {
 		let anIdea, underTest, spy, layoutCalculator;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'center',
 				ideas: {
@@ -2692,7 +2696,7 @@ describe('MapModel', function () {
 			spy = jasmine.createSpy('nodeTitleChanged');
 			layoutCalculator = jasmine.createSpy('layoutCalculator');
 			layoutCalculator.and.returnValue({nodes: {1: {title: 'center', id: 1}, 2: {title: 'lower left', id: 2}}});
-			underTest = new MAPJS.MapModel(layoutCalculator);
+			underTest = new MapModel(layoutCalculator);
 			underTest.setIdea(anIdea);
 			underTest.addEventListener('nodeTitleChanged', spy);
 			underTest.pause();
@@ -2712,7 +2716,7 @@ describe('MapModel', function () {
 			expect(spy).toHaveBeenCalled();
 		});
 		it('unpauses when a new idea is loaded', function () {
-			anIdea = MAPJS.content({id: 1, title: 'five'});
+			anIdea = content({id: 1, title: 'five'});
 			underTest.setIdea(anIdea);
 			anIdea.updateTitle(1, 'new center');
 			expect(layoutCalculator).toHaveBeenCalled();
@@ -2721,7 +2725,7 @@ describe('MapModel', function () {
 	describe('dropImage', function () {
 		let underTest, layout, idea;
 		beforeEach(function () {
-			idea = MAPJS.content({id: 1, title: 'one',
+			idea = content({id: 1, title: 'one',
 				attr: {
 					icon: {
 						url: 'http://www.google.com',
@@ -2732,7 +2736,7 @@ describe('MapModel', function () {
 				},
 				ideas: {1: {id: 2, title: 'two'}}});
 			layout = { nodes: { 1: { id: 1, x: 0, y: 100, width: 10, height: 10 }, 2: { id: 2, x: -100, y: 100, width: 10, height: 10} } };
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
 			underTest.setIdea(idea);
@@ -2804,7 +2808,7 @@ describe('MapModel', function () {
 	describe('labels', function () {
 		let underTest, layout, idea, labelGenerator;
 		beforeEach(function () {
-			idea = MAPJS.content({id: 1, title: 'one',
+			idea = content({id: 1, title: 'one',
 				attr: {
 					icon: {
 						url: 'http://www.google.com',
@@ -2821,7 +2825,7 @@ describe('MapModel', function () {
 					3: {id: 3, x: 10, y: 10, width: 100, height: 50 }
 				}
 			};
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			});
 			underTest.setIdea(idea);
@@ -2885,7 +2889,7 @@ describe('MapModel', function () {
 	describe('getTopDownReorderBoundary', function () {
 		let idea, layout, underTest, margin;
 		beforeEach(function () {
-			idea = MAPJS.content({
+			idea = content({
 				formatVersion: 3,
 				id: 'root',
 				ideas: {
@@ -2933,7 +2937,7 @@ describe('MapModel', function () {
 				}
 			};
 			margin = 20;
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			}, undefined, undefined, margin);
 			underTest.setIdea(idea);
@@ -2978,7 +2982,7 @@ describe('MapModel', function () {
 				return underTest.getStandardReorderBoundary(nodeId)[1];
 			};
 		beforeEach(function () {
-			idea = MAPJS.content({
+			idea = content({
 				id: 1,
 				ideas: {
 					1: {
@@ -3029,7 +3033,7 @@ describe('MapModel', function () {
 				}
 			};
 			margin = 20;
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
 			}, undefined, undefined, margin);
 			underTest.setIdea(idea);
@@ -3087,7 +3091,7 @@ describe('MapModel', function () {
 	describe('focusAndSelect', function () {
 		let underTest, anIdea, listener;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -3100,7 +3104,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return {
 					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
 				};
@@ -3128,7 +3132,7 @@ describe('MapModel', function () {
 			};
 		};
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -3152,8 +3156,8 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			clipboard = new MAPJS.MemoryClipboard();
-			underTest = new MAPJS.MapModel(layoutCalculator, undefined, clipboard);
+			clipboard = new MemoryClipboard();
+			underTest = new MapModel(layoutCalculator, undefined, clipboard);
 			underTest.setIdea(anIdea);
 		});
 		it('should be undefined when there is no node for node id', function () {
@@ -3317,7 +3321,7 @@ describe('MapModel', function () {
 	describe('requestContextMenu', function () {
 		let underTest, anIdea, listener;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -3330,7 +3334,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return {
 					nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
 				};
@@ -3361,7 +3365,7 @@ describe('MapModel', function () {
 	describe('root node operations', function () {
 		let underTest, anIdea, changeListener, layout;
 		beforeEach(function () {
-			anIdea = MAPJS.content({
+			anIdea = content({
 				id: 1,
 				title: 'root',
 				ideas: {
@@ -3377,7 +3381,7 @@ describe('MapModel', function () {
 			layout = {
 				nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, x: 100, y: 200, rootId: 1}, 3: {level: 3, rootId: 1}}
 			};
-			underTest = new MAPJS.MapModel(function () {
+			underTest = new MapModel(function () {
 				return layout;
 			});
 			underTest.setIdea(anIdea);

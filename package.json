@@ -11,7 +11,7 @@
     "svg"
   ],
   "files": [
-    "dist"
+    "src"
   ],
   "bugs": {
     "url": "https://github.com/mindmup/mapjs/issues"
@@ -19,11 +19,11 @@
   "homepage": "https://www.mindmup.com",
   "version": "1.15.0",
   "scripts": {
-    "pretest": "eslint spec",
+    "pretest": "eslint spec src",
     "test-watch": "karma start --auto-watch --no-single-run",
     "test": "karma start"
   },
-  "main": "dist/index.js",
+  "main": "src/npm-main.js",
   "dependencies": {
     "hammerjs": "^1.1.3",
     "jquery": "^2.1.4",
@@ -34,10 +34,10 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "es5-shim": "^4.5.2",
     "eslint": "^3.14.1",
     "eslint-config-crockford": "^1.0.0",
     "eslint-config-defaults": "^9.0.0",
+    "exports-loader": "^0.6.3",
     "jasmine": "^2.5.3",
     "karma": "^1.4.1",
     "karma-chrome-launcher": "^2.0.0",

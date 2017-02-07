@@ -1,12 +1,15 @@
-/*jslint nomen: true, newcap: true, browser: true*/
-/*global MAPJS, $, _, jQuery*/
+/*global require, document, window */
+const $ = require('jquery'),
+	_ = require('underscore'),
+	DOMRender = require('./dom-render');
 
-jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
-	/*jslint newcap:true*/
+require('imports-loader?jquery=>jquery!jquery-hotkeys');
+
+$.fn.scrollWhenDragging = function (scrollPredicate) {
 	'use strict';
 	return this.each(function () {
-		var element = $(this),
-			dragOrigin;
+		const element = $(this);
+		let dragOrigin;
 		element.on('dragstart', function () {
 			if (scrollPredicate()) {
 				dragOrigin = {
@@ -26,7 +29,7 @@ jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
 };
 $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, resourceTranslator, centerSelectedNodeOnOrientationChange, options) {
 	'use strict';
-	var hotkeyEventHandlers = {
+	const hotkeyEventHandlers = {
 			'return': 'insertDown',
 			'shift+return': 'insertUp',
 			'shift+tab': 'insertLeft',
@@ -58,16 +61,16 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'Esc': 'cancelCurrentAction'
 		},
 		charEventHandlers = {
-			'[' : 'activateChildren',
-			'{'	: 'activateNodeAndChildren',
-			'='	: 'activateSiblingNodes',
-			'.'	: 'activateSelectedNode',
-			'/' : 'toggleCollapse',
-			'a' : 'openAttachment',
-			'i' : 'editIcon'
+			'[': 'activateChildren',
+			'{': 'activateNodeAndChildren',
+			'=': 'activateSiblingNodes',
+			'.': 'activateSelectedNode',
+			'/': 'toggleCollapse',
+			'a': 'openAttachment',
+			'i': 'editIcon'
 		},
-		actOnKeys = true,
 		self = this;
+	let actOnKeys = true;
 	mapModel.addEventListener('inputEnabledChanged', function (canInput, holdFocus) {
 		actOnKeys = canInput;
 		if (canInput && !holdFocus) {
@@ -76,7 +79,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 	});
 
 	return this.each(function () {
-		var element = $(this),
+		const element = $(this),
 			stage = $('<div>').css({
 				position: 'relative'
 			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
@@ -85,8 +88,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				'width': element.innerWidth() - 20,
 				'height': element.innerHeight() - 20,
 				'scale': 1
-			}).updateStage(),
-			previousPinchScale = false;
+			}).updateStage();
+		let previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {
 			(dragContainer || element).simpleDraggableContainer();
@@ -99,7 +102,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 					element.css('overflow', 'hidden');
 				}
 			});
-			jQuery(document).on('mouseup', function () {
+			$(document).on('mouseup', function () {
 				if (element.css('overflow') !== 'auto') {
 					element.css('overflow', 'auto');
 				}
@@ -113,13 +116,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 					return false;
 				}
 			}).on('pinch', function (event) {
+				let scale;
 				if (!event || !event.gesture || !event.gesture.scale) {
 					return;
 				}
 				event.preventDefault();
 				event.gesture.preventDefault();
 
-				var scale = event.gesture.scale;
+				scale = event.gesture.scale;
 				if (previousPinchScale) {
 					scale = scale / previousPinchScale;
 				}
@@ -137,7 +141,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			});
 
 		}
-		MAPJS.DOMRender.viewController(mapModel, stage, touchEnabled, imageInsertController, resourceTranslator, options);
+		DOMRender.viewController(mapModel, stage, touchEnabled, imageInsertController, resourceTranslator, options);
 		_.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
 			element.keydown(keysPressed, function (event) {
 				if (actOnKeys) {
@@ -148,12 +152,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			});
 		});
 		if (!touchEnabled) {
-			jQuery(window).on('resize', function () {
+			$(window).on('resize', function () {
 				mapModel.resetView();
 			});
 		}
 
-		jQuery(window).on('orientationchange', function () {
+		$(window).on('orientationchange', function () {
 			if (centerSelectedNodeOnOrientationChange) {
 				mapModel.centerOnNode(mapModel.getSelectedNodeId());
 			} else {
@@ -161,13 +165,14 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			}
 
 		});
-		jQuery(document).on('keydown', function (e) {
-			var functions = {
+		$(document).on('keydown', function (e) {
+			const functions = {
 				'U+003D': 'scaleUp',
 				'U+002D': 'scaleDown',
 				61: 'scaleUp',
 				173: 'scaleDown'
-			}, mappedFunction;
+			};
+			let mappedFunction;
 			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {
 				if (e.originalEvent && e.originalEvent.keyIdentifier) { /* webkit */
 					mappedFunction = functions[e.originalEvent.keyIdentifier];
@@ -182,7 +187,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				}
 			}
 		}).on('wheel mousewheel', function (e) {
-			var scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
+			const scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
 			if (scroll < 0 && element.scrollLeft() === 0) {
 				e.preventDefault();
 			}
@@ -198,7 +203,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			if (/INPUT|TEXTAREA/.test(evt && evt.target && evt.target.tagName)) {
 				return;
 			}
-			var unicode = evt.charCode || evt.keyCode,
+			const unicode = evt.charCode || evt.keyCode,
 				actualkey = String.fromCharCode(unicode),
 				mappedFunction = charEventHandlers[actualkey];
 			if (mappedFunction) {
