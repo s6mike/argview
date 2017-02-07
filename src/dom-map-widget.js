@@ -3,7 +3,8 @@ const $ = require('jquery'),
 	_ = require('underscore'),
 	DOMRender = require('./dom-render');
 
-require('imports-loader?jquery=>jquery!jquery-hotkeys');
+require('imports-loader?jQuery=jquery!jquery.hotkeys');
+require('./dom-map-view');
 
 $.fn.scrollWhenDragging = function (scrollPredicate) {
 	'use strict';

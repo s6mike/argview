@@ -1,4 +1,5 @@
-/*global jQuery*/
+/*global require */
+const jQuery = require('jquery');
 jQuery.fn.linkEditWidget = function (mapModel) {
 	'use strict';
 	return this.each(function () {
