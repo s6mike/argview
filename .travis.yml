@@ -1,5 +1,0 @@
-before_script:
-  - npm install  grunt-cli
-  - npm install  
-script: npm test 
-sudo: false
