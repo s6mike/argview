@@ -1,6 +1,4 @@
 - make tests run in Firefox and Safari
-- remove dist and build using webpack
-- remove describe batch helper and rewrite to use arrays and describe/it
 - revisit `= false` in let assignments, refactor to const
 - create an example that initialises widgets
 - remove/refactor DOMRender references

@@ -3,6 +3,7 @@ const $ = require('jquery'),
 	observable = require('mindmup-mapjs-model').observable,
 	DOMRender = require('../src/dom-render');
 require('../src/theme-css-widget');
+require('./helpers/jquery-extension-matchers');
 describe('themeCssWidget', function () {
 	'use strict';
 	const template = '<span></span>';

@@ -4,6 +4,7 @@ const _ = require('underscore'),
 	content = require('mindmup-mapjs-model').content,
 	jQuery = require('jquery');
 
+require('./helpers/jquery-extension-matchers');
 require('../src/map-toolbar-widget');
 describe('mapToolbarWidget', function () {
 	'use strict';

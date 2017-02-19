@@ -8,6 +8,7 @@ const jQuery = require('jquery'),
 	observable = require('mindmup-mapjs-model').observable,
 	Connectors = require('mindmup-mapjs-layout').Connectors;
 
+require('./helpers/jquery-extension-matchers');
 require('../src/dom-map-view');
 
 describe('innerText', function () {
@@ -1451,25 +1452,40 @@ describe('DOMRender', function () {
 	'use strict';
 	describe('nodeCacheMark', function () {
 
-		describe('returns the same value for two nodes if they have the same title, icon sizes, levels and positions, groups and collapsed attribute', [
-			['no icons, just titles', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2}}],
-			['titles and collapsed', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
-			['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}],
-			['titles and groups', {level: 1, title: 'zeka', x: 1, attr: {group: 'xx', ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, group: 'xx'}}]
-		], function (first, second) {
-			expect(DOMRender.nodeCacheMark(first)).toEqual(DOMRender.nodeCacheMark(second));
+		describe('returns the same value for two nodes if they have the same title, icon sizes, levels and positions, groups and collapsed attribute', function () {
+			[
+				['no icons, just titles', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2}}],
+				['titles and collapsed', {level: 1, title: 'zeka', x: 1, attr: {ignored: 1, collapsed: true}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, collapsed: true}}],
+				['titles and icon', {level: 1, title: 'zeka', x: 1, attr: { ignored: 1, icon: {width: 100, height: 120, position: 'top', url: '1'} }}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, icon: {width: 100, height: 120, position: 'top', url: '2'}}}],
+				['titles and groups', {level: 1, title: 'zeka', x: 1, attr: {group: 'xx', ignored: 1}}, {level: 1, title: 'zeka', x: 2, attr: {ignored: 2, group: 'xx'}}]
+			].forEach(function (testCase) {
+				const testName = testCase[0],
+					first = testCase[1],
+					second = testCase[2];
+				it(testName, function () {
+					expect(DOMRender.nodeCacheMark(first)).toEqual(DOMRender.nodeCacheMark(second));
+				});
+			});
 		});
-		describe('returns different values for two nodes if they differ in the', [
-			['titles', {title: 'zeka'}, {title: 'zeka2'}],
-			['levels', {title: 'zeka', level: 2}, {title: 'zeka', level: 1}],
-			['groups', {title: 'zeka', level: 3, attr: {group: 's1'}}, {title: 'zeka', level: 3, attr: { group: 's2' }}],
-			['collapsed', {title: 'zeka', attr: {collapsed: true}}, {title: 'zeka', attr: {collapsed: false}}],
-			['icon width', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 101, height: 120, position: 'top'}}}],
-			['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
-			['icon position', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'left'} }}, {title: 'zeka', attr: {icon: {width: 100, height: 120, position: 'top'}}}]
-		], function (first, second) {
-			DOMRender.theme = new Theme({});
-			expect(DOMRender.nodeCacheMark(first)).not.toEqual(DOMRender.nodeCacheMark(second));
+		describe('returns different values for two nodes if they differ', function () {
+			[
+				['titles', {title: 'zeka'}, {title: 'zeka2'}],
+				['levels', {title: 'zeka', level: 2}, {title: 'zeka', level: 1}],
+				['groups', {title: 'zeka', level: 3, attr: {group: 's1'}}, {title: 'zeka', level: 3, attr: { group: 's2' }}],
+				['collapsed', {title: 'zeka', attr: {collapsed: true}}, {title: 'zeka', attr: {collapsed: false}}],
+				['icon width', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 101, height: 120, position: 'top'}}}],
+				['icon height', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'top'} }}, {title: 'zeka', attr: { icon: {width: 100, height: 121, position: 'top'}}}],
+				['icon position', {title: 'zeka', attr: { icon: {width: 100, height: 120, position: 'left'} }}, {title: 'zeka', attr: {icon: {width: 100, height: 120, position: 'top'}}}]
+			].forEach(function (testCase) {
+				const testName = testCase[0],
+					first = testCase[1],
+					second = testCase[2];
+
+				it(testName, function () {
+					DOMRender.theme = new Theme({});
+					expect(DOMRender.nodeCacheMark(first)).not.toEqual(DOMRender.nodeCacheMark(second));
+				});
+			});
 		});
 	});
 	describe('dimensionProvider', function () {
@@ -2829,22 +2845,33 @@ describe('DOMRender', function () {
 				expect(stage.data()).toEqual({ 'offsetX': 100, 'offsetY': 50, 'scale': 1, 'width': 400, 'height': 300 });
 				expect(jQuery.fn.updateStage).not.toHaveBeenCalled();
 			});
-			describe('expands the stage to enable scrolling to the node point when the node is ', [
-				['left', -50, 50, 140, 50, 440, 300],
-				['top', 100, -40, 100, 85, 400, 335],
-				['right', 270, 50, 100, 50, 480, 300],
-				['bottom', 100, 230, 100, 50, 400, 335]
-			], function (nodeX, nodeY, expectedStageOffsetX, expectedStageOffsetY, expectedStageWidth, expectedStageHeight) {
-				jQuery('#node_11_12').data({x: nodeX, y: nodeY});
-				mapModel.dispatchEvent('nodeFocusRequested', '11.12');
-				expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
+			describe('expands the stage to enable scrolling to the node point when the node is ', function () {
+				[
+					['left', -50, 50, 140, 50, 440, 300],
+					['top', 100, -40, 100, 85, 400, 335],
+					['right', 270, 50, 100, 50, 480, 300],
+					['bottom', 100, 230, 100, 50, 400, 335]
+				].forEach(function (testCase) {
+					const testName = testCase[0],
+						nodeX = testCase[1],
+						nodeY = testCase[2],
+						expectedStageOffsetX = testCase[3],
+						expectedStageOffsetY = testCase[4],
+						expectedStageWidth = testCase[5],
+						expectedStageHeight = testCase[6];
 
-				expect(stage.data('offsetX')).toEqual(expectedStageOffsetX);
-				expect(stage.data('offsetY')).toEqual(expectedStageOffsetY);
-				expect(stage.data('width')).toEqual(expectedStageWidth);
-				expect(stage.data('height')).toEqual(expectedStageHeight);
+					it(testName, function () {
+						jQuery('#node_11_12').data({x: nodeX, y: nodeY});
+						mapModel.dispatchEvent('nodeFocusRequested', '11.12');
+						expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
+
+						expect(stage.data('offsetX')).toEqual(expectedStageOffsetX);
+						expect(stage.data('offsetY')).toEqual(expectedStageOffsetY);
+						expect(stage.data('width')).toEqual(expectedStageWidth);
+						expect(stage.data('height')).toEqual(expectedStageHeight);
+					});
+				});
 			});
-
 		});
 		describe('image drag and drop', function () {
 			it('converts event coordinates to stage coordinates and delegates to mapModel.dropImage', function () {

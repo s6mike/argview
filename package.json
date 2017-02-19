@@ -19,9 +19,9 @@
   "homepage": "https://www.mindmup.com",
   "version": "2.0.1",
   "scripts": {
-    "pretest": "eslint spec src",
-    "test-watch": "karma start --auto-watch --no-single-run",
-    "test": "karma start"
+    "pretest": "eslint spec src && rm -rf testem/compiled",
+    "test": "testem ci -R dot",
+    "test-watch": "npm run pretest && testem dev -R dot"
   },
   "main": "src/npm-main.js",
   "dependencies": {
@@ -39,14 +39,7 @@
     "eslint-config-defaults": "^9.0.0",
     "exports-loader": "^0.6.3",
     "jasmine": "^2.5.3",
-    "karma": "^1.4.1",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-firefox-launcher": "^1.0.0",
-    "karma-jasmine": "^1.1.0",
-    "karma-safari-launcher": "^1.0.0",
-    "karma-sourcemap-loader": "^0.3.7",
-    "karma-summary-reporter": "^1.3.3",
-    "karma-webpack": "^2.0.2",
+    "testem": "^1.15.0",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0"
   }

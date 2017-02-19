@@ -1,4 +1,5 @@
 .DS_Store
+testem/compiled
 pub
 lib
 #grunt and jasmine artificats

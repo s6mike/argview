@@ -1,5 +1,6 @@
 /*global describe, it, beforeEach, afterEach, expect, spyOn, require */
 const jQuery = require('jquery');
+require('./helpers/jquery-extension-matchers');
 describe('toHaveBeenCalledOnJQueryObject matcher', function () {
 	'use strict';
 	let underTest1, underTest2;

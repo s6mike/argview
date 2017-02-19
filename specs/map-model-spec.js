@@ -2607,7 +2607,7 @@ describe('MapModel', function () {
 			}));
 		});
 
-		describe(' calculates points',
+		describe('calculates points', function () {
 			[
 				['return false if no node at point', 0, 0, undefined],
 				['return nodeId if smack at centre', 5, 105, '1.1'],
@@ -2615,9 +2615,16 @@ describe('MapModel', function () {
 				['return nodeId if at bottom left', -100, -90, 3],
 				['return nodeId if at top right', -100, 110, 2],
 				['return nodeId if at bottom right', -90, 110, 2]
-			], function (x, y, expected) {
-				expect(underTest.getNodeIdAtPosition(x, y)).toEqual(expected);
+			].forEach(function (testCase) {
+				const testName = testCase[0],
+					x = testCase[1],
+					y = testCase[2],
+					expected = testCase[3];
+				it (testName, function () {
+					expect(underTest.getNodeIdAtPosition(x, y)).toEqual(expected);
+				});
 			});
+		});
 	});
 
 
