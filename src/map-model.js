@@ -617,7 +617,10 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 	};
 	this.resetView = function (source) {
 		const selectedNode = layoutModel.getNode(currentlySelectedIdeaId),
-			localRoot = (selectedNode && selectedNode.rootId) || idea.getDefaultRootId();
+			localRoot = (selectedNode && selectedNode.rootId) || (idea && idea.getDefaultRootId());
+		if (!localRoot) {
+			return;
+		}
 		if (isInputEnabled) {
 			self.selectNode(localRoot);
 			self.dispatchEvent('mapViewResetRequested');

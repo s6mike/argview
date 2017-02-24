@@ -1729,6 +1729,21 @@ describe('MapModel', function () {
 			expect(mapScaleChangedListener).toHaveBeenCalledWith(1.25, undefined);
 		});
 		describe('resetView', function () {
+			describe('when there is no idea set', function () {
+				beforeEach(function () {
+					underTest = new MapModel();
+					underTest.addEventListener('mapViewResetRequested', mapViewResetRequestedListener);
+				});
+				it('should exit silently ', function () {
+					expect(function () {
+						underTest.resetView();
+					}).not.toThrow()
+				});
+				it('should not dispatch mapViewResetRequested event', function () {
+					underTest.resetView();
+					expect(mapViewResetRequestedListener).not.toHaveBeenCalled();
+				});
+			});
 			it('should select the local root node and dispatch mapViewResetRequested when resetView is called', function () {
 				underTest.selectNode(3);
 				nodeSelectionChangedListener.calls.reset();
