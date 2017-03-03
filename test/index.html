@@ -63,84 +63,8 @@
 			</div>
 		</div>
 		<div id="container"></div>
-		<script type="text/javascript" src="../lib/dependencies.js"></script>
-		<script type="text/javascript" src="../src/mapjs.js"></script>
-		<script type="text/javascript" src="../src/clipboard.js"></script>
-		<script type="text/javascript" src="../src/map-model.js"></script>
-		<script type="text/javascript" src="../src/map-toolbar-widget.js"></script>
-		<script type="text/javascript" src="../src/link-edit-widget.js"></script>
-		<script type="text/javascript" src="../src/image-drop-widget.js"></script>
-		<script type="text/javascript" src="../src/hammer-draggable.js"></script>
-		<script type="text/javascript" src="../src/dom-map-view.js"></script>
-		<script type="text/javascript" src="../src/dom-map-widget.js"></script>
-		<script type="text/javascript" src="../src/theme-css-widget.js"></script>
-		<script type="text/javascript" src="../src/node-resize-widget.js"></script>
-		<script type="text/javascript" src="roy-map.js"></script>
-		<script type="text/javascript" src="themes/compact.js"></script>
-		<script type="text/javascript" src="themes/top-down-simple.js"></script>
-		<script type="text/javascript" src="themes/argument-mapping.js"></script>
-		<script type="text/javascript" src="themes/v1.js"></script>
 		<style id="themecss">
 		</style>
-		<script>
-			jQuery.fn.attachmentEditorWidget = function (mapModel) {
-				'use strict';
-				return this.each(function () {
-					var element = jQuery(this);
-					mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
-						mapModel.setAttachment(
-							'attachmentEditorWidget',
-							nodeId, {
-								contentType: 'text/html',
-								content: prompt('attachment', attachment && attachment.content)
-							}
-						);
-					});
-				});
-			};
-			(function () {
-				window.onerror = alert;
-				var container = jQuery('#container'),
-				idea = MAPJS.content(test_tree()),
-				imageInsertController = new MAPJS.ImageInsertController("http://localhost:4999?u="),
-				themeProvider = MAPJS.Themes,
-				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-				$('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel);
-				container.domMapWidget(console, mapModel, false, imageInsertController);
-				jQuery('body').mapToolbarWidget(mapModel);
-				jQuery('body').attachmentEditorWidget(mapModel);
-				$("[data-mm-action='export-image']").click(function () {
-					MAPJS.pngExport(idea).then(function (url) {
-						window.open(url, '_blank');
-					});
-				});
-				mapModel.setIdea(idea);
-
-
-				jQuery('#linkEditWidget').linkEditWidget(mapModel);
-				window.mapModel = mapModel;
-				jQuery('.arrow').click(function () {
-					jQuery(this).toggleClass('active');
-				});
-				imageInsertController.addEventListener('imageInsertError', function (reason) {
-					console.log('image insert error', reason);
-				});
-				container.on('drop', function (e) {
-					var dataTransfer = e.originalEvent.dataTransfer;
-					e.stopPropagation();
-					e.preventDefault();
-					if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-						var fileInfo = dataTransfer.files[0];
-						if (/\.mup$/.test(fileInfo.name)) {
-							var oFReader = new FileReader();
-							oFReader.onload = function (oFREvent) {
-								mapModel.setIdea(MAPJS.content(JSON.parse(oFREvent.target.result)));
-							};
-							oFReader.readAsText(fileInfo, 'UTF-8');
-						}
-					}
-				});
-			}());
-		</script>
+		<script src="bundle.js"></script>
 	</body>
 </html>

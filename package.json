@@ -21,7 +21,8 @@
   "scripts": {
     "pretest": "eslint spec src && rm -rf testem/compiled",
     "test": "testem ci -R dot",
-    "test-watch": "npm run pretest && testem dev -R dot"
+    "test-watch": "npm run pretest && testem dev -R dot",
+    "server": "webpack-dev-server"
   },
   "main": "src/npm-main.js",
   "dependencies": {
@@ -38,9 +39,11 @@
     "eslint-config-crockford": "^1.0.0",
     "eslint-config-defaults": "^9.0.0",
     "exports-loader": "^0.6.3",
+    "imports-loader": "^0.7.1",
     "jasmine": "^2.5.3",
     "testem": "^1.15.0",
     "webpack": "^2.2.1",
-    "webpack-dev-middleware": "^1.10.0"
+    "webpack-dev-middleware": "^1.10.0",
+    "webpack-dev-server": "^2.4.1"
   }
 }
