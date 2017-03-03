@@ -370,12 +370,12 @@ describe('MapModel', function () {
 					});
 					layoutBefore = {
 						nodes: {
-							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
-							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
-							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 },
-							5: { x: 49, y: 20, title: '5', id: 5, rootId: 5 },
-							6: { x: 49, y: 20, title: '6', id: 6, rootId: 5 },
-							7: { x: 49, y: 20, title: '7', id: 7, rootId: 5 }
+							1: { x: 149, y: 120, title: '1', id: 1, rootId: 1, width: 100, height: 50 },
+							2: { x: 249, y: 220, title: '2', id: 2, rootId: 1, width: 100, height: 50 },
+							3: { x: 349, y: 320, title: '3', id: 3, rootId: 1, width: 100, height: 50 },
+							5: { x: 449, y: 420, title: '5', id: 5, rootId: 5, width: 100, height: 50 },
+							6: { x: 549, y: 520, title: '6', id: 6, rootId: 5, width: 100, height: 50 },
+							7: { x: 559, y: 530, title: '7', id: 7, rootId: 5, width: 100, height: 50 }
 						}
 					};
 					layoutCalculatorLayout = layoutBefore;
@@ -383,31 +383,18 @@ describe('MapModel', function () {
 					underTest.selectNode(6);
 					nodeSelectionChangedListener.calls.reset();
 				});
-				it('when the currently selected node is removed, selects its root if still in layout', function () {
+				it('when the currently selected node is removed, selects the closest node still in layout', function () {
 					layoutCalculatorLayout = {
 						nodes: {
-							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
-							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
-							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 },
-							5: { x: 49, y: 20, title: '5', id: 5, rootId: 5 },
-							7: { x: 49, y: 20, title: '7', id: 7, rootId: 5 }
+							1: { x: 0, y: 500, title: '1', id: 1, rootId: 1, width: 100, height: 50 },
+							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1, width: 100, height: 50 },
+							3: { x: 349, y: 20, title: '3', id: 3, rootId: 1, width: 100, height: 50 },
+							5: { x: 409, y: 450, title: '5', id: 5, rootId: 5, width: 100, height: 50 }
 						}
 					};
 					anIdea.removeSubIdea(6);
 					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(6, false);
 					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
-				});
-				it('when the currently selected node is removed, selects default root if direct root is no longer in layout', function () {
-					layoutCalculatorLayout = {
-						nodes: {
-							1: { x: 49, y: 20, title: '1', id: 1, rootId: 1 },
-							2: { x: 49, y: 20, title: '2', id: 2, rootId: 1 },
-							3: { x: 49, y: 20, title: '3', id: 3, rootId: 1 }
-						}
-					};
-					anIdea.removeSubIdea(6);
-					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(6, false);
-					expect(nodeSelectionChangedListener).toHaveBeenCalledWith(1, true);
 				});
 			});
 
@@ -1737,7 +1724,7 @@ describe('MapModel', function () {
 				it('should exit silently ', function () {
 					expect(function () {
 						underTest.resetView();
-					}).not.toThrow()
+					}).not.toThrow();
 				});
 				it('should not dispatch mapViewResetRequested event', function () {
 					underTest.resetView();
@@ -1852,17 +1839,6 @@ describe('MapModel', function () {
 			nodeSelectionChangedListener.calls.reset();
 			underTest.insertIntermediate();
 			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(newId, true);
-		});
-		it('should select parent when a node is deleted', function () {
-			underTest.selectNode(6);
-			nodeSelectionChangedListener.calls.reset();
-			underTest.removeSubIdea('toolbar');
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
-		});
-		it('should select parent when a node is cut', function () {
-			underTest.selectNode(6);
-			underTest.cut('toolbar');
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(5, true);
 		});
 		it('should select pasted node when pasted', function () {
 			underTest.selectNode(6);

@@ -41,6 +41,13 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 				}
 			});
 		},
+		closestNodeId = function (nodeList, referenceNode) {
+			const closestNode = _.min(nodeList, function (node) {
+				return Math.pow(node.x + node.width / 2 - referenceNode.x - referenceNode.width / 2, 2)
+					+ Math.pow(node.y + node.height / 2 - referenceNode.y - referenceNode.height / 2, 2);
+			});
+			return closestNode && closestNode.id;
+		},
 		updateCurrentLayout = function (newLayout, sessionId) {
 			let layoutCompleteOptions;
 			const currentLayout = layoutModel.getLayout(),
@@ -66,11 +73,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 				if (!newNode) {
 					/*jslint eqeq: true*/
 					if (nodeId == currentlySelectedIdeaId) { //eslint-disable-line eqeqeq
-						if (newLayout.nodes[oldNode.rootId]) {
-							self.selectNode(oldNode.rootId);
-						} else {
-							self.selectNode(idea.getDefaultRootId());
-						}
+						self.selectNode(closestNodeId(newLayout.nodes, oldNode));
 					}
 					newActive = _.reject(activatedNodes, function (e) {
 						return e == nodeId; // eslint-disable-line eqeqeq
@@ -544,13 +547,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 		analytic('removeSubIdea', source);
 		if (isInputEnabled) {
 			self.applyToActivated(function (id) {
-				let parent;
-				if (currentlySelectedIdeaId == id) { //eslint-disable-line eqeqeq
-					parent = idea.findParent(currentlySelectedIdeaId);
-					if (parent) {
-						self.selectNode(parent.id);
-					}
-				}
 				removed  = idea.removeSubIdea(id);
 			});
 		}
@@ -749,7 +745,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 	};
 	self.cut = function (source) {
 		const activeNodeIds = [], parents = [];
-		let firstLiveParent;
 		if (!isEditingEnabled) {
 			return false;
 		}
@@ -761,8 +756,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			});
 			clipboard.put(idea.cloneMultiple(activeNodeIds));
 			idea.removeMultiple(activeNodeIds);
-			firstLiveParent = _.find(parents, idea.findSubIdeaById);
-			self.selectNode(firstLiveParent || idea.getDefaultRootId());
 		}
 	};
 	self.contextForNode = function (nodeId) {
