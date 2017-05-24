@@ -20,8 +20,7 @@ const MAPJS = require('../src/npm-main'),
 							nodeId, {
 								contentType: 'text/html',
 								content: window.prompt('attachment', attachment && attachment.content)
-							}
-							);
+							});
 				});
 			});
 		};
@@ -43,6 +42,7 @@ const MAPJS = require('../src/npm-main'),
 		imageInsertController.addEventListener('imageInsertError', function (reason) {
 			console.log('image insert error', reason);
 		});
+
 		container.on('drop', function (e) {
 			const dataTransfer = e.originalEvent.dataTransfer;
 			e.stopPropagation();

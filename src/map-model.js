@@ -1,9 +1,8 @@
 /*global require, module */
 const _ = require('underscore'),
-	MemoryClipboard = require('./clipboard'),
 	LayoutModel = require('mindmup-mapjs-layout').LayoutModel,
 	observable = require('mindmup-mapjs-model').observable;
-module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
+module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, defaultReorderMargin, optional) {
 	'use strict';
 	let idea,
 		isAddLinkMode,
@@ -18,8 +17,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 		currentlySelectedIdeaId;
 
 	const self = this,
-		reorderMargin = defaultReorderMargin || 20,
-		clipboard = clipboardProvider || new MemoryClipboard(),
+		reorderMargin = (optional && optional.reorderMargin) || 20,
 		layoutModel = (optional && optional.layoutModel) || new LayoutModel({nodes: {}, connectors: {}}),
 		setActiveNodes = function (activated) {
 			const wasActivated = _.clone(activatedNodes);
@@ -743,21 +741,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			idea.moveRelative(currentlySelectedIdeaId, relativeMovement, options);
 		}
 	};
-	self.cut = function (source) {
-		const activeNodeIds = [], parents = [];
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('cut', source);
-		if (isInputEnabled) {
-			self.applyToActivated(function (nodeId) {
-				activeNodeIds.push(nodeId);
-				parents.push(idea.findParent(nodeId).id);
-			});
-			clipboard.put(idea.cloneMultiple(activeNodeIds));
-			idea.removeMultiple(activeNodeIds);
-		}
-	};
 	self.contextForNode = function (nodeId) {
 		const node = self.findIdeaById(nodeId),
 			hasChildren = node && node.ideas && _.size(node.ideas) > 0,
@@ -765,14 +748,12 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			hasSiblings = idea.hasSiblings(nodeId),
 			hasPreferredWidth = node && node.attr && node.attr.style && node.attr.style.width,
 			isCollapsed = node && node.getAttr('collapsed'),
-			canPaste = node && isEditingEnabled && clipboard && clipboard.get(),
 			isRoot = idea.isRootNode(nodeId);
 		if (node) {
 			return {
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				hasPreferredWidth: !!hasPreferredWidth,
-				canPaste: !!canPaste,
 				notRoot: !isRoot,
 				notLastRoot: !isRoot || (rootCount > 1),
 				canUndo: idea.canUndo(),
@@ -782,47 +763,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			};
 		}
 
-	};
-	self.copy = function (source) {
-		const activeNodeIds = [];
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('copy', source);
-		if (isInputEnabled) {
-			self.applyToActivated(function (node) {
-				activeNodeIds.push(node);
-			});
-			clipboard.put(idea.cloneMultiple(activeNodeIds));
-		}
-	};
-	self.paste = function (source) {
-		let result;
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('paste', source);
-		if (isInputEnabled) {
-			result = idea.pasteMultiple(currentlySelectedIdeaId, clipboard.get());
-			if (result && result[0]) {
-				self.selectNode(result[0]);
-			}
-		}
-		return result;
-	};
-	self.pasteStyle = function (source) {
-		const clipContents = clipboard.get();
-		let pastingStyle;
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('pasteStyle', source);
-		if (isInputEnabled && clipContents && clipContents[0]) {
-			pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
-			self.applyToActivated(function (id) {
-				idea.updateAttr(id, 'style', pastingStyle);
-			});
-		}
 	};
 	self.getIcon = function (nodeId) {
 		const node = layoutModel.getNode(nodeId || currentlySelectedIdeaId);

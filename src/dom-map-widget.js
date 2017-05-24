@@ -50,15 +50,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'down': 'selectNodeDown',
 			'space f2': 'editNode',
 			'f': 'toggleCollapse',
-			'c meta+x ctrl+x': 'cut',
-			'p meta+v ctrl+v': 'paste',
-			'y meta+c ctrl+c': 'copy',
 			'u meta+z ctrl+z': 'undo',
 			'Esc 0 meta+0 ctrl+0': 'resetView',
 			'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
 			'meta+plus ctrl+plus z': 'scaleUp',
 			'meta+minus ctrl+minus shift+z': 'scaleDown',
-			'ctrl+shift+v meta+shift+v': 'pasteStyle',
 			'Esc': 'cancelCurrentAction'
 		},
 		charEventHandlers = {
