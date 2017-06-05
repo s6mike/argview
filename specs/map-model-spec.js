@@ -1,6 +1,5 @@
 /*global beforeEach, describe, expect, it, jasmine, spyOn, require */
 const MapModel = require('../src/map-model'),
-	MemoryClipboard = require('../src/clipboard'),
 	_ = require('underscore'),
 	content = require('mindmup-mapjs-model').content,
 	observable = require('mindmup-mapjs-model').observable,
@@ -468,7 +467,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('methods delegating to idea', function () {
-		let anIdea, underTest, clipboard, layout;
+		let anIdea, underTest, layout;
 		beforeEach(function () {
 			anIdea = content({
 				id: 1,
@@ -481,10 +480,9 @@ describe('MapModel', function () {
 				}
 			});
 			layout = {nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1, attr: {style: {styleprop: 'oldValue'}}}}};
-			clipboard = jasmine.createSpyObj('clipboard', ['get', 'put']);
 			underTest = new MapModel(function () {
 				return layout;
-			}, [], clipboard);
+			}, []);
 			underTest.setIdea(anIdea);
 		});
 		describe('flip', function () {
@@ -506,7 +504,7 @@ describe('MapModel', function () {
 					return {
 						nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
 					};
-				}, [], clipboard);
+				}, []);
 				underTest.setIdea(anIdea);
 				spyOn(anIdea, 'flip');
 			});
@@ -773,82 +771,6 @@ describe('MapModel', function () {
 
 
 		});
-		describe('copy', function () {
-			beforeEach(function () {
-				spyOn(anIdea, 'cloneMultiple').and.returnValue('CLONE');
-				underTest.selectNode(11);
-				anIdea.cloneMultiple.and.returnValue([1, 2, 3, 4, 5]);
-			});
-			it('should clone active idea into clipboard when copy is called', function () {
-				underTest.copy('keyboard');
-				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11]);
-				expect(clipboard.put).toHaveBeenCalledWith([1, 2, 3, 4, 5]);
-			});
-			it('should not clone if input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.copy('keyboard');
-				expect(anIdea.cloneMultiple).not.toHaveBeenCalled();
-			});
-			it('should work on multiple active nodes', function () {
-				underTest.activateNode('test', 12);
-				underTest.copy('keyboard');
-				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11, 12]);
-			});
-		});
-		describe('paste', function () {
-			describe('single nodes', function () {
-				let toPaste;
-				beforeEach(function () {
-					toPaste = [{title: 'clone'}];
-					clipboard.get.and.returnValue(toPaste);
-					spyOn(anIdea, 'pasteMultiple');
-					underTest.selectNode(12);
-				});
-				it('should paste clipboard into currently selected idea', function () {
-					underTest.paste('keyboard');
-					expect(anIdea.pasteMultiple).toHaveBeenCalledWith(12, toPaste);
-				});
-				it('should not paste when input is disabled', function () {
-					underTest.setInputEnabled(false);
-					underTest.paste('keyboard');
-					expect(anIdea.pasteMultiple).not.toHaveBeenCalled();
-				});
-				it('returns the result of pasteMultiple', function () {
-					anIdea.pasteMultiple.and.returnValue([101]);
-					expect(underTest.paste('keyboard')).toEqual([101]);
-				});
-			});
-		});
-		describe('cut', function () {
-			let toPaste;
-			beforeEach(function () {
-				toPaste = [{title: 'clone'}];
-				spyOn(anIdea, 'cloneMultiple').and.returnValue(toPaste);
-				spyOn(anIdea, 'pasteMultiple');
-				spyOn(anIdea, 'removeMultiple');
-				underTest.selectNode(11);
-			});
-			it('should invoke idea.removeMultiple when cut/paste method is invoked', function () {
-				underTest.cut('keyboard');
-				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11]);
-			});
-			it('should invoke idea.removeMultipple for all active nodes', function () {
-				underTest.activateNode('test', 12);
-				underTest.cut('keyboard');
-				expect(anIdea.removeMultiple).toHaveBeenCalledWith([11, 12]);
-			});
-			it('should clone all active nodes into the clipboard', function () {
-				underTest.activateNode('test', 12);
-				underTest.cut('keyboard');
-				expect(anIdea.cloneMultiple).toHaveBeenCalledWith([11, 12]);
-				expect(clipboard.put).toHaveBeenCalledWith(toPaste);
-			});
-			it('should not invoke idea.removeSubIdea when input is disabled', function () {
-				underTest.setInputEnabled(false);
-				underTest.cut('keyboard');
-				expect(anIdea.removeMultiple).not.toHaveBeenCalled();
-			});
-		});
 		describe('undo', function () {
 			beforeEach(function () {
 				underTest.selectNode(123);
@@ -891,7 +813,7 @@ describe('MapModel', function () {
 				layoutModel = jasmine.createSpyObj('layoutModel', ['getOrientation']);
 				underTest = new MapModel(function () {
 					return JSON.parse(JSON.stringify(layout)); /* deep clone */
-				}, undefined, undefined, undefined, {layoutModel: layoutModel});
+				}, undefined, undefined, {layoutModel: layoutModel});
 				spyOn(underTest, 'moveRelative');
 				spyOn(underTest, 'flip');
 				spyOn(underTest, 'addSiblingIdeaBefore');
@@ -1061,7 +983,7 @@ describe('MapModel', function () {
 					return {
 						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
 					};
-				}, [], clipboard);
+				}, []);
 				underTest.setIdea(anIdea);
 			});
 			it('assigns position for root nodes', function () {
@@ -1095,7 +1017,7 @@ describe('MapModel', function () {
 					return {
 						nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, rootId: 1}, 3: {level: 3, rootId: 1}}
 					};
-				}, [], clipboard);
+				}, []);
 				underTest.setIdea(anIdea);
 				listener = jasmine.createSpy('onChange');
 				anIdea.addEventListener('changed', listener);
@@ -1196,7 +1118,7 @@ describe('MapModel', function () {
 
 				underTest = new MapModel(function () {
 					return layout;
-				}, [], clipboard);
+				}, []);
 				underTest.setIdea(topDownIdea);
 				underTest.topDownPositionNodeAt(2, 146, 52, false);
 				expect(topDownIdea.ideas[1].findChildRankById(2)).toBeGreaterThan(topDownIdea.ideas[1].findChildRankById(4));
@@ -1221,6 +1143,37 @@ describe('MapModel', function () {
 		describe('addSiblingIdea', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'addSubIdea').and.callThrough();
+				layout = {
+					'nodes': {
+						'1': {
+							'level': 1,
+							'title': 'root',
+							'width': 59,
+							'height': 50,
+							'id': 1,
+							'x': -29,
+							'y': -98,
+							'rootId': 1
+						},
+						'2': {
+							'level': 2,
+							'title': '',
+							'width': 122,
+							'height': 16,
+							'id': 2,
+							'x': -132,
+							'y': 52,
+							'rootId': 1
+						}
+					}
+				};
+
+				underTest = new MapModel(function () {
+					return layout;
+				});
+				underTest.setIdea(anIdea, [], 20);
+
+
 			});
 			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
 				underTest.selectNode(2);
@@ -1265,10 +1218,19 @@ describe('MapModel', function () {
 				anIdea.attr.collapsed =  true;
 				spyOn(anIdea, 'updateAttr').and.callThrough();
 				spyOn(anIdea, 'dispatchEvent');
-
 				underTest.selectNode(1);
 				underTest.addSiblingIdea();
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
+				expect(anIdea.attr.collapsed).toBeTruthy();
+			});
+			it('should try to relatively position the right to the currently selected one if it is adding a root node', function () {
+				underTest.selectNode(1);
+				underTest.addSiblingIdea();
+				expect(anIdea.findSubIdeaById(3).attr.position).toEqual([70, -98, 1]);
+			});
+			it('should not relatively position the new idea if it is adding a subnode', function () {
+				underTest.selectNode(2);
+				underTest.addSiblingIdea();
+				expect(anIdea.findSubIdeaById(3).attr).toBeFalsy();
 			});
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
@@ -1317,6 +1279,36 @@ describe('MapModel', function () {
 		describe('addSiblingIdeaBefore', function () {
 			beforeEach(function () {
 				spyOn(anIdea, 'addSubIdea').and.callThrough();
+				layout = {
+					'nodes': {
+						'1': {
+							'level': 1,
+							'title': 'root',
+							'width': 59,
+							'height': 50,
+							'id': 1,
+							'x': -29,
+							'y': -98,
+							'rootId': 1
+						},
+						'2': {
+							'level': 2,
+							'title': '',
+							'width': 122,
+							'height': 16,
+							'id': 2,
+							'x': -132,
+							'y': 52,
+							'rootId': 1
+						}
+					}
+				};
+
+				underTest = new MapModel(function () {
+					return layout;
+				});
+				underTest.setIdea(anIdea, [], 20);
+
 			});
 			it('should invoke idea.addSubIdea with a parent of a currently selected node', function () {
 				underTest.selectNode(2);
@@ -1338,13 +1330,24 @@ describe('MapModel', function () {
 				expect(anIdea.updateAttr).toHaveBeenCalledWith(1, 'collapsed', false);
 				expect(anIdea.dispatchEvent.calls.count()).toBe(1);
 			});
-			it('should expand the parent node if it is the map root', function () {
+			it('should not try expand the parent node if it is the aggregate root', function () {
 				anIdea.attr.collapsed = true;
 				spyOn(anIdea, 'updateAttr').and.callThrough();
 				spyOn(anIdea, 'dispatchEvent');
 				underTest.addSiblingIdeaBefore();
-				expect(anIdea.updateAttr).not.toHaveBeenCalled();
+				expect(anIdea.attr.collapsed).toBeTruthy();
 			});
+			it('should try to relatively position the right to the currently selected one if it is adding a root node', function () {
+				underTest.selectNode(1);
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.findSubIdeaById(3).attr.position).toEqual([70, -98, 1]);
+			});
+			it('should not relatively position the new idea if it is adding a subnode', function () {
+				underTest.selectNode(2);
+				underTest.addSiblingIdeaBefore();
+				expect(anIdea.findSubIdeaById(3).attr).toBeFalsy();
+			});
+
 			it('should not invoke anything if input is disabled', function () {
 				underTest.setInputEnabled(false);
 				underTest.addSiblingIdeaBefore();
@@ -1555,17 +1558,48 @@ describe('MapModel', function () {
 		});
 		describe('setNodeWidth', function () {
 			it('should set the width property of the idea style attribute', function () {
-				spyOn(anIdea, 'mergeAttrProperty');
 				underTest.setNodeWidth('mouse', 2, 200);
-				expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'width', 200);
+				expect(anIdea.getAttrById(2, 'style')).toEqual({width: 200});
+			});
+		});
+		describe('unsetSelectedNodePosition', function () {
+			it('should unset the width property of the idea style attribute', function () {
+				underTest.selectNode(2);
+				anIdea.updateAttr(2, 'position', [1, 2, 3]);
+				underTest.unsetSelectedNodePosition('menu');
+				expect(anIdea.getAttrById(2, 'position')).toBeFalsy();
+			});
+			it('applies to all activated nodes as a batch', function () {
+				const changedListener = jasmine.createSpy();
+				anIdea.updateAttr(1, 'position', [1, 2, 3]);
+				anIdea.updateAttr(1, 'position', [1, 2, 3]);
+				underTest.selectNode(2);
+				underTest.selectNode(1, true, true);
+				anIdea.addEventListener('changed', changedListener);
+				underTest.unsetSelectedNodePosition('menu');
+				expect(anIdea.getAttrById(1, 'position')).toBeFalsy();
+				expect(anIdea.getAttrById(2, 'position')).toBeFalsy();
+				expect(changedListener.calls.count()).toBe(1);
 			});
 		});
 		describe('unsetSelectedNodeWidth', function () {
 			it('should unset the width property of the idea style attribute', function () {
-				spyOn(anIdea, 'mergeAttrProperty');
 				underTest.selectNode(2);
+				underTest.setNodeWidth('mouse', 2, 200);
 				underTest.unsetSelectedNodeWidth('menu');
-				expect(anIdea.mergeAttrProperty).toHaveBeenCalledWith(2, 'style', 'width', false);
+				expect(anIdea.getAttrById(2, 'style')).toBeFalsy();
+			});
+			it('applies to all activated nodes as a batch', function () {
+				const changedListener = jasmine.createSpy();
+				underTest.setNodeWidth('mouse', 2, 200);
+				underTest.setNodeWidth('mouse', 1, 100);
+				underTest.selectNode(2);
+				underTest.selectNode(1, true, true);
+				anIdea.addEventListener('changed', changedListener);
+				underTest.unsetSelectedNodeWidth('menu');
+				expect(anIdea.getAttrById(1, 'style')).toBeFalsy();
+				expect(anIdea.getAttrById(2, 'style')).toBeFalsy();
+				expect(changedListener.calls.count()).toBe(1);
 			});
 		});
 		describe('insertIntermediate', function () {
@@ -1823,7 +1857,7 @@ describe('MapModel', function () {
 			layoutModel = new LayoutModel({nodes: {}, connectors: {}});
 			underTest = new MapModel(function () {
 				return JSON.parse(JSON.stringify(layout)); /* deep clone */
-			}, undefined, undefined, undefined, {layoutModel: layoutModel});
+			}, undefined, undefined, {layoutModel: layoutModel});
 			underTest.setIdea(anIdea);
 			nodeSelectionChangedListener = jasmine.createSpy();
 			underTest.addEventListener('nodeSelectionChanged', nodeSelectionChangedListener);
@@ -1839,12 +1873,6 @@ describe('MapModel', function () {
 			nodeSelectionChangedListener.calls.reset();
 			underTest.insertIntermediate();
 			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(newId, true);
-		});
-		it('should select pasted node when pasted', function () {
-			underTest.selectNode(6);
-			underTest.copy('toolbar');
-			underTest.paste('toolbar');
-			expect(nodeSelectionChangedListener).toHaveBeenCalledWith(9, true);
 		});
 		describe('selectNode', function () {
 			it('should dispatch nodeSelectionChanged when a different node is selected', function () {
@@ -2110,35 +2138,6 @@ describe('MapModel', function () {
 					});
 
 				});
-				describe('pasteStyle', function () {
-					let toPaste;
-					beforeEach(function () {
-						toPaste = {title: 'c', attr: {style: {color: 'red'}}};
-						spyOn(anIdea, 'clone').and.returnValue(toPaste);
-						underTest.selectNode(11);
-						underTest.copy('keyboard');
-						underTest.selectNode(2);
-					});
-					it('should invoke paste style on all activated nodes', function () {
-						underTest.selectNode(3);
-						underTest.activateSiblingNodes();
-						changedListener.calls.reset();
-						underTest.pasteStyle('keyboard');
-						for (let i = 2; i <= 5; i++) {
-							expect(anIdea.updateAttr).toHaveBeenCalledWith(i, 'style', toPaste.attr.style);
-						}
-						expect(changedListener.calls.count()).toBe(1);
-					});
-					it('should set root node style from clipboard to currently selected idea', function () {
-						underTest.pasteStyle('keyboard');
-						expect(anIdea.updateAttr).toHaveBeenCalledWith(2, 'style', toPaste.attr.style);
-					});
-					it('should not paste when input is disabled', function () {
-						underTest.setInputEnabled(false);
-						underTest.pasteStyle('keyboard');
-						expect(anIdea.updateAttr).not.toHaveBeenCalled();
-					});
-				});
 				describe('removeSubIdea', function () {
 					beforeEach(function () {
 						spyOn(anIdea, 'removeSubIdea');
@@ -2215,10 +2214,10 @@ describe('MapModel', function () {
 			underTest.addEventListener('analytic', analyticListener);
 		});
 		describe('should dispatch analytic event', function () {
-			const allMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
+			const allMethods = ['flip', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink',
-				'setIcon', 'removeLink'];
+				'setIcon', 'removeLink', 'unsetSelectedNodeWidth', 'unsetSelectedNodePosition'];
 			_.each(allMethods, function (method) {
 				it('when ' + method + ' method is invoked', function () {
 					const spy = jasmine.createSpy(method);
@@ -2251,8 +2250,9 @@ describe('MapModel', function () {
 			expect(analyticListener).not.toHaveBeenCalledWith();
 		});
 		describe('when editing is disabled edit methods should not execute ', function () {
-			const editingMethods = ['flip', 'cut', 'copy', 'paste', 'pasteStyle', 'redo', 'undo', 'moveRelative', 'addSubIdea',
-				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink'];
+			const editingMethods = ['flip',  'redo', 'undo', 'moveRelative', 'addSubIdea',
+				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink',
+				'unsetSelectedNodeWidth', 'unsetSelectedNodePosition'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
 					const spy = jasmine.createSpy(method);
@@ -3123,7 +3123,7 @@ describe('MapModel', function () {
 		});
 	});
 	describe('contextForNode', function () {
-		let underTest, anIdea, clipboard;
+		let underTest, anIdea;
 		const layoutCalculator = function () {
 			return {
 				nodes: {1: {level: 1}, 2: {level: 2}, 3: {level: 3}}
@@ -3154,8 +3154,7 @@ describe('MapModel', function () {
 					}
 				}
 			});
-			clipboard = new MemoryClipboard();
-			underTest = new MapModel(layoutCalculator, undefined, clipboard);
+			underTest = new MapModel(layoutCalculator, undefined);
 			underTest.setIdea(anIdea);
 		});
 		it('should be undefined when there is no node for node id', function () {
@@ -3212,21 +3211,17 @@ describe('MapModel', function () {
 				expect(underTest.contextForNode(2).hasPreferredWidth).toBeFalsy();
 			});
 		});
-		describe('canPaste', function () {
-			it('should be false when clipboard is empty', function () {
-				expect(underTest.contextForNode(1).canPaste).toBe(false);
+		describe('hasPreferredPosition', function () {
+			it('should be true if selected node has a position attribute', function () {
+				anIdea.updateAttr(2, 'position', [1]);
+				expect(underTest.contextForNode(2).hasPreferredPosition).toBeTruthy();
 			});
-			describe('when clipboard is not empty', function () {
-				beforeEach(function () {
-					clipboard.put('hoo har');
-				});
-				it('should be true when editing is enabled', function () {
-					expect(underTest.contextForNode(1).canPaste).toBe(true);
-				});
-				it('should be false when editing is disabled', function () {
-					underTest.setEditingEnabled(false);
-					expect(underTest.contextForNode(1).canPaste).toBe(false);
-				});
+			it('should be false if selected node has no attributes', function () {
+				expect(underTest.contextForNode(2).hasPreferredPosition).toBeFalsy();
+			});
+			it('should be false if selected node has attributes but not position', function () {
+				anIdea.updateAttr(2, 'x-position', [1]);
+				expect(underTest.contextForNode(2).hasPreferredWidth).toBeFalsy();
 			});
 		});
 		describe('hasChildren', function () {
@@ -3377,7 +3372,7 @@ describe('MapModel', function () {
 				}
 			});
 			layout = {
-				nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, x: 100, y: 200, rootId: 1}, 3: {level: 3, rootId: 1}}
+				nodes: {1: {level: 1, rootId: 1}, 2: {level: 2, width: 50, x: 100, y: 200, rootId: 1}, 3: {level: 3, rootId: 1}}
 			};
 			underTest = new MapModel(function () {
 				return layout;
@@ -3456,6 +3451,12 @@ describe('MapModel', function () {
 				expect(anIdea.addSubIdea).toHaveBeenCalledWith('root', 'initial title');
 				expect(nodeEditRequestedListener).not.toHaveBeenCalled();
 				expect(underTest.getSelectedNodeId()).toBe(4);
+			});
+			it('should relatively position the node to the right of the currently selected node', function () {
+
+				underTest.selectNode(2);
+				underTest.insertRoot();
+				expect(anIdea.findSubIdeaById(4).attr.position).toEqual([190, 200, 1]);
 			});
 
 		});

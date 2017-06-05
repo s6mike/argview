@@ -2774,6 +2774,7 @@ describe('DOMRender', function () {
 				mapModel.dispatchEvent('connectorCreated', {from: '11.12', to: '12.12'});
 				mapModel.dispatchEvent('connectorCreated', {from: '12.12', to: '13.12'});
 				mapModel.dispatchEvent('linkCreated', {ideaIdFrom: '11.12', ideaIdTo: '13.12', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}});
+				mapModel.getCurrentlySelectedIdeaId.and.returnValue('11.12');
 				jQuery.fn.updateStage.calls.reset();
 			});
 
@@ -2784,10 +2785,10 @@ describe('DOMRender', function () {
 				expect(stage.data('scale')).toBe(1);
 				expect(jQuery.fn.updateStage).toHaveBeenCalledOnJQueryObject(stage);
 			});
-			it('resets stage data', function () {
+			it('resets stage data to contain all nodes and put the focused node in the center', function () {
 				stage.data({'scale': 1, 'height': 500, 'width': 1000, 'offsetX': 20, 'offsetY': 500}).updateStage();
 				mapModel.dispatchEvent('mapViewResetRequested');
-				expect(stage.data()).toEqual({'scale': 1, 'height': 310, 'width': 420, 'offsetX': 100, 'offsetY': 50});
+				expect(stage.data()).toEqual({'scale': 1, 'height': 260, 'width': 320, 'offsetX': 0, 'offsetY': 0});
 			});
 			it('should update Connectors', function () {
 				jQuery.fn.updateConnector.calls.reset();
@@ -2803,8 +2804,8 @@ describe('DOMRender', function () {
 			});
 			it('centers the view', function () {
 				mapModel.dispatchEvent('mapViewResetRequested');
-				expect(viewPort.scrollLeft()).toBe(0);
-				expect(viewPort.scrollTop()).toBe(0);
+				expect(viewPort.scrollLeft()).toBe(10);
+				expect(viewPort.scrollTop()).toBe(5);
 			});
 		});
 		describe('nodeFocusRequested', function () {

@@ -180,6 +180,12 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 				idea.updateAttr(nodeId, 'position', [node.x, node.y, 1]);
 			}
 		},
+		positionNextTo = function (nodeId, relativeNodeId) {
+			const relativeNode = relativeNodeId && layoutModel.getNode(relativeNodeId);
+			if (relativeNode) {
+				idea.updateAttr(nodeId, 'position', [relativeNode.x + relativeNode.width + 2 * reorderMargin, relativeNode.y, 1]);
+			}
+		},
 		analytic = function (eventName, eventArg) {
 			if (eventArg) {
 				self.dispatchEvent('analytic', 'mapModel', eventName, eventArg);
@@ -481,12 +487,16 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			}
 			newId = idea.addSubIdea(parent.id);
 			if (newId) {
-				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
-				newRank = parent.findChildRankById(newId);
-				if (contextRank * newRank < 0) {
-					idea.flip(newId);
+				if (parent === idea) {
+					positionNextTo(newId, currentlySelectedIdeaId);
+				} else {
+					contextRank = parent.findChildRankById(currentlySelectedIdeaId);
+					newRank = parent.findChildRankById(newId);
+					if (contextRank * newRank < 0) {
+						idea.flip(newId);
+					}
+					idea.positionBefore(newId, currentlySelectedIdeaId);
 				}
-				idea.positionBefore(newId, currentlySelectedIdeaId);
 			}
 		});
 		if (newId) {
@@ -517,14 +527,18 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 					newId = idea.addSubIdea(parent.id);
 				}
 				if (newId) {
-					nextId = idea.nextSiblingId(currentId);
-					contextRank = parent.findChildRankById(currentId);
-					newRank = parent.findChildRankById(newId);
-					if (contextRank * newRank < 0) {
-						idea.flip(newId);
-					}
-					if (nextId) {
-						idea.positionBefore(newId, nextId);
+					if (parent === idea) {
+						positionNextTo(newId, currentlySelectedIdeaId);
+					} else {
+						nextId = idea.nextSiblingId(currentId);
+						contextRank = parent.findChildRankById(currentId);
+						newRank = parent.findChildRankById(newId);
+						if (contextRank * newRank < 0) {
+							idea.flip(newId);
+						}
+						if (nextId) {
+							idea.positionBefore(newId, nextId);
+						}
 					}
 				}
 			});
@@ -616,9 +630,9 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			return;
 		}
 		if (isInputEnabled) {
+			analytic('resetView', source);
 			self.selectNode(localRoot);
 			self.dispatchEvent('mapViewResetRequested');
-			analytic('resetView', source);
 		}
 
 	};
@@ -747,6 +761,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			rootCount = _.size(idea.ideas),
 			hasSiblings = idea.hasSiblings(nodeId),
 			hasPreferredWidth = node && node.attr && node.attr.style && node.attr.style.width,
+			hasPosition = node && node.attr && node.attr.position,
 			isCollapsed = node && node.getAttr('collapsed'),
 			isRoot = idea.isRootNode(nodeId);
 		if (node) {
@@ -754,6 +769,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				hasPreferredWidth: !!hasPreferredWidth,
+				hasPreferredPosition: !!hasPosition,
 				notRoot: !isRoot,
 				notLastRoot: !isRoot || (rootCount > 1),
 				canUndo: idea.canUndo(),
@@ -1357,22 +1373,40 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 	self.setNodeWidth = function (source, id, width) {
 		idea.mergeAttrProperty(id, 'style', 'width', width);
 	};
-	self.unsetSelectedNodeWidth = function () {
-		const id = self.getSelectedNodeId();
-		idea.mergeAttrProperty(id, 'style', 'width', false);
+	self.unsetSelectedNodeWidth = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('unsetSelectedNodeWidth', source);
+		self.applyToActivated(function (id) {
+			idea.mergeAttrProperty(id, 'style', 'width', false);
+		});
+	};
+	self.unsetSelectedNodePosition = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('unsetSelectedNodePosition', source);
+		self.applyToActivated(self.autoPosition);
 	};
 	self.insertRoot = function (source, initialTitle) {
-		let newId;
+		const createNode = function () {
+			if (initialTitle) {
+				return idea.addSubIdea(idea.id, initialTitle);
+			} else {
+				return idea.addSubIdea(idea.id);
+			}
+		};
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('addRootNode', source);
 		if (isInputEnabled) {
-			if (initialTitle) {
-				newId = idea.addSubIdea(idea.id, initialTitle);
-			} else {
-				newId = idea.addSubIdea(idea.id);
-			}
+			let newId = false;
+			idea.batch(function () {
+				newId = createNode();
+				positionNextTo(newId, self.getSelectedNodeId());
+			});
 			if (newId) {
 				if (initialTitle) {
 					selectNewIdea(newId);
