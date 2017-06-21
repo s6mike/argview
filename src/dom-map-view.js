@@ -886,6 +886,12 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 				viewPort.scrollTop(newTopScroll);
 			}
 		},
+		centerViewOnNode = function (ideaId, animate) {
+			const node = stageElement.nodeWithId(ideaId).data(),
+				nodeCenterX = Math.round(node.x + node.width / 2),
+				nodeCenterY = Math.round(node.y + node.height / 2);
+			centerViewOn(nodeCenterX, nodeCenterY, animate);
+		},
 		stagePointAtViewportCenter = function () {
 			return viewToStageCoordinates(Math.round(viewPort.innerWidth() / 2), Math.round(viewPort.innerHeight() / 2));
 		},
@@ -1205,13 +1211,10 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 
 	});
 	mapModel.addEventListener('nodeFocusRequested', function (ideaId) {
-		const node = stageElement.nodeWithId(ideaId).data(),
-			nodeCenterX = Math.round(node.x + node.width / 2),
-			nodeCenterY = Math.round(node.y + node.height / 2);
 		if (stageElement.data('scale') !== 1) {
 			stageElement.data('scale', 1).updateStage();
 		}
-		centerViewOn(nodeCenterX, nodeCenterY, true);
+		centerViewOnNode(ideaId, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
 		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
@@ -1219,7 +1222,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
 		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector(true);
 		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink(true);
-		centerViewOn(0, 0);
+		centerViewOnNode(mapModel.getCurrentlySelectedIdeaId());
 		viewPort.focus();
 	});
 	mapModel.addEventListener('layoutChangeStarting', function () {

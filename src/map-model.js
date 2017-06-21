@@ -1,9 +1,8 @@
 /*global require, module */
 const _ = require('underscore'),
-	MemoryClipboard = require('./clipboard'),
 	LayoutModel = require('mindmup-mapjs-layout').LayoutModel,
 	observable = require('mindmup-mapjs-model').observable;
-module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
+module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, defaultReorderMargin, optional) {
 	'use strict';
 	let idea,
 		isAddLinkMode,
@@ -18,8 +17,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 		currentlySelectedIdeaId;
 
 	const self = this,
-		reorderMargin = defaultReorderMargin || 20,
-		clipboard = clipboardProvider || new MemoryClipboard(),
+		reorderMargin = (optional && optional.reorderMargin) || 20,
 		layoutModel = (optional && optional.layoutModel) || new LayoutModel({nodes: {}, connectors: {}}),
 		setActiveNodes = function (activated) {
 			const wasActivated = _.clone(activatedNodes);
@@ -180,6 +178,12 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			const node = nodeId && layoutModel.getNode(nodeId);
 			if (node) {
 				idea.updateAttr(nodeId, 'position', [node.x, node.y, 1]);
+			}
+		},
+		positionNextTo = function (nodeId, relativeNodeId) {
+			const relativeNode = relativeNodeId && layoutModel.getNode(relativeNodeId);
+			if (relativeNode) {
+				idea.updateAttr(nodeId, 'position', [relativeNode.x + relativeNode.width + 2 * reorderMargin, relativeNode.y, 1]);
 			}
 		},
 		analytic = function (eventName, eventArg) {
@@ -483,12 +487,16 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			}
 			newId = idea.addSubIdea(parent.id);
 			if (newId) {
-				contextRank = parent.findChildRankById(currentlySelectedIdeaId);
-				newRank = parent.findChildRankById(newId);
-				if (contextRank * newRank < 0) {
-					idea.flip(newId);
+				if (parent === idea) {
+					positionNextTo(newId, currentlySelectedIdeaId);
+				} else {
+					contextRank = parent.findChildRankById(currentlySelectedIdeaId);
+					newRank = parent.findChildRankById(newId);
+					if (contextRank * newRank < 0) {
+						idea.flip(newId);
+					}
+					idea.positionBefore(newId, currentlySelectedIdeaId);
 				}
-				idea.positionBefore(newId, currentlySelectedIdeaId);
 			}
 		});
 		if (newId) {
@@ -519,14 +527,18 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 					newId = idea.addSubIdea(parent.id);
 				}
 				if (newId) {
-					nextId = idea.nextSiblingId(currentId);
-					contextRank = parent.findChildRankById(currentId);
-					newRank = parent.findChildRankById(newId);
-					if (contextRank * newRank < 0) {
-						idea.flip(newId);
-					}
-					if (nextId) {
-						idea.positionBefore(newId, nextId);
+					if (parent === idea) {
+						positionNextTo(newId, currentlySelectedIdeaId);
+					} else {
+						nextId = idea.nextSiblingId(currentId);
+						contextRank = parent.findChildRankById(currentId);
+						newRank = parent.findChildRankById(newId);
+						if (contextRank * newRank < 0) {
+							idea.flip(newId);
+						}
+						if (nextId) {
+							idea.positionBefore(newId, nextId);
+						}
 					}
 				}
 			});
@@ -618,9 +630,9 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			return;
 		}
 		if (isInputEnabled) {
+			analytic('resetView', source);
 			self.selectNode(localRoot);
 			self.dispatchEvent('mapViewResetRequested');
-			analytic('resetView', source);
 		}
 
 	};
@@ -743,36 +755,21 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			idea.moveRelative(currentlySelectedIdeaId, relativeMovement, options);
 		}
 	};
-	self.cut = function (source) {
-		const activeNodeIds = [], parents = [];
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('cut', source);
-		if (isInputEnabled) {
-			self.applyToActivated(function (nodeId) {
-				activeNodeIds.push(nodeId);
-				parents.push(idea.findParent(nodeId).id);
-			});
-			clipboard.put(idea.cloneMultiple(activeNodeIds));
-			idea.removeMultiple(activeNodeIds);
-		}
-	};
 	self.contextForNode = function (nodeId) {
 		const node = self.findIdeaById(nodeId),
 			hasChildren = node && node.ideas && _.size(node.ideas) > 0,
 			rootCount = _.size(idea.ideas),
 			hasSiblings = idea.hasSiblings(nodeId),
 			hasPreferredWidth = node && node.attr && node.attr.style && node.attr.style.width,
+			hasPosition = node && node.attr && node.attr.position,
 			isCollapsed = node && node.getAttr('collapsed'),
-			canPaste = node && isEditingEnabled && clipboard && clipboard.get(),
 			isRoot = idea.isRootNode(nodeId);
 		if (node) {
 			return {
 				hasChildren: !!hasChildren,
 				hasSiblings: !!hasSiblings,
 				hasPreferredWidth: !!hasPreferredWidth,
-				canPaste: !!canPaste,
+				hasPreferredPosition: !!hasPosition,
 				notRoot: !isRoot,
 				notLastRoot: !isRoot || (rootCount > 1),
 				canUndo: idea.canUndo(),
@@ -782,47 +779,6 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 			};
 		}
 
-	};
-	self.copy = function (source) {
-		const activeNodeIds = [];
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('copy', source);
-		if (isInputEnabled) {
-			self.applyToActivated(function (node) {
-				activeNodeIds.push(node);
-			});
-			clipboard.put(idea.cloneMultiple(activeNodeIds));
-		}
-	};
-	self.paste = function (source) {
-		let result;
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('paste', source);
-		if (isInputEnabled) {
-			result = idea.pasteMultiple(currentlySelectedIdeaId, clipboard.get());
-			if (result && result[0]) {
-				self.selectNode(result[0]);
-			}
-		}
-		return result;
-	};
-	self.pasteStyle = function (source) {
-		const clipContents = clipboard.get();
-		let pastingStyle;
-		if (!isEditingEnabled) {
-			return false;
-		}
-		analytic('pasteStyle', source);
-		if (isInputEnabled && clipContents && clipContents[0]) {
-			pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
-			self.applyToActivated(function (id) {
-				idea.updateAttr(id, 'style', pastingStyle);
-			});
-		}
 	};
 	self.getIcon = function (nodeId) {
 		const node = layoutModel.getNode(nodeId || currentlySelectedIdeaId);
@@ -1417,22 +1373,40 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, clipboa
 	self.setNodeWidth = function (source, id, width) {
 		idea.mergeAttrProperty(id, 'style', 'width', width);
 	};
-	self.unsetSelectedNodeWidth = function () {
-		const id = self.getSelectedNodeId();
-		idea.mergeAttrProperty(id, 'style', 'width', false);
+	self.unsetSelectedNodeWidth = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('unsetSelectedNodeWidth', source);
+		self.applyToActivated(function (id) {
+			idea.mergeAttrProperty(id, 'style', 'width', false);
+		});
+	};
+	self.unsetSelectedNodePosition = function (source) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('unsetSelectedNodePosition', source);
+		self.applyToActivated(self.autoPosition);
 	};
 	self.insertRoot = function (source, initialTitle) {
-		let newId;
+		const createNode = function () {
+			if (initialTitle) {
+				return idea.addSubIdea(idea.id, initialTitle);
+			} else {
+				return idea.addSubIdea(idea.id);
+			}
+		};
 		if (!isEditingEnabled) {
 			return false;
 		}
 		analytic('addRootNode', source);
 		if (isInputEnabled) {
-			if (initialTitle) {
-				newId = idea.addSubIdea(idea.id, initialTitle);
-			} else {
-				newId = idea.addSubIdea(idea.id);
-			}
+			let newId = false;
+			idea.batch(function () {
+				newId = createNode();
+				positionNextTo(newId, self.getSelectedNodeId());
+			});
 			if (newId) {
 				if (initialTitle) {
 					selectNewIdea(newId);
