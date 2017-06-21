@@ -473,11 +473,39 @@ describe('updateConnector', function () {
 		it('sets the stroke of the path from the connector color', function () {
 			expect(path.attr('stroke')).toEqual('black');
 		});
+		it('sets the stroke of the path from the parentConnector color', function () {
+			toNode.data('parentConnector', {color: 'green'});
+			underTest.updateConnector();
+			expect(path.attr('stroke')).toEqual('green');
+		});
 		it('sets the stroke-width from the connector width', function () {
 			expect(path.attr('stroke-width')).toEqual('3');
 		});
+		it('sets the stroke-dasharray to empty by default', function () {
+			expect(path.attr('stroke-dasharray')).toEqual('');
+		});
+		it('sets the stroke-dasharray of the path from the parentConnector lineStyle', function () {
+			toNode.data('parentConnector', {lineStyle: 'dashed'});
+			underTest.updateConnector();
+			expect(path.attr('stroke-dasharray')).toEqual('8, 8');
+		});
 		it('sets the path fill to transparent', function () {
 			expect(path.attr('fill')).toEqual('transparent');
+		});
+		describe('when the theme has blockParentConnectorOverride flag', function () {
+			beforeEach(function () {
+				DOMRender.theme = new Theme({blockParentConnectorOverride: true});
+			});
+			it('should not override the theme color ', function () {
+				toNode.data('parentConnector', {color: 'green'});
+				underTest.updateConnector();
+				expect(path.attr('stroke')).toEqual('black');
+			});
+			it('should not set the stroke-dasharray of the path from the parentConnector lineStyle', function () {
+				toNode.data('parentConnector', {lineStyle: 'dashed'});
+				underTest.updateConnector();
+				expect(path.attr('stroke-dasharray')).toEqual('');
+			});
 		});
 	});
 	it('returns itself for chaining', function () {
@@ -537,6 +565,17 @@ describe('updateConnector', function () {
 			underTest.updateConnector();
 			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,190 140,142');
 		});
+		it('will update if the shapes did not move, but the parentConnector attribute changed', function () {
+			toNode.data('parentConnector', {color: 'red'});
+			underTest.updateConnector();
+			toNode.data('parentConnector', {color: 'blue'});
+			underTest.find('path').attr('stroke', '');
+
+			underTest.updateConnector();
+
+			expect(underTest.find('path').attr('stroke')).toBe('blue');
+		});
+
 		it('will update if the shapes move', function () {
 			underTest.updateConnector();
 			underTest.find('path').attr('d', '');
@@ -761,6 +800,23 @@ describe('updateNodeContent', function () {
 			DOMRender.theme = new Theme({name: 'blue'});
 			underTest.updateNodeContent(nodeContent);
 			expect(underTest.data('nodeCacheMark')).toEqual({ level: 3, width: undefined, styles: ['level_3', 'default'], title: 'Hello World!', theme: 'blue', icon: undefined, note: false, collapsed: undefined});
+		});
+	});
+	describe('parentConnector', function () {
+		it('sets the parentConnector attribute in the node data', function () {
+			nodeContent.attr = {
+				parentConnector: {
+					color: 'blue',
+					lineStyle: 'dashed'
+				}
+			};
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('parentConnector')).toEqual(nodeContent.attr.parentConnector);
+		});
+		it('sets the parentConnector to falsy if attr missing', function () {
+			delete nodeContent.attr;
+			underTest.updateNodeContent(nodeContent);
+			expect(underTest.data('parentConnector')).toBeFalsy();
 		});
 	});
 	describe('node text', function () {

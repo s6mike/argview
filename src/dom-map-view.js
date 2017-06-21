@@ -7,6 +7,10 @@ const jQuery = require('jquery'),
 	foregroundStyle = require('mindmup-mapjs-layout').foregroundStyle,
 	formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
 	createSVG = require('./create-svg'),
+	dashes = {
+		dashed: '8, 8',
+		solid: ''
+	},
 	cleanDOMId = function (s) {
 		'use strict';
 		return s.replace(/[^A-Za-z0-9_-]/g, '_');
@@ -158,7 +162,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 		const element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
-
+			allowParentConnectorOverride = !(DOMRender.theme && DOMRender.theme.blockParentConnectorOverride),
+			parentConnector = allowParentConnectorOverride && shapeTo && shapeTo.data('parentConnector'),
 			applyInnerRect = function (shape, box) {
 				const innerRect = shape.data().innerRect;
 				if (innerRect) {
@@ -187,7 +192,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 		*/
 		fromBox.styles = shapeFrom.data('styles');
 		toBox.styles = shapeTo.data('styles');
-		changeCheck = {from: fromBox, to: toBox, theme: DOMRender.theme &&  DOMRender.theme.name };
+		changeCheck = {from: fromBox, to: toBox, theme: DOMRender.theme &&  DOMRender.theme.name, parentConnector: parentConnector || {}};
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}
@@ -202,8 +207,9 @@ jQuery.fn.updateConnector = function (canUseData) {
 		// if only the relative position changed, do not re-update the curve!!!!
 		pathElement.attr({
 			'd': connection.d,
-			'stroke': connection.color,
+			'stroke': (parentConnector && parentConnector.color) || connection.color,
 			'stroke-width': connection.width,
+			'stroke-dasharray': dashes[(parentConnector && parentConnector.lineStyle) || 'solid'],
 			fill: 'transparent'
 		});
 	});
@@ -216,10 +222,6 @@ jQuery.fn.updateLink = function () {
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
 			n = Math.tan(Math.PI / 9),
-			dashes = {
-				dashed: '8, 8',
-				solid: ''
-			},
 			attrs = _.pick(element.data(), 'lineStyle', 'arrow', 'color');
 		let connection = false,
 			pathElement = element.find('path.mapjs-link'),
@@ -522,7 +524,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 			width: Math.round(nodeContent.width),
 			height: Math.round(nodeContent.height),
 			nodeId: nodeContent.id,
-			styles: effectiveStyles
+			styles: effectiveStyles,
+			parentConnector: nodeContent && nodeContent.attr && nodeContent.attr.parentConnector
 		};
 
 

@@ -26,7 +26,7 @@ const MAPJS = require('../src/npm-main'),
 			});
 		};
 		window.onerror = window.alert;
-
+		window.jQuery = jQuery;
 
 		jQuery('#themecss').themeCssWidget(themeProvider, new ThemeProcessor(), mapModel);
 		container.domMapWidget(console, mapModel, false, imageInsertController);

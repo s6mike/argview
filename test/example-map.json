@@ -42,6 +42,9 @@
           "attr": {
             "style": {
               "background": "#ffff00"
+            },
+            "parentConnector": {
+              "color": "#ff0000"
             }
           }
         },
@@ -60,6 +63,9 @@
           "attr": {
             "style": {
               "background": "#761934"
+            },
+            "parentConnector": {
+              "lineStyle": "dashed"
             }
           }
         }
