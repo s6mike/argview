@@ -177,7 +177,7 @@ DOMRender.appendUnderLine = function (connectorCurve, calculatedConnector, posit
 jQuery.fn.updateConnector = function (canUseData) {
 	'use strict';
 	return jQuery.each(this, function () {
-		let connection = false, pathElement, fromBox, toBox, changeCheck = false;
+		let connection = false, pathElement, hitElement, fromBox, toBox, changeCheck = false;
 		const element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
@@ -217,14 +217,19 @@ jQuery.fn.updateConnector = function (canUseData) {
 		}
 		element.data('changeCheck', changeCheck);
 		connection = Connectors.themePath(fromBox, toBox, DOMRender.theme);
-		pathElement = element.find('path');
-
+		pathElement = element.find('path.mapjs-connector');
+		hitElement = element.find('path.mapjs-link-hit');
 		element.css(convertPositionToTransform(connection.position));
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
-
+		if (hitElement.length === 0) {
+			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
+		}
 		// if only the relative position changed, do not re-update the curve!!!!
+		hitElement.attr({
+			'd': connection.d
+		});
 		pathElement.attr({
 			'd': connection.d,
 			'stroke': (parentConnector && parentConnector.color) || connection.color,
@@ -1189,6 +1194,14 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 			.on('mapjs:animatemove', function () {
 				connectorsForAnimation = connectorsForAnimation.add(element);
 			});
+		element.find('.mapjs-link-hit').on('tap', function (event) {
+			mapModel.selectConnector('mouse', connector,
+				event && event.gesture && event.gesture.center &&
+					{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
+			);
+			event.gesture && event.gesture.stopPropagation && event.gesture.stopPropagation();
+			event.stopPropagation();
+		});
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		stageElement.findConnector(connector).remove();

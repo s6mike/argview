@@ -684,6 +684,16 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 		}
 		self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));
 	};
+	this.selectConnector = function (source, connector, selectionPoint) {
+		if (!isEditingEnabled) {
+			return false;
+		}
+		analytic('selectConnector', source);
+		if (!connector) {
+			return false;
+		}
+		self.dispatchEvent('connectorSelected', connector.to, selectionPoint, idea.getAttrById(connector.to, 'parentConnector'));
+	};
 	this.removeLink = function (source, nodeIdFrom, nodeIdTo) {
 		if (!isEditingEnabled) {
 			return false;

@@ -2217,6 +2217,7 @@ describe('MapModel', function () {
 			const allMethods = ['flip', 'redo', 'undo', 'scaleUp', 'scaleDown', 'move', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'selectNodeLeft', 'selectNodeRight', 'selectNodeUp', 'selectNodeDown',
 				'resetView', 'openAttachment', 'setAttachment', 'activateNodeAndChildren', 'activateNode', 'activateSiblingNodes', 'activateChildren', 'activateSelectedNode', 'toggleAddLinkMode', 'addLink', 'selectLink',
+				'selectConnector',
 				'setIcon', 'removeLink', 'unsetSelectedNodeWidth', 'unsetSelectedNodePosition'];
 			_.each(allMethods, function (method) {
 				it('when ' + method + ' method is invoked', function () {
@@ -2252,7 +2253,7 @@ describe('MapModel', function () {
 		describe('when editing is disabled edit methods should not execute ', function () {
 			const editingMethods = ['flip',  'redo', 'undo', 'moveRelative', 'addSubIdea',
 				'addSiblingIdea', 'addSiblingIdeaBefore', 'removeSubIdea', 'editNode', 'setAttachment', 'updateStyle', 'insertIntermediate', 'updateLinkStyle', 'toggleAddLinkMode', 'addLink', 'selectLink', 'removeLink',
-				'unsetSelectedNodeWidth', 'unsetSelectedNodePosition'];
+				'selectConnector', 'unsetSelectedNodeWidth', 'unsetSelectedNodePosition'];
 			_.each(editingMethods, function (method) {
 				it(method + ' does not execute', function () {
 					const spy = jasmine.createSpy(method);
@@ -2315,6 +2316,25 @@ describe('MapModel', function () {
 		it('retrieves root node style by default', function () {
 			underTest.selectNode(2);
 			expect(underTest.getSelectedStyle('v')).toEqual('y');
+		});
+	});
+	describe('Connectors', function () {
+		it('should dispatch connectorSelected event when selectConnector method is invoked', function () {
+			const connectorSelected = jasmine.createSpy('connectorSelected');
+			underTest.addEventListener('connectorSelected', connectorSelected);
+
+			underTest.selectConnector('source', {from: 1, to: 10}, { x: 100, y: 100 });
+
+			expect(connectorSelected).toHaveBeenCalledWith(10, {x: 100, y: 100}, undefined);
+		});
+		it('should send any parentConnector attributes of the TO node with the event', function () {
+			const connectorSelected = jasmine.createSpy('connectorSelected');
+			underTest.addEventListener('connectorSelected', connectorSelected);
+			underTest.getIdea().mergeAttrProperty(1, 'parentConnector', 'color', 'green');
+			underTest.selectConnector('source', {from: 10, to: 1}, { x: 100, y: 100 });
+
+			expect(connectorSelected).toHaveBeenCalledWith(1, {x: 100, y: 100}, {color: 'green'});
+
 		});
 	});
 	describe('Links', function () {

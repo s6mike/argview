@@ -532,11 +532,18 @@ describe('updateConnector', function () {
 	});
 	it('draws a cubic curve between the centers of two nodes', function () {
 		underTest.updateConnector();
-		const path = underTest.find('path');
+		const path = underTest.find('path.mapjs-connector');
 		expect(path.length).toBe(1);
 		expect(path.attr('class')).toEqual('mapjs-connector');
 		expect(path.attr('d')).toEqual('M50,20Q50,190 140,142');
 	});
+	it('draws a link-hit area with the same curve as the connector ', function () {
+		underTest.updateConnector();
+		const path = underTest.find('path.mapjs-link-hit');
+		expect(path.length).toBe(1);
+		expect(path.attr('d')).toEqual('M50,20Q50,190 140,142');
+	});
+
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateConnector();
 		expect(underTest[0].style.top).toBeFalsy();
@@ -557,10 +564,16 @@ describe('updateConnector', function () {
 
 	});
 	it('updates the existing curve if one is present', function () {
-		const path = createSVG('path').appendTo(underTest);
+		const path = createSVG('path').addClass('mapjs-connector').appendTo(underTest);
 		underTest.updateConnector();
-		expect(underTest.find('path').length).toBe(1);
-		expect(underTest.find('path')[0]).toEqual(path[0]);
+		expect(underTest.find('path.mapjs-connector').length).toBe(1);
+		expect(underTest.find('path.mapjs-connector')[0]).toEqual(path[0]);
+	});
+	it('updates the existing hit-area if one is present', function () {
+		const path = createSVG('path').addClass('mapjs-link-hit').appendTo(underTest);
+		underTest.updateConnector();
+		expect(underTest.find('path.mapjs-link-hit').length).toBe(1);
+		expect(underTest.find('path.mapjs-link-hit')[0]).toEqual(path[0]);
 	});
 
 	it('updates multiple connectors at once', function () {
@@ -1674,7 +1687,7 @@ describe('DOMRender', function () {
 			imageInsertController,
 			resourceTranslator;
 		beforeEach(function () {
-			mapModel = observable(jasmine.createSpyObj('mapModel', ['getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
+			mapModel = observable(jasmine.createSpyObj('mapModel', ['selectConnector', 'getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
 			mapModel.getInputEnabled.and.returnValue(true);
 			mapModel.isEditingEnabled.and.returnValue(true);
 			imageInsertController = observable({});
@@ -2609,6 +2622,20 @@ describe('DOMRender', function () {
 				});
 				it('updates the connector content', function () {
 					expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
+				});
+				it('wires a link hit event to mapModel selectConnector', function () {
+					const evt = new jQuery.Event('tap');
+					underTest.find('path.mapjs-link-hit').trigger(evt);
+					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', Object({ from: '1.from', to: '1.to' }), undefined);
+					expect(evt.isPropagationStopped()).toBeTruthy();
+				});
+				it('sends the gesture page coordinates if the gesture is supplied with the event', function () {
+					const stopProp = jasmine.createSpy('stopProp'),
+						evt = new jQuery.Event('tap', { gesture: {stopPropagation: stopProp, center: { pageX: 100, pageY: 200} } });
+
+					underTest.find('path.mapjs-link-hit').trigger(evt);
+					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', Object({ from: '1.from', to: '1.to' }), {x: 100, y: 200});
+					expect(stopProp).toHaveBeenCalled();
 				});
 				describe('event wiring for node updates', function () {
 					beforeEach(function () {

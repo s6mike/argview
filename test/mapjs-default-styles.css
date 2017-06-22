@@ -110,6 +110,7 @@
 }
 .mapjs-link-hit {
 	stroke: transparent;
+	fill: transparent;
 	stroke-width: 15;
 	cursor: crosshair;
 }
