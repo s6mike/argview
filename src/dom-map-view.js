@@ -219,20 +219,20 @@ jQuery.fn.updateConnector = function (canUseData) {
 		connection = Connectors.themePath(fromBox, toBox, DOMRender.theme);
 		pathElement = element.find('path.mapjs-connector');
 		hitElement = element.find('path.mapjs-link-hit');
-		element.css(convertPositionToTransform(connection.position));
+		element.css(_.extend(convertPositionToTransform(connection.position), {stroke: (parentConnector && parentConnector.color) || connection.color}));
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
 		if (hitElement.length === 0) {
 			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
 		}
+
 		// if only the relative position changed, do not re-update the curve!!!!
 		hitElement.attr({
 			'd': connection.d
 		});
 		pathElement.attr({
 			'd': connection.d,
-			'stroke': (parentConnector && parentConnector.color) || connection.color,
 			'stroke-width': connection.width,
 			'stroke-dasharray': dashes[(parentConnector && parentConnector.lineStyle) || 'solid'],
 			fill: 'transparent'
@@ -269,7 +269,7 @@ jQuery.fn.updateLink = function () {
 		element.data('changeCheck', changeCheck);
 
 		connection = Connectors.linkPath(fromBox, toBox);
-		element.css(convertPositionToTransform(connection.position));
+		element.css(_.extend(convertPositionToTransform(connection.position), {stroke: attrs.color}));
 
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-link').appendTo(element);
@@ -277,7 +277,7 @@ jQuery.fn.updateLink = function () {
 		pathElement.attr({
 			'd': connection.d,
 			'stroke-dasharray': dashes[attrs.lineStyle]
-		}).css('stroke', attrs.color);
+		});
 
 		if (hitElement.length === 0) {
 			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
