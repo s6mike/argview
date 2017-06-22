@@ -1,7 +1,9 @@
 /*global require, document, window */
 const $ = require('jquery'),
 	_ = require('underscore'),
-	DOMRender = require('./dom-render');
+	DOMRender = require('./dom-render'),
+	createSVG = require('./create-svg');
+
 
 require('imports-loader?jQuery=jquery!jquery.hotkeys');
 require('./dom-map-view');
@@ -77,15 +79,26 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 
 	return this.each(function () {
 		const element = $(this),
-			stage = $('<div>').css({
-				position: 'relative'
-			}).attr('data-mapjs-role', 'stage').appendTo(element).data({
-				'offsetX': element.innerWidth() / 2,
-				'offsetY': element.innerHeight() / 2,
-				'width': element.innerWidth() - 20,
-				'height': element.innerHeight() - 20,
-				'scale': 1
-			}).updateStage();
+			svgContainer = createSVG().css(
+				{
+					position: 'absolute',
+					top: 0,
+					left: 0
+				}).attr({
+					'data-mapjs-role': 'svg-container',
+					'class': 'mapjs-draw-container'
+				}),
+			stage = $('<div>').css(
+				{
+					position: 'relative'
+				}).attr('data-mapjs-role', 'stage').appendTo(element).data({
+					'offsetX': element.innerWidth() / 2,
+					'offsetY': element.innerHeight() / 2,
+					'width': element.innerWidth() - 20,
+					'height': element.innerHeight() - 20,
+					'scale': 1
+				}).append(svgContainer)
+				.updateStage();
 		let previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.isEditingEnabled()) {

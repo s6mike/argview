@@ -26,6 +26,12 @@ const jQuery = require('jquery'),
 	nodeKey = function (id) {
 		'use strict';
 		return cleanDOMId('node_' + id);
+	},
+	convertPositionToTransform = function (cssPosition) {
+		'use strict';
+		const position = _.omit(cssPosition, 'left', 'top');
+		position.transform = 'translate(' + cssPosition.left + 'px,' + cssPosition.top  + 'px)';
+		return position;
 	};
 
 
@@ -129,6 +135,7 @@ jQuery.fn.queueFadeIn = function (options) {
 		);
 };
 
+
 jQuery.fn.updateStage = function () {
 	'use strict';
 	const data = this.data(),
@@ -139,11 +146,23 @@ jQuery.fn.updateStage = function () {
 			'height': Math.round(data.height - data.offsetY),
 			'transform-origin': 'top left',
 			'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px, 0)'
-		};
+		},
+		svgContainer = this.find('[data-mapjs-role=svg-container]')[0];
 	if (data.scale && data.scale !== 1) {
 		size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)';
 	}
 	this.css(size);
+	if (svgContainer) {
+		svgContainer.setAttribute('viewBox',
+			'' + Math.round(-1 * data.offsetX) + ' ' +  Math.round(-1 * data.offsetY) + ' ' + Math.round(data.width) + ' ' + Math.round(data.height)
+		);
+		svgContainer.setAttribute('style',
+			'top:' + Math.round(-1 * data.offsetY) + 'px; ' +
+			'left:' + Math.round(-1 * data.offsetX) + 'px; ' +
+			'width:' +  Math.round(data.width) + 'px; ' +
+			'height:' +  Math.round(data.height) + 'px;'
+		);
+	}
 	return this;
 };
 
@@ -199,7 +218,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 		element.data('changeCheck', changeCheck);
 		connection = Connectors.themePath(fromBox, toBox, DOMRender.theme);
 		pathElement = element.find('path');
-		element.css(connection.position);
+
+		element.css(convertPositionToTransform(connection.position));
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
@@ -244,7 +264,7 @@ jQuery.fn.updateLink = function () {
 		element.data('changeCheck', changeCheck);
 
 		connection = Connectors.linkPath(fromBox, toBox);
-		element.css(connection.position);
+		element.css(convertPositionToTransform(connection.position));
 
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-link').appendTo(element);
@@ -728,21 +748,22 @@ jQuery.fn.createNode = function (node) {
 };
 jQuery.fn.createConnector = function (connector) {
 	'use strict';
-	return createSVG()
-		.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector', 'class': 'mapjs-draw-container'})
-		.data({'nodeFrom': this.nodeWithId(connector.from), 'nodeTo': this.nodeWithId(connector.to)})
+	const stage = this.parent('[data-mapjs-role=stage]');
+	return createSVG('g')
+		.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector'})
+		.data({'nodeFrom': stage.nodeWithId(connector.from), 'nodeTo': stage.nodeWithId(connector.to)})
 		.appendTo(this);
 };
 jQuery.fn.createLink = function (l) {
 	'use strict';
-	const defaults = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style);
-	return createSVG()
+	const defaults = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style),
+		stage = this.parent('[data-mapjs-role=stage]');
+	return createSVG('g')
 		.attr({
 			'id': linkKey(l),
-			'data-mapjs-role': 'link',
-			'class': 'mapjs-draw-container'
+			'data-mapjs-role': 'link'
 		})
-	.data({'nodeFrom': this.nodeWithId(l.ideaIdFrom), 'nodeTo': this.nodeWithId(l.ideaIdTo) })
+	.data({'nodeFrom': stage.nodeWithId(l.ideaIdFrom), 'nodeTo': stage.nodeWithId(l.ideaIdTo) })
 		.data(defaults)
 		.appendTo(this);
 };
@@ -1154,7 +1175,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		stageElement.nodeWithId(n.id).updateNodeContent(n, resourceTranslator);
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		const element = stageElement.createConnector(connector).queueFadeIn(nodeAnimOptions).updateConnector(true);
+		const element = stageElement.find('[data-mapjs-role=svg-container]').createConnector(connector).updateConnector(true);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
 			.on('mapjs:move', function () {
 				element.updateConnector(true);
@@ -1170,10 +1191,12 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 			});
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
-		stageElement.findConnector(connector).queueFadeOut(nodeAnimOptions);
+		stageElement.findConnector(connector).remove();
 	});
 	mapModel.addEventListener('linkCreated', function (l) {
-		const link = stageElement.createLink(l).queueFadeIn(nodeAnimOptions).updateLink();
+		const link = stageElement
+			.find('[data-mapjs-role=svg-container]')
+			.createLink(l).updateLink();
 		link.find('.mapjs-link-hit').on('tap', function (event) {
 			mapModel.selectLink('mouse', l, { x: event.gesture.center.pageX, y: event.gesture.center.pageY });
 			event.stopPropagation();
@@ -1189,7 +1212,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
-		stageElement.findLink(l).queueFadeOut(nodeAnimOptions);
+		stageElement.findLink(l).remove();
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		const currentScale = stageElement.data('scale'),

@@ -116,6 +116,25 @@ describe('updateStage', function () {
 		expect(stage.css('min-height')).toEqual('89px');
 
 	});
+	it('updates the svg container if present', function () {
+		const svgContainer = createSVG().css(
+			{
+				position: 'absolute',
+				top: 0,
+				left: 0
+			}).attr({
+				'data-mapjs-role': 'svg-container',
+				'class': 'mapjs-draw-container',
+				'width': '100%',
+				'height': '100%'
+			}).appendTo(stage);
+		stage.data({width: 137.33, height: 100.34, offsetX: 50.21, offsetY: 10.93, scale: 1}).updateStage();
+		expect(svgContainer[0].getAttribute('viewBox')).toEqual('-50 -11 137 100');
+		expect(svgContainer[0].style.top).toEqual('-11px');
+		expect(svgContainer[0].style.left).toEqual('-50px');
+		expect(svgContainer[0].style.width).toEqual('137px');
+		expect(svgContainer[0].style.height).toEqual('100px');
+	});
 });
 describe('getBox', function () {
 	'use strict';
@@ -450,7 +469,7 @@ describe('updateConnector', function () {
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').data('styles', ['funky']).css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').data('styles', ['bleak']).css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
-		underTest = createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': toNode});
+		underTest = createSVG().appendTo('body').attr('data-role', 'test-connector').data({'nodeFrom': fromNode, 'nodeTo': toNode});
 		third = jQuery('<div>').attr('id', 'node_third').css({ position: 'absolute', top: '330px', left: '220px', width: '119px', height: '55px'}).appendTo('body');
 		anotherConnector = createSVG().appendTo('body').attr('data-role', 'test-connector').css('position', 'absolute').data({'nodeFrom': fromNode, 'nodeTo': third});
 	});
@@ -520,18 +539,22 @@ describe('updateConnector', function () {
 	});
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateConnector();
-		expect(underTest.css('top')).toEqual('100px');
-		expect(underTest.css('left')).toEqual('200px');
-		expect(underTest.css('height')).toEqual('166px');
-		expect(underTest.css('width')).toEqual('142px');
+		expect(underTest[0].style.top).toBeFalsy();
+		expect(underTest[0].style.left).toBeFalsy();
+		expect(underTest[0].style.width).toEqual('142px');
+		expect(underTest[0].style.height).toEqual('166px');
+		expect(underTest[0].style.transform).toEqual('translate(200px, 100px)');
 	});
-	it('positions the connector ising innerRect to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
+	it('positions the connector using innerRect to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		fromNode.data({innerRect: {dx: 10, dy: 5, width: 90, height: 35}});
 		underTest.updateConnector();
-		expect(underTest.css('top')).toEqual('105px');
-		expect(underTest.css('left')).toEqual('210px');
-		expect(underTest.css('height')).toEqual('161px');
-		expect(underTest.css('width')).toEqual('132px');
+		expect(underTest[0].style.top).toBeFalsy();
+		expect(underTest[0].style.left).toBeFalsy();
+		expect(underTest[0].style.width).toEqual('132px');
+		expect(underTest[0].style.height).toEqual('161px');
+		expect(underTest[0].style.transform).toEqual('translate(210px, 105px)');
+
+
 	});
 	it('updates the existing curve if one is present', function () {
 		const path = createSVG('path').appendTo(underTest);
@@ -632,10 +655,14 @@ describe('updateLink', function () {
 	});
 	it('positions the link to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {
 		underTest.updateLink();
-		expect(underTest.css('top')).toEqual('100px');
-		expect(underTest.css('left')).toEqual('200px');
-		expect(underTest.css('height')).toEqual('164px');
-		expect(underTest.css('width')).toEqual('142px');
+
+		expect(underTest[0].style.top).toBeFalsy();
+		expect(underTest[0].style.left).toBeFalsy();
+		expect(underTest[0].style.width).toEqual('142px');
+		expect(underTest[0].style.height).toEqual('164px');
+		expect(underTest[0].style.transform).toEqual('translate(200px, 100px)');
+
+
 	});
 	it('uses the lineStyle data attribute to control the dashed styling', function () {
 		underTest.data('lineStyle', 'dashed').updateLink();
@@ -2545,8 +2572,14 @@ describe('DOMRender', function () {
 			});
 		});
 		describe('connector events', function () {
-			let nodeFrom, nodeTo, underTest, connector;
+			let nodeFrom, nodeTo, underTest, connector, svgContainer;
 			beforeEach(function () {
+				svgContainer = createSVG().attr({
+					'data-mapjs-role': 'svg-container',
+					'class': 'mapjs-draw-container'
+				});
+				stage.append(svgContainer);
+				stage.attr('data-mapjs-role', 'stage');
 				connector = {from: '1.from', to: '1.to'};
 				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
 				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
@@ -2556,17 +2589,16 @@ describe('DOMRender', function () {
 				jQuery.fn.queueFadeIn.calls.reset();
 
 				mapModel.dispatchEvent('connectorCreated', connector);
-				underTest = stage.children('[data-mapjs-role=connector]').first();
+				underTest = svgContainer.children('[data-mapjs-role=connector]').first();
 
 			});
 			describe('connectorCreated', function () {
 				it('adds a connector element to the stage', function () {
 					expect(underTest.length).toBe(1);
-					expect(underTest.parent()[0]).toEqual(stage[0]);
+					expect(underTest.parent()[0]).toEqual(svgContainer[0]);
 				});
 				it('creates a SVG mapjs-draw-container class', function () {
-					expect(underTest.prop('tagName')).toBe('svg');
-					expect(underTest.attr('class')).toEqual('mapjs-draw-container');
+					expect(underTest.prop('tagName')).toBe('g');
 				});
 				it('assigns the DOM Id by sanitising node IDs', function () {
 					expect(underTest.prop('id')).toBe('connector_1_from_1_to');
@@ -2574,10 +2606,6 @@ describe('DOMRender', function () {
 				it('maps the from and to nodes as jQuery objects to data properties', function () {
 					expect(underTest.data('nodeFrom')[0]).toEqual(nodeFrom[0]);
 					expect(underTest.data('nodeTo')[0]).toEqual(nodeTo[0]);
-				});
-				it('queues connector fade in', function () {
-					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration: 400, queue: 'nodeQueue', easing: 'linear' });
-					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('updates the connector content', function () {
 					expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
@@ -2635,20 +2663,23 @@ describe('DOMRender', function () {
 				});
 			});
 			describe('connectorRemoved', function () {
-				it('schedules a fade out animation', function () {
-					spyOn(jQuery.fn, 'queueFadeOut');
+				it('removes the element', function () {
 					mapModel.dispatchEvent('connectorRemoved', connector);
-
-					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration: 400, queue: 'nodeQueue', easing: 'linear' });
-					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
+					expect(underTest.parent().length).toEqual(0);
 				});
 			});
 		});
 
 
 		describe('link events', function () {
-			let nodeFrom, nodeTo, underTest, link;
+			let nodeFrom, nodeTo, underTest, link, svgContainer;
 			beforeEach(function () {
+				svgContainer = createSVG().attr({
+					'data-mapjs-role': 'svg-container',
+					'class': 'mapjs-draw-container'
+				});
+				stage.append(svgContainer);
+				stage.attr('data-mapjs-role', 'stage');
 				link = {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}};
 				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
 				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
@@ -2658,17 +2689,16 @@ describe('DOMRender', function () {
 				jQuery.fn.queueFadeIn.calls.reset();
 
 				mapModel.dispatchEvent('linkCreated', link);
-				underTest = stage.children('[data-mapjs-role=link]').first();
+				underTest = svgContainer.children('[data-mapjs-role=link]').first();
 
 			});
 			describe('linkCreated', function () {
 				it('adds a link element to the stage', function () {
 					expect(underTest.length).toBe(1);
-					expect(underTest.parent()[0]).toEqual(stage[0]);
+					expect(underTest.parent()[0]).toEqual(svgContainer[0]);
 				});
 				it('creates a SVG mapjs-draw-container class', function () {
-					expect(underTest.prop('tagName')).toBe('svg');
-					expect(underTest.attr('class')).toEqual('mapjs-draw-container');
+					expect(underTest.prop('tagName')).toBe('g');
 				});
 				it('assigns the DOM Id by sanitising node IDs', function () {
 					expect(underTest.prop('id')).toBe('link_1_from_1_to');
@@ -2676,10 +2706,6 @@ describe('DOMRender', function () {
 				it('maps the from and to nodes as jQuery objects to data properties', function () {
 					expect(underTest.data('nodeFrom')[0]).toEqual(nodeFrom[0]);
 					expect(underTest.data('nodeTo')[0]).toEqual(nodeTo[0]);
-				});
-				it('queues link fade in', function () {
-					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledWith({ duration: 400, queue: 'nodeQueue', easing: 'linear' });
-					expect(jQuery.fn.queueFadeIn).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 				it('updates the link content', function () {
 					expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
@@ -2744,10 +2770,8 @@ describe('DOMRender', function () {
 			});
 			describe('linkRemoved', function () {
 				it('schedules a fade out animation', function () {
-					spyOn(jQuery.fn, 'queueFadeOut');
 					mapModel.dispatchEvent('linkRemoved', link);
-					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledWith({ duration: 400, queue: 'nodeQueue', easing: 'linear' });
-					expect(jQuery.fn.queueFadeOut).toHaveBeenCalledOnJQueryObject(underTest);
+					expect(underTest.parent().length).toEqual(0);
 				});
 			});
 			describe('linkAttrChanged', function () {
