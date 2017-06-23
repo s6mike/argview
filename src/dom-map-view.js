@@ -223,20 +223,25 @@ jQuery.fn.updateConnector = function (canUseData) {
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
-		if (hitElement.length === 0) {
-			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
-		}
-
-		// if only the relative position changed, do not re-update the curve!!!!
-		hitElement.attr({
-			'd': connection.d
-		});
+		//TODO: if the map was translated (so only the relative position changed), do not re-update the curve!!!!
 		pathElement.attr({
 			'd': connection.d,
 			'stroke-width': connection.width,
 			'stroke-dasharray': dashes[(parentConnector && parentConnector.lineStyle) || 'solid'],
 			fill: 'transparent'
 		});
+		if (allowParentConnectorOverride) {
+			if (hitElement.length === 0) {
+				hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
+			}
+			hitElement.attr({
+				'd': connection.d
+			});
+		} else {
+			if (hitElement.length > 0) {
+				hitElement.remove();
+			}
+		}
 	});
 };
 

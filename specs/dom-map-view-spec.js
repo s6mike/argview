@@ -490,12 +490,18 @@ describe('updateConnector', function () {
 			path = underTest.find('path');
 		});
 		it('sets the stroke of the path from the connector color', function () {
-			expect(path.attr('stroke')).toEqual('black');
+			expect(underTest[0].style.stroke).toEqual('black');
+			expect(path.attr('stroke')).toBeFalsy();
+			expect(path[0].style.stroke).toBeFalsy();
+			expect(underTest.attr('stroke')).toBeFalsy();
 		});
 		it('sets the stroke of the path from the parentConnector color', function () {
 			toNode.data('parentConnector', {color: 'green'});
 			underTest.updateConnector();
-			expect(path.attr('stroke')).toEqual('green');
+			expect(underTest[0].style.stroke).toEqual('green');
+			expect(path.attr('stroke')).toBeFalsy();
+			expect(path[0].style.stroke).toBeFalsy();
+			expect(underTest.attr('stroke')).toBeFalsy();
 		});
 		it('sets the stroke-width from the connector width', function () {
 			expect(path.attr('stroke-width')).toEqual('3');
@@ -513,17 +519,30 @@ describe('updateConnector', function () {
 		});
 		describe('when the theme has blockParentConnectorOverride flag', function () {
 			beforeEach(function () {
-				DOMRender.theme = new Theme({blockParentConnectorOverride: true});
+				DOMRender.theme = new Theme({name: 'blocked', blockParentConnectorOverride: true});
 			});
 			it('should not override the theme color ', function () {
 				toNode.data('parentConnector', {color: 'green'});
 				underTest.updateConnector();
-				expect(path.attr('stroke')).toEqual('black');
+				expect(underTest[0].style.stroke).toEqual('black');
 			});
 			it('should not set the stroke-dasharray of the path from the parentConnector lineStyle', function () {
 				toNode.data('parentConnector', {lineStyle: 'dashed'});
 				underTest.updateConnector();
 				expect(path.attr('stroke-dasharray')).toEqual('');
+			});
+			it('still adds a connector path', function () {
+				underTest.updateConnector();
+				expect(underTest.find('path.mapjs-connector').length).toBe(1);
+			});
+			it('does not add a link-hit element', function () {
+				underTest.updateConnector();
+				expect(underTest.find('path.mapjs-link-hit').length).toBe(0);
+			});
+			it('removes a pre-existing link-hit element', function () {
+				createSVG('path').addClass('mapjs-link-hit').appendTo(underTest);
+				underTest.updateConnector();
+				expect(underTest.find('path.mapjs-link-hit').length).toBe(0);
 			});
 		});
 	});
@@ -605,11 +624,10 @@ describe('updateConnector', function () {
 			toNode.data('parentConnector', {color: 'red'});
 			underTest.updateConnector();
 			toNode.data('parentConnector', {color: 'blue'});
-			underTest.find('path').attr('stroke', '');
+			underTest[0].style.stroke = '';
 
 			underTest.updateConnector();
-
-			expect(underTest.find('path').attr('stroke')).toBe('blue');
+			expect(underTest[0].style.stroke).toBe('blue');
 		});
 
 		it('will update if the shapes move', function () {
@@ -690,7 +708,7 @@ describe('updateLink', function () {
 		/*jslint newcap:true*/
 		underTest.data('color', 'blue').updateLink();
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
-		expect(colorToRGB(underTest.find('path.mapjs-link').css('stroke'))).toEqual(colorToRGB('#0000FF'));
+		expect(colorToRGB(underTest.css('stroke'))).toEqual(colorToRGB('#0000FF'));
 	});
 
 	it('updates the existing line if one is present', function () {
