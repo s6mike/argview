@@ -1199,7 +1199,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 			.on('mapjs:animatemove', function () {
 				connectorsForAnimation = connectorsForAnimation.add(element);
 			});
-		element.find('.mapjs-link-hit').on('tap', function (event) {
+		element.on('tap', function (event) {
 			mapModel.selectConnector('mouse', connector,
 				event && event.gesture && event.gesture.center &&
 					{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
