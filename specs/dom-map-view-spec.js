@@ -495,8 +495,8 @@ describe('updateConnector', function () {
 			expect(path[0].style.stroke).toBeFalsy();
 			expect(underTest.attr('stroke')).toBeFalsy();
 		});
-		it('sets the stroke of the path from the parentConnector color', function () {
-			toNode.data('parentConnector', {color: 'green'});
+		it('overrides the theme color with connector attribute color', function () {
+			underTest.data('attr', {color: 'green'});
 			underTest.updateConnector();
 			expect(underTest[0].style.stroke).toEqual('green');
 			expect(path.attr('stroke')).toBeFalsy();
@@ -509,8 +509,8 @@ describe('updateConnector', function () {
 		it('sets the stroke-dasharray to empty by default', function () {
 			expect(path.attr('stroke-dasharray')).toEqual('');
 		});
-		it('sets the stroke-dasharray of the path from the parentConnector lineStyle', function () {
-			toNode.data('parentConnector', {lineStyle: 'dashed'});
+		it('overrides the theme lineStyle with the connector attributes', function () {
+			underTest.data('attr', {lineStyle: 'dashed'});
 			underTest.updateConnector();
 			expect(path.attr('stroke-dasharray')).toEqual('8, 8');
 		});
@@ -520,16 +520,6 @@ describe('updateConnector', function () {
 		describe('when the theme has blockParentConnectorOverride flag', function () {
 			beforeEach(function () {
 				DOMRender.theme = new Theme({name: 'blocked', blockParentConnectorOverride: true});
-			});
-			it('should not override the theme color ', function () {
-				toNode.data('parentConnector', {color: 'green'});
-				underTest.updateConnector();
-				expect(underTest[0].style.stroke).toEqual('black');
-			});
-			it('should not set the stroke-dasharray of the path from the parentConnector lineStyle', function () {
-				toNode.data('parentConnector', {lineStyle: 'dashed'});
-				underTest.updateConnector();
-				expect(path.attr('stroke-dasharray')).toEqual('');
 			});
 			it('still adds a connector path', function () {
 				underTest.updateConnector();
@@ -620,10 +610,10 @@ describe('updateConnector', function () {
 			underTest.updateConnector();
 			expect(underTest.find('path').attr('d')).toBe('M50,20Q50,190 140,142');
 		});
-		it('will update if the shapes did not move, but the parentConnector attribute changed', function () {
-			toNode.data('parentConnector', {color: 'red'});
+		it('will update if the shapes did not move, but the connector attributes changed', function () {
+			underTest.data('attr', {color: 'red'});
 			underTest.updateConnector();
-			toNode.data('parentConnector', {color: 'blue'});
+			underTest.data('attr', {color: 'blue'});
 			underTest[0].style.stroke = '';
 
 			underTest.updateConnector();
@@ -2611,7 +2601,7 @@ describe('DOMRender', function () {
 				});
 				stage.append(svgContainer);
 				stage.attr('data-mapjs-role', 'stage');
-				connector = {from: '1.from', to: '1.to'};
+				connector = {from: '1.from', to: '1.to', attr: {lovely: true}};
 				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
 				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
 				nodeFrom = jQuery('#node_1_from');
@@ -2641,10 +2631,13 @@ describe('DOMRender', function () {
 				it('updates the connector content', function () {
 					expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
 				});
+				it('sets the connector attributes as data', function () {
+					expect(underTest.data('attr')).toEqual({lovely: true});
+				});
 				it('wires a link hit event to mapModel selectConnector', function () {
 					const evt = new jQuery.Event('tap');
 					underTest.find('path.mapjs-link-hit').trigger(evt);
-					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', Object({ from: '1.from', to: '1.to' }), undefined);
+					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', connector, undefined);
 					expect(evt.isPropagationStopped()).toBeTruthy();
 				});
 				it('sends the gesture page coordinates if the gesture is supplied with the event', function () {
@@ -2652,7 +2645,7 @@ describe('DOMRender', function () {
 						evt = new jQuery.Event('tap', { gesture: {stopPropagation: stopProp, center: { pageX: 100, pageY: 200} } });
 
 					underTest.find('path.mapjs-link-hit').trigger(evt);
-					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', Object({ from: '1.from', to: '1.to' }), {x: 100, y: 200});
+					expect(mapModel.selectConnector).toHaveBeenCalledWith('mouse', connector, {x: 100, y: 200});
 					expect(stopProp).toHaveBeenCalled();
 				});
 				describe('event wiring for node updates', function () {
@@ -2713,6 +2706,22 @@ describe('DOMRender', function () {
 					expect(underTest.parent().length).toEqual(0);
 				});
 			});
+
+			describe('connectorAttrChanged', function () {
+				beforeEach(function () {
+					connector.attr = {lovely: false};
+				});
+				it('updates the connector', function () {
+					jQuery.fn.updateConnector.calls.reset();
+					mapModel.dispatchEvent('connectorAttrChanged', connector);
+					expect(jQuery.fn.updateConnector).toHaveBeenCalledOnJQueryObject(underTest);
+				});
+				it('updates the connector data attributes', function () {
+					mapModel.dispatchEvent('connectorAttrChanged', connector);
+					expect(underTest.data('attr')).toEqual({lovely: false});
+				});
+			});
+
 		});
 
 

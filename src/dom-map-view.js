@@ -181,8 +181,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 		const element = jQuery(this),
 			shapeFrom = element.data('nodeFrom'),
 			shapeTo = element.data('nodeTo'),
+			connectorAttr = element.data('attr'),
 			allowParentConnectorOverride = !(DOMRender.theme && DOMRender.theme.blockParentConnectorOverride),
-			parentConnector = allowParentConnectorOverride && shapeTo && shapeTo.data('parentConnector'),
 			applyInnerRect = function (shape, box) {
 				const innerRect = shape.data().innerRect;
 				if (innerRect) {
@@ -211,15 +211,15 @@ jQuery.fn.updateConnector = function (canUseData) {
 		*/
 		fromBox.styles = shapeFrom.data('styles');
 		toBox.styles = shapeTo.data('styles');
-		changeCheck = {from: fromBox, to: toBox, theme: DOMRender.theme &&  DOMRender.theme.name, parentConnector: parentConnector || {}};
+		changeCheck = {from: fromBox, to: toBox, theme: DOMRender.theme &&  DOMRender.theme.name, attr: connectorAttr};
 		if (_.isEqual(changeCheck, element.data('changeCheck'))) {
 			return;
 		}
 		element.data('changeCheck', changeCheck);
-		connection = Connectors.themePath(fromBox, toBox, DOMRender.theme);
+		connection = _.extend(Connectors.themePath(fromBox, toBox, DOMRender.theme), connectorAttr);
 		pathElement = element.find('path.mapjs-connector');
 		hitElement = element.find('path.mapjs-link-hit');
-		element.css(_.extend(convertPositionToTransform(connection.position), {stroke: (parentConnector && parentConnector.color) || connection.color}));
+		element.css(_.extend(convertPositionToTransform(connection.position), {stroke: connection.color}));
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
@@ -227,7 +227,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 		pathElement.attr({
 			'd': connection.d,
 			'stroke-width': connection.width,
-			'stroke-dasharray': dashes[(parentConnector && parentConnector.lineStyle) || 'solid'],
+			'stroke-dasharray': dashes[connection.lineStyle || 'solid'],
 			fill: 'transparent'
 		});
 		if (allowParentConnectorOverride) {
@@ -761,7 +761,7 @@ jQuery.fn.createConnector = function (connector) {
 	const stage = this.parent('[data-mapjs-role=stage]');
 	return createSVG('g')
 		.attr({'id': connectorKey(connector), 'data-mapjs-role': 'connector'})
-		.data({'nodeFrom': stage.nodeWithId(connector.from), 'nodeTo': stage.nodeWithId(connector.to)})
+		.data({'nodeFrom': stage.nodeWithId(connector.from), 'nodeTo': stage.nodeWithId(connector.to), attr: connector.attr})
 		.appendTo(this);
 };
 jQuery.fn.createLink = function (l) {
@@ -1339,7 +1339,9 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		const attr = _.extend({arrow: false}, l.attr && l.attr.style);
 		stageElement.findLink(l).data(attr).updateLink();
 	});
-
+	mapModel.addEventListener('connectorAttrChanged', function (connector) {
+		stageElement.findConnector(connector).data('attr', connector.attr).updateConnector(true);
+	});
 	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 		_.each(activatedNodes, function (nodeId) {
 			stageElement.nodeWithId(nodeId).addClass('activated');

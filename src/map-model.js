@@ -54,7 +54,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
 			applyLabels(newLayout);
 			_.each(currentLayout.connectors, function (oldConnector, connectorId) {
-				const newConnector = newLayout.connectors[connectorId];
+				const newConnector = newLayout.connectors && newLayout.connectors[connectorId];
 				if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
 					self.dispatchEvent('connectorRemoved', oldConnector);
 				}
@@ -107,6 +107,9 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			});
 			_.each(newLayout.connectors, function (newConnector, connectorId) {
 				const oldConnector = currentLayout.connectors[connectorId];
+				if (oldConnector && !_.isEqual(oldConnector.attr || {}, newConnector.attr || {})) {
+					self.dispatchEvent('connectorAttrChanged', newConnector);
+				}
 				if (!oldConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
 					self.dispatchEvent('connectorCreated', newConnector, sessionId);
 				}

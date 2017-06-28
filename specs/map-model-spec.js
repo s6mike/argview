@@ -69,6 +69,13 @@ describe('MapModel', function () {
 							}
 						}
 					}
+				},
+				connectors: {
+					2: {
+						from: 1,
+						to: 2,
+						attr: { color: 'red' }
+					}
 				}
 			};
 			layoutAfter = {
@@ -102,6 +109,13 @@ describe('MapModel', function () {
 								prop: 'new val'
 							}
 						}
+					}
+				},
+				connectors: {
+					2: {
+						from: 1,
+						to: 2,
+						attr: { color: 'blue' }
 					}
 				}
 			};
@@ -278,6 +292,12 @@ describe('MapModel', function () {
 			anIdea.dispatchEvent('changed');
 
 			expect(linkAttrChangedListener).toHaveBeenCalledWith(layoutAfter.links['2_9'], undefined);
+		});
+		it('should dispatch connectorAttrChanged with the connector attributes', function () {
+			const connectorAttrChanged = jasmine.createSpy();
+			underTest.addEventListener('connectorAttrChanged', connectorAttrChanged);
+			anIdea.dispatchEvent('changed');
+			expect(connectorAttrChanged).toHaveBeenCalledWith(layoutAfter.connectors[2]);
 		});
 		describe('automatic UI actions', function () {
 			let nodeEditRequestedListener, nodeSelectionChangedListener, activatedNodesChangedListener;
