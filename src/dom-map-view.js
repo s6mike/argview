@@ -191,6 +191,33 @@ jQuery.fn.updateConnector = function (canUseData) {
 					box.width = innerRect.width;
 					box.height = innerRect.height;
 				}
+			},
+			getTextElement = function () {
+				let textElement = element.find('text.mapjs-connector-text');
+				if (!(connectorAttr && connectorAttr.label)) {
+					textElement.remove();
+					return false;
+				} else {
+					if (textElement.length === 0) {
+						textElement = createSVG('text').attr('class', 'mapjs-connector-text').appendTo(element);
+					}
+					return textElement;
+				}
+			},
+			updateConnectorText = function () {
+				const textElement = getTextElement(),
+					textDOM = textElement && textElement[0],
+					pathDOM = textElement && pathElement && pathElement[0],
+					centrePoint = pathDOM && pathDOM.getPointAtLength(pathDOM.getTotalLength() * 0.5);
+				if (!textDOM) {
+					return false;
+				}
+				//TODO sanitize
+				textDOM.innerHTML = connectorAttr && connectorAttr.label;
+				textDOM.setAttribute('stroke', 'none');
+				textDOM.setAttribute('x', centrePoint.x - textDOM.getClientRects()[0].width / 2);
+				textDOM.setAttribute('y', centrePoint.y - textDOM.getClientRects()[0].height / 2);
+				return textElement;
 			};
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
 			element.hide();
@@ -242,6 +269,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 				hitElement.remove();
 			}
 		}
+		updateConnectorText();
+
 	});
 };
 
@@ -1200,10 +1229,14 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 				connectorsForAnimation = connectorsForAnimation.add(element);
 			});
 		element.on('tap', function (event) {
-			mapModel.selectConnector('mouse', connector,
-				event && event.gesture && event.gesture.center &&
-					{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
-			);
+			if (event.target && event.target.tagName === 'text') {
+				mapModel.editConnectorLabel('mouse', connector.to);
+			} else {
+				mapModel.selectConnector('mouse', connector,
+					event && event.gesture && event.gesture.center &&
+						{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
+				);
+			}
 			event.gesture && event.gesture.stopPropagation && event.gesture.stopPropagation();
 			event.stopPropagation();
 		});
@@ -1340,7 +1373,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		stageElement.findLink(l).data(attr).updateLink();
 	});
 	mapModel.addEventListener('connectorAttrChanged', function (connector) {
-		stageElement.findConnector(connector).data('attr', connector.attr).updateConnector(true);
+		stageElement.findConnector(connector).data('attr', connector.attr || false).updateConnector(true);
 	});
 	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 		_.each(activatedNodes, function (nodeId) {
