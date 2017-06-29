@@ -2,6 +2,7 @@
 const jQuery = require('jquery'),
 	_ = require('underscore'),
 	DOMRender = require('./dom-render'),
+	defaultTheme = require('mindmup-mapjs-layout').Themes.default,
 	Connectors = require('mindmup-mapjs-layout').Connectors,
 	URLHelper = require('mindmup-mapjs-model').URLHelper,
 	foregroundStyle = require('mindmup-mapjs-layout').foregroundStyle,
@@ -192,31 +193,59 @@ jQuery.fn.updateConnector = function (canUseData) {
 					box.height = innerRect.height;
 				}
 			},
-			getTextElement = function () {
-				let textElement = element.find('text.mapjs-connector-text');
+			getTextElement = function (elementType) {
+				elementType = elementType || 'text';
+				let textElement = element.find(elementType + '.mapjs-connector-text');
 				if (!(connectorAttr && connectorAttr.label)) {
 					textElement.remove();
 					return false;
 				} else {
 					if (textElement.length === 0) {
-						textElement = createSVG('text').attr('class', 'mapjs-connector-text').appendTo(element);
+						textElement = createSVG(elementType).attr('class', 'mapjs-connector-text');
+						textElement.appendTo(element);
 					}
 					return textElement;
 				}
 			},
 			updateConnectorText = function () {
-				const textElement = getTextElement(),
+				const labelTheme = (connection.theme && connection.theme.label) || defaultTheme.connector.default.label,
+					calcCenterPoint = function (pathDOM) {
+						if (labelTheme.position.ratio) {
+							return pathDOM.getPointAtLength(pathDOM.getTotalLength() * labelTheme.position.ratio);
+						}
+						return {
+							x: toBox.left + (toBox.width / 2) - connection.position.left,
+							y: toBox.top - connection.position.top - labelTheme.position.aboveEnd
+						};
+					},
+					rectElement = getTextElement('rect'),
+					textElement = getTextElement(),
 					textDOM = textElement && textElement[0],
-					pathDOM = textElement && pathElement && pathElement[0],
-					centrePoint = pathDOM && pathDOM.getPointAtLength(pathDOM.getTotalLength() * 0.5);
+					rectDOM = rectElement && rectElement[0],
+					pathDOM = pathElement && pathElement[0],
+					centrePoint = pathDOM && calcCenterPoint(pathDOM),
+					labelText = (connectorAttr && connectorAttr.label) || '';
+
+				element.data('label-center-point', centrePoint);
+				let dimensions = false;
 				if (!textDOM) {
 					return false;
 				}
-				//TODO sanitize
-				textDOM.innerHTML = connectorAttr && connectorAttr.label;
-				textDOM.setAttribute('stroke', 'none');
-				textDOM.setAttribute('x', centrePoint.x - textDOM.getClientRects()[0].width / 2);
-				textDOM.setAttribute('y', centrePoint.y - textDOM.getClientRects()[0].height / 2);
+				textDOM.style.stroke = 'none';
+				textDOM.style.fill = labelTheme.text.color;
+				textDOM.style.fontSize = labelTheme.text.font.sizePx + 'px';
+				textDOM.style.fontWeight = labelTheme.text.font.weight;
+				textDOM.style.alignmentBaseline = 'hanging';
+				textElement.text(labelText.trim());
+				dimensions = textDOM.getClientRects()[0];
+				textDOM.setAttribute('x', Math.round(centrePoint.x - dimensions.width / 2));
+				textDOM.setAttribute('y', Math.round(centrePoint.y - dimensions.height));
+				rectDOM.setAttribute('x', Math.round(centrePoint.x - dimensions.width / 2));
+				rectDOM.setAttribute('y', Math.round(centrePoint.y - dimensions.height - 2));
+				rectDOM.style.height = Math.round(dimensions.height) + 'px';
+				rectDOM.style.width = Math.round(dimensions.width) + 'px';
+				rectDOM.style.fill = labelTheme.backgroundColor;
+				rectDOM.style.stroke = labelTheme.borderColor;
 				return textElement;
 			};
 		if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
@@ -244,6 +273,7 @@ jQuery.fn.updateConnector = function (canUseData) {
 		}
 		element.data('changeCheck', changeCheck);
 		connection = _.extend(Connectors.themePath(fromBox, toBox, DOMRender.theme), connectorAttr);
+		element.data('theme', connection.theme);
 		pathElement = element.find('path.mapjs-connector');
 		hitElement = element.find('path.mapjs-link-hit');
 		element.css(_.extend(convertPositionToTransform(connection.position), {stroke: connection.color}));

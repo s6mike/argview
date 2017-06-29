@@ -65,7 +65,8 @@
               "background": "#761934"
             },
             "parentConnector": {
-              "lineStyle": "dashed"
+              "lineStyle": "dashed",
+              "label": "Hello there"
             }
           }
         }
