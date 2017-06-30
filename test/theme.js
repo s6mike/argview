@@ -204,11 +204,14 @@ module.exports.default =  {
 		'default': {
 			'type': 'quadratic',
 			label: {
+				backgroundColor: 'transparent',
+				borderColor: 'transparent',
 				position: {
 					ratio: 0.5
 				},
 				text: {
 					color: '#4F4F4F',
+
 					font: {
 						size: 9,
 						sizePx: 12,
