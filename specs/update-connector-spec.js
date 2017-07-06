@@ -175,6 +175,110 @@ describe('updateConnector', function () {
 		});
 
 	});
+	describe('painting labels', function () {
+		let themePath,
+			textField,
+			textDims,
+			rectField,
+			customTheme;
+		beforeEach(() => {
+			customTheme = {
+				label: {
+					position: {
+						ratio: 0.25
+					},
+					text: {
+						font: {
+							sizePx: 12,
+							weight: 'bold'
+						},
+						color: 'rgb(10, 20, 30)'
+					}
+				}
+			};
+			themePath = {
+				'd': 'M10,10L50,50',
+				color: 'black',
+				width: 3.0,
+				position: {
+					left: 101,
+					top: 102,
+					width: 50,
+					height: 60
+				}
+			};
+			spyOn(Connectors, 'themePath').and.returnValue(themePath);
+			underTest.data('attr', {label: 'blah blah blah'});
+
+		});
+		it('adds a text label if it is in the attributes', function () {
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			expect(textField.length).toEqual(1);
+			expect(textField.text()).toEqual('blah blah blah');
+			expect(textField[0].style.alignmentBaseline).toEqual('hanging');
+		});
+		it('appends the active label theme to the attributes so they can be used for editor widgets', function () {
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			expect(underTest.data('theme')).toEqual(customTheme);
+
+		});
+		it('paints the text label according to the default theme if no theme supplied', function () {
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(30 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(30 - textDims.height));
+			expect(textField[0].style.stroke).toEqual('none');
+			expect(textField[0].style.fill).toEqual('rgb(79, 79, 79)');
+			expect(textField[0].style.fontSize).toEqual('12px');
+			expect(textField[0].style.fontWeight).toEqual('normal');
+		});
+		it('positions the text label according to the theme settings returned from themePath', function () {
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(20 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(20 - textDims.height));
+			expect(textField[0].style.fill).toEqual('rgb(10, 20, 30)');
+			expect(textField[0].style.fontSize).toEqual('12px');
+			expect(textField[0].style.fontWeight).toEqual('bold');
+		});
+		it('places the label above the end node if aboveEnd is set', function () {
+			toNode.css({
+				top: '120px', left: '130px', width: '30px', height: '40px'
+			});
+			customTheme.label.position = {aboveEnd: 10};
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			// cx = 130 - 101 + 30/2 = 44
+			// cy = 120 - 102 - 10  = 8
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(44 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(8 - textDims.height));
+		});
+		it('paints the rect element 2 pixels above the text element', function () {
+			customTheme.label.backgroundColor = 'rgb(1, 2, 3)';
+			customTheme.label.borderColor = 'rgb(4, 5, 6)';
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			rectField = underTest.find('rect');
+
+			expect(parseInt(rectField.attr('x'))).toEqual(parseInt(textField.attr('x')));
+			expect(parseInt(rectField.attr('y'))).toEqual(parseInt(textField.attr('y') - 2));
+			expect(rectField[0].style.stroke).toEqual('rgb(4, 5, 6)');
+			expect(rectField[0].style.fill).toEqual('rgb(1, 2, 3)');
+			expect(rectField[0].style.width).toEqual(Math.round(textDims.width) + 'px');
+			expect(rectField[0].style.height).toEqual(textDims.height + 'px');
+
+
+		});
+	});
 	it('does not die if one of the shapes is no longer present', function () {
 		fromNode.remove();
 		expect(function () {
