@@ -1,4 +1,5 @@
 /*global document, window, require */
+require('./create-node');
 const jQuery = require('jquery'),
 	_ = require('underscore'),
 	DOMRender = require('./dom-render'),
@@ -12,10 +13,7 @@ const jQuery = require('jquery'),
 		dashed: '8, 8',
 		solid: ''
 	},
-	cleanDOMId = function (s) {
-		'use strict';
-		return s.replace(/[^A-Za-z0-9_-]/g, '_');
-	},
+	cleanDOMId = require('./clean-dom-id'),
 	connectorKey = function (connectorObj) {
 		'use strict';
 		return cleanDOMId('connector_' + connectorObj.from + '_' + connectorObj.to);
@@ -24,10 +22,7 @@ const jQuery = require('jquery'),
 		'use strict';
 		return cleanDOMId('link_' + linkObj.ideaIdFrom + '_' + linkObj.ideaIdTo);
 	},
-	nodeKey = function (id) {
-		'use strict';
-		return cleanDOMId('node_' + id);
-	},
+	nodeKey = require('./node-key'),
 	convertPositionToTransform = function (cssPosition) {
 		'use strict';
 		const position = _.omit(cssPosition, 'left', 'top');
@@ -483,6 +478,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, resourceTranslator, forcedL
 				element.css('max-width', domElement.scrollWidth + 'px');
 			} else if (!preferredWidth) {
 				height = domElement.offsetHeight;
+
 				element.css('min-width', element.css('max-width'));
 				if (domElement.offsetHeight === height) {
 					element.css('min-width', '');
@@ -807,14 +803,6 @@ jQuery.fn.updateReorderBounds = function (border, box, dropCoords) {
 
 };
 
-jQuery.fn.createNode = function (node) {
-	'use strict';
-	return jQuery('<div>')
-		.attr({'id': nodeKey(node.id), 'tabindex': 0, 'data-mapjs-role': 'node' })
-		.css({display: 'block', position: 'absolute'})
-		.addClass('mapjs-node')
-		.appendTo(this);
-};
 jQuery.fn.createConnector = function (connector) {
 	'use strict';
 	const stage = this.parent('[data-mapjs-role=stage]');
