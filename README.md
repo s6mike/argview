@@ -9,11 +9,11 @@ mind maps in a browser. You can see an example of this live at [mindmup.com](htt
 This project is relatively stand alone and you can use it to create a nice mind map visualisation separate from the 
 [MindMup Server](https://www.mindmup.com).
 
-#Using MAPJS in your projects
+# Using MAPJS in your projects
 
 MapJS 2 works well with WebPack. Check out the [MAPJS Webpack Example](https://github.com/mindmup/mapjs-webpack-example) project.
 
-#Testing
+# Testing
 
 To run the unit tests, execute
 
@@ -23,7 +23,7 @@ To debug and try things out visually, grab the dependencies using:
 
     npm run pretest
 
-#Dependencies
+# Dependencies
 
 This library depends on the following projects:
 
