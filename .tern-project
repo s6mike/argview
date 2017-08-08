@@ -1,0 +1,8 @@
+{
+    "libs": ["ecmascript", "browser", "jquery", "underscore"],
+    "plugins": {
+        "node": {},
+        "jasmine": {},
+        "es_modules": {}
+    }
+}

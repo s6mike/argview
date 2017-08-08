@@ -2428,8 +2428,7 @@ describe('DOMRender', function () {
 					expect(underTest.data('arrow')).toBeFalsy();
 					expect(underTest.data('attr')).toEqual({
 						lineStyle: 'dashed',
-						color: 'yellow',
-						arrow: false
+						color: 'yellow'
 					});
 				});
 				it('calls updateLink', function () {

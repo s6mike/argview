@@ -567,8 +567,7 @@ jQuery.fn.createConnector = function (connector) {
 };
 jQuery.fn.createLink = function (l) {
 	'use strict';
-	const attr = _.extend({color: 'red', lineStyle: 'dashed'}, l.attr && l.attr.style),
-		stage = this.parent('[data-mapjs-role=stage]');
+	const stage = this.parent('[data-mapjs-role=stage]');
 	return createSVG('g')
 		.attr({
 			'id': linkKey(l),
@@ -577,7 +576,7 @@ jQuery.fn.createLink = function (l) {
 		.data({
 			'nodeFrom': stage.nodeWithId(l.ideaIdFrom),
 			'nodeTo': stage.nodeWithId(l.ideaIdTo),
-			attr: attr
+			attr: l.attr && l.attr.style
 		})
 		.appendTo(this);
 };
@@ -1144,8 +1143,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		}
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
-		const attr = _.extend({arrow: false}, l.attr && l.attr.style);
-		stageElement.findLink(l).data('attr', attr).updateLink();
+		stageElement.findLink(l).data('attr', (l.attr && l.attr.style) || {}).updateLink();
 	});
 	mapModel.addEventListener('connectorAttrChanged', function (connector) {
 		stageElement.findConnector(connector).data('attr', connector.attr || false).updateConnector(true);

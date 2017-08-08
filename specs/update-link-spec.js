@@ -1,8 +1,10 @@
-/*global describe, it, beforeEach, afterEach, expect, require, xdescribe, spyOn */
+/*global describe, it, beforeEach, afterEach, expect, require, spyOn */
 
 const jQuery = require('jquery'),
 	createSVG = require('../src/create-svg'),
 	_ = require('underscore'),
+	DOMRender = require('../src/dom-render'),
+	Theme = require('mindmup-mapjs-layout').Theme,
 	Connectors = require('mindmup-mapjs-layout').Connectors,
 	colorToRGB = require('mindmup-mapjs-layout').colorToRGB;
 
@@ -53,9 +55,9 @@ describe('updateLink', function () {
 		setAttr('lineStyle', 'dashed');
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('8, 8');
 	});
-	it('clears the dashes if not provided in the lineStyle data attribute', function () {
+	it('clears the dashes if lineStyle is solid', function () {
 		underTest.find('path').attr('stroke-dasharray', '1, 1');
-		setAttr('lineStyle', '');
+		setAttr('lineStyle', 'solid');
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBeFalsy();
 	});
 	it('uses the color attribute to set the line stroke', function () {
@@ -126,6 +128,16 @@ describe('updateLink', function () {
 			underTest.updateLink();
 			expect(underTest.find('path').attr('d')).toBe('');
 		});
+		it('will update if the shapes did not move, but the theme changed', function () {
+			underTest.updateLink();
+			underTest.find('path').attr('d', '');
+
+			DOMRender.theme = new Theme({name: 'new'});
+
+			underTest.updateLink();
+			expect(underTest.find('path').attr('d')).toBe('M100,20L136,120');
+		});
+
 		it('will update if the shapes move', function () {
 			underTest.updateLink();
 			underTest.find('path').attr('d', '');
@@ -144,31 +156,31 @@ describe('updateLink', function () {
 	});
 
 
-	xdescribe('painting labels', function () {
-		let themePath,
+	describe('painting labels', function () {
+		let linkPath,
 			textField,
-			textDims,
-			rectField,
-			customTheme;
+			rectField;
 		beforeEach(() => {
-			customTheme = {
-				label: {
-					position: {
-						ratio: 0.25
-					},
-					text: {
-						font: {
-							sizePx: 12,
-							weight: 'bold'
-						},
-						color: 'rgb(10, 20, 30)'
-					}
-				}
-			};
-			themePath = {
+			linkPath = {
 				'd': 'M10,10L50,50',
-				color: 'black',
-				width: 3.0,
+				lineProps: {
+					color: 'black',
+					width: 3.0
+				},
+				theme: {
+					label: {
+						position: {
+							ratio: 0.25
+						},
+						text: {
+							font: {
+								sizePx: 12,
+								weight: 'bold'
+							},
+							color: 'rgb(10, 20, 30)'
+						}
+					}
+				},
 				position: {
 					left: 101,
 					top: 102,
@@ -176,74 +188,42 @@ describe('updateLink', function () {
 					height: 60
 				}
 			};
-			spyOn(Connectors, 'themePath').and.returnValue(themePath);
+			spyOn(Connectors, 'linkPath').and.returnValue(linkPath);
 			underTest.data('attr', {label: 'blah blah blah'});
 
 		});
-		it('adds a text label if it is in the attributes', function () {
-			underTest.updateConnector();
+		it('uses the color attribute to set the line stroke', function () {
+			underTest.updateLink();
 			textField = underTest.find('text');
 			expect(textField.length).toEqual(1);
 			expect(textField.text()).toEqual('blah blah blah');
 			expect(textField[0].style.alignmentBaseline).toEqual('hanging');
-		});
-		it('appends the active label theme to the attributes so they can be used for editor widgets', function () {
-			themePath.theme = customTheme;
-			underTest.updateConnector();
-			expect(underTest.data('theme')).toEqual(customTheme);
-
-		});
-		it('appends the label-center-point', function () {
-			themePath.theme = customTheme;
-			underTest.updateConnector();
-			expect(underTest.data('theme')).toEqual(customTheme);
-			expect(underTest.data('label-center-point').x).toEqual(20);
-			expect(underTest.data('label-center-point').y).toEqual(20);
-
-		});
-		it('paints the text label according to the default theme if no theme supplied', function () {
-			underTest.updateConnector();
-			textField = underTest.find('text');
-			textDims = textField[0].getClientRects()[0];
-			expect(parseInt(textField.attr('x'))).toEqual(Math.round(30 - textDims.width / 2));
-			expect(parseInt(textField.attr('y'))).toEqual(Math.round(30 - textDims.height));
-			expect(textField[0].style.stroke).toEqual('none');
-			expect(textField[0].style.fill).toEqual('rgb(79, 79, 79)');
-			expect(textField[0].style.fontSize).toEqual('12px');
-			expect(textField[0].style.fontWeight).toEqual('normal');
-		});
-		it('positions the text label according to the theme settings returned from themePath', function () {
-			themePath.theme = customTheme;
-			underTest.updateConnector();
-			textField = underTest.find('text');
-			textDims = textField[0].getClientRects()[0];
-			expect(parseInt(textField.attr('x'))).toEqual(Math.round(20 - textDims.width / 2));
-			expect(parseInt(textField.attr('y'))).toEqual(Math.round(20 - textDims.height));
 			expect(textField[0].style.fill).toEqual('rgb(10, 20, 30)');
 			expect(textField[0].style.fontSize).toEqual('12px');
 			expect(textField[0].style.fontWeight).toEqual('bold');
 		});
-		it('places the label above the end node if aboveEnd is set', function () {
-			toNode.css({
-				top: '120px', left: '130px', width: '30px', height: '40px'
-			});
-			customTheme.label.position = {aboveEnd: 10};
-			themePath.theme = customTheme;
-			underTest.updateConnector();
+		it('positions the label according to the center point', function () {
+			underTest.updateLink();
 			textField = underTest.find('text');
-			textDims = textField[0].getClientRects()[0];
-			// cx = 130 - 101 + 30/2 = 44
-			// cy = 120 - 102 - 10  = 8
-			expect(parseInt(textField.attr('x'))).toEqual(Math.round(44 - textDims.width / 2));
-			expect(parseInt(textField.attr('y'))).toEqual(Math.round(8 - textDims.height));
+			const textDims = textField[0].getClientRects()[0];
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(20 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(20 - textDims.height));
+		});
+		it('appends the active label theme to the attributes so they can be used for editor widgets', function () {
+			underTest.updateLink();
+			expect(underTest.data('theme')).toEqual(linkPath.theme);
+		});
+		it('appends the label-center-point', function () {
+			underTest.updateLink();
+			expect(underTest.data('label-center-point').x).toEqual(20);
+			expect(underTest.data('label-center-point').y).toEqual(20);
 		});
 		it('paints the rect element 2 pixels above the text element', function () {
-			customTheme.label.backgroundColor = 'rgb(1, 2, 3)';
-			customTheme.label.borderColor = 'rgb(4, 5, 6)';
-			themePath.theme = customTheme;
-			underTest.updateConnector();
+			linkPath.theme.label.backgroundColor = 'rgb(1, 2, 3)';
+			linkPath.theme.label.borderColor = 'rgb(4, 5, 6)';
+			underTest.updateLink();
 			textField = underTest.find('text');
-			textDims = textField[0].getClientRects()[0];
+			const textDims = textField[0].getClientRects()[0];
 			rectField = underTest.find('rect');
 
 			expect(parseInt(rectField.attr('x'))).toEqual(parseInt(textField.attr('x')));
@@ -252,8 +232,6 @@ describe('updateLink', function () {
 			expect(rectField[0].style.fill).toEqual('rgb(1, 2, 3)');
 			expect(rectField[0].style.width).toEqual(Math.round(textDims.width) + 'px');
 			expect(rectField[0].style.height).toEqual(textDims.height + 'px');
-
-
 		});
 	});
 
