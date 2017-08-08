@@ -76,7 +76,7 @@ jQuery.fn.updateLink = function () {
 				arrowElement = createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 			}
 			arrowElement.attr('d', connection.arrow)
-				.css('fill', attrs.color)
+				.css('fill', connection.lineProps.color)
 				.show();
 		} else {
 			arrowElement.hide();
