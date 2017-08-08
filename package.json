@@ -22,6 +22,7 @@
     "pretest": "eslint spec src && rm -rf testem/compiled",
     "test": "testem ci -R dot",
     "test-watch": "npm run pretest && testem dev -R dot",
+    "test-dev": "testem -l Chrome",
     "server": "webpack-dev-server"
   },
   "main": "src/npm-main.js",

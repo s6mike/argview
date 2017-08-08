@@ -1,7 +1,9 @@
-/*global describe, it, beforeEach, afterEach, expect, require */
+/*global describe, it, beforeEach, afterEach, expect, require, xdescribe, spyOn */
 
 const jQuery = require('jquery'),
 	createSVG = require('../src/create-svg'),
+	_ = require('underscore'),
+	Connectors = require('mindmup-mapjs-layout').Connectors,
 	colorToRGB = require('mindmup-mapjs-layout').colorToRGB;
 
 require('../src/update-link');
@@ -9,6 +11,16 @@ require('../src/update-link');
 describe('updateLink', function () {
 	'use strict';
 	let path, underTest, fromNode, toNode, third, anotherLink;
+	const setAttr = function (attrName, attrVal) {
+		let attrs = underTest.data('attr') || {};
+		if (typeof attrName === 'string') {
+			attrs[attrName] = attrVal;
+		} else {
+			attrs = _.extend(attrs, attrName);
+		}
+
+		return underTest.data('attr', attrs).updateLink();
+	};
 	beforeEach(function () {
 		fromNode = jQuery('<div>').attr('id', 'node_fr').css({ position: 'absolute', top: '100px', left: '200px', width: '100px', height: '40px'}).appendTo('body');
 		toNode = jQuery('<div>').attr('id', 'node_to').css({ position: 'absolute', top: '220px', left: '330px', width: '12px', height: '44px'}).appendTo('body');
@@ -38,16 +50,16 @@ describe('updateLink', function () {
 
 	});
 	it('uses the lineStyle data attribute to control the dashed styling', function () {
-		underTest.data('lineStyle', 'dashed').updateLink();
+		setAttr('lineStyle', 'dashed');
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('8, 8');
 	});
 	it('clears the dashes if not provided in the lineStyle data attribute', function () {
 		underTest.find('path').attr('stroke-dasharray', '1, 1');
-		underTest.data('lineStyle', '').updateLink();
+		setAttr('lineStyle', '');
 		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBeFalsy();
 	});
 	it('uses the color attribute to set the line stroke', function () {
-		underTest.data('color', 'blue').updateLink();
+		setAttr('color', 'blue');
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
 		expect(colorToRGB(underTest.css('stroke'))).toEqual(colorToRGB('#0000FF'));
 	});
@@ -59,18 +71,17 @@ describe('updateLink', function () {
 		expect(underTest.find('path.mapjs-link')[0]).toEqual(path[0]);
 	});
 	it('uses the arrow data attribute to draw an arrow', function () {
-		underTest.data('arrow', 'true').updateLink();
+		setAttr('arrow', 'true');
 		expect(underTest.find('path.mapjs-arrow').css('display')).toBe('inline');
 	});
 	it('updates an existing arrow if one is present', function () {
 		path = createSVG('path').attr('class', 'mapjs-arrow').appendTo(underTest);
-		underTest.data('arrow', 'true').updateLink();
+		setAttr('arrow', 'true');
 		expect(underTest.find('path.mapjs-arrow').length).toBe(1);
 		expect(underTest.find('path.mapjs-arrow')[0]).toEqual(path[0]);
 	});
 	it('uses the color attribute to set the arrow fill', function () {
-		/*jslint newcap:true*/
-		underTest.data('arrow', 'true').data('color', '#FF7577').updateLink();
+		setAttr({arrow: 'true', color: '#FF7577'});
 		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
 		expect(colorToRGB(underTest.find('path.mapjs-arrow').css('fill'))).toEqual(colorToRGB('#FF7577'));
 	});
@@ -104,7 +115,7 @@ describe('updateLink', function () {
 	});
 	describe('performance optimisations', function () {
 		it('rounds coordinates', function () {
-			anotherLink.data('arrow', 'true').updateLink();
+			anotherLink.data({attr: {arrow: true}}).updateLink();
 			expect(anotherLink.find('path.mapjs-link').attr('d')).toEqual('M50,40L80,230');
 			expect(anotherLink.find('path.mapjs-arrow').attr('d')).toEqual('M83,216L80,230L73,218Z');
 		});
@@ -126,11 +137,126 @@ describe('updateLink', function () {
 		it('will update if the attributes change', function () {
 			underTest.updateLink();
 			underTest.find('path').attr('d', '');
-			underTest.data('lineStyle', 'solid').updateLink();
+			setAttr('lineStyle', 'solid');
 			expect(underTest.find('path').attr('d')).toBe('M100,20L136,120');
 
 		});
 	});
+
+
+	xdescribe('painting labels', function () {
+		let themePath,
+			textField,
+			textDims,
+			rectField,
+			customTheme;
+		beforeEach(() => {
+			customTheme = {
+				label: {
+					position: {
+						ratio: 0.25
+					},
+					text: {
+						font: {
+							sizePx: 12,
+							weight: 'bold'
+						},
+						color: 'rgb(10, 20, 30)'
+					}
+				}
+			};
+			themePath = {
+				'd': 'M10,10L50,50',
+				color: 'black',
+				width: 3.0,
+				position: {
+					left: 101,
+					top: 102,
+					width: 50,
+					height: 60
+				}
+			};
+			spyOn(Connectors, 'themePath').and.returnValue(themePath);
+			underTest.data('attr', {label: 'blah blah blah'});
+
+		});
+		it('adds a text label if it is in the attributes', function () {
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			expect(textField.length).toEqual(1);
+			expect(textField.text()).toEqual('blah blah blah');
+			expect(textField[0].style.alignmentBaseline).toEqual('hanging');
+		});
+		it('appends the active label theme to the attributes so they can be used for editor widgets', function () {
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			expect(underTest.data('theme')).toEqual(customTheme);
+
+		});
+		it('appends the label-center-point', function () {
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			expect(underTest.data('theme')).toEqual(customTheme);
+			expect(underTest.data('label-center-point').x).toEqual(20);
+			expect(underTest.data('label-center-point').y).toEqual(20);
+
+		});
+		it('paints the text label according to the default theme if no theme supplied', function () {
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(30 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(30 - textDims.height));
+			expect(textField[0].style.stroke).toEqual('none');
+			expect(textField[0].style.fill).toEqual('rgb(79, 79, 79)');
+			expect(textField[0].style.fontSize).toEqual('12px');
+			expect(textField[0].style.fontWeight).toEqual('normal');
+		});
+		it('positions the text label according to the theme settings returned from themePath', function () {
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(20 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(20 - textDims.height));
+			expect(textField[0].style.fill).toEqual('rgb(10, 20, 30)');
+			expect(textField[0].style.fontSize).toEqual('12px');
+			expect(textField[0].style.fontWeight).toEqual('bold');
+		});
+		it('places the label above the end node if aboveEnd is set', function () {
+			toNode.css({
+				top: '120px', left: '130px', width: '30px', height: '40px'
+			});
+			customTheme.label.position = {aboveEnd: 10};
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			// cx = 130 - 101 + 30/2 = 44
+			// cy = 120 - 102 - 10  = 8
+			expect(parseInt(textField.attr('x'))).toEqual(Math.round(44 - textDims.width / 2));
+			expect(parseInt(textField.attr('y'))).toEqual(Math.round(8 - textDims.height));
+		});
+		it('paints the rect element 2 pixels above the text element', function () {
+			customTheme.label.backgroundColor = 'rgb(1, 2, 3)';
+			customTheme.label.borderColor = 'rgb(4, 5, 6)';
+			themePath.theme = customTheme;
+			underTest.updateConnector();
+			textField = underTest.find('text');
+			textDims = textField[0].getClientRects()[0];
+			rectField = underTest.find('rect');
+
+			expect(parseInt(rectField.attr('x'))).toEqual(parseInt(textField.attr('x')));
+			expect(parseInt(rectField.attr('y'))).toEqual(parseInt(textField.attr('y') - 2));
+			expect(rectField[0].style.stroke).toEqual('rgb(4, 5, 6)');
+			expect(rectField[0].style.fill).toEqual('rgb(1, 2, 3)');
+			expect(rectField[0].style.width).toEqual(Math.round(textDims.width) + 'px');
+			expect(rectField[0].style.height).toEqual(textDims.height + 'px');
+
+
+		});
+	});
+
 	afterEach(function () {
 		fromNode.remove();
 		toNode.remove();
