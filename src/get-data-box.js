@@ -1,5 +1,6 @@
 /*global require */
 const jQuery = require('jquery');
+require('./get-box');
 jQuery.fn.getDataBox = function () {
 	'use strict';
 	const domShapeData = this.data();
