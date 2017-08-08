@@ -6,7 +6,7 @@ const jQuery = require('jquery'),
 	Connectors = require('mindmup-mapjs-layout').Connectors;
 
 require('./helpers/jquery-extension-matchers');
-require('../src/dom-map-view');
+require('../src/update-connector');
 
 describe('updateConnector', function () {
 	'use strict';
@@ -295,12 +295,12 @@ describe('updateConnector', function () {
 	});
 	it('does not die if nodeFrom gets cleared out', function () {
 		underTest.data('nodeFrom', false);
-		underTest.updateLink();
+		underTest.updateConnector();
 		expect(underTest.is(':visible')).toBeFalsy();
 	});
 	it('does not die if nodeTo gets cleared out', function () {
 		underTest.data('nodeTo', false);
-		underTest.updateLink();
+		underTest.updateConnector();
 		expect(underTest.is(':visible')).toBeFalsy();
 	});
 	afterEach(function () {
