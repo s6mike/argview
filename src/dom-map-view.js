@@ -584,13 +584,16 @@ jQuery.fn.nodeWithId = function (id) {
 	'use strict';
 	return this.find('#' + nodeKey(id));
 };
-jQuery.fn.findConnector = function (connectorObj) {
+
+jQuery.fn.findLine = function (line) {
 	'use strict';
-	return this.find('#' + connectorKey(connectorObj));
-};
-jQuery.fn.findLink = function (linkObj) {
-	'use strict';
-	return this.find('#' + linkKey(linkObj));
+	if (line && line.type === 'connector') {
+		return this.find('#' + connectorKey(line));
+	} else if (line && line.type === 'link') {
+		return this.find('#' + linkKey(line));
+	}
+	console.log('invalid.line', line); //eslint-disable-line
+	throw 'invalid-args';
 };
 jQuery.fn.createReorderBounds = function () {
 	'use strict';
@@ -1016,7 +1019,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		});
 	});
 	mapModel.addEventListener('connectorRemoved', function (connector) {
-		stageElement.findConnector(connector).remove();
+		stageElement.findLine(connector).remove();
 	});
 	mapModel.addEventListener('linkCreated', function (line) {
 		const link = stageElement
@@ -1040,7 +1043,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 			});
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
-		stageElement.findLink(l).remove();
+		stageElement.findLine(l).remove();
 	});
 	mapModel.addEventListener('mapScaleChanged', function (scaleMultiplier /*, zoomPoint */) {
 		const currentScale = stageElement.data('scale'),
@@ -1146,10 +1149,10 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 		}
 	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
-		stageElement.findLink(l).data('attr', (l.attr && l.attr.style) || {}).updateLink();
+		stageElement.findLine(l).data('attr', (l.attr && l.attr.style) || {}).updateLink();
 	});
 	mapModel.addEventListener('connectorAttrChanged', function (connector) {
-		stageElement.findConnector(connector).data('attr', connector.attr || false).updateConnector(true);
+		stageElement.findLine(connector).data('attr', connector.attr || false).updateConnector(true);
 	});
 	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 		_.each(activatedNodes, function (nodeId) {

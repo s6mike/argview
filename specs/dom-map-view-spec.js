@@ -311,7 +311,7 @@ describe('animateConnectorToPosition', function () {
 	beforeEach(function () {
 		from = jQuery('<div>').attr('id', 'fromC').appendTo('body').css({position: 'absolute', width: 50, height: 60, left: 70, top: 80}).data({width: 50, height: 60, x: 70, y: 80});
 		to = jQuery('<div>').attr('id', 'toC').appendTo('body').css({position: 'absolute', width: 90, height: 100, left: 110, top: 120}).data({width: 90, height: 100, x: 110, y: 120});
-		connector = jQuery('<div>').data({'nodeFrom': from, 'nodeTo': to}).appendTo('body');
+		connector = jQuery('<div>').data({type: 'connector', 'nodeFrom': from, 'nodeTo': to}).appendTo('body');
 		spyOn(jQuery.fn, 'animate').and.callThrough();
 	});
 	afterEach(function () {
@@ -2184,7 +2184,7 @@ describe('DOMRender', function () {
 				});
 				stage.append(svgContainer);
 				stage.attr('data-mapjs-role', 'stage');
-				connector = {from: '1.from', to: '1.to', attr: {lovely: true}};
+				connector = {type: 'connector', from: '1.from', to: '1.to', attr: {lovely: true}};
 				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
 				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
 				nodeFrom = jQuery('#node_1_from');
@@ -2317,7 +2317,7 @@ describe('DOMRender', function () {
 				});
 				stage.append(svgContainer);
 				stage.attr('data-mapjs-role', 'stage');
-				link = {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}};
+				link = {type: 'link', ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'blue', lineStyle: 'solid', arrow: true}}};
 				mapModel.dispatchEvent('nodeCreated', {id: '1.from', title: 'zeka', x: -80, y: -35, width: 30, height: 20});
 				mapModel.dispatchEvent('nodeCreated', {id: '1.to', title: 'zeka2', x: 80, y: 35, width: 50, height: 34});
 				nodeFrom = jQuery('#node_1_from');
@@ -2416,7 +2416,7 @@ describe('DOMRender', function () {
 			describe('linkAttrChanged', function () {
 
 				it('passes the style properties as data attributes to the DOM object', function () {
-					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed', arrow: true}}});
+					mapModel.dispatchEvent('linkAttrChanged', {type: 'link', ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed', arrow: true}}});
 					expect(underTest.data('attr')).toEqual({
 						lineStyle: 'dashed',
 						color: 'yellow',
@@ -2424,7 +2424,7 @@ describe('DOMRender', function () {
 					});
 				});
 				it('removes arrow if not set', function () {
-					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
+					mapModel.dispatchEvent('linkAttrChanged', {type: 'link', ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
 					expect(underTest.data('arrow')).toBeFalsy();
 					expect(underTest.data('attr')).toEqual({
 						lineStyle: 'dashed',
@@ -2433,7 +2433,7 @@ describe('DOMRender', function () {
 				});
 				it('calls updateLink', function () {
 					jQuery.fn.updateLink.calls.reset();
-					mapModel.dispatchEvent('linkAttrChanged', {ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
+					mapModel.dispatchEvent('linkAttrChanged', {type: 'link', ideaIdFrom: '1.from', ideaIdTo: '1.to', attr: {style: {color: 'yellow', lineStyle: 'dashed'}}});
 					expect(jQuery.fn.updateLink).toHaveBeenCalledOnJQueryObject(underTest);
 				});
 			});
