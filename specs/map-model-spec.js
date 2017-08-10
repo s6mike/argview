@@ -3502,5 +3502,11 @@ describe('MapModel', function () {
 		});
 
 	});
+	it('lineLabelClicked should dispatch a lineLabelClicked event', () => {
+		const listener = jasmine.createSpy('listener');
+		underTest.addEventListener('lineLabelClicked', listener);
 
+		underTest.lineLabelClicked('lineHere');
+		expect(listener).toHaveBeenCalledWith('lineHere');
+	});
 });

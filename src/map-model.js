@@ -1429,21 +1429,7 @@ module.exports = function MapModel(layoutCalculatorArg, selectAllTitles, default
 			}
 		}
 	};
-	self.editConnectorLabel = function (source, childNodeId) {
-		const connectors = layoutModel.getLayout().connectors,
-			connectorObj = connectors[childNodeId];
-		if (!connectorObj) {
-			return false;
-		}
-		if (!isEditingEnabled) {
-			return false;
-		}
-		if (source) {
-			analytic('editIcon', source);
-		}
-		if (!isInputEnabled) {
-			return false;
-		}
-		self.dispatchEvent('connectorLabelEditRequested', connectorObj);
+	self.lineLabelClicked = function (line) {
+		self.dispatchEvent('lineLabelClicked', line);
 	};
 };

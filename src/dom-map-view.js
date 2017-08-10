@@ -1004,7 +1004,7 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 			});
 		element.on('tap', function (event) {
 			if (event.target && event.target.tagName === 'text') {
-				mapModel.editConnectorLabel('mouse', connector.to);
+				mapModel.lineLabelClicked(connector);
 			} else {
 				mapModel.selectConnector('mouse', connector,
 					event && event.gesture && event.gesture.center &&
@@ -1018,23 +1018,26 @@ DOMRender.viewController = function (mapModel, stageElement, touchEnabled, image
 	mapModel.addEventListener('connectorRemoved', function (connector) {
 		stageElement.findConnector(connector).remove();
 	});
-	mapModel.addEventListener('linkCreated', function (l) {
+	mapModel.addEventListener('linkCreated', function (line) {
 		const link = stageElement
 			.find('[data-mapjs-role=svg-container]')
-			.createLink(l).updateLink();
-		link.find('.mapjs-link-hit').on('tap', function (event) {
-			mapModel.selectLink('mouse', l, { x: event.gesture.center.pageX, y: event.gesture.center.pageY });
+			.createLink(line).updateLink();
+		link.on('tap', function (event) {
+			if (event.target && event.target.tagName === 'text') {
+				mapModel.lineLabelClicked(line);
+			} else {
+				mapModel.selectLink('mouse', line, { x: event.gesture.center.pageX, y: event.gesture.center.pageY });
+			}
 			event.stopPropagation();
 			event.gesture.stopPropagation();
 		});
-		stageElement.nodeWithId(l.ideaIdFrom).add(stageElement.nodeWithId(l.ideaIdTo))
+		stageElement.nodeWithId(line.ideaIdFrom).add(stageElement.nodeWithId(line.ideaIdTo))
 			.on('mapjs:move mm:drag', function () {
 				link.updateLink();
 			})
 			.on('mapjs:animatemove', function () {
 				linksForAnimation = linksForAnimation.add(link);
 			});
-
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
 		stageElement.findLink(l).remove();
