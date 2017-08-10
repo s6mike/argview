@@ -107,17 +107,10 @@
 	padding: 0px;
 	z-index: 1;
 }
-.mapjs-link {
-	stroke-width: 1.5px;
-	fill: none;
-}
 .mapjs-link-hit {
 	stroke: transparent;
 	fill: transparent;
-	stroke-width: 15;
 	cursor: crosshair;
-}
-.mapjs-arrow {
 }
 .drag-shadow {
 	opacity: 0.5;

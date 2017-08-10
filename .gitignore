@@ -7,4 +7,5 @@ node_modules/
 SpecRunner.html
 .grunt
 .sublime*
+.tern-port
 npm-debug.log

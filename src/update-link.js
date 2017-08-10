@@ -61,6 +61,7 @@ jQuery.fn.updateLink = function () {
 			'd': connection.d,
 			'stroke-width': connection.lineProps.width,
 			'stroke-dasharray': connection.lineProps.strokes,
+			'stroke-linecap': connection.lineProps.linecap,
 			fill: 'transparent'
 		});
 
@@ -68,16 +69,22 @@ jQuery.fn.updateLink = function () {
 			hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
 		}
 		hitElement.attr({
-			'd': connection.d
+			'd': connection.d,
+			'stroke-width': connection.lineProps.width + 12
 		});
 
 		if (connection.arrow) {
 			if (arrowElement.length === 0) {
 				arrowElement = createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 			}
-			arrowElement.attr('d', connection.arrow)
-				.css('fill', connection.lineProps.color)
-				.show();
+			arrowElement
+			.attr({
+				d: connection.arrow,
+				fill: connection.lineProps.color,
+				'stroke-width': connection.lineProps.width
+			})
+			.show();
+
 		} else {
 			arrowElement.hide();
 		}

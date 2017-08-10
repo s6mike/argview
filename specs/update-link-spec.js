@@ -53,7 +53,11 @@ describe('updateLink', function () {
 	});
 	it('uses the lineStyle data attribute to control the dashed styling', function () {
 		setAttr('lineStyle', 'dashed');
-		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('8, 8');
+		expect(underTest.find('path.mapjs-link').attr('stroke-dasharray')).toBe('4, 4');
+	});
+	it('uses the lineStyle data attribute to control the stroke linecap', function () {
+		setAttr('lineStyle', 'solid');
+		expect(underTest.find('path.mapjs-link').attr('stroke-linecap')).toBe('square');
 	});
 	it('clears the dashes if lineStyle is solid', function () {
 		underTest.find('path').attr('stroke-dasharray', '1, 1');
@@ -81,6 +85,11 @@ describe('updateLink', function () {
 		setAttr('arrow', 'true');
 		expect(underTest.find('path.mapjs-arrow').length).toBe(1);
 		expect(underTest.find('path.mapjs-arrow')[0]).toEqual(path[0]);
+	});
+	it('uses the width attribute to set the arrow stroke width', function () {
+		setAttr({arrow: 'true', color: '#FF7577', width: 10});
+		// chrome and phantom return different forms for the same color, so explicit hex needed to make test repeatable
+		expect(parseInt(underTest.find('path.mapjs-arrow').attr('stroke-width'))).toEqual(10);
 	});
 	it('uses the color attribute to set the arrow fill', function () {
 		setAttr({arrow: 'true', color: '#FF7577'});
