@@ -93,7 +93,8 @@ jQuery.fn.updateConnector = function (canUseData) {
 				hitElement = createSVG('path').attr('class', 'mapjs-link-hit').appendTo(element);
 			}
 			hitElement.attr({
-				'd': connection.d
+				'd': connection.d,
+				'stroke-width': connection.width + 12
 			});
 		} else {
 			if (hitElement.length > 0) {

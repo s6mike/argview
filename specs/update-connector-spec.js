@@ -96,6 +96,7 @@ describe('updateConnector', function () {
 		const path = underTest.find('path.mapjs-link-hit');
 		expect(path.length).toBe(1);
 		expect(path.attr('d')).toEqual('M50,20Q50,190 140,142');
+		expect(path.attr('stroke-width')).toEqual('13');
 	});
 
 	it('positions the connector to the upper left edge of the nodes, and expands it to the bottom right edge of the nodes', function () {

@@ -107,11 +107,16 @@
 	padding: 0px;
 	z-index: 1;
 }
-.mapjs-link-hit {
-	stroke: transparent;
-	fill: transparent;
-	cursor: crosshair;
+.mapjs-link-hit:hover {
+    opacity: .1;
 }
+.mapjs-link-hit {
+    opacity: 0;
+    fill: transparent;
+    cursor: crosshair;
+    transition: opacity .2s;
+}
+
 .drag-shadow {
 	opacity: 0.5;
 }
