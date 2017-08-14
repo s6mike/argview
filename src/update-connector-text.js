@@ -30,15 +30,15 @@ const createSVG = require('./create-svg'),
 		textDOM.style.fill = labelTheme.text.color;
 		textDOM.style.fontSize = labelTheme.text.font.sizePx + 'px';
 		textDOM.style.fontWeight = labelTheme.text.font.weight;
-		textDOM.style.alignmentBaseline = 'hanging';
+		textDOM.style.dominantBaseline = 'hanging';
 		textElement.text(labelText.trim());
 		dimensions = textDOM.getClientRects()[0];
 		textDOM.setAttribute('x', Math.round(centrePoint.x - dimensions.width / 2));
 		textDOM.setAttribute('y', Math.round(centrePoint.y - dimensions.height));
 		rectDOM.setAttribute('x', Math.round(centrePoint.x - dimensions.width / 2));
 		rectDOM.setAttribute('y', Math.round(centrePoint.y - dimensions.height - 2));
-		rectDOM.style.height = Math.round(dimensions.height) + 'px';
-		rectDOM.style.width = Math.round(dimensions.width) + 'px';
+		rectDOM.setAttribute('height', Math.round(dimensions.height));
+		rectDOM.setAttribute('width', Math.round(dimensions.width));
 		rectDOM.style.fill = labelTheme.backgroundColor;
 		rectDOM.style.stroke = labelTheme.borderColor;
 		return textElement;

@@ -206,7 +206,7 @@ describe('updateLink', function () {
 			textField = underTest.find('text');
 			expect(textField.length).toEqual(1);
 			expect(textField.text()).toEqual('blah blah blah');
-			expect(textField[0].style.alignmentBaseline).toEqual('hanging');
+			expect(textField[0].style.dominantBaseline).toEqual('hanging');
 			expect(textField[0].style.fill).toEqual('rgb(10, 20, 30)');
 			expect(textField[0].style.fontSize).toEqual('12px');
 			expect(textField[0].style.fontWeight).toEqual('bold');
@@ -237,10 +237,10 @@ describe('updateLink', function () {
 
 			expect(parseInt(rectField.attr('x'))).toEqual(parseInt(textField.attr('x')));
 			expect(parseInt(rectField.attr('y'))).toEqual(parseInt(textField.attr('y') - 2));
+			expect(parseInt(rectField.attr('width'))).toEqual(Math.round(textDims.width));
+			expect(parseInt(rectField.attr('height'))).toEqual(Math.round(textDims.height));
 			expect(rectField[0].style.stroke).toEqual('rgb(4, 5, 6)');
 			expect(rectField[0].style.fill).toEqual('rgb(1, 2, 3)');
-			expect(rectField[0].style.width).toEqual(Math.round(textDims.width) + 'px');
-			expect(rectField[0].style.height).toEqual(textDims.height + 'px');
 		});
 	});
 
