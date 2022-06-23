@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+-- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
 -- a pipe that parses a yaml argument map and generates
 -- a tikz argument map, styled to mimic the argument maps
 -- on mindmup.
@@ -10,9 +10,9 @@
 -- TODO: support for notes
 
 -- uses pl.app.parse_args() to parse cli options
-local pl = require'pl.import_into'()
+local pl    = require 'pl.import_into' ()
 -- uses lyaml to parse yaml
-local lyaml   = require "lyaml"
+local lyaml = require "lyaml"
 
 -- initialize a global counter for providing unique ids for each node
 local gn = 0
@@ -73,7 +73,7 @@ function pipe_in_out(cmd, s)
     local f = io.open(tmp, 'w')
     f:write(s)
     f:close()
-    local fout = assert(io.popen(cmd .. " " .. tmp)) 
+    local fout = assert(io.popen(cmd .. " " .. tmp))
     local o = fout:read("*all")
     fout:close()
     os.remove(tmp)
@@ -82,17 +82,17 @@ function pipe_in_out(cmd, s)
 end
 
 local function trim(s)
-   return (s:gsub("\n",""))
+    return (s:gsub("\n", ""))
 end
 
 function markdown_to_latex(s)
     return trim(pipe_in_out("pandoc --wrap=none -t latex -f markdown", s))
 end
 
--- TODO: enable parsing of notes 
-function parse_special(t,s)
+-- TODO: enable parsing of notes
+function parse_special(t, s)
     -- a function for parsing notes, labels, and strengths
-    for i,v in pairs(t) do
+    for i, v in pairs(t) do
         if string.match(i, "^" .. s .. "$") then
             return v
         end
@@ -104,7 +104,7 @@ function parse_claims(t)
     -- a function that parses claims
     local o = ""
     indent = indent + 2
-    for i,v in pairs(t) do
+    for i, v in pairs(t) do
         -- this for loop iterates over a list of claims:
         --    i is a claim, v is a table of reasons for or against i
         if not string.match(i, "^label$") and not string.match(i, "^strength$") then
@@ -114,28 +114,28 @@ function parse_claims(t)
             local claim = i
             -- attr controls the tikz styling for the claim
             local attr = "claim"
-            if string.match(claim,"^-.*") then
+            if string.match(claim, "^-.*") then
                 -- if the claim begins with a '-', strip it off and style as an implicit premise
-                claim = string.sub(claim,2,-1)
+                claim = string.sub(claim, 2, -1)
                 attr = attr .. ", implicit"
             end
             claim = markdown_to_latex(claim)
-            local note = parse_special(v,"note")
+            local note = parse_special(v, "note")
             if note then
                 note = trim(markdown_to_latex(note))
                 -- TODO: attach note to claim.
             end
             -- construct the claim in tikz, e.g,: c1/"Eating meat is morally acceptable"[claim, implicit]
-            local claimline = string.rep(" ",indent) .. "c" .. gid .. "/\"" .. claim .. "\"[" .. attr .. "]"
+            local claimline = string.rep(" ", indent) .. "c" .. gid .. "/\"" .. claim .. "\"[" .. attr .. "]"
             -- parse the reasons for the claim, and add the result to output.
-            o = o .. parse_reasons(v,claimline)
+            o = o .. parse_reasons(v, claimline)
         end
     end
     indent = indent - 2
     return o
 end
 
-function parse_reasons(t,claimline)
+function parse_reasons(t, claimline)
     -- function that parses reasons for a claim and returns the appropriate tikz
     -- initialize output string
     local o = ""
@@ -144,7 +144,7 @@ function parse_reasons(t,claimline)
         -- if no reasons are offered for the claim, then just return the claimline
         o = claimline .. ",\n"
     else
-        for i,v in pairs(t) do
+        for i, v in pairs(t) do
             -- this for loop iterates over reasons: i is the identifier, and v is a list of claims
             if not string.match(i, "^note$") then
                 -- skip items labeled "note"
@@ -155,14 +155,14 @@ function parse_reasons(t,claimline)
                 if string.match(i, "^[-o].*") then
                     type = "opposing"
                 end
-                local label = parse_special(v,"label")
+                local label = parse_special(v, "label")
                 local labelnode = ""
                 if label then
                     label = trim(markdown_to_latex(label))
                     label = string.gsub(label, ":", "{:}")
                     label = "\"{\\footnotesize " .. label .. "}\", "
                 end
-                local strength = parse_special(v,"strength")
+                local strength = parse_special(v, "strength")
                 local width = "line width=1.2pt" -- "very thick"
                 if strength == 1 then
                     width = "line width=0.6pt"
@@ -176,7 +176,7 @@ function parse_reasons(t,claimline)
                     width = "line width=2pt"
                 end
 
-                    
+
                 -- construct the tikz, e.g.,
                 --   c1/"Eating meat is morally acceptable"[claim, implicit]
                 --     --[supportingedge]
@@ -184,11 +184,12 @@ function parse_reasons(t,claimline)
                 --        ...
                 --     }
                 -- note the recursive call to parse_claims.
-                o = o .. claimline .. "\n" .. 
-                    string.rep(" ",indent) .. "--[" .. width .. ", " .. labelnode .. type .. "edge] " ..
-                    string.rep(" ",indent) .. "r" .. gid .. "/\"\" [" .. type .. "={" .. width .. "}] // [ tree layout ] {\n"
+                o = o .. claimline .. "\n" ..
+                    string.rep(" ", indent) .. "--[" .. width .. ", " .. labelnode .. type .. "edge] " ..
+                    string.rep(" ", indent) ..
+                    "r" .. gid .. "/\"\" [" .. type .. "={" .. width .. "}] // [ tree layout ] {\n"
                     .. parse_claims(v)
-                    .. string.rep(" ",indent) .. "},\n"
+                    .. string.rep(" ", indent) .. "},\n"
             end
         end
     end
@@ -198,15 +199,15 @@ end
 
 function create_graph(t)
     -- parse the map and generate the tikz \graph
-    local o = string.rep(" ",indent) .. "\\graph [layered layout, " .. 
-                                                  "grow down, " ..
-                                                  "level distance=5em, " ..
-                                                  "tail anchor=center, " ..
-                                                  "edge quotes={fill=yellow!25,inner sep=3pt}, " ..
-                                                  "head anchor=center]\n" ..
-              string.rep(" ",indent) .. "{\n" ..
-              parse_claims(t) ..
-              string.rep(" ",indent) .. "};\n"
+    local o = string.rep(" ", indent) .. "\\graph [layered layout, " ..
+        "grow down, " ..
+        "level distance=5em, " ..
+        "tail anchor=center, " ..
+        "edge quotes={fill=yellow!25,inner sep=3pt}, " ..
+        "head anchor=center]\n" ..
+        string.rep(" ", indent) .. "{\n" ..
+        parse_claims(t) ..
+        string.rep(" ", indent) .. "};\n"
     return o
 end
 
@@ -215,12 +216,12 @@ function create_tikzpicture(t)
     -- TODO: is there more appropriate way to specify rounded corners other than calling pdfsetcornerarced?
     indent = indent + 2
     local o = "\\begin{tikzpicture}\n" ..
-               string.rep(" ",indent) .. "[\n" ..
-               styles .. 
-               string.rep(" ",indent) .. "]\n" ..
-               string.rep(" ",indent) .. "\\pgfsetcornersarced{\\pgfpoint{.5mm}{.5mm}}" ..
-               create_graph(t) ..
-               "\\end{tikzpicture}"
+        string.rep(" ", indent) .. "[\n" ..
+        styles ..
+        string.rep(" ", indent) .. "]\n" ..
+        string.rep(" ", indent) .. "\\pgfsetcornersarced{\\pgfpoint{.5mm}{.5mm}}" ..
+        create_graph(t) ..
+        "\\end{tikzpicture}"
     return o
 end
 
@@ -228,10 +229,10 @@ function create_texdocument(t)
     -- generate a the tikzpicture and wrap it in a standalone tex document
     local documentclass = [[\documentclass[tikz]{standalone}]]
     return "\\documentclass[tikz]{standalone}\n" ..
-           includes .. "\n" ..
-           "\\begin{document}\n" ..
-           create_tikzpicture(t) .. "\n" ..
-           "\\end{document}"
+        includes .. "\n" ..
+        "\\begin{document}\n" ..
+        create_tikzpicture(t) .. "\n" ..
+        "\\end{document}"
 end
 
 function help()
@@ -244,7 +245,7 @@ end
 
 function parse_options(a)
     local opts = {}
-    local flags,args = pl.app.parse_args(a)
+    local flags, args = pl.app.parse_args(a)
     opts["standalone"] = flags["s"] or flags["standalone"]
     opts["includes"] = flags["i"] or flags["includes"]
     opts["template"] = flags["t"] or flags["template"]
@@ -263,22 +264,22 @@ function main()
         return includes
     elseif opts["template"] then
         return "$if(argmaps)$\n" ..
-                includes .. "\n" ..
-               "$endif$"
+            includes .. "\n" ..
+            "$endif$"
     else
         local input = ""
         if opts["file"] then
-            local f = io.open(opts["file"],'r')
+            local f = io.open(opts["file"], 'r')
             input = f:read("*all")
             f:close()
         else
             input = io.read("*all")
-        end 
+        end
         local argmap = lyaml.load(input)
         if opts["standalone"] then
-           return create_texdocument(argmap)
+            return create_texdocument(argmap)
         else
-           return create_tikzpicture(argmap)
+            return create_tikzpicture(argmap)
         end
     end
 end

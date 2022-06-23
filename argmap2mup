@@ -1,12 +1,10 @@
-#!/usr/bin/env lua
-
-local pl = require'pl.import_into'()
-local lyaml   = require "lyaml"
-local json = require 'json'
-
+-- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
+local pl    = require 'pl.import_into' ()
+local lyaml = require "lyaml"
+local json  = require 'json'
 
 -- initialize the output map
-local output = { ["ideas"] = {}}
+local output = { ["ideas"] = {} }
 -- initialize a global counter for providing unique ids
 local gn = 0
 
@@ -15,7 +13,7 @@ local gdrive_id = nil
 local gdriveFolder = nil
 local name = nil
 local upload = false
-local public = "" 
+local public = ""
 
 -- a long string containing all the styling needed for argument maps
 local template = lyaml.load([=[
@@ -403,114 +401,114 @@ theme:
 ]=])
 
 function pipe_in_out(cmd, s)
-    -- a function for piping through unix commands
-    local tmp = os.tmpname()
-    local tmpout = os.tmpname()
-    local f = io.open(tmp, 'w')
-    f:write(s)
-    f:close()
-    local fout = assert(io.popen(cmd .. " " .. tmp)) 
-    local o = fout:read("*all")
-    fout:close()
-    os.remove(tmp)
-    os.remove(tmpout)
-    return o
+  -- a function for piping through unix commands
+  local tmp = os.tmpname()
+  local tmpout = os.tmpname()
+  local f = assert(io.open(tmp, 'w'))
+  f:write(s)
+  f:close()
+  local fout = assert(io.popen(cmd .. " " .. tmp))
+  local o = fout:read("*all")
+  fout:close()
+  os.remove(tmp)
+  os.remove(tmpout)
+  return o
 end
 
 local function trim(s)
-    -- trim trailing newlines
-    return (s:gsub("\n",""))
+  -- trim trailing newlines
+  return (s:gsub("\n", ""))
 end
 
 function markdown_to_plain(s)
-    return trim(pipe_in_out("pandoc --wrap=none -t plain -f markdown", s))
+  return trim(pipe_in_out("pandoc --wrap=none -t plain -f markdown", s))
 end
 
-function parse_special(t,s)
-    -- a function for parsing notes, labels, and strengths
-    for i,v in pairs(t) do
-        if string.match(i, "^" .. s .. "$") then
-            return v
-        end
+function parse_special(t, s)
+  -- a function for parsing notes, labels, and strengths
+  for i, v in pairs(t) do
+    if string.match(i, "^" .. s .. "$") then
+      return v
     end
-    return nil
+  end
+  return nil
 end
 
 function parse_claims(t)
-    -- initialize the output table
-    local o = {}
-    -- initialize a local counter for ids
-    local n = 0
-    for i,v in pairs(t) do
-        if not string.match(i, "^label$") and not string.match(i, "^strength$") then
-            -- manage counters
-            n = n + 1
-            gn = gn + 1
-            local id = tostring(n)
-            local gid = tostring(gn)
-            -- the key is the claim
-            local claim = i
-            -- if we haven't set a name for our map yet, use the claim as the name.
-            if not name then
-                name = claim
-            end
-            local attr = {}
-            -- claims that begin with a '-' are styled as implicit premises
-            if string.match(claim,"^-.*") then
-                claim = string.sub(claim,2,-1)
-                attr = { 
-                    ["styleNames"] = { "attr_implicit_claim" } 
-                }
-            end
-            claim = markdown_to_plain(claim)
-            local note = parse_special(v,"note")
-            if note then
-                note = markdown_to_plain(note)
-                gn = gn + 1
-                attr["note"] = {
-                    ["index"] = gn,
-                    ["text"] = note
-                }
-            end
-            o[id] = { 
-                ["title"] = claim, 
-                ["id"] = gid, 
-                ["attr"] = attr, 
-                ["ideas"] = parse_reasons(v) 
-            }
-        end
+  -- initialize the output table
+  local o = {}
+  -- initialize a local counter for ids
+  local n = 0
+  for i, v in pairs(t) do
+    if not string.match(i, "^label$") and not string.match(i, "^strength$") then
+      -- manage counters
+      n = n + 1
+      gn = gn + 1
+      local id = tostring(n)
+      local gid = tostring(gn)
+      -- the key is the claim
+      local claim = i
+      -- if we haven't set a name for our map yet, use the claim as the name.
+      if not name then
+        name = claim
+      end
+      local attr = {}
+      -- claims that begin with a '-' are styled as implicit premises
+      if string.match(claim, "^-.*") then
+        claim = string.sub(claim, 2, -1)
+        attr = {
+          ["styleNames"] = { "attr_implicit_claim" }
+        }
+      end
+      claim = markdown_to_plain(claim)
+      local note = parse_special(v, "note")
+      if note then
+        note = markdown_to_plain(note)
+        gn = gn + 1
+        attr["note"] = {
+          ["index"] = gn,
+          ["text"] = note
+        }
+      end
+      o[id] = {
+        ["title"] = claim,
+        ["id"] = gid,
+        ["attr"] = attr,
+        ["ideas"] = parse_reasons(v)
+      }
     end
-    return o
+  end
+  return o
 end
 
 function parse_reasons(t)
-    local o = {}
-    local n = 0
-    for i,v in pairs(t) do
-        if not string.match(i, "^note$") then
-            n = n + 1
-            gn = gn + 1
-            local id = tostring(n)
-            local gid = tostring(gn)
-            local group = "supporting"
-            if string.match(i, "^[-o].*") then
-                group = "opposing"
-            end
-            local label = parse_special(v,"label")
-            local strength = parse_special(v,"strength")
-            local ideas = parse_claims(v)
-            local attr = { ["contentLocked"] = "true", 
-                           ["group"] = group, 
-                           ["parentConnector"] = { ["width"] = strength, ["label"] = label }
-                       }
-            o[id] = { ["title"] = "group", ["id"] = gid, ["attr"] = attr, ["ideas"] = ideas }
-        end
+  local o = {}
+  local n = 0
+  for i, v in pairs(t) do
+    if not string.match(i, "^note$") then
+      n = n + 1
+      gn = gn + 1
+      local id = tostring(n)
+      local gid = tostring(gn)
+      local group = "supporting"
+      if string.match(i, "^[-o].*") then
+        group = "opposing"
+      end
+      local label = parse_special(v, "label")
+      local strength = parse_special(v, "strength")
+      local ideas = parse_claims(v)
+      local attr = { ["contentLocked"] = "true",
+        ["group"] = group,
+        ["parentConnector"] = { ["width"] = strength, ["label"] = label }
+      }
+      o[id] = { ["title"] = "group", ["id"] = gid, ["attr"] = attr, ["ideas"] = ideas }
     end
-    return o
+  end
+  return o
 end
 
 function help()
-   return [[argmap2mup <options> <file>
+  return [[argmap2mup <options> <file>
    -u, --upload           :  upload to Google Drive
    -g ID, --gdrive_id ID  :  update file with ID on Google Drive
    -f ID, --folder ID     :  upload to Google Drive folder with ID
@@ -520,84 +518,85 @@ function help()
 end
 
 function parse_options(a)
-    local opts = {}
-    local flags,args = pl.app.parse_args(a,{g=true, gdrive_id=true, n=true, name=true, f=true, folder=true })
-    opts["upload"] = flags["u"] or flags["upload"] or
-                     flags["p"] or flags["public"] or 
-                     flags["g"] or flags["gdrive"] or
-                     flags["f"] or flags["folder"]
-    opts["help"]   = flags["h"] or flags["help"]
-    if flags["p"] or flags["public"] then
-        opts["public"] = "--share"
-    else
-        opts["public"] = ""
-    end
-    opts["gdrive_id"] = flags["g"]
-    if not opts["gdrive_id"] then
-        opts["gdrive_id"] = flags["gdrive_id"]
-    end
-    gdriveFolder = flags["f"]
-    if not gdriveFolder then
-        gdriveFolder = flags["folder"]
-    end
-    name = flags["n"]
-    if not name then
-        name = flags["name"]
-    end
-    if #args > 0 then
-        opts["file"] = args[1]
-    end
-    return opts
+  local opts        = {}
+  local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true, n = true, name = true, f = true, folder = true })
+  opts["upload"]    = flags["u"] or flags["upload"] or
+      flags["p"] or flags["public"] or
+      flags["g"] or flags["gdrive"] or
+      flags["f"] or flags["folder"]
+  opts["help"]      = flags["h"] or flags["help"]
+  if flags["p"] or flags["public"] then
+    opts["public"] = "--share"
+  else
+    opts["public"] = ""
+  end
+  opts["gdrive_id"] = flags["g"]
+  if not opts["gdrive_id"] then
+    opts["gdrive_id"] = flags["gdrive_id"]
+  end
+  gdriveFolder = flags["f"]
+  if not gdriveFolder then
+    gdriveFolder = flags["folder"]
+  end
+  name = flags["n"]
+  if not name then
+    name = flags["name"]
+  end
+  if #args > 0 then
+    opts["file"] = args[1]
+  end
+  return opts
 end
 
 function main()
-    print(args)
-    local opts = parse_options(args)
-    if opts["help"] then
-        return help()
+  --print(args) -- What is this line for? Debugging? Should it use something other than print?
+  local opts = parse_options(arg)
+  if opts["help"] then
+    return help()
+  else
+    local input = ""
+    if opts["file"] then
+      local f = assert(io.open(opts["file"], 'r'))
+      input = f:read("*all")
+      f:close()
     else
-        local input = ""
-        if opts["file"] then
-            local f = io.open(opts["file"],'r')
-            input = f:read("*all")
-            f:close()
-        else
-            input = io.read("*all")
-        end 
-        local argmap = lyaml.load(input)
-        output = template
-        output["ideas"] = parse_claims(argmap)
-        output["title"] = name
-        local mup = json.encode(output)
-
-        if opts["upload"] and opts["gdrive_id"] then
-            pipe_in_out("gdrive update " .. 
-                        "--no-progress " ..
-                        "--name \"" .. name .. "\" " ..
-                        "--mime \"application/vnd.mindmup\" ..\" " ..
-                        opts["gdrive_id"] .. "\"", 
-                        mup)
-            return opts["gdrive_id"]
-        elseif opts["upload"] then
-            if gdriveFolder then
-                folderopt = "-p \"" .. gdriveFolder .. "\" "
-            else
-                gdriveFolder = nil
-            end
-            local gdriveoutput = pipe_in_out(
-               "gdrive upload --delete " ..
-                opts["public"] .. " " ..
-                "--no-progress " ..
-                folderopt ..
-                "--name \"" .. name .. "\" " ..
-                "--mime \"application/vnd.mindmup\"",
-                mup)
-            local gdrive_id = string.match(gdriveoutput, "Uploaded ([^%s]*) at")
-            return gdrive_id
-        else
-            return mup
-        end
+      input = io.read("*all")
     end
+    local argmap = lyaml.load(input)
+    output = template
+    output["ideas"] = parse_claims(argmap)
+    output["title"] = name
+    local mup = json.encode(output)
+
+    local folderopt = ""
+    if opts["upload"] and opts["gdrive_id"] then
+      pipe_in_out("gdrive update " ..
+        "--no-progress " ..
+        "--name \"" .. name .. "\" " ..
+        "--mime \"application/vnd.mindmup\" ..\" " ..
+        opts["gdrive_id"] .. "\"",
+        mup)
+      return opts["gdrive_id"]
+    elseif opts["upload"] then
+      if gdriveFolder then
+        folderopt = "-p \"" .. gdriveFolder .. "\" "
+      else
+        gdriveFolder = nil
+      end
+      local gdriveoutput = pipe_in_out(
+        "gdrive upload --delete " ..
+        opts["public"] .. " " ..
+        "--no-progress " ..
+        folderopt ..
+        "--name \"" .. name .. "\" " ..
+        "--mime \"application/vnd.mindmup\"",
+        mup)
+      local gdrive_id = string.match(gdriveoutput, "Uploaded ([^%s]*) at")
+      return gdrive_id
+    else
+      return mup
+    end
+  end
 end
 
 print(main())
