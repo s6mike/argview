@@ -1,9 +1,11 @@
 Argmap Project News
 ===================
 
+# argmap 0.1.1
+- Minor change
+
 # argmap 0.1.0
 - Fork of https://github.com/dsanson/argmap
-- Install with lua 5.3.4
 - argmap2mup fixes:
     - Close #1 starts file with nil
     - Close #2 gdrive upload fails
