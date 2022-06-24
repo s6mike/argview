@@ -1,9 +1,20 @@
 -- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
 -- A pipe that reads mindmup `mup` files and outputs `yaml` argument maps.
 
-local pl    = require 'pl.import_into' ()
-local lyaml = require "lyaml"
-local json  = require 'json'
+local pl      = require 'pl.import_into' ()
+local lyaml   = require "lyaml"
+local json    = require 'json'
+local logging = require 'logging'
+
+-- [LuaLogging: A simple API to use logging features in Lua](https://neopallium.github.io/lualogging/manual.html#introduction)
+local logger = logging.new(function(self, level, message)
+    io.stderr:write(message)
+    io.stderr:write("\n")
+    return true
+end)
+
+-- Set to .DEBUG to activate logging
+logger:setLevel(logging.ERROR)
 
 function dig_in(table, fields)
     local t = table
@@ -62,6 +73,9 @@ function parse_reasons(reasons, note)
         end
         local strength = dig_in(items, { "attr", "parentConnector", "width" })
         local label = dig_in(items, { "attr", "parentConnector", "label" })
+        logger:debug('reasons, index, items["ideas"], strength, label: ')
+        logger:debug(reasons, index, items["ideas"], strength, label)
+        logger:debug('')
         local claims = parse_claims(items["ideas"], strength, label)
         argmap[key] = claims
     end
@@ -91,7 +105,7 @@ function parse_options(a)
 end
 
 function main()
-    local opts = parse_options(args)
+    local opts = parse_options(arg)
     if opts["help"] then
         return help()
     else
@@ -101,7 +115,7 @@ function main()
             input = f:read("*all")
             f:close()
         elseif opts["file"] then
-            local f = io.open(opts["file"], 'r')
+            local f = assert(io.open(opts["file"], 'r'))
             input = f:read("*all")
             f:close()
         else

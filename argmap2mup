@@ -549,7 +549,7 @@ function parse_options(a)
 end
 
 function main()
-  --print(args) -- What is this line for? Debugging? Should it use something other than print?
+  -- print(args) -- What is this line for? Debugging? In which case, is there a log function?
   local opts = parse_options(arg)
   if opts["help"] then
     return help()

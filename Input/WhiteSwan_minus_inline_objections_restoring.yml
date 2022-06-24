@@ -1,0 +1,39 @@
+---
+All swans are white.:
+  r-1:
+    label: supports (+)
+    These swans are representative of all swans.:
+      o5:
+        label: X
+        Logical Fallacy Observing individuals doesn't prove anything about the whole population.: []
+    Every swan I've ever seen is white.:
+      r1:
+        label: +
+        Here is a photo of another white swan.: []
+        Here is a photo of a white swan.:
+          r1: []
+  o1:
+    label: rejects (X)
+    strength: 5
+    Not all swans are white.:
+      r1:
+        label: +
+        strength: 5
+          This is a photo of a black swan from Australia.
+
+          https://en.wikipedia.org/wiki/Black_swan
+        o1:
+            label: X
+            This black swan is a photo-shopped fake.: []
+  r2:
+    label: supports (+)
+    strength: 1
+    Every seagull I've ever seen is white. :
+      o3:
+        label: X
+        This isn't relevant to the argument of whether all swans are white.: []
+    Every dove I've ever seen is white.:
+      o1:
+        label: X
+        This colour of doves is not relevant to the colour of swans.: []
+...
