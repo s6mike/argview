@@ -11,6 +11,8 @@ local gn = 0
 -- default options
 local gdrive_id = nil
 local gdriveFolder = nil
+-- the google ID of the default folder to upload to:
+--local gdriveFolder = "1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x" -- 'GDrive/_1. Shared/Personal Admin/Personal Projects/ArguMend GDrive/Mindmup/argmap_uploads'
 local name = nil
 local upload = false
 local public = ""

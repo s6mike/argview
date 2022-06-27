@@ -1,6 +1,12 @@
 Argmap Project News
 ===================
 
+## argmap 3.0.1
+- Update bash aliases:
+    - Add bash function for uploading to gdrive.
+    - Upload to GDrive folder 'argmap_uploads'.
+    - Use input filename as upload filename.
+
 ## argmap 3.0.0 BREAKING
 - BREAKING: Add .lua file extension to lua app files to ensure correct syntax highlighting. Readme examples still need updating.
 - Add argmap_init_script.sh and bash_aliases_argmap.sh to keep bash config and convenience functions in sync with code.
