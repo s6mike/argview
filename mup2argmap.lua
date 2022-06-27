@@ -2,8 +2,8 @@
 -- A pipe that reads mindmup `mup` files and outputs `yaml` argument maps.
 
 local pl      = require 'pl.import_into' ()
-local lyaml   = require "lyaml"
-local json    = require 'json'
+local lyaml   = require 'lyaml'
+local json    = require 'rxi-json-lua'
 local logging = require 'logging'
 
 -- [LuaLogging: A simple API to use logging features in Lua](https://neopallium.github.io/lualogging/manual.html#introduction)

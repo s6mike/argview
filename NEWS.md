@@ -1,6 +1,14 @@
 Argmap Project News
 ===================
 
+## argmap 3.1.0
+- Add rockspec file.
+- Replace dependency json.lua with rxi-json-lua.lua for simpler installation.
+- Update conda env with values from luarocks path.
+- Update readme install instructions.
+    - Rename to README.md: simplifies rockspec generation.
+- Add tests.sh file to do minimal testing.
+
 ## argmap 3.0.1
 - Update bash aliases:
     - Add bash function for uploading to gdrive.
