@@ -1,6 +1,9 @@
 Argmap Project News
 ===================
 
+# argmap 1.0.4
+- Minor NEWS.md fix.
+
 # argmap 1.0.3
 - Update [README](README.markdown).
 
@@ -13,7 +16,5 @@ Argmap Project News
 
 # argmap 1.0.0
 Original https://github.com/dsanson/argmap
-
-Uses Semantic Versioning: http://semver.org/
 
 Uses Semantic Versioning: http://semver.org/ and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
