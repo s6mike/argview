@@ -3,11 +3,13 @@ Argument Maps in YAML
 
 [![](examples/2cc90b7c54f340b9e4589f2c1b5a26589a5f2653.png)](https://drive.mindmup.com/map/18asUocP9fUtPbA8h4-qtTTfem0bxGunB)
 
-Master currently matches [dsanson/argmap: tools for working with argument maps represented in YAML](https://github.com/dsanson/argmap), which is not being actively maintained at the moment.
+Master currently matches https://github.com/dsanson/argmap, which is not being actively maintained at the moment.
 
-For fixes and improvements, I've created two branches:
-- argmap2mup-fix: fixes some issues I had in this file only, with corresponding documentation updates.
+Fixes and improvements are on two branches:
+- argmap2mup-fix: fixes some issues in this file only, with corresponding documentation updates.
 - bugfixes: more fixes, plus much broader changes, including formatting, bash aliases etc.
+
+See relevant [NEWS.md](NEWS.md) for change notes.
 
 -------------
 
