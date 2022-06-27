@@ -5,11 +5,11 @@ Argument Maps in YAML
 
 Master currently matches [dsanson/argmap: tools for working with argument maps represented in YAML](https://github.com/dsanson/argmap), which is not being actively maintained at the moment.
 
--------------
-
 For fixes and improvements, I've created two branches:
 - argmap2mup-fix: fixes some issues I had in this file only, with corresponding documentation updates.
 - bugfixes: more fixes, plus much broader changes, including formatting, bash aliases etc.
+
+-------------
 
 This repository contains some tools for working with argument maps written in
 a relatively simple [`YAML`](https://yaml.org/) format, described below. For
