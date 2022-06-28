@@ -1,9 +1,27 @@
-Argmap Project News
-===================
+Argmap Project Change Log
+========================
+
+## argmap 3.1.4
+- Move [CONTRIBUTING.md](../CONTRIBUTING.md). to root folder for visibility.
+
+## argmap 3.1.3
+- Fix readme links to contributing.md
+
+## argmap 3.1.2
+- Update change log.
+
+## argmap 3.1.1
+- Docs:
+    - Add docs folder.
+    - Rename change log from NEWS.md to docs/CHANGELOG.md.
+    - Add [CONTRIBUTING.md](../CONTRIBUTING.md).
+    - Fix readme examples: now commands have .lua file extension.
+- Fix rockspec to use correct version number.
+- Add luarocks library cleanup file to simplify install testing.
 
 ## argmap 3.1.0
 - Add rockspec file.
-- Replace dependency json.lua with rxi-json-lua.lua for simpler installation.
+- Replace dependency json.lua with rxi-json-lua.lua for simpler install.
 - Update conda env with values from luarocks path.
 - Update readme install instructions.
     - Rename to README.md: simplifies rockspec generation.
@@ -28,25 +46,25 @@ Argmap Project News
     - Fix need check nil, relates to #7.
 - Fix argmap2mup:
     - Close #3 Static analyser errors.
-- Comment out line 1 #! directive, so actboy168's lua debug extension
-    can handle breakpoints:
-    (see https://github.com/actboy168/lua-debug/issues/153).
+- Comment out line 1 #! directive, so actboy168's lua debug extension can handle breakpoints: (see https://github.com/actboy168/lua-debug/issues/153).
     - Call explicitly with lua instead.
 - Fix formatting based on sumneko's vscode lua extension.
 - Add my own reference examples, in Input and Output folders.
 - Readme: add github compatible syntax highlighting directives.
 
-# argmap 0.1.0
+## argmap 1.1.0
 - Fork of https://github.com/dsanson/argmap
-- argmap2mup fixes:
-    - Close #1 starts file with nil
-    - Close #2 gdrive upload fails
-    - Close #3 Static analyser errors
-- Comment out line 1 #! directive, so actboy168's lua debug extension could handle breakpoints.
-    - Call explicitly with lua instead.
-- Minor formatting fixes based on sumneko's vscode lua extension.
-- Add my own reference examples, in Input and Output folders.
+- argmap2mup fix (potentially caused by different lua version):
+    - Close #1 output file start with 'nil'.
+    - Close #2 gdrive upload fails.
 - Update license and readme.
-- Add conda export: environment.yml, .gitignore and this NEWS.md file.
+- Add .gitignore, conda export: environment.yml
 
-Uses Semantic Versioning: http://semver.org/
+## argmap 1.0.1
+- Update [README](README.md), [license](LICENSE).
+- Add this CHANGELOG.md file.
+
+## argmap 1.0.0
+Original https://github.com/dsanson/argmap
+
+Uses Semantic Versioning: http://semver.org/ and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).

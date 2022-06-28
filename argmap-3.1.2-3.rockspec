@@ -1,13 +1,13 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "2.2.0-1"
+version = "3.1.2-3"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v2.2.0"
+   tag = "v3.1.2"
 }
 description = {
    summary = "Tools for working with argument maps.",
-   detailed = "Convert YAML into .mup, vice versa, upload to Mindmup, and pandoc integration. See [README.md](README.md), and [NEWS.md](NEWS.md) for change notes.",
+   detailed = "Convert YAML into .mup, vice versa, upload to Mindmup, and pandoc integration. See [README.md](README.md), and [CHANGELOG.md](docs/CHANGELOG.md) for change notes.",
    homepage = "https://github.com/s6mike/argmap)",
    issues_url = "https://github.com/s6mike/argmap/issues",
    license = "MIT",
