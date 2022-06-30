@@ -1,14 +1,11 @@
 Argmap Project Change Log
 ========================
 
-## argmap 3.1.4
-- Move [CONTRIBUTING.md](../CONTRIBUTING.md). to root folder for visibility.
-
-## argmap 3.1.3
-- Fix readme links to contributing.md
-
 ## argmap 3.1.2
-- Update change log.
+- Update test.sh script to delete output files directly before test.
+- Update clean function:
+    - Rename as clean_repo
+    - Update to revert Output folder to match remote branch.
 
 ## argmap 3.1.1
 - Docs:

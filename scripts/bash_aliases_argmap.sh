@@ -9,6 +9,11 @@ export WORKSPACE MJS_WP_HOME MJS_WP_MAP
 
 # argmap Functions
 
+clean_repo() {
+    echo 'Restoring output folder to match remote.'
+    git checkout -- /home/s6mike/git_projects/argmap/Output/
+}
+
 mappack() {
   npm --prefix $MJS_WP_HOME run pack-js
 }
@@ -39,7 +44,7 @@ m2a() { # m2a Output/Example1_simple.mup
 }
 
 ## Export functions for use in other scripts
-export -f mappack saveenv a2m a2mu a2mo m2a clean
+export -f clean_repo mappack saveenv a2m a2mu a2mo m2a
 
 # argmap Aliases
 
