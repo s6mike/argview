@@ -1,6 +1,9 @@
 Argmap Project Change Log
 ========================
 
+## argmap 3.1.3
+- CONTRIBUTING.md: fix broken links and typos.
+
 ## argmap 3.1.2
 - Update test.sh script to delete output files directly before test.
 - Update clean function:

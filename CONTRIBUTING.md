@@ -48,10 +48,10 @@ In short, when you submit code changes, your submissions are understood to be un
 Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
 
 1. [Open an issue](https://github.com/s6mike/argmap/issues/new) for the change if there isn't one already. If you are making visual changes, include a screenshot of what the affected element looks like before the change. And if possible a mockup of what is planned after.
-2. [Fork](https://github.com/s6mike/argmap/forkfork) and clone the project.
-3. Create a new branch: `git checkout -b [my-branch-name]`.
+2. [Fork](https://github.com/s6mike/argmap/fork) and clone the project.
+3. Create a new branch: `git checkout -b [my-branch-name]`. Note that most of my fixes and improvements are currently on the `bugfixes` branch, while the changes on the master are much more conservative. So it's worth discussing in the issue which branch to base yours on.
 4. Make your change, add tests, and make sure the tests still pass.
-5. Push to your fork and [submit a pull request](https://github.com/s6mike/argmap/fork/compare).
+5. Push to your fork and [submit a pull request](https://github.com/s6mike/argmap/pulls).
 6. Pat your self on the back and wait for your pull request to be reviewed and merged.
 
 **Interesting in submitting your first Pull Request?** It's easy! You can learn how from this *free* series [Course - How to Contribute to an Open Source Project on GitHub from @kentcdodds on @eggheadio](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github)
@@ -60,7 +60,6 @@ Here's a few general guidelines for proposing changes:
 
 * Each pull request should implement **one** feature or bug fix. If you want to add or fix more than one thing, submit more than one pull request.
 * Please keep your coding style consistent with what's already there. For code formatting etc, I've been using [sumneko's Lua VSCode Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua).
-[Lua - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=sumneko.lua)
 * Do not commit changes to files that are irrelevant to your feature or bug fix.
 * If you are changing any user-facing functionality, please be sure to update the documentation.
 * Write [a good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
@@ -71,8 +70,8 @@ Here's a few general guidelines for proposing changes:
 
 ## Additional Resources
 
-* [Contributing to Open Source on GitHub](https://guides.github.com/activities/contributing-to-open-source/)
+* [Finding ways to contribute to open source on GitHub - GitHub Docs](https://docs.github.com/en/get-started/exploring-projects-on-github/finding-ways-to-contribute-to-open-source-on-github)
 * [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
-* [GitHub Help](https://help.github.com)
+* [GitHub Documentation](https://docs.github.com/en)
 
 This file was adapted from: [minimal/CONTRIBUTING.md at master · pages-themes/minimal](https://github.com/pages-themes/minimal/blob/master/docs/CONTRIBUTING.md) :)
