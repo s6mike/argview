@@ -1,6 +1,13 @@
 Argmap Project Change Log
 ========================
 
+## argmap 3.1.5
+- README: 
+    - Fix headline map link to link to published version (should be available until Jan 2023).
+    - Make some sections collapsible: Installation, Syntax Rules and pandoc-argmap.lua
+    - Add reference to issue 11: generated .mup files don't always work on mindmup, but can be used with legacy mindmup.
+- example/example.yml: Update to match documentation.
+
 ## argmap 3.1.4
 - launch.json:
     - Update filenames to include .lua extension.
