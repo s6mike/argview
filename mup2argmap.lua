@@ -14,6 +14,9 @@ local logger = logging.new(function(self, level, message)
 end)
 
 -- Set to .DEBUG to activate logging
+-- TODO set this with a command line argument, then use in launch.json
+--   Try this approach: lua -e'a=1' -e 'print(a)' script.lua
+--   https://www.lua.org/manual/5.3/manual.html#6.10
 logger:setLevel(logging.ERROR)
 
 function dig_in(table, fields)
@@ -140,4 +143,5 @@ function main()
     end
 end
 
+-- TODO is print best practice for this purpose?
 print(main())

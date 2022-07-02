@@ -48,8 +48,8 @@ export -f clean_repo mappack saveenv a2m a2mu a2mo m2a
 
 # argmap Aliases
 
-alias argmm='a2m Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
+alias argmm='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup; a2m Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmu='a2mu Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmo='a2mo Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
-alias argmy='m2a Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup'
+alias argmy='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml; m2a Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup'
 alias argt='scripts/tests.sh'

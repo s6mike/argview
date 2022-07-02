@@ -16,54 +16,54 @@
             "type": "lua",
             "request": "launch",
             "name": "Debug mup2argmap output",
-            "program": "${workspaceFolder}/mup2argmap",
+            "program": "${workspaceFolder}/mup2argmap.lua",
             "arg": [
                 "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_minus_inline_objections.mup",
                 ">",
                 "${workspaceFolder}/Output/WhiteSwan_minus_inline_objections.yml"
             ],
             "stopOnEntry": false,
-            "sourceMaps": [
-                [
-                    "./*",
-                    "${workspaceFolder}/*"
-                ]
-            ],
+            // "sourceMaps": [
+            //     [
+            //         "./*",
+            //         "${workspaceFolder}/*"
+            //     ]
+            // ],
         },
         {
             "type": "lua",
             "request": "launch",
             "name": "Debug argmap2mup output",
-            "program": "${workspaceFolder}/argmap2mup",
+            "program": "${workspaceFolder}/argmap2mup.lua",
             "arg": [
                 "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
                 ">",
                 "${workspaceFolder}/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
             ],
             "stopOnEntry": false,
-            "sourceMaps": [
-                [
-                    "./*",
-                    "${workspaceFolder}/*"
-                ]
-            ],
+            // "sourceMaps": [
+            //     [
+            //         "./*",
+            //         "${workspaceFolder}/*"
+            //     ]
+            // ],
         },
         {
             "type": "lua",
             "request": "launch",
             "name": "Debug argmap2mup gdrive upload",
-            "program": "${workspaceFolder}/argmap2mup",
+            "program": "${workspaceFolder}/argmap2mup.lua",
             "arg": [
                 "-u",
                 "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
             ],
             "stopOnEntry": false,
-            "sourceMaps": [
-                [
-                    "./*",
-                    "${workspaceFolder}/*"
-                ]
-            ],
+            // "sourceMaps": [
+            //     [
+            //         "./*",
+            //         "${workspaceFolder}/*"
+            //     ]
+            // ],
         },
     ]
 }

@@ -1,13 +1,18 @@
 Argmap Project Change Log
 ========================
 
+## argmap 3.1.4
+- launch.json:
+    - Update filenames to include .lua extension.
+    - Comment out sourcemap references, since unnecessary.
+
 ## argmap 3.1.3
-- CONTRIBUTING.md: fix broken links and typos.
+- CONTRIBUTING.md: Fix broken links and typos.
 
 ## argmap 3.1.2
 - Update test.sh script to delete output files directly before test.
 - Update clean function:
-    - Rename as clean_repo
+    - Rename as clean_repo.
     - Update to revert Output folder to match remote branch.
 
 ## argmap 3.1.1
