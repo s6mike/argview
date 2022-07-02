@@ -1,8 +1,14 @@
 Argmap Project Change Log
 ========================
 
+## argmap 3.1.6
+- [README.md](../README.md): 
+    - Made collapsible sections more obvious.
+    - Fixed broken code example.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): Improve formatting, layout and wording.
+
 ## argmap 3.1.5
-- README: 
+- [README.md](../README.md): 
     - Fix headline map link to link to published version (should be available until Jan 2023).
     - Make some sections collapsible: Installation, Syntax Rules and pandoc-argmap.lua
     - Add reference to issue 11: generated .mup files don't always work on mindmup, but can be used with legacy mindmup.
@@ -14,9 +20,9 @@ Argmap Project Change Log
     - Comment out sourcemap references, since unnecessary.
 
 ## argmap 3.1.3
-- CONTRIBUTING.md: Fix broken links and typos.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): Fix broken links and typos.
 
-## argmap 3.1.2
+## argmap 3.1.2 Release Version
 - Update test.sh script to delete output files directly before test.
 - Update clean function:
     - Rename as clean_repo.
@@ -29,14 +35,14 @@ Argmap Project Change Log
     - Add [CONTRIBUTING.md](../CONTRIBUTING.md).
     - Fix readme examples: now commands have .lua file extension.
 - Fix rockspec to use correct version number.
-- Add luarocks library cleanup file to simplify install testing.
+- Add luarocks library clean-up file to simplify install testing.
 
 ## argmap 3.1.0
 - Add rockspec file.
 - Replace dependency json.lua with rxi-json-lua.lua for simpler install.
 - Update conda env with values from luarocks path.
 - Update readme install instructions.
-    - Rename to README.md: simplifies rockspec generation.
+    - Rename to [README.md](../README.md): simplifies rockspec generation.
 - Add tests.sh file to do minimal testing.
 
 ## argmap 3.0.1
@@ -49,7 +55,7 @@ Argmap Project Change Log
 - BREAKING: Add .lua file extension to lua app files to ensure correct syntax highlighting. Readme examples still need updating.
 - Add argmap_init_script.sh and bash_aliases_argmap.sh to keep bash config and convenience functions in sync with code.
 
-# argmap 2.1.0
+## argmap 2.1.0 Release Version
 - Install lualogging to help with debugging.
     - Add debug logging to mup2argmap.
 - Add launch.json to repo to track debugging tests.

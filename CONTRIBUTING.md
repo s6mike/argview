@@ -2,7 +2,7 @@
 
 Hello!
 
-As I write this, I tried out `[dsanson/argmap](https://github.com/dsanson/argmap)` only 10 days ago and that was my first time using Lua. I made my first ever pull request 4 days later.
+As I write this, I tried out [`dsanson/argmap`](https://github.com/dsanson/argmap) only 10 days ago and that was my first time using Lua. I made my first ever pull request 4 days later.
 
 So I could use all the help I can get! :)
 
@@ -38,12 +38,12 @@ Feature requests are welcome. But take a moment to find out whether your idea fi
 
 [Open an issue](https://github.com/s6mike/argmap/issues/new) which describes the feature you would like to see, why you want it, how it should work, etc.
 
-## How to propose changes
+## How to contribute code
 
-## Any contributions you make will be under the MIT Software License
+### Any contributions you make will be under the MIT Software License
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
+### We Use [Github Flow](https://guides.github.com/introduction/flow/index.html): So All Code Changes Happen Through Pull Requests
 
 Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
 
@@ -56,7 +56,7 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 
 **Interesting in submitting your first Pull Request?** It's easy! You can learn how from this *free* series [Course - How to Contribute to an Open Source Project on GitHub from @kentcdodds on @eggheadio](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github)
 
-Here's a few general guidelines for proposing changes:
+Here are a few general guidelines for proposing changes:
 
 * Each pull request should implement **one** feature or bug fix. If you want to add or fix more than one thing, submit more than one pull request.
 * Please keep your coding style consistent with what's already there. For code formatting etc, I've been using [sumneko's Lua VSCode Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua).

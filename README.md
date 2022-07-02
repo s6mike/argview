@@ -19,7 +19,7 @@ The map above is also a hyper-link: click on it to open a read-only version of t
 
 <details>
 <summary>
-Installation
+<em>Expandable Section: <strong>Installation</strong></em>
 </summary>
 
 ## Installation
@@ -148,7 +148,7 @@ We also include a way to attach a single note to each claim, and a way to label 
 
 <details>
 <summary>
-Syntax Rules
+<em>Expandable Section: <strong>Syntax Rules</strong></em>
 </summary>
 
 ### Markdown Formatting
@@ -173,7 +173,7 @@ Brunellus is \emph{probably} 90\% H\textsubscript{2}O
 
 Note that the reasons for a given claim cannot share the same identifier.
 
-Something like this will lead to unpredictable behavior:
+Something like this will lead to unpredictable behaviour:
 
 ``` yaml
 "Brunellus is irrational":
@@ -342,8 +342,8 @@ By default, `argmap2mup.lua` creates a new file on your Google Drive every time 
 
 ``` shell
 $ cat example.yml | lua argmap2mup.lua -g 1e4HAl1iHPKBiKZ_BI_yBw7rXYbuvMsC2
-1e4HAl1iHPKBiKZ_BI_yBw7rXYbuvMsC2
 ```
+
 `-f ID, --folder ID`:  upload to Google Drive folder with ID
 
 For example, I prefer to upload all of my automatically generated maps to a folder called `argmaps`.
@@ -465,7 +465,7 @@ $endif$
 
 <details>
 <summary>
-pandoc-argmap.lua
+<em>Expandable Section: <strong>pandoc-argmap.lua</strong></em>
 </summary>
 
 `pandoc-argmap.lua`
@@ -572,7 +572,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 I could use all the help I can get :)
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+So if you'd like to help make argument maps more effective, have a look at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # Fork details
 
