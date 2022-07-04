@@ -1,11 +1,19 @@
 # Argmap Project Change Log
 
+## argmap 3.1.8
+
+- Docs:
+  - Added Tables of Contents.
+  - Refine collapsible section formatting, default to open so ToC links work.
+  - Improve formatting using markdown linter suggestions.
+  - Updates for clarity.
+
 ## argmap 3.1.7
 
 - Shell scripts:
   - Fix lint issues using shellcheck and shell-format suggestions.
   - Make tests.sh output command success cleanly.
-- update environment.yml to include more dependencies.
+- Update environment.yml to include more dependencies.
 - Change Log: improve formatting using markdown linter suggestions.
 
 ## argmap 3.1.6
