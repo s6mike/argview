@@ -1,24 +1,39 @@
-Argmap Project News
-===================
+# Argmap Project News
 
-# argmap 1.0.5
+## argmap 1.0.7
+
+- Format this change log file for markdownlint compliance.
+- Update [CONTRIBUTIONS.md](../CONTRIBUTIONS.md).
+- Update .gitignore
+
+## argmap 1.0.6
+
+- Add bug report and feature request templates.
+
+## argmap 1.0.5
+
 - Add [CONTRIBUTING.md](CONTRIBUTING.md).
 - Update [README](README.markdown).
 
-# argmap 1.0.4
+## argmap 1.0.4
+
 - Minor NEWS.md fix.
 
-# argmap 1.0.3
+## argmap 1.0.3
+
 - Update [README](README.markdown).
 
-# argmap 1.0.2
+## argmap 1.0.2
+
 - Update [README](README.markdown).
 
-# argmap 1.0.1
+## argmap 1.0.1
+
 - Update [README](README.markdown), [license](LICENSE).
 - Add this NEWS.md file.
 
-# argmap 1.0.0
-Original https://github.com/dsanson/argmap
+## argmap 1.0.0
 
-Uses Semantic Versioning: http://semver.org/ and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Original <https://github.com/dsanson/argmap>
+
+Uses Semantic Versioning: <http://semver.org/> and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).

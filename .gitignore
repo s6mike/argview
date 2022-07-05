@@ -1,0 +1,6 @@
+.vscode/*
+!.vscode/launch.json
+argmap.code-workspace
+lua_modules/
+Input/Archived/
+Output/*
