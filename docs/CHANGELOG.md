@@ -1,8 +1,12 @@
 # Argmap Project Change Log
 
+## argmap 3.1.10
+
+- CONTRIBUTING: Update for clarity.
+
 ## argmap 3.1.9
 
-- Update tests.sh to work when called from pre-commit hook.
+- Update tests.sh to work when called from pre-commit hook:
   - Exit code set to fail when a test fails.
   - Don't use ANSI colour escape code when dumb terminal.
 

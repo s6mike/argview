@@ -9,12 +9,12 @@
 
 - [Contributing to Argmap](#contributing-to-argmap)
   - [Suggestions and Improvements](#suggestions-and-improvements)
-    - [Reporting Bugs](#reporting-bugs)
+    - [Reporting bugs](#reporting-bugs)
     - [How to suggest a feature or enhancement](#how-to-suggest-a-feature-or-enhancement)
-  - [How to contribute code](#how-to-contribute-code)
+  - [How to Contribute Code](#how-to-contribute-code)
     - [Any contributions you make will be under the MIT Software License](#any-contributions-you-make-will-be-under-the-mit-software-license)
-    - [We Use Github Flow: So All Code Changes Happen Through Pull Requests](#we-use-github-flow-so-all-code-changes-happen-through-pull-requests)
-  - [Running tests](#running-tests)
+    - [This repo uses Github Flow: all code changes happen through pull requests](#this-repo-uses-github-flow-all-code-changes-happen-through-pull-requests)
+  - [Running Tests](#running-tests)
   - [Additional Resources](#additional-resources)
 
 <!-- /TOC -->
@@ -38,7 +38,7 @@ Anyone can submit an issue to [Issues · s6mike/argmap](https://github.com/s6mik
 - Request help with difficult use cases.
 - Ask questions.
 
-### Reporting Bugs
+### Reporting bugs
 
 Think you found a bug? Please check [the list of open issues](https://github.com/s6mike/argmap/issues) to see if your bug has already been reported. If it hasn't please [submit a new issue](https://github.com/s6mike/argmap/issues/new).
 
@@ -61,13 +61,13 @@ Please provide as much context as possible, including describing the problem you
 
 [Open an issue](https://github.com/s6mike/argmap/issues/new) which describes the feature you would like to see, why you want it, how it should work, etc.
 
-## How to contribute code
+## How to Contribute Code
 
 ### Any contributions you make will be under the MIT Software License
 
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-### We Use [Github Flow](https://guides.github.com/introduction/flow/index.html): So All Code Changes Happen Through Pull Requests
+### This repo uses [Github Flow](https://guides.github.com/introduction/flow/index.html): all code changes happen through pull requests
 
 Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
 
@@ -88,7 +88,7 @@ Here are a few general guidelines for proposing changes:
 - If you are changing any user-facing functionality, please be sure to update the documentation.
 - Write [a good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
-## Running tests
+## Running Tests
 
 [`scripts/tests.sh`](scripts/tests.sh)
 
