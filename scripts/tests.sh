@@ -2,26 +2,45 @@
 
 echo 'Attempting to delete old test outputs.'
 
-rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+rm "Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+rm "Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-TEST=1
+COLOUR='true' # true
+TESTNUM=1
+FAILCOUNT=0 #count failed tests, also acts at return code at end; 0 = success
+
+COL_PASS=""
+COL_FAIL="<< "
+COL_RESET=""
+
+case "$TERM" in
+dumb)
+    COLOUR='false'
+    echo "Colour not supported by terminal."
+    ;;
+*) ;;
+esac
+
+if [ $COLOUR = 'true' ]; then
+    echo "Colour supported"
+    COL_PASS='\033[0;32m' # Green
+    COL_FAIL='\033[0;31m' # Red
+    COL_RESET='\033[0m'   # No Color
+fi
 
 test() {
-    PRE="Test $TEST:"
+    PRE="Test $TESTNUM:"
     echo -en "$PRE "
 
     # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
     if "$1" "$2" >/dev/null; then
-        echo -e "${GREEN}Pass${NC}"
+        echo -e "${COL_PASS}Pass${COL_RESET}"
     else
-        echo -e "$PRE ${RED}Fail${NC}"
+        echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
+        FAILCOUNT=$((FAILCOUNT + 1))
     fi
 
-    TEST=$((TEST + 1))
+    TESTNUM=$((TESTNUM + 1))
 }
 
 # todo Delete old gdrive file
@@ -51,4 +70,6 @@ test m2a $TEST_FILE_MUP
 test a2mu $TEST_FILE_YML
 test a2mo $TEST_FILE_YML
 
-echo 'Testing finished.'
+echo "Testing finished, $FAILCOUNT tests failed."
+
+exit $FAILCOUNT

@@ -1,12 +1,18 @@
 # Argmap Project Change Log
 
+## argmap 3.1.9
+
+- Update tests.sh to work when called from pre-commit hook.
+  - Exit code set to fail when a test fails.
+  - Don't use ANSI colour escape code when dumb terminal.
+
 ## argmap 3.1.8
 
 - Docs:
-  - Added Tables of Contents.
+  - Add Tables of Contents.
   - Refine collapsible section formatting, default to open so ToC links work.
   - Improve formatting using markdown linter suggestions.
-  - Updates for clarity.
+  - Update for clarity.
 
 ## argmap 3.1.7
 
@@ -14,7 +20,7 @@
   - Fix lint issues using shellcheck and shell-format suggestions.
   - Make tests.sh output command success cleanly.
 - Update environment.yml to include more dependencies.
-- Change Log: improve formatting using markdown linter suggestions.
+- Change Log: Improve formatting using markdown linter suggestions.
 
 ## argmap 3.1.6
 
