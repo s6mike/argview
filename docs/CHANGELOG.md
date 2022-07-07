@@ -1,8 +1,12 @@
 # Argmap Project Change Log
 
+## argmap 3.1.11
+
+- [CONTRIBUTIONS.md](../CONTRIBUTIONS.md): Update for clarity.
+
 ## argmap 3.1.10
 
-- CONTRIBUTING: Update for clarity.
+- [CONTRIBUTIONS.md](../CONTRIBUTIONS.md): Update for clarity.
 
 ## argmap 3.1.9
 

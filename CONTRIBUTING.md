@@ -83,14 +83,18 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 Here are a few general guidelines for proposing changes:
 
 - Each pull request should implement **one** feature or bug fix. If you want to add or fix more than one thing, submit more than one pull request.
-- Please keep your coding style consistent with what's already there. For code formatting etc, I've been using [sumneko's Lua VSCode Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua).
+- Please keep your coding style consistent with what's already there:
+  - For Lua formatting etc, I've been using [sumneko's Lua VSCode Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua).
+  - For Markdown formatting, I've been using [markdownlint - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
 - Do not commit changes to files that are irrelevant to your feature or bug fix.
 - If you are changing any user-facing functionality, please be sure to update the documentation.
 - Write [a good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 ## Running Tests
 
-[`scripts/tests.sh`](scripts/tests.sh)
+Some simple tests are executed here: [`scripts/tests.sh`](scripts/tests.sh).
+
+I've also got this set up to be called from a pre-commit hook.
 
 ## Additional Resources
 

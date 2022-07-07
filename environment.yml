@@ -17,7 +17,7 @@ dependencies:
   - ncurses=6.3=h7f8727e_2
   - nodejs=16.13.1=hb931c9a_0
   - openssl=1.1.1o=h7f8727e_0
-  - pandoc=2.12=h06a4308_0
+  - pandoc=2.6=1
   - readline=7.0=h7b6447c_5
   - unzip=6.0=h7f98852_3
   - yaml=0.2.5=h7b6447c_0
