@@ -1,7 +1,27 @@
 -- a pandoc lua filter that replaces yaml encoded argument maps
 -- with tikz maps linked to generated mindmup maps.
 
-local format = FORMAT 
+-- require("lldebugger").start() -- Use to add breakpoint
+
+local logging = require 'logging'
+-- TODO: this might simplify using argmap2mup, aliases etc
+-- local argmap2mup = require 'argmap2mup'
+
+-- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
+local logger = logging.new(function(self, level, message)
+    io.stderr:write(message)
+    io.stderr:write("\n")
+    return true
+end)
+
+-- Set to .DEBUG to activate logging
+-- TODO set this with a command line argument, then use in launch.json
+--   Try this approach: lua -e'a=1' -e 'print(a)' script.lua
+--   https://www.lua.org/manual/5.3/manual.html#6.10
+logger:setLevel(logging.ERROR)
+
+-- The global FORMAT is set to the format of the pandoc writer being used (html5, latex, etc.), so the behavior of a filter can be made conditional on the eventual output format.
+local format = FORMAT
 -- class that identifies a code block as an argument map
 local identifier = "argmap"
 
@@ -9,9 +29,8 @@ local identifier = "argmap"
 local gdriveFolder = nil
 
 local function trim(s)
-   return (s:gsub("\n",""))
+    return (s:gsub("\n", ""))
 end
-
 
 local function argmap2image(src, filetype, outfile)
     -- function for converting yaml map to tikz and then to pdf or png. More or
@@ -25,16 +44,16 @@ local function argmap2image(src, filetype, outfile)
         -- for any format other than raw tikz we need a standalone tex file
         opts = ""
     end
-    local tex = pandoc.pipe("argmap2tikz",{opts}, src) -- convert map to standalone tex
+    local tex = pandoc.pipe("src/argmap2tikz.lua", { opts }, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
         o = tex
     else
-        local f = io.open(tmp .. ".tex", 'w')
+        local f = assert(io.open(tmp .. ".tex", 'w'))
         f:write(tex)
         f:close()
         -- convert the tex file to pdf (need to use lualatex  for graph support)
-        os.execute("lualatex -output-directory " .. tmpdir  .. " " .. tmp .. ".tex")
+        os.execute("lualatex -output-directory " .. tmpdir .. " " .. tmp .. ".tex")
         if filetype == 'pdf' then
             -- we don't use this for latex or beamer, but it is available
             -- if other formats need pdf images instead of inline tikz
@@ -42,7 +61,7 @@ local function argmap2image(src, filetype, outfile)
         elseif format == 'html5' then
             -- for html5 format, we return raw svg
             os.execute("pdf2svg " .. tmp .. ".pdf " .. tmp .. ".svg")
-            local fsvg = io.open(tmp .. ".svg", 'r')
+            local fsvg = assert(io.open(tmp .. ".svg", 'r'))
             o = fsvg:read("*all")
             fsvg:close()
             os.remove(tmp .. ".svg")
@@ -92,8 +111,8 @@ function CodeBlock(block)
     -- (c) a pandoc paragraph containing an image link linked to the mindmup map (for all other formats)
     if block.classes[1] == identifier then
         local original = block.text
-        local argmap2mup_opts = {"-p"} 
-        local name = block.attributes["name"] 
+        local argmap2mup_opts = { "-p" }
+        local name = block.attributes["name"]
         if name and name ~= "" then
             argmap2mup_opts[#argmap2mup_opts + 1] = "-n"
             argmap2mup_opts[#argmap2mup_opts + 1] = name
@@ -112,33 +131,33 @@ function CodeBlock(block)
         if format == "markdown" and block.attributes["tidy"] == "true" then
             -- convert and upload to google drive, and return a yaml
             -- argument map with the gid as attribute.
-            local output = pandoc.pipe("argmap2mup", argmap2mup_opts, original)
+            local output = pandoc.pipe("src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
             local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
-            return pandoc.CodeBlock(original,attr)
+            return pandoc.CodeBlock(original, attr)
         else
             -- argmap2mup converts yaml to mindmup
-            local output = pandoc.pipe("argmap2mup", argmap2mup_opts, original)
+            local output = pandoc.pipe("src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
             -- construct link to map on mindmup
             local mupLink = "https://drive.mindmup.com/map/" .. gid
             local filetype = extension_for[FORMAT] or "png"
-            if format ==  "latex" or format == "beamer" then
+            if format == "latex" or format == "beamer" then
                 -- convert mup to raw tikz
-                local rawtikz = argmap2image(original,filetype,nil)
+                local rawtikz = argmap2image(original, filetype, nil)
                 -- construct raw latex:
                 --   wrap the tikz map with \href and a link to mindmup
                 --   and wrap the \href is adjustbox, so it shrinks to the page
                 --   TODO: support captions by wrapping in figure environment
                 local rawlatex = [[\begin{adjustbox}{max totalsize={.9\textwidth}{.7\textheight},center}]]
-                                 .. "\\href{" .. mupLink .. "}{" .. rawtikz .. "}\n" ..
-                                 [[\end{adjustbox}]]
-                return pandoc.RawBlock(format,rawlatex)
+                    .. "\\href{" .. mupLink .. "}{" .. rawtikz .. "}\n" ..
+                    [[\end{adjustbox}]]
+                return pandoc.RawBlock(format, rawlatex)
             elseif format == "html5" then
                 -- convert mup to raw svg
-                local rawsvg = argmap2image(original,filetype,nil)
+                local rawsvg = argmap2image(original, filetype, nil)
                 local rawhtml = "<a href=\"" .. mupLink .. "\">" .. rawsvg .. "</a>"
-                return pandoc.RawBlock(format,rawhtml)
+                return pandoc.RawBlock(format, rawhtml)
             else
                 -- check to see if the images need to be regenerated
                 -- (borrowed from pandoc lua filter docs: each image name
@@ -151,12 +170,10 @@ function CodeBlock(block)
                     argmap2image(original, filetype, fname)
                 end
                 local mapCaption = pandoc.Str(name)
-                local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["width"] = "100%", ["gid"] = gid})
-                local linkContent = {pandoc.Image(mapCaption, fname, "", attr)}
-                return pandoc.Para(pandoc.Link(linkContent,mupLink))
+                local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["width"] = "100%", ["gid"] = gid })
+                local linkContent = { pandoc.Image(mapCaption, fname, "", attr) }
+                return pandoc.Para(pandoc.Link(linkContent, mupLink))
             end
         end
     end
 end
-
-

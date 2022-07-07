@@ -1,4 +1,4 @@
--- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
+#!/usr/bin/env lua
 -- A pipe that reads mindmup `mup` files and outputs `yaml` argument maps.
 
 local pl      = require 'pl.import_into' ()

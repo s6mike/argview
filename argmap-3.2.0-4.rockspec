@@ -1,9 +1,9 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "3.1.2-3"
+version = "3.2.0-4"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v3.1.2"
+   tag = "v3.2.0"
 }
 description = {
    summary = "Tools for working with argument maps.",
@@ -25,9 +25,13 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
-      argmap2mup = "argmap2mup.lua",
-      argmap2tikz = "argmap2tikz.lua",
-      mup2argmap = "mup2argmap.lua",
-      ["pandoc-argmap"] = "pandoc-argmap.lua"
-   }
+      argmap2mup = "src/argmap2mup.lua",
+      argmap2tikz = "src/argmap2tikz.lua",
+      mup2argmap = "src/mup2argmap.lua",
+      ["pandoc-argmap"] = "src/pandoc-argmap.lua"
+   },
+  test = {
+    type = "command",
+    command ="scripts/tests.sh",
+  },
 }

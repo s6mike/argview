@@ -1,4 +1,5 @@
--- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
+#!/usr/bin/env lua
+
 local pl    = require 'pl.import_into' ()
 local lyaml = require 'lyaml'
 local json  = require 'rxi-json-lua'

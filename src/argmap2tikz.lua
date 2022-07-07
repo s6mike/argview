@@ -1,4 +1,5 @@
--- #!/usr/bin/env lua -- commented out because it breaks vscode breakpoints. Call explicitly with lua instead.
+#!/usr/bin/env lua
+
 -- a pipe that parses a yaml argument map and generates
 -- a tikz argument map, styled to mimic the argument maps
 -- on mindmup.

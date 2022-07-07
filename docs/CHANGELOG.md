@@ -1,5 +1,38 @@
 # Argmap Project Change Log
 
+## argmap 3.2.0
+
+- Lua Code:
+  - Move to src folder.
+  - Restore line 1 #! shebang directive to lua scripts ([Local Lua Debugger - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tomblind.local-lua-debugger-vscode) works with them).
+  - [README.md](../README.md): update examples to correctly call lua files.
+  - Add src folder to LUA_PATH in conda environment.yml.
+  - Fix pandoc-argmap so it works.
+  - Updated rockspec and `scripts/install.sh` to reflect new rockspec dependency.
+- Pandoc:
+  - Downgrade pandoc to v2.6:
+    - [README.md](../README.md): update to reference this version.
+    - `environment.yml`: Downgrade pandoc to v2.6, which was hopefully version used to develop pandoc-argmap.lua
+  - `pandoc-argmap.lua`:
+    - Fix references to local .lua commands (argmap2mup etc).
+    - Fix 'need check nil' and undefined globals lint warnings, relates to #7, #8.
+    - Make formatting consistent.
+    - Add debug logging.
+    - Fix launch.json debug configurations.
+- Scripts:
+  - Add `md2h` command to convert markdown with embedded argmaps to html, using filter `pandoc-argmap.lua`.
+  - And `a2t` command to convert argmap yml into tex, using argmap2tikz.
+    - Add aliases to run both of them.
+    - Add them both to tests script.
+  - Make scripts more portable with env variables: can change folder locations and conda env.
+  - Move environment variable definitions from bash aliases, to conda env, init_script and conda.env
+  - Add `install.sh` for symbolic links to lua files, to help reproduce install config consistently and avoid recent path issues.
+  - No longer use lua or .lua in calls due to above lua code changes plus use of symbolic links.
+  - Add `conda.env` to set conda env name variable so it's easy for pre-commit hook to access.
+  - Add pandoc bash completions to init script.
+- Add some additional Input and Output examples.
+- Add Input and example folders to .gitignore now sufficient examples in repo.
+
 ## argmap 3.1.11
 
 - [CONTRIBUTIONS.md](../CONTRIBUTIONS.md): Update for clarity.
