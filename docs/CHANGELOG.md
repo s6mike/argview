@@ -1,5 +1,15 @@
 # Argmap Project Change Log
 
+## argmap 3.2.1
+
+- [README.md](../README.md): Update sections: fork details and installation.
+- Update launch.json to use more settings variables for portability.
+- Add workspace settings.json to repo to track these settings.
+- Add failing md to pdf test to argmap aliases script.
+- Add .mup Input file to repo for tests.
+- .gitignore: Add examples and Input to keep stable. Plus archive folder for reference files.
+- Minor formatting updates.
+
 ## argmap 3.2.0
 
 - Lua Code:

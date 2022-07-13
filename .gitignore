@@ -1,10 +1,11 @@
+argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
-argmap.code-workspace
+!.vscode/settings.json
+archive
 lua_modules/
 Input/*
 Input/Archived/
 Output/*
-environment_argmaps.yml
 examples/*
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png

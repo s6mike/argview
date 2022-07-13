@@ -30,6 +30,8 @@ export XDG_DATA_HOME="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/"
 #    "/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS"
 # }" >> /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/lua/luarocks/config-5.3.lua
 
+# Though LD_LIBRARY_PATH  might also work: https://workflowy.com/#/dad8323b9953
+
 # Install lua dependencies
 
 # Ensure I'm in correct directory e.g. ~/git_projects/argmap/

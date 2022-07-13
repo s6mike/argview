@@ -71,8 +71,11 @@ Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data direct
 
 ### Dependencies
 
+Tested with:
+
 - Lua 5.3.4
 - LuaRocks 3.7.0
+- Pandoc 2.6
 
 `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` require:
 
@@ -81,9 +84,9 @@ Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data direct
 - [json](https://github.com/rxi/json.lua) (for encoding `JSON`)
 - [LuaLogging: A simple API to use logging features in Lua](https://neopallium.github.io/lualogging/manual.html#introduction).
 
-1. To install these dependencies, you can use the included rockspec file. e.g. when in the package directory, run `luarocks make` or `luarocks install --only-deps argmap-3.1.2-3.rockspec` (install accesses rockspec from github repo instead of locally, there is probably no advantage in this).
+1. To install these dependencies, you can use the included rockspec file. Navigate to the package directory and run `luarocks make --only-deps argmap-3.2.0-4.rockspec`.
 
-2. For lyaml, you may need to install [yaml (conda)](https://anaconda.org/anaconda/yaml) or [libyaml-dev](https://packages.debian.org/stretch/libyaml-dev).
+2. For lyaml, you may need to install [libyaml-dev](https://packages.debian.org/stretch/libyaml-dev) or [yaml (conda)](https://anaconda.org/anaconda/yaml).
 
 3. `argmap2mup.lua` and `mup2argmap.lua` also depend on the command line utility [`gdrive`](https://github.com/prasmussen/gdrive) for Google Drive integration. Follow the link for installation instructions. (Note that on linux the 386 version is more likely to work: see <https://github.com/prasmussen/gdrive/issues/597>).
 
@@ -616,8 +619,6 @@ So if you'd like to help make argument maps more effective, have a look at [CONT
 
 Fork of <https://github.com/dsanson/argmap>
 
-Fixed some issues (potentially caused by different lua version), also had to remove #! lua directives from start of files due to vscode debugging issues  (see <https://github.com/actboy168/lua-debug/issues/153>).
-
-Have updated above instructions to include lua commands where appropriate.
+Fixed some issues (potentially caused by different lua version), and for development convenience renamed some files and added scripts, environment and config files.
 
 Uses Semantic Versioning: <http://semver.org/>

@@ -51,6 +51,12 @@ m2a() { # m2a Output/Example1_simple.mup
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.yml}"
 }
 
+a2t() {
+  NAME=$(basename --suffix=".yml" "$1") &&
+    argmap2tikz "$1" >"${2:-$WORKSPACE/Output/$NAME.tex}" &&
+    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.tex}"
+}
+
 md2h() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
     pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.html}" --lua-filter pandoc-argmap.lua --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
@@ -58,10 +64,11 @@ md2h() { # md2h Input/example.md
   mv "$WORKSPACE"/*.png Output/
 }
 
-a2t() {
-  NAME=$(basename --suffix=".yml" "$1") &&
-    argmap2tikz "$1" >"${2:-$WORKSPACE/Output/$NAME.tex}" &&
-    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.tex}"
+md2pdf() { # md2h Input/example.md
+  NAME=$(basename --suffix=".md" "$1") &&
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.html}"
+  mv "$WORKSPACE"/*.png Output/
 }
 
 export -f clean_repo mappack saveenv a2m a2mu a2mo m2a md2h a2t ## Mark functions for export to use in other scripts:
@@ -70,12 +77,16 @@ export -f clean_repo mappack saveenv a2m a2mu a2mo m2a md2h a2t ## Mark function
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
-# Though may not be consistently same name anyway, would need to create with fix name
+# Though may not be consistently same name anyway, would need to create with fixed name
 
 alias argmm='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup; a2m $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
-alias argmu='a2mu $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
-alias argmo='rm $MJS_WP_MAP; a2mo $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmy='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml; m2a $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.mup'
 alias argmt='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.tex; a2t $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
+alias argmu='a2mu $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
+alias argmo='rm $MJS_WP_MAP; a2mo $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmp='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.html; rm $WORKSPACE/12ff0311ebc308e94fe0359b761fa405b605f126.png; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2h Input/Example1_ClearlyFalse_WhiteSwan_simplified.md'
+
+# TODO add to tests once working, then try failed test 2:
+alias argmf1='rm $WORKSPACE/Output/example.pdf; md2pdf $WORKSPACE/examples/example.md'
+
 alias argt='$WORKSPACE/scripts/tests.sh'

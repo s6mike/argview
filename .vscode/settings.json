@@ -1,0 +1,72 @@
+{
+    "debug.allowBreakpointsEverywhere": true,
+    "files.associations": {
+        "*.mup": "json",
+        "config": "plaintext"
+    },
+    "git.branchProtection": [
+        "master",
+        "argmap2mup-fix"
+    ],
+    "bash": {
+        "path": "bash",
+        "icon": "terminal-bash",
+        "args": [
+            "--init-file",
+            "${workspaceFolder}/scripts/argmaps_init_script.sh",
+        ]
+    },
+    "terminal.integrated.copyOnSelection": true,
+    "emmet.excludeLanguages": [],
+    "emmet.includeLanguages": {
+        "markdown": "html"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.showExpandedAbbreviation": "never",
+    "cSpell.words": [
+        "Argdown",
+        "argmap",
+        "argmap2lua",
+        "argmap2mup",
+        "argmap2tikz",
+        "asinum",
+        "Brunellus",
+        "libyaml",
+        "lyaml",
+        "mapjs",
+        "mindmup",
+        "Mindmup's",
+        "mup2argmap",
+        "pandoc-argmap",
+        "parisiensis"
+    ],
+    "cSpell.ignoreWords": [
+        "Ybuv",
+        "argmaplua",
+        "muplua",
+        "tikzlua"
+    ],
+    "argdown.configFile": "argdown.config.json",
+    "argdown.preview.lockMenu": true,
+    "lua.targetVersion": "5.3",
+    "lua.luacheckPath": "",
+    "lua.debug.settings.luaVersion": "5.3",
+    "lua.debug.settings.conda_env.argmaps": "argumend",
+    "lua.debug.settings.argmaps.src.path": "src/",
+    "lua.debug.settings.env.path": "/home/s6mike/.local/bin:/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
+    "lua.debug.settings.path": "/home/s6mike/git_projects/argmap/${config:lua.debug.settings.argmaps.src.path}?.lua;/home/s6mike/git_projects/argmap/${config:lua.debug.settings.argmaps.src.path}?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/?.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/lua_modules/share/lua/5.3/?.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.lua;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/home/s6mike/.luarocks/share/lua/5.3/?.lua;/home/s6mike/.luarocks/share/lua/5.3/?/init.lua",
+    "lua.debug.settings.cpath": "/home/s6mike/git_projects/argmap/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.so;/home/s6mike/git_projects/argmap/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.so;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/loadall.so;./?.so;/home/s6mike/.luarocks/lib/lua/5.3/?.so",
+    "Lua.runtime.version": "Lua 5.3",
+    "Lua.misc.parameters": [
+        "--develop=true",
+        "--dbgport=11413"
+    ],
+    "Lua.workspace.library": [
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/?.lua",
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/lua/5.3/?/init.lua",
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.lua",
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?/init.lua",
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.so",
+        "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/loadall.so"
+    ],
+}
