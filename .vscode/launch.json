@@ -95,7 +95,7 @@
         {
             "type": "lua-local",
             "request": "launch",
-            "name": "Lua Local: pandoc Fail 1",
+            "name": "Lua Local: pandoc md2pdf",
             "program": {
                 "command": "pandoc",
             },

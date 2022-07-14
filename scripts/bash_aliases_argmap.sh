@@ -20,7 +20,7 @@ mappack() {
   npm --prefix "$MJS_WP_HOME" run pack-js
 }
 
-saveenv() {
+save_env() {
   conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$WORKSPACE/environment.yml"
   # TODO: Prepare Environment YAML For Distribution
   # https://workflowy.com/#/b0011d3b3ba1
@@ -42,7 +42,7 @@ a2mu() {
 a2mo() {
   a2m "$1" "${2:-$MJS_WP_MAP}" &&
     mappack >/dev/null
-  open "$MJS_WP_HOME/index.html" 2>/dev/null &
+  chrome "$MJS_WP_HOME/index.html" --window-size=500,720 2>/dev/null &
 }
 
 m2a() { # m2a Output/Example1_simple.mup
@@ -57,21 +57,21 @@ a2t() {
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.tex}"
 }
 
-md2h() { # md2h Input/example.md
+md2htm() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
-    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.html}" --lua-filter pandoc-argmap.lua --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.html}" --lua-filter "$WORKSPACE"/src/pandoc-argmap.lua --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.html}"
   mv "$WORKSPACE"/*.png Output/
 }
 
 md2pdf() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
-    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
-    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.html}"
-  mv "$WORKSPACE"/*.png Output/
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter "$WORKSPACE"/src/pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.pdf}"
 }
 
-export -f clean_repo mappack saveenv a2m a2mu a2mo m2a md2h a2t ## Mark functions for export to use in other scripts:
+## Mark functions for export to use in other scripts:
+export -f clean_repo mappack save_env a2m m2a a2t a2mu a2mo md2htm md2pdf
 
 # argmap Aliases
 
@@ -84,9 +84,8 @@ alias argmy='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml
 alias argmt='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.tex; a2t $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmu='a2mu $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmo='rm $MJS_WP_MAP; a2mo $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
-alias argmp='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.html; rm $WORKSPACE/12ff0311ebc308e94fe0359b761fa405b605f126.png; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2h Input/Example1_ClearlyFalse_WhiteSwan_simplified.md'
-
-# TODO add to tests once working, then try failed test 2:
-alias argmf1='rm $WORKSPACE/Output/example.pdf; md2pdf $WORKSPACE/examples/example.md'
+alias argmh='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.html; rm $WORKSPACE/12ff0311ebc308e94fe0359b761fa405b605f126.png; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2htm $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md'
+alias argmp='rm $WORKSPACE/Output/example.pdf; md2pdf $WORKSPACE/examples/example.md'
+alias argmph='rm $WORKSPACE/Output/example.pdf; rm $WORKSPACE/Output/header.tex; $WORKSPACE/src/argmap2tikz.lua -i > $WORKSPACE/Output/header.tex; pandoc $WORKSPACE/examples/example.md -o $WORKSPACE/Output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $WORKSPACE/Output/header.tex --data-dir=/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc; echo "Generated: $WORKSPACE/Output/example.pdf"'
 
 alias argt='$WORKSPACE/scripts/tests.sh'

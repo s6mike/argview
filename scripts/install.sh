@@ -75,7 +75,15 @@ chmod u+x src/*
 # Connects legacy data-folder to conda env:
 ln -s "$WORKSPACE/src/pandoc-argmap.lua" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/filters
 
+# latex templates e.g. examples/example-template.latex need to go here:
+mkdir --parent /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/templates/examples/
+ln -s "$WORKSPACE/examples/example-template.latex" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/templates/examples/example-template.latex
+
 # TODO: add this to conda activation, and delete this link when env deactivated?
 # NOTE: once using pandoc 2.8 or later, can use defaults file to set defalt data directory, should simplify.
 ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/ "$HOME/.pandoc"
 # TODO: Alternative is always to use --data-directory /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/ when calling pandoc
+
+# Makes conda exes available in local for VSCode extensions which don't have path option:
+ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/bin/pandoc "$HOME/.local/bin/"
+ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/bin/convert "$HOME/.local/bin/"

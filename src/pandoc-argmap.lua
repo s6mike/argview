@@ -39,12 +39,20 @@ local function argmap2image(src, filetype, outfile)
     local o = nil
     local tmp = os.tmpname()
     local tmpdir = string.match(tmp, "^(.*[\\/])") or "."
-    local opts = "-s"
+    local opts = { "-s" }
     if format == "latex" or format == "beamer" then
         -- for any format other than raw tikz we need a standalone tex file
-        opts = ""
+        opts = {}
     end
-    local tex = pandoc.pipe("src/argmap2tikz.lua", { opts }, src) -- convert map to standalone tex
+    -- local f = assert(io.open("/home/s6mike/pandoc_pipe_src4tikz" .. ".yml", "w"))
+    -- f:write(src)
+    -- f:close()
+    if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+        require("lldebugger").start()
+    end
+
+    -- TODO: this crashes when opts is empty string since it tries to read in {""} instead of src.
+    local tex = pandoc.pipe("src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
         o = tex

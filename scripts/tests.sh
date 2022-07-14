@@ -73,7 +73,8 @@ test m2a "$TEST_FILE_MUP"
 test a2t "$TEST_FILE_YML"
 test a2mu "$TEST_FILE_YML"
 test a2mo "$TEST_FILE_YML"
-test md2h "$TEST_FILE_MD"
+test md2htm "$TEST_FILE_MD"
+test md2pdf "$TEST_FILE_MD"
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

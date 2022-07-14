@@ -71,7 +71,7 @@ function pipe_in_out(cmd, s)
     -- a function for piping through unix commands
     local tmp = os.tmpname()
     local tmpout = os.tmpname()
-    local f = io.open(tmp, 'w')
+    local f = assert(io.open(tmp, 'w'))
     f:write(s)
     f:close()
     local fout = assert(io.popen(cmd .. " " .. tmp))
@@ -258,7 +258,7 @@ function parse_options(a)
 end
 
 function main()
-    local opts = parse_options(args)
+    local opts = parse_options(arg)
     if opts["help"] then
         return help()
     elseif opts["includes"] then
@@ -270,7 +270,7 @@ function main()
     else
         local input = ""
         if opts["file"] then
-            local f = io.open(opts["file"], 'r')
+            local f = assert(io.open(opts["file"], 'r'))
             input = f:read("*all")
             f:close()
         else

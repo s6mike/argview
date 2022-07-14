@@ -69,4 +69,27 @@
         "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/?.so",
         "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/lib/lua/5.3/loadall.so"
     ],
+    "launch": {
+        "env": {
+            "PATH": "${config:lua.debug.settings.env.path}",
+            "LUA_PATH": "${config:lua.debug.settings.path}",
+            "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+        },
+        "stopOnEntry": false,
+        "configurations": [],
+        "compounds": []
+    },
+    "markdown-preview-enhanced.pandocArguments": [
+        "--lua-filter=pandoc-argmap.lua",
+        "--data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    ],
+    "pandoc.htmlOptString": "--lua-filter=pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    "pandoc.pdfOptString": "--lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    "markdown-preview-enhanced.latexEngine": "lualatex",
+    "markdown-preview-enhanced.usePandocParser": true,
+    "markdown-preview-enhanced.enableScriptExecution": true,
+    "pandoc.epubOptString": "--lua-filter pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    "pandoc.docbookOptString": "--lua-filter pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    "pandoc.asciidocOptString": "--lua-filter pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argumend/share/pandoc",
+    // "pandoc.executable": "/opt/miniconda3/envs/argumend/bin/pandoc",
 }
