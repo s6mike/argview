@@ -5,6 +5,8 @@
 
 # Download/install git folder?
 
+# TODO: use these: CONDA_PREFIX=/opt/miniconda3/envs/argumend; CONDA_PREFIX_1=/opt/miniconda3
+
 export CONDA_ENV_ARGMAPS="argumend"
 export XDG_DATA_HOME="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/"
 
@@ -23,7 +25,7 @@ export XDG_DATA_HOME="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/"
 
 # conda install -c anaconda-platform luarocks
 
-# TODO for conda, run commandto add conda env as dependencies directory (for lib yaml etc) to end of config file: /opt/miniconda3/envs/argumend/share/lua/luarocks/config-5.3.lua
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: /opt/miniconda3/envs/argumend/share/lua/luarocks/config-5.3.lua
 #
 # QUESTION: Something like this?
 # echo "external_deps_dirs = {
@@ -72,18 +74,36 @@ chmod u+x src/*
 #   e.g. ~/.local/share/pandoc/filters
 # legacy: ~/.pandoc/
 # conda: /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/filters
-# Connects legacy data-folder to conda env:
-ln -s "$WORKSPACE/src/pandoc-argmap.lua" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/filters
+
+# This might be useful on more recent version of pandoc, which might actually check all these folders
+# Though more likely it will use XDG_DATA_HOME which I can then overwrite
+# XDG_DATA_DIRS="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share":$XDG_DATA_DIRS
+
+# Adds .lua files to pandoc data-folder:
+
+# ln -s "$WORKSPACE/src/config_argmap.lua" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/
+ln -s "$WORKSPACE/src/pandoc-argmap.lua" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/filters/
+ln -s "$WORKSPACE/src/argmap2mup.lua" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/
+
+# Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
+# Need to use sudo for both:
+mkdir --parents /usr/local/share/lua/5.3/
+ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
 
 # latex templates e.g. examples/example-template.latex need to go here:
 mkdir --parent /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/templates/examples/
+
 ln -s "$WORKSPACE/examples/example-template.latex" /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/templates/examples/example-template.latex
 
+# Connects legacy data-folder to conda env:
 # TODO: add this to conda activation, and delete this link when env deactivated?
 # NOTE: once using pandoc 2.8 or later, can use defaults file to set defalt data directory, should simplify.
-ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/ "$HOME/.pandoc"
+ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc "$HOME/.pandoc"
 # TODO: Alternative is always to use --data-directory /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc/ when calling pandoc
 
 # Makes conda exes available in local for VSCode extensions which don't have path option:
-ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/bin/pandoc "$HOME/.local/bin/"
+# Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
+# ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/bin/pandoc "$HOME/.local/bin/"
+
+# Only needed for pre-commit hook:
 ln -s /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/bin/convert "$HOME/.local/bin/"

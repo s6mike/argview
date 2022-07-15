@@ -18,6 +18,8 @@ conda activate "$CONDA_ENV_ARGMAPS"
 #   Plus they will outlast any env deactivation
 export PROJECT_DIR=${GIT_PROJECT_DIR:-$(dirname "$(pwd)")}
 
+export PANDOC_DATA_DIR="$CONDA_PREFIX/share/pandoc"
+
 export WORKSPACE="$PROJECT_DIR/argmap"
 export MJS_WP_HOME="$PROJECT_DIR/mapjs-webpack-example"
 export MJS_WP_MAP="$MJS_WP_HOME/src/example-map.json"

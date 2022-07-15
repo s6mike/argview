@@ -1,24 +1,12 @@
 -- a pandoc lua filter that replaces yaml encoded argument maps
 -- with tikz maps linked to generated mindmup maps.
 
--- require("lldebugger").start() -- Use to add breakpoint
+-- Sets up shared 'environment' variables:
+local config_argmap = require 'config_argmap'
 
-local logging = require 'logging'
 -- TODO: this might simplify using argmap2mup, aliases etc
 -- local argmap2mup = require 'argmap2mup'
-
--- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
-local logger = logging.new(function(self, level, message)
-    io.stderr:write(message)
-    io.stderr:write("\n")
-    return true
-end)
-
--- Set to .DEBUG to activate logging
--- TODO set this with a command line argument, then use in launch.json
---   Try this approach: lua -e'a=1' -e 'print(a)' script.lua
---   https://www.lua.org/manual/5.3/manual.html#6.10
-logger:setLevel(logging.ERROR)
+-- will then need to call argmap2mup.main etc
 
 -- The global FORMAT is set to the format of the pandoc writer being used (html5, latex, etc.), so the behavior of a filter can be made conditional on the eventual output format.
 local format = FORMAT
@@ -33,9 +21,8 @@ local function trim(s)
 end
 
 local function argmap2image(src, filetype, outfile)
-    -- function for converting yaml map to tikz and then to pdf or png. More or
-    -- less borrowed from the example given in the pandoc lua filter
-    -- docs.
+    -- Converts yaml map to tikz and then to pdf or png.
+    -- More or less borrowed from the example given in the pandoc lua filter docs.
     local o = nil
     local tmp = os.tmpname()
     local tmpdir = string.match(tmp, "^(.*[\\/])") or "."
@@ -44,15 +31,8 @@ local function argmap2image(src, filetype, outfile)
         -- for any format other than raw tikz we need a standalone tex file
         opts = {}
     end
-    -- local f = assert(io.open("/home/s6mike/pandoc_pipe_src4tikz" .. ".yml", "w"))
-    -- f:write(src)
-    -- f:close()
-    if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
-        require("lldebugger").start()
-    end
 
-    -- TODO: this crashes when opts is empty string since it tries to read in {""} instead of src.
-    local tex = pandoc.pipe("src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
+    local tex = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
         o = tex
@@ -139,13 +119,13 @@ function CodeBlock(block)
         if format == "markdown" and block.attributes["tidy"] == "true" then
             -- convert and upload to google drive, and return a yaml
             -- argument map with the gid as attribute.
-            local output = pandoc.pipe("src/argmap2mup.lua", argmap2mup_opts, original)
+            local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
             local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
             return pandoc.CodeBlock(original, attr)
         else
             -- argmap2mup converts yaml to mindmup
-            local output = pandoc.pipe("src/argmap2mup.lua", argmap2mup_opts, original)
+            local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
             -- construct link to map on mindmup
             local mupLink = "https://drive.mindmup.com/map/" .. gid

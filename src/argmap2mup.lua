@@ -1,6 +1,13 @@
 #!/usr/bin/env lua
 
+-- a pipe that parses a yaml argument map and generates a JSON encoded mindmup map.
+
+-- Sets up shared 'environment' variables:
+local config_argmap = require 'config_argmap'
+
+-- uses pl.app.parse_args() to parse cli options
 local pl    = require 'pl.import_into' ()
+-- uses lyaml to parse yaml
 local lyaml = require 'lyaml'
 local json  = require 'rxi-json-lua'
 

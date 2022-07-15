@@ -1,5 +1,21 @@
 # Argmap Project Change Log
 
+## argmap 3.3.0
+
+- Use more variables to reduce duplicate paths etc:
+  - `launch.json`
+  - `settings.json`
+  - Add `config_argmap.lua` to ensure LUA_PATH etc available to VSCode extensions.
+  - Update scripts:
+    - Including symbolic link in `install.sh` to ensure `config_argmap.lua` available in `~/.local/share`.
+- Fix missing image issue: relates to #20:
+  - Update bash aliases to move image file for `tests.sh`
+  - Add Input/12ff...png to repo for VSCode extension html output tests.
+- Update `install.sh`:
+  - Comment out redundant symbolic links due to VSCode extensions with custom paths.
+  - Fix symbolic link error.
+- Tidy up code comments.
+
 ## argmap 3.2.2
 
 `pandoc-argmap`:

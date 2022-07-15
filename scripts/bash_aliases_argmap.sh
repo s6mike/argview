@@ -59,14 +59,15 @@ a2t() {
 
 md2htm() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
-    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.html}" --lua-filter "$WORKSPACE"/src/pandoc-argmap.lua --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.html}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.html}"
-  mv "$WORKSPACE"/*.png Output/
+  wait # waits for png to appear
+  mv ./*.png "$WORKSPACE/Output/"
 }
 
 md2pdf() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
-    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter "$WORKSPACE"/src/pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.pdf}"
 }
 

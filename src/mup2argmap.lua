@@ -1,7 +1,12 @@
 #!/usr/bin/env lua
 -- A pipe that reads mindmup `mup` files and outputs `yaml` argument maps.
 
+-- Sets up shared 'environment' variables:
+local config_argmap = require 'config_argmap'
+
+-- uses pl.app.parse_args() to parse cli options
 local pl      = require 'pl.import_into' ()
+-- uses lyaml to parse yaml
 local lyaml   = require 'lyaml'
 local json    = require 'rxi-json-lua'
 local logging = require 'logging'

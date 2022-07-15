@@ -1,14 +1,16 @@
 #!/usr/bin/env lua
 
 -- a pipe that parses a yaml argument map and generates
--- a tikz argument map, styled to mimic the argument maps
--- on mindmup.
+-- a tikz argument map, styled to mimic the argument maps on mindmup.
 --
 -- TODO: better way to lay out the graph?
 -- TODO:   covering line width
 -- TODO:   top align claims
 -- TODO: numbering, hierarchal labels
 -- TODO: support for notes
+
+-- Sets up shared 'environment' variables:
+local config_argmap = require 'config_argmap'
 
 -- uses pl.app.parse_args() to parse cli options
 local pl    = require 'pl.import_into' ()

@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Lua Local: argmap2mup",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmaps.src.path}argmap2mup.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             },
             "args": [
                 // "${workspaceFolder}/examples/example.yml",
@@ -34,7 +34,7 @@
             "request": "launch",
             "name": "Lua Local: mup2argmap",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmaps.src.path}mup2argmap.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/mup2argmap.lua",
             },
             "args": [
                 // "${workspaceFolder}/examples/example.mup",
@@ -55,7 +55,7 @@
             "request": "launch",
             "name": "Lua Local: argmap2tikz",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmaps.src.path}argmap2tikz.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2tikz.lua",
             },
             "args": [
                 // "${workspaceFolder}/examples/example.yml",
@@ -83,7 +83,7 @@
                 "-o",
                 "Output/example.html",
                 "--lua-filter pandoc-argmap.lua",
-                "--data-dir=/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/pandoc",
+                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -108,7 +108,7 @@
                 "lualatex",
                 "--template",
                 "examples/example-template.latex",
-                "--data-dir=/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmaps}/share/pandoc",
+                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -123,8 +123,8 @@
             "name": "Debug argmap2mup gdrive upload",
             "program": {
                 "lua": "lua5.3",
-                "file": "${workspaceFolder}/${config:lua.debug.settings.argmaps.src.path}argmap2mup.lua",
-                // "command": "${workspaceFolder}/${config:lua.debug.settings.argmaps.src.path}argmap2mup.lua",
+                "file": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+                // "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             },
             "args": [
                 "-u",
