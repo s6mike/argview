@@ -67,7 +67,7 @@ md2htm() { # md2h Input/example.md
 
 md2pdf() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1") &&
-    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template examples/example-template.latex --data-dir="/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc" >/dev/null &&
+    pandoc "$1" -o "${2:-$WORKSPACE/Output/$NAME.pdf}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template examples/example-template.latex --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: ${2:-$WORKSPACE/Output/$NAME.pdf}"
 }
 
@@ -87,6 +87,6 @@ alias argmu='a2mu $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.ym
 alias argmo='rm $MJS_WP_MAP; a2mo $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml'
 alias argmh='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.html; rm $WORKSPACE/12ff0311ebc308e94fe0359b761fa405b605f126.png; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2htm $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md'
 alias argmp='rm $WORKSPACE/Output/example.pdf; md2pdf $WORKSPACE/examples/example.md'
-alias argmph='rm $WORKSPACE/Output/example.pdf; rm $WORKSPACE/Output/header.tex; $WORKSPACE/src/argmap2tikz.lua -i > $WORKSPACE/Output/header.tex; pandoc $WORKSPACE/examples/example.md -o $WORKSPACE/Output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $WORKSPACE/Output/header.tex --data-dir=/opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/pandoc; echo "Generated: $WORKSPACE/Output/example.pdf"'
+alias argmph='rm $WORKSPACE/Output/example.pdf; rm $WORKSPACE/Output/header.tex; $WORKSPACE/src/argmap2tikz.lua -i > $WORKSPACE/Output/header.tex; pandoc $WORKSPACE/examples/example.md -o $WORKSPACE/Output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $WORKSPACE/Output/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $WORKSPACE/Output/example.pdf"'
 
 alias argt='$WORKSPACE/scripts/tests.sh'

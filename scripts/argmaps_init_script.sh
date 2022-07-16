@@ -14,7 +14,7 @@ source /opt/miniconda3/bin/activate
 conda activate "$CONDA_ENV_ARGMAPS"
 
 # Uses variable set in conda env, or defaults to pwd.
-# TODO: this still isn't great, assumes you are in argmaps folder when called.
+# TODO: this still isn't great, assumes you are in argmap folder when called.
 #   Plus they will outlast any env deactivation
 export PROJECT_DIR=${GIT_PROJECT_DIR:-$(dirname "$(pwd)")}
 

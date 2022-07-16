@@ -1,37 +1,44 @@
 # Argmap Project Change Log
 
+## argmap 3.3.1
+
+- New conda env argmap:
+  - Clean up `LUA_PATH` and `LUA_CPATH`, which both had invalid paths.
+  - Remove extra dependencies so only deliberate installs included. Should be more platform independent.
+  - Rename relevant variables in vscode settings etc.
+  - Update `scripts/install.sh` to use `$CONDA_PREFIX`.
+  - `.vscode/settings.json`:
+    - Add missing $ to variables, must have been wrong for a while.
+    - Added variable to [MPE](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced) extension setting.
+
 ## argmap 3.3.0
 
 - Use more variables to reduce duplicate paths etc:
-  - `launch.json`
-  - `settings.json`
-  - Add `config_argmap.lua` to ensure LUA_PATH etc available to VSCode extensions.
+  - `.vscode/launch.json`
+  - `.vscode/settings.json`
+  - Add `src/config_argmap.lua` to ensure LUA_PATH etc available to VSCode extensions.
   - Update scripts:
-    - Including symbolic link in `install.sh` to ensure `config_argmap.lua` available in `~/.local/share`.
+    - Including symbolic link in `scripts/install.sh` to ensure `src/config_argmap.lua` available in `~/.local/share`.
 - Fix missing image issue: relates to #20:
   - Update bash aliases to move image file for `tests.sh`
   - Add Input/12ff...png to repo for VSCode extension html output tests.
-- Update `install.sh`:
-  - Comment out redundant symbolic links due to VSCode extensions with custom paths.
-  - Fix symbolic link error.
-- Tidy up code comments.
 
 ## argmap 3.2.2
 
-`pandoc-argmap`:
+`src/pandoc-argmap`:
 
 - Fix crash on 2 README md to pdf examples, close #19.
   - Add first one to test file to ensure no regressions.
   - Add second to aliases.
 
-`argmap2tikz.lua`:
+`src/argmap2tikz.lua`:
 
 - Fix lint errors: close #6, #7, #8.
 
 ## argmap 3.2.1
 
 - [README.md](../README.md): Update sections: fork details and installation.
-- Update `launch.json` to use more settings variables for portability.
+- Update `.vscode/launch.json` to use more settings variables for portability.
 - Add workspace settings.json to repo to track these settings.
 - Add failing md to pdf test to argmap aliases script.
 - Add `.mup` Input file to repo for tests.
@@ -51,20 +58,20 @@
   - Downgrade pandoc to v2.6:
     - [README.md](../README.md): update to reference this version.
     - `environment.yml`: Downgrade pandoc to v2.6, which was hopefully version used to develop pandoc-argmap.lua
-  - `pandoc-argmap.lua`:
+  - `src/pandoc-argmap.lua`:
     - Fix references to local .lua commands (argmap2mup etc).
     - Fix 'need check nil' and undefined globals lint warnings, relates to #7, #8.
     - Make formatting consistent.
     - Add debug logging.
     - Fix launch.json debug configurations.
 - Scripts:
-  - Add `md2h` command to convert markdown with embedded argmaps to html, using filter `pandoc-argmap.lua`.
+  - Add `md2h` command to convert markdown with embedded argmaps to html, using filter `src/pandoc-argmap.lua`.
   - And `a2t` command to convert argmap yml into tex, using argmap2tikz.
     - Add aliases to run both of them.
     - Add them both to tests script.
   - Make scripts more portable with env variables: can change folder locations and conda env.
   - Move environment variable definitions from bash aliases, to conda env, init_script and conda.env
-  - Add `install.sh` for symbolic links to lua files, to help reproduce install config consistently and avoid recent path issues.
+  - Add `scripts/install.sh` for symbolic links to lua files, to help reproduce install config consistently and avoid recent path issues.
   - No longer use lua or .lua in calls due to above lua code changes plus use of symbolic links.
   - Add `conda.env` to set conda env name variable so it's easy for pre-commit hook to access.
   - Add pandoc bash completions to init script.
