@@ -16,6 +16,11 @@ clean_repo() {
   rm "$MJS_WP_MAP"
 }
 
+# Checks `src/`` for lua files with leftover test/debug code.
+check_repo() {
+  grep -Frni "$WORKSPACE/src" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+}
+
 mappack() {
   npm --prefix "$MJS_WP_HOME" run pack-js
 }
@@ -72,7 +77,7 @@ md2pdf() { # md2h Input/example.md
 }
 
 ## Mark functions for export to use in other scripts:
-export -f clean_repo mappack save_env a2m m2a a2t a2mu a2mo md2htm md2pdf
+export -f reset_repo clean_repo check_repo mappack save_env a2m m2a a2t a2mu a2mo md2htm md2pdf
 
 # argmap Aliases
 

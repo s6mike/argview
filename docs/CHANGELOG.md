@@ -1,5 +1,9 @@
 # Argmap Project Change Log
 
+## argmap 3.4.0
+
+- New script function: check_repo: Checks `src/` for lua files with leftover test/debug code.
+
 ## argmap 3.3.1
 
 - New conda env argmap:
