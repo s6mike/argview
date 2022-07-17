@@ -1,5 +1,10 @@
 # Argmap Project Change Log
 
+## argmap 3.5.0 Release Version
+
+- Add `scripts/qa_rockspec`: lints and makes rockspec to ensure validity.
+- Update rockspec for release, and to include external yaml dependency.
+
 ## argmap 3.4.0
 
 - New script function: check_repo: Checks `src/` for lua files with leftover test/debug code.
@@ -49,7 +54,7 @@
 - `.gitignore`: Add examples and Input to keep stable. Plus archive folder for reference files.
 - Minor formatting updates.
 
-## argmap 3.2.0
+## argmap 3.2.0 Release Version
 
 - Lua Code:
   - Move to src folder.

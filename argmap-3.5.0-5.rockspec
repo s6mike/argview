@@ -1,9 +1,9 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "3.2.0-4"
+version = "3.5.0-5"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v3.2.0"
+   tag = "v3.5.0",
 }
 description = {
    summary = "Tools for working with argument maps.",
@@ -12,7 +12,7 @@ description = {
    issues_url = "https://github.com/s6mike/argmap/issues",
    license = "MIT",
    maintainer = "Michael Hayes <es6.mike@gmail.com>",
-   labels = {"argumentation", "mindmap"}
+   labels = {"argumentation", "mindmap"},
 }
 supported_platforms = {"linux"}
 dependencies = {
@@ -22,13 +22,17 @@ dependencies = {
    "penlight ~> 1.12.0-2",
    "rxi-json-lua ~> e1dbe93-0",
 }
+external_dependencies = {
+   YAML = {library="libyaml.so"}
+}
 build = {
    type = "builtin",
    modules = {
+      config_argmap = "src/config_argmap.lua",
       argmap2mup = "src/argmap2mup.lua",
       argmap2tikz = "src/argmap2tikz.lua",
       mup2argmap = "src/mup2argmap.lua",
-      ["pandoc-argmap"] = "src/pandoc-argmap.lua"
+      ["pandoc-argmap"] = "src/pandoc-argmap.lua",
    },
   test = {
     type = "command",
