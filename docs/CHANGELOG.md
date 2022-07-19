@@ -1,5 +1,14 @@
 # Argmap Project Change Log
 
+## argmap 3.5.3
+
+- `.vscode`:  
+  - `launch.json`: Update argmap2mup gdrive upload debug profile to use correct lua install.
+  - `settings.json`: Update lua extension settings.
+- `scripts/install.sh`:
+  - Add symbolic link so vscode-pandoc extension can find `config_argmap.lua`.
+  - Move `chmod src/*` into section 2 since it will be needed by all users.
+
 ## argmap 3.5.2 Release Version
 
 - Update rockspec for release.

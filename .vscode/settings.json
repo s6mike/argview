@@ -64,12 +64,12 @@
         "--dbgport=11413"
     ],
     "Lua.workspace.library": [
-        "${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua",
+        "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua",
         "${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so",
-        "${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so"
+        "${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so",
     ],
     "pandoc.htmlOptString": "--lua-filter=pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
     "pandoc.pdfOptString": "--lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
@@ -99,4 +99,9 @@
     "markdown-preview-enhanced.breakOnSingleNewLine": false,
     "markdown-preview-enhanced.frontMatterRenderingOption": "table",
     "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
+    "Lua.runtime.path": [
+        "?.lua",
+        "?/init.lua",
+        "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua"
+    ],
 }

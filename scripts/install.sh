@@ -66,6 +66,8 @@ apt-get install texlive-luatex
 
 # TODO: for other users would need to install argmap in current directory
 
+chmod u+x src/*
+
 # SECTION 3: Link conda env
 # ---------------------------------------------------
 
@@ -73,8 +75,6 @@ apt-get install texlive-luatex
 ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
 ln -s "$WORKSPACE/src/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
 ln -s "$WORKSPACE/src/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
-
-chmod u+x src/*
 
 # pandoc data-folder:
 # local: ~/.local/share/pandoc/
@@ -99,7 +99,13 @@ ln -s "$WORKSPACE/src/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
 # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
 # Need to use sudo for both:
 mkdir --parents /usr/local/share/lua/5.3/
-ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
+
+# Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
+# So this might not be needed any longer:
+# ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
+
+# Fixed issue with vscode-pandoc not finding config_argmap with this link:
+ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
 
 # latex templates e.g. examples/example-template.latex need to go here:
 mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
@@ -115,6 +121,9 @@ ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.pandoc"
 # Makes conda exes available in local for VSCode extensions which don't have path option:
 # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
 # ln -s "$CONDA_PREFIX/bin/pandoc" "$HOME/.local/bin/"
+
+# Added since after uninstalling global lua, vscode-pandoc extension fails.
+ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
 # Only needed for pre-commit hook:
 ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"

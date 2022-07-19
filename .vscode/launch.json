@@ -122,9 +122,7 @@
             "request": "launch",
             "name": "Debug argmap2mup gdrive upload",
             "program": {
-                "lua": "lua5.3",
-                "file": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
-                // "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             },
             "args": [
                 "-u",
