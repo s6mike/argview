@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 # clean up Lua Rocks from global library
-luarocks remove --global argmap-3.2.0-4.rockspec
+
+# This might only be necessary if rockspec installed globally
+# ROCKSPEC_FILE=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+# luarocks remove --global "$ROCKSPEC_FILE"
+
 luarocks remove argmap
 luarocks remove lualogging
 luarocks remove lyaml

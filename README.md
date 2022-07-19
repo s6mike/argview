@@ -84,7 +84,7 @@ Tested with:
 - [json](https://github.com/rxi/json.lua) (for encoding `JSON`)
 - [LuaLogging: A simple API to use logging features in Lua](https://neopallium.github.io/lualogging/manual.html#introduction).
 
-1. To install these dependencies, you can use the included rockspec file. Navigate to the package directory and run `luarocks make --only-deps argmap-3.2.0-4.rockspec`.
+1. To install these dependencies, you can use the included rockspec file. Navigate to the package directory and run `luarocks make --only-deps argmap-[version number].rockspec` depending on latest version.
 
 2. For lyaml, you may need to install [libyaml-dev](https://packages.debian.org/stretch/libyaml-dev) or [yaml (conda)](https://anaconda.org/anaconda/yaml).
 

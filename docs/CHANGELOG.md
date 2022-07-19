@@ -1,6 +1,12 @@
 # Argmap Project Change Log
 
-## argmap 3.5.1 Release Version
+## argmap 3.5.2 Release Version
+
+- Update rockspec for release.
+- `scripts/luarocks_clean.sh`: Find rockspec filename before trying to delete it.
+- [README.md](../README.md): Remove reference to rockspec version number to simplify maintenance.
+
+## argmap 3.5.1
 
 - `scripts/`:
   - `qa_rockspec.sh`: Use environment variable in rockspec install command.
