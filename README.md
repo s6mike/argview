@@ -622,3 +622,5 @@ Fork of <https://github.com/dsanson/argmap>
 Fixed some issues (potentially caused by different lua version), and for development convenience renamed some files and added scripts, environment and config files.
 
 Uses Semantic Versioning: <http://semver.org/>
+
+Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.

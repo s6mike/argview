@@ -1,6 +1,16 @@
 # Argmap Project Change Log
 
-## argmap 3.5.0 Release Version
+## argmap 3.5.1 Release Version
+
+- `scripts/`:
+  - `qa_rockspec.sh`: Use environment variable in rockspec install command.
+  - `install.sh`: Call `qa_rockspec.sh` to install Lua dependencies.
+- `.vscode/settings.json`:
+  - Fix incorrect pandoc data folder path for [MPE extension](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced).
+  - Remove some duplicates in lua path variables.
+- [README.md](../README.md): Manage expectations regarding use of semantic versioning.
+
+## argmap 3.5.0
 
 - Add `scripts/qa_rockspec`: lints and makes rockspec to ensure validity.
 - Update rockspec for release, and to include external yaml dependency.

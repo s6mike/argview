@@ -56,8 +56,8 @@
     "lua.debug.settings.argmap.src.folder": "src",
     "lua.debug.settings.system_root": "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmap}",
     "lua.debug.settings.env.path": "/home/s6mike/.local/bin:${config:lua.debug.settings.system_root}/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
-    "lua.debug.settings.path": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua;${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/lua_modules/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
-    "lua.debug.settings.cpath": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so;${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so;./?.so;",
+    "lua.debug.settings.path": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
+    "lua.debug.settings.cpath": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so;./?.so;",
     "Lua.runtime.version": "Lua 5.3",
     "Lua.misc.parameters": [
         "--develop=true",
@@ -81,8 +81,8 @@
     "markdown-preview-enhanced.usePandocParser": true,
     "markdown-preview-enhanced.enableScriptExecution": true,
     "markdown-preview-enhanced.pandocArguments": [
-        "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua",
-        "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc/share/pandoc",
+        "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua", // Variables don't work in this fi
+        "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
         // "--output=/home/s6mike/git_projects/argmap/Output/test.html",
     ],
     "launch": {

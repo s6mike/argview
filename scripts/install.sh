@@ -31,21 +31,20 @@ export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 
 # conda install -c anaconda-platform luarocks
 
-# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: /opt/miniconda3/envs/$CONDA_ENV_ARGMAPS/share/lua/luarocks/config-5.3.lua
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
 # QUESTION: Something like this?
 # echo "external_deps_dirs = {
 #    "$CONDA_PREFIX"
 # }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
 
-# Though LD_LIBRARY_PATH  might also work: https://workflowy.com/#/dad8323b9953
+# Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
 
 # Install lua dependencies
 
 # Ensure I'm in correct directory e.g. ~/git_projects/argmap/
 
-luarocks make --only-deps --tree lua_modules argmap-3.2.0-4.rockspec
-# But if config not amended as above, run this:
-# luarocks make --only-deps --tree lua_modules YAML_LIBDIR="$CONDA_PREFIX/lib" argmap-3.2.0-4.rockspec
+# Running qa_rockspec will also install dependencies
+scripts/qa_rockspec.sh
 
 # if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
 # mkdir --parent ~/.local/share/pandoc/filters
@@ -95,7 +94,7 @@ mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
 ln -s "$WORKSPACE/src/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
 
 # TODO is this necessary? Forget why
-ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
+# ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
 
 # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
 # Need to use sudo for both:
