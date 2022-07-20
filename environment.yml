@@ -5,7 +5,7 @@ channels:
   - defaults
 dependencies:
   - conda-forge/linux-64::unzip==6.0=h7f98852_3
-  - pandoc=2.6
+  - pandoc=2.9.2.1
   - imagemagick
   - anaconda/linux-64::nodejs==16.13.1=hb931c9a_0
   - anaconda/linux-64::yaml==0.2.5=h7b6447c_0

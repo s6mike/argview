@@ -1,5 +1,14 @@
 # Argmap Project Change Log
 
+## argmap 3.6.0 Release Version
+
+- Update to pandoc 2.9.2.1-0:
+  - Update `environment.yml`
+  - Update [README.md](../README.md)
+  - Add comments re available pandoc variable to `src/pandoc-argmap.lua`
+  - Update `scripts/install.sh` to link to new pandoc data directory location (`$HOME/.local/share/pandoc`).
+  - Update rockspec for release.
+  
 ## argmap 3.5.3
 
 - `.vscode`:  

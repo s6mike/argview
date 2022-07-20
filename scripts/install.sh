@@ -114,15 +114,18 @@ ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/t
 
 # Connects legacy data-folder to conda env:
 # TODO: add this to conda activation, and delete this link when env deactivated?
-# NOTE: once using pandoc 2.8 or later, can use defaults file to set defalt data directory, should simplify.
-ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.pandoc"
-# TODO: Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
+# NOTE: can use defaults file to set defalt data directory, should simplify.
+# Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
+ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
 
 # Makes conda exes available in local for VSCode extensions which don't have path option:
 # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
 # ln -s "$CONDA_PREFIX/bin/pandoc" "$HOME/.local/bin/"
 
 # Added since after uninstalling global lua, vscode-pandoc extension fails.
+# Wondering if adding this link (from section 2), would help:
+#   ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+
 ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
 # Only needed for pre-commit hook:

@@ -1,9 +1,9 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "3.5.2-6"
+version = "3.6.0-7"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v3.5.2",
+   tag = "v3.6.0",
 }
 description = {
    summary = "Tools for working with argument maps.",

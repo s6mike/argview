@@ -32,6 +32,8 @@ local function argmap2image(src, filetype, outfile)
         opts = {}
     end
 
+    -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
+    -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
     local tex = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
@@ -76,7 +78,8 @@ extension_for = {
     html4 = 'png',
     html5 = 'svg',
     latex = 'pdf',
-    beamer = 'pdf' }
+    beamer = 'pdf'
+}
 
 local function file_exists(name)
     -- utility function borrowed from pandoc lua filter docs.
@@ -117,6 +120,9 @@ function CodeBlock(block)
             argmap2mup_opts[#argmap2mup_opts + 1] = gdriveFolder
         end
         if format == "markdown" and block.attributes["tidy"] == "true" then
+            -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
+            -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
+
             -- convert and upload to google drive, and return a yaml
             -- argument map with the gid as attribute.
             local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
@@ -124,6 +130,8 @@ function CodeBlock(block)
             local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
             return pandoc.CodeBlock(original, attr)
         else
+            -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
+            -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
             -- argmap2mup converts yaml to mindmup
             local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
