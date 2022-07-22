@@ -1,5 +1,33 @@
 # Argmap Project Change Log
 
+## argmap 3.7.0
+
+- Develop argmapjs prototype:
+
+  - Merge with local custom branch of repo [`s6mike/mapjs-webpack-example at custom`](https://github.com/s6mike/mapjs-webpack-example/tree/custom). See [README.md](../README.md#using-mapjs-to-display-argmaps) for more details.
+    - mapjs project files are in `mapjs` folder.
+    - `scripts`:
+      - `scripts/bash_aliases_argmap.sh`:
+        - Add `a2jo` function and `argmj` alias to generate .json file and open with mapjs.
+        - Rename `mappack` function to `pack_mapjs` and add argument to pass onto webpack build.
+        - Fix bug from calling chrome alias instead of chrome-browser directly, blocking command line parameters.
+        - Remove output redirect from webpack calls, set webpack.config.js to report build errors only.
+      - `scripts/install.sh`: Add npm install command.
+      - `scripts/argmaps_init_script.sh`: Update 2 MJS_WP_X variables to match new mapjs folder location and to reference new `examples/example.json`.
+      - `tests.sh`: run test for `a2jo` instead of `a2mo`.
+      - Add `examples/example.json` (generated from example.yml) to repo as an example for mapjs.
+      - Remove commands to delete MJS_WP_MAP which is now `examples/example.json`
+    - See [CHANGELOG-mapjs.md](mapjs/docs/CHANGELOG-mapjs.md) for more details.
+    - [README.md](../README.md):
+      - Add mapjs and troubleshooting sections.
+      - Add `docs/mapjs-example.png` to repo for use in [README.md](../README.md).
+    - git hook `hooks/pre-commit`:
+      - Add to repo, in `hooks` folder (symlinking to it from .git/hooks/pre-commit), to keep it in sync with rest of repo.
+        - Add symlink command to `scripts/install.sh`.
+      - Update MJS variables to reflect new mapjs folder and example file.
+      - Source init_script rather than defining variables independently.
+  - Other minor documentation updates.
+
 ## argmap 3.6.0 Release Version
 
 - Update to pandoc 2.9.2.1-0:
@@ -248,4 +276,6 @@
 
 Original <https://github.com/dsanson/argmap>
 
-Uses Semantic Versioning: <http://semver.org/> and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+-------------------------
+
+Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).

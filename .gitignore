@@ -4,6 +4,8 @@ argmap.code-workspace
 !.vscode/settings.json
 archive
 lua_modules/
+mapjs/node_modules
+mapjs/site
 Input/*
 Input/Archived/
 Output/*

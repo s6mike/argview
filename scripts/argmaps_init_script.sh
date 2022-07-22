@@ -21,8 +21,12 @@ export PROJECT_DIR=${GIT_PROJECT_DIR:-$(dirname "$(pwd)")}
 export PANDOC_DATA_DIR="$CONDA_PREFIX/share/pandoc"
 
 export WORKSPACE="$PROJECT_DIR/argmap"
-export MJS_WP_HOME="$PROJECT_DIR/mapjs-webpack-example"
-export MJS_WP_MAP="$MJS_WP_HOME/src/example-map.json"
+
+# TODO: Update variable names, WP not necessary?
+export MJS_WP_HOME="$PROJECT_DIR/argmap/mapjs"
+
+# TODO: Add this to pack_mapjs function? or is it used elsewhere?
+export MJS_WP_MAP="$WORKSPACE/examples/example.json"
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
 

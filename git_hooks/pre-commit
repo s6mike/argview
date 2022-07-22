@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+# Adapted from https://stackoverflow.com/questions/52038034/push-and-pull-my-conda-environment-using-git
+# and https://stackoverflow.com/questions/57838081/auto-update-of-requirements-yml-in-conda?noredirect=1&lq=1
+# echo -e "\n==================== pre-commit hook ===================="
+
+# So I can disable hook easily, during interactive rebase etc.
+if [ "$NO_VERIFY" ]; then
+  echo 'pre-commit hook skipped' 1>&2
+  exit 0
+fi
+
+# echo "Terminal Type: $TERM" # terminal type
+# echo "term program: $TERM_PROGRAM"
+
+# echo "shell:"
+# ls -l /proc/$$/exe
+
+# echo "terminal:"
+# ps -p $(ps -p $$ -o ppid=) -o args
+# Conda argmaps not activated:
+#   conda activate argmaps # Won't work because need conda init [shell] - is hook run in bash?
+# or do this: conda env update -n my_env --file ENV.yaml
+# # TODO: try to fix activation before attempting to parse environment.yml:
+# * https://stackoverflow.com/questions/71482060/source-os-environment-variables-from-a-docker-compose-yaml
+# * https://stackoverflow.com/questions/71393380/fetch-variables-values-from-yml-and-pass-to-shell-script
+# * https://stackoverflow.com/questions/67132339/conda-export-env-from-bash-script
+
+# using init_script to set up variables.
+source scripts/argmaps_init_script.sh
+
+# Have commented out to test argmaps_init_script sourcing:
+
+# Since env variables don't seem to be available in hook script:
+# source scripts/conda.env # Get current conda env
+#source /opt/miniconda3/bin/activate # QUESTION: run this to get conda env variables instead?
+# export WORKSPACE=${GIT_PROJECT_DIR:-$(dirname "$(pwd)")}/argmap #adapted from prev 2 lines from init_script.
+# export MJS_WP_HOME
+# MJS_WP_HOME="$WORKSPACE/mapjs"
+# export MJS_WP_MAP="$WORKSPACE/examples/example.json"
+
+#testing
+source scripts/bash_aliases_argmap.sh
+
+ENV_FILE="$WORKSPACE/environment.yml"
+
+# Once conda env activated, $CONDA_PREFIX/bin will be sufficient.
+export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAPS/bin:$PATH
+
+# Needed for tests.sh to work.
+# TODO: Can I source another file for this? ideally environment.yml exported in next section.
+export LUA_PATH="$WORKSPACE/lua_modules/share/lua/5.3/?.lua;$WORKSPACE/lua_modules/share/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/usr/local/share/lua/5.3/?/init.lua;/usr/local/share/lua/5.3/?.lua;"
+export LUA_CPATH="$WORKSPACE/lua_modules/lib/lua/5.3/?.so;"
+
+# Export conda environment argmaps to yaml file
+conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$ENV_FILE"
+
+# Check if new environment file is different from original
+# git diff --exit-code --quiet environment.yml
+
+# # If new environment file is different, stage it
+# if [[ $? -eq 0 ]]; then
+#     echo "Conda environment not changed. No further action."
+# else
+#     echo "Conda environment changed. Staging new env.yml"
+
+# Leave env.yml out of staging until I've fixed
+# git add $ENV_FILE
+
+#     exit 1
+# fi
+
+# Run test script tests.sh
+scripts/tests.sh
+
+TEST_EXIT=$?
+
+reset_repo # Clean up script output after - so submission still works even if reset fails.
+
+# Check src/ for lua files with leftover scaffolding and show relevant lines in popup.
+xmessage -center -button Abort:1,OK:0 -fn '-sony-fixed-medium-r-normal--0-0-200-200-c-0-iso8859-1' "$(check_repo)"
+
+BUTTON=$?
+
+echo "repo_check button press: $BUTTON"
+
+TEST_EXIT=$((TEST_EXIT + BUTTON)) # if test fails or cancel button then abort commit.
+
+exit $TEST_EXIT # Exit as non-zero (fail) if any tests fail.

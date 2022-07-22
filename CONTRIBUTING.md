@@ -18,14 +18,14 @@
   - [Additional Resources](#additional-resources)
 
 <!-- /TOC -->
------------
+---------------------------
 </details>
 
 Hello!
 
 As I write this, I tried out [`dsanson/argmap`](https://github.com/dsanson/argmap) only 10 days ago and that was my first time using Lua. I made my first ever pull request 4 days later.
 
-So I could use all the help I can get! :)
+So I'm still very much learning how to do this, and I could use all the help I can get! :)
 
 There are many ways to contribute, from writing tutorials, improving the documentation, submitting bug reports and feature requests, commenting on issues, or writing code which can be incorporated into Argmap itself.
 
@@ -101,5 +101,7 @@ I've also got this set up to be called from a pre-commit hook.
 - [Finding ways to contribute to open source on GitHub - GitHub Docs](https://docs.github.com/en/get-started/exploring-projects-on-github/finding-ways-to-contribute-to-open-source-on-github)
 - [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
 - [GitHub Documentation](https://docs.github.com/en)
+
+---------------------------
 
 This file was adapted from: [minimal/CONTRIBUTING.md at master · pages-themes/minimal](https://github.com/pages-themes/minimal/blob/master/docs/CONTRIBUTING.md) :)

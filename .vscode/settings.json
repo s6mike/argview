@@ -29,6 +29,7 @@
         "argmap2lua",
         "argmap2mup",
         "argmap2tikz",
+        "argmapjs",
         "asinum",
         "Brunellus",
         "libyaml",
@@ -39,11 +40,13 @@
         "MPE",
         "mup2argmap",
         "pandoc-argmap",
-        "parisiensis"
+        "parisiensis",
+        "argmapjs",
     ],
     "cSpell.ignoreWords": [
         "Ybuv",
         "argmaplua",
+        "mappack",
         "muplua",
         "tikzlua"
     ],

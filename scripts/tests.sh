@@ -7,9 +7,10 @@ TEST_FILE_MUP=$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup
 TEST_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md
 
 rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$WORKSPACE/Output/example.html"
 rm "$TEST_FILE_MUP"
-rm "$MJS_WP_MAP"
+
+# TODO: How is this generated? Delete this line?
+rm "$WORKSPACE/Output/example.html"
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
@@ -68,13 +69,14 @@ test() {
 # do
 #     cat "$Output"
 # done
-test a2m "$TEST_FILE_YML"
-test m2a "$TEST_FILE_MUP"
-test a2t "$TEST_FILE_YML"
-test a2mu "$TEST_FILE_YML"
-test a2mo "$TEST_FILE_YML"
-test md2htm "$TEST_FILE_MD"
-test md2pdf "$TEST_FILE_MD"
+
+test a2m "$TEST_FILE_YML"   #1
+test m2a "$TEST_FILE_MUP"   #2
+test a2t "$TEST_FILE_YML"   #3
+test a2mu "$TEST_FILE_YML"  #4
+test a2jo "$TEST_FILE_YML"  #5
+test md2htm "$TEST_FILE_MD" #6
+test md2pdf "$TEST_FILE_MD" #7
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

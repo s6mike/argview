@@ -68,6 +68,10 @@ apt-get install texlive-luatex
 
 chmod u+x src/*
 
+# Link up pre-commit hook
+ln -s git_hooks/pre-commit .git/hooks/
+chmod +x git_hooks/*
+
 # SECTION 3: Link conda env
 # ---------------------------------------------------
 
@@ -130,3 +134,16 @@ ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
 # Only needed for pre-commit hook:
 ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+
+# SECTION 4: mapjs
+# ---------------------------------------------------
+
+cd "$WORKSPACE/mapjs" || {
+  echo "Abandoning QA install."
+  exit 1
+}
+
+#nodejs installed with conda
+
+# TODO choose location instead of using cd above.
+npm install
