@@ -2,12 +2,8 @@
 
 echo 'Attempting to delete old test outputs.'
 
-TEST_FILE_YML=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
-TEST_FILE_MUP=$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup
-TEST_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md
-
 rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$TEST_FILE_MUP"
+rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
 
 # TODO: How is this generated? Delete this line?
 rm "$WORKSPACE/Output/example.html"
@@ -70,13 +66,13 @@ test() {
 #     cat "$Output"
 # done
 
-test a2m "$TEST_FILE_YML"   #1
-test m2a "$TEST_FILE_MUP"   #2
-test a2t "$TEST_FILE_YML"   #3
-test a2mu "$TEST_FILE_YML"  #4
-test a2jo "$TEST_FILE_YML"  #5
-test md2htm "$TEST_FILE_MD" #6
-test md2pdf "$TEST_FILE_MD" #7
+test a2m "$INPUT_FILE_YML"   #1
+test m2a "$INPUT_FILE_MUP"   #2
+test a2t "$INPUT_FILE_YML"   #3
+test a2mu "$INPUT_FILE_YML"  #4
+test a2jo "$INPUT_FILE_YML"  #5
+test md2hf "$INPUT_FILE_MD"  #6
+test md2pdf "$INPUT_FILE_MD" #7
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

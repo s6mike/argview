@@ -145,22 +145,6 @@ ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
 # Only needed for pre-commit hook:
 ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
-<<<<<<< HEAD
-
-# SECTION 4: mapjs
-# ---------------------------------------------------
-
-cd "$WORKSPACE/mapjs" || {
-  echo "Abandoning QA install."
-  exit 1
-}
-
-#nodejs installed with conda
-
-# TODO choose location instead of using cd above.
-npm install
-||||||| parent of a9fcd83 (3.7.0 feat(argmapjs): Develop argmapjs prototype:)
-=======
 
 # SECTION 4: mapjs
 # ---------------------------------------------------
@@ -184,27 +168,6 @@ ln -s "$WORKSPACE/Output" "$MJS_WP_HOME/src/argmap_output"
 #   }
 
 npm --prefix "$MJS_WP_HOME" install
->>>>>>> a9fcd83 (3.7.0 feat(argmapjs): Develop argmapjs prototype:)
 
-# SECTION 4: mapjs
-# ---------------------------------------------------
-
-# Check $MJS_WP_HOME is set as desired
-cd "$MJS_WP_HOME" || {
-  echo "Abandoning QA install."
-  exit 1
-}
-
-# Link src folder to Output folder.
-ln -s "$WORKSPACE/Output" "$MJS_WP_HOME/src/argmap_output"
-
-#nodejs installed with conda
-
-# TODO: remove this comment, now irrelevant?
-# Before npm install:
-# Check mapjs/package.json, ensure latest git commit is referenced:
-# "dependencies": {
-#     "mindmup-mapjs": "git@github.com:mindmup/mapjs.git#e30f8d835e028febe2e951e422c313ac304a0431"
-#   }
-
-npm --prefix "$MJS_WP_HOME" install
+# Ideally generate .json files before running this
+pack_mapjs

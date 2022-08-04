@@ -1,5 +1,46 @@
 # Argmap Project Change Log
 
+## TODO
+
+- [README.md](../README.md):
+  - Add note about linking/using templates (html and latex).
+  - `scripts/bash_aliases_argmap.sh`: Review functions.
+
+## argmap 3.8.0
+
+- `src/pandoc-argmap.lua`: Update to convert argmap code blocks with attribute `convertTo="mapjs"` to mapjs format.
+- `mapjs-example/src/start.js`:
+  - Now requires map.json dynamically.
+  - `init()` now takes map.json path as second argument or can read it from container `src` attribute.
+- [README.md](../README.md):
+  - Add info about generating html containing mapjs format in section ['Embedding Maps in Markdown'](../README.md#embedding-maps-in-markdown).
+    - Add `docs/mapjs-in-html-example.png`.
+    - Explain `convertTo="mapjs"` functionality.
+  - Fix code formatting for latex code block examples.
+  - Fix argmap code block examples to display relevant attributes.
+- Add references in various places to [mapjs .json Data Format](https://github.com/mindmup/mapjs/wiki/Data-Format) on the mapjs wiki.
+- `scripts/`:
+  - `bash_aliases_argmap.sh`:
+    - Add new functions:
+      - `md2hf`:
+        - Generates index.html from pandoc template and generates mup.json with webpack.
+        - Fix bug with template parameter using relative path.
+        - BUG #21: Hanging when calling `argmh` when browser already open. Not sure when introduced.
+      - `chrome-mini`: Utility function.
+    - Update md2htm() to use custom mapjs html5 template now available in pandoc data folder.
+    - Remove unnecessary calls to webpack from some functions now `pandoc-argmap.lua` creates output files.
+  - `tests.sh`:
+    - Use init file variables instead of own.
+    - Fix test #6 to use newer html function.
+- `Input/`:
+  - `Example1_ClearlyFalse_WhiteSwan_simplified.md`:
+    - Use two code snippets, one for png output and one for mapjs.
+    - Add meta-data for use in template.
+- `.vscode/launch.json`:
+  - Add `cat X | argmap2mup` profile.
+  - Fix html output profile.
+  - Update pandoc test to use my own example files.
+
 ## argmap 3.7.1
 
 - Add `pandoc-templates` folder containing:
@@ -46,10 +87,17 @@
         - Fix bug from calling chrome alias instead of chrome-browser directly, blocking command line parameters.
         - Remove output redirect from webpack calls, set webpack.config.js to report build errors only.
       - `scripts/install.sh`: Add npm install command.
-      - `scripts/argmaps_init_script.sh`: Update 2 MJS_WP_X variables to match new mapjs folder location and to reference new `examples/example.json`.
+      - `scripts/argmaps_init_script.sh`:
+        - Update 2 MJS_WP_X variables to match new mapjs folder location and to reference new `examples/example.json`.
+        - Fix bugs when terminal opens outside of WORKSPACE.
+        - Clean up variable references and delete GIT_PROJECT_DIR.
+          - Remove GIT_PROJECT_DIR definition from `environment.yml`.
+        - Add input file variables for each file type.
       - `tests.sh`: run test for `a2jo` instead of `a2mo`.
-      - Add `examples/example.json` (generated from example.yml) to repo as an example for mapjs.
-      - Remove commands to delete MJS_WP_MAP which is now `examples/example.json`
+      - `install.sh`: Add symbolic link from pandoc data folder to `pandoc-templates`.
+    - Add `examples/example.json` (generated from example.yml) to repo as an example for mapjs.
+    - Remove commands to delete MJS_WP_MAP which is now `examples/example.json`
+  
     - See [CHANGELOG-mapjs.md](mapjs/docs/CHANGELOG-mapjs.md) for more details.
     - [README.md](../README.md):
       - Add mapjs and troubleshooting sections.

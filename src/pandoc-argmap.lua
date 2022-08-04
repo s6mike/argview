@@ -2,7 +2,16 @@
 -- with tikz maps linked to generated mindmup maps.
 
 -- Sets up shared 'environment' variables:
+
 local config_argmap = require 'config_argmap'
+
+-- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
+
+-- TODO set this with a command line argument, then use in launch.json
+--   Try this approach: lua -e'a=1' -e 'print(a)' script.lua
+--   https://www.lua.org/manual/5.3/manual.html#6.10
+
+-- Logger:debug("input_filename: " .. input_filename) -- tables can't be concatenated so use separate debug message.
 
 -- TODO: this might simplify using argmap2mup, aliases etc
 -- local argmap2mup = require 'argmap2mup'
@@ -78,7 +87,8 @@ extension_for = {
     html4 = 'png',
     html5 = 'svg',
     latex = 'pdf',
-    beamer = 'pdf'
+    beamer = 'pdf',
+    mapjs = 'json',
 }
 
 local function file_exists(name)
@@ -93,16 +103,22 @@ local function file_exists(name)
 end
 
 function CodeBlock(block)
-    -- function finds code blocks with class '.map', generates a corresponding
+    -- function finds code blocks with class '.argmap', generates a corresponding
     -- mindmup map, uploads that map to google drive, and replaces the block with:
     --
     -- (a) raw latex code containing a tikz map linked to the mindmup map (if format is latex);
     -- (b) a code block the class '.map' and a 'gid' attribute pointing with the google drive
     --     id of the mindmup map (if format is markdown);
     -- (c) a pandoc paragraph containing an image link linked to the mindmup map (for all other formats)
+    -- (d) (WIP) a mapjs container
+
+    -- ISSUE: only detects argmap block if it's first class in list.
     if block.classes[1] == identifier then
         local original = block.text
-        local argmap2mup_opts = { "-p" }
+
+        -- REVIEW: Much of following code not required?
+        -- TODO: have stopped opt "-p" forcing upload, but might want to remove this flag too/instead.
+        local argmap2mup_opts = { "-p" } -- Defaults to publicly accessible map.
         local name = block.attributes["name"]
         if name and name ~= "" then
             argmap2mup_opts[#argmap2mup_opts + 1] = "-n"
@@ -130,14 +146,26 @@ function CodeBlock(block)
             local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
             return pandoc.CodeBlock(original, attr)
         else
+            -- TODO: get convertTo value
+            local convertTo = block.attributes["convertTo"]
+
             -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
             -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
             -- argmap2mup converts yaml to mindmup
-            local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
-            gid = trim(output)
+
+            -- Now I've changed argmap2mup, this may output the JSON rather than the upload gid
+            local output_extra_line = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts
+                , original)
+
+            output = trim(output_extra_line)
+
+            -- TODO: assign later only where needed (since it may now be JSON rather than gid)
+            gid = output
+
             -- construct link to map on mindmup
             local mupLink = "https://drive.mindmup.com/map/" .. gid
             local filetype = extension_for[FORMAT] or "png"
+
             if format == "latex" or format == "beamer" then
                 -- convert mup to raw tikz
                 local rawtikz = argmap2image(original, filetype, nil)
@@ -149,15 +177,51 @@ function CodeBlock(block)
                     .. "\\href{" .. mupLink .. "}{" .. rawtikz .. "}\n" ..
                     [[\end{adjustbox}]]
                 return pandoc.RawBlock(format, rawlatex)
+            elseif convertTo == "mapjs" then -- if code block has this attribute then convert to mapjs output
+                -- ISSUE: Currently filetype: "png", want "json"
+
+                local block_id = block.attr.identifier
+
+                -- TODO: use lua solution instead (use regex or upgrade pandoc)
+                -- Cheat method to run os command and get output back (should really use to pipe input to output via os command).
+                local input_filename_extra_line = pandoc.pipe("basename", { "--suffix=.md", PANDOC_STATE.input_files[1] }
+                    , "")
+                local input_filename = trim(input_filename_extra_line)
+
+                -- TODO: output should be a constant set in early part of this file.
+                -- TODO: can I set filetype based on pandoc target format?
+                -- yml #ID (block id: append to container_ for: container div id;
+                --          prepend with input filename for:
+                --              Output/input_file_yml_id.json
+                -- TODO: add _yml name attribute (with _ substitutions for spaces) ?
+
+                local output_filename = input_filename .. "_" .. block_id
+                local output_fpath = "Output/" .. output_filename .. ".json"
+
+                -- TODO: This should be a utility function, since used elsewhere
+                --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
+                local f = assert(io.open(output_fpath, 'w'))
+                f:write(output)
+                f:close()
+
+                -- QUESTION: Better to build html using pandoc functions rather than with rawhtml?
+                local argmap_controls_path = "pandoc-templates/mapjs/mapjs-testcontrols.html"
+                local _, argmap_controls_html = pandoc.mediabag.fetch(argmap_controls_path)
+
+                local rawhtml = argmap_controls_html ..
+                    "<div id=\"container" ..
+                    "_" .. block_id .. "\" class=\"container_argmapjs\" src=\"" .. output_filename .. "\"></div>"
+                -- "<div id=\"container" .. "\" src=\"" .. output_filename .. "\"></div>"
+
+                -- return pandoc.CodeBlock(original, attr)
+                return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
                 -- convert mup to raw svg
                 local rawsvg = argmap2image(original, filetype, nil)
                 local rawhtml = "<a href=\"" .. mupLink .. "\">" .. rawsvg .. "</a>"
                 return pandoc.RawBlock(format, rawhtml)
             else
-                -- check to see if the images need to be regenerated
-                -- (borrowed from pandoc lua filter docs: each image name
-                -- is a hash of the yaml map.)
+                -- check to see if the images need to be regenerated (borrowed from pandoc lua filter docs: each image name is a hash of the yaml map.)
                 -- TODO: put the images in a directory
                 -- TODO: delete old images that are no longer needed?
                 local fname = pandoc.sha1(original) .. "." .. filetype
