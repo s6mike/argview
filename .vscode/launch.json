@@ -104,7 +104,7 @@
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md",
+                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md",
                 "-o",
                 "${workspaceFolder}/mapjs-example/index.html",
                 "--lua-filter pandoc-argmap.lua",

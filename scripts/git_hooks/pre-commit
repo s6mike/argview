@@ -72,7 +72,7 @@ __save_env
 # fi
 
 # Run test script tests.sh
-scripts/tests.sh
+test/tests.sh
 
 TEST_EXIT=$?
 

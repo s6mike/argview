@@ -38,13 +38,6 @@ source "$MJS_WP_HOME/scripts/mapjs.env"
 # export MJS_OUTPUT_FILE="test/bundle.js"
 # export MJS_WP_MAP="$WORKSPACE/examples/example.json"
 
-export INPUT_FILE_YML=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
-export INPUT_FILE_MUP=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.mup
-export INPUT_FILE_MD0=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.md
-export INPUT_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md
-export INPUT_FILE_MD2=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.md
-# export INPUT_FILE_JSON=$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json
-
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
 
 # Add pandoc bash completions
@@ -53,3 +46,15 @@ eval "$(pandoc --bash-completion)"
 # Add Nodejs flags:
 # Didn't fix type: json import error, leaving for reference.
 # export NODE_OPTIONS="--experimental-modules --experimental-json-modules"
+
+# TESTING INIT
+
+# TODO: could move to separate test/init_script_argmap_test file
+export INPUT_FILE_YML=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
+export INPUT_FILE_MUP=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.mup
+export INPUT_FILE_MD0=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.md
+export INPUT_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md
+export INPUT_FILE_MD2=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.md
+# export INPUT_FILE_JSON=$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json
+
+source "$WORKSPACE/test/bash_aliases_argmap_test.sh"

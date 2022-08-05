@@ -4,8 +4,24 @@
 
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex).
-  - `scripts/bash_aliases_argmap.sh`: Review functions.
+- `scripts/bash_aliases_argmap.sh`: Review functions.
+- `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
+- Move `Input` and `Output` to `test/input` and `test/output`?
 
+## argmap 3.9.0
+
+- `test/`:
+  - Add folder to use for tests related scripts.
+  - Move 'tests.sh' from `scripts/` to here.
+  - Create `test/bash_aliases_argmap_test.sh`.
+- `scripts/`:
+  - `bash_aliases_argmap.sh`: Move all aliases to `test/bash_aliases_argmap_test.sh` since they are all tests.
+  - `scripts/argmaps_init_script.sh`: Source `test/bash_aliases_argmap_test.sh`
+- Docs, scripts, rockspec:
+  - Update references to both above scripts.
+  - Add mentions that test files are not public api.
+- `.vscode/launch.json`: Fix broken path to example file due to 3.8.3 bug.
+  
 ## argmap 3.8.3
 
 - `Input`:
@@ -15,6 +31,10 @@
   - `scripts/bash_aliases_argmap.sh`: Add above to argm aliases.
 - `mapjs-example/src/start.js`: Only generates mapjs if mapjs snippets found.
 - `Input/example-updated.md`: Add copy of `examples/example.md` modified to work with mapjs.
+
+BUG:
+
+- `.vscode/launch.json`: Broke path to example file.
 
 ## argmap 3.8.2
 
@@ -386,6 +406,6 @@ Original <https://github.com/dsanson/argmap>
 
 Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
 
-Note that bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+Note that test files, and bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
 
 Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.

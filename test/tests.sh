@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+
 echo 'Attempting to delete old test outputs.'
 
 rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
@@ -35,6 +37,7 @@ if [ $COLOUR = 'true' ]; then
     COL_RESET='\033[0m'   # No Color
 fi
 
+# This function is not considered part of a public API, and therefore may change during patch updates without warning.
 __test() {
     PRE="Test $TESTNUM:"
     echo -en "$PRE "

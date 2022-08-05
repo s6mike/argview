@@ -36,6 +36,6 @@ build = {
    },
   test = {
     type = "command",
-    command ="scripts/tests.sh",
+    command ="test/tests.sh",
   },
 }

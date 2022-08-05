@@ -81,6 +81,9 @@ chmod u+x src/*
 ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
 chmod +x git_hooks/*
 
+# Link up tests.sh to deprecated location?
+# ln -s test/tests.sh scripts
+
 # SECTION 3: Link conda env
 # ---------------------------------------------------
 
