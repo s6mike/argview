@@ -5,7 +5,7 @@ var default_map_value = 'webpack.config.js: invalid map variable' // '/home/s6mi
 
 module.exports = (env) => {
 	// Throws error if no input_map value
-	if (!env.input_map) console.error('ERROR: Invalid input_map ! %s', env.input_map);
+	// if (!env.input_map) console.error('ERROR: Invalid input_map ! %s', env.input_map);
 	return {
 		// stats: 'errors-only',
 
@@ -21,10 +21,10 @@ module.exports = (env) => {
 			filename: '[name].js',
 			path: path.resolve(__dirname, 'site/'),
 		},
-		plugins: [
-			new webpack.DefinePlugin({
-				'process.env.input_map': JSON.stringify(env.input_map || default_map_value),
-			}),
-		],
+		// plugins: [
+		// 	new webpack.DefinePlugin({
+		// 		'process.env.input_map': JSON.stringify(env.input_map || default_map_value),
+		// 	}),
+		// ],
 	}
 };

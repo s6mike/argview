@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex).
   - `scripts/bash_aliases_argmap.sh`: Review functions.
 
+## argmap 3.8.2
+
+- `scripts`
+  - `bash_aliases_argmap.sh`:
+    `__pack_mapjs()`: Remove env variable argument since specific .json files no longer requested during webpack build process.
+- `mapjs-example/webpack.config.js`: Remove env variable functionality.
+  
 ## argmap 3.8.1
 
 - `scripts`:
@@ -31,7 +38,7 @@
 - `scripts/`:
   - `bash_aliases_argmap.sh`:
     - Add new functions:
-      - `md2hf`:
+      - `md2hf()`:
         - Generates index.html from pandoc template and generates mup.json with webpack.
         - Fix bug with template parameter using relative path.
         - BUG #21: Hanging when calling `argmh` when browser already open. Not sure when introduced.

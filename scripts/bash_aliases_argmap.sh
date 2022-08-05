@@ -42,7 +42,7 @@ __pack_mapjs() {
   # OUTPUT=$1 # Remove default so can test properly: ${1:-$MJS_WP_MAP}
   # First -- ensures rest is passed onto webpack call
   # TODO - adding --inspect should enable debug mode - but can't get to work.
-  npm --prefix "$MJS_WP_HOME" run pack-js -- --env.input_map="$1"
+  npm --prefix "$MJS_WP_HOME" run pack-js # -- --env.input_map="$1"
 }
 
 # lua argmap2mup Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml > Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup
@@ -74,7 +74,7 @@ a2jo() { # m2a Output/Example1_simple.yml
   #TODO: Is there a way to pipe a2m output directly into pack_mapjs?
   # Then __pack_mapjs should ideally have been generated during install/init, so won't be needed to be called after, will just be referenced in js
   a2m "$1" "$OUTPUT" &&
-    __pack_mapjs "$OUTPUT"
+    __pack_mapjs # "$OUTPUT"
 }
 
 md2hf() { # md2h Input/example.md
@@ -94,7 +94,7 @@ md2hf() { # md2h Input/example.md
 
   # TODO: Shouldn't need this part, but will need to run __pack_mapjs after updating start.js.
   # call a2jo?
-  # __pack_mapjs "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json"
+  # __pack_mapjs # "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json"
   __chrome-mini "$OUTPUT"
 }
 
