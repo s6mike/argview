@@ -1,5 +1,5 @@
 ---
-title: Example 1 - All swans are white.
+title: Example 1.0 - All swans are white.
 template: pandoc-templates/mapjs/mapjs-main-html5.html
 # TODO: These might be better in a defaults file:
 #   https://workflowy.com/#/ee624e71f40c
@@ -21,9 +21,9 @@ This is a simplified version of the White Swan argument:
     "Not all swans are white.": []
 ```
 
-And here it is in mapjs format:
+And here it is again:
 
-```{#argmap1 .argmap .yml name="Example 1: All swans are white." convertTo="mapjs"}
+```{#argmap1 .argmap .yml name="Example 1: All swans are white."}
 "All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []

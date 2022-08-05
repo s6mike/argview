@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex).
   - `scripts/bash_aliases_argmap.sh`: Review functions.
 
+## argmap 3.8.3
+
+- `Input`:
+  - Duplicate and rename `Example1_ClearlyFalse_WhiteSwan_simplified.md` to have variants with 0,1,2 mapjs references, and add them to repo.
+- `scripts/`:
+  - `argmaps_init_script.sh`: Add above to INPUT_FILE aliases.
+  - `scripts/bash_aliases_argmap.sh`: Add above to argm aliases.
+- `mapjs-example/src/start.js`: Only generates mapjs if mapjs snippets found.
+- `Input/example-updated.md`: Add copy of `examples/example.md` modified to work with mapjs.
+
 ## argmap 3.8.2
 
 - `scripts`
@@ -88,7 +98,6 @@
 - `src/`:
   - `argmap2mup.lua`: Stop public flag forcing upload to ensure uploads deliberate.
   - `config_argmap.lua`: Move logging functionality here for centralisation.
-- `Input/example-updated.md`: Add copy of `examples/example.md` modified to work with mapjs.
 
 ## argmap 3.7.0
 

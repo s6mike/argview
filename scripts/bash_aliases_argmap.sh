@@ -153,7 +153,9 @@ alias argmu='a2mu $WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.ym
 #TODO: need to delete previous file, best way? Separate output folder or just delete all .json in Output folder?
 alias argmo='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup; a2mo $INPUT_FILE_YML'
 alias argmj='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json; a2jo $INPUT_FILE_YML'
+alias argmh0='rm $MJS_WP_HOME/index.html; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD0'
 alias argmh='rm $MJS_WP_HOME/index.html; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD'
+alias argmh2='rm $MJS_WP_HOME/index.html; rm $WORKSPACE/Output/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD2'
 alias argmp='rm $WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.pdf; md2pdf $INPUT_FILE_MD'
 alias argmph='rm $WORKSPACE/Output/example.pdf; rm $WORKSPACE/Output/header.tex; $WORKSPACE/src/argmap2tikz.lua -i > $WORKSPACE/Output/header.tex; pandoc $INPUT_FILE_MD -o $WORKSPACE/Output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $WORKSPACE/Output/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $WORKSPACE/Output/example.pdf"'
 alias argt='$WORKSPACE/scripts/tests.sh'

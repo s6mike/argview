@@ -40,7 +40,9 @@ source "$MJS_WP_HOME/scripts/mapjs.env"
 
 export INPUT_FILE_YML=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
 export INPUT_FILE_MUP=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.mup
-export INPUT_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified.md
+export INPUT_FILE_MD0=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.md
+export INPUT_FILE_MD=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md
+export INPUT_FILE_MD2=$WORKSPACE/Input/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.md
 # export INPUT_FILE_JSON=$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"

@@ -46,9 +46,11 @@
     ],
     "cSpell.ignoreWords": [
         "Ybuv",
+        "argm",
         "argmaplua",
         "mappack",
         "muplua",
+        "themecss",
         "tikzlua"
     ],
     "argdown.configFile": "argdown.config.json",

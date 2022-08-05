@@ -20,84 +20,90 @@ const MAPJS = require('mindmup-mapjs'),
 		//  For now, just take first one:
 		const container = jQuery('.container_argmapjs:first')
 
-		container_src = container.attr('src');
-		console.debug("container_src: ", container_src)
+		if (container.length > 0) { // Checks there are mapjs requests
+			container_src = container.attr('src');
+			console.debug("container_src: ", container_src)
 
-		// console.debug("map: ", map)
 
-		// TODO: tells webpack to acquire dependency at runtime instead of during build:
-		// https://webpack.js.org/configuration/externals/
+			// console.debug("map: ", map)
 
-		// import { readFile } from 'fs/promises';
-		// const testMap = JSON.parse(
-		// 	await readFile(
-		// 		new URL('./example-map.json', import.meta.url)
-		// 	)
-		// );
+			// TODO: tells webpack to acquire dependency at runtime instead of during build:
+			// https://webpack.js.org/configuration/externals/
 
-		// QUESTION: Should I still use assert with require?
-		// More secure to use assert, but this throws error about needing a loader
-		// Using node --experimental-json-modules should fix this, but not sure how to call this via npm
-		// Possible solution: https://stackoverflow.com/questions/48536902/how-to-let-npm-package-bin-run-with-experimental-modules-option
-		// Added export NODE_OPTIONS="--experimental-json-modules" to argmaps init script
-		// import testMap from './example-map.json'; // assert {type: `json`};
+			// import { readFile } from 'fs/promises';
+			// const testMap = JSON.parse(
+			// 	await readFile(
+			// 		new URL('./example-map.json', import.meta.url)
+			// 	)
+			// );
 
-		// const testMap = () => import(/* webpackChunkName: "example-map" */ './example-map.json').then(module => module.default);
+			// QUESTION: Should I still use assert with require?
+			// More secure to use assert, but this throws error about needing a loader
+			// Using node --experimental-json-modules should fix this, but not sure how to call this via npm
+			// Possible solution: https://stackoverflow.com/questions/48536902/how-to-let-npm-package-bin-run-with-experimental-modules-option
+			// Added export NODE_OPTIONS="--experimental-json-modules" to argmaps init script
+			// import testMap from './example-map.json'; // assert {type: `json`};
 
-		// const testMap = require('./' + map);
-		// const testMap = require('./argmap_output/' + container_src + '.json');
-		const testMap = require('/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/' + container_src + '.json');
-		console.debug("testMap: ", testMap);
+			// const testMap = () => import(/* webpackChunkName: "example-map" */ './example-map.json').then(module => module.default);
 
-		idea = content(testMap),
-			imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
-			mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-		console.debug("idea: ", idea);
-		jQuery.fn.attachmentEditorWidget = function (mapModel) {
-			return this.each(function () {
-				mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
-					mapModel.setAttachment(
-						'attachmentEditorWidget',
-						nodeId, {
-						contentType: 'text/html',
-						content: window.prompt('attachment', attachment && attachment.content)
-					}
-					);
+			// const testMap = require('./' + map);
+			// const testMap = require('./argmap_output/' + container_src + '.json');
+			const testMap = require('/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/' + container_src + '.json');
+			console.debug("testMap: ", testMap);
+
+			idea = content(testMap),
+				imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
+				mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
+			console.debug("idea: ", idea);
+			jQuery.fn.attachmentEditorWidget = function (mapModel) {
+				return this.each(function () {
+					mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+						mapModel.setAttachment(
+							'attachmentEditorWidget',
+							nodeId, {
+							contentType: 'text/html',
+							content: window.prompt('attachment', attachment && attachment.content)
+						}
+						);
+					});
 				});
+			};
+			window.onerror = window.alert;
+
+
+			jQuery('#themecss').themeCssWidget(themeProvider, new ThemeProcessor(), mapModel);
+			container.domMapWidget(console, mapModel, false, imageInsertController);
+			jQuery('body').mapToolbarWidget(mapModel);
+			jQuery('body').attachmentEditorWidget(mapModel);
+			mapModel.setIdea(idea);
+
+
+			jQuery('#linkEditWidget').linkEditWidget(mapModel);
+			window.mapModel = mapModel;
+			jQuery('.arrow').click(function () {
+				jQuery(this).toggleClass('active');
 			});
-		};
-		window.onerror = window.alert;
-
-
-		jQuery('#themecss').themeCssWidget(themeProvider, new ThemeProcessor(), mapModel);
-		container.domMapWidget(console, mapModel, false, imageInsertController);
-		jQuery('body').mapToolbarWidget(mapModel);
-		jQuery('body').attachmentEditorWidget(mapModel);
-		mapModel.setIdea(idea);
-
-
-		jQuery('#linkEditWidget').linkEditWidget(mapModel);
-		window.mapModel = mapModel;
-		jQuery('.arrow').click(function () {
-			jQuery(this).toggleClass('active');
-		});
-		imageInsertController.addEventListener('imageInsertError', function (reason) {
-			console.error('image insert error', reason);
-		});
-		container.on('drop', function (e) {
-			const dataTransfer = e.originalEvent.dataTransfer;
-			e.stopPropagation();
-			e.preventDefault();
-			if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-				const fileInfo = dataTransfer.files[0];
-				if (/\.mup$/.test(fileInfo.name)) {
-					const oFReader = new window.FileReader();
-					oFReader.onload = function (oFREvent) {
-						mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
-					};
-					oFReader.readAsText(fileInfo, 'UTF-8');
+			imageInsertController.addEventListener('imageInsertError', function (reason) {
+				console.error('image insert error', reason);
+			});
+			container.on('drop', function (e) {
+				const dataTransfer = e.originalEvent.dataTransfer;
+				e.stopPropagation();
+				e.preventDefault();
+				if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
+					const fileInfo = dataTransfer.files[0];
+					if (/\.mup$/.test(fileInfo.name)) {
+						const oFReader = new window.FileReader();
+						oFReader.onload = function (oFREvent) {
+							mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
+						};
+						oFReader.readAsText(fileInfo, 'UTF-8');
+					}
 				}
-			}
-		});
+			});
+		} else { // If no mapjs requests:
+			console.debug('No requests for mapjs detected.')
+		};
 	};
+
 document.addEventListener('DOMContentLoaded', init);
