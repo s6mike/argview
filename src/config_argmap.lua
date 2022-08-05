@@ -33,21 +33,21 @@ package.cpath = os.getenv("LUA_CPATH") or
     .. package.cpath
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
--- logger:debug("message")
 
--- require "logging"
--- local logger = logging.new(function(self, level, message)
---     io.stderr:write(message)
---     io.stderr:write("\n")
---     return true
--- end)
+logging = require "logging"
+Logger = logging.new(function(self, level, message)
+    io.stderr:write(message)
+    io.stderr:write("\n")
+    return true
+end)
 
--- Set to .DEBUG to activate logging
 -- TODO set this with a command line argument, then use in launch.json
 --   Try this approach: lua -e'a=1' -e 'print(a)' script.lua
 --   https://www.lua.org/manual/5.3/manual.html#6.10
--- logger:setLevel(logging.DEBUG)
 
--- logger:debug("message")
+-- Set to .DEBUG to activate logging
+Logger:setLevel(logging.ERROR)
+
+-- logger:debug("message: ".. message) -- tables can't be concatenated so use separate debug message.
 
 return config

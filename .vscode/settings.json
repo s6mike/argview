@@ -42,6 +42,7 @@
         "pandoc-argmap",
         "parisiensis",
         "argmapjs",
+        "testcontrols",
     ],
     "cSpell.ignoreWords": [
         "Ybuv",

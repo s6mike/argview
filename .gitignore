@@ -6,6 +6,8 @@ archive
 lua_modules/
 mapjs/node_modules
 mapjs/site
+mapjs-example/node_modules
+mapjs-example/site
 Input/*
 Input/Archived/
 Output/*

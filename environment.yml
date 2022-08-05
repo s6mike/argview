@@ -14,7 +14,6 @@ dependencies:
   - anaconda/linux-64::lua==5.3.4=h7b6447c_0
 variables:
   CONDA_ENV_ARGMAPS: argmap
-  GIT_PROJECT_DIR: /home/s6mike/git_projects
   LUA_CPATH: /home/s6mike/git_projects/argmap/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argmap/lib/lua/5.3/?.so;/opt/miniconda3/envs/argmap/lib/lua/5.3/loadall.so;./?.so;
   LUA_PATH: /home/s6mike/git_projects/argmap/src/?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argmap/share/lua/5.3/?.lua;/opt/miniconda3/envs/argmap/share/lua/5.3/?/init.lua;./?.lua;./?/init.lua;
 prefix: /opt/miniconda3/envs/argmap

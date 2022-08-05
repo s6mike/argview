@@ -6,13 +6,15 @@
 local config_argmap = require 'config_argmap'
 
 -- uses pl.app.parse_args() to parse cli options
-local pl    = require 'pl.import_into' ()
+local pl = require 'pl.import_into' ()
+
 -- uses lyaml to parse yaml
 local lyaml = require 'lyaml'
 local json  = require 'rxi-json-lua'
 
 -- initialize the output map
 local output = { ["ideas"] = {} }
+
 -- initialize a global counter for providing unique ids
 local gn = 0
 
@@ -422,6 +424,9 @@ function pipe_in_out(cmd, s)
   fout:close()
   os.remove(tmp)
   os.remove(tmpout)
+
+  Logger:debug("pipe_in_out (cmd, input, output): " .. cmd .. ", " .. s .. ", " .. o)
+
   return o
 end
 
@@ -530,11 +535,13 @@ end
 function parse_options(a)
   local opts        = {}
   local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true, n = true, name = true, f = true, folder = true })
-  opts["upload"]    = flags["u"] or flags["upload"] or
-      flags["p"] or flags["public"] or
+
+  opts["upload"] = flags["u"] or flags["upload"] or
+      -- Make uploads more explicit:
+      -- flags["p"] or flags["public"] or
       flags["g"] or flags["gdrive"] or
       flags["f"] or flags["folder"]
-  opts["help"]      = flags["h"] or flags["help"]
+  opts["help"]   = flags["h"] or flags["help"]
   if flags["p"] or flags["public"] then
     opts["public"] = "--share"
   else
@@ -559,18 +566,25 @@ function parse_options(a)
 end
 
 function main()
+  Logger:debug("arg: ")
+  Logger:debug(arg)
+
   -- print(args) -- What is this line for? Debugging? In which case, is there a log function?
   local opts = parse_options(arg)
+
   if opts["help"] then
     return help()
   else
     local input = ""
     if opts["file"] then
+      Logger:debug("opts[\"file\"]: ")
+      Logger:debug(opts)
       local f = assert(io.open(opts["file"], 'r'))
       input = f:read("*all")
       f:close()
     else
       input = io.read("*all")
+      Logger:debug("input = io.read(\" * all \"), input: " .. input)
     end
     local argmap = lyaml.load(input)
     output = template
@@ -579,6 +593,11 @@ function main()
     local mup = json.encode(output)
 
     local folderopt = ""
+
+    --  TODO: remove Temp code:
+    Logger:debug("opts: ")
+    Logger:debug(opts)
+
     if opts["upload"] and opts["gdrive_id"] then
       pipe_in_out("gdrive update " ..
         "--no-progress " ..
@@ -604,6 +623,7 @@ function main()
       local gdrive_id = string.match(gdriveoutput, "Uploaded ([^%s]*) at")
       return gdrive_id
     else
+      Logger:debug("return mup: " .. mup)
       return mup
     end
   end

@@ -34,7 +34,8 @@ source scripts/argmaps_init_script.sh
 # Since env variables don't seem to be available in hook script:
 # source scripts/conda.env # Get current conda env
 #source /opt/miniconda3/bin/activate # QUESTION: run this to get conda env variables instead?
-# export WORKSPACE=${GIT_PROJECT_DIR:-$(dirname "$(pwd)")}/argmap #adapted from prev 2 lines from init_script.
+# PROJECT_DIR=$(dirname "$WORKSPACE")/argmap #adapted from prev 2 lines from init_script.
+# export PROJECT_DIR
 # export MJS_WP_HOME
 # MJS_WP_HOME="$WORKSPACE/mapjs"
 # export MJS_WP_MAP="$WORKSPACE/examples/example.json"

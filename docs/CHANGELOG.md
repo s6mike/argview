@@ -1,5 +1,38 @@
 # Argmap Project Change Log
 
+## argmap 3.7.1
+
+- Add `pandoc-templates` folder containing:
+  - Two html5 templates: pandoc default, and custom mapjs:
+    - `custom-mapjs.html5` template based on default combined with mapjs `index.html` file.
+    - `mapjs-map.html`: Move script and style to `mapjs-main-html5.html` since they only need to appear once regardless of number of containers.
+    - pandoc partials (sub-templates) for parts of custom template.
+      - `pandoc-templates/mapjs/mapjs-map.html`:
+      - Add temporary `src` attribute to container.
+- mapjs folders:
+  - Add `scripts/mapjs.config` to `mapjs` and `mapjs-example` folders and source these from argmap init script so that correct files are referenced for each.
+  - Move to `mapjs-example/`:
+    - `scripts/`:
+      - `scripts/argmaps_init_script.sh`:
+        - Fix bugs when terminal opens outside of WORKSPACE.
+        - Clean up variable references and delete GIT_PROJECT_DIR.
+          - Remove GIT_PROJECT_DIR definition from `environment.yml`.
+        - Add input file variables for each file type.
+      - `install.sh`: Add symbolic link from pandoc data folder to `pandoc-templates`.
+    - `pandoc-templates/mapjs/mapjs-map.html`: Add metadata variable: $mapjs-output-js$
+    - Update scripts to use variable MJS_WP_HOME properly.
+  - Add `mapjs-example/src/argmap_output/` for maps data:
+    - Symbolic links to `Output/` folder.
+    - Update paths used in `src/start.js`.
+  - Select containers based on .container not #container.
+    - `mapjs-example/src/start.js`
+    - `mapjs/mapjs-inline-styles.css`
+  - `package.json`: Add `"type": "commonjs"`.
+- `src/`:
+  - `argmap2mup.lua`: Stop public flag forcing upload to ensure uploads deliberate.
+  - `config_argmap.lua`: Move logging functionality here for centralisation.
+- `Input/example-updated.md`: Add copy of `examples/example.md` modified to work with mapjs.
+
 ## argmap 3.7.0
 
 - Develop argmapjs prototype:

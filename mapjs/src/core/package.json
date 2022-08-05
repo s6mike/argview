@@ -1,0 +1,12 @@
+{
+  "name": "@mindmup/mapjs-core",
+  "license": "MIT",
+  "private": true,
+  "version": "4.0.0",
+  "main": "npm-core.js",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "monotone-convex-hull-2d": "^1.0.1",
+    "polybooljs": "^1.1.1"
+  }
+}

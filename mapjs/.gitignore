@@ -1,0 +1,13 @@
+results
+.DS_Store
+testem/compiled
+pub
+lib
+#grunt and jasmine artificats
+node_modules/
+SpecRunner.html
+.grunt
+.sublime*
+.tern-port
+npm-debug.log
+package-lock.json

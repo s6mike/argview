@@ -1,10 +1,34 @@
-# How to use MapJS 2 with WebPack
+MindMup MapJs
+=============
 
-1. Navigate to `mapjs` folder, which is where files have been moved to, to simplify merging with argmap repo.
-2. Run `npm install` to grab the dependencies.
-3. Run `npm run pack-js -- --env.input_map=[path to map.json file]` to package MAPJS and all the dependencies into a single JS file which displays the chosen map.json file as a mindmap. This `.json` file could be a mindmup export or an output from `argmap2mup` (see [s6mike/argmap: Tools for working with argument maps represented in YAML - forked bugfixes and customisation](https://github.com/s6mike/argmap/tree/master)).
-4. Open `index.html` in your browser.
+MindMup is a zero-friction mind map canvas. Our aim is to create the most productive mind mapping environment out there, removing all the distractions and providing powerful editing shortcuts.
 
-## How it works
+This project is the JavaScript visualisation portion of MindMup. It provides a canvas for users to create and edit
+mind maps in a browser. You can see an example of this live at [mindmup.com](http://www.mindmup.com), or play with the library directly in the browser using `test/index.html` from this project..
 
-Check out [src/start.js](src/start.js) to see how the page is wired up and initialised.
+This project is relatively stand alone and you can use it to create a nice mind map visualisation separate from the
+[MindMup Server](https://www.mindmup.com).
+
+# Using MAPJS in your projects
+
+MapJS 2 works well with WebPack. Check out the [MAPJS Webpack Example](https://github.com/mindmup/mapjs-webpack-example) project.
+
+# Testing
+
+To run the unit tests, execute
+
+    npm test
+
+To debug and try things out visually, grab the dependencies using:
+
+    npm run pretest
+
+# Dependencies
+
+This library depends on the following projects:
+
+- [JQuery](http://jquery.com/)
+- [Underscore.Js](http://underscorejs.org/)
+- [JQuery HotKeys](http://jquery.com/)
+- [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
+- [Color JS](https://github.com/harthur/color)

@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# SECTION 0:
+# ----------
+
+# a) Review: intialised values in `scripts/argmaps_init_script.sh`
+
 # SECTION 1:
 # ----------
 
@@ -18,6 +23,10 @@ export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 # conda env create -f environment.yml
 # Or:
 # conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAPS
+
+# If conda activate errors:
+# conda init bash
+# source /opt/miniconda3/bin/activate
 
 # conda activate $CONDA_ENV_ARGMAPS
 
@@ -74,6 +83,8 @@ chmod +x git_hooks/*
 
 # SECTION 3: Link conda env
 # ---------------------------------------------------
+
+# a) Review: intialised values in `environment.yml`
 
 # ln -s source_file symbolic_link
 ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
@@ -134,6 +145,7 @@ ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
 # Only needed for pre-commit hook:
 ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+<<<<<<< HEAD
 
 # SECTION 4: mapjs
 # ---------------------------------------------------
@@ -147,3 +159,52 @@ cd "$WORKSPACE/mapjs" || {
 
 # TODO choose location instead of using cd above.
 npm install
+||||||| parent of a9fcd83 (3.7.0 feat(argmapjs): Develop argmapjs prototype:)
+=======
+
+# SECTION 4: mapjs
+# ---------------------------------------------------
+
+# Check $MJS_WP_HOME is set as desired
+cd "$MJS_WP_HOME" || {
+  echo "Abandoning QA install."
+  exit 1
+}
+
+# Link src folder to Output folder.
+ln -s "$WORKSPACE/Output" "$MJS_WP_HOME/src/argmap_output"
+
+#nodejs installed with conda
+
+# TODO: remove this comment, now irrelevant?
+# Before npm install:
+# Check mapjs/package.json, ensure latest git commit is referenced:
+# "dependencies": {
+#     "mindmup-mapjs": "git@github.com:mindmup/mapjs.git#e30f8d835e028febe2e951e422c313ac304a0431"
+#   }
+
+npm --prefix "$MJS_WP_HOME" install
+>>>>>>> a9fcd83 (3.7.0 feat(argmapjs): Develop argmapjs prototype:)
+
+# SECTION 4: mapjs
+# ---------------------------------------------------
+
+# Check $MJS_WP_HOME is set as desired
+cd "$MJS_WP_HOME" || {
+  echo "Abandoning QA install."
+  exit 1
+}
+
+# Link src folder to Output folder.
+ln -s "$WORKSPACE/Output" "$MJS_WP_HOME/src/argmap_output"
+
+#nodejs installed with conda
+
+# TODO: remove this comment, now irrelevant?
+# Before npm install:
+# Check mapjs/package.json, ensure latest git commit is referenced:
+# "dependencies": {
+#     "mindmup-mapjs": "git@github.com:mindmup/mapjs.git#e30f8d835e028febe2e951e422c313ac304a0431"
+#   }
+
+npm --prefix "$MJS_WP_HOME" install
