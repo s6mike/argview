@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex).
   - `scripts/bash_aliases_argmap.sh`: Review functions.
 
+## argmap 3.8.1
+
+- `scripts`:
+  - Rename 'private' functions to start with __
+  - Move `git_hooks` folder into `scripts`.
+    - Update `install.sh`
+  - Re-organise some functions.
+- Update docs to explain private functions may change during patch updates.
+
 ## argmap 3.8.0
 
 - `src/pandoc-argmap.lua`: Update to convert argmap code blocks with attribute `convertTo="mapjs"` to mapjs format.
@@ -360,3 +369,7 @@ Original <https://github.com/dsanson/argmap>
 -------------------------
 
 Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Note that bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+
+Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.

@@ -94,7 +94,7 @@ Here are a few general guidelines for proposing changes:
 
 Some simple tests are executed here: [`scripts/tests.sh`](scripts/tests.sh).
 
-I've also got this set up to be called from a pre-commit hook.
+I have also set these up to be called from a pre-commit hook.
 
 ## Additional Resources
 

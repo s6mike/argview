@@ -78,7 +78,7 @@ apt-get install texlive-luatex
 chmod u+x src/*
 
 # Link up pre-commit hook
-ln -s git_hooks/pre-commit .git/hooks/
+ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
 chmod +x git_hooks/*
 
 # SECTION 3: Link conda env
@@ -170,4 +170,4 @@ ln -s "$WORKSPACE/Output" "$MJS_WP_HOME/src/argmap_output"
 npm --prefix "$MJS_WP_HOME" install
 
 # Ideally generate .json files before running this
-pack_mapjs
+__pack_mapjs

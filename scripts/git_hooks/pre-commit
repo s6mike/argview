@@ -43,8 +43,6 @@ source scripts/argmaps_init_script.sh
 #testing
 source scripts/bash_aliases_argmap.sh
 
-ENV_FILE="$WORKSPACE/environment.yml"
-
 # Once conda env activated, $CONDA_PREFIX/bin will be sufficient.
 export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAPS/bin:$PATH
 
@@ -55,6 +53,8 @@ export LUA_CPATH="$WORKSPACE/lua_modules/lib/lua/5.3/?.so;"
 
 # Export conda environment argmaps to yaml file
 conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$ENV_FILE"
+
+__save_env
 
 # Check if new environment file is different from original
 # git diff --exit-code --quiet environment.yml
@@ -76,10 +76,10 @@ scripts/tests.sh
 
 TEST_EXIT=$?
 
-reset_repo # Clean up script output after - so submission still works even if reset fails.
+__reset_repo # Clean up script output after - so submission still works even if reset fails.
 
 # Check src/ for lua files with leftover scaffolding and show relevant lines in popup.
-xmessage -center -button Abort:1,OK:0 -fn '-sony-fixed-medium-r-normal--0-0-200-200-c-0-iso8859-1' "$(check_repo)"
+xmessage -center -button Abort:1,OK:0 -fn '-sony-fixed-medium-r-normal--0-0-200-200-c-0-iso8859-1' "$(__check_repo)"
 
 BUTTON=$?
 

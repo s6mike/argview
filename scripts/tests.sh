@@ -35,7 +35,7 @@ if [ $COLOUR = 'true' ]; then
     COL_RESET='\033[0m'   # No Color
 fi
 
-test() {
+__test() {
     PRE="Test $TESTNUM:"
     echo -en "$PRE "
 
@@ -66,13 +66,13 @@ test() {
 #     cat "$Output"
 # done
 
-test a2m "$INPUT_FILE_YML"   #1
-test m2a "$INPUT_FILE_MUP"   #2
-test a2t "$INPUT_FILE_YML"   #3
-test a2mu "$INPUT_FILE_YML"  #4
-test a2jo "$INPUT_FILE_YML"  #5
-test md2hf "$INPUT_FILE_MD"  #6
-test md2pdf "$INPUT_FILE_MD" #7
+__test a2m "$INPUT_FILE_YML"   #1
+__test m2a "$INPUT_FILE_MUP"   #2
+__test a2t "$INPUT_FILE_YML"   #3
+__test a2mu "$INPUT_FILE_YML"  #4
+__test a2jo "$INPUT_FILE_YML"  #5
+__test md2hf "$INPUT_FILE_MD"  #6
+__test md2pdf "$INPUT_FILE_MD" #7
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

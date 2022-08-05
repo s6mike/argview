@@ -17,6 +17,8 @@ source /opt/miniconda3/bin/activate
 #   create a (version-controlled) activate.cmd file in the root of the project directory that sets the environemnt variable(s) and then calls conda's own activate.bat script.
 conda activate "$CONDA_ENV_ARGMAPS"
 
+export ENV_FILE="$WORKSPACE/environment.yml"
+
 # Uses variable set in conda env, or defaults to pwd.
 # TODO: this still isn't great, assumes you are in argmap folder when called.
 #   Plus they will outlast any env deactivation

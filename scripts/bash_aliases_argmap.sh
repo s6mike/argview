@@ -1,35 +1,48 @@
 #!/usr/bin/env bash
 
+# Functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+
 echo "Running ${BASH_SOURCE[0]}"
 
 # argmap Functions
 
-chrome-mini() {
+__chrome-mini() {
   # &suffix runs it in background so terminal not blocked
   google-chrome --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
 }
 
-reset_repo() {
+# Used by pre-commit hook
+__reset_repo() {
   echo 'Restoring output folder to match remote.'
+  # Would like to do this for mapjs-example, but risky that it would affect files with legitimate changes.
+  # TODO: move output files to a sub-folder.
   git checkout -- "$WORKSPACE/Output/"
   git checkout -- "$WORKSPACE/examples/"
 }
 
-clean_repo() {
+# Checks `src/`` for lua files with leftover test/debug code.
+# Used by pre-commit hook
+__check_repo() {
+  grep -Frni "$WORKSPACE/src" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+}
+
+__save_env() {
+  conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$ENV_FILE"
+  # TODO: Prepare Environment YAML For Distribution
+  # https://workflowy.com/#/b0011d3b3ba1
+}
+
+__clean_repo() {
   rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
   rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
   # rm "$INPUT_FILE_JSON"
 }
 
-# Checks `src/`` for lua files with leftover test/debug code.
-check_repo() {
-  grep -Frni "$WORKSPACE/src" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
-}
-
-save_env() {
-  conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$WORKSPACE/environment.yml"
-  # TODO: Prepare Environment YAML For Distribution
-  # https://workflowy.com/#/b0011d3b3ba1
+__pack_mapjs() {
+  # OUTPUT=$1 # Remove default so can test properly: ${1:-$MJS_WP_MAP}
+  # First -- ensures rest is passed onto webpack call
+  # TODO - adding --inspect should enable debug mode - but can't get to work.
+  npm --prefix "$MJS_WP_HOME" run pack-js -- --env.input_map="$1"
 }
 
 # lua argmap2mup Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml > Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup
@@ -48,27 +61,20 @@ a2mu() { # a2mu Output/Example1_simple.yml
     echo "Uploaded: $1 to GDrive."
 }
 
-pack_mapjs() {
-  # OUTPUT=$1 # Remove default so can test properly: ${1:-$MJS_WP_MAP}
-  # First -- ensures rest is passed onto webpack call
-  # TODO - adding --inspect should enable debug mode - but can't get to work.
-  npm --prefix "$MJS_WP_HOME" run pack-js -- --env.input_map="$1"
-}
-
 a2mo() { # Deprecated, use a2jo instead.
   NAME=$(basename --suffix=".yml" "$1") &&
     OUTPUT=${2:-$WORKSPACE/Output/$NAME.json} &&
     a2m "$1" "$OUTPUT" &&
-    pack_mapjs "$OUTPUT"
+    __pack_mapjs "$OUTPUT"
 }
 
 a2jo() { # m2a Output/Example1_simple.yml
   NAME=$(basename --suffix=".yml" "$1")
   OUTPUT=${2:-$WORKSPACE/Output/$NAME.json}
   #TODO: Is there a way to pipe a2m output directly into pack_mapjs?
-  # Then pack_mapjs should ideally have been generated during install/init, so won't be needed to be called after, will just be referenced in js
+  # Then __pack_mapjs should ideally have been generated during install/init, so won't be needed to be called after, will just be referenced in js
   a2m "$1" "$OUTPUT" &&
-    pack_mapjs "$OUTPUT"
+    __pack_mapjs "$OUTPUT"
 }
 
 md2hf() { # md2h Input/example.md
@@ -86,10 +92,10 @@ md2hf() { # md2h Input/example.md
   wait # waits for png to appear
   mv ./*.png "$(dirname "$OUTPUT")"
 
-  # TODO: Shouldn't need this part, but will need to run pack_mapjs after updating start.js.
+  # TODO: Shouldn't need this part, but will need to run __pack_mapjs after updating start.js.
   # call a2jo?
-  # pack_mapjs "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json"
-  chrome-mini "$OUTPUT"
+  # __pack_mapjs "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.json"
+  __chrome-mini "$OUTPUT"
 }
 
 m2a() { # m2a Output/Example1_simple.mup
@@ -119,7 +125,7 @@ md2htm() { # md2htm Input/example-updated.md
     echo "Generated: $OUTPUT"
   wait # waits for png to appear
   mv ./*.png "$WORKSPACE/Output/"
-  chrome-mini "$OUTPUT"
+  __chrome-mini "$OUTPUT"
 }
 
 md2pdf() { # md2pdf Input/example.md
@@ -127,11 +133,11 @@ md2pdf() { # md2pdf Input/example.md
   OUTPUT=${2:-$WORKSPACE/Output/$NAME.pdf}
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template examples/example-template.latex --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: $OUTPUT"
-  chrome-mini "$OUTPUT"
+  __chrome-mini "$OUTPUT"
 }
 
 ## Mark functions for export to use in other scripts:
-export -f reset_repo clean_repo check_repo chrome-mini save_env pack_mapjs a2m m2a a2t a2mu a2mo a2jo md2htm md2hf md2pdf
+export -f __reset_repo __clean_repo __check_repo __chrome-mini __save_env __pack_mapjs a2m m2a a2t a2mu a2mo a2jo md2htm md2hf md2pdf
 
 # argmap Aliases
 

@@ -740,4 +740,6 @@ Fork of:
 
 Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
 
+Note that bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+
 Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.
