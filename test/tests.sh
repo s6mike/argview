@@ -4,11 +4,9 @@
 
 echo 'Attempting to delete old test outputs.'
 
-rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$WORKSPACE/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
-
-# TODO: How is this generated? Delete this line?
-rm "$WORKSPACE/Output/example.html"
+__clean_repo
+rm "$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+rm "$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
@@ -64,18 +62,21 @@ __test() {
 #     echo "$Variable"
 # done
 # or could loop through files in a folder
-# for Output in $(ls)
+# for test/output in $(ls)
 # do
-#     cat "$Output"
+#     cat "$test/output"
 # done
 
-__test a2m "$INPUT_FILE_YML"   #1
-__test m2a "$INPUT_FILE_MUP"   #2
-__test a2t "$INPUT_FILE_YML"   #3
-__test a2mu "$INPUT_FILE_YML"  #4
-__test a2jo "$INPUT_FILE_YML"  #5
-__test md2hf "$INPUT_FILE_MD"  #6
-__test md2pdf "$INPUT_FILE_MD" #7
+__test a2m "$INPUT_FILE_YML"       #1
+__test m2a "$INPUT_FILE_MUP"       #2
+__test a2t "$INPUT_FILE_YML"       #3
+__test a2mu "$INPUT_FILE_YML"      #4
+__test a2jo "$INPUT_FILE_YML"      #5
+__test md2hf "$INPUT_FILE_MD0"     #6
+__test md2hf "$INPUT_FILE_MD"      #7
+__test md2hf "$INPUT_FILE_MD2"     #8
+__test md2hf "$INPUT_FILE_MD_META" #9
+__test md2pdf "$INPUT_FILE_MD0"    #10
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

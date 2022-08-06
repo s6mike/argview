@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+  [
+    umbrella/.style args={#1}{
+        draw=none,
+        rectangle,
+        append after command={
+            \pgfextra{%
+                \pgfkeysgetvalue{/pgf/outer xsep}{\oxsep}
+                \pgfkeysgetvalue{/pgf/outer ysep}{\oysep}
+                \begin{pgfinterruptpath}
+                    \ifx\\#1\\\else
+                        \draw[draw,#1] 
+                        ([xshift=-\pgflinewidth,yshift=-2mm]\tikzlastnode.north east) 
+                        -- ([xshift=-\pgflinewidth,yshift=-\oysep]\tikzlastnode.north east) 
+                        -- ([xshift=0,yshift=-\oysep]\tikzlastnode.north west) 
+                        -- ([xshift=0,yshift=-2mm]\tikzlastnode.north west);
+                    \fi
+                \end{pgfinterruptpath}
+            }
+        }
+    },
+    claim/.style={draw, black, very thin,
+       execute at begin node={\begin{varwidth}{\argmapmaxnodewidth}},
+       execute at end node={\end{varwidth}}
+    },
+    supporting/.style args={#1}{umbrella={green,#1}},
+    supportingedge/.style={green},
+    opposing/.style args={#1}{umbrella={red,#1}},
+    opposingedge/.style={red},
+    implicit/.style={dashed}
+  ]
+  \pgfsetcornersarced{\pgfpoint{.5mm}{.5mm}}  \graph [layered layout, grow down, level distance=5em, tail anchor=center, edge quotes={fill=yellow!25,inner sep=3pt}, head anchor=center]
+  {
+    c1/"All swans are white."[claim]
+      --[line width=1.2pt, opposingedge]       r2/"" [opposing={line width=1.2pt}] // [ tree layout ] {
+        c3/"Not all swans are white."[claim],
+      },
+    c1/"All swans are white."[claim]
+      --[line width=1.2pt, supportingedge]       r4/"" [supporting={line width=1.2pt}] // [ tree layout ] {
+        c5/"These swans are representative of all swans."[claim],
+        c6/"Every swan I've ever seen is white."[claim],
+      },
+  };
+\end{tikzpicture}

@@ -89,7 +89,7 @@
     "markdown-preview-enhanced.pandocArguments": [
         "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua", // Variables don't work in this fi
         "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
-        // "--output=/home/s6mike/git_projects/argmap/Output/test.html",
+        // "--output=/home/s6mike/git_projects/argmap/test/output/test.html",
     ],
     "launch": {
         "env": {
@@ -110,4 +110,11 @@
         "?/init.lua",
         "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua"
     ],
+    "Lua.diagnostics.globals": [
+        "pandoc",
+        "FORMAT",
+        "PANDOC_STATE",
+        "Logger",
+        "MAPJS_JSON_INPUT_DIR"
+    ]
 }

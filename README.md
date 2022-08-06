@@ -116,7 +116,7 @@ See [`scripts/bash_aliases_argmap.sh`](scripts/bash_aliases_argmap.sh) for bash 
 
 There are some example files in the [examples](examples) folder in the repository. Here are some things to try:
 
-`$ cat examples/example.yml | argmap2mup.lua > Output/example.mup`: generate a MindMup map from example.yml. Import that map into MindMup to work with.
+`$ cat examples/example.yml | argmap2mup.lua > output/example.mup`: generate a MindMup map from example.yml. Import that map into MindMup to work with.
 
 `$ argmap2mup.lua -u examples/example-2.yml`: generate a MindMup map and upload it to your Google Drive. You can then go to Google Drive and open the map in MindMup to work with it.
 
@@ -129,14 +129,14 @@ mup2argmap.lua download.mup > download.yml
 Next, try generating a PDF image from `example.yml`:
 
 ``` shell
-cat examples/example.yml | argmap2tikz.lua -s > Output/example.tex
-lualatex Output/example
+cat examples/example.yml | argmap2tikz.lua -s > output/example.tex
+lualatex output/example
 ```
 
 Finally, try generating an HTML document from a markdown document containing an embedded argument map:
 
 ``` shell
-pandoc examples/example.md -o Output/example.html --lua-filter pandoc-argmap.lua
+pandoc examples/example.md -o output/example.html --lua-filter pandoc-argmap.lua
 ```
 
 ## How to represent Argument Maps in YAML
@@ -383,11 +383,7 @@ $  argmap2mup.lua -u examples/example.yml
 1e4HAl1iHPKBiKZ_BI_yBw7rXYbuvMsC2
 ```
 
-If you have connected your MindMup account to Google Drive, you can use this Google Drive ID to construct a URL that allows you to open the file directly in MindMup. The format for the URL is:
-
-``` markdown
-https://drive.mindmup.com/map/ID
-```
+If you have connected your MindMup account to Google Drive, you can use this Google Drive ID to construct a URL that allows you to open the file directly in MindMup. The format for the URL is: `https://drive.mindmup.com/map/ID`
 
 `-g ID, --gdrive_id ID`: Update the file with ID on Google Drive.
 
@@ -417,7 +413,7 @@ For more information about the structure of the .mup/.json output format, see: [
 
 `mup2argmap.lua` is a pipe for converting MindMup maps into the argmap `YAML` format.
 
-It takes as its input the first CLI argument that is not an option,or, if there is no such argument, STDIN.
+It takes as its input the first CLI argument that is not an option, or, if there is no such argument, STDIN.
 
 ``` shell
 cat examples/example.mup | mup2argmap.lua
@@ -480,9 +476,9 @@ This standalone LaTeX file is suitable for generating a PDF image of the map, wh
 e.g.
 
 ``` shell
-argmap2tikz.lua -s examples/example.yml > Output/example.tex
-lualatex Output/example
-convert Output/example.pdf Output/example.png
+argmap2tikz.lua -s examples/example.yml > output/example.tex
+lualatex output/example
+convert output/example.pdf output/example.png
 ```
 
 `-i, --includes`: dump lines suitable for including in a `LaTeX` preamble
@@ -543,7 +539,6 @@ This tells pandoc to upload all the maps it generates to a specific folder on my
 Embedded argument maps are represented as code blocks with the class `argmap`.
 
 ``` yaml
-
     ``` {.argmap}
     "Brunellus is irrational":
       r1:
@@ -553,7 +548,6 @@ Embedded argument maps are represented as code blocks with the class `argmap`.
         "Brunellus studied in Paris.":
         "-Most who study in Paris are rational.":
     ```
-
 ```
 
 As per [pandoc's markdown format for Fenced code blocks](https://pandoc.org/MANUAL.html#extension-fenced_code_attributes), you can use:
@@ -562,13 +556,12 @@ As per [pandoc's markdown format for Fenced code blocks](https://pandoc.org/MANU
 - . for classes
 - attribute="value" for assigning values.
 
-If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps), then add the attribute convertTo="mapjs". See section [Generating mapjs Interactive Argument Maps](#generating-mapjs-interactive-argument-maps) for an example.
+If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps), then add the attribute to="mapjs". See section [Generating mapjs Interactive Argument Maps](#generating-mapjs-interactive-argument-maps) for an example.
 
 A name and Google Drive ID can also be specified as attributes of the code
 block:
 
 ``` yaml
-
     ``` {.argmap name="A Donkey Argument" gid="1X6uD8KyrSawW2qSqhmPaNtuSy-6eEK6g"}
     "Brunellus is irrational":
       r1:
@@ -578,7 +571,6 @@ block:
         "Brunellus studied in Paris.":
         "-Most who study in Paris are rational.":
     ```
-
 ```
 
 ### Converting Maps Embedded in Markdown
@@ -586,7 +578,7 @@ block:
 To convert a markdown document containing argument maps, use the `--lua-filter` option with `pandoc`:
 
 ``` shell
-pandoc examples/example.md -o Output/example.html --lua-filter pandoc-argmap.lua
+pandoc examples/example.md -o test/output/example.html --lua-filter pandoc-argmap.lua
 ```
 
 #### Generating Interactive Argument Maps (mapjs)
@@ -594,7 +586,7 @@ pandoc examples/example.md -o Output/example.html --lua-filter pandoc-argmap.lua
  |[![Argument Map Example 1 in mapjs format, embedded in html page](docs/mapjs-in-html-example.png)](mapjs/index.html "Argument Mapjs Example 1")|
  |----------------|
 
-If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps) within the html output, then add the code block attribute `convertTo="mapjs"` to the map, as below:
+If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps) within the html output, then add the code block attribute `to="mapjs"` to the map, as below:
 
 ``` yaml
     ---
@@ -604,7 +596,7 @@ If you want your argmap to be converted into [mapjs format](#using-mapjs-to-disp
 
     This is an example of an argument about a donkey!
 
-    ``` {.argmap name="An argument about a donkey" convertTo="mapjs"}
+    ``` {.argmap name="An argument about a donkey" to="mapjs"}
     "Brunellus is irrational":
       r1:
         "Brunellus is a donkey.":
@@ -615,22 +607,18 @@ If you want your argmap to be converted into [mapjs format](#using-mapjs-to-disp
     ```
 ```
 
-The generated html will also need to reference the mapjs script,
-
-e.g.:
+The generated html will also need to reference the mapjs script e.g.
 
 `<script src="/mapjs-example/site/main.js"></script>`
 
-and for proper formatting reference the included stylesheet,
-
-e.g.:
+and for proper formatting reference the included stylesheet e.g.
 
 `<link rel="stylesheet" href="mapjs-default-styles.css" />`
 
 This can be done with the included pandoc template by calling pandoc like this:
 
 ``` shell
-pandoc Input/example-updated.md --template /pandoc-templates/mapjs/mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/site/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua
+pandoc input/example-updated.md --template /pandoc-templates/mapjs/mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/site/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua
 ```
 
 See [Displaying Argmaps with mapjs](#displaying-argmaps-with-mapjs) for other ways to use mapjs with argmap.
@@ -666,14 +654,14 @@ In addition, if the Google Drive `gid` attribute for the file is added to the co
 If you want to generate a PDF file using `LaTeX`, you will also need to use the `--pdf-engine=lualatex` option, and use a custom template with the `--template`:
 
 ``` shell
-pandoc examples/example.md -o Output/examples/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples example-template.latex
+pandoc examples/example.md -o output/examples/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples example-template.latex
 ```
 
 If you prefer, you could use the `--include-in-header` option instead of a custom template:
 
 ``` shell
-argmap2tikz.lua -i > Output/header.tex
-pandoc examples/example.md -o Output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header Output/header.tex
+argmap2tikz.lua -i > output/header.tex
+pandoc examples/example.md -o output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header output/header.tex
 ```
 
 ### LaTeX and PDF output
@@ -681,7 +669,7 @@ pandoc examples/example.md -o Output/example.pdf --lua-filter pandoc-argmap.lua 
 If the output format is latex, the filter directly embeds the TikZ image code into the latex file as raw latex. So if you want to use `pandoc` to directly produce a PDF using one of its latex engines, you will need to specify `--pdf-engine lualatex` and use a custom template or the `--include-in-header` option.
 
 ``` shell
-pandoc examples/example.md -o Output/example.pdf --lua-filter pandoc-argmap.lua --template custom.latex --pdf-engine lualatex
+pandoc examples/example.md -o output/example.pdf --lua-filter pandoc-argmap.lua --template custom.latex --pdf-engine lualatex
 ```
 
 ### Output in All Other Formats
@@ -747,4 +735,4 @@ Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 
 
 Note that test files, and bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
 
-Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.
+Though documentation is not yet precise and comprehensive! Lua code is well documented, but the bash scripts still need to be properly documented.

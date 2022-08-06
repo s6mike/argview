@@ -37,10 +37,10 @@
             },
             "args": [
                 // "${workspaceFolder}/examples/example.yml",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
                 ">",
-                // "${workspaceFolder}/Output/example.mup",
-                "${workspaceFolder}/Output/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
+                // "${workspaceFolder}/test/output/example.mup",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -62,10 +62,10 @@
             },
             "args": [
                 // "${workspaceFolder}/examples/example.mup",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
                 ">",
-                "${workspaceFolder}/Output/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
-                // "${workspaceFolder}/Output/example.yml",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                // "${workspaceFolder}/test/output/example.yml",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -83,10 +83,10 @@
             },
             "args": [
                 // "${workspaceFolder}/examples/example.yml",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
                 ">",
-                // "${workspaceFolder}/Output/example.tex",
-                "${workspaceFolder}/Output/Example1_ClearlyFalse_WhiteSwan_simplified.tex",
+                // "${workspaceFolder}/test/output/example.tex",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.tex",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -104,7 +104,31 @@
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md",
+                "-o",
+                "${workspaceFolder}/mapjs-example/index.html",
+                "--lua-filter pandoc-argmap.lua",
+                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
+                "--metadata=mapjs-output-js:${workspaceFolder}/mapjs-example/site/main.js",
+                "--metadata=css:mapjs-default-styles.css",
+            ],
+            "env": {
+                "PATH": "${config:lua.debug.settings.env.path}",
+                "LUA_PATH": "${config:lua.debug.settings.path}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+            },
+            "stopOnEntry": true,
+        },
+        {
+            "type": "lua-local",
+            "request": "launch",
+            "name": "Lua Local: pandoc-argmap.lua meta mapjs",
+            "program": {
+                "command": "pandoc",
+            },
+            "args": [
+                "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.md",
                 "-o",
                 "${workspaceFolder}/mapjs-example/index.html",
                 "--lua-filter pandoc-argmap.lua",
@@ -129,7 +153,7 @@
             "args": [
                 "examples/example.md",
                 "-o",
-                "Output/example.pdf",
+                "test/output/example.pdf",
                 "--lua-filter pandoc-argmap.lua",
                 "--pdf-engine",
                 "lualatex",
@@ -154,7 +178,7 @@
             "args": [
                 "-u",
                 // "${workspaceFolder}/examples/example.yml",
-                "${workspaceFolder}/Input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",

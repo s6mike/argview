@@ -8,8 +8,7 @@ mapjs/node_modules
 mapjs/site
 mapjs-example/node_modules
 mapjs-example/site
-Input/*
-Input/Archived/
-Output/*
 examples/*
+output/*
+test/output/*
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png

@@ -146,8 +146,8 @@ function CodeBlock(block)
             local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
             return pandoc.CodeBlock(original, attr)
         else
-            -- TODO: get convertTo value
-            local convertTo = block.attributes["convertTo"]
+            -- https://docs.google.com/spreadsheets/d/1nUmP52mYggR6cbZUwkrjxArgrvr3nJXO_tE6qV4-2S4/edit#gid=823952520&range=D12
+            local argmap_format = block.attributes["to"]
 
             -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
             -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
@@ -177,7 +177,7 @@ function CodeBlock(block)
                     .. "\\href{" .. mupLink .. "}{" .. rawtikz .. "}\n" ..
                     [[\end{adjustbox}]]
                 return pandoc.RawBlock(format, rawlatex)
-            elseif convertTo == "mapjs" then -- if code block has this attribute then convert to mapjs output
+            elseif argmap_format == "js" then -- if code block has this attribute then convert to mapjs output
                 -- ISSUE: Currently filetype: "png", want "json"
 
                 local block_id = block.attr.identifier
@@ -192,11 +192,11 @@ function CodeBlock(block)
                 -- TODO: can I set filetype based on pandoc target format?
                 -- yml #ID (block id: append to container_ for: container div id;
                 --          prepend with input filename for:
-                --              Output/input_file_yml_id.json
+                --              test/output/input_file_yml_id.json
                 -- TODO: add _yml name attribute (with _ substitutions for spaces) ?
 
                 local output_filename = input_filename .. "_" .. block_id
-                local output_fpath = "Output/" .. output_filename .. ".json"
+                local output_fpath = MAPJS_JSON_INPUT_DIR .. output_filename .. ".json"
 
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
@@ -211,7 +211,6 @@ function CodeBlock(block)
                 local rawhtml = argmap_controls_html ..
                     "<div id=\"container" ..
                     "_" .. block_id .. "\" class=\"container_argmapjs\" src=\"" .. output_filename .. "\"></div>"
-                -- "<div id=\"container" .. "\" src=\"" .. output_filename .. "\"></div>"
 
                 -- return pandoc.CodeBlock(original, attr)
                 return pandoc.RawBlock(format, rawhtml)

@@ -1,16 +1,16 @@
 ---
-title: Example 1.2 - All swans are white.
+title: Example 1.0 - All swans are white.
 template: pandoc-templates/mapjs/mapjs-main-html5.html
-argmaps: true
 # TODO: These might be better in a defaults file:
 #   https://workflowy.com/#/ee624e71f40c
 # css: test/mapjs-default-styles.css
 # mapjs-output-js: test/bundle.js
 # lua-filter: "$WORKSPACE/src/pandoc-argmap.lua"
 # data-dir: "$PANDOC_DATA_DIR"
+argmaps: true
 ---
 
-This is a simplified version of the White Swan argument in mapjs format:
+This is a simplified version of the White Swan argument:
 
 ```{#argmap1 .argmap .yml name="Example 1: All swans are white."}
 "All swans are white.":
@@ -23,7 +23,7 @@ This is a simplified version of the White Swan argument in mapjs format:
 
 And here it is again:
 
-```{#argmap1 .argmap .yml name="Example 1: All swans are white." convertTo="mapjs"}
+```{#argmap2 .argmap .yml name="Example 1: All swans are white."}
 "All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []

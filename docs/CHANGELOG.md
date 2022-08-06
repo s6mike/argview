@@ -2,12 +2,32 @@
 
 ## TODO
 
+- `scripts/bash_aliases_argmap.sh`: Review functions.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex).
-- `scripts/bash_aliases_argmap.sh`: Review functions.
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
-- Move all of `Input` and `Output` to `test/input` and `test/output` and update scripts
 - Add references to argmap specs?
+
+## argmap 4.0.0 BREAKING
+
+- Change block directive from `convertTo="mapjs"` to `to="js"` for consistency with pandoc. BREAKING
+  - Update: `src/pandoc-argmap.lua`, example files.
+- Update scripts to use `test/input` and `test/output` instead of `Input` and `Output`. BREAKING
+  - Move `Input` test files to above folders.
+- Write all mapjs .json input files to `MAPJS_JSON_INPUT_DIR`: BREAKING
+  - Initialise in init_script as `output/mapjs-json-input`.
+  - Read in `config_argmap.lua`
+  - Update `src/pandoc-argmap.lua` to output json code to this folder.
+  - Update `scripts/install.sh` and symbolic link: link to `mapjs-example/`.
+- `tests/tests.sh`:
+  - Fix duplicate argmap IDs in some test files.
+  - Add 2 md2hf() tests for new input files with 0, 2 argmap > mapjs code blocks.
+  - Add md2hf() test for new input file with argmap > mapjs metadata.
+  - `scripts/bash_aliases_argmap.sh`:
+    - `md2hf()`:
+      - Fix browser blocking test progression with `&disown`.
+      - Write html output to different files, avoiding shared test state while waiting for browser.
+      - Update `__clean_repo`.
 
 ## argmap 3.9.2
 

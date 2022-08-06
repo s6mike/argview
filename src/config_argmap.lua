@@ -1,6 +1,6 @@
 -- Configures global variables for lua files.
 
--- if this file showing up as not found, then in calling file add:
+-- If this file showing up as not found, then in calling file add:
 -- package.path = "/home/s6mike/git_projects/argmap/src/?.lua;" .. package.path
 
 -- Use to add breakpoint:
@@ -10,14 +10,10 @@
 
 local config = {}
 
--- TODO: Try adding this once using later version of pandoc:
--- io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
-
+-- QUESTION: Use PANDOC_SCRIPT_FILE instead?
 config.project_folder = os.getenv("WORKSPACE") or "/home/s6mike/git_projects/argmap"
 
 -- Didn't work from extension:
--- package.path = os.getenv("LUA_PATH")
-
 package.path = os.getenv("LUA_PATH") or
     config.project_folder ..
     "/src/?.lua;" ..
@@ -34,7 +30,9 @@ package.cpath = os.getenv("LUA_CPATH") or
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
 
-logging = require "logging"
+MAPJS_JSON_INPUT_DIR = os.getenv("MAPJS_JSON_INPUT_DIR") or 'output/mapjs-json-input/'
+
+local logging = require "logging"
 Logger = logging.new(function(self, level, message)
     io.stderr:write(message)
     io.stderr:write("\n")
