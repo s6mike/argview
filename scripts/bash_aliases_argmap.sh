@@ -77,6 +77,19 @@ a2jo() { # m2a Output/Example1_simple.yml
     __pack_mapjs # "$OUTPUT"
 }
 
+m2a() { # m2a Output/Example1_simple.mup
+  NAME=$(basename --suffix=".mup" "$1")
+  OUTPUT=${2:-$WORKSPACE/Output/$NAME.yml}
+  mup2argmap "$1" >"$OUTPUT" &&
+    echo "Generated: $OUTPUT"
+}
+
+a2t() { # a2t Output/Example1_simple.yml
+  NAME=$(basename --suffix=".yml" "$1") &&
+    argmap2tikz "$1" >"${2:-$WORKSPACE/Output/$NAME.tex}" &&
+    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.tex}"
+}
+
 md2hf() { # md2h Input/example.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$MJS_WP_HOME/index.html}
@@ -98,19 +111,7 @@ md2hf() { # md2h Input/example.md
   __chrome-mini "$OUTPUT"
 }
 
-m2a() { # m2a Output/Example1_simple.mup
-  NAME=$(basename --suffix=".mup" "$1")
-  OUTPUT=${2:-$WORKSPACE/Output/$NAME.yml}
-  mup2argmap "$1" >"$OUTPUT" &&
-    echo "Generated: $OUTPUT"
-}
-
-a2t() { # a2t Output/Example1_simple.yml
-  NAME=$(basename --suffix=".yml" "$1") &&
-    argmap2tikz "$1" >"${2:-$WORKSPACE/Output/$NAME.tex}" &&
-    echo "Generated: ${2:-$WORKSPACE/Output/$NAME.tex}"
-}
-
+# This is meant to output an html doc fragment rather than full doc, so removing template.
 # TODO: fix, this currently creates html output in Output folder: e.g. file:///home/s6mike/git_projects/argmap/Output/example-updated.html
 # Which breaks links to webpack output js, looks in: file:///home/s6mike/git_projects/argmap/Output/site/main.js
 # Probably because I'm now using a relative link to the js file, so that I can view in main chrome browser.
@@ -121,7 +122,7 @@ md2htm() { # md2htm Input/example-updated.md
   # TODO: Put this into new function?
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
-  pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$MJS_OUTPUT_FILE" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: $OUTPUT"
   wait # waits for png to appear
   mv ./*.png "$WORKSPACE/Output/"

@@ -6,8 +6,15 @@
   - Add note about linking/using templates (html and latex).
 - `scripts/bash_aliases_argmap.sh`: Review functions.
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
-- Move `Input` and `Output` to `test/input` and `test/output`?
+- Move all of `Input` and `Output` to `test/input` and `test/output` and update scripts
+- Add references to argmap specs?
+
+## argmap 3.9.2
+
 - `bash_aliases_argmap.sh`: Update `md2htm()` to output only html doc fragment.
+- `test/`:
+  - Add folders: input, output, issues
+    - Move any test files to these folders from `Input/` and `Output/` which won't break scripts.
 
 ## argmap 3.9.1
 
