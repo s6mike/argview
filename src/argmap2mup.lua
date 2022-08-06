@@ -28,6 +28,7 @@ local upload = false
 local public = ""
 
 -- a long string containing all the styling needed for argument maps
+-- TODO: move this yaml template into a file and load the file. Will make code more readable and better for version control.
 local template = lyaml.load([=[
 ---
 formatVersion: 3

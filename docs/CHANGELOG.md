@@ -7,6 +7,13 @@
 - `scripts/bash_aliases_argmap.sh`: Review functions.
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Move `Input` and `Output` to `test/input` and `test/output`?
+- `bash_aliases_argmap.sh`: Update `md2htm()` to output only html doc fragment.
+
+## argmap 3.9.1
+
+- [README.md](../README.md):
+  - Update mapjs link in introduction to refer to internal section instead of github.
+  - Improve clarity of some sections.
 
 ## argmap 3.9.0
 
