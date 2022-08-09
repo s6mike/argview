@@ -8,6 +8,14 @@
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Add references to argmap specs?
 
+## argmap 4.1.0
+
+- `src/pandoc-argmap.lua`:
+  - Set default `to:` in .md metadata using `argmap: to: X`.
+    - See `test/input/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.md` for example.
+  - Re-factor.
+- Update [README.md](../README.md).
+
 ## argmap 4.0.0 BREAKING
 
 - Change block directive from `convertTo="mapjs"` to `to="js"` for consistency with pandoc. BREAKING

@@ -1,5 +1,7 @@
--- a pandoc lua filter that replaces yaml encoded argument maps
--- with tikz maps linked to generated mindmup maps.
+-- A pandoc lua filter that replaces yaml encoded argument maps with tikz maps linked to generated mindmup maps.
+-- Modified to alternatively replace the argument maps with mapjs representation.
+--
+-- return statement at end of this file ensures that Meta function is executed first, before CodeBlock.
 
 -- Sets up shared 'environment' variables:
 
@@ -20,10 +22,22 @@ local config_argmap = require 'config_argmap'
 -- The global FORMAT is set to the format of the pandoc writer being used (html5, latex, etc.), so the behavior of a filter can be made conditional on the eventual output format.
 local format = FORMAT
 -- class that identifies a code block as an argument map
-local identifier = "argmap"
+local class_argmap = "argmap"
 
 -- set this to the google ID of the default folder to upload to
 local gdriveFolder = nil
+
+-- TEST: Added local, might break
+local extension_for = {
+    html = 'png',
+    html4 = 'png',
+    html5 = 'svg',
+    latex = 'pdf',
+    beamer = 'pdf',
+    mapjs = 'json',
+}
+
+local meta_to = nil
 
 local function trim(s)
     return (s:gsub("\n", ""))
@@ -82,15 +96,6 @@ local function argmap2image(src, filetype, outfile)
     return o
 end
 
-extension_for = {
-    html = 'png',
-    html4 = 'png',
-    html5 = 'svg',
-    latex = 'pdf',
-    beamer = 'pdf',
-    mapjs = 'json',
-}
-
 local function file_exists(name)
     -- utility function borrowed from pandoc lua filter docs.
     local f = io.open(name, 'r')
@@ -102,18 +107,30 @@ local function file_exists(name)
     end
 end
 
-function CodeBlock(block)
-    -- function finds code blocks with class '.argmap', generates a corresponding
-    -- mindmup map, uploads that map to google drive, and replaces the block with:
-    --
-    -- (a) raw latex code containing a tikz map linked to the mindmup map (if format is latex);
-    -- (b) a code block the class '.map' and a 'gid' attribute pointing with the google drive
-    --     id of the mindmup map (if format is markdown);
-    -- (c) a pandoc paragraph containing an image link linked to the mindmup map (for all other formats)
-    -- (d) (WIP) a mapjs container
+-- return statement at end of this file ensures that Meta function is executed first, before CodeBlock.
+-- Reads `argmap: to: js` from metadata so CodeBlocks can use it as default
+local function Meta(meta)
+    if meta.argmap then
+        meta_to = meta.argmap.to[1].text or nil
+    end
 
+    Logger:debug("meta.argmap: ")
+    Logger:debug(meta.argmap)
+
+    return nil
+end
+
+-- return statement at end of this file ensures that Meta function is executed first, before CodeBlock.
+-- Finds code blocks with class '.argmap', generates a corresponding mindmup map, uploads that map to google drive, and replaces the block with:
+-- (a) raw latex code containing a tikz map linked to the mindmup map (if format is latex);
+-- (b) a code block the class '.map' and a 'gid' attribute pointing with the google drive
+--     id of the mindmup map (if format is markdown);
+-- (c) a pandoc paragraph containing an image link linked to the mindmup map (for all other formats)
+-- (d) a mapjs container
+local function CodeBlock(block)
     -- ISSUE: only detects argmap block if it's first class in list.
-    if block.classes[1] == identifier then
+    --  For iterating through classes, see https://github.com/pandoc/lua-filters/blob/master/revealjs-codeblock/revealjs-codeblock.lua
+    if block.classes[1] == class_argmap then
         local original = block.text
 
         -- REVIEW: Much of following code not required?
@@ -143,21 +160,25 @@ function CodeBlock(block)
             -- argument map with the gid as attribute.
             local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
             gid = trim(output)
-            local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
+
+            -- This sets the identifier and the classes:
+            --           pandoc.Attr(id = 'text', class = 'a b', other_attribute = '1')
+            local attr = pandoc.Attr(nil, { class_argmap }, { ["name"] = name, ["gid"] = gid, ["tidy"] = "true" })
             return pandoc.CodeBlock(original, attr)
         else
             -- https://docs.google.com/spreadsheets/d/1nUmP52mYggR6cbZUwkrjxArgrvr3nJXO_tE6qV4-2S4/edit#gid=823952520&range=D12
-            local argmap_format = block.attributes["to"]
 
-            -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
-            -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
+            -- If no block attribute, then use default set in meta attribute (read in Meta())
+            local argmap_format = block.attributes["to"] or meta_to
+
+            -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE
             -- argmap2mup converts yaml to mindmup
 
             -- Now I've changed argmap2mup, this may output the JSON rather than the upload gid
             local output_extra_line = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts
                 , original)
 
-            output = trim(output_extra_line)
+            local output = trim(output_extra_line)
 
             -- TODO: assign later only where needed (since it may now be JSON rather than gid)
             gid = output
@@ -188,12 +209,11 @@ function CodeBlock(block)
                     , "")
                 local input_filename = trim(input_filename_extra_line)
 
-                -- TODO: output should be a constant set in early part of this file.
                 -- TODO: can I set filetype based on pandoc target format?
                 -- yml #ID (block id: append to container_ for: container div id;
                 --          prepend with input filename for:
                 --              test/output/input_file_yml_id.json
-                -- TODO: add _yml name attribute (with _ substitutions for spaces) ?
+                -- TODO: add _yml name attribute (with _ substitutions for spaces)?
 
                 local output_filename = input_filename .. "_" .. block_id
                 local output_fpath = MAPJS_JSON_INPUT_DIR .. output_filename .. ".json"
@@ -229,10 +249,19 @@ function CodeBlock(block)
                     argmap2image(original, filetype, fname)
                 end
                 local mapCaption = pandoc.Str(name)
-                local attr = pandoc.Attr(nil, { identifier }, { ["name"] = name, ["width"] = "100%", ["gid"] = gid })
+                -- This sets the identifier and the classes:
+                --           pandoc.Attr(id = 'text', class = 'a b', other_attribute = '1')
+                local attr = pandoc.Attr(nil, { class_argmap },
+                    { ["name"] = name, ["width"] = "100%", ["gid"] = gid })
                 local linkContent = { pandoc.Image(mapCaption, fname, "", attr) }
                 return pandoc.Para(pandoc.Link(linkContent, mupLink))
             end
         end
     end
 end
+
+-- QUESTION: Once using pandoc 2.17, would it be better to change traversal order to topdown instead?
+-- The following return statement sets the order the filters are applied in so that CodeBlocks can use the defaults set in Meta.
+-- Since by default lua filter functions are run in this order: Inlines → Blocks → Meta → Pandoc
+-- Adapted from: https://pandoc.org/lua-filters.html#replacing-placeholders-with-their-metadata-value
+return { { Meta = Meta }, { CodeBlock = CodeBlock } }

@@ -7,7 +7,6 @@ echo "Running ${BASH_SOURCE[0]}"
 # argmap Functions
 
 __chrome-mini() {
-  # &suffix runs it in background so terminal not blocked
   google-chrome --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.
 }

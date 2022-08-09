@@ -21,6 +21,7 @@ module.exports = (env) => {
 			filename: '[name].js',
 			path: path.resolve(__dirname, 'site/'),
 		},
+
 		// plugins: [
 		// 	new webpack.DefinePlugin({
 		// 		'process.env.input_map': JSON.stringify(env.input_map || default_map_value),

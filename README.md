@@ -556,7 +556,7 @@ As per [pandoc's markdown format for Fenced code blocks](https://pandoc.org/MANU
 - . for classes
 - attribute="value" for assigning values.
 
-If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps), then add the attribute to="mapjs". See section [Generating mapjs Interactive Argument Maps](#generating-mapjs-interactive-argument-maps) for an example.
+If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps), then add the attribute to="js". See section [Generating mapjs Interactive Argument Maps](#generating-mapjs-interactive-argument-maps) for more details.
 
 A name and Google Drive ID can also be specified as attributes of the code
 block:
@@ -586,17 +586,13 @@ pandoc examples/example.md -o test/output/example.html --lua-filter pandoc-argma
  |[![Argument Map Example 1 in mapjs format, embedded in html page](docs/mapjs-in-html-example.png)](mapjs/index.html "Argument Mapjs Example 1")|
  |----------------|
 
-If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps) within the html output, then add the code block attribute `to="mapjs"` to the map, as below:
+When converting a .md file to html, you can convert an argmap into [mapjs format](#using-mapjs-to-display-argmaps) by doing the following:
 
-``` yaml
-    ---
-    title: An Example
-    argmaps: true
-    ---
+1a ) Either adding attribute `to="js"` to the code block:
 
-    This is an example of an argument about a donkey!
+  ``` yaml
 
-    ``` {.argmap name="An argument about a donkey" to="mapjs"}
+    ``` {.argmap name="An argument about a donkey" to="js"}
     "Brunellus is irrational":
       r1:
         "Brunellus is a donkey.":
@@ -605,13 +601,44 @@ If you want your argmap to be converted into [mapjs format](#using-mapjs-to-disp
         "Brunellus studied in Paris.":
         "-Most who study in Paris are rational.":
     ```
+
+  ```
+
+b) Or you can set a default value `to:` value for all argmap blocks in the document by adding this to the document metadata:
+
+``` yaml
+argmap:
+  to: js
 ```
 
-The generated html will also need to reference the mapjs script e.g.
+e.g.
+
+  ``` yaml
+      ---
+      title: An Example
+      argmaps: true
+      argmap:
+        to: js
+      ---
+
+      This is an example of an argument about a donkey!
+
+      ``` {.argmap name="An argument about a donkey"}
+      "Brunellus is irrational":
+        r1:
+          "Brunellus is a donkey.":
+          "All donkeys are irrational.":
+        o1:
+          "Brunellus studied in Paris.":
+          "-Most who study in Paris are rational.":
+      ```
+  ```
+
+2 ) The html output will also need to reference the mapjs script e.g.
 
 `<script src="/mapjs-example/site/main.js"></script>`
 
-and for proper formatting reference the included stylesheet e.g.
+and for proper formatting reference the included stylesheet:
 
 `<link rel="stylesheet" href="mapjs-default-styles.css" />`
 

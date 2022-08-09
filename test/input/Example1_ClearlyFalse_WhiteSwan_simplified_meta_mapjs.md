@@ -15,7 +15,7 @@ argmap:
 This is a simplified version of the White Swan argument:
 
 ```{#argmap1 .argmap .yml name="Example 1: All swans are white."}
-"All swans are white.":
+"Map 1: All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []
     "These swans are representative of all swans.": []
@@ -26,7 +26,7 @@ This is a simplified version of the White Swan argument:
 And here it is again:
 
 ```{#argmap2 .argmap .yml name="Example 1: All swans are white."}
-"All swans are white.":
+"Map 2: All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []
     "These swans are representative of all swans.": []
