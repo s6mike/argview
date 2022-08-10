@@ -67,11 +67,11 @@ __test() {
 #     cat "$test/output"
 # done
 
-__test a2m "$INPUT_FILE_YML"       #1
-__test m2a "$INPUT_FILE_MUP"       #2
-__test a2t "$INPUT_FILE_YML"       #3
-__test a2mu "$INPUT_FILE_YML"      #4
-__test a2jo "$INPUT_FILE_YML"      #5
+__test a2m "$INPUT_FILE_YML"  #1
+__test m2a "$INPUT_FILE_MUP"  #2
+__test a2t "$INPUT_FILE_YML"  #3
+__test a2mu "$INPUT_FILE_YML" #4
+# __test a2jo "$INPUT_FILE_YML"      #5
 __test md2hf "$INPUT_FILE_MD0"     #6
 __test md2hf "$INPUT_FILE_MD"      #7
 __test md2hf "$INPUT_FILE_MD2"     #8

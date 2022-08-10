@@ -6,16 +6,21 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # argmap Functions
 
-__chrome-mini() {
-  google-chrome --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
+# For opening html pages containing mapjs files
+__open-mapjs() {
+  # QUESTION: Is --allow-file-access-from-files a temp solution?
+  #   Alternatives:
+  #     Embed JSON directly in html
+  #     https://stackoverflow.com/questions/64140887/how-to-solve-cors-origin-issue-when-trying-to-get-data-of-a-json-file-from-local
+  #     Set it up as a client-server app
+  google-chrome --allow-file-access-from-files --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
 
 # Used by pre-commit hook
 __reset_repo() {
   echo 'Restoring output folder to match remote.'
-  # Would like to do this for mapjs-example, but risky that it would affect files with legitimate changes.
-  # TODO: move output files to a sub-folder.
+  # May need to update this once json export folder is in WORKSPACE.
   git checkout -- "$WORKSPACE/examples/"
   git checkout -- "$WORKSPACE/Output/"
   git checkout -- "$WORKSPACE/test/output"
@@ -47,12 +52,13 @@ __clean_repo() {
   # rm "$INPUT_FILE_JSON"
 }
 
-__pack_mapjs() {
-  # OUTPUT=$1 # Remove default so can test properly: ${1:-$MJS_WP_MAP}
-  # First -- ensures rest is passed onto webpack call
+__build_mapjs() {
   # TODO - adding --inspect should enable debug mode - but can't get to work.
-  npm --prefix "$MJS_WP_HOME" run pack-js # -- --env.input_map="$1"
+  # First -- ensures rest is passed onto webpack call
+  npm --prefix "$MJS_WP_HOME" run pack-js
 }
+
+alias bmj='__build_mapjs'
 
 # lua argmap2mup test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml > test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup
 # TODO add option for .mup vs .json output
@@ -70,21 +76,21 @@ a2mu() { # a2mu test/output/Example1_simple.yml
     echo "Uploaded: $1 to GDrive."
 }
 
-a2mo() { # Deprecated, use a2jo instead.
-  NAME=$(basename --suffix=".yml" "$1") &&
-    OUTPUT=${2:-$WORKSPACE/test/output/$NAME.json} &&
-    a2m "$1" "$OUTPUT" &&
-    __pack_mapjs "$OUTPUT"
-}
-
-# TODO is this necessary any longer?
+# Deprecated, use a2m() for converting argmap to .mup/.json and use __build_mapjs to rebuild app
 a2jo() { # m2a output/mapjs-json-input/Example1_simple.yml
   NAME=$(basename --suffix=".yml" "$1")
   OUTPUT=${2:-$WORKSPACE/test/output/$NAME.json}
-  #TODO: Is there a way to pipe a2m output directly into pack_mapjs?
-  # Then __pack_mapjs should ideally have been generated during install/init, so won't be needed to be called after, will just be referenced in js
-  a2m "$1" "$OUTPUT" &&
-    __pack_mapjs # "$OUTPUT"
+  a2m "$1" "$OUTPUT" # &&
+  # Now only needed during install or after updating mapjs source code.
+  # __build_mapjs # "$OUTPUT"
+}
+
+# Deprecated, use a2jo instead.
+a2mo() {
+  NAME=$(basename --suffix=".yml" "$1") &&
+    OUTPUT=${2:-$WORKSPACE/test/output/$NAME.json} &&
+    a2m "$1" "$OUTPUT" # &&
+  # __build_mapjs # "$OUTPUT"
 }
 
 m2a() { # m2a test/output/Example1_simple.mup
@@ -102,25 +108,21 @@ a2t() { # a2t test/output/Example1_simple.yml
 
 md2hf() { # md2h test/input/example.md
   NAME=$(basename --suffix=".md" "$1")
-  # TODO: get js file reference to work from other locations so I can write here:
+  # TODO: Export to test/output, but will first need to update paths to main.js and mapjs-default-styles.css
   # OUTPUT=${2:-$WORKSPACE/test/output/$NAME.html}
   OUTPUT=${2:-$MJS_WP_HOME/$NAME.html}
-  # QUESTION: Is it worth putting some of these settings into a meta-data or defaults file?
-  # If so, how would I easily update it? Or just put it in relevant root of mapjs folder?
-  # Needed? --metadata=curdir:"$MJS_WP_HOME"
+  # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
+  # If so, how would I easily update it?
+  # Needed? --metadata=curdir:X
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
-  # TODO: lua filter should create container html fragment, with $NAME.json attribute
+  # TODO: lua filter should create container html fragment, with JSON file url etc
   # TODO: Could use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$MJS_OUTPUT_FILE" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: $OUTPUT"
   wait # waits for png to appear
   mv ./*.png "$(dirname "$OUTPUT")"
-
-  # TODO: Shouldn't need this part, but will need to run __pack_mapjs after updating start.js.
-  # call a2jo?
-  # __pack_mapjs # "$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.json"
-  __chrome-mini "$OUTPUT"
+  __open-mapjs "$OUTPUT"
 }
 
 # This is meant to output an html doc fragment rather than full doc, so removing template.
@@ -138,7 +140,7 @@ md2htm() { # md2htm test/input/example-updated.md
     echo "Generated: $OUTPUT"
   wait # waits for png to appear
   mv ./*.png "$WORKSPACE/test/output/"
-  __chrome-mini "$OUTPUT"
+  __open-mapjs "$OUTPUT"
 }
 
 md2pdf() { # md2pdf test/input/example.md
@@ -146,9 +148,9 @@ md2pdf() { # md2pdf test/input/example.md
   OUTPUT=${2:-$WORKSPACE/test/output/$NAME.pdf}
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template examples/example-template.latex --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "Generated: $OUTPUT"
-  __chrome-mini "$OUTPUT"
+  __open-mapjs "$OUTPUT"
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_repo __chrome-mini __save_env __pack_mapjs # __chrome-newtab
-export -f a2m m2a a2t a2mu a2mo a2jo md2htm md2hf md2pdf
+export -f __reset_repo __clean_repo __check_repo __open-mapjs __save_env __build_mapjs
+export -f a2m m2a a2t a2mu md2htm md2hf md2pdf

@@ -724,7 +724,7 @@ To use them in other scenarios:
 
 2. Once you have created a JSON file using `src/argmap2mup` you can display it with mapjs from inside the `mapjs` directory by calling `npm run --prefix [path to mapjs folder] pack-js -- --env.input_map=[path to map.json file output from argmap2mup]` to build the app with webpack.
 
-3. You can then view `[path to mapjs folder]/index.html` in a browser to see the map.
+3. You can then view `[path to mapjs folder]/index.html` in a browser to see the map. Note that you will probably get a CORS origin error. You can fix this easily in Chrome by opening it with the command line option `--allow-file-access-from-files`, although this turns off a security feature so be best to only do this when using this app and turn off the option at other times.
 
 I have written scripts to help with this workflow, you may be able to adapt them for your purposes. See `scripts/bash-aliases-argmap.sh`.
 

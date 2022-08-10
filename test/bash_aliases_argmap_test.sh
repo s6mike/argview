@@ -18,7 +18,7 @@ alias argmu='a2mu $WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simplifi
 
 #TODO: need to delete previous file, best way? Separate output folder or just delete all .json in test/output folder?
 alias argmo='rm $WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup; a2mo $INPUT_FILE_YML'
-alias argmj='rm $WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.json; a2jo $INPUT_FILE_YML'
+# alias argmj='rm $WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.json; a2jo $INPUT_FILE_YML'
 alias argmh0='rm $MJS_WP_HOME/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.html; rm $MJS_WP_HOME/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD0'
 alias argmh='rm $MJS_WP_HOME/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html; rm $MJS_WP_HOME/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD'
 alias argmh2='rm $MJS_WP_HOME/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html; md2hf $INPUT_FILE_MD2'

@@ -49,6 +49,9 @@ eval "$(pandoc --bash-completion)"
 # Didn't fix type: json import error, leaving for reference.
 # export NODE_OPTIONS="--experimental-modules --experimental-json-modules"
 
+# QUESTION: Build mapjs just in case?
+# __build_mapjs
+
 # TESTING INIT
 
 # TODO: could move to separate test/init_script_argmap_test file

@@ -228,9 +228,16 @@ local function CodeBlock(block)
                 local argmap_controls_path = "pandoc-templates/mapjs/mapjs-testcontrols.html"
                 local _, argmap_controls_html = pandoc.mediabag.fetch(argmap_controls_path)
 
+                local argmap_output_folder_path = "/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/"
+                local argmap_output_file_path = argmap_output_folder_path .. output_filename .. ".json"
+
+                -- TODO: if script doesn't work, write JSON content to container src or js variable
+                -- TODO: if script works, shouldn't need container_src any longer
+                -- QUESTION: Better to nest script inside container?
                 local rawhtml = argmap_controls_html ..
-                    "<div id=\"container" ..
-                    "_" .. block_id .. "\" class=\"container_argmapjs\" src=\"" .. output_filename .. "\"></div>"
+                    "<script type=\"application/json\" id=\"" .. block_id .. ".json\" class=\"argmap_json\" src=\"" ..
+                    argmap_output_file_path .. "\"></script>\n" .. "<div id=\"container" ..
+                    "_" .. block_id .. "\" class=\"container_argmapjs\"></div>"
 
                 -- return pandoc.CodeBlock(original, attr)
                 return pandoc.RawBlock(format, rawhtml)

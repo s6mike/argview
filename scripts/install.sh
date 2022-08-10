@@ -171,6 +171,4 @@ ln -s "$WORKSPACE/$MAPJS_JSON_INPUT_DIR" "$MJS_WP_HOME/src/argmap_output"
 #   }
 
 npm --prefix "$MJS_WP_HOME" install
-
-# Ideally generate .json files before running this
-__pack_mapjs
+__build_mapjs

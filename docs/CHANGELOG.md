@@ -8,6 +8,25 @@
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Add references to argmap specs?
 
+## argmap 4.2.0
+
+- Generate argmap mapjs without webpack rebuild:
+  - `mapjs-example/src/start.js`:
+    - Load mapjs JSON file asynchronously using fetch().
+    - Tidy comments.
+  - `src/pandoc-argmap.lua`: Reference JSON file with application/json script.
+  - `scripts/bash_aliases_argmap.sh`:
+    - `__open-mapjs()`:
+      - Rename `__chrome-mini()` to `__open-mapjs()`.
+      - Add `--allow-file-access-from-files` to chrome call to avoid CORS origin error from Chrome accessing JSON file locally.
+        - [README.md](../README.md): Document above workaround.
+    - `__build_mapjs`: Only call when code changes, rather than for each new argmap:
+      - Rename `__pack_mapjs` to `__build_mapjs`.
+      - Add it to install.sh, remove it from other functions.
+      - Deprecate `a2jo()`, do not export it and `a2mo` so they are not available to other scripts.
+        - `scripts/tests.sh`: remove test #5 (uses a2jo).
+        - `test/bash_aliases_argmap_test.sh`: Remove alias `argmj`.
+
 ## argmap 4.1.0
 
 - `src/pandoc-argmap.lua`:
