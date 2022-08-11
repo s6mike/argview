@@ -10,16 +10,17 @@ const MAPJS = require('mindmup-mapjs'),
 	content = require('mindmup-mapjs-model').content;
 
 function init(event) {
-	//TODO: Should pair up container and scripts and search only for one
 	// Now looks for class instead of id, so can capture a number of containers each with own id.
-	const scripts = jQuery('.argmap_json:first')
-	const container = jQuery('.container_argmapjs:first')
+	const container = jQuery('.container_argmapjs:first');
 
 	// TODO: need to loop round all containers
 	// Use .each() for collections (I think this is one) or $.each()
 	//  For now, just take first one:
-	if (scripts.length > 0) { // Checks there are mapjs requests
-		const script_src = scripts.attr('src');
+	if (container.length > 0) { // Checks there are mapjs requests
+		// TODO: check for 0 > script > 1
+		const script = jQuery(container).children('script.argmap_json');
+
+		const script_src = script.attr('src');
 		// container_src = container.attr('src');
 		console.debug("script_src: ", script_src)
 
@@ -29,7 +30,6 @@ function init(event) {
 			.then(data => addMap(container, data))
 			// .then((data) => console.log(data))
 			.catch(error => console.log(error));
-
 	} else { // If no mapjs requests:
 		console.debug('No requests for mapjs detected.')
 	};

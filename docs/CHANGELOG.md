@@ -9,6 +9,13 @@
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Add references to argmap specs?
 
+## argmap 4.2.2
+
+- Fix logic for identifying script for mapjs container:
+  - `src/pandoc-argmap.lua`: Make JSON script child of relevant container.
+  - `mapjs-example/src/start.js`:
+    - Identify script relative to container.
+
 ## argmap 4.2.1
 
 - Create all html, JSON and png output in `test/output/`.

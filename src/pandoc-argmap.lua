@@ -237,9 +237,12 @@ local function CodeBlock(block)
                 -- QUESTION: Better to nest script inside container?
                 -- TODO: fix start.js logic first then re-arrange after.
                 local rawhtml = argmap_controls_html ..
-                    "<script type=\"application/json\" id=\"" .. block_id .. ".json\" class=\"argmap_json\" src=\"" ..
-                    argmap_output_file_path .. "\"></script>\n" .. "<div id=\"container" ..
-                    "_" .. block_id .. "\" class=\"container_argmapjs\"></div>"
+                    "<div id=\"container_"
+                    .. block_id .. "\" class=\"container_argmapjs\">\n"
+                    .. "  <script type=\"application/json\" "
+                    -- .. " id=\"" .. block_id .. ".json\" "
+                    .. "class=\"argmap_json\" src=\""
+                    .. argmap_output_file_path .. "\"></script>\n" .. "</div>"
 
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
