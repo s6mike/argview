@@ -9,12 +9,21 @@
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Add references to argmap specs?
 
+## argmap 4.2.3
+
+Supports multiple mapjs on page:
+
+- `mapjs-example/src/start.js`:
+  - Loops through all containers.
+  - ISSUE #22: Each control panel affects both maps.
+
 ## argmap 4.2.2
 
 - Fix logic for identifying script for mapjs container:
   - `src/pandoc-argmap.lua`: Make JSON script child of relevant container.
   - `mapjs-example/src/start.js`:
-    - Identify script relative to container.
+    - Identify script relative to container rather than using ID.
+    - Remove script ID since no longer necessary.
 
 ## argmap 4.2.1
 

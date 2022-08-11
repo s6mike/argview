@@ -1,7 +1,9 @@
-
 /* mapjs entry point: Initialises, plus function to load JSON and embed visualisation into a container. */
 
 /*global require, document, window, console */
+
+// TODO: Restore use strict and fix cause of warning/error:
+// 'use strict';
 
 const MAPJS = require('mindmup-mapjs'),
 	jQuery = require('jquery'),
@@ -10,35 +12,31 @@ const MAPJS = require('mindmup-mapjs'),
 	content = require('mindmup-mapjs-model').content;
 
 function init(event) {
-	// Now looks for class instead of id, so can capture a number of containers each with own id.
-	const container = jQuery('.container_argmapjs:first');
+	// Looks for class not id, so can capture a number of containers each with own id.
+	const containers = jQuery('.container_argmapjs');
 
-	// TODO: need to loop round all containers
-	// Use .each() for collections (I think this is one) or $.each()
-	//  For now, just take first one:
-	if (container.length > 0) { // Checks there are mapjs requests
-		// TODO: check for 0 > script > 1
-		const script = jQuery(container).children('script.argmap_json');
+	if (containers.length > 0) { // Checks there are mapjs requests
 
-		const script_src = script.attr('src');
-		// container_src = container.attr('src');
-		console.debug("script_src: ", script_src)
+		jQuery(containers).each(function (container) {
+			// TODO: check for 0 > script > 1
+			//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
+			const script_src = jQuery(this).children('script.argmap_json').attr('src');
+			console.debug("script_src: ", script_src)
 
-		// TODO: switch to await/async for simpler code and debugging.
-		fetch(script_src)
-			.then(response => response.json())
-			.then(data => addMap(container, data))
-			// .then((data) => console.log(data))
-			.catch(error => console.log(error));
+			// TODO: switch to await/async for simpler code and debugging.
+			fetch(script_src)
+				.then(response => response.json())
+				.then(data => addMap(jQuery(this), data))
+				// .then((data) => console.debug(data))
+				.catch(error => console.log(error));
+		})
+
 	} else { // If no mapjs requests:
 		console.debug('No requests for mapjs detected.')
 	};
 };
 
 function addMap(container, testMap) {
-	// TODO: Restore use strict and fix cause of warning/error:
-	// 'use strict';
-
 	// console.debug("testMap: ", testMap);
 
 	var idea = content(testMap),
