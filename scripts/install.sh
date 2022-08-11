@@ -158,9 +158,6 @@ cd "$MJS_WP_HOME" || {
   exit 1
 }
 
-# Link src folder to test/output folder.
-ln -s "$WORKSPACE/$MAPJS_JSON_INPUT_DIR" "$MJS_WP_HOME/src/argmap_output"
-
 #nodejs installed with conda
 
 # TODO: remove this comment, now irrelevant?

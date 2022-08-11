@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # For running casual tests and checks.
-# These aliases are not considered part of a public API, and therefore may change during patch updates without warning.
+# These aliases are not considered part of a public API, and therefore updates may change them without warning.
 
 echo "Running ${BASH_SOURCE[0]}"
 
@@ -26,3 +26,4 @@ alias argmhmeta='rm $MJS_WP_HOME/Example1_ClearlyFalse_WhiteSwan_simplified_meta
 alias argmp='rm $WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.pdf; md2pdf $INPUT_FILE_MD'
 alias argmph='rm $WORKSPACE/test/output/example.pdf; rm $WORKSPACE/test/output/header.tex; $WORKSPACE/src/argmap2tikz.lua -i > $WORKSPACE/test/output/header.tex; pandoc $INPUT_FILE_MD -o $WORKSPACE/test/output/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $WORKSPACE/test/output/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $WORKSPACE/test/output/example.pdf"'
 alias argt='$WORKSPACE/test/tests.sh'
+alias argth='$WORKSPACE/test/tests.sh html'

@@ -131,6 +131,9 @@ local function CodeBlock(block)
     -- ISSUE: only detects argmap block if it's first class in list.
     --  For iterating through classes, see https://github.com/pandoc/lua-filters/blob/master/revealjs-codeblock/revealjs-codeblock.lua
     if block.classes[1] == class_argmap then
+        -- TODO: lua filter should include main.js etc even for fragment
+        -- Might also simplify logic for leaving JS out of template when no argmaps.
+
         local original = block.text
 
         -- REVIEW: Much of following code not required?
@@ -214,13 +217,16 @@ local function CodeBlock(block)
                 --          prepend with input filename for:
                 --              test/output/input_file_yml_id.json
                 -- TODO: add _yml name attribute (with _ substitutions for spaces)?
-
                 local output_filename = input_filename .. "_" .. block_id
-                local output_fpath = MAPJS_JSON_INPUT_DIR .. output_filename .. ".json"
+
+                -- TODO: Can I remove path before /test/?
+                -- local argmap_output_folder_path = "/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/"
+                local argmap_output_folder_path = MAPJS_JSON_DIR
+                local argmap_output_file_path = argmap_output_folder_path .. output_filename .. ".json"
 
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
-                local f = assert(io.open(output_fpath, 'w'))
+                local f = assert(io.open(argmap_output_file_path, 'w'))
                 f:write(output)
                 f:close()
 
@@ -228,18 +234,13 @@ local function CodeBlock(block)
                 local argmap_controls_path = "pandoc-templates/mapjs/mapjs-testcontrols.html"
                 local _, argmap_controls_html = pandoc.mediabag.fetch(argmap_controls_path)
 
-                local argmap_output_folder_path = "/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/"
-                local argmap_output_file_path = argmap_output_folder_path .. output_filename .. ".json"
-
-                -- TODO: if script doesn't work, write JSON content to container src or js variable
-                -- TODO: if script works, shouldn't need container_src any longer
                 -- QUESTION: Better to nest script inside container?
+                -- TODO: fix start.js logic first then re-arrange after.
                 local rawhtml = argmap_controls_html ..
                     "<script type=\"application/json\" id=\"" .. block_id .. ".json\" class=\"argmap_json\" src=\"" ..
                     argmap_output_file_path .. "\"></script>\n" .. "<div id=\"container" ..
                     "_" .. block_id .. "\" class=\"container_argmapjs\"></div>"
 
-                -- return pandoc.CodeBlock(original, attr)
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
                 -- convert mup to raw svg

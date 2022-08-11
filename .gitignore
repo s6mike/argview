@@ -2,7 +2,7 @@ argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
 !.vscode/settings.json
-archive
+archived
 lua_modules/
 mapjs/node_modules
 mapjs/site

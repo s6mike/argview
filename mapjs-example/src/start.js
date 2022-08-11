@@ -9,9 +9,7 @@ const MAPJS = require('mindmup-mapjs'),
 	ThemeProcessor = require('mindmup-mapjs-layout').ThemeProcessor,
 	content = require('mindmup-mapjs-model').content;
 
-// QUESTION: Rename init() as addMap() ?
-// TODO: Rename dom_ready() as init()
-function dom_ready(event) {
+function init(event) {
 	//TODO: Should pair up container and scripts and search only for one
 	// Now looks for class instead of id, so can capture a number of containers each with own id.
 	const scripts = jQuery('.argmap_json:first')
@@ -25,10 +23,10 @@ function dom_ready(event) {
 		// container_src = container.attr('src');
 		console.debug("script_src: ", script_src)
 
-		// QUESTION: May want to use await instead? Review difference
+		// TODO: switch to await/async for simpler code and debugging.
 		fetch(script_src)
 			.then(response => response.json())
-			.then(data => init(container, data))
+			.then(data => addMap(container, data))
 			// .then((data) => console.log(data))
 			.catch(error => console.log(error));
 
@@ -37,7 +35,7 @@ function dom_ready(event) {
 	};
 };
 
-async function init(container, testMap) {
+function addMap(container, testMap) {
 	// TODO: Restore use strict and fix cause of warning/error:
 	// 'use strict';
 
@@ -93,4 +91,4 @@ async function init(container, testMap) {
 	});
 };
 
-document.addEventListener('DOMContentLoaded', dom_ready);
+document.addEventListener('DOMContentLoaded', init);

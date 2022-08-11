@@ -106,16 +106,14 @@ a2t() { # a2t test/output/Example1_simple.yml
     echo "Generated: ${2:-$WORKSPACE/test/output/$NAME.tex}"
 }
 
+# QUESTION: Use a relative link to the js file, so that I can view in main chrome browser?
 md2hf() { # md2h test/input/example.md
   NAME=$(basename --suffix=".md" "$1")
-  # TODO: Export to test/output, but will first need to update paths to main.js and mapjs-default-styles.css
-  # OUTPUT=${2:-$WORKSPACE/test/output/$NAME.html}
-  OUTPUT=${2:-$MJS_WP_HOME/$NAME.html}
+  OUTPUT=${2:-$WORKSPACE/test/output/$NAME.html}
   # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
   # If so, how would I easily update it?
-  # Needed? --metadata=curdir:X
+  # Useful? --metadata=curdir:X
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
-  # TODO: lua filter should create container html fragment, with JSON file url etc
   # TODO: Could use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$MJS_OUTPUT_FILE" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
@@ -126,9 +124,7 @@ md2hf() { # md2h test/input/example.md
 }
 
 # This is meant to output an html doc fragment rather than full doc, so removing template.
-# TODO: fix, this currently creates html output in test/output folder: e.g. file:///home/s6mike/git_projects/argmap/test/output/example-updated.html
-# Which breaks links to webpack output js, looks in: file:///home/s6mike/git_projects/argmap/test/output/site/main.js
-# Probably because I'm now using a relative link to the js file, so that I can view in main chrome browser.
+# TODO: lua filter should include main.js etc even for fragment
 md2htm() { # md2htm test/input/example-updated.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$WORKSPACE/test/output/$NAME.html}

@@ -30,6 +30,7 @@
         "argmap2mup",
         "argmap2tikz",
         "argmapjs",
+        "argmh",
         "asinum",
         "Brunellus",
         "libyaml",
@@ -41,8 +42,7 @@
         "mup2argmap",
         "pandoc-argmap",
         "parisiensis",
-        "argmapjs",
-        "testcontrols",
+        "testcontrols"
     ],
     "cSpell.ignoreWords": [
         "Ybuv",
@@ -115,6 +115,6 @@
         "FORMAT",
         "PANDOC_STATE",
         "Logger",
-        "MAPJS_JSON_INPUT_DIR"
+        "MAPJS_JSON_DIR"
     ]
 }

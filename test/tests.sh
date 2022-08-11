@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+# Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 echo 'Attempting to delete old test outputs.'
 
@@ -35,7 +35,7 @@ if [ $COLOUR = 'true' ]; then
     COL_RESET='\033[0m'   # No Color
 fi
 
-# This function is not considered part of a public API, and therefore may change during patch updates without warning.
+# This function is not considered part of a public API, and therefore updates may change them without warning.
 __test() {
     PRE="Test $TESTNUM:"
     echo -en "$PRE "
@@ -67,16 +67,22 @@ __test() {
 #     cat "$test/output"
 # done
 
-__test a2m "$INPUT_FILE_YML"  #1
-__test m2a "$INPUT_FILE_MUP"  #2
-__test a2t "$INPUT_FILE_YML"  #3
-__test a2mu "$INPUT_FILE_YML" #4
-# __test a2jo "$INPUT_FILE_YML"      #5
+if [ "$1" != html ]; then
+    __test a2m "$INPUT_FILE_YML"  #1
+    __test m2a "$INPUT_FILE_MUP"  #2
+    __test a2t "$INPUT_FILE_YML"  #3
+    __test a2mu "$INPUT_FILE_YML" #4
+# __test a2jo "$INPUT_FILE_YML"   #5
+fi
+
 __test md2hf "$INPUT_FILE_MD0"     #6
 __test md2hf "$INPUT_FILE_MD"      #7
 __test md2hf "$INPUT_FILE_MD2"     #8
 __test md2hf "$INPUT_FILE_MD_META" #9
-__test md2pdf "$INPUT_FILE_MD0"    #10
+
+if [ "$1" != html ]; then
+    __test md2pdf "$INPUT_FILE_MD0" #10
+fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
 

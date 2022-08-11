@@ -27,18 +27,26 @@ export PROJECT_DIR
 
 export PANDOC_DATA_DIR="$CONDA_PREFIX/share/pandoc"
 
-export MAPJS_JSON_INPUT_DIR="output/mapjs-json-input/"
+export MAPJS_JSON_DIR="/home/s6mike/git_projects/argmap/test/output/mapjs-json/"
 
-# TODO: Remove WP from variable names?
+# TODO: Remove WP from variable names
 export MJS_WP_HOME="$WORKSPACE/mapjs-example"
 # export MJS_WP_HOME="$WORKSPACE/mapjs"
 
+# TODO: Tidy comments
 # Uses config file in the relevant directory to identify mapjs based locations
 # shellcheck source=/mapjs-example/scripts/mapjs.env
-source "$MJS_WP_HOME/scripts/mapjs.env"
+# source "$MJS_WP_HOME/scripts/mapjs.env"
 # # export MJS_OUTPUT_FILE="site/main.js"
 # export MJS_OUTPUT_FILE="test/bundle.js"
 # export MJS_WP_MAP="$WORKSPACE/examples/example.json"
+
+# Sets correct paths for mapjs install
+export MJS_OUTPUT_FILE="$MJS_WP_HOME/site/main.js" # Relative path more portable
+export MJS_CSS="$MJS_WP_HOME/mapjs-default-styles.css"
+# export MJS_OUTPUT_FILE="$WORKSPACE/mapjs-example/site/main.js"
+# export MJS_WP_MAP="$WORKSPACE/examples/example.json"
+# export MJS_WP_MAP="$WORKSPACE/mapjs-example/src/example-map-backup.json"
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
 

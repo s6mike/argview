@@ -2,11 +2,23 @@
 
 ## TODO
 
+- Try relative paths again, with argmh (and bmj) from different folders in terminal.
 - `scripts/bash_aliases_argmap.sh`: Review functions.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex).
 - `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
 - Add references to argmap specs?
+
+## argmap 4.2.1
+
+- Create all html, JSON and png output in `test/output/`.
+  - `mapjs-example/src/start.js`: Above, plus rename functions more logically.
+  - `scripts/install.sh`: Remove symbolic link to `test/output` folder.
+  - Update env variables in script files.
+  - Delete mapjs.env files.
+  - Rename `MAPJS_JSON_INPUT_DIR` to `MAPJS_JSON_DIR`.
+- Add alias `argth` to run html output tests only.
+- Remove `pandoc-templates/pandoc_html5_template.html` since unnecessary (was added for reference).
 
 ## argmap 4.2.0
 
@@ -467,6 +479,6 @@ Original <https://github.com/dsanson/argmap>
 
 Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
 
-Note that test files, and bash script functions beginning with __ are not considered part of a public API, and therefore may change during patch updates without warning.
+Note that test files, and bash script functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.
