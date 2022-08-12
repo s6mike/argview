@@ -115,6 +115,6 @@
         "FORMAT",
         "PANDOC_STATE",
         "Logger",
-        "MAPJS_JSON_DIR"
+        "DIR_MJS_JSON"
     ]
 }

@@ -152,8 +152,8 @@ ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
 # SECTION 4: mapjs
 # ---------------------------------------------------
 
-# Check $MJS_WP_HOME is set as desired
-cd "$MJS_WP_HOME" || {
+# Check $PATH_MJS_HOME is set as desired
+cd "$PATH_MJS_HOME" || {
   echo "Abandoning QA install."
   exit 1
 }
@@ -167,5 +167,5 @@ cd "$MJS_WP_HOME" || {
 #     "mindmup-mapjs": "git@github.com:mindmup/mapjs.git#e30f8d835e028febe2e951e422c313ac304a0431"
 #   }
 
-npm --prefix "$MJS_WP_HOME" install
+npm --prefix "$PATH_MJS_HOME" install
 __build_mapjs

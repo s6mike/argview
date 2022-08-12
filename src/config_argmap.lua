@@ -30,7 +30,9 @@ package.cpath = os.getenv("LUA_CPATH") or
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
 
-MAPJS_JSON_DIR = os.getenv("MAPJS_JSON_DIR") or "/home/s6mike/git_projects/argmap/test/output/mapjs-json/"
+-- For html links, use relative paths (to test/output folder) - more portable
+DIR_MJS_JSON = os.getenv("DIR_MJS_JSON") or "mapjs-json"
+PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (config.project_folder .. "/test/output/" .. DIR_MJS_JSON)
 
 local logging = require "logging"
 Logger = logging.new(function(self, level, message)

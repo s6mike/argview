@@ -16,7 +16,6 @@ source /opt/miniconda3/bin/activate
 # Order of setting variables then activating important?
 #   create a (version-controlled) activate.cmd file in the root of the project directory that sets the environemnt variable(s) and then calls conda's own activate.bat script.
 conda activate "$CONDA_ENV_ARGMAPS"
-
 export ENV_FILE="$WORKSPACE/environment.yml"
 
 # Uses variable set in conda env, or defaults to pwd.
@@ -24,29 +23,21 @@ export ENV_FILE="$WORKSPACE/environment.yml"
 #   Plus they will outlast any env deactivation
 PROJECT_DIR=$(dirname "$WORKSPACE")
 export PROJECT_DIR
-
 export PANDOC_DATA_DIR="$CONDA_PREFIX/share/pandoc"
 
-export MAPJS_JSON_DIR="/home/s6mike/git_projects/argmap/test/output/mapjs-json/"
+# This is abolute for reading/writing to the correct directory
+export DIR_HTML_OUTPUT="$WORKSPACE/test/output"
 
-# TODO: Remove WP from variable names
-export MJS_WP_HOME="$WORKSPACE/mapjs-example"
-# export MJS_WP_HOME="$WORKSPACE/mapjs"
+# For html links, use relative paths (to test/output folder) - more portable
+export DIR_MJS_JSON="mapjs-json"
+export PATH_MJS_JSON="$DIR_HTML_OUTPUT/$DIR_MJS_JSON"
 
-# TODO: Tidy comments
-# Uses config file in the relevant directory to identify mapjs based locations
-# shellcheck source=/mapjs-example/scripts/mapjs.env
-# source "$MJS_WP_HOME/scripts/mapjs.env"
-# # export MJS_OUTPUT_FILE="site/main.js"
-# export MJS_OUTPUT_FILE="test/bundle.js"
-# export MJS_WP_MAP="$WORKSPACE/examples/example.json"
+export PATH_MJS_HOME="$WORKSPACE/mapjs-example"
+# export PATH_MJS_HOME="$WORKSPACE/mapjs"
 
-# Sets correct paths for mapjs install
-export MJS_OUTPUT_FILE="$MJS_WP_HOME/site/main.js" # Relative path more portable
-export MJS_CSS="$MJS_WP_HOME/mapjs-default-styles.css"
-# export MJS_OUTPUT_FILE="$WORKSPACE/mapjs-example/site/main.js"
-# export MJS_WP_MAP="$WORKSPACE/examples/example.json"
-# export MJS_WP_MAP="$WORKSPACE/mapjs-example/src/example-map-backup.json"
+# Uses config file in the relevant mapjs directory to get correct mapjs paths
+# shellcheck source=/mapjs-example/scripts/mapjs.env # Stops shellcheck lint error
+source "$PATH_MJS_HOME/scripts/mapjs.env"
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
 
@@ -69,6 +60,6 @@ export INPUT_FILE_MD0=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simp
 export INPUT_FILE_MD=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md
 export INPUT_FILE_MD2=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.md
 export INPUT_FILE_MD_META=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.md
-# export INPUT_FILE_JSON=$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.json
+# export INPUT_FILE_JSON=$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.json
 
 source "$WORKSPACE/test/bash_aliases_argmap_test.sh"

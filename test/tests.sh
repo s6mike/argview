@@ -5,8 +5,8 @@
 echo 'Attempting to delete old test outputs.'
 
 __clean_repo
-rm "$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$WORKSPACE/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs

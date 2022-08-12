@@ -2,12 +2,26 @@
 
 ## TODO
 
-- Try relative paths again, with argmh (and bmj) from different folders in terminal.
-- `scripts/bash_aliases_argmap.sh`: Review functions.
 - [README.md](../README.md):
-  - Add note about linking/using templates (html and latex).
-- `scripts/bash_aliases_argmap.sh`: Contains no aliases, only functions. Best practice name?
+  - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.2.4
+
+- Fix html output URLs - use relative URLs:
+  - Restore `mapjs.env` files e.g. `mapjs-example/scripts/mapjs.env`.
+  - Various config files: Update environment variables for html resource paths to be relative.
+  - `src/pandoc-argmap.lua`:
+    - Add variable for JSON resource path (relative), contrasting with output folder (absolute).
+    - Fix path for mapjs controls template.
+- Rationalise env variables:
+  - Standardise env variable naming convention.
+  - Create env variable: `DIR_HTML_OUTPUT` and add where needed.
+  - Fix some incorrect paths missed from output folder changed in v4.2.1
+  - Simplified logic in `src/pandoc-argmap.lua`
+- `scripts/git_hooks/pre-commit`: Add webpack rebuild before testing.
+- `scripts/bash_aliases_argmap.sh: md2pdf()`: Make link to pdf template absolute so function works from any folder location.
+- [README.md](../README.md): Update mapjs sections with instructions for v4.2.0 onwards.
 
 ## argmap 4.2.3
 
@@ -42,7 +56,7 @@ Supports multiple mapjs on page:
   - `mapjs-example/src/start.js`:
     - Load mapjs JSON file asynchronously using fetch().
     - Tidy comments.
-  - `src/pandoc-argmap.lua`: Reference JSON file with application/json script.
+  - `src/pandoc-argmap.lua`: Reference JSON file with `application/json` script.
   - `scripts/bash_aliases_argmap.sh`:
     - `__open-mapjs()`:
       - Rename `__chrome-mini()` to `__open-mapjs()`.
@@ -50,9 +64,9 @@ Supports multiple mapjs on page:
         - [README.md](../README.md): Document above workaround.
     - `__build_mapjs`: Only call when code changes, rather than for each new argmap:
       - Rename `__pack_mapjs` to `__build_mapjs`.
-      - Add it to install.sh, remove it from other functions.
+      - Add it to `scripts/install.sh`, remove it from other functions.
       - Deprecate `a2jo()`, do not export it and `a2mo` so they are not available to other scripts.
-        - `scripts/tests.sh`: remove test #5 (uses a2jo).
+        - `scripts/tests.sh`: Remove test #5 (obsolete, uses a2jo).
         - `test/bash_aliases_argmap_test.sh`: Remove alias `argmj`.
 
 ## argmap 4.1.0
@@ -67,8 +81,6 @@ Supports multiple mapjs on page:
 
 - Change block directive from `convertTo="mapjs"` to `to="js"` for consistency with pandoc. BREAKING
   - Update: `src/pandoc-argmap.lua`, example files.
-- Update scripts to use `test/input` and `test/output` instead of `Input` and `Output`. BREAKING
-  - Move `Input` test files to above folders.
 - Write all mapjs .json input files to `MAPJS_JSON_INPUT_DIR`: BREAKING
   - Initialise in init_script as `output/mapjs-json-input`.
   - Read in `config_argmap.lua`
@@ -76,13 +88,15 @@ Supports multiple mapjs on page:
   - Update `scripts/install.sh` and symbolic link: link to `mapjs-example/`.
 - `tests/tests.sh`:
   - Fix duplicate argmap IDs in some test files.
-  - Add 2 md2hf() tests for new input files with 0, 2 argmap > mapjs code blocks.
-  - Add md2hf() test for new input file with argmap > mapjs metadata.
+  - Add 2 `md2hf()` tests for new input files with 0, 2 argmap > mapjs code blocks.
+  - Add `md2hf()` test for new input file with argmap > mapjs metadata.
   - `scripts/bash_aliases_argmap.sh`:
     - `md2hf()`:
       - Fix browser blocking test progression with `&disown`.
       - Write html output to different files, avoiding shared test state while waiting for browser.
       - Update `__clean_repo`.
+- Update scripts to use `test/input` and `test/output` instead of `Input` and `Output`.
+  - Move `Input` test files to above folders.
 
 ## argmap 3.9.2
 

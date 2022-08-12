@@ -171,6 +171,7 @@ local function CodeBlock(block)
         else
             -- https://docs.google.com/spreadsheets/d/1nUmP52mYggR6cbZUwkrjxArgrvr3nJXO_tE6qV4-2S4/edit#gid=823952520&range=D12
 
+            -- QUESTION: Why do I assign this here rather than before argmap_format check?
             -- If no block attribute, then use default set in meta attribute (read in Meta())
             local argmap_format = block.attributes["to"] or meta_to
 
@@ -217,12 +218,14 @@ local function CodeBlock(block)
                 --          prepend with input filename for:
                 --              test/output/input_file_yml_id.json
                 -- TODO: add _yml name attribute (with _ substitutions for spaces)?
-                local output_filename = input_filename .. "_" .. block_id
+                local output_filename = input_filename .. "_" .. block_id .. ".json"
 
-                -- TODO: Can I remove path before /test/?
-                -- local argmap_output_folder_path = "/home/s6mike/git_projects/argmap/mapjs-example/src/argmap_output/"
-                local argmap_output_folder_path = MAPJS_JSON_DIR
-                local argmap_output_file_path = argmap_output_folder_path .. output_filename .. ".json"
+                -- Create JSON file in aboslute path:
+                local argmap_output_file_path = PATH_MJS_JSON .. "/" .. output_filename
+
+                -- TODO: For relative paths, could try script source?
+                -- The URL reference needs to be relative to html page location: /test/output
+                local mapjs_url = DIR_MJS_JSON .. "/" .. output_filename
 
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
@@ -231,18 +234,17 @@ local function CodeBlock(block)
                 f:close()
 
                 -- QUESTION: Better to build html using pandoc functions rather than with rawhtml?
-                local argmap_controls_path = "pandoc-templates/mapjs/mapjs-testcontrols.html"
+                local argmap_controls_path = config_argmap.project_folder ..
+                    "/pandoc-templates/mapjs/mapjs-testcontrols.html"
                 local _, argmap_controls_html = pandoc.mediabag.fetch(argmap_controls_path)
 
-                -- QUESTION: Better to nest script inside container?
-                -- TODO: fix start.js logic first then re-arrange after.
                 local rawhtml = argmap_controls_html ..
                     "<div id=\"container_"
                     .. block_id .. "\" class=\"container_argmapjs\">\n"
                     .. "  <script type=\"application/json\" "
                     -- .. " id=\"" .. block_id .. ".json\" "
                     .. "class=\"argmap_json\" src=\""
-                    .. argmap_output_file_path .. "\"></script>\n" .. "</div>"
+                    .. mapjs_url .. "\"></script>\n" .. "</div>"
 
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
@@ -251,9 +253,9 @@ local function CodeBlock(block)
                 local rawhtml = "<a href=\"" .. mupLink .. "\">" .. rawsvg .. "</a>"
                 return pandoc.RawBlock(format, rawhtml)
             else
-                -- check to see if the images need to be regenerated (borrowed from pandoc lua filter docs: each image name is a hash of the yaml map.)
-                -- TODO: put the images in a directory
-                -- TODO: delete old images that are no longer needed?
+                -- Check to see if the images need to be regenerated (borrowed from pandoc lua filter docs: each image name is a hash of the yaml map.)
+                -- TODO: Put the images in DIR_HTML_OUTPUT directory (need to add to config_argmap.lua)
+                -- QUESTION: Delete old images that are no longer needed?
                 local fname = pandoc.sha1(original) .. "." .. filetype
                 if not file_exists(fname) then
                     -- convert the yaml map to an image
