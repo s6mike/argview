@@ -9,98 +9,83 @@
             "request": "launch",
             "name": "Lua Local: cat example | argmap2mup",
             "program": {
-                // "command": "cat examples/example.yml | ${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
-                "command": "cat",
+                "command": "cat"
             },
             "args": [
                 "${workspaceFolder}/examples/example.yml",
                 "|",
-                "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+                "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
-                // "PATH": "${env:PATH}",
-                // "LUA_PATH": "${workspaceFolder}/src/?.lua;${workspaceFolder}/src/?/init.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/share/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/home/s6mike/.luarocks/share/lua/5.3/?.lua;/home/s6mike/.luarocks/share/lua/5.3/?/init.lua",
-                // "LUA_CPATH": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/loadall.so;./?.so;/home/s6mike/.luarocks/lib/lua/5.3/?.so",
-                // "PATH": "$WORKSPACE/lua_modules/bin:/home/s6mike/.luarocks/bin:/home/s6mike/bin:/opt/miniconda3/envs/argumend/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true,
+            "stopOnEntry": true
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: argmap2mup",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
             },
             "args": [
-                // "${workspaceFolder}/examples/example.yml",
                 "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
                 ">",
-                // "${workspaceFolder}/test/output/example.mup",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
-                // "PATH": "${env:PATH}",
-                // "LUA_PATH": "${workspaceFolder}/src/?.lua;${workspaceFolder}/src/?/init.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/share/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.lua;/opt/miniconda3/envs/argumend/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/home/s6mike/.luarocks/share/lua/5.3/?.lua;/home/s6mike/.luarocks/share/lua/5.3/?/init.lua",
-                // "LUA_CPATH": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/share/lua/5.3/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/loadall.so;./?.so;/home/s6mike/.luarocks/lib/lua/5.3/?.so",
-                // "PATH": "$WORKSPACE/lua_modules/bin:/home/s6mike/.luarocks/bin:/home/s6mike/bin:/opt/miniconda3/envs/argumend/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true,
+            "stopOnEntry": true
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: mup2argmap",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/mup2argmap.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/mup2argmap.lua"
             },
             "args": [
-                // "${workspaceFolder}/examples/example.mup",
                 "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
                 ">",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
-                // "${workspaceFolder}/test/output/example.yml",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": false,
+            "stopOnEntry": false
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: argmap2tikz",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2tikz.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2tikz.lua"
             },
             "args": [
-                // "${workspaceFolder}/examples/example.yml",
                 "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
                 ">",
-                // "${workspaceFolder}/test/output/example.tex",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.tex",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.tex"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": false,
+            "stopOnEntry": false
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: pandoc-argmap.lua",
             "program": {
-                "command": "pandoc",
+                "command": "pandoc"
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
@@ -110,21 +95,21 @@
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
                 "--metadata=mapjs-output-js:${workspaceFolder}/mapjs-example/site/main.js",
-                "--metadata=css:mapjs-default-styles.css",
+                "--metadata=css:mapjs-default-styles.css"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true,
+            "stopOnEntry": true
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: pandoc-argmap.lua meta mapjs",
             "program": {
-                "command": "pandoc",
+                "command": "pandoc"
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
@@ -134,21 +119,21 @@
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
                 "--metadata=mapjs-output-js:${workspaceFolder}/mapjs-example/site/main.js",
-                "--metadata=css:mapjs-default-styles.css",
+                "--metadata=css:mapjs-default-styles.css"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true,
+            "stopOnEntry": true
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: pandoc md2pdf",
             "program": {
-                "command": "pandoc",
+                "command": "pandoc"
             },
             "args": [
                 "examples/example.md",
@@ -159,33 +144,32 @@
                 "lualatex",
                 "--template",
                 "examples/example-template.latex",
-                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
+                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": false,
+            "stopOnEntry": false
         },
         {
             "type": "lua-local",
             "request": "launch",
             "name": "Debug argmap2mup gdrive upload",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
             },
             "args": [
                 "-u",
-                // "${workspaceFolder}/examples/example.yml",
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": false,
+            "stopOnEntry": false
         },
         {
             "type": "lua-local",
@@ -193,15 +177,29 @@
             "name": "launch",
             "program": {
                 "lua": "lua5.3",
-                "file": "${file}",
+                "file": "${file}"
             },
             "request": "launch",
             "stopOnEntry": false,
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
                 "LUA_PATH": "${config:lua.debug.settings.path}",
-                "LUA_CPATH": "${config:lua.debug.settings.cpath}",
-            },
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
+            }
         },
+        {
+            "type": "chrome",
+            "name": "Debug html with 2 mapjs",
+            "request": "launch",
+            // "runtimeExecutable": "__open-mapjs", // No idea if this would work
+            "file": "test/output/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html",
+            // "url": "file:///home/s6mike/git_projects/argmap/test/output/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html",
+            // --allow-file-access-from-files --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
+            "runtimeArgs": [
+                "--allow-file-access-from-files"
+            ],
+            "sourceMaps": true,
+            "cleanUp": "onlyTab"
+        }
     ]
 }

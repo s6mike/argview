@@ -9,13 +9,13 @@ echo "Running ${BASH_SOURCE[0]}"
 # Needed for non-VSCode environments:
 export WORKSPACE=${WORKSPACE:-/home/s6mike/git_projects/argmap}
 
-source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAPS
+source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
 source /home/s6mike/scripts/bash_aliases.sh
 source /opt/miniconda3/bin/activate
 
 # Order of setting variables then activating important?
 #   create a (version-controlled) activate.cmd file in the root of the project directory that sets the environemnt variable(s) and then calls conda's own activate.bat script.
-conda activate "$CONDA_ENV_ARGMAPS"
+conda activate "$CONDA_ENV_ARGMAP"
 export ENV_FILE="$WORKSPACE/environment.yml"
 
 # Uses variable set in conda env, or defaults to pwd.

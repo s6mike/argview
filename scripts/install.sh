@@ -3,7 +3,7 @@
 # SECTION 0:
 # ----------
 
-# a) Review: intialised values in `scripts/argmaps_init_script.sh`
+# a) Review: intialised values in `scripts/argmap_init_script.sh`
 
 # SECTION 1:
 # ----------
@@ -13,7 +13,7 @@
 
 # Download/install git folder?
 
-export CONDA_ENV_ARGMAPS="argmap"
+export CONDA_ENV_ARGMAP="argmap"
 export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 
 # TODO Just run conda env script?
@@ -22,13 +22,13 @@ export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 # Else:
 # conda env create -f environment.yml
 # Or:
-# conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAPS
+# conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAP
 
 # If conda activate errors:
 # conda init bash
 # source /opt/miniconda3/bin/activate
 
-# conda activate $CONDA_ENV_ARGMAPS
+# conda activate $CONDA_ENV_ARGMAP
 
 # SECTION 2:
 # ----------

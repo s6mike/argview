@@ -13,7 +13,7 @@
         "icon": "terminal-bash",
         "args": [
             "--init-file",
-            "${workspaceFolder}/scripts/argmaps_init_script.sh",
+            "${workspaceFolder}/scripts/argmap_init_script.sh",
         ]
     },
     "terminal.integrated.copyOnSelection": true,

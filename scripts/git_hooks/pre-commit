@@ -18,8 +18,8 @@ fi
 
 # echo "terminal:"
 # ps -p $(ps -p $$ -o ppid=) -o args
-# Conda argmaps not activated:
-#   conda activate argmaps # Won't work because need conda init [shell] - is hook run in bash?
+# Conda argmap not activated:
+#   conda activate argmap # Won't work because need conda init [shell] - is hook run in bash?
 # or do this: conda env update -n my_env --file ENV.yaml
 # # TODO: try to fix activation before attempting to parse environment.yml:
 # * https://stackoverflow.com/questions/71482060/source-os-environment-variables-from-a-docker-compose-yaml
@@ -27,21 +27,21 @@ fi
 # * https://stackoverflow.com/questions/67132339/conda-export-env-from-bash-script
 
 # using init_script to set up variables.
-source scripts/argmaps_init_script.sh
+source scripts/argmap_init_script.sh
 
 #testing
 source scripts/bash_aliases_argmap.sh
 
 # Once conda env activated, $CONDA_PREFIX/bin will be sufficient.
-export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAPS/bin:$PATH
+export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAP/bin:$PATH
 
 # Needed for tests.sh to work.
 # TODO: Can I source another file for this? ideally environment.yml exported in next section.
 export LUA_PATH="$WORKSPACE/lua_modules/share/lua/5.3/?.lua;$WORKSPACE/lua_modules/share/lua/5.3/?/init.lua;./?.lua;./?/init.lua;/usr/local/share/lua/5.3/?/init.lua;/usr/local/share/lua/5.3/?.lua;"
 export LUA_CPATH="$WORKSPACE/lua_modules/lib/lua/5.3/?.so;"
 
-# Export conda environment argmaps to yaml file
-conda env export --from-history --name "$CONDA_ENV_ARGMAPS" >"$ENV_FILE"
+# Export conda environment argmap to yaml file
+conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$ENV_FILE"
 
 __save_env
 

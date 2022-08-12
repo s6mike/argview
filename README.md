@@ -71,7 +71,7 @@ One of the tools is a filter for [Pandoc](https://pandoc.org/), a universal docu
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
-This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even Mac, but will not work on Windows.
+This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
 1. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. ~/bin.
 

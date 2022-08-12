@@ -132,7 +132,7 @@ local function CodeBlock(block)
     --  For iterating through classes, see https://github.com/pandoc/lua-filters/blob/master/revealjs-codeblock/revealjs-codeblock.lua
     if block.classes[1] == class_argmap then
         -- TODO: lua filter should include main.js etc even for fragment
-        -- Might also simplify logic for leaving JS out of template when no argmaps.
+        -- Might also simplify logic for leaving JS out of template when no argmap.
 
         local original = block.text
 
@@ -236,7 +236,11 @@ local function CodeBlock(block)
                 -- QUESTION: Better to build html using pandoc functions rather than with rawhtml?
                 local argmap_controls_path = config_argmap.project_folder ..
                     "/pandoc-templates/mapjs/mapjs-testcontrols.html"
-                local _, argmap_controls_html = pandoc.mediabag.fetch(argmap_controls_path)
+                local _, argmap_controls_html_raw = pandoc.mediabag.fetch(argmap_controls_path)
+
+                -- %% is escaped %
+                local argmap_controls_html = argmap_controls_html_raw:gsub("%%BLOCK_ID%%", block_id)
+
 
                 local rawhtml = argmap_controls_html ..
                     "<div id=\"container_"

@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.2.5
+
+- Give test controls class and unique IDs:
+  - `src/pandoc-argmap.lua`
+  - `pandoc-templates/mapjs/mapjs-testcontrols.html`
+- `.vscode/launch.json`: Add url debug profile, with flag for opening local files included.
+- Rename these uses of argmaps to argmap for consistency:
+  - `scripts/argmap_init_script.sh`
+  - env variable `CONDA_ENV_ARGMAP`
+
 ## argmap 4.2.4
 
 - Fix html output URLs - use relative URLs:
@@ -21,7 +31,9 @@
   - Simplified logic in `src/pandoc-argmap.lua`
 - `scripts/git_hooks/pre-commit`: Add webpack rebuild before testing.
 - `scripts/bash_aliases_argmap.sh: md2pdf()`: Make link to pdf template absolute so function works from any folder location.
-- [README.md](../README.md): Update mapjs sections with instructions for v4.2.0 onwards.
+- [README.md](../README.md):
+  - Update mapjs sections with instructions for v4.2.0 onwards.
+  - Minor updates.
 
 ## argmap 4.2.3
 
