@@ -61,7 +61,7 @@ __save_env
 # fi
 
 # Rebuild webpack just in case
-bmj
+__build_mapjs
 
 # Run test script tests.sh
 test/tests.sh

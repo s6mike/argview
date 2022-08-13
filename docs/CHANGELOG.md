@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.2.7 TEST
+
+- Installed critical packages
+
 ## argmap 4.2.6 TEST
 
 - Testing `/mapjs` instead of `/example-mapjs` to see if it fixes some security errors.

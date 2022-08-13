@@ -167,5 +167,8 @@ cd "$PATH_MJS_HOME" || {
 #     "mindmup-mapjs": "git@github.com:mindmup/mapjs.git#e30f8d835e028febe2e951e422c313ac304a0431"
 #   }
 
+# QUESTION: Do I need above cd if I'm using prefix?
 npm --prefix "$PATH_MJS_HOME" install
+npm audit fix --legacy-peer-deps >npm_audit_output.txt
+
 __build_mapjs
