@@ -32,10 +32,11 @@ export DIR_HTML_OUTPUT="$WORKSPACE/test/output"
 export DIR_MJS_JSON="mapjs-json"
 export PATH_MJS_JSON="$DIR_HTML_OUTPUT/$DIR_MJS_JSON"
 
-export PATH_MJS_HOME="$WORKSPACE/mapjs-example"
-# export PATH_MJS_HOME="$WORKSPACE/mapjs"
+# export PATH_MJS_HOME="$WORKSPACE/mapjs-example"
+export PATH_MJS_HOME="$WORKSPACE/mapjs"
 
 # Uses config file in the relevant mapjs directory to get correct mapjs paths
+# shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error
 # shellcheck source=/mapjs-example/scripts/mapjs.env # Stops shellcheck lint error
 source "$PATH_MJS_HOME/scripts/mapjs.env"
 

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.2.6 TEST
+
+- Testing `/mapjs` instead of `/example-mapjs` to see if it fixes some security errors.
+
 ## argmap 4.2.5
 
 - Give test controls class and unique IDs:
