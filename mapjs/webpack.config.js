@@ -1,7 +1,7 @@
 /*global require, module, __dirname */
 const path = require('path');
 module.exports = {
-	entry: './test/start',
+	entry: './src/start',
 	devtool: 'source-map',
 	output: {
 		filename: 'bundle.js',

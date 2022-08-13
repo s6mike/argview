@@ -5,10 +5,21 @@ argmap.code-workspace
 archived
 lua_modules/
 mapjs/node_modules
-mapjs/site
+mapjs/test
 mapjs-example/node_modules
 mapjs-example/site
 examples/*
 output/*
 test/output/*
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png
+results
+.DS_Store
+testem/compiled
+pub
+lib
+#grunt and jasmine artificats
+SpecRunner.html
+.grunt
+.sublime*
+.tern-port
+npm-debug.log

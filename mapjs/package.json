@@ -2,6 +2,7 @@
   "name": "@mindmup/mapjs",
   "license": "MIT",
   "description": "Mind mapping visualisation library, using SVG, developed for MindMup",
+  "type": "commonjs",
   "repository": {
     "type": "git",
     "url": "https://github.com/mindmup/mapjs.git"

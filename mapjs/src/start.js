@@ -2,51 +2,59 @@
 
 /*global require, document, window, console */
 
-const MAPJS = require('mindmup-mapjs'),
+const MAPJS = require('./npm-main'),
 	jQuery = require('jquery'),
-	themeProvider = require('./theme'),
-	ThemeProcessor = require('mindmup-mapjs-layout').ThemeProcessor,
+	themeProvider = require('../test/theme'),
+	content = MAPJS.content,
 
-	content = require('mindmup-mapjs-model').content;
+	init = function () {
+		'use strict';
+		let domMapController = false;
 
-// Run once DOM Content loaded
-function init(event) {
-	// TODO: Restore use strict and fix cause of warning/error:
-	'use strict';
+		// Looks for class not id, so can capture a number of containers each with own id.
+		const containers = jQuery('.container_argmapjs');
 
-	// Looks for class not id, so can capture a number of containers each with own id.
-	const containers = jQuery('.container_argmapjs');
+		if (containers.length > 0) { // Checks there are mapjs requests
+			jQuery(containers).each(function (container) {
+				// TODO: check for 0 > script > 1
+				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
+				const script_src = jQuery(this).children('script.argmap_json').attr('src');
+				console.debug("script_src: ", script_src);
 
-	if (containers.length > 0) { // Checks there are mapjs requests
+				// TODO: switch to await/async for simpler code and debugging.
+				fetch(script_src)
+					.then(response => response.json())
+					.then(data => addMap(jQuery(this), data))
+					// .then((data) => console.debug(data))
+					.catch(error => console.log(error));
+			})
 
-		jQuery(containers).each(function (container) {
-			// TODO: check for 0 > script > 1
-			//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-			const script_src = jQuery(this).children('script.argmap_json').attr('src');
-			console.debug("script_src: ", script_src)
-
-			// TODO: switch to await/async for simpler code and debugging.
-			fetch(script_src)
-				.then(response => response.json())
-				.then(data => addMap(jQuery(this), data))
-				// .then((data) => console.debug(data))
-				.catch(error => console.log(error));
-		})
-
-	} else { // If no mapjs requests:
-		console.debug('No requests for mapjs detected.')
+		} else { // If no mapjs requests:
+			console.debug('No requests for mapjs detected.')
+		};
 	};
-};
 
-// Called asynchronously after successful fetch of JSON data
 function addMap(container, testMap) {
 	// console.debug("testMap: ", testMap);
 
 	// const container = jQuery('#container'),
-	var idea = content(testMap),
-		imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
-		mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []);
-	console.debug("idea: ", idea);
+	idea = content(testMap),
+		touchEnabled = false,
+		mapModel = new MAPJS.MapModel([]),
+		layoutThemeStyle = function (themeJson) {
+			const themeCSS = themeJson && new MAPJS.ThemeProcessor().process(themeJson).css;
+			if (!themeCSS) {
+				return false;
+			}
+
+			if (!window.themeCSS) {
+				jQuery('<style id="themeCSS" type="text/css"></style>').appendTo('head').text(themeCSS);
+			}
+			return true;
+		},
+		themeJson = themeProvider.default || MAPJS.defaultTheme,
+		theme = new MAPJS.Theme(themeJson),
+		getTheme = () => theme;
 
 	jQuery.fn.attachmentEditorWidget = function (mapModel) {
 		return this.each(function () {
@@ -56,18 +64,27 @@ function addMap(container, testMap) {
 					nodeId, {
 					contentType: 'text/html',
 					content: window.prompt('attachment', attachment && attachment.content)
-				}
-				);
+				});
 			});
 		});
 	};
 	window.onerror = window.alert;
+	window.jQuery = jQuery;
 
+	container.domMapWidget(console, mapModel, touchEnabled);
 
-	jQuery('#themecss').themeCssWidget(themeProvider, new ThemeProcessor(), mapModel);
-	container.domMapWidget(console, mapModel, false, imageInsertController);
-	jQuery('body').mapToolbarWidget(mapModel);
+	domMapController = new MAPJS.DomMapController(
+		mapModel,
+		container.find('[data-mapjs-role=stage]'),
+		touchEnabled,
+		undefined, // resourceTranslator
+		getTheme
+	);
+	//jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
+	// activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange
+
 	jQuery('body').attachmentEditorWidget(mapModel);
+	layoutThemeStyle(themeJson);
 	mapModel.setIdea(idea);
 
 
@@ -76,9 +93,7 @@ function addMap(container, testMap) {
 	jQuery('.arrow').click(function () {
 		jQuery(this).toggleClass('active');
 	});
-	imageInsertController.addEventListener('imageInsertError', function (reason) {
-		console.error('image insert error', reason);
-	});
+
 	container.on('drop', function (e) {
 		const dataTransfer = e.originalEvent.dataTransfer;
 		e.stopPropagation();

@@ -2,14 +2,26 @@
 
 ## TODO
 
+- Move mapjs source files to `src/`: `theme.js`.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.2.9
+
+- `mapjs/`:
+  - Removed extra start.js files mixed up from `mapjs-example/`.
+  - Fix differences between `test/start.js` vs original, now working, though UI seems flakier than `mapjs-example/`.
+  - Move `test/start.js` to `src/start.js` since it's a source file.
+  - `package.json`: Add  "type": "commonjs".
+  - Remove references to `src/example-map.json` from `src/start.js`
+  - Delete `test/example-map.json`
+- Update `.gitignore`, including update from upstream mapjs repo.
+
 ## argmap 4.2.8 General Improvements
 
 - Fix `scripts/install.sh`, `environment.yml`
-- Restore missing test Example to `test/input`.
+- Restore missing example test to `test/input`.
 
 ## argmap 4.2.7 TEST
 
