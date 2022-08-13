@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# To install with conda, provide first argument conda:
+# ./install.sh conda
+
 # SECTION 0:
 # ----------
 
@@ -8,32 +11,7 @@
 # SECTION 1:
 # ----------
 
-# TODO: normal install shouldn't use conda, so should set up to give option for either
-# ie  INSTALL_ROOT=$CONDA_PREFIX||X or similar.
-
-# Download/install git folder?
-
-export CONDA_ENV_ARGMAP="argmap"
-export XDG_DATA_HOME="$CONDA_PREFIX/share/"
-
-# TODO Just run conda env script?
-# if in folder with environment.yml
-# conda env create
-# Else:
-# conda env create -f environment.yml
-# Or:
-# conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAP
-
-# If conda activate errors:
-# conda init bash
-# source /opt/miniconda3/bin/activate
-
-# conda activate $CONDA_ENV_ARGMAP
-
-# SECTION 2:
-# ----------
-
-# If installing from environment.yml, skip to SECTION 3.
+# If installing from environment.yml, skip to SECTION 2.
 
 # TODO: check whether these are already installed
 # conda install lua5.3
@@ -84,79 +62,112 @@ chmod +x git_hooks/*
 # Link up tests.sh to deprecated location?
 # ln -s test/tests.sh scripts
 
-# SECTION 3: Link conda env
-# ---------------------------------------------------
+# Only executed if called with first argument 'conda'
+# e.g.
+#     ./install.sh conda
+if [ "$1" != 'conda' ]; then
 
-# a) Review: intialised values in `environment.yml`
+  # Note: this used to be section 1
+  # SECTION 2 Set up conda env:
+  # ----------
 
-# ln -s source_file symbolic_link
-ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
-ln -s "$WORKSPACE/src/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
-ln -s "$WORKSPACE/src/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
+  # TODO: normal install shouldn't use conda, so should set up to give option for either
+  # ie  INSTALL_ROOT=$CONDA_PREFIX||X or similar.
 
-# pandoc data-folder:
-# local: ~/.local/share/pandoc/
-#   e.g. ~/.local/share/pandoc/filters
-# legacy: ~/.pandoc/
-# conda: "$CONDA_PREFIX/share/pandoc/filters"
+  # Download/install git folder?
 
-# This might be useful on more recent version of pandoc, which might actually check all these folders
-# Though more likely it will use XDG_DATA_HOME which I can then overwrite
-# XDG_DATA_DIRS="$CONDA_PREFIX/share":$XDG_DATA_DIRS
+  export CONDA_ENV_ARGMAP="argmap"
+  export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 
-# Adds .lua files to pandoc data-folder:
+  # TODO Just run conda env script?
+  # if in folder with environment.yml
+  # conda env create
+  # Else:
+  # conda env create -f environment.yml
+  # Or:
+  # conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAP
 
-# ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  # If conda activate errors:
+  # conda init bash
+  # source /opt/miniconda3/bin/activate
 
-mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
-ln -s "$WORKSPACE/src/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
+  # conda activate $CONDA_ENV_ARGMAP
 
-# TODO is this necessary? Forget why
-# ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
+  # SECTION 3: Link conda env
+  # ---------------------------------------------------
 
-# Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
-# Need to use sudo for both:
-mkdir --parents /usr/local/share/lua/5.3/
+  # a) Review: intialised values in `environment.yml`
 
-# Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
-# So this might not be needed any longer:
-# ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
+  # ln -s source_file symbolic_link
+  ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
+  ln -s "$WORKSPACE/src/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
+  ln -s "$WORKSPACE/src/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
 
-# Fixed issue with vscode-pandoc not finding config_argmap with this link:
-ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
+  # pandoc data-folder:
+  # local: ~/.local/share/pandoc/
+  #   e.g. ~/.local/share/pandoc/filters
+  # legacy: ~/.pandoc/
+  # conda: "$CONDA_PREFIX/share/pandoc/filters"
 
-# latex templates e.g. examples/example-template.latex need to go here:
-mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
+  # This might be useful on more recent version of pandoc, which might actually check all these folders
+  # Though more likely it will use XDG_DATA_HOME which I can then overwrite
+  # XDG_DATA_DIRS="$CONDA_PREFIX/share":$XDG_DATA_DIRS
 
-ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
+  # Adds .lua files to pandoc data-folder:
 
-# Connects legacy data-folder to conda env:
-# TODO: add this to conda activation, and delete this link when env deactivated?
-# NOTE: can use defaults file to set defalt data directory, should simplify.
-# Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
-ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
+  # ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
 
-# Makes conda exes available in local for VSCode extensions which don't have path option:
-# Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
-# ln -s "$CONDA_PREFIX/bin/pandoc" "$HOME/.local/bin/"
+  mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
+  ln -s "$WORKSPACE/src/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
 
-# Added since after uninstalling global lua, vscode-pandoc extension fails.
-# Wondering if adding this link (from section 2), would help:
-#   ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  # TODO is this necessary? Forget why
+  # ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
 
-ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
+  # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
+  # Need to use sudo for both:
+  mkdir --parents /usr/local/share/lua/5.3/
 
-# Only needed for pre-commit hook:
-ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+  # Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
+  # So this might not be needed any longer:
+  # ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
+
+  # Fixed issue with vscode-pandoc not finding config_argmap with this link:
+  ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
+
+  # latex templates e.g. examples/example-template.latex need to go here:
+  mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
+
+  ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
+
+  # Connects legacy data-folder to conda env:
+  # TODO: add this to conda activation, and delete this link when env deactivated?
+  # NOTE: can use defaults file to set defalt data directory, should simplify.
+  # Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
+  ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
+
+  # Makes conda exes available in local for VSCode extensions which don't have path option:
+  # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
+  # ln -s "$CONDA_PREFIX/bin/pandoc" "$HOME/.local/bin/"
+
+  # Added since after uninstalling global lua, vscode-pandoc extension fails.
+  # Wondering if adding this link (from section 2), would help:
+  #   ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+
+  ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
+
+  # Only needed for pre-commit hook:
+  ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+
+fi
 
 # SECTION 4: mapjs
 # ---------------------------------------------------
 
-# Check $PATH_MJS_HOME is set as desired
-cd "$PATH_MJS_HOME" || {
-  echo "Abandoning QA install."
-  exit 1
-}
+# # Check $PATH_MJS_HOME is set as desired
+# cd "$PATH_MJS_HOME" || {
+#   echo "Abandoning QA install."
+#   exit 1
+# }
 
 #nodejs installed with conda
 
@@ -169,6 +180,6 @@ cd "$PATH_MJS_HOME" || {
 
 # QUESTION: Do I need above cd if I'm using prefix?
 npm --prefix "$PATH_MJS_HOME" install
-npm audit fix --legacy-peer-deps >npm_audit_output.txt
+npm audit fix --prefix "$PATH_MJS_HOME" --legacy-peer-deps >npm_audit_output.txt
 
 __build_mapjs

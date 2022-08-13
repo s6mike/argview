@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.2.8 General Improvements
+
+- Fix `scripts/install.sh`, `environment.yml`
+- Restore missing test Example to `test/input`.
+
 ## argmap 4.2.7 TEST
 
 - Installed critical packages
