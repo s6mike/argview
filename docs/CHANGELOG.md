@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.3.2
+
+- `scripts/install.sh`: Fix error with running conda install introduced v4.2.8
+- `mapjs/docs/CHANGELOG-mapjs.md`: Document recent mapjs commits to mapjs repo.
+- `.gitignore`: Remove mapjs package-lock.json since this should be in version control.
+
 ## argmap 4.3.1
 
 - `pandoc-templates/mapjs/mapjs-inline-styles.css`: Fix css so mapjs displays container better.
@@ -69,7 +75,8 @@
 
 ## argmap 4.2.8 General Improvements
 
-- Fix `scripts/install.sh`, `environment.yml`
+- Fix `scripts/install.sh`, `environment.yml`.
+  - Introduce bug in conda section, fixed in v4.3.2
 - Restore missing example test to `test/input`.
 
 ## argmap 4.2.7 TEST

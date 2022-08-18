@@ -1,5 +1,32 @@
 # Mapjs Project Change Log
 
+## mapjs-webpack-example 4.0.0
+
+- Version 4.0.0 because latest mapjs tag is 3.3.5.
+- Align with argmap changes (v4.3.0): BREAKING
+  - Restructure folder so inputs and outputs logically separated:
+    - `mapjs/test/`:
+    - Move website dependencies to `site/`:
+      - Move `/mapjs-default-styles.css`
+        - `mapjs/scripts/mapjs.env`: Update env variable for css location.
+      - Move all svg files to `site/svg/`.
+    - Move js source files to `src/`:
+      - Move `theme.js` and `themes/`.
+        - `mapjs/src/start.js`: Update reference to `theme.js`.
+    - `mapjs/webpack.config.js`: Create bundle.js in `site/js/` instead.
+  - Delete `mapjs/test/index.html` - no longer needed.
+  - Move `test/start.js` to `src/start.js` since it's a source file.
+  - `package.json`: Add  "type": "commonjs".
+  - Remove references to `src/example-map.json` from `src/start.js`
+  - Delete `test/example-map.json`
+  - Update .gitignore
+- Import commits from: garlic0708/mapjs.git
+  - Modify attach, delete and rename actions to require 'standard' source
+    45ce477c400d5d8a67c86758bc8d0643e2f8828b
+- Add `package-lock.json`.
+- Add package_garlic.json for reference.
+- Include commits from previous changes I made, on top of the upstream master.
+
 ## mapjs-webpack-example 2.0.1
 
 - Update .gitignore paths to include `mapjs` folder.

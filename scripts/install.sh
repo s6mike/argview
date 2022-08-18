@@ -62,10 +62,10 @@ chmod +x git_hooks/*
 # Link up tests.sh to deprecated location?
 # ln -s test/tests.sh scripts
 
-# Only executed if called with first argument 'conda'
+# This section only executed if called with first argument 'conda'
 # e.g.
 #     ./install.sh conda
-if [ "$1" != 'conda' ]; then
+if [ "$1" == 'conda' ]; then
 
   # Note: this used to be section 1
   # SECTION 2 Set up conda env:

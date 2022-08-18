@@ -10,4 +10,3 @@ SpecRunner.html
 .sublime*
 .tern-port
 npm-debug.log
-package-lock.json
