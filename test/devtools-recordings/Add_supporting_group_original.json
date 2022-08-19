@@ -1,0 +1,31 @@
+{
+  "title": "Add supporting group",
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "file:///home/s6mike/git_projects/mapjs/test/index.html",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "file:///home/s6mike/git_projects/mapjs/test/index.html",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/supporting group"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(6)"
+        ]
+      ],
+      "offsetY": 12.627450942993164,
+      "offsetX": 63.80390930175781,
+      "deviceType": "pen"
+    }
+  ]
+}

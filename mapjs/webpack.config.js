@@ -8,7 +8,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'site/js/')
 	},
 	devServer: {
-		contentBase: path.join(__dirname, 'site/js'),
-		port: 9000
+		contentBase: path.join(__dirname, 'site'),
+		port: process.env.PORT_DEV_SERVER
 	}
 };

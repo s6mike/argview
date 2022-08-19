@@ -10,7 +10,9 @@ echo "Running ${BASH_SOURCE[0]}"
 export WORKSPACE=${WORKSPACE:-/home/s6mike/git_projects/argmap}
 
 source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
-source /home/s6mike/scripts/bash_aliases.sh
+
+# shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
+source "$HOME/scripts/bash_aliases.sh"
 source /opt/miniconda3/bin/activate
 
 # Order of setting variables then activating important?
@@ -25,6 +27,8 @@ PROJECT_DIR=$(dirname "$WORKSPACE")
 export PROJECT_DIR
 export PANDOC_DATA_DIR="$CONDA_PREFIX/share/pandoc"
 
+export PORT_DEV_SERVER=9001
+
 # This is abolute for reading/writing to the correct directory
 export DIR_HTML_OUTPUT="$WORKSPACE/test/output"
 
@@ -34,6 +38,12 @@ export PATH_MJS_JSON="$DIR_HTML_OUTPUT/$DIR_MJS_JSON"
 
 # export PATH_MJS_HOME="$WORKSPACE/mapjs-example"
 export PATH_MJS_HOME="$WORKSPACE/mapjs"
+
+# DIR_CHROME_PROFILE_TEMP=$(mktemp -d)
+DIR_CHROME_PROFILE_TEMP=/tmp/tmp.dp4dY6VFXl
+export DIR_CHROME_PROFILE_TEMP
+# QUESTION: Add cleanup function?
+#   https://stackoverflow.com/questions/4632028/how-to-create-a-temporary-directory#answer-34676160
 
 # Uses config file in the relevant mapjs directory to get correct mapjs paths
 # shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error

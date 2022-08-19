@@ -6,7 +6,8 @@ remote-debug-profile
 archived
 lua_modules/
 mapjs/node_modules
-mapjs/site
+mapjs/site/js
+mapjs/site/output
 mapjs-example/node_modules
 mapjs-example/site
 examples/*

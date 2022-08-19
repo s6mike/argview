@@ -2,11 +2,14 @@
 
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
+# Ensure Dev server running for tests. Start early since it takes a little while to get going.
+__restart_mapjs_webserver
+
 echo 'Attempting to delete old test outputs.'
 
 __clean_repo
-rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+# rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+# rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
@@ -72,16 +75,16 @@ if [ "$1" != html ]; then
     __test m2a "$INPUT_FILE_JSON" #2
     __test a2t "$INPUT_FILE_YML"  #3
     __test a2mu "$INPUT_FILE_YML" #4
-# __test a2jo "$INPUT_FILE_YML"   #5
+# __test a2jo "$INPUT_FILE_YML"
 fi
 
-__test md2hf "$INPUT_FILE_MD0"     #6
-__test md2hf "$INPUT_FILE_MD"      #7
-__test md2hf "$INPUT_FILE_MD2"     #8
-__test md2hf "$INPUT_FILE_MD_META" #9
+__test md2hf "$INPUT_FILE_MD0"     #5
+__test md2hf "$INPUT_FILE_MD"      #6
+__test md2hf "$INPUT_FILE_MD2"     #7
+__test md2hf "$INPUT_FILE_MD_META" #8
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #10
+    __test md2pdf "$INPUT_FILE_MD0" #9
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."

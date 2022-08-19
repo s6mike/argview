@@ -203,7 +203,7 @@
             "type": "chrome",
             "request": "attach",
             "name": "Attach to browser",
-            "port": 9222,
+            "port": 9221,
             "sourceMaps": true,
         }
     ]

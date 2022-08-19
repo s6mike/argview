@@ -32,7 +32,12 @@ package.cpath = os.getenv("LUA_CPATH") or
 
 -- For html links, use relative paths (to test/output folder) - more portable
 DIR_MJS_JSON = os.getenv("DIR_MJS_JSON") or "mapjs-json"
-PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (config.project_folder .. "/test/output/" .. DIR_MJS_JSON)
+
+-- QUESTION: Should I be using a path join function?
+DIR_HTML_OUTPUT = os.getenv("DIR_HTML_OUTPUT") or (config.project_folder .. "/test/output")
+PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_HTML_OUTPUT .. "/" .. DIR_MJS_JSON)
+DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
+
 
 local logging = require "logging"
 Logger = logging.new(function(self, level, message)

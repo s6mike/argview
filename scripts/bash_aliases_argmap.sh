@@ -6,26 +6,46 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # argmap Functions
 
-# For opening html pages containing mapjs files
+__open-chrome-debug() {
+  google-chrome --user-data-dir="$DIR_CHROME_PROFILE_TEMP" --hide-crash-restore-bubble --remote-debugging-port=9221 --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
+  disown # so browser stays open independent of vscode
+  # echo "Temp dir: $DIR_CHROME_PROFILE_TEMP"
+}
+
+alias argdb='__open-chrome-debug'
+alias argdb1='__open-chrome-debug $DIR_HTML_SERVER_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html'
+alias argdbe='__open-chrome-debug output/example-map.html'
+
+__open-server() {
+  # npm --prefix "$PATH_MJS_HOME" run start &
+  # PAGE="$1"
+  # Opens in chromeos browser
+  xdg-open "http://localhost:$PORT_DEV_SERVER/$1"
+}
+
+# QUESTION: Still needed? Use __open-server instead?
+# For opening html pages in linux browser containing mapjs files
 __open-mapjs() {
   # QUESTION: Is --allow-file-access-from-files a temp solution?
   #   Alternatives:
   #     Embed JSON directly in html
   #     https://stackoverflow.com/questions/64140887/how-to-solve-cors-origin-issue-when-trying-to-get-data-of-a-json-file-from-local
-  #     Set it up as a client-server app
-  google-chrome --disable-extensions --allow-file-access-from-files --no-default-browser-check --window-size=500,720 "$1" 2>/dev/null &
+  # --user-data-dir=/dev/null
+  google-chrome --disable-extensions --hide-crash-restore-bubble --allow-file-access-from-files --no-default-browser-check --window-size=500,720 "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
 
+#  QUESTION: Still needed? Use __open-chrome-debug instead?
 # For opening html pages with debug port open
 __chrome-attach-mapjs() { # __chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1rDKFs3QyM1uQyY
   # QUESTION: Is --allow-file-access-from-files a temp solution?
+  # Run page from dev server instead?
   #   Alternatives:
   #     Embed JSON directly in html
   #     https://stackoverflow.com/questions/64140887/how-to-solve-cors-origin-issue-when-trying-to-get-data-of-a-json-file-from-local
-  #     Set it up as a client-server app
-  google-chrome --disable-extensions --allow-file-access-from-files --no-default-browser-check --remote-debugging-port=9222 --user-data-dir=remote-debug-profile "$1" 2>/dev/null &
-  disown # stops browser blocking terminal and allows all tabs to open in single window.
+  google-chrome --user-data-dir=remote-debug-profile --disable-extensions --allow-file-access-from-files --no-default-browser-check --remote-debugging-port=9221 "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
+  # google-chrome --user-data-dir=/dev/null --disable-extensions --allow-file-access-from-files --no-default-browser-check --remote-debugging-port=9221 "$1" # 2>/dev/null &
+  # disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
 
 # Checks `src/` for lua files with leftover test/debug code.
@@ -44,7 +64,7 @@ __reset_repo() {
 
 __clean_repo() {
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+  # rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
   rm "$PATH_MJS_JSON/Example1_ClearlyFalse_WhiteSwan_simplified.json"
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.tex"
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.pdf"
@@ -52,7 +72,7 @@ __clean_repo() {
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html"
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html"
   rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.html"
-  rm "$DIR_HTML_OUTPUT/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
+  rm "$DIR_HTML_OUTPUT/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
   # rm "$INPUT_FILE_JSON"
 }
 
@@ -62,13 +82,32 @@ __save_env() {
   # https://workflowy.com/#/b0011d3b3ba1
 }
 
+__stop_mapjs_webserver() {
+  npm --prefix "$PATH_MJS_HOME" run stop
+}
+
+alias smj='__stop_mapjs_webserver'
+
+__start_mapjs_webserver() {
+  npm --prefix "$PATH_MJS_HOME" run start &
+  disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
+  # If I want to turn off the dev server, call smj
+}
+
+__restart_mapjs_webserver() {
+  __stop_mapjs_webserver
+  __start_mapjs_webserver
+}
+
+alias rmj='__restart_mapjs_webserver'
+
 __build_mapjs() {
   # Deletes webconfig output
   # Convoluted solution, but means I can use relative path from mapjs.env to delete the correct output js directory regardless of mapjs repo used.
   # QUESTION: Better to build delete into package.json script?
   rm -R "$PATH_MJS_HOME/src/$(dirname "$FILE_MJS_JS")"
   # TODO - adding --inspect should enable debug mode - but can't get to work.
-  npm --prefix "$PATH_MJS_HOME" run build
+  npm --prefix "$PATH_MJS_HOME" run pack
 }
 
 alias bmj='__build_mapjs'
@@ -117,9 +156,7 @@ md2hf() { # md2h test/input/example.md
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  wait # waits for png to appear
-  mv ./*.png "$(dirname "$OUTPUT")"
-  __open-mapjs "$OUTPUT"
+  __open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
 }
 
 # shellcheck disable=SC2120 # Disables lint error
@@ -127,10 +164,10 @@ j2hf() {             # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSw
   INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   NAME=$(basename --suffix=".json" "$INPUT")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
-  PATH_OUTPUT_JSON=$PATH_MJS_JSON/$NAME.json # Assumes file is in the JSON output folder
+  PATH_OUTPUT_JSON=$DIR_MJS_JSON/$NAME.json # Assumes file is in the JSON output folder
   echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  __open-mapjs "$OUTPUT"
+  __open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
 }
 
 a2hf() { # a2hf test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
@@ -148,9 +185,7 @@ md2htm() { # md2htm test/input/example-updated.md
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  wait # waits for png to appear
-  mv ./*.png "$DIR_HTML_OUTPUT/"
-  __open-mapjs "$OUTPUT"
+  __open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
 }
 
 # Convert markdown to pdf
@@ -159,7 +194,8 @@ md2pdf() { # md2pdf test/input/example.md
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.pdf}
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  __open-mapjs "$OUTPUT"
+  # __open-mapjs "$OUTPUT"
+  __open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.pdf"
 }
 
 # Deprecated, use a2m() for converting argmap to .mup/.json and use __build_mapjs to rebuild app
@@ -177,5 +213,5 @@ a2mo() {
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_repo __open-mapjs __save_env __build_mapjs
+export -f __reset_repo __clean_repo __check_repo __open-mapjs __save_env __build_mapjs __open-server __start_mapjs_webserver __stop_mapjs_webserver __restart_mapjs_webserver __open-chrome-debug
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf

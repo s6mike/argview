@@ -15,14 +15,16 @@
     "src",
     "packages"
   ],
-  "bugs": {
-    "url": "https://github.com/mindmup/mapjs/issues"
-  },
   "homepage": "https://www.mindmup.com",
   "version": "4.1.0",
   "scripts": {
-    "pack-js": "webpack",
-    "build": "webpack",
+    "testc": "npm run test-start",
+    "test-start": "npm run start && npm run test-cafe",
+    "stop": "killall node",
+    "start": "webpack-dev-server &",
+    "restart": "npm run stop && npm run start",
+    "test-cafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",
+    "pack": "webpack",
     "pretest": "eslint specs src && rm -rf testem/compiled",
     "test-core": "node specs/support/jasmine-runner.js",
     "pretest-browser": "rm -rf testem/compiled",
@@ -33,7 +35,7 @@
     "pretest-dev": "npm run pretest",
     "test-dev": "testem -l Chrome",
     "sourcemap": "sourcemap-lookup",
-    "server": "webpack-dev-server",
+    "server": "npm run start",
     "appraise": "appraise run --initial-width 500 --initial-height 300",
     "preappraise": "webpack --config webpack.appraise.config.js",
     "approve": "appraise approve"
@@ -65,7 +67,8 @@
     "testem": "^2.9.2",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^2.4.1",
+    "testcafe": "^1.20.1"
   },
   "resolutions": {
     "jquery": ">=3.5.0",

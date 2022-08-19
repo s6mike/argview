@@ -221,11 +221,11 @@ local function CodeBlock(block)
                 local output_filename = input_filename .. "_" .. block_id .. ".json"
 
                 -- Create JSON file in aboslute path:
+                -- QUESTION: Should I be using a path join function?
                 local argmap_output_file_path = PATH_MJS_JSON .. "/" .. output_filename
 
-                -- TODO: For relative paths, could try script source?
-                -- The URL reference needs to be relative to html page location: /test/output
-                local mapjs_url = DIR_MJS_JSON .. "/" .. output_filename
+                -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
+                local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MJS_JSON .. "/" .. output_filename
 
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
@@ -257,19 +257,22 @@ local function CodeBlock(block)
                 return pandoc.RawBlock(format, rawhtml)
             else
                 -- Check to see if the images need to be regenerated (borrowed from pandoc lua filter docs: each image name is a hash of the yaml map.)
-                -- TODO: Put the images in DIR_HTML_OUTPUT directory (need to add to config_argmap.lua)
+                -- Writes to server output folder, subfolder determined by filetype.
                 -- QUESTION: Delete old images that are no longer needed?
-                local fname = pandoc.sha1(original) .. "." .. filetype
-                if not file_exists(fname) then
+                local path_local_image_html = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" ..
+                    filetype .. "/" .. pandoc.sha1(original) .. "." .. filetype
+                local image_abs_path_output = config_argmap.project_folder .. '/test' .. path_local_image_html
+                if not file_exists(image_abs_path_output) then
                     -- convert the yaml map to an image
-                    argmap2image(original, filetype, fname)
+                    argmap2image(original, filetype, image_abs_path_output)
                 end
                 local mapCaption = pandoc.Str(name)
+
                 -- This sets the identifier and the classes:
                 --           pandoc.Attr(id = 'text', class = 'a b', other_attribute = '1')
                 local attr = pandoc.Attr(nil, { class_argmap },
                     { ["name"] = name, ["width"] = "100%", ["gid"] = gid })
-                local linkContent = { pandoc.Image(mapCaption, fname, "", attr) }
+                local linkContent = { pandoc.Image(mapCaption, path_local_image_html, "", attr) }
                 return pandoc.Para(pandoc.Link(linkContent, mupLink))
             end
         end

@@ -169,6 +169,13 @@ fi
 #   exit 1
 # }
 
+# For dev web server:
+# Link up test/output with mapjs/site
+ln -s "$WORKSPACE/test/output" "$PATH_MJS_HOME/site/."
+
+# Add index.html
+ln -s "$PATH_MJS_HOME/site/output/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html" "$PATH_MJS_HOME/site/index.html"
+
 #nodejs installed with conda
 
 # TODO: remove this comment, now irrelevant?

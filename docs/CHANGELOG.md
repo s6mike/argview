@@ -6,6 +6,34 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.5.1
+
+## argmap 4.5.0
+
+- Use webpack dev server for testing:
+  - Update code and variables to write to correct folder.
+  - `src/pandoc-argmap.lua`: Update `argmap2image()` to write png in correct folder.
+    - `scripts/bash_aliases_argmap.sh`:
+      - No longer need to move png after writing them.
+      - Open server pages in ChromeOS native browser instead of Linux's installed chrome.
+      - Add functions and aliases to start and stop web server.
+      - Update functions to open dev server pages instead of local filesystem.
+      - Update chrome attach aliases.
+      - Minor function refinements.
+  - `test/tests.sh`: Restart server before tests, plus minor fixes.
+- Add `test/devtools-recordings` with recordings for testing mapjs nodes.
+- `package.json`:
+  - Add TestCafe module for automated testing using chrome devtools recordings.
+  - Add alias script keys to align with npm lifecycle as described in: <https://docs.npmjs.com/cli/v8/using-npm/scripts>
+- `scripts/argmap_init_script.sh`: Use $HOME env variable for portability.
+- Add `mapjs/site/index.html` (symbolic link) to repo since missing.
+  - Update `.gitignore`.
+- Set up debug attach to avoid clashes with other vscode instances:
+  - `.vscode/launch.json`: Change debugging port to 9221.
+  - `scripts/bash_aliases_argmap.sh`:
+    - Change debugging port to 9221
+    - Set up separate chrome profile in temp folder and use to keep debugging port separate.
+
 ## argmap 4.4.1
 
 - `src/core/content/content.js`: Fix sameSideSiblingRanks()
