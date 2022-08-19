@@ -12,8 +12,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
 
 	const invalidateIdCache = function () {
-			cachedId = undefined;
-		},
+		cachedId = undefined;
+	},
 		maxId = function maxId(idea) {
 			idea = idea || contentAggregate;
 			if (!idea.ideas) {
@@ -30,7 +30,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		nextId = function nextId(originSession) {
 			originSession = originSession || sessionKey;
 			if (!cachedId) {
-				cachedId =  maxId();
+				cachedId = maxId();
 			}
 			cachedId += 1;
 			if (originSession) {
@@ -165,7 +165,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			return contentAggregate.id == ideaId ? contentAggregate : contentAggregate.findSubIdeaById(ideaId); //eslint-disable-line eqeqeq
 		},
 		sameSideSiblingRanks = function (parentIdea, ideaRank) {
-			return _(_.map(_.keys(parentIdea.ideas), parseFloat)).reject(function (k) {
+			return _.reject((_.map(_.keys(parentIdea.ideas), parseFloat)), function (k) {
 				return k * ideaRank < 0;
 			});
 		},
@@ -185,7 +185,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			}
 		},
 		logChange = function (method, args, undofunc, originSession) {
-			const event = {eventMethod: method, eventArgs: args, undoFunction: undofunc};
+			const event = { eventMethod: method, eventArgs: args, undoFunction: undofunc };
 			if (batches[originSession]) {
 				batches[originSession].push(event);
 				return;
@@ -459,8 +459,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			inBatch = batches[activeSession],
 			performBatchOperations = function () {
 				const batchArgs = _.map(inBatch, function (event) {
-						return [event.eventMethod].concat(event.eventArgs);
-					}),
+					return [event.eventMethod].concat(event.eventArgs);
+				}),
 					batchUndoFunctions = _.sortBy(
 						_.map(inBatch, function (event) {
 							return event.undoFunction;
@@ -536,9 +536,9 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		return contentAggregate.execCommand('paste', arguments);
 	};
 	commandProcessors.paste = function (originSession, parentIdeaId, jsonToPaste, initialId) {
-		const pasteParent = (parentIdeaId == contentAggregate.id) ?  contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId), //eslint-disable-line eqeqeq
+		const pasteParent = (parentIdeaId == contentAggregate.id) ? contentAggregate : contentAggregate.findSubIdeaById(parentIdeaId), //eslint-disable-line eqeqeq
 			cleanUp = function (json) {
-				const result =  _.omit(json, 'ideas', 'id', 'attr');
+				const result = _.omit(json, 'ideas', 'id', 'attr');
 				let index = 1, childKeys, sortedChildKeys;
 				result.attr = _.omit(json.attr, configuration.nonClonedAttributes);
 				if (_.isEmpty(result.attr)) {
@@ -562,7 +562,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		if (initialId) {
 			cachedId = parseInt(initialId, 10) - 1;
 		}
-		newIdea =  jsonToPaste && (jsonToPaste.title || jsonToPaste.attr) && init(cleanUp(jsonToPaste), sessionFromId(initialId));
+		newIdea = jsonToPaste && (jsonToPaste.title || jsonToPaste.attr) && init(cleanUp(jsonToPaste), sessionFromId(initialId));
 		if (!pasteParent || !newIdea) {
 			return false;
 		}
@@ -581,7 +581,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	};
 	commandProcessors.flip = function (originSession, ideaId) {
 		const parentIdea = contentAggregate.findParent(ideaId),
-			currentRank = parentIdea && contentAggregate.isRootNode(parentIdea.id) &&  parentIdea.findChildRankById(ideaId),
+			currentRank = parentIdea && contentAggregate.isRootNode(parentIdea.id) && parentIdea.findChildRankById(ideaId),
 			performFlip = function () {
 				const maxRank = maxKey(parentIdea.ideas, -1 * sign(currentRank)),
 					newRank = maxRank - 10 * sign(currentRank),
@@ -675,8 +675,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
 		const canRemove = function () {
-				return !contentAggregate.isRootNode(subIdeaId) || _.size(contentAggregate.ideas) > 1;
-			},
+			return !contentAggregate.isRootNode(subIdeaId) || _.size(contentAggregate.ideas) > 1;
+		},
 			performRemove = function () {
 				const parent = contentAggregate.findParent(subIdeaId) || contentAggregate,
 					oldRank = parent && parent.findChildRankById(subIdeaId),
@@ -688,11 +688,11 @@ module.exports = function content(contentAggregate, initialSessionId) {
 				if (!oldRank) {
 					return false;
 				}
-				oldIdea.traverse((traversed)=> removedNodeIds[traversed.id] = true);
+				oldIdea.traverse((traversed) => removedNodeIds[traversed.id] = true);
 				delete parent.ideas[oldRank];
 
 				contentAggregate.links = _.reject(contentAggregate.links, function (link) {
-					return removedNodeIds[link.ideaIdFrom]  || removedNodeIds[link.ideaIdTo];
+					return removedNodeIds[link.ideaIdFrom] || removedNodeIds[link.ideaIdTo];
 				});
 				logChange('removeSubIdea', [subIdeaId], function () {
 					parent.ideas[oldRank] = oldIdea;
@@ -744,15 +744,15 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			},
 			performInsert = function () {
 				const createIdeaParams = () => {
-						const params = {
-							title: title,
-							id: optionalNewId
-						};
-						if (optionalAttr) {
-							params.attr = optionalAttr;
-						}
-						return params;
-					},
+					const params = {
+						title: title,
+						id: optionalNewId
+					};
+					if (optionalAttr) {
+						params.attr = optionalAttr;
+					}
+					return params;
+				},
 					oldIdea = parentIdea.ideas[childRank],
 					newIdea = init(createIdeaParams());
 
@@ -884,7 +884,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					return false;
 				}
 				if (options && options.ignoreRankSide && currentRank < 0) {
-					return newIndex	> (siblingRanks.length - 1);
+					return newIndex > (siblingRanks.length - 1);
 				}
 				return (newIndex < 0);
 			};
@@ -897,7 +897,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		if (options && options.ignoreRankSide && beforeRank && beforeSibling && ((beforeRank * currentRank) < 0)) {
 			contentAggregate.flip(ideaId);
 		}
-		result =  contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
+		result = contentAggregate.positionBefore(ideaId, beforeSibling && beforeSibling.id, parentIdea);
 		contentAggregate.endBatch();
 		return result;
 	};
@@ -1058,13 +1058,13 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	};
 	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
 		const maxIdForSession = function () {
-				const keys = _.keys(contentAggregate.resources),
-					filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys,
-					intKeys = _.map(filteredKeys, function (string) {
-						return parseInt(string, 10);
-					});
-				return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
-			},
+			const keys = _.keys(contentAggregate.resources),
+				filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys,
+				intKeys = _.map(filteredKeys, function (string) {
+					return parseInt(string, 10);
+				});
+			return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
+		},
 			nextResourceId = function () {
 				const intId = maxIdForSession() + 1;
 				return intId + uniqueResourcePostfix;

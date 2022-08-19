@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.4.1
+
+- `src/core/content/content.js`: Fix sameSideSiblingRanks()
+
 ## argmap 4.4.0
 
 - `mapjs/package.json`: Add alias script `build` to call webpack for simplicity, deprecate pack-js.
