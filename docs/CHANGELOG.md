@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.4.0
+
+- `mapjs/package.json`: Add alias script `build` to call webpack for simplicity, deprecate pack-js.
+  - `scripts/bash_aliases_argmap.sh`: Update `__build_mapjs()` to use alias.
+
 ## argmap 4.3.2
 
 - `scripts/install.sh`: Fix error with running conda install introduced v4.2.8

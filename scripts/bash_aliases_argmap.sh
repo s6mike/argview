@@ -68,7 +68,7 @@ __build_mapjs() {
   # QUESTION: Better to build delete into package.json script?
   rm -R "$PATH_MJS_HOME/src/$(dirname "$FILE_MJS_JS")"
   # TODO - adding --inspect should enable debug mode - but can't get to work.
-  npm --prefix "$PATH_MJS_HOME" run pack-js
+  npm --prefix "$PATH_MJS_HOME" run build
 }
 
 alias bmj='__build_mapjs'

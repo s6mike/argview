@@ -22,6 +22,7 @@
   "version": "4.1.0",
   "scripts": {
     "pack-js": "webpack",
+    "build": "webpack",
     "pretest": "eslint specs src && rm -rf testem/compiled",
     "test-core": "node specs/support/jasmine-runner.js",
     "pretest-browser": "rm -rf testem/compiled",
