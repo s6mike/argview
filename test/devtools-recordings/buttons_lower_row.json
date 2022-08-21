@@ -1,0 +1,158 @@
+{
+  "title": "Buttons_lower_row",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1082,
+      "height": 929,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9000/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget > select.color"
+        ]
+      ],
+      "offsetY": 14,
+      "offsetX": 10
+    },
+    {
+      "type": "change",
+      "value": "blue",
+      "selectors": [
+        [
+          "#linkEditWidget > select.color"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget > select.color"
+        ]
+      ],
+      "offsetY": 0,
+      "offsetX": 0,
+      "duration": 11806.800000000745,
+      "deviceType": "",
+      "assertedEvents": [
+        {
+          "type": "navigation"
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget > select.lineStyle"
+        ]
+      ],
+      "offsetY": 16,
+      "offsetX": 43
+    },
+    {
+      "type": "change",
+      "value": "dashed",
+      "selectors": [
+        [
+          "#linkEditWidget > select.lineStyle"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget > select.lineStyle"
+        ]
+      ],
+      "offsetY": 0,
+      "offsetX": 0,
+      "duration": 1085.3999999985099,
+      "deviceType": "",
+      "assertedEvents": [
+        {
+          "type": "navigation"
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Arrow"
+        ],
+        [
+          "#linkEditWidget > button"
+        ]
+      ],
+      "offsetY": 6,
+      "offsetX": 35
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#connector_1_12 > path.mapjs-link-hit.noTransition"
+        ]
+      ],
+      "offsetY": 12.617645263671875,
+      "offsetX": 43,
+      "assertedEvents": [
+        {
+          "type": "navigation"
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#connector_1_12 > path.mapjs-link-hit.noTransition"
+        ]
+      ],
+      "offsetY": 10.617645263671875,
+      "offsetX": 40
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Delete"
+        ],
+        [
+          "#linkEditWidget > input"
+        ]
+      ],
+      "offsetY": 7,
+      "offsetX": 29
+    }
+  ]
+}

@@ -8,6 +8,10 @@
 
 ## argmap 4.5.1
 
+- `mapjs/package.json`: Ensure webpack always applied before server start.
+- `mapjs/src/start.js`: Change onerror from alert box to console.error
+- Add devtools-recordings: for clicking all buttons for regression testing etc
+
 ## argmap 4.5.0
 
 - Use webpack dev server for testing:
@@ -97,7 +101,7 @@
 
 ## argmap 4.2.10
 
-- Commit (garlic0708's final mapjs commit) removed with interactive rebase, since part of it was breaking mapjs.
+- Commit 757b6c0 (garlic0708's final mapjs commit) removed with interactive rebase, since part of it was breaking mapjs.
 
 ## argmap 4.2.9
 

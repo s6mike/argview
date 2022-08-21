@@ -7,8 +7,9 @@ echo "Running ${BASH_SOURCE[0]}"
 # TODO: should parameterize bash_aliases script path
 
 # Needed for non-VSCode environments:
-export WORKSPACE=${WORKSPACE:-/home/s6mike/git_projects/argmap}
+export WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 
+# shellcheck source=/home/s6mike/git_projects/argmap/scripts/conda.env # Stops shellcheck lint error
 source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
 
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error

@@ -43,8 +43,7 @@ __chrome-attach-mapjs() { # __chrome-attach https://drive.mindmup.com/map/1FY98e
   #   Alternatives:
   #     Embed JSON directly in html
   #     https://stackoverflow.com/questions/64140887/how-to-solve-cors-origin-issue-when-trying-to-get-data-of-a-json-file-from-local
-  google-chrome --user-data-dir=remote-debug-profile --disable-extensions --allow-file-access-from-files --no-default-browser-check --remote-debugging-port=9221 "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
-  # google-chrome --user-data-dir=/dev/null --disable-extensions --allow-file-access-from-files --no-default-browser-check --remote-debugging-port=9221 "$1" # 2>/dev/null &
+  google-chrome --remote-debugging-port=9221 --user-data-dir=remote-debug-profile --disable-extensions --allow-file-access-from-files --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
   # disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
 

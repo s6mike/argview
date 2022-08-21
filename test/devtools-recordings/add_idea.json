@@ -1,0 +1,35 @@
+{
+  "title": "Add idea",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ],
+      "url": "http://localhost:9000/"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add"
+        ],
+        [
+          "#testcontrols > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 13,
+      "offsetX": 18,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==13"
+    }
+  ]
+}

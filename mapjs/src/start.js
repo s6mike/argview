@@ -71,7 +71,11 @@ function addMap(container, testMap) {
 			});
 		});
 	};
-	window.onerror = window.alert;
+
+	// Hopefully stops annoying pop ups when there's an error.
+	// window.onerror = window.alert;
+	window.onerror = console.log;
+
 	window.jQuery = jQuery;
 
 	container.domMapWidget(console, mapModel, touchEnabled);

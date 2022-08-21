@@ -1,0 +1,398 @@
+{
+  "title": "Main_buttons",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1082,
+      "height": 929,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9000/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/0"
+        ],
+        [
+          "#testcontrols > input.resetView"
+        ]
+      ],
+      "offsetY": 16,
+      "offsetX": 21
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/+"
+        ],
+        [
+          "#testcontrols > input.scaleUp"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 13
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/-"
+        ],
+        [
+          "#testcontrols > input.scaleDown"
+        ]
+      ],
+      "offsetY": 13,
+      "offsetX": 17
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add"
+        ],
+        [
+          "#testcontrols > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 13,
+      "offsetX": 18
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/parent reason"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(5)"
+        ]
+      ],
+      "offsetY": 14,
+      "offsetX": 30
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/supporting group"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(6)"
+        ]
+      ],
+      "offsetY": 17,
+      "offsetX": 33
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/opposing group"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(7)"
+        ]
+      ],
+      "offsetY": 15,
+      "offsetX": 27
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/edit"
+        ],
+        [
+          "#testcontrols > input.editNode"
+        ]
+      ],
+      "offsetY": 10,
+      "offsetX": 19
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/delete"
+        ],
+        [
+          "#testcontrols > input.removeSubIdea"
+        ]
+      ],
+      "offsetY": 13,
+      "offsetX": 18
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/insert parent"
+        ],
+        [
+          "#testcontrols > input.insertIntermediate"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 16
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/exp/col"
+        ],
+        [
+          "#testcontrols > input.toggleCollapse"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 13
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/disable"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(12)"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 28
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/enable"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(13)"
+        ]
+      ],
+      "offsetY": 15,
+      "offsetX": 43
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/undo"
+        ],
+        [
+          "#testcontrols > input.undo"
+        ]
+      ],
+      "offsetY": 16,
+      "offsetX": 15
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/redo"
+        ],
+        [
+          "#testcontrols > input.redo"
+        ]
+      ],
+      "offsetY": 15,
+      "offsetX": 12
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Export To Image"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(16)"
+        ]
+      ],
+      "offsetY": 17,
+      "offsetX": 28
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/cut"
+        ],
+        [
+          "#testcontrols > input.cut"
+        ]
+      ],
+      "offsetY": 9,
+      "offsetX": 5
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/copy"
+        ],
+        [
+          "#testcontrols > input.copy"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 18
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/paste"
+        ],
+        [
+          "#testcontrols > input.paste"
+        ]
+      ],
+      "offsetY": 20,
+      "offsetX": 33
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/open attachment"
+        ],
+        [
+          "#testcontrols > input.openAttachment"
+        ]
+      ],
+      "offsetY": 16,
+      "offsetX": 32
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add link"
+        ],
+        [
+          "#testcontrols > input.toggleAddLinkMode"
+        ]
+      ],
+      "offsetY": 16,
+      "offsetX": 40
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add root node"
+        ],
+        [
+          "#testcontrols > input.insertRoot"
+        ]
+      ],
+      "offsetY": 12,
+      "offsetX": 19
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/make root"
+        ],
+        [
+          "#testcontrols > input.makeSelectedNodeRoot"
+        ]
+      ],
+      "offsetY": 11,
+      "offsetX": 11
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols > input.updateStyle"
+        ]
+      ],
+      "offsetY": 9,
+      "offsetX": 17
+    },
+    {
+      "type": "change",
+      "value": "#",
+      "selectors": [
+        [
+          "#testcontrols > input.updateStyle"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Shift"
+    },
+    {
+      "type": "change",
+      "value": "#FFFFFF",
+      "selectors": [
+        [
+          "#testcontrols > input.updateStyle"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "Shift",
+      "target": "main"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Tab"
+    },
+    {
+      "type": "keyUp",
+      "key": "Tab",
+      "target": "main"
+    }
+  ]
+}
