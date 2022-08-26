@@ -4,19 +4,30 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
-# argmap Functions
+# argmap aliases
 
-# TODO try combining with bash_aliases functions
-# TODO try chrome headless: https://workflowy.com/#/8aac548986a4
-__open-chrome-debug() {
-  google-chrome --user-data-dir="$DIR_CHROME_PROFILE_TEMP" --hide-crash-restore-bubble --remote-debugging-port=9221 --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
-  disown # so browser stays open independent of vscode
-  # echo "Temp dir: $DIR_CHROME_PROFILE_TEMP"
-}
+## browser aliases
 
 alias argdb='__open-chrome-debug'
 alias argdb1='__open-chrome-debug $DIR_HTML_SERVER_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html'
 alias argdbe='__open-chrome-debug output/example-map.html'
+
+## webpack aliases
+
+alias smj='__stop_mapjs_webserver'
+alias rmj='__restart_mapjs_webserver'
+alias bmj='__build_mapjs'
+alias rml='__run_mapjs_legacy'
+
+# argmap Functions
+
+# TODO try combining with bash_aliases functions
+# TODO try chrome headless: https://workflowy.com/#/8aac548986a4
+__open-chrome-debug() { # argdb, argdb1, argdbe
+  google-chrome --user-data-dir="$DIR_CHROME_PROFILE_TEMP" --hide-crash-restore-bubble --remote-debugging-port=9221 --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
+  disown # so browser stays open independent of vscode
+  # echo "Temp dir: $DIR_CHROME_PROFILE_TEMP"
+}
 
 # TODO try combining with bash_aliases functions
 __open-server() {
@@ -87,11 +98,9 @@ __save_env() {
   # https://workflowy.com/#/b0011d3b3ba1
 }
 
-__stop_mapjs_webserver() {
+__stop_mapjs_webserver() { #smj
   npm --prefix "$PATH_MJS_HOME" run stop
 }
-
-alias smj='__stop_mapjs_webserver'
 
 # If I want to turn off the dev server, call smj
 __start_mapjs_webserver() {
@@ -99,14 +108,12 @@ __start_mapjs_webserver() {
   disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
 }
 
-__restart_mapjs_webserver() {
+__restart_mapjs_webserver() { #rmj
   __stop_mapjs_webserver
   __start_mapjs_webserver
 }
 
-alias rmj='__restart_mapjs_webserver'
-
-__run_mapjs_legacy() {
+__run_mapjs_legacy() { #rml
   echo "Installing and running legacy mapjs"
   npm --prefix "$PROJECT_DIR/mapjs" run stop
   npm --prefix "$PROJECT_DIR/mapjs" install
@@ -117,18 +124,15 @@ __run_mapjs_legacy() {
   xdg-open "http://localhost:9000/$1"
 }
 
-alias rml='__run_mapjs_legacy'
-
-__build_mapjs() {
+__build_mapjs() { # bmj
   # Deletes webconfig output
   # Convoluted solution, but means I can use relative path from mapjs.env to delete the correct output js directory regardless of mapjs repo used.
   # QUESTION: Better to build delete into package.json script?
-  rm -R "$PATH_MJS_HOME/src/$(dirname "$FILE_MJS_JS")"
+  # rm -R "$PATH_MJS_HOME/src/$(dirname "$FILE_MJS_JS")" # Don't think this is necessary
   # TODO - adding --inspect should enable debug mode - but can't get to work.
+  npm --prefix "$PATH_MJS_HOME" install
   npm --prefix "$PATH_MJS_HOME" run pack
 }
-
-alias bmj='__build_mapjs'
 
 # Convert to map.json, writes it to test/output/mapjs-json/
 # lua argmap2mup test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml > test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified.json

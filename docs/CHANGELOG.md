@@ -2,9 +2,18 @@
 
 ## TODO
 
+- Review `/home/s6mike/scripts/bash_aliases.sh` and rationalise `scripts/bash_aliases_argmap.sh`.
+  - Don't forget relative folder is different, but try and keep aliases consistent.
+  - Missing install shortcut.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.6.3
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Update build script to install too.
+  - Consolidate aliases at file start.
 
 ## argmap 4.6.2
 
