@@ -6,6 +6,8 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # argmap Functions
 
+# TODO try combining with bash_aliases functions
+# TODO try chrome headless: https://workflowy.com/#/8aac548986a4
 __open-chrome-debug() {
   google-chrome --user-data-dir="$DIR_CHROME_PROFILE_TEMP" --hide-crash-restore-bubble --remote-debugging-port=9221 --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
   disown # so browser stays open independent of vscode
@@ -16,6 +18,7 @@ alias argdb='__open-chrome-debug'
 alias argdb1='__open-chrome-debug $DIR_HTML_SERVER_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html'
 alias argdbe='__open-chrome-debug output/example-map.html'
 
+# TODO try combining with bash_aliases functions
 __open-server() {
   # npm --prefix "$PATH_MJS_HOME" run start &
   # PAGE="$1"
@@ -24,6 +27,7 @@ __open-server() {
 }
 
 # QUESTION: Still needed? Use __open-server instead?
+# TODO try combining with bash_aliases functions
 # For opening html pages in linux browser containing mapjs files
 __open-mapjs() {
   # QUESTION: Is --allow-file-access-from-files a temp solution?
@@ -36,7 +40,9 @@ __open-mapjs() {
 }
 
 #  QUESTION: Still needed? Use __open-chrome-debug instead?
+# TODO try combining with bash_aliases functions
 # For opening html pages with debug port open
+# TODO try chrome headless: https://workflowy.com/#/8aac548986a4
 __chrome-attach-mapjs() { # __chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1rDKFs3QyM1uQyY
   # QUESTION: Is --allow-file-access-from-files a temp solution?
   # Run page from dev server instead?
@@ -87,10 +93,10 @@ __stop_mapjs_webserver() {
 
 alias smj='__stop_mapjs_webserver'
 
+# If I want to turn off the dev server, call smj
 __start_mapjs_webserver() {
   npm --prefix "$PATH_MJS_HOME" run start &
   disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
-  # If I want to turn off the dev server, call smj
 }
 
 __restart_mapjs_webserver() {
@@ -99,6 +105,19 @@ __restart_mapjs_webserver() {
 }
 
 alias rmj='__restart_mapjs_webserver'
+
+__run_mapjs_legacy() {
+  echo "Installing and running legacy mapjs"
+  npm --prefix "$PROJECT_DIR/mapjs" run stop
+  npm --prefix "$PROJECT_DIR/mapjs" install
+  npm --prefix "$PROJECT_DIR/mapjs" run pack
+  npm --prefix "$PROJECT_DIR/mapjs" run start &
+  disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
+  wait
+  xdg-open "http://localhost:9000/$1"
+}
+
+alias rml='__run_mapjs_legacy'
 
 __build_mapjs() {
   # Deletes webconfig output
@@ -212,5 +231,5 @@ a2mo() {
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_repo __open-mapjs __save_env __build_mapjs __open-server __start_mapjs_webserver __stop_mapjs_webserver __restart_mapjs_webserver __open-chrome-debug
+export -f __reset_repo __clean_repo __check_repo __open-mapjs __save_env __build_mapjs __open-server __start_mapjs_webserver __stop_mapjs_webserver __restart_mapjs_webserver __run_mapjs_legacy __open-chrome-debug
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf

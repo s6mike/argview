@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.6.0
+
+- `scripts/`:
+  - Add git bisect run scripts for finding bugs in mapjs commit history.
+  - Add devtools recording for checking mapjs page has rendered.
+  - Add `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`:
+    - ['expect' script](https://linux.die.net/man/1/expect) to use chrome headless REPL to check mapjs page has rendered.
+      - Update `environment.yml`: install 'expect' as a development dependency.
+  - `scripts/bash_aliases_argmap.sh`: Add `__run_mapjs_legacy()` for running legacy mapjs project (separate repo).
+
 ## argmap 4.5.1
 
 - `mapjs/package.json`: Ensure webpack always applied before server start.

@@ -1,0 +1,20 @@
+{
+  "title": "map_renders",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ],
+      "url": "http://localhost:9000/"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length>=1"
+    }
+  ]
+}
