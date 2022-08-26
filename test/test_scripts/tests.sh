@@ -3,7 +3,7 @@
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
-__restart_mapjs_webserver
+__start_mapjs_webserver
 
 echo 'Attempting to delete old test outputs.'
 
@@ -78,13 +78,16 @@ if [ "$1" != html ]; then
 # __test a2jo "$INPUT_FILE_YML"
 fi
 
-__test md2hf "$INPUT_FILE_MD0"     #5
-__test md2hf "$INPUT_FILE_MD"      #6
-__test md2hf "$INPUT_FILE_MD2"     #7
-__test md2hf "$INPUT_FILE_MD_META" #8
+# map renders
+__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #5
+__test md2hf "$INPUT_FILE_MD0"                      #6
+__test md2hf "$INPUT_FILE_MD"                       #7
+#__test md2hf "$INPUT_FILE_MD" # add button works
+__test md2hf "$INPUT_FILE_MD2"     #8
+__test md2hf "$INPUT_FILE_MD_META" #9
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #9
+    __test md2pdf "$INPUT_FILE_MD0" #10
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
