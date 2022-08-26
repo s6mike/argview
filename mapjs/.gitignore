@@ -10,3 +10,6 @@ SpecRunner.html
 .sublime*
 .tern-port
 npm-debug.log
+site/js/
+test/bundle*
+examples/assets/webpack-bundle.js

@@ -29,7 +29,7 @@ const MAPJS = require('./npm-main'),
 					.then(response => response.json())
 					.then(data => addMap(jQuery(container), data))
 					// .then((data) => console.debug(data))
-					.catch(error => console.log(error));
+					.catch(error => console.error(error));
 			}
 
 		} else { // If no mapjs requests:
@@ -72,9 +72,8 @@ function addMap(container, testMap) {
 		});
 	};
 
-	// Hopefully stops annoying pop ups when there's an error.
-	// window.onerror = window.alert;
-	window.onerror = console.log;
+	// Stops annoying pop ups when there's an error.
+	window.onerror = console.error;
 
 	window.jQuery = jQuery;
 
@@ -90,6 +89,7 @@ function addMap(container, testMap) {
 	//jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
 	// activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange
 
+	jQuery('body').mapToolbarWidget(mapModel);
 	jQuery('body').attachmentEditorWidget(mapModel);
 	layoutThemeStyle(themeJson);
 	mapModel.setIdea(idea);

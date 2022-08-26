@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.6.2
+
+- Add mapjs bugfixes (mapjs v3.3.6):
+  - Fix add parent reason issue:
+    - `test/start.js`: Errors sent to console.error, rather than alert which was incredibly annoying!
+  - Fix toolbar buttons by restoring `src/browser/map-toolbar-widget` related code which was removed in commit 'initial jquery 3 migration' (`b2768ac`).
+  - `src/core/content/content.js`: Fix reject call syntax which caused unrecognised function '_' error.
+  - Change console.log to console.error for catching JSON load errors.
+- `mapjs/package.json`: Downgrade version requirements back down again, will update versions once more mapjs bugs fixed.
+
 ## argmap 4.6.1
 
 - Move remaining test scripts from `test/` to `test/test_scripts/`.
