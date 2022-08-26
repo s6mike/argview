@@ -64,7 +64,7 @@ __save_env
 __build_mapjs
 
 # Run test script tests.sh
-test/tests.sh
+test/test_scripts/tests.sh
 
 TEST_EXIT=$?
 

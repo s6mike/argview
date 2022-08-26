@@ -74,4 +74,4 @@ export INPUT_FILE_MD2=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simp
 export INPUT_FILE_MD_META=$WORKSPACE/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.md
 # export INPUT_FILE_JSON=$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.json
 
-source "$WORKSPACE/test/bash_aliases_argmap_test.sh"
+source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"

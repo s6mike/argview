@@ -60,7 +60,7 @@ ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
 chmod +x git_hooks/*
 
 # Link up tests.sh to deprecated location?
-# ln -s test/tests.sh scripts
+# ln -s test/test_scripts/tests.sh scripts
 
 # This section only executed if called with first argument 'conda'
 # e.g.

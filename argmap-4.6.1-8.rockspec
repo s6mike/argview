@@ -1,9 +1,9 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "3.6.0-7"
+version = "4.6.1-8"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v3.6.0",
+   tag = "v4.6.1",
 }
 description = {
    summary = "Tools for working with argument maps.",
@@ -36,6 +36,6 @@ build = {
    },
   test = {
     type = "command",
-    command ="test/tests.sh",
+    command ="test/test_scripts/tests.sh",
   },
 }

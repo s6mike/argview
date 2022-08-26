@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.6.1
+
+- Move remaining test scripts from `test/` to `test/test_scripts/`.
+  - Update rockspec, scripts and docs with new paths.
+
 ## argmap 4.6.0
 
 - `scripts/`:

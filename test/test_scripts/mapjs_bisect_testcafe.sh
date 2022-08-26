@@ -21,11 +21,13 @@ source /home/s6mike/scripts/bash_aliases.sh # Functions to ensure clean build.
 # This stops bisect if apply breaks (125 to skip commit and continue testing)
 #  Alternative to stash apply: https://workflowy.com/#/c1fcaad78669
 
+# Current latest stash fix: All mapjs fixes up to toolbar
+#   /home/s6mike/git_projects/all_mapjs_fixes_to_toolbar.diff
 # Does package.json use 'webpack-dev-server': '^2.4.1'?
 # Has start.js alert but changed to console error? Not essential
 # stash@{0}: On (no branch): package.json version, start.js alert
-
 # map-model.js _ fix
+# toolbar fix
 
 git stash apply || (
   echo "'git stash apply' failed, exit 255 (abort bisect)"

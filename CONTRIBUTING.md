@@ -92,7 +92,7 @@ Here are a few general guidelines for proposing changes:
 
 ## Running Tests
 
-Some simple tests are executed here: [`test/tests.sh`](test/tests.sh).
+Some simple tests are executed here: [`test/test_scripts/tests.sh`](test/test_scripts/tests.sh).
 
 I have also set these up to be called from a pre-commit hook.
 
