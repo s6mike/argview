@@ -82,12 +82,12 @@ fi
 __test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #5
 __test md2hf "$INPUT_FILE_MD0"                      #6
 __test md2hf "$INPUT_FILE_MD"                       #7
-#__test md2hf "$INPUT_FILE_MD" # add button works
-__test md2hf "$INPUT_FILE_MD2"     #8
-__test md2hf "$INPUT_FILE_MD_META" #9
+__test md2hf "$INPUT_FILE_MD2"                      #8
+__test md2hf "$INPUT_FILE_MD_META"                  #9
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"  #10 add child button works
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #10
+    __test md2pdf "$INPUT_FILE_MD0" #11
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."

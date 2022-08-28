@@ -58,7 +58,7 @@ set timeout 2
 
 # tmp folder should be in git_projects
 spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_HTML_PAGE
-# spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:9001/
+
 match_max 100000
 expect -exact ">>> "
 sleep .1

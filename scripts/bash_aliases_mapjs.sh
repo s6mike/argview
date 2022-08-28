@@ -73,6 +73,19 @@ __test_mapjs_renders() {
   fi
 }
 
+testcafe_run() { # tcr
+  if [ "$1" == head ]; then
+    BROWSER='chrome --no-default-browser-check'
+    PATH_REPLAY_SCRIPT=${2:-$PATH_REPLAY_SCRIPT_ADD_IDEA}
+  else
+    BROWSER='chrome:headless --no-default-browser-check'
+    PATH_REPLAY_SCRIPT=${1:-$PATH_REPLAY_SCRIPT_ADD_IDEA}
+  fi
+  # __bisect_init
+  echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
+  npm exec testcafe "$BROWSER" "$PATH_REPLAY_SCRIPT"
+}
+
 # Deprecated
 
 # Deprecated use webpack_server_start # wss

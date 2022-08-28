@@ -1,0 +1,43 @@
+{
+  "title": "argmap-add-child",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 695,
+      "height": 837,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": "Example 1.1 - All swans are white."
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add"
+        ],
+        [
+          "#testcontrols_argmap2 > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 7.025390625,
+      "offsetX": 13.400390625
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==7"
+    }
+  ]
+}

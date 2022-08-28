@@ -8,6 +8,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.1
+
+- Add browser test for adding child node:
+  - `scripts/bash_aliases_mapjs.sh`: Add `testcafe_run()`.
+  - Re-arrange `test/devtools-recordings`.
+  - Add new devtool recording to test 'add child' on argmapjs example 1.1
+  - Update env variables for TestCafe defaults.
+
 ## argmap 4.7.0
 
 - Start adding browser tests:

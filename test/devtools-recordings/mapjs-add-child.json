@@ -1,5 +1,5 @@
 {
-  "title": "Add idea",
+  "title": "mapjs-add-child",
   "steps": [
     {
       "type": "navigate",
@@ -23,8 +23,8 @@
           "#testcontrols > input.addSubIdea"
         ]
       ],
-      "offsetY": 13,
       "offsetX": 18,
+      "offsetY": 13,
       "deviceType": "pen"
     },
     {
