@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "Bash debug",
+            "cwd": "${workspaceFolder}",
+            "program": "${file}",
+            "terminalKind": "integrated"
+        },
+        {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: cat example | argmap2mup",

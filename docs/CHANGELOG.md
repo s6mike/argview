@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.2
+
+- Add bash debug profile to launch.json.
+
 ## argmap 4.7.1
 
 - Add browser test for adding child node:
