@@ -8,9 +8,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.3
+
+- `test/test_scripts/mapjs_bisect_testcafe.sh`:
+  - Check whether replay script chosen.
+  - Show feedback messages in console.
+  - Add test mode so git commands and install can be disabled. This stops changes being reset, and also speeds up testing.
+  - Fix boolean logic checks.
+
 ## argmap 4.7.2
 
-- Add bash debug profile to launch.json.
+- Add bash debug profile to launch.json
 
 ## argmap 4.7.1
 

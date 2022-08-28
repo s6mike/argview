@@ -10,7 +10,8 @@
             "name": "Bash debug",
             "cwd": "${workspaceFolder}",
             "program": "${file}",
-            "terminalKind": "integrated"
+            "terminalKind": "integrated",
+            // "commandLineArguments": "",
         },
         {
             "type": "lua-local",

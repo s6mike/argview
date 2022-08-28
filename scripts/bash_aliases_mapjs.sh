@@ -60,16 +60,15 @@ __run_mapjs_legacy() { #rml
 # mapjs tests
 
 __test_mapjs_renders() {
-  RENDERS=$("$WORKSPACE/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
+  result=$("$WORKSPACE/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
   # e.g. trailing \r:
   # echo aa$("$HOME/scripts/argmap_test_scripts/headless_chrome_repl_mapjs_is_rendered.exp")b
   # abrue
-  if [[ "$RENDERS" == "true"* ]]; then
-    return 0
-  else # if headless chrome fails to render any map nodes
-    echo "Map not rendered, setting exit status to 125 (skip during bisect skip)."
-    return 1
+  if [[ "$result" == "true"* ]]; then
+    return 0 # success
+  else       # if headless chrome fails to render any map nodes
+    return 1 #fail
   fi
 }
 
@@ -128,4 +127,4 @@ __restart_mapjs_webserver() { #rmj
 ## Mark functions for export to use in other scripts:
 export -f __build_mapjs __start_mapjs_webserver __run_mapjs_legacy #__stop_mapjs_webserver __restart_mapjs_webserver
 export -f open-debug
-export -f __test_mapjs_renders
+export -f __test_mapjs_renders testcafe_run
