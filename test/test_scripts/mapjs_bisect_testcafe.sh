@@ -15,7 +15,7 @@ source "$HOME/scripts/argmap_scripts/bash_aliases_mapjs.sh"
 VALIDATE_PATCH=false # false skips the check that patch needs to work
 TEST_MODE=false      # false allows git commands to remove any changes.
 KEEP_PATCHES=false   # git reset will only happen if this and TEST_MODE is false
-PATH_BISECT_PATCH_FILE=${PATH_BISECT_PATCH_FILE:-"$DIR_PROJECTS/all_mapjs_fixes_3_3_8_modified.diff"}
+PATH_BISECT_PATCH_FILE=${PATH_BISECT_PATCH_FILE:-"$DIR_PROJECTS/diffs/all_mapjs_fixes_3_3_8_modified.diff"}
 
 BISECT_START_TIMESTAMP=${BISECT_START_TIMESTAMP:-$(date "+%Y.%m.%d-%H.%M.%S")}
 
@@ -101,7 +101,7 @@ case $rendered in
     exit_status=255
     exit 255 # exits without git reset
   else
-    npm exec testcafe 'chrome:headless --no-default-browser-check' "$PATH_REPLAY_SCRIPT" >>"$DIR_PROJECTS/git-bisect-logs/$BISECT_START_TIMESTAMP-testcafe-output.txt"
+    npm exec testcafe 'chrome:headless --no-default-browser-check' "$PATH_REPLAY_SCRIPT" >>"$DIR_PROJECTS/misc/git-bisect-logs/$BISECT_START_TIMESTAMP-testcafe-output.txt"
     exit_status=$?
   fi
   ;;

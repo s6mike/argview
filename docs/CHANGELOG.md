@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.6
+
+- Update some log file folder locations.
+
 ## argmap 4.7.5
 
 - Add mapjs fix from mapjs v3.3.9:

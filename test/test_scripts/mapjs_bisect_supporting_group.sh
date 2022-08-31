@@ -67,4 +67,4 @@ exit "$status"
 # Get diff of staging area vs prev commit
 # git add -u
 # git stash -u -m "cumulative-fixes"
-# git diff --cached >../mapjs_cumulative_fixes.diff
+# git diff --cached >../diffs/mapjs_cumulative_fixes.diff
