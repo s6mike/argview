@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.7
+
+- Add `test/devtools-recordings/argmap-undo-redo.json` to test undo and redo buttons.
+- Add above recording path to `mapjs.env` variable.
+
 ## argmap 4.7.6
 
 - Update some log file folder locations.
