@@ -1,0 +1,40 @@
+{
+  "title": "argmap-node-click",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 782,
+      "height": 837,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": ""
+        }
+      ],
+      "url": "http://localhost:9001/"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_3 > span"
+        ]
+      ],
+      "offsetX": 85.251953125,
+      "offsetY": 18.624969482421875
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('selected')[0].id=='node_3'"
+    }
+  ]
+}

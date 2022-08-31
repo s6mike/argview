@@ -8,6 +8,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.5
+
+- Add mapjs fix from mapjs v3.3.9:
+  - `src/core/map-model.js`: Fix left click on node to select (introduced in commit 'moved addLinkMode out of mapModel' 354071624edb6c257441fcdfcb3f11ab92ad395e).
+  - Relevant function `clickNode` triggered by `mouseup`: `button` value wasn't used, so test `which` value instead.
+- Add devtools recording and regression test for left click node select issue.
+- `README.md`: Update mapjs install instructions.
+
 ## argmap 4.7.4
 
 - Update test and automation files to work better with legacy mapjs repo:

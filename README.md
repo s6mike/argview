@@ -680,9 +680,9 @@ To set this up, you will need to:
 
 1. Install `node.js` and then run `npm --prefix [path to mapjs folder] install` to grab the dependencies.
 
-2. Call `npm run --prefix [path to mapjs folder] pack-js` to build the app with webpack.
+2. Call `npm run --prefix [path to mapjs folder] pack` to build the app with webpack.
 
-This builds the client side JavaScript file which activates the maps: `mapjs-example/site/main.js`.
+This builds the client side JavaScript file which activates the maps: `mapjs/site/js/bundle.js`. This needs to be added to any page displaying the map in .json format.
 
 ### Creating html pages containing mapjs with Pandoc
 

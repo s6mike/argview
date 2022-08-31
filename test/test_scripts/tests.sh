@@ -79,15 +79,16 @@ if [ "$1" != html ]; then
 fi
 
 # map renders
-__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #5
-__test md2hf "$INPUT_FILE_MD0"                      #6
-__test md2hf "$INPUT_FILE_MD"                       #7
-__test md2hf "$INPUT_FILE_MD2"                      #8
-__test md2hf "$INPUT_FILE_MD_META"                  #9
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"  #10 add child button works
+__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML"  #5
+__test md2hf "$INPUT_FILE_MD0"                       #6
+__test md2hf "$INPUT_FILE_MD"                        #7
+__test md2hf "$INPUT_FILE_MD2"                       #8
+__test md2hf "$INPUT_FILE_MD_META"                   #9
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"   #10 add child button works
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK" #11 left click works
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #11
+    __test md2pdf "$INPUT_FILE_MD0" #12
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."

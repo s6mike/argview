@@ -23,6 +23,10 @@
     - `mapjs/test/index.html`
 - Using VSCode defaults for file formatting: many whitespace changes.
 
+## mapjs 3.3.10
+
+- Align with some argmap changes.
+
 ## mapjs 3.3.9
 
 - `src/core/map-model.js`: Fix left click on node to select (introduced in commit 'moved addLinkMode out of mapModel' 354071624edb6c257441fcdfcb3f11ab92ad395e).
@@ -31,7 +35,7 @@
 ## mapjs 3.3.8
 
 - Merge fixes from stash 'All mapjs fixes up to toolbar': just a settings.json with bash terminal init file.
-- Add 'scripts/mapsjs.env' to hold new environment variables: PATH_LOG_FILE_EXPECT, PATH_REPLAY_SCRIPT, PATH_REPLAY_SCRIPT_ADD_IDEA, PATH_BISECT_PATCH_FILE
+- Add 'scripts/mapjs.env' to hold new environment variables: PATH_LOG_FILE_EXPECT, PATH_REPLAY_SCRIPT, PATH_REPLAY_SCRIPT_ADD_IDEA, PATH_BISECT_PATCH_FILE
 
 ## mapjs 3.3.7
 

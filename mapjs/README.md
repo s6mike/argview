@@ -9,19 +9,37 @@ mind maps in a browser. You can see an example of this live at [mindmup.com](htt
 This project is relatively stand alone and you can use it to create a nice mind map visualisation separate from the
 [MindMup Server](https://www.mindmup.com).
 
+# Using MAPJS standalone
+
+To run the dev server, execute:
+
+`npm run start`
+
+Then open <http://localhost:9000/> to view the example map.
+
 # Using MAPJS in your projects
 
 MapJS 2 works well with WebPack. Check out the [MAPJS Webpack Example](https://github.com/mindmup/mapjs-webpack-example) project.
+
+Or just use: `npm run pack`
+
+# Using MAPJS with argmap
+
+argmap integrates with MAPJS:
+
+[argmap](https://github.com/s6mike/argmap/tree/master)
+
+Though currently, most of this integration is not on the main branch.
 
 # Testing
 
 To run the unit tests, execute
 
-    npm test
+    `npm test`
 
 To debug and try things out visually, grab the dependencies using:
 
-    npm run pretest
+    `npm run pretest`
 
 # Dependencies
 

@@ -326,14 +326,17 @@ module.exports = function MapModel(selectAllTitles, defaultReorderMargin, option
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}
 	};
+	// This seems to be triggered by mouseup not mousedown
 	this.clickNode = function (id, event) {
 		const button = event && event.button && event.button !== -1;
+		// 'which', unlike button, seems to get populated on mouse up.
+		const which = event.which;
 		if (event && event.altKey) {
 			self.toggleLink('mouse', id);
 		} else if (event && event.shiftKey) {
 			/*don't stop propagation, this is needed for drop targets*/
 			self.toggleActivationOnNode('mouse', id);
-		} else if (button) {
+		} else if (which) {
 			this.selectNode(id);
 			if (button && button !== -1 && isInputEnabled) {
 				self.dispatchEvent('contextMenuRequested', id, event.layerX, event.layerY);
