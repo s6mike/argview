@@ -8,6 +8,19 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.4
+
+- Update test and automation files to work better with legacy mapjs repo:
+  - Add `test/devtools-recordings/mapjs-node-click.json` to test left mouse click to select node.
+  - `mapjs/scripts/mapjs.env`: Add variable for above script path, plus one for patch file (applied by bisect script as hotfix, rather than stash).
+  - `test/test_scripts/mapjs_bisect_testcafe.sh`:
+    - Make more reliable.
+    - Add flags to simplify testing.
+    - Apply patch rather than stash.
+    - Add more messages for feedback.
+  - `scripts/bash_aliases_mapjs.sh`: Minor changes so legacy mapjs can use aliases more easily.
+  - `mapjs/.vscode/settings.json`: Add `scripts/bash_aliases_mapjs.sh` as terminal init file.
+  
 ## argmap 4.7.3
 
 - `test/test_scripts/mapjs_bisect_testcafe.sh`:

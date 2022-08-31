@@ -10,6 +10,7 @@ echo "Running ${BASH_SOURCE[0]}"
 source "$HOME/scripts/default_vscode_init_script.sh"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/mapjs/scripts/mapjs.env # Stops shellcheck lint error
+# echo "PATH_MJS_HOME: $PATH_MJS_HOME"
 source "$PATH_MJS_HOME/scripts/mapjs.env"
 
 # mapjs aliases
@@ -24,7 +25,7 @@ alias smj='node_stop'
 alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
 # Overwrite aliases from default bash_aliases
-alias wss='npm run start --prefix "$PATH_MJS_HOME"'
+# alias wss='npm run server --prefix "$PATH_MJS_HOME"'
 
 # mapjs functions
 
@@ -59,8 +60,23 @@ __run_mapjs_legacy() { #rml
 
 # mapjs tests
 
+testcafe_run() { # tcr
+  DEFAULT_SCRIPT="$PATH_REPLAY_SCRIPT"
+  if [ "$1" == head ]; then
+    BROWSER_TESTCAFE='chrome --no-default-browser-check'
+    PATH_REPLAY_SCRIPT=${2:-$DEFAULT_SCRIPT}
+  else
+    BROWSER_TESTCAFE='chrome:headless --no-default-browser-check'
+    PATH_REPLAY_SCRIPT=${1:-$DEFAULT_SCRIPT}
+  fi
+  # __bisect_init
+  echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
+  npm --prefix "$PATH_MJS_HOME" run testcafe-command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+}
+
 __test_mapjs_renders() {
-  result=$("$WORKSPACE/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
+  # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
+  result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
   # e.g. trailing \r:
   # echo aa$("$HOME/scripts/argmap_test_scripts/headless_chrome_repl_mapjs_is_rendered.exp")b
@@ -70,19 +86,6 @@ __test_mapjs_renders() {
   else       # if headless chrome fails to render any map nodes
     return 1 #fail
   fi
-}
-
-testcafe_run() { # tcr
-  if [ "$1" == head ]; then
-    BROWSER='chrome --no-default-browser-check'
-    PATH_REPLAY_SCRIPT=${2:-$PATH_REPLAY_SCRIPT_ADD_IDEA}
-  else
-    BROWSER='chrome:headless --no-default-browser-check'
-    PATH_REPLAY_SCRIPT=${1:-$PATH_REPLAY_SCRIPT_ADD_IDEA}
-  fi
-  # __bisect_init
-  echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm exec testcafe "$BROWSER" "$PATH_REPLAY_SCRIPT"
 }
 
 # Deprecated
@@ -127,4 +130,4 @@ __restart_mapjs_webserver() { #rmj
 ## Mark functions for export to use in other scripts:
 export -f __build_mapjs __start_mapjs_webserver __run_mapjs_legacy #__stop_mapjs_webserver __restart_mapjs_webserver
 export -f open-debug
-export -f __test_mapjs_renders testcafe_run
+export -f testcafe_run __test_mapjs_renders

@@ -26,6 +26,7 @@
     "stop": "killall node",
     "start": "webpack-dev-server &",
     "test-cafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",
+    "testcafe-command": "testcafe",
     "pack": "webpack",
     "pretest": "eslint specs src && rm -rf testem/compiled",
     "test-core": "node specs/support/jasmine-runner.js",
@@ -66,7 +67,7 @@
     "testem": "^2.9.2",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0",
-    "webpack-dev-server": "^2.4.1",
-    "testcafe": "^1.20.1"
+    "testcafe": "^1.20.1",
+    "webpack-dev-server": "^2.4.1"
   }
 }
