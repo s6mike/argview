@@ -21,6 +21,8 @@ alias argdb1='open-debug $DIR_HTML_SERVER_OUTPUT/Example1_ClearlyFalse_WhiteSwan
 alias argdbe='open-debug output/example-map.html'
 
 ## webpack aliases
+alias dmj='diff_mapjs'
+alias dfs='diff_staged_file' # dfs package.json package.diff
 alias smj='node_stop'
 alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
@@ -59,6 +61,29 @@ __run_mapjs_legacy() { #rml
 }
 
 # mapjs tests
+
+# Diffs current commit to mapjs upstream master: so be sure to be on correct commit.
+diff_mapjs() { # dmj
+  EXCLUSIONS_OUTPUT=()
+  EXCLUSIONS_INPUT=(package-lock.json .gitignore docs/CHANGELOG-mapjs.md README.md)
+  for e in "${EXCLUSIONS_INPUT[@]}"; do
+    EXCLUSIONS_OUTPUT+=("':(exclude)$e'")
+  done
+
+  DIFF_COMMAND="git diff --no-color --ignore-all-space e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ${EXCLUSIONS_OUTPUT[*]} >../diffs/all_mapjs_fixes_latest.diff"
+  # git diff --no-color e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ':(exclude)package-lock.json' ':(exclude).gitignore' ':(exclude)docs/CHANGELOG-mapjs.md' >../diffs/all_mapjs_fixes_latest.diff
+  # echo "$DIFF_COMMAND"
+  eval "$DIFF_COMMAND" # >../diffs/all_mapjs_fixes_latest.diff"
+  code ../diffs/all_mapjs_fixes_latest.diff
+}
+
+diff_staged_file() { # dfs package.json package.diff
+  INPUT_FILE=${1:-package.json}
+  OUTPUT_FILENAME=$(basename "${INPUT_FILE%.*}.diff")
+  OUTPUT_FILE=../diffs/${2:-$OUTPUT_FILENAME}
+  git diff --cached --no-color --ignore-all-space "$INPUT_FILE" >"$OUTPUT_FILE"
+  code "$OUTPUT_FILE"
+}
 
 testcafe_run() { # tcr
   DEFAULT_SCRIPT="$PATH_REPLAY_SCRIPT"

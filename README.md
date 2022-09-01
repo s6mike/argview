@@ -563,7 +563,7 @@ As per [Pandoc's markdown format for Fenced code blocks](https://pandoc.org/MANU
 - . for classes
 - attribute="value" for assigning values.
 
-If you want your argmap to be converted into [mapjs format](#using-mapjs-to-display-argmaps), then add the attribute to="js". See section [Generating mapjs Interactive Argument Maps](#generating-mapjs-interactive-argument-maps) for more details.
+If you want your argmap to be converted into [mapjs format](#displaying-argmaps-with-mapjs), then add the attribute to="js". See section [Generating mapjs Interactive Argument Maps](#generating-interactive-argument-maps-mapjs) for more details.
 
 A name and Google Drive ID can also be specified as attributes of the code
 block:
@@ -806,7 +806,7 @@ This repo inherits from:
 
 Changes include: Issue fixes (potentially caused by different lua version), and renamed files, added scripts, environment and config files for development convenience.
 
-2 ) <https://github.com/mindmup/mapjs-webpack-example>: To display mindmup JSON files on a web page as an interactive mindmap, without using the [MindMup website](https://www.mindmup.com/). This is an earlier, open source version of mindmup, customised to display the output from argmap2mup by passing the filename to the webpack build as an environment variable. See [Using mapjs to display argmaps](#using-mapjs-to-display-argmaps) section for more details.
+2 ) <https://github.com/mindmup/mapjs-webpack-example>: To display mindmup JSON files on a web page as an interactive mindmap, without using the [MindMup website](https://www.mindmup.com/). This is an earlier, open source version of mindmup, customised to display the output from argmap2mup by passing the filename to the webpack build as an environment variable. See [Using mapjs to display argmaps](#displaying-argmaps-with-mapjs) section for more details.
 
 Changes include: moving the functionality to a sub-folder, and getting start.js to dynamically read JSON files from the web page its on, instead of building them into webpack.
 

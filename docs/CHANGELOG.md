@@ -8,6 +8,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.9
+
+- [README.md](../README.md): Fix broken internal links.
+
+## argmap 4.7.8
+
+- Add `test/devtools-recordings/mapjs-button-undo-redo.json` and `test/devtools-recordings/mapjs-keys-undo-redo.json` for new bisect tests.
+- `scripts/bash_aliases_mapjs.sh`: Add function and alias to generate diff file for bisect.
+- `test/test_scripts/mapjs_bisect_testcafe.sh`:
+  - Update default diff file path.
+  - Add rebuild step to stop server, reinstall and start server, and flag to skip this step.
+
 ## argmap 4.7.7
 
 - Add `test/devtools-recordings/argmap-undo-redo.json` to test undo and redo buttons.

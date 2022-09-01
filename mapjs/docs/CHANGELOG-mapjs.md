@@ -8,7 +8,7 @@
     - Move website dependencies to `site/`:
       - Move `/mapjs-default-styles.css`
         - `mapjs/scripts/mapjs.env`:
-          - Update env variablesfor css path.
+          - Update env variables for css path.
           - Add variables for other paths including devtools recordings.
       - Move all svg files to `site/svg/`.
     - Move js source files to `src/`:

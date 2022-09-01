@@ -14,9 +14,9 @@ source "$HOME/scripts/argmap_scripts/bash_aliases_mapjs.sh"
 
 VALIDATE_PATCH=false # false skips the check that patch needs to work
 TEST_MODE=false      # false allows git commands to remove any changes.
+REBUILD=true         # false stops webserver stop, install, webserver start
 KEEP_PATCHES=false   # git reset will only happen if this and TEST_MODE is false
-PATH_BISECT_PATCH_FILE=${PATH_BISECT_PATCH_FILE:-"$DIR_PROJECTS/diffs/all_mapjs_fixes_3_3_8_modified.diff"}
-
+PATH_BISECT_PATCH_FILE=${PATH_BISECT_PATCH_FILE:-"$DIR_PROJECTS/diffs/all_mapjs_fixes_latest.diff"}
 BISECT_START_TIMESTAMP=${BISECT_START_TIMESTAMP:-$(date "+%Y.%m.%d-%H.%M.%S")}
 
 # Add Hotfixes
@@ -66,12 +66,22 @@ fi
 # shellcheck source=/home/s6mike/git_projects/mapjs/scripts/mapjs.env # Stops shellcheck lint error
 source "$WORKSPACE/scripts/mapjs.env"
 
-# webpack_build
-if [ "$TEST_MODE" = false ]; then # Only runs if not in test mode
-  npm install --prefix "$PATH_MJS_HOME" --legacy-peer-deps
-fi
+if [ "$REBUILD" = true ]; then # Only runs if not in test mode
 
-# git add -u
+  # webpack_build
+  node_stop
+
+  if [ "$TEST_MODE" = false ]; then # Only runs if not in test mode
+    npm install --prefix "$PATH_MJS_HOME" --legacy-peer-deps
+  fi
+
+  npm run --prefix "$PATH_MJS_HOME" server &
+  # PID=$!
+
+  # wait $!
+  sleep 1.5
+
+fi
 
 # TODO: Ideally want to read node_count_before and pass it into the JSON script as a variable to compare it to.
 #   See https://workflowy.com/#/33d0bdfaf875
@@ -89,6 +99,7 @@ fi
 
 # Pre-test: Do any elements render?
 # shellcheck disable=SC2119 # No arguments needed, all defaults
+
 __test_mapjs_renders
 rendered=$?
 
