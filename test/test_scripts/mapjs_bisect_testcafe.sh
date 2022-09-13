@@ -12,10 +12,12 @@
 # shellcheck source=/home/s6mike/scripts/argmap_scripts/bash_aliases_mapjs.sh
 source "$HOME/scripts/argmap_scripts/bash_aliases_mapjs.sh"
 
-VALIDATE_PATCH=false # false skips the check that patch needs to work
 TEST_MODE=false      # false allows git commands to remove any changes.
+APPLY_PATCH=true     # false stops patch being applied
+VALIDATE_PATCH=false # false skips the check that patch needs to work
+KEEP_PATCHES=false   # git reset will only happen if this and TEST_MODE is false, and if APPLY_PATCH is true.
 REBUILD=true         # false stops webserver stop, install, webserver start
-KEEP_PATCHES=false   # git reset will only happen if this and TEST_MODE is false
+SERVER_CHECK=false   # false stops browser being opened after rendering fails.
 PATH_BISECT_PATCH_FILE=${PATH_BISECT_PATCH_FILE:-"$DIR_PROJECTS/diffs/all_mapjs_fixes_latest.diff"}
 BISECT_START_TIMESTAMP=${BISECT_START_TIMESTAMP:-$(date "+%Y.%m.%d-%H.%M.%S")}
 
@@ -37,22 +39,26 @@ BISECT_START_TIMESTAMP=${BISECT_START_TIMESTAMP:-$(date "+%Y.%m.%d-%H.%M.%S")}
 # Ensures bisect log is updated each iteration.
 git bisect log >"$PATH_BISECT_LOG"
 
-if [ "$TEST_MODE" = false ]; then # Only runs if not in test mode
+if [ "$APPLY_PATCH" = true ]; then # Only runs if applying patch file.
 
-  # if git stash apply; then
-  # -v to get verbose feedback
+  if [ "$TEST_MODE" = false ]; then # Only runs if not in test mode
 
-  # Reject allows each patch to be applied independently of success/fails of rest
-  # if git apply -v --ignore-whitespace --3way "$PATH_BISECT_PATCH_FILE"; then
-  if git apply -v --ignore-whitespace --reject "$PATH_BISECT_PATCH_FILE"; then
-    echo "'git apply patch' successful."
-  else
+    # if git stash apply; then
+    # -v to get verbose feedback
 
-    if [ "$VALIDATE_PATCH" = true ]; then
-      echo "'git apply patch' failed, exit 255 (abort bisect)"
-      exit 255
+    # Reject allows each patch to be applied independently of success/fails of rest
+    # if git apply -v --ignore-whitespace --3way "$PATH_BISECT_PATCH_FILE"; then
+    if git apply -v --ignore-whitespace --reject "$PATH_BISECT_PATCH_FILE"; then
+      echo "'git apply patch' successful."
     else
-      echo "'git apply patch' failed, continuing anyway."
+
+      if [ "$VALIDATE_PATCH" = true ]; then
+        echo "'git apply patch' failed, exit 255 (abort bisect)"
+        exit 255
+      else
+        echo "'git apply patch' failed, continuing anyway."
+      fi
+
     fi
 
   fi
@@ -63,8 +69,8 @@ fi
 #------
 
 # Should now be available to source
-# shellcheck source=/home/s6mike/git_projects/mapjs/scripts/mapjs.env # Stops shellcheck lint error
-source "$WORKSPACE/scripts/mapjs.env"
+# shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
+source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 if [ "$REBUILD" = true ]; then # Only runs if not in test mode
 
@@ -112,7 +118,7 @@ case $rendered in
     exit_status=255
     exit 255 # exits without git reset
   else
-    npm exec testcafe 'chrome:headless --no-default-browser-check' "$PATH_REPLAY_SCRIPT" >>"$DIR_PROJECTS/misc/git-bisect-logs/$BISECT_START_TIMESTAMP-testcafe-output.txt"
+    npm exec testcafe 'chrome:headless --no-default-browser-check' "$PATH_REPLAY_SCRIPT" >>"$DIR_PROJECTS/mapjs-git-bisect/git-bisect-logs/$BISECT_START_TIMESTAMP-testcafe-output.txt"
     exit_status=$?
   fi
   ;;
@@ -126,9 +132,11 @@ case $rendered in
   exit_status=125
   echo "Rendering test failed, setting exit status to 125 (bisect skip). Is server running? Try 'wss.'"
 
-  # Sanity check rendering in browser
-  # shellcheck disable=SC2119 # No arguments needed, all defaults
-  open-server
+  if [ "$SERVER_CHECK" = true ]; then # Only opens browser if true
+    # Sanity check rendering in browser
+    # shellcheck disable=SC2119 # No arguments needed, all defaults
+    open-server
+  fi
   ;;
 
 esac

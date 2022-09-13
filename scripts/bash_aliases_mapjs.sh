@@ -9,9 +9,9 @@ echo "Running ${BASH_SOURCE[0]}"
 # shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
 source "$HOME/scripts/default_vscode_init_script.sh"
 
-# shellcheck source=/home/s6mike/git_projects/argmap/mapjs/scripts/mapjs.env # Stops shellcheck lint error
+# shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
 # echo "PATH_MJS_HOME: $PATH_MJS_HOME"
-source "$PATH_MJS_HOME/scripts/mapjs.env"
+source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 # mapjs aliases
 
@@ -63,18 +63,19 @@ __run_mapjs_legacy() { #rml
 # mapjs tests
 
 # Diffs current commit to mapjs upstream master: so be sure to be on correct commit.
-diff_mapjs() { # dmj
+diff_mapjs() { # dmj all_mapjs_fixes_latest_modified.diff
+  DIFF_FILENAME="${1:-$DEFAULT_DIFF_FILENAME}"
   EXCLUSIONS_OUTPUT=()
   EXCLUSIONS_INPUT=(package-lock.json .gitignore docs/CHANGELOG-mapjs.md README.md)
   for e in "${EXCLUSIONS_INPUT[@]}"; do
     EXCLUSIONS_OUTPUT+=("':(exclude)$e'")
   done
 
-  DIFF_COMMAND="git diff --no-color --ignore-all-space e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ${EXCLUSIONS_OUTPUT[*]} >../diffs/all_mapjs_fixes_latest.diff"
+  DIFF_COMMAND="git diff --no-color --ignore-all-space e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ${EXCLUSIONS_OUTPUT[*]} >$DIFF_FILENAME"
   # git diff --no-color e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ':(exclude)package-lock.json' ':(exclude).gitignore' ':(exclude)docs/CHANGELOG-mapjs.md' >../diffs/all_mapjs_fixes_latest.diff
   # echo "$DIFF_COMMAND"
   eval "$DIFF_COMMAND" # >../diffs/all_mapjs_fixes_latest.diff"
-  code ../diffs/all_mapjs_fixes_latest.diff
+  code "$DIFF_FILENAME"
 }
 
 diff_staged_file() { # dfs package.json package.diff

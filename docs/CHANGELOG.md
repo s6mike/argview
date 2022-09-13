@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.10
+
+- Add `/test/devtools-recordings/mapjs-button-editlink-menu-error.json` for new bisect test.
+- Update `/test/scripts/mapjs_bisect_testcafe.sh` to make apply patch step and browser sanity check optional.
+- Update `/scripts/bash_aliases_mapjs.sh` and `/test/scripts/mapjs_bisect_testcafe.sh` to reflect mapjs bisect env variables and files being moved to external folder.
+
 ## argmap 4.7.9
 
 - [README.md](../README.md): Fix broken internal links.

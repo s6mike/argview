@@ -1,0 +1,39 @@
+{
+  "title": "mapjs-button-editlink-menu-error",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1410,
+      "height": 837,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9000/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Delete"
+        ],
+        [
+          "#linkEditWidget > input"
+        ]
+      ],
+      "offsetY": 7.421875,
+      "offsetX": 31
+    }
+  ]
+}
