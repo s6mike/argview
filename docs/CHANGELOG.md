@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.12
+
+- `test/test_scripts/mapjs_bisect_testcafe.sh`: Update teardown to remove untracked files, after this broke the bisect.
+
 ## argmap 4.7.11
 
 - Add `/test/devtools-recordings/mapjs-button-add-link.json` for new bisect test.

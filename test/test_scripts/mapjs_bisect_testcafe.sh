@@ -147,6 +147,7 @@ esac
 # Only resets if not in test mode
 if [ "$TEST_MODE" = false ] && [ "$KEEP_PATCHES" = false ]; then # Won't in test mode
   git reset --hard
+  git clean -f
 fi
 
 # Return test result
