@@ -1,0 +1,59 @@
+{
+  "title": "mapjs-button-add-link",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1401,
+      "height": 856,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9000/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/add link"
+        ],
+        [
+          "#testcontrols > input.toggleAddLinkMode"
+        ]
+      ],
+      "offsetY": 12.882352828979492,
+      "offsetX": 13.186279296875,
+      "deviceType": "pen"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/above"
+        ],
+        [
+          "#node_22"
+        ]
+      ],
+      "offsetY": 47.88232421875,
+      "offsetX": 63,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-link').length==2"
+    }
+  ]
+}

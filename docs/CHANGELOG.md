@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.11
+
+- Add `/test/devtools-recordings/mapjs-button-add-link.json` for new bisect test.
+
 ## argmap 4.7.10
 
 - Add `/test/devtools-recordings/mapjs-button-editlink-menu-error.json` for new bisect test.
