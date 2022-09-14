@@ -158,6 +158,9 @@ if [ "$1" == 'conda' ]; then
   # Only needed for pre-commit hook:
   ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
 
+  # Install testcafe
+  npm install -g testcafe
+
 fi
 
 # SECTION 4: mapjs
