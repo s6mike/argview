@@ -1,0 +1,59 @@
+{
+  "title": "mapjs-mouse-past-linkEditWidget-after-link-click",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1913,
+      "height": 949,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9000/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9000/",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "selectors": [
+        [
+          "#link_22_5 > path.mapjs-link-hit.noTransition"
+        ]
+      ],
+      "offsetX": 64,
+      "offsetY": 30,
+      "deviceType": "pen"
+    },
+    {
+      "type": "hover",
+      "target": "main",
+      "frame": [],
+      "selectors": [
+        [
+          "#linkEditWidget"
+        ]
+      ]
+    },
+    {
+      "type": "hover",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols > input.addSubIdea"
+        ]
+      ]
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "!document.getElementById('linkEditWidget').style.display==='none'"
+    }
+  ]
+}

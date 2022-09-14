@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.14
+
+- Add `/test/devtools-recordings/mapjs-mouse-past-linkEditWidget-after-link-click.json` for new bisect test.
+
 ## argmap 4.7.13
 
 - `scripts/install.sh`: Add TestCafe global install to simplify git bisect.
