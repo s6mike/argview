@@ -1,0 +1,949 @@
+
+> @mindmup/mapjs@4.1.0 pretest-browser
+> rm -rf testem/compiled
+
+
+> @mindmup/mapjs@4.1.0 test-browser
+> testem ci -R dot
+
+
+  ......................................................F...............F....FF........F.FFF....F............F.F.F....................................................................................................F......F.F...........................................................................................................................................................................................................F.............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................F.F.FF..F.FF.F..F.F.....................................F..F.......................................F..FF..FF..FF..FF..FF..FF..FF..F.......................................................................................................................................................................................................................................................................................................................FFFFFF.F...........................................................................FF....................................................F......FF..F..FFF.FFF..FF.....................F.........................................................
+
+  2034 tests complete (17285 ms)
+
+ 55) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging works out the stage position from the page drop position and calls mapModel.getNodeIdAtPosition
+     Expected spy mapModel.getNodeIdAtPosition to have been called with [ -160, -75 ] but actual calls were [ -160.27450942993164, -75.29411745071411 ].
+
+     Error: Expected spy mapModel.getNodeIdAtPosition to have been called with [ -160, -75 ] but actual calls were [ -160.27450942993164, -75.29411745071411 ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25232:44)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 71) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops calls getNodeIdAtPosition to work out if it got dropped on a node
+     Expected spy mapModel.getNodeIdAtPosition to have been called with [ -160, -75 ] but actual calls were [ -160.27450942993164, -75.29411745071411 ].
+
+     Error: Expected spy mapModel.getNodeIdAtPosition to have been called with [ -160, -75 ] but actual calls were [ -160.27450942993164, -75.29411745071411 ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25349:44)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 76) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops when level > 1 dropped on background calls positionNode and passes the current drop position if not manual
+     Expected spy mapModel.positionNodeAt to have been called with [ 1, -160, -75, false ] but actual calls were [ 1, -160.27450942993164, -75.29411745071411, false ].
+
+     Error: Expected spy mapModel.positionNodeAt to have been called with [ 1, -160, -75, false ] but actual calls were [ 1, -160.27450942993164, -75.29411745071411, false ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25381:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 77) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops when level > 1 dropped on background calls positionNode and passes the current DOM position if  manual
+     Expected spy mapModel.positionNodeAt to have been called with [ 1, 112, 123, true ] but actual calls were [ 1, 111.72549057006836, 122.70588254928589, true ].
+
+     Error: Expected spy mapModel.positionNodeAt to have been called with [ 1, 112, 123, true ] but actual calls were [ 1, 111.72549057006836, 122.70588254928589, true ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25385:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 86) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops manually positions level 1 nodes when dropped on a background
+     Expected spy mapModel.positionNodeAt to have been called with [ 2, 112, 123, true ] but actual calls were [ 2, 111.72549057006836, 122.70588254928589, true ].
+
+     Error: Expected spy mapModel.positionNodeAt to have been called with [ 2, 112, 123, true ] but actual calls were [ 2, 111.72549057006836, 122.70588254928589, true ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25441:39)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 88) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops when dropped on itself triggers automatic positioning to drop coordinates if within reorder bounds
+     Expected spy mapModel.positionNodeAt to have been called with [ 1, -160, -75, false ] but actual calls were [ 1, -160.27450942993164, -75.29411745071411, false ].
+
+     Error: Expected spy mapModel.positionNodeAt to have been called with [ 1, -160, -75, false ] but actual calls were [ 1, -160.27450942993164, -75.29411745071411, false ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25458:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 89) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops when dropped on itself triggers manual positioning to DOM coordinates outside of reorder bounds
+     Expected spy mapModel.positionNodeAt to have been called with [ 1, 142, 123, true ] but actual calls were [ 1, 141.72549057006836, 122.70588254928589, true ].
+
+     Error: Expected spy mapModel.positionNodeAt to havtest-browser-output.txte been called with [ 1, 142, 123, true ] but actual calls were [ 1, 141.72549057006836, 122.70588254928589, true ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25464:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 90) [Chrome 105.0] DomMapController event actions nodeCreated drag and drop features when dragging stops when dropped on itself triggers manual positioning if shift is pressed
+     Expected spy mapModel.positionNodeAt to have been called with [ 1, 112, 123, true ] but actual calls were [ 1, 111.72549057006836, 122.70588254928589, true ].
+
+     Error: Expected spy mapModel.positionNodeAt to have been called with [ 1, 112, 123, true ] but actual calls were [ 1, 111.72549057006836, 122.70588254928589, true ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25469:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+ 95) [Chrome 105.0] DomMapController event actions nodeSelectionChanged when deselected does not move the viewport
+     Expected 179.4509735107422 to be 180.
+
+     Error: Expected 179.4509735107422 to be 180.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toBe (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25547:36)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+108) [Chrome 105.0] DomMapController event actions nodeSelectionChanged when selected when right of viewport animates scroll movements to show selected node
+     Expected $.scrollLeft = 250.431 to equal 250.
+
+     Error: Expected $.scrollLeft = 250.431 to equal 250.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25597:56)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+110) [Chrome 105.0] DomMapController event actions nodeSelectionChanged when selected when bottom of viewport animates scroll movements to show selected node
+     Expected $.scrollTop = 210.4314 to equal 210.
+
+     Error: Expected $.scrollTop = 210.4314 to equal 210.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25597:56)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+112) [Chrome 105.0] DomMapController event actions nodeSelectionChanged when selected when bottom right of viewport animates scroll movements to show selected node
+     Expected $.scrollLeft = 250.431 to equal 250.
+Expected $.scrollTop = 210.4314 to equal 210.
+
+     Error: Expected $.scrollLeft = 250.431 to equal 250.
+     Expected $.scrollTop = 210.4314 to equal 210.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:25597:56)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+213) [Chrome 105.0] DomMapController event actions mapScaleChanged keeps the center point in the same position in the new scale
+     Expected 458.6666564941406 to be 460.
+
+     Error: Expected 458.6666564941406 to be 460.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toBe (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:26155:35)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+220) [Chrome 105.0] DomMapController event actions mapViewResetRequested centers the view
+     Expected 9.411765098571777 to be 10.
+
+     Error: Expected 9.411765098571777 to be 10.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toBe (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:26215:35)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+222) [Chrome 105.0] DomMapController event actions nodeFocusRequested does not immediately change viewport
+     Expected 179.4509735107422 to be 180.
+
+     Error: Expected 179.4509735107422 to be 180.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toBe (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/dom-map-controller-spec.js:26243:35)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+426) [Chrome 105.0] updateNodeContent icon handling when icon is set positions bottom icons bottom of node text and horizontally centers the text for fixed layout
+     Expected '50% 23.8235px' to be '50% 23px'.
+
+     Error: Expected '50% 23.8235px' to be '50% 23px'.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toBe (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/browser/update-node-content-spec.js:17126:50)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1352) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements insertUp adds an intermediate if layout is top-down
+     Expected spy addSiblingIdeaBefore not to have been called.
+
+     Error: Expected spy addSiblingIdeaBefore not to have been called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalled (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8833:49)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1354) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements insertDown adds a child if layout is top-down
+     Expected spy addSiblingIdea not to have been called.
+
+     Error: Expected spy addSiblingIdea not to have been called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalled (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8847:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1356) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements insertLeft adds a sibling idea before the current one if layout is top-down
+     Expected spy addSiblingIdeaBefore to have been called with [ 'keyboard' ] but it was never called.
+
+     Error: Expected spy addSiblingIdeaBefore to have been called with [ 'keyboard' ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8861:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1357) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements insertRight adds a sibling after the current one if the layout is top-down
+     Expected spy addSiblingIdea to have been called with [ 'keyboard' ] but it was never called.
+
+     Error: Expected spy addSiblingIdea to have been called with [ 'keyboard' ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8870:39)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1360) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements moveUp does nothing if layout is top-down
+     Expected spy moveRelative not to have been called.
+
+     Error: Expected spy moveRelative not to have been called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalled (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8890:41)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1362) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements moveDown does nothing if layout is top-down
+     Expected spy moveRelative not to have been called.
+
+     Error: Expected spy moveRelative not to have been called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalled (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8902:41)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1363) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements moveLeft moves relative if layout is top-down
+     Expected spy moveRelative to have been called with [ 'keyboard', -1 ] but it was never called.
+
+     Error: Expected spy moveRelative to have been called with [ 'keyboard', -1 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8909:37)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1365) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements moveRight moves relative if layout is top-down
+     Expected spy moveRelative to have been called with [ 'keyboard', 1 ] but it was never called.
+
+     Error: Expected spy moveRelative to have been called with [ 'keyboard', 1 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8923:37)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1368) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements positionNodeAt delegates to the top-down position if required
+     Expected spy topDownPositionNodeAt to have been called with [ 1, 2, 3, 4 ] but it was never called.
+
+     Error: Expected spy topDownPositionNodeAt to have been called with [ 1, 2, 3, 4 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8943:46)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1370) [Chrome 105.0] MapModel methods delegating to idea layout-specific movements getReorderBoundary delegates to the top-down reorder if required
+     Expected spy getTopDownReorderBoundary to have been called with [ 1 ] but it was never called.
+
+     Error: Expected spy getTopDownReorderBoundary to have been called with [ 1 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:8957:50)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1408) [Chrome 105.0] MapModel methods delegating to idea clickNode should select the node and dispatch contextMenuRequested event if node is right clicked
+     Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+
+     Error: Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9459:42)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1411) [Chrome 105.0] MapModel methods delegating to idea clickNode should not dispatch nodeClicked if right clicked, should dispatch contextMenuRequested event
+     Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+
+     Error: Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9475:42)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1451) [Chrome 105.0] MapModel Selection selectNodeLeft should send the selected node id when calling layoutModel
+     Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9932:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1454) [Chrome 105.0] MapModel Selection selectNodeLeft should select node returned by layoutModel
+     Expected spy unknown to have been called with [ 3, true ] but it was never called.
+
+     Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9947:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1455) [Chrome 105.0] MapModel Selection selectNodeRight should send the selected node id when calling layoutModel
+     Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9932:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1458) [Chrome 105.0] MapModel Selection selectNodeRight should select node returned by layoutModel
+     Expected spy unknown to have been called with [ 3, true ] but it was never called.
+
+     Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9947:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1459) [Chrome 105.0] MapModel Selection selectNodeUp should send the selected node id when calling layoutModel
+     Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9932:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1462) [Chrome 105.0] MapModel Selection selectNodeUp should select node returned by layoutModel
+     Expected spy unknown to have been called with [ 3, true ] but it was never called.
+
+     Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9947:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1463) [Chrome 105.0] MapModel Selection selectNodeDown should send the selected node id when calling layoutModel
+     Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9932:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1466) [Chrome 105.0] MapModel Selection selectNodeDown should select node returned by layoutModel
+     Expected spy unknown to have been called with [ 3, true ] but it was never called.
+
+     Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9947:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1467) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeLeft should send the selected node id when calling layoutModel
+     Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9979:47)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1470) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeLeft should activate parent node when currently selected node left of central node
+     Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+
+     Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at checkActivated (http://localhost:7357/testem/compiled/core/map-model-spec.js:9956:43)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9996:8)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+1471) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeRight should send the selected node id when calling layoutModel
+     Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9979:47)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1474) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeRight should activate parent node when currently selected node left of central node
+     Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+
+     Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at checkActivated (http://localhost:7357/testem/compiled/core/map-model-spec.js:9956:43)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9996:8)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+1475) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeUp should send the selected node id when calling layoutModel
+     Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9979:47)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1478) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeUp should activate parent node when currently selected node left of central node
+     Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+
+     Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at checkActivated (http://localhost:7357/testem/compiled/core/map-model-spec.js:9956:43)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9996:8)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+1479) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeDown should send the selected node id when calling layoutModel
+     Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+
+     Error: Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9979:47)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1482) [Chrome 105.0] MapModel Selection multiple node activation activating relative to current selection activateNodeDown should activate parent node when currently selected node left of central node
+     Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+
+     Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toHaveBeenCalledWith (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at checkActivated (http://localhost:7357/testem/compiled/core/map-model-spec.js:9956:43)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/map-model-spec.js:9996:8)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+1794) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default horizontal connector if no style provided
+     Expected $.height = 0 to equal 1.
+
+     Error: Expected $.height = 0 to equal 1.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5375:75)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1795) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default horizontal connector if no style provided
+     Expected $.height = 0.75 to equal 1.75.
+
+     Error: Expected $.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5378:70)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1796) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default horizontal connector if no control point is configured for the connector style
+     Expected $.height = 0 to equal 1.
+
+     Error: Expected $.height = 0 to equal 1.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5382:84)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1797) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default non-horizontal connector if no control point is configured for the connector style
+     Expected $.height = 0.75 to equal 1.75.
+
+     Error: Expected $.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5385:79)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1798) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default above connector if no style provided
+     Expected $.height = 0.75 to equal 1.75.
+
+     Error: Expected $.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5389:67)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1799) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default below connector if no style provided
+     Expected $.height = 0.75 to equal 1.75.
+
+     Error: Expected $.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5389:67)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1801) [Chrome 105.0] themeAttributeUtils connectorControlPoint should return the default non-horizontal connector if unconfigured childPosition supplied
+     Expected $.height = 0.75 to equal 1.75.
+
+     Error: Expected $.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-attribute-utils-spec.js:5398:93)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1877) [Chrome 105.0] theme-fallback-values should include a node theme
+     Expected $.font not to have properties
+    lineSpacingPx: 3.25
+    sizePx: 12
+Expected $.lineStyle = undefined to equal 'solid'.
+
+     Error: Expected $.font not to have properties
+         lineSpacingPx: 3.25
+         sizePx: 12
+     Expected $.lineStyle = undefined to equal 'solid'.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-fallback-values-spec.js:407:31)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1878) [Chrome 105.0] theme-fallback-values should include a connector control point
+     Expected $.horizontal = 0 to equal 1.
+Expected $.default = 0.75 to equal 1.75.
+
+     Error: Expected $.horizontal = 0 to equal 1.
+     Expected $.default = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-fallback-values-spec.js:429:43)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1931) [Chrome 105.0] Theme nodeTheme should return the overridden values in the theme
+     Expected $.lineStyle = undefined to equal 'solid'.
+
+     Error: Expected $.lineStyle = undefined to equal 'solid'.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5493:45)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1938) [Chrome 105.0] Theme connectorTheme should return default line if not configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5599:65)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1939) [Chrome 105.0] Theme connectorTheme should return configured label
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5611:65)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1942) [Chrome 105.0] Theme connectorTheme should return the default style when childStyles is empty
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5638:57)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1945) [Chrome 105.0] Theme connectorTheme when the node has no parent should return the default connector style when no connector style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5668:74)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1946) [Chrome 105.0] Theme connectorTheme when the node has no parent should return the hard coded default connector style when the node has no connector style configured and there is no default style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5681:74)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1947) [Chrome 105.0] Theme connectorTheme when the node has no parent should return the configured connector style when the node has a connector style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5692:76)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1949) [Chrome 105.0] Theme connectorTheme when the node has a parent with no child style configured should return the default connector style when no connector style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5668:74)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1950) [Chrome 105.0] Theme connectorTheme when the node has a parent with no child style configured should return the hard coded default connector style when the node has no connector style configured and there is no default style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5681:74)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1951) [Chrome 105.0] Theme connectorTheme when the node has a parent with no child style configured should return the configured connector style when the node has a connector style configured
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5692:76)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1954) [Chrome 105.0] Theme connectorTheme when the node has a parent with a child style configured should return a connector style that matches parentchildstyle.childstyle if it exists
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5713:79)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1955) [Chrome 105.0] Theme connectorTheme when the node has a parent with a child style configured should return a connector style that matches parentchildstyle if parentchildstyle.childstyle does not exist
+     Expected $.controlPoint.height = 0.75 to equal 1.75.
+
+     Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-spec.js:5725:77)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)
+1977) [Chrome 105.0] themeToDictionary should convert the node array into a dictionary
+     Expected object not to have properties
+    level_1.activated: Object({ name: 'level_1.activated', border: Object({ type: 'surround', line: Object({ color: '#EEEEEE', width: 3, style: 'dotted' }) }) })
+
+     Error: Expected object not to have properties
+         level_1.activated: Object({ name: 'level_1.activated', border: Object({ type: 'surround', line: Object({ color: '#EEEEEE', width: 3, style: 'dotted' }) }) })
+         at stack (http://localhost:7357/jasmine/jasmine.js:2455:17)
+         at buildExpectationResult (http://localhost:7357/jasmine/jasmine.js:2425:14)
+         at Spec.expectationResultFactory (http://localhost:7357/jasmine/jasmine.js:901:18)
+         at Spec.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:524:34)
+         at Expectation.addExpectationResult (http://localhost:7357/jasmine/jasmine.js:845:21)
+         at Expectation.toEqual (http://localhost:7357/jasmine/jasmine.js:2369:12)
+         at UserContext.<anonymous> (http://localhost:7357/testem/compiled/core/theme/theme-to-dictionary-spec.js:377:40)
+         at attempt (http://localhost:7357/jasmine/jasmine.js:4478:46)
+         at QueueRunner.run (http://localhost:7357/jasmine/jasmine.js:4402:20)
+         at QueueRunner.execute (http://localhost:7357/jasmine/jasmine.js:4384:10)

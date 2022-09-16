@@ -30,26 +30,36 @@ $.fn.scrollWhenDragging = function (scrollPredicate) {
 $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer, centerSelectedNodeOnOrientationChange) {
 	'use strict';
 	const hotkeyEventHandlers = {
-			'return': 'insertDown',
-			'shift+return': 'insertUp',
-			'shift+tab': 'insertLeft',
-			'tab insert': 'insertRight',
-			'del backspace': 'removeSubIdea',
-			'left': 'selectNodeLeft',
-			'up': 'selectNodeUp',
-			'right': 'selectNodeRight',
-			'shift+right': 'activateNodeRight',
-			'shift+left': 'activateNodeLeft',
-			'meta+right ctrl+right': 'moveRight',
-			'meta+left ctrl+left': 'moveLeft',
-			'meta+up ctrl+up': 'moveUp',
-			'meta+down ctrl+down': 'moveDown',
-			'shift+up': 'activateNodeUp',
-			'shift+down': 'activateNodeDown',
-			'down': 'selectNodeDown',
-			'space f2': 'editNode',
-			'f': 'toggleCollapse'
-		},
+		'return': 'insertDown',
+		'shift+return': 'insertUp',
+		'shift+tab': 'insertLeft',
+		'tab insert': 'insertRight',
+		'del backspace': 'removeSubIdea',
+		'left': 'selectNodeLeft',
+		'up': 'selectNodeUp',
+		'right': 'selectNodeRight',
+		'shift+right': 'activateNodeRight',
+		'shift+left': 'activateNodeLeft',
+		'meta+right ctrl+right': 'moveRight',
+		'meta+left ctrl+left': 'moveLeft',
+		'meta+up ctrl+up': 'moveUp',
+		'meta+down ctrl+down': 'moveDown',
+		'shift+up': 'activateNodeUp',
+		'shift+down': 'activateNodeDown',
+		'down': 'selectNodeDown',
+		'space f2': 'editNode',
+		'f': 'toggleCollapse',
+		'c meta+x ctrl+x': 'cut',
+		'p meta+v ctrl+v': 'paste',
+		'y meta+c ctrl+c': 'copy',
+		'ctrl+shift+v meta+shift+v': 'pasteStyle',
+		'u meta+z ctrl+z': 'undo',
+		'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
+		'meta+plus ctrl+plus z': 'scaleUp',
+		'meta+minus ctrl+minus shift+z': 'scaleDown',
+		'Esc 0 meta+0 ctrl+0': 'resetView',
+		// 'Esc': 'cancelCurrentAction'
+	},
 		charEventHandlers = {
 			'[': 'activateChildren',
 			'{': 'activateNodeAndChildren',
@@ -71,31 +81,31 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 	return this.each(function () {
 		const element = $(this),
 			svgContainer = createSVG()
-			.css({
-				position: 'absolute',
-				top: 0,
-				left: 0
-			})
-			.attr({
-				'data-mapjs-role': 'svg-container',
-				'class': 'mapjs-draw-container'
-			}),
-			stage = $('<div>')
-			.css(
-				{
-					position: 'relative'
+				.css({
+					position: 'absolute',
+					top: 0,
+					left: 0
 				})
-			.attr('data-mapjs-role', 'stage')
-			.appendTo(element)
-			.data({
-				'offsetX': element.innerWidth() / 2,
-				'offsetY': element.innerHeight() / 2,
-				'width': element.innerWidth() - 20,
-				'height': element.innerHeight() - 20,
-				'scale': 1
-			})
-			.append(svgContainer)
-			.updateStage();
+				.attr({
+					'data-mapjs-role': 'svg-container',
+					'class': 'mapjs-draw-container'
+				}),
+			stage = $('<div>')
+				.css(
+					{
+						position: 'relative'
+					})
+				.attr('data-mapjs-role', 'stage')
+				.appendTo(element)
+				.data({
+					'offsetX': element.innerWidth() / 2,
+					'offsetY': element.innerHeight() / 2,
+					'width': element.innerWidth() - 20,
+					'height': element.innerHeight() - 20,
+					'scale': 1
+				})
+				.append(svgContainer)
+				.updateStage();
 		let previousPinchScale = false;
 		element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.getInputEnabled()) {

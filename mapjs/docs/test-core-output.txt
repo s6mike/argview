@@ -1,0 +1,505 @@
+
+> @mindmup/mapjs@4.1.0 test-core
+> node specs/support/jasmine-runner.js
+
+Started
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m
+
+Failures:
+1) MapModel methods delegating to idea layout-specific movements insertUp adds an intermediate if layout is top-down
+  Message:
+[31m    Expected spy addSiblingIdeaBefore not to have been called.[0m
+  Stack:
+    Error: Expected spy addSiblingIdeaBefore not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:949:49)
+  Message:
+[31m    Expected spy insertIntermediate to have been called with [ 'keyboard' ] but it was never called.[0m
+  Stack:
+    Error: Expected spy insertIntermediate to have been called with [ 'keyboard' ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:950:43)
+
+2) MapModel methods delegating to idea layout-specific movements insertDown adds a child if layout is top-down
+  Message:
+[31m    Expected spy addSiblingIdea not to have been called.[0m
+  Stack:
+    Error: Expected spy addSiblingIdea not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:963:43)
+  Message:
+[31m    Expected spy addSubIdea to have been called with [ 'keyboard' ] but it was never called.[0m
+  Stack:
+    Error: Expected spy addSubIdea to have been called with [ 'keyboard' ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:964:35)
+
+3) MapModel methods delegating to idea layout-specific movements insertLeft adds a sibling idea before the current one if layout is top-down
+  Message:
+[31m    Expected spy addSiblingIdeaBefore to have been called with [ 'keyboard' ] but it was never called.[0m
+  Stack:
+    Error: Expected spy addSiblingIdeaBefore to have been called with [ 'keyboard' ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:977:45)
+  Message:
+[31m    Expected spy insertIntermediate not to have been called.[0m
+  Stack:
+    Error: Expected spy insertIntermediate not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:978:47)
+
+4) MapModel methods delegating to idea layout-specific movements insertRight adds a sibling after the current one if the layout is top-down
+  Message:
+[31m    Expected spy addSiblingIdea to have been called with [ 'keyboard' ] but it was never called.[0m
+  Stack:
+    Error: Expected spy addSiblingIdea to have been called with [ 'keyboard' ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:986:39)
+  Message:
+[31m    Expected spy addSubIdea not to have been called.[0m
+  Stack:
+    Error: Expected spy addSubIdea not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:987:39)
+
+5) MapModel methods delegating to idea layout-specific movements moveUp does nothing if layout is top-down
+  Message:
+[31m    Expected spy moveRelative not to have been called.[0m
+  Stack:
+    Error: Expected spy moveRelative not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1006:41)
+
+6) MapModel methods delegating to idea layout-specific movements moveDown does nothing if layout is top-down
+  Message:
+[31m    Expected spy moveRelative not to have been called.[0m
+  Stack:
+    Error: Expected spy moveRelative not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1018:41)
+
+7) MapModel methods delegating to idea layout-specific movements moveLeft moves relative if layout is top-down
+  Message:
+[31m    Expected spy moveRelative to have been called with [ 'keyboard', -1 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy moveRelative to have been called with [ 'keyboard', -1 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1025:37)
+  Message:
+[31m    Expected spy flip not to have been called.[0m
+  Stack:
+    Error: Expected spy flip not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1026:33)
+
+8) MapModel methods delegating to idea layout-specific movements moveRight moves relative if layout is top-down
+  Message:
+[31m    Expected spy moveRelative to have been called with [ 'keyboard', 1 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy moveRelative to have been called with [ 'keyboard', 1 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1039:37)
+  Message:
+[31m    Expected spy flip not to have been called.[0m
+  Stack:
+    Error: Expected spy flip not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1040:33)
+
+9) MapModel methods delegating to idea layout-specific movements positionNodeAt delegates to the top-down position if required
+  Message:
+[31m    Expected spy topDownPositionNodeAt to have been called with [ 1, 2, 3, 4 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy topDownPositionNodeAt to have been called with [ 1, 2, 3, 4 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1059:46)
+  Message:
+[31m    Expected spy standardPositionNodeAt not to have been called.[0m
+  Stack:
+    Error: Expected spy standardPositionNodeAt not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1060:51)
+
+10) MapModel methods delegating to idea layout-specific movements getReorderBoundary delegates to the top-down reorder if required
+  Message:
+[31m    Expected spy getTopDownReorderBoundary to have been called with [ 1 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy getTopDownReorderBoundary to have been called with [ 1 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1073:50)
+  Message:
+[31m    Expected spy getStandardReorderBoundary not to have been called.[0m
+  Stack:
+    Error: Expected spy getStandardReorderBoundary not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1074:55)
+
+11) MapModel methods delegating to idea clickNode should select the node and dispatch contextMenuRequested event if node is right clicked
+  Message:
+[31m    Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1575:42)
+  Message:
+[31m    Expected spy selectNode to have been called with [ 2 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy selectNode to have been called with [ 2 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1576:34)
+
+12) MapModel methods delegating to idea clickNode should not dispatch nodeClicked if right clicked, should dispatch contextMenuRequested event
+  Message:
+[31m    Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy contextMenuRequestedListener to have been called with [ 2, 100, 200 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1591:42)
+  Message:
+[31m    Expected spy nodeClicked not to have been called.[0m
+  Stack:
+    Error: Expected spy nodeClicked not to have been called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:1592:37)
+
+13) MapModel Selection selectNodeLeft should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2048:45)
+
+14) MapModel Selection selectNodeLeft should select node returned by layoutModel
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2063:43)
+
+15) MapModel Selection selectNodeRight should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2048:45)
+
+16) MapModel Selection selectNodeRight should select node returned by layoutModel
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2063:43)
+
+17) MapModel Selection selectNodeUp should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2048:45)
+
+18) MapModel Selection selectNodeUp should select node returned by layoutModel
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2063:43)
+
+19) MapModel Selection selectNodeDown should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2048:45)
+
+20) MapModel Selection selectNodeDown should select node returned by layoutModel
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, true ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2063:43)
+
+21) MapModel Selection multiple node activation activating relative to current selection activateNodeLeft should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdLeft to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2095:47)
+
+22) MapModel Selection multiple node activation activating relative to current selection activateNodeLeft should activate parent node when currently selected node left of central node
+  Message:
+[31m    Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2072:43)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, false ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, false ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2073:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 4, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 4, true ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2074:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.[0m
+  Stack:
+    Error: Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2075:45)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+
+23) MapModel Selection multiple node activation activating relative to current selection activateNodeRight should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdRight to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2095:47)
+
+24) MapModel Selection multiple node activation activating relative to current selection activateNodeRight should activate parent node when currently selected node left of central node
+  Message:
+[31m    Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2072:43)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, false ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, false ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2073:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 4, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 4, true ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2074:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.[0m
+  Stack:
+    Error: Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2075:45)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+
+25) MapModel Selection multiple node activation activating relative to current selection activateNodeUp should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdUp to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2095:47)
+
+26) MapModel Selection multiple node activation activating relative to current selection activateNodeUp should activate parent node when currently selected node left of central node
+  Message:
+[31m    Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2072:43)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, false ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, false ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2073:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 4, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 4, true ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2074:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.[0m
+  Stack:
+    Error: Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2075:45)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+
+27) MapModel Selection multiple node activation activating relative to current selection activateNodeDown should send the selected node id when calling layoutModel
+  Message:
+[31m    Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.[0m
+  Stack:
+    Error: Expected spy nodeIdDown to have been called with [ 5 ] but it was never called.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2095:47)
+
+28) MapModel Selection multiple node activation activating relative to current selection activateNodeDown should activate parent node when currently selected node left of central node
+  Message:
+[31m    Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ [ 4 ], [  ] ] but actual calls were [ [ 3 ], [ 1 ] ].
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2072:43)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 3, false ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 3, false ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2073:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected spy unknown to have been called with [ 4, true ] but it was never called.[0m
+  Stack:
+    Error: Expected spy unknown to have been called with [ 4, true ] but it was never called.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2074:42)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+  Message:
+[31m    Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.[0m
+  Stack:
+    Error: Expected $.length = 1 to equal 2.
+    Expected $[1] = undefined to equal 4.
+        at checkActivated (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2075:45)
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/map-model-spec.js:2112:8)
+
+29) themeAttributeUtils connectorControlPoint should return the default horizontal connector if no style provided
+  Message:
+[31m    Expected $.height = 0 to equal 1.[0m
+  Stack:
+    Error: Expected $.height = 0 to equal 1.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:229:75)
+
+30) themeAttributeUtils connectorControlPoint should return the default horizontal connector if no style provided
+  Message:
+[31m    Expected $.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:232:70)
+
+31) themeAttributeUtils connectorControlPoint should return the default horizontal connector if no control point is configured for the connector style
+  Message:
+[31m    Expected $.height = 0 to equal 1.[0m
+  Stack:
+    Error: Expected $.height = 0 to equal 1.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:236:84)
+
+32) themeAttributeUtils connectorControlPoint should return the default non-horizontal connector if no control point is configured for the connector style
+  Message:
+[31m    Expected $.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:239:79)
+
+33) themeAttributeUtils connectorControlPoint should return the default above connector if no style provided
+  Message:
+[31m    Expected $.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:243:67)
+
+34) themeAttributeUtils connectorControlPoint should return the default below connector if no style provided
+  Message:
+[31m    Expected $.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:243:67)
+
+35) themeAttributeUtils connectorControlPoint should return the default non-horizontal connector if unconfigured childPosition supplied
+  Message:
+[31m    Expected $.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-attribute-utils-spec.js:252:93)
+
+36) theme-fallback-values should include a node theme
+  Message:
+[31m    Expected $.font not to have properties
+        lineSpacingPx: 3.25
+        sizePx: 12
+    Expected $.lineStyle = undefined to equal 'solid'.[0m
+  Stack:
+    Error: Expected $.font not to have properties
+        lineSpacingPx: 3.25
+        sizePx: 12
+    Expected $.lineStyle = undefined to equal 'solid'.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-fallback-values-spec.js:7:31)
+
+37) theme-fallback-values should include a connector control point
+  Message:
+[31m    Expected $.horizontal = 0 to equal 1.
+    Expected $.default = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.horizontal = 0 to equal 1.
+    Expected $.default = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-fallback-values-spec.js:29:43)
+
+38) Theme nodeTheme should return the overridden values in the theme
+  Message:
+[31m    Expected $.lineStyle = undefined to equal 'solid'.[0m
+  Stack:
+    Error: Expected $.lineStyle = undefined to equal 'solid'.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:201:45)
+
+39) Theme connectorTheme should return default line if not configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:307:65)
+
+40) Theme connectorTheme should return configured label
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:319:65)
+
+41) Theme connectorTheme should return the default style when childStyles is empty
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:346:57)
+
+42) Theme connectorTheme when the node has no parent should return the default connector style when no connector style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:376:74)
+
+43) Theme connectorTheme when the node has no parent should return the hard coded default connector style when the node has no connector style configured and there is no default style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:389:74)
+
+44) Theme connectorTheme when the node has no parent should return the configured connector style when the node has a connector style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:400:76)
+
+45) Theme connectorTheme when the node has a parent with no child style configured should return the default connector style when no connector style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:376:74)
+
+46) Theme connectorTheme when the node has a parent with no child style configured should return the hard coded default connector style when the node has no connector style configured and there is no default style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:389:74)
+
+47) Theme connectorTheme when the node has a parent with no child style configured should return the configured connector style when the node has a connector style configured
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:400:76)
+
+48) Theme connectorTheme when the node has a parent with a child style configured should return a connector style that matches parentchildstyle.childstyle if it exists
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:421:79)
+
+49) Theme connectorTheme when the node has a parent with a child style configured should return a connector style that matches parentchildstyle if parentchildstyle.childstyle does not exist
+  Message:
+[31m    Expected $.controlPoint.height = 0.75 to equal 1.75.[0m
+  Stack:
+    Error: Expected $.controlPoint.height = 0.75 to equal 1.75.
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-spec.js:433:77)
+
+50) themeToDictionary should convert the node array into a dictionary
+  Message:
+[31m    Expected object not to have properties
+        level_1.activated: Object({ name: 'level_1.activated', border: Object({ type: 'surround', line: Object({ color: '#EEEEEE', width: 3, style: 'dotted' }) }) })[0m
+  Stack:
+    Error: Expected object not to have properties
+        level_1.activated: Object({ name: 'level_1.activated', border: Object({ type: 'surround', line: Object({ color: '#EEEEEE', width: 3, style: 'dotted' }) }) })
+        at UserContext.<anonymous> (/home/s6mike/git_projects/mapjs/specs/core/theme/theme-to-dictionary-spec.js:22:40)
+
+1560 specs, 50 failures
+Finished in 1.064 seconds
+

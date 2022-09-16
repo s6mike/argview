@@ -8,6 +8,7 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			lineStyleElement = element.find('.lineStyle'),
 			arrowElement = element.find('.arrow');
 		let currentLink, width, height;
+		element.hide();
 		mapModel.addEventListener('linkSelected', function (link, selectionPoint, linkStyle) {
 			currentLink = link;
 			element.show();
@@ -25,18 +26,24 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			element.hide();
 		});
 		element.find('.delete').click(function () {
+			if (!currentLink) { // Added check to stop error message when delete link button clicked without any link selected.
+				return false;
+			}
 			mapModel.removeLink('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo);
 			element.hide();
 		});
 		colorElement.change(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'color', jQuery(this).val());
 		});
-		lineStyleElement.find('a').click(function () {
+		// Fixes lineystle selector:
+		// lineStyleElement.find('a').click(function () {
+		lineStyleElement.change(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).text());
 		});
 		arrowElement.click(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', !arrowElement.hasClass('active'));
 		});
-		element.mouseleave(element.hide.bind(element));
+		// Removing so menu stays visible after mouse over or link change.
+		// element.mouseleave(element.hide.bind(element));
 	});
 };

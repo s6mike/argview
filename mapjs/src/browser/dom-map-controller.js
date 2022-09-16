@@ -33,15 +33,15 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 
 	const self = this,
 		viewPort = stageElement.parent(),
-		viewPortAnimOptions = {duration: 400},
+		viewPortAnimOptions = { duration: 400 },
 		reorderBounds = mapModel.isEditingEnabled() ? stageElement.createReorderBounds() : jQuery('<div>'),
 		svgPixel = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
-		dummyTextBox = jQuery('<div>').addClass('mapjs-node').addClass('noTransition').css({position: 'absolute', visibility: 'hidden'}),
+		dummyTextBox = jQuery('<div>').addClass('mapjs-node').addClass('noTransition').css({ position: 'absolute', visibility: 'hidden' }),
 		getViewPortDimensions = function () {
 			if (viewPortDimensions) {
 				return viewPortDimensions;
 			}
-			viewPortDimensions =  {
+			viewPortDimensions = {
 				left: viewPort.scrollLeft(),
 				top: viewPort.scrollTop(),
 				innerWidth: viewPort.innerWidth(),
@@ -76,7 +76,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			const stage = stageElement.data();
 			let dirty = false;
 			if (x < -1 * stage.offsetX) {
-				stage.width =  stage.width - stage.offsetX - x;
+				stage.width = stage.width - stage.offsetX - x;
 				stage.offsetX = -1 * x;
 				dirty = true;
 			}
@@ -100,7 +100,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 		ensureSpaceForNode = function () {
 			return jQuery(this).each(function () {
 				const node = jQuery(this).data(),
-					margin = stageMargin || {top: 0, left: 0, bottom: 0, right: 0};
+					margin = stageMargin || { top: 0, left: 0, bottom: 0, right: 0 };
 				/* sequence of calculations is important because maxX and maxY take into consideration the new offsetX snd offsetY */
 				ensureSpaceForPoint(node.x - margin.left, node.y - margin.top);
 				ensureSpaceForPoint(node.x + node.width + margin.right, node.y + node.height + margin.bottom);
@@ -112,7 +112,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 					x: Math.round(viewPort.innerWidth() / 2),
 					y: Math.round(viewPort.innerHeight() / 2)
 				},
-				margin = stageVisibilityMargin || {top: 0, left: 0, bottom: 0, right: 0};
+				margin = stageVisibilityMargin || { top: 0, left: 0, bottom: 0, right: 0 };
 			let newLeftScroll = false, newTopScroll = false;
 
 			ensureSpaceForPoint(x - viewPortCenter.x / stage.scale, y - viewPortCenter.y / stage.scale);
@@ -149,7 +149,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				nodeTopLeft = stageToViewCoordinates(node.x, node.y),
 				nodeBottomRight = stageToViewCoordinates(node.x + node.width, node.y + node.height),
 				animation = {},
-				margin = stageVisibilityMargin || {top: 10, left: 10, bottom: 10, right: 10};
+				margin = stageVisibilityMargin || { top: 10, left: 10, bottom: 10, right: 10 };
 			if ((nodeTopLeft.x - margin.left) < 0) {
 				animation.scrollLeft = viewPort.scrollLeft() + nodeTopLeft.x - margin.left;
 			} else if ((nodeBottomRight.x + margin.right) > viewPort.innerWidth()) {
@@ -171,7 +171,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			if (dropPosition) {
 				result = {
 					x: dropPosition.pageX - vpOffset.left,
-					y: dropPosition.pageY -  vpOffset.top
+					y: dropPosition.pageY - vpOffset.top
 				};
 				if (result.x >= 0 && result.x <= viewPort.innerWidth() && result.y >= 0 && result.y <= viewPort.innerHeight()) {
 					return result;
@@ -238,7 +238,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			if (!stats.cacheMisses) {
 				stats.cacheMisses = [];
 			}
-			stats.cacheMisses.push({old: actual, new: expected});
+			stats.cacheMisses.push({ old: actual, new: expected });
 		};
 	self.resetStats = function () {
 		stats = {};
@@ -258,7 +258,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	self.dimensionProvider = function (idea, level) {
 		let result = false,
 			textBox = stageElement.nodeWithId(idea.id);
-		const expectedCacheMark = nodeCacheMark(idea, {level: level, theme: themeSource()});
+		const expectedCacheMark = nodeCacheMark(idea, { level: level, theme: themeSource() });
 		if (textBox && textBox.length > 0) {
 			if (_.isEqual(textBox.data('nodeCacheMark'), expectedCacheMark)) {
 				record('dimension-cache:hit');
@@ -271,7 +271,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 		textBox.appendTo('body').updateNodeContent(
 			idea,
 			themeSource(),
-			{resourceTranslator: translateToPixel, level: level, decorations: ['left', 'right']}
+			{ resourceTranslator: translateToPixel, level: level, decorations: ['left', 'right'] }
 		);
 		result = {
 			width: Math.ceil(textBox.outerWidth(true)),
@@ -283,7 +283,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	};
 
 	mapModel.setLayoutCalculator(function (contentAggregate, contextNode) {
-		return calculateLayout(contentAggregate, self.dimensionProvider, {contextNode: contextNode, theme: themeSource()});
+		return calculateLayout(contentAggregate, self.dimensionProvider, { contextNode: contextNode, theme: themeSource() });
 	});
 
 	viewPort.on('scroll', function () {
@@ -292,7 +292,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	mapModel.addEventListener('nodeCreated', function (node) {
 		let currentReorderBoundary;
 		const element = stageElement.createNode(node)
-			.updateNodeContent(node, themeSource(), {resourceTranslator: resourceTranslator})
+			.updateNodeContent(node, themeSource(), { resourceTranslator: resourceTranslator })
 			.nodeResizeWidget(node.id, mapModel, stagePositionForPointEvent)
 			.on('tap', function (evt) {
 
@@ -339,7 +339,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			})
 			.on('mm:drag', function (evt) {
 				const dropCoords = stagePositionForPointEvent(evt),
-					currentPosition = evt.currentPosition && stagePositionForPointEvent({pageX: evt.currentPosition.left, pageY: evt.currentPosition.top}),
+					currentPosition = evt.currentPosition && stagePositionForPointEvent({ pageX: evt.currentPosition.left, pageY: evt.currentPosition.top }),
 					hasShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					nodeId = dropCoords && mapModel.getNodeIdAtPosition(dropCoords.x, dropCoords.y);
 				let border;
@@ -380,7 +380,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				const isShift = evt && evt.gesture && evt.gesture.srcEvent && evt.gesture.srcEvent.shiftKey,
 					stageDropCoordinates = stagePositionForPointEvent(evt),
 					nodeAtDrop = stageDropCoordinates && mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
-					finalPosition = evt.finalPosition && stagePositionForPointEvent({pageX: evt.finalPosition.left, pageY: evt.finalPosition.top});
+					finalPosition = evt.finalPosition && stagePositionForPointEvent({ pageX: evt.finalPosition.left, pageY: evt.finalPosition.top });
 
 				clearCurrentDroppable();
 				if (!stageDropCoordinates) {
@@ -448,29 +448,29 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 		}).each(ensureSpaceForNode).each(updateScreenCoordinates);
 	});
 	mapModel.addEventListener('nodeTitleChanged nodeAttrChanged nodeLabelChanged', function (n) {
-		stageElement.nodeWithId(n.id).updateNodeContent(n, themeSource(), { resourceTranslator: resourceTranslator}).each(ensureSpaceForNode);
+		stageElement.nodeWithId(n.id).updateNodeContent(n, themeSource(), { resourceTranslator: resourceTranslator }).each(ensureSpaceForNode);
 	});
 	mapModel.addEventListener('connectorMoved', function (connector /*, reason*/) {
-		stageElement.findLine(connector).updateConnector({theme: themeSource()});
+		stageElement.findLine(connector).updateConnector({ theme: themeSource() });
 	});
 	mapModel.addEventListener('connectorCreated', function (connector) {
-		const connectorOptions = {theme: themeSource()},
+		const connectorOptions = { theme: themeSource() },
 			element = stageElement.find('[data-mapjs-role=svg-container]')
-			.createConnector(connector, connectorOptions)
-			.updateConnector(connectorOptions);
+				.createConnector(connector, connectorOptions)
+				.updateConnector(connectorOptions);
 		stageElement.nodeWithId(connector.from).add(stageElement.nodeWithId(connector.to))
 			.on('mapjs:resize', function () {
-				element.updateConnector({theme: themeSource()});
+				element.updateConnector({ theme: themeSource() });
 			});
 		element.on('tap', function (event) {
 			const theme = themeSource();
 			if (!theme || !theme.connectorEditingContext || (theme.connectorEditingContext.allowed && theme.connectorEditingContext.allowed.length)) {
 				if (event.target && event.target.tagName === 'text') {
 					mapModel.lineLabelClicked(connector);
-				} else 	{
+				} else {
 					mapModel.selectConnector('mouse', connector,
 						event && event.gesture && event.gesture.center &&
-							{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
+						{ x: event.gesture.center.pageX, y: event.gesture.center.pageY }
 					);
 				}
 			}
@@ -484,7 +484,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	mapModel.addEventListener('linkCreated', function (line) {
 		const link = stageElement
 			.find('[data-mapjs-role=svg-container]')
-			.createLink(line, {theme: themeSource()}).updateLink({theme: themeSource()});
+			.createLink(line, { theme: themeSource() }).updateLink({ theme: themeSource() });
 		link.on('tap', function (event) {
 			if (event.target && event.target.tagName === 'text') {
 				mapModel.lineLabelClicked(line);
@@ -496,7 +496,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 		});
 		stageElement.nodeWithId(line.ideaIdFrom).add(stageElement.nodeWithId(line.ideaIdTo))
 			.on('mapjs:move mm:drag mapjs:resize', function () {
-				link.updateLink({theme: themeSource()});
+				link.updateLink({ theme: themeSource() });
 			});
 	});
 	mapModel.addEventListener('linkRemoved', function (l) {
@@ -529,10 +529,10 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 		centerViewOnNode(ideaId, true);
 	});
 	mapModel.addEventListener('mapViewResetRequested', function () {
-		stageElement.data({'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0}).updateStage();
+		stageElement.data({ 'scale': 1, 'height': 0, 'width': 0, 'offsetX': 0, 'offsetY': 0 }).updateStage();
 		jQuery(stageElement).find('.mapjs-node').each(ensureSpaceForNode);
-		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector({theme: themeSource()});
-		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink({theme: themeSource()});
+		jQuery(stageElement).find('[data-mapjs-role=connector]').updateConnector({ theme: themeSource() });
+		jQuery(stageElement).find('[data-mapjs-role=link]').updateLink({ theme: themeSource() });
 		centerViewOnNode(mapModel.getCurrentlySelectedIdeaId());
 		viewPort.focus();
 	});
@@ -550,25 +550,32 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			mapModel.setInputEnabled(false);
 			viewPort.finish(); /* close any pending scroll animations */
 			editingElement.editNode(shouldSelectAll)
-			.then(function (newText) {
-				mapModel.setInputEnabled(true);
-				mapModel.updateTitle(nodeId, newText, editingNew);
-				editingElement.focus();
-			})
-			.catch(function () {
-				mapModel.setInputEnabled(true);
-				if (editingNew) {
-					mapModel.undo('internal');
-				}
-				editingElement.focus();
-			});
+				.then(function (newText) {
+					mapModel.setInputEnabled(true);
+					mapModel.updateTitle(nodeId, newText, editingNew);
+					editingElement.focus();
+				})
+				.catch(function () {
+					mapModel.setInputEnabled(true);
+					if (editingNew) {
+						mapModel.undo('internal');
+					}
+					editingElement.focus();
+				});
 		});
 	}
+	mapModel.addEventListener('addLinkModeToggled', function (isOn) {
+		if (isOn) {
+			stageElement.addClass('mapjs-add-link');
+		} else {
+			stageElement.removeClass('mapjs-add-link');
+		}
+	});
 	mapModel.addEventListener('linkAttrChanged', function (l) {
-		stageElement.findLine(l).data('attr', (l.attr && l.attr.style) || {}).updateLink({theme: themeSource()});
+		stageElement.findLine(l).data('attr', (l.attr && l.attr.style) || {}).updateLink({ theme: themeSource() });
 	});
 	mapModel.addEventListener('connectorAttrChanged', function (connector) {
-		stageElement.findLine(connector).data('attr', connector.attr || false).updateConnector({theme: themeSource()});
+		stageElement.findLine(connector).data('attr', connector.attr || false).updateConnector({ theme: themeSource() });
 	});
 	mapModel.addEventListener('activatedNodesChanged', function (activatedNodes, deactivatedNodes) {
 		_.each(activatedNodes, function (nodeId) {

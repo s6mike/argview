@@ -8,6 +8,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.15
+
+- Add mapjs fixes from mapjs v3.3.11 to 3.3.20:
+  - Enable cut/copy/paste.
+  - Add missing keyboard shortcuts (hotkeyEventHandlers) for zoom in/out/reset, undo/redo, cut/copy/paste
+  - Fix Add link button
+  - Fix Edit Link Menu/Widget, including error messages when no link selected.
+  - [mapjs/README.md](../mapjs/README.md): Add table listing keyboard shortcuts.
+  - `mapjs/scripts/mapjs.env`: Update various environment variables.
+  - Add jasmine test outputs to `mapjs/docs/` folder.
+  - Update [CHANGELOG-mapjs.md](../mapjs/docs/CHANGELOG-mapjs.md).
+
 ## argmap 4.7.14
 
 - Add `/test/devtools-recordings/mapjs-mouse-past-linkEditWidget-after-link-click.json` for new bisect test.

@@ -38,7 +38,7 @@
     "pretest-dev": "npm run pretest",
     "test-dev": "testem -l Chrome",
     "sourcemap": "sourcemap-lookup",
-    "server": "npm run start",
+    "server": "webpack-dev-server",
     "appraise": "appraise run --initial-width 500 --initial-height 300",
     "preappraise": "webpack --config webpack.appraise.config.js",
     "approve": "appraise approve"

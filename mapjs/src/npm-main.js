@@ -5,6 +5,7 @@ require('./browser/map-toolbar-widget');
 require('./browser/link-edit-widget');
 
 module.exports = {
+	MemoryClipboard: require('./core/clipboard'),
 	MapModel: require('./core/map-model'),
 	content: require('./core/content/content'),
 	observable: require('./core/util/observable'),
