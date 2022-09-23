@@ -8,6 +8,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.16
+
+- Fix broken html generation:
+  - `mapjs/scripts/mapjs.env` not being sourced:
+    - Uncomment source command in `scripts/argmap_init_script.sh`
+  - `png` and `mapjs-json` folders missing from `test/output`:
+    - Create them in `scripts/install.sh`
+    - Add comment todo to fix this in `pandoc-argmap.lua`
+
 ## argmap 4.7.15
 
 - Add mapjs fixes from mapjs v3.3.11 to 3.3.20:

@@ -227,6 +227,8 @@ local function CodeBlock(block)
                 -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
                 local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MJS_JSON .. "/" .. output_filename
 
+                -- TOOD: FIX: if directory missing then this fails
+                --  e.g. test/output/mapjs-json folder
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
                 local f = assert(io.open(argmap_output_file_path, 'w'))

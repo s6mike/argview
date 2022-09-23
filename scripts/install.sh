@@ -176,6 +176,11 @@ fi
 # Link up test/output with mapjs/site
 ln -s "$WORKSPACE/test/output" "$PATH_MJS_HOME/site/."
 
+# TODO Use env variables instead of hardcoded folders
+# Create json and png output folders otherwise pandoc-argmap.lua won't work
+mkdir --parent "$WORKSPACE/test/output/mapjs-json"
+mkdir --parent "$WORKSPACE/test/output/png"
+
 # Add index.html
 ln -s "$PATH_MJS_HOME/site/output/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html" "$PATH_MJS_HOME/site/index.html"
 
