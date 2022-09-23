@@ -8,6 +8,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.17
+
+- Fix control widget css:
+  - widget class and ids had been updated updated in template but not in `pandoc-templates/mapjs/mapjs-inline-styles.css` - now uses correct class.
+  - Update min-height to 64 px, so that edit link widget appearing won't normally change height of canvas.
+    - However, making window narrower can still create this side effect. Issue s6mike/mapjs#2.
+
 ## argmap 4.7.16
 
 - Fix broken html generation:

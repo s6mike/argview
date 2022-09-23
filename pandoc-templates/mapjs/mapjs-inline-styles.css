@@ -3,8 +3,8 @@ body {
   margin: 0;
 }
 
-#testcontrols {
-  height: 50px;
+.mapjs_control {
+  min-height: 64px !important;
   overflow-y: scroll;
   padding: 5px;
 }
