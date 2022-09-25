@@ -25,6 +25,10 @@
     - `mapjs/test/index.html`
 - Using VSCode defaults for file formatting: many whitespace changes.
 
+## mapjs 3.3.21
+
+- Fix `src/browser/link-edit-widget.js` so that widget correctly shows when links are dashed, and can be changed to solid lines again, by using line style val, rather than text.
+
 ## mapjs 3.3.20
 
 - Add jasmine test outputs to `docs/` folder.

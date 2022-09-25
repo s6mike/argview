@@ -38,7 +38,7 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		// Fixes lineystle selector:
 		// lineStyleElement.find('a').click(function () {
 		lineStyleElement.change(function () {
-			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).text());
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).val()); // Changed from text() to val() so that value is set correctly.
 		});
 		arrowElement.click(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', !arrowElement.hasClass('active'));

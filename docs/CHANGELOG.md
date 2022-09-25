@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.19
+
+- Add mapjs edit link style fix from v3.3.21:
+  - Fix `src/browser/link-edit-widget.js` so that widget correctly shows when links are dashed, and can be changed to solid lines again, by using line style val, rather than text.
+
 ## argmap 4.7.18
 
 - Add two more TestCafe regression tests:
