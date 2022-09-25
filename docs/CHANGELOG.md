@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.18
+
+- Add two more TestCafe regression tests:
+  - Click undo/redo buttons
+  - Add link (though commenting out since it fails on git pre-commit hook)
+
 ## argmap 4.7.17
 
 - Fix control widget css:

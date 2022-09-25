@@ -41,9 +41,6 @@
       "target": "main",
       "selectors": [
         [
-          "aria/above"
-        ],
-        [
           "#node_22"
         ]
       ],

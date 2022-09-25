@@ -1,0 +1,53 @@
+{
+  "title": "argmap-button-add-link",
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": "Example 1.1 - All swans are white."
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          ".mapjs_control > input.toggleAddLinkMode"
+        ]
+      ],
+      "offsetY": 0,
+      "offsetX": 0
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_4 > span"
+        ]
+      ],
+      "offsetY": 0,
+      "offsetX": 0
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_5 > span"
+        ]
+      ],
+      "offsetY": 0,
+      "offsetX": 0
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-link').length==1"
+    }
+  ]
+}
