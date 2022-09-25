@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.20
+
+- Rename vscode debug attach profile for clarity.
+
 ## argmap 4.7.19
 
 - Add mapjs edit link style fix from v3.3.21:

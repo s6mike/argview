@@ -211,7 +211,7 @@
         {
             "type": "chrome",
             "request": "attach",
-            "name": "Attach to browser",
+            "name": "Attach to browser 9221 (argmap debug)",
             "port": 9221,
             "sourceMaps": true,
         }
