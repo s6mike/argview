@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.21
+
+- `scripts/bash_aliases_mapjs.sh`: Fix `__run_mapjs_legacy` to open chrome using debug profile (no chrome extensions).
+
 ## argmap 4.7.20
 
 - Rename vscode debug attach profile for clarity.

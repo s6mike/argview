@@ -57,7 +57,10 @@ __run_mapjs_legacy() { #rml
   npm --prefix "$DIR_PROJECTS/$dir_legacy_mapjs" run server &
   disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
   wait
-  xdg-open "http://localhost:9000/$1"
+  REMEMBER_SERVER_PORT=$PORT_DEV_SERVER
+  PORT_DEV_SERVER=9000
+  open-debug "$1"
+  PORT_DEV_SERVER=$REMEMBER_SERVER_PORT
 }
 
 # mapjs tests
