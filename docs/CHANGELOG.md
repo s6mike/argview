@@ -8,6 +8,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.22
+
+- Add regression test:
+  - `test/devtools-recordings/argmap-edit-first-child.json`: Add devtools recording.
+  - `mapjs/scripts/mapjs.env`: Add path variable to recording.
+  - `test/test_scripts/tests.sh`: Add regression test to call recording.
+
 ## argmap 4.7.21
 
 - `scripts/bash_aliases_mapjs.sh`: Fix `__run_mapjs_legacy` to open chrome using debug profile (no chrome extensions).
