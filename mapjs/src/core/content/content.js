@@ -428,7 +428,9 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		if (contentAggregate.isRootNode(subIdeaId)) {
 			return false;
 		}
-		if (parentIdea.containsDirectChild(subIdeaId)) {
+		var child_rank = parentIdea.containsDirectChild(subIdeaId)
+		// Fix: child having rank 0 was being treated as false.
+		if (child_rank !== false && !isNaN(child_rank) && child_rank != null) { // != null means also false for undefined
 			return parentIdea;
 		}
 		return _.reduce(

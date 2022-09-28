@@ -1385,10 +1385,16 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 					secondaryEdge = isRightHalf(node, rootNode) ? 'right' : 'left',
 					siblingBoundary = function (siblings, side) {
 						const tops = _.map(siblings, function (node) {
-							return node.y;
+							// siblings sometimes contains initial undefined value, so this should stop an error being thrown
+							//	 See https://workflowy.com/#/6c9851b2d1f5
+							// TODO: Is undefined sibling sign of a bug?
+							return node ? node.y : undefined;
 						}),
 							bottoms = _.map(siblings, function (node) {
-								return node.y + node.height;
+								// siblings sometimes contains initial undefined value, so this should stop an error being thrown
+								//	 See https://workflowy.com/#/6c9851b2d1f5
+								// TODO: Is undefined sibling sign of a bug?
+								return node ? node.y + node.height : undefined;
 							}),
 							result = {
 								'minY': _.min(tops) - reorderMargin - node.height,

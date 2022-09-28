@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.7.23
+
+- `mapjs/src/core/map-model.js`: Fix "Cannot read properties of undefined (setting 'y')" when dragging nodes in some circumstances."
+  - Issue was that first sibling of node was `undefined`, and therefore can't have y value. Have fixed by checking for this, but better solution may be to avoid undefined nodes/siblings.
+
 ## argmap 4.7.22
 
 - Add regression test:
