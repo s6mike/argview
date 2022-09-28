@@ -63,7 +63,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					_.reduce(
 						contentIdea.ideas,
 						function (res, value, key) {
-							return value.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
+							// In case value is undefined:
+							return value && value.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
 						},
 						undefined
 					)
@@ -71,10 +72,12 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			};
 			contentIdea.findSubIdeaById = function (childIdeaId) {
 				const myChild = _.find(contentIdea.ideas, function (idea) {
-					return idea.id == childIdeaId; //eslint-disable-line eqeqeq
+					// return idea.id == childIdeaId; //eslint-disable-line eqeqeq
+					return idea && idea.id == childIdeaId; //eslint-disable-line eqeqeq
 				});
 				return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
-					return result || idea.findSubIdeaById(childIdeaId);
+					// If idea is undefined, returns undefined
+					return result || (idea ? idea.findSubIdeaById(childIdeaId) : undefined);
 				}, undefined);
 			};
 			contentIdea.isEmptyGroup = function () {
@@ -137,6 +140,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			});
 		},
 		isRootNode = function (id) {
+			// Threw a max call stack size exceeded error for id: 3
+			//	Seems to only find root and 1
 			return !!_.find(contentAggregate.ideas, function (idea) {
 				return idea.id === id;
 			});
@@ -358,6 +363,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		return parentIdea.ideas[_.min(siblingsAfter, Math.abs)].id;
 	};
 	contentAggregate.sameSideSiblingIds = function (subIdeaId) {
+		// ISSUE: idea.sameSideSiblingIds(nodeId) can return deleted grouping (e.g. green, supporting) node, which means node is undefined in next line:
 		const parentIdea = contentAggregate.findParent(subIdeaId),
 			currentRank = parentIdea.findChildRankById(subIdeaId);
 		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) {

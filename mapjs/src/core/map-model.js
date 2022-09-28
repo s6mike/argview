@@ -1186,7 +1186,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 					y: Infinity
 				};
 				_.each(idea.sameSideSiblingIds(nodeId), function (id) {
+					// ISSUE: idea.sameSideSiblingIds(nodeId) can return deleted grouping (e.g. green, supporting) node, which means node is undefined in next line:
 					const node = layoutModel.getNode(id);
+					// TODO: Check node
 					if (y < node.y && node.y < verticallyClosestNode.y) {
 						verticallyClosestNode = node;
 					}

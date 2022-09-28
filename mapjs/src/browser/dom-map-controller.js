@@ -21,8 +21,6 @@ require('./find-line');
 require('./create-reorder-bounds');
 
 
-
-
 module.exports = function DomMapController(mapModel, stageElement, touchEnabled, resourceTranslator, themeSource, options) {
 	'use strict';
 	let stageMargin = (options && options.stageMargin),
@@ -390,6 +388,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else {
+					// TODO: check finalPosition not undefined
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();
 					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
