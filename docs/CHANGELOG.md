@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.0
+
+- `mapjs/src/core/map-model.js`: For debugging, call new utility function idea_pp() each time map layout is updated.
+  - `mapjs/src/argmapjs-utilities.js`: Add utility functions for pretty printing mapjs idea object for debugging purposes.
+  - `mapjs/src/npm-main.js`: Add utility script to webpack.
+
 ## argmap 4.7.24
 
 - `mapjs/src/core/content/content.js`: Fix `contentIdea.containsDirectChild` error where "Cannot read properties of undefined (setting 'id')" when dragging nodes in some circumstances.

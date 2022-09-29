@@ -3,6 +3,7 @@
 require('./browser/dom-map-widget');
 require('./browser/map-toolbar-widget');
 require('./browser/link-edit-widget');
+require('./argmapjs-utilities.js');
 
 module.exports = {
 	MemoryClipboard: require('./core/clipboard'),
