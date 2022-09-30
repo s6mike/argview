@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.4
+
+- Check for undefined variables to avoid crash:
+  - `mapjs/src/core/map-model.js`
+  - `mapjs/src/browser/dom-map-widget.js`
+
 ## argmap 4.8.3
 
 - `mapjs/src/core/content/content.js`: Fix first child nodes not being deletable. Because rank was 0 which is falsy value, leading to failing test during removeSubIdea(). Changed to an explicit test for missing values.

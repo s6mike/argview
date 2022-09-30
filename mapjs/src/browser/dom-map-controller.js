@@ -388,7 +388,10 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				if (nodeAtDrop && nodeAtDrop !== node.id) {
 					dropResult = mapModel.dropNode(node.id, nodeAtDrop, !!isShift);
 				} else {
-					// TODO: check finalPosition not undefined
+					// Check finalPosition not undefined:
+					if (!finalPosition) {
+						return false
+					}
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();
 					manualPosition = (!!isShift) || !withinReorderBoundary(currentReorderBoundary, finalPosition);
