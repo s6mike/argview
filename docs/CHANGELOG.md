@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.6
+
+- `mapjs/src/core/content/content.js`: Add handleRangeError() using code from 4.8.2, with additional debugger statement.
+  - Call it from try catch in same 2 functions: `isRootNode()` and `removeSubIdea()`, plus 1 additional: `findChildRankById()`.
+
 ## argmap 4.8.5
 
 - `mapjs/src/core/content/content.js`: Create deleteIfEmptyGroup() to delete group (supporting/opposing node) if it's empty, using code from fix in 4.8.1

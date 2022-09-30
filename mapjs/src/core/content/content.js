@@ -10,10 +10,20 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		configuration = {},
 		isRedoInProgress = false;
 
-
-	const invalidateIdCache = function () {
-		cachedId = undefined;
+	// New function to handle max call stack size exceeded errors
+	const handleRangeError = function (e, calling_function_name) {
+		if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
+			console.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
+			debugger;
+			return false;
+		} else {
+			logMyErrors(e); // pass exception object to error handler
+			return true;
+		}
 	},
+		invalidateIdCache = function () {
+			cachedId = undefined;
+		},
 		maxId = function maxId(idea) {
 			idea = idea || contentAggregate;
 			if (!idea.ideas) {
@@ -72,12 +82,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 						)
 					);
 				} catch (e) {
-					if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
-						console.dir(`Caught RangeError in findChildRankById, returning false: ${e}`)
-						return false;
-					} else {
-						logMyErrors(e); // pass exception object to error handler
-					}
+					return handleRangeError(e, 'findChildRankById');
 				}
 			};
 			contentIdea.findSubIdeaById = function (childIdeaId) {
@@ -162,12 +167,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					return idea.id === id;
 				});
 			} catch (e) {
-				if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
-					console.dir(`Caught RangeError in isRootNode check, returning false: ${e}`)
-					return false;
-				} else {
-					logMyErrors(e); // pass exception object to error handler
-				}
+				// New function to handle max call stack size exceeded errors.
+				return handleRangeError(e, 'isRootNode');
 			}
 		},
 		nextChildRank = function (parentIdea) {
@@ -715,12 +716,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		try {
 			var parent = contentAggregate.findParent(subIdeaId) || contentAggregate;
 		} catch (e) {
-			if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
-				console.dir(`Caught RangeError in removeSubIdea, returning false: ${e}`)
-				return false;
-			} else {
-				logMyErrors(e); // pass exception object to error handler
-			}
+			// New function to handle max call stack size exceeded errors
+			return handleRangeError(e, 'removeSubIdea');
 		}
 
 		const canRemove = function () {
