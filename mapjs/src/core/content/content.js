@@ -717,9 +717,12 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					oldLinks = contentAggregate.links,
 					removedNodeIds = {};
 
-				if (!oldRank) {
+				// This fails if oldRank is 0, need to test for undefined etc instead:
+				// if (!oldRank) {
+				if (oldRank == null || oldRank === false || isNaN(oldRank)) { // == null tests for undefined too
 					return false;
 				}
+
 				oldIdea.traverse((traversed) => removedNodeIds[traversed.id] = true);
 				delete parent.ideas[oldRank];
 
