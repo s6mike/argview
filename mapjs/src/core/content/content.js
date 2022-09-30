@@ -140,11 +140,20 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			});
 		},
 		isRootNode = function (id) {
-			// Threw a max call stack size exceeded error for id: 3
-			//	Seems to only find root and 1
-			return !!_.find(contentAggregate.ideas, function (idea) {
-				return idea.id === id;
-			});
+			// Often throws max call stack size exceeded errors, so testing try catch:
+			try {
+				return !!_.find(contentAggregate.ideas, function (idea) {
+					return idea.id === id;
+				});
+			} catch (e) {
+				if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
+					console.dir(`Caught RangeError in isRootNode check, returning false: ${e}`)
+					return false;
+				} else {
+					logMyErrors(e); // pass exception object to error handler
+				}
+			}
+
 		},
 		nextChildRank = function (parentIdea) {
 			let newRank = 0, counts = 0, childRankSign = 1;
@@ -429,6 +438,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		collectIds(contentAggregate.findSubIdeaById(rootIdeaId) || contentAggregate);
 		return result;
 	};
+	// TODO: ISSUE: findParent can throw RangeError: Maximum call stack size exceeded if subIdeaId not found
 	contentAggregate.findParent = function (subIdeaId, parentIdea) {
 		parentIdea = parentIdea || contentAggregate;
 		if (contentAggregate.isRootNode(subIdeaId)) {
@@ -682,12 +692,27 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
+		// Due to fix I added, possible to now try to remove idea which has already been removed.
+		// So checking for that first, by checking for parent now instead of later on.
+		// Using var so it's function scope and can be used in performRemove
+		try {
+			var parent = contentAggregate.findParent(subIdeaId) || contentAggregate;
+		} catch (e) {
+			if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
+				console.dir(`Caught RangeError in removeSubIdea, returning false: ${e}`)
+				return false;
+			} else {
+				logMyErrors(e); // pass exception object to error handler
+			}
+		}
+
 		const canRemove = function () {
 			return !contentAggregate.isRootNode(subIdeaId) || _.size(contentAggregate.ideas) > 1;
 		},
 			performRemove = function () {
-				const parent = contentAggregate.findParent(subIdeaId) || contentAggregate,
-					oldRank = parent && parent.findChildRankById(subIdeaId),
+				// No longer needs to be looked up since it was created earlier:
+				// const parent = contentAggregate.findParent(subIdeaId) || contentAggregate,
+				const oldRank = parent && parent.findChildRankById(subIdeaId),
 					oldIdea = parent && parent.ideas[oldRank],
 					oldLinks = contentAggregate.links,
 					removedNodeIds = {};

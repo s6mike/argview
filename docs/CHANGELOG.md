@@ -8,6 +8,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.2
+
+- Catch RangeErrors due to searching map for ideas which don't exist:
+  - `mapjs/src/core/content/content.js`: In two functions: `isRootNode()` and `removeSubIdea()`.
+    - `removeSubIdea()`:
+      - Also move search for id to start of function to save time if id not found.
+      - Issue caused by 4.8.1 fix, which also ends up being triggered when idea has already been deleted, leading to a search for a deleted idea.
+- Undefined has no property `ideas` also thrown in `mapjs/src/argmapjs-utilities.js`, fixed with conventional check.
+
 ## argmap 4.8.1
 
 - Fix idea model not being updated when supporting/opposing group deleted because it is empty:

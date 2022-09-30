@@ -8,7 +8,9 @@ idea_pp = function (idea, level = -1, key = []) {
     parseInt(key) > 0 ? indent += " " : null // So ranks with minus sign align
     // TODO FIX: when running as script, _.pick causes an issue if underscore.js not available
     console.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
-    ideas_pp(idea.ideas, level, Object.keys(idea.ideas))
+    if (idea.ideas) {
+      ideas_pp(idea.ideas, level, Object.keys(idea.ideas))
+    }
   }
   level -= 1;
   return;
