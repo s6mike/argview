@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.5
+
+- `mapjs/src/core/content/content.js`: Create deleteIfEmptyGroup() to delete group (supporting/opposing node) if it's empty, using code from fix in 4.8.1
+  - Update above fix to use this function instead.
+  - Call this function after making a child node into a root, so that dangling group node not left in idea model.
+
 ## argmap 4.8.4
 
 - Check for undefined variables to avoid crash:

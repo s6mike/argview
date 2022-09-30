@@ -52,23 +52,33 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					} else {
 						contentIdea.ideas[parseFloat(key)] = init(value, originSession);
 					}
-
 				});
 			}
 			if (!contentIdea.title) {
 				contentIdea.title = '';
 			}
 			contentIdea.containsDirectChild = contentIdea.findChildRankById = function (childIdeaId) {
-				return parseFloat(
-					_.reduce(
-						contentIdea.ideas,
-						function (res, value, key) {
-							// In case value is undefined:
-							return value && value.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
-						},
-						undefined
-					)
-				);
+				// Added because it looks like max call stack size exceed thrown here too.
+				// 	TODO: Can I focus try on more specific line, like the anon function inside reduce?
+				try {
+					return parseFloat(
+						_.reduce(
+							contentIdea.ideas,
+							function (res, value, key) {
+								// In case value is undefined:
+								return value && value.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
+							},
+							undefined
+						)
+					);
+				} catch (e) {
+					if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
+						console.dir(`Caught RangeError in findChildRankById, returning false: ${e}`)
+						return false;
+					} else {
+						logMyErrors(e); // pass exception object to error handler
+					}
+				}
 			};
 			contentIdea.findSubIdeaById = function (childIdeaId) {
 				const myChild = _.find(contentIdea.ideas, function (idea) {
@@ -83,6 +93,12 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			contentIdea.isEmptyGroup = function () {
 				return !contentAggregate.isRootNode(contentIdea.id) && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
 			};
+
+			// Deletes empty group without breaking undo/redo
+			contentIdea.deleteIfEmptyGroup = function (originSession) {
+				contentIdea.isEmptyGroup() ? commandProcessors.removeSubIdea(originSession, contentIdea.id) : null;
+			}
+
 			contentIdea.find = function (predicate) {
 				const current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
 				if (_.size(contentIdea.ideas) === 0) {
@@ -153,7 +169,6 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					logMyErrors(e); // pass exception object to error handler
 				}
 			}
-
 		},
 		nextChildRank = function (parentIdea) {
 			let newRank = 0, counts = 0, childRankSign = 1;
@@ -650,6 +665,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		}, originSession);
 		return true;
 	};
+
 	contentAggregate.addSubIdea = function (/*parentId, ideaTitle, optionalNewId, optionalAttr*/) {
 		return contentAggregate.execCommand('addSubIdea', arguments);
 	};
@@ -688,6 +704,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		contentAggregate.endBatch();
 		return results;
 	};
+
 	contentAggregate.removeSubIdea = function (/*subIdeaId*/) {
 		return contentAggregate.execCommand('removeSubIdea', arguments);
 	};
@@ -726,8 +743,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 				oldIdea.traverse((traversed) => removedNodeIds[traversed.id] = true);
 				delete parent.ideas[oldRank];
 
-				// If parent is now an empty group, delete it without breaking undo/redo:
-				parent.isEmptyGroup() ? commandProcessors.removeSubIdea(originSession, parent.id) : null;
+				// If parent is now an empty group, delete it:
+				parent.deleteIfEmptyGroup(originSession)
 
 				contentAggregate.links = _.reject(contentAggregate.links, function (link) {
 					return removedNodeIds[link.ideaIdFrom] || removedNodeIds[link.ideaIdTo];
@@ -846,6 +863,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
 				updateAttr(idea, 'position');
 				delete oldParent.ideas[oldRank];
+
+				// If parent is now an empty group, delete it without breaking undo/redo:
+				oldParent.deleteIfEmptyGroup(originSession)
+
 				logChange('changeParent', [ideaId, newParentId], function () {
 					updateAttr(idea, 'position', oldPosition);
 					oldParent.ideas[oldRank] = idea;
