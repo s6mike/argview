@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.1
+
+- Fix idea model not being updated when supporting/opposing group deleted because it is empty:
+  - `mapjs/src/core/content/content.js`: Delete empty group from idea model without breaking undo/redo.
+  - `mapjs/src/browser/dom-map-controller.js`: Add comment about solution.
+
 ## argmap 4.8.0
 
 - `mapjs/src/core/map-model.js`: For debugging, call new utility function idea_pp() each time map layout is updated.

@@ -437,6 +437,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	});
 	mapModel.addEventListener('nodeRemoved', function (node) {
 		stageElement.nodeWithId(node.id).queueFadeOut(themeSource());
+		// Have updated update content.js: 698 commandProcessors.removeSubIdea() to delete any empty groups instead of doing it here.
 	});
 	mapModel.addEventListener('nodeMoved', function (node /*, reason*/) {
 		stageElement.nodeWithId(node.id).data({

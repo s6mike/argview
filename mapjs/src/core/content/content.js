@@ -692,12 +692,14 @@ module.exports = function content(contentAggregate, initialSessionId) {
 					oldLinks = contentAggregate.links,
 					removedNodeIds = {};
 
-
 				if (!oldRank) {
 					return false;
 				}
 				oldIdea.traverse((traversed) => removedNodeIds[traversed.id] = true);
 				delete parent.ideas[oldRank];
+
+				// If parent is now an empty group, delete it without breaking undo/redo:
+				parent.isEmptyGroup() ? commandProcessors.removeSubIdea(originSession, parent.id) : null;
 
 				contentAggregate.links = _.reject(contentAggregate.links, function (link) {
 					return removedNodeIds[link.ideaIdFrom] || removedNodeIds[link.ideaIdTo];
