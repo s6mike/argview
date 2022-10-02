@@ -2,11 +2,25 @@
 
 ## TODO
 
+- Review and commit keyboard shortcuts changes
+- Minor temp webpack changes:
+  - package.json, webpack in attempt to streamline test process.
 - Start to use - not _ in filenames. Change auto generation e.g. output folder since web stuff is better with -.
 - Move `mapjs/site/mapjs-default-styles.css` to `mapjs/site/css`?
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.8.7
+
+- Fix empty ideas and attr having value [] instead of {}, which breaks mapjs logic:
+  - `src/argmap2mup.lua`:
+    - Add Default_to_nil() so that empty ideas variable can be omitted instead of being [].
+      - 2 functions return this function output, instead of returning ideas value directly.
+    - attr initialised to nil instead of {} so that it will be omitted if left empty.
+    - Add check for empty input to stop crash.
+- `src/config_argmap.lua`:
+  - Add 'Local Lua' debugger path to `package.path` (LUA_CPATH) in case it's missing.
 
 ## argmap 4.8.6
 

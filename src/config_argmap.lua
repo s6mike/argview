@@ -23,6 +23,9 @@ package.path = os.getenv("LUA_PATH") or
     "/lua_modules/share/lua/5.3/?.lua;" .. config.project_folder .. "/lua_modules/share/lua/5.3/?/init.lua;"
     .. package.path
 
+-- If lldebugger showing up as not found, then add:
+package.path = "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua;" .. package.path
+
 package.cpath = os.getenv("LUA_CPATH") or
     config.project_folder ..
     "/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;"
@@ -53,6 +56,8 @@ end)
 -- Set to .DEBUG to activate logging
 Logger:setLevel(logging.ERROR)
 
--- logger:debug("message: ".. message) -- tables can't be concatenated so use separate debug message.
+Logger:debug("LUA_PATH: " .. os.getenv("LUA_PATH"))
+
+-- Logger:debug("message: ".. message) -- tables can't be concatenated so use separate debug message.
 
 return config

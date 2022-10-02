@@ -1,5 +1,9 @@
 # Mapjs Project Change Log
 
+## mapjs 4.1.0
+
+- Align with argmap changes from 4.7.23 to 4.8.6
+
 ## mapjs 4.0.0
 
 - Align with argmap changes (v4.3.0): BREAKING

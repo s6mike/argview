@@ -10,7 +10,7 @@ local pl = require 'pl.import_into' ()
 
 -- uses lyaml to parse yaml
 local lyaml = require 'lyaml'
-local json  = require 'rxi-json-lua'
+local json = require 'rxi-json-lua'
 
 -- initialize the output map
 local output = { ["ideas"] = {} }
@@ -413,6 +413,16 @@ theme:
 ...
 ]=])
 
+function Default_to_nil(o)
+  -- Setting ideas to nil instead of {} means that it will not be included in object if it stays empty.
+  -- Which means that JSON output will not be set to [], which screws up mapjs data structure.
+  if next(o) == nil then
+    return nil
+  end
+
+  return o
+end
+
 function pipe_in_out(cmd, s)
   -- a function for piping through unix commands
   local tmp = os.tmpname()
@@ -455,46 +465,50 @@ function parse_claims(t)
   local o = {}
   -- initialize a local counter for ids
   local n = 0
-  for i, v in pairs(t) do
-    if not string.match(i, "^label$") and not string.match(i, "^strength$") then
-      -- manage counters
-      n = n + 1
-      gn = gn + 1
-      local id = tostring(n)
-      local gid = tostring(gn)
-      -- the key is the claim
-      local claim = i
-      -- if we haven't set a name for our map yet, use the claim as the name.
-      if not name then
-        name = claim
-      end
-      local attr = {}
-      -- claims that begin with a '-' are styled as implicit premises
-      if string.match(claim, "^-.*") then
-        claim = string.sub(claim, 2, -1)
-        attr = {
-          ["styleNames"] = { "attr_implicit_claim" }
-        }
-      end
-      claim = markdown_to_plain(claim)
-      local note = parse_special(v, "note")
-      if note then
-        note = markdown_to_plain(note)
+  if t then -- input empty, return empty template.
+    for i, v in pairs(t) do
+      if not string.match(i, "^label$") and not string.match(i, "^strength$") then
+        -- manage counters
+        n = n + 1
         gn = gn + 1
-        attr["note"] = {
-          ["index"] = gn,
-          ["text"] = note
+        local id = tostring(n)
+        local gid = tostring(gn)
+        -- the key is the claim
+        local claim = i
+        -- if we haven't set a name for our map yet, use the claim as the name.
+        if not name then
+          name = claim
+        end
+        -- Setting to nil means that it will not be included in object if it stays empty.
+        -- Which means that JSON output will not be set to [], which screws up mapjs data structure.
+        local attr = nil
+        -- claims that begin with a '-' are styled as implicit premises
+        if string.match(claim, "^-.*") then
+          claim = string.sub(claim, 2, -1)
+          attr = {
+            ["styleNames"] = { "attr_implicit_claim" }
+          }
+        end
+        claim = markdown_to_plain(claim)
+        local note = parse_special(v, "note")
+        if note then
+          note = markdown_to_plain(note)
+          gn = gn + 1
+          attr["note"] = {
+            ["index"] = gn,
+            ["text"] = note
+          }
+        end
+        o[id] = {
+          ["title"] = claim,
+          ["id"] = gid,
+          ["attr"] = attr,
+          ["ideas"] = parse_reasons(v)
         }
       end
-      o[id] = {
-        ["title"] = claim,
-        ["id"] = gid,
-        ["attr"] = attr,
-        ["ideas"] = parse_reasons(v)
-      }
     end
   end
-  return o
+  return Default_to_nil(o)
 end
 
 function parse_reasons(t)
@@ -520,7 +534,7 @@ function parse_reasons(t)
       o[id] = { ["title"] = "group", ["id"] = gid, ["attr"] = attr, ["ideas"] = ideas }
     end
   end
-  return o
+  return Default_to_nil(o)
 end
 
 function help()
