@@ -11,6 +11,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.9
+
+- Still getting issues with render test #5 (expect script), looks like it's running before server ready, so:
+  - `test/test_scripts/tests.sh`:
+    - Swap test #5 with #6 (open mapjs file) because this is a quick visual test, so can just refresh the page once server is up to check it.
+    - Add extra diagnostic message in case of failure.
+    - Add comments with notes about alternative solutions.
+  - `scripts/bash_aliases_mapjs.sh`: Add diagnostic message.
+  - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Add comment re debugging.
+
 ## argmap 4.8.8
 
 - Fix errors caused by missing output files:

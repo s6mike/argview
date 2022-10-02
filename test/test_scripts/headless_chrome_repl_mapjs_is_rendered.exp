@@ -57,6 +57,9 @@ log_user 0
 set timeout 2
 
 # tmp folder should be in git_projects
+
+# Switch comments if want to see browser run:
+# spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_HTML_PAGE
 spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_HTML_PAGE
 
 match_max 100000

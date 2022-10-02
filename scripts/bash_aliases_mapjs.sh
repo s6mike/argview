@@ -114,6 +114,7 @@ __test_mapjs_renders() {
     return 0 # success
   else       # if headless chrome fails to render any map nodes
     return 1 #fail
+    echo "Render Failed"
   fi
 }
 

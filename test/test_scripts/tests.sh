@@ -5,6 +5,12 @@
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 __start_mapjs_webserver
 
+# Have switched rendering to be second test.
+# Before moving to first, need to fix race condition with web server
+# Ensure server running before runnig first html test.
+#   TODO: Would be better to store the time here and then pause the difference before running html tests.
+# sleep 1.5
+
 echo 'Attempting to delete old test outputs.'
 
 __clean_repo
@@ -79,8 +85,8 @@ if [ "$1" != html ]; then
 fi
 
 # map renders
-__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML"        #5
-__test md2hf "$INPUT_FILE_MD0"                             #6
+__test md2hf "$INPUT_FILE_MD0"                             #5
+__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML"        #6
 __test md2hf "$INPUT_FILE_MD"                              #7
 __test md2hf "$INPUT_FILE_MD2"                             #8
 __test md2hf "$INPUT_FILE_MD_META"                         #9
@@ -95,5 +101,6 @@ if [ "$1" != html ]; then
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
+echo "If first html test failed, check whether webserver was running."
 
 exit $FAILCOUNT
