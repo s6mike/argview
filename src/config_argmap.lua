@@ -23,8 +23,9 @@ package.path = os.getenv("LUA_PATH") or
     "/lua_modules/share/lua/5.3/?.lua;" .. config.project_folder .. "/lua_modules/share/lua/5.3/?/init.lua;"
     .. package.path
 
+-- Currently using lua-debugger, see: https://workflowy.com/#/8b71cb424dda
 -- If lldebugger showing up as not found, then add:
-package.path = "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua;" .. package.path
+-- package.path = "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua;" .. package.path
 
 package.cpath = os.getenv("LUA_CPATH") or
     config.project_folder ..

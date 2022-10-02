@@ -11,6 +11,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.10
+
+- `.vscode/launch.json`: Fix debugging launch profile for [Lua Debug - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug) since [Local Lua Debugger - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tomblind.local-lua-debugger-vscode) stopped working.
+- Add lua local path fix but leave commented out since still not working properly:
+  - `.vscode/settings.json`
+  - `src/config_argmap.lua`
+
 ## argmap 4.8.9
 
 - Still getting issues with render test #5 (expect script), looks like it's running before server ready, so:

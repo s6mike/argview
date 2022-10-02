@@ -14,6 +14,23 @@
             // "commandLineArguments": "",
         },
         {
+            "type": "lua",
+            "request": "launch",
+            "name": "Lua Debugger a2m",
+            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "arg": [
+                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                ">",
+                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+            ],
+            "env": {
+                "PATH": "${config:lua.debug.settings.env.path}",
+                "LUA_PATH": "${config:lua.debug.settings.path}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
+            },
+            "stopOnEntry": true,
+        },
+        {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: cat example | argmap2mup",
@@ -30,7 +47,8 @@
                 "LUA_PATH": "${config:lua.debug.settings.path}",
                 "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true
+            "stopOnEntry": true,
+            "verbose": true,
         },
         {
             "type": "lua-local",
@@ -49,7 +67,8 @@
                 "LUA_PATH": "${config:lua.debug.settings.path}",
                 "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true
+            "stopOnEntry": true,
+            "verbose": true,
         },
         {
             "type": "lua-local",

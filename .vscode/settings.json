@@ -81,6 +81,7 @@
         "--dbgport=11413"
     ],
     "Lua.workspace.library": [
+        // "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua",
         "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua",
         "${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua",
