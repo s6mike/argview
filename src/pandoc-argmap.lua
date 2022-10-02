@@ -43,6 +43,39 @@ local function trim(s)
     return (s:gsub("\n", ""))
 end
 
+local function file_exists(name)
+    -- utility function borrowed from pandoc lua filter docs.
+    local f = io.open(name, 'r')
+    if f ~= nil then
+        io.close(f)
+        return true
+    else
+        -- TODO: Use pl.makepath(name) to create require directories?
+        return false
+    end
+end
+
+local function create_subdirectories(file_path)
+    -- TODO Temp solution: however, this command can be abused if the directory name comes from an untrusted source!
+    --  See https://workflowy.com/#/0a7351c9fcf2 for attempts at alternative solutions.
+
+    local result = os.execute('mkdir --parent $(dirname "' .. file_path .. '")')
+    if not result then
+        Logger:error("Subdirectory creation failed: " .. file_path)
+    end
+
+    return result
+end
+
+local function ensure_directory(file_path)
+    if not file_exists(file_path) then -- Check that file_path exists
+        -- Automatically creates required sub-directories in path
+        return create_subdirectories(file_path)
+    end
+
+    return true
+end
+
 local function argmap2image(src, filetype, outfile)
     -- Converts yaml map to tikz and then to pdf or png.
     -- More or less borrowed from the example given in the pandoc lua filter docs.
@@ -70,7 +103,11 @@ local function argmap2image(src, filetype, outfile)
         if filetype == 'pdf' then
             -- we don't use this for latex or beamer, but it is available
             -- if other formats need pdf images instead of inline tikz
-            os.rename(tmp .. ".pdf", outfile)
+            if ensure_directory(outfile) then
+                os.rename(tmp .. ".pdf", outfile)
+            else
+                Logger:error("Failed to move pdf " .. tmp .. " to this destination: " .. outfile)
+            end
         elseif format == 'html5' then
             -- for html5 format, we return raw svg
             os.execute("pdf2svg " .. tmp .. ".pdf " .. tmp .. ".svg")
@@ -81,10 +118,18 @@ local function argmap2image(src, filetype, outfile)
         elseif filetype == 'svg' then
             -- we don't use this for html5, but it is available for other formats
             -- that need svg images instead of inline svg.
-            os.execute("pdf2svg " .. tmp .. ".pdf " .. outfile)
+            if ensure_directory(outfile) then
+                os.execute("pdf2svg " .. tmp .. ".pdf " .. outfile)
+            else
+                Logger:error("Failed to convert pdf " .. tmp .. " to png in this destination: " .. outfile)
+            end
         else
             -- convert the pdf to appropriate format
-            os.execute("convert -density 150 " .. tmp .. ".pdf " .. outfile)
+            if ensure_directory(outfile) then
+                os.execute("convert -density 150 " .. tmp .. ".pdf " .. outfile)
+            else
+                Logger:error("Failed to convert pdf " .. tmp .. " to a png at this destination: " .. outfile)
+            end
         end
         -- clean up tmp files
         os.remove(tmp)
@@ -94,17 +139,6 @@ local function argmap2image(src, filetype, outfile)
         os.remove(tmp .. ".aux")
     end
     return o
-end
-
-local function file_exists(name)
-    -- utility function borrowed from pandoc lua filter docs.
-    local f = io.open(name, 'r')
-    if f ~= nil then
-        io.close(f)
-        return true
-    else
-        return false
-    end
 end
 
 -- return statement at end of this file ensures that Meta function is executed first, before CodeBlock.
@@ -227,8 +261,7 @@ local function CodeBlock(block)
                 -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
                 local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MJS_JSON .. "/" .. output_filename
 
-                -- TOOD: FIX: if directory missing then this fails
-                --  e.g. test/output/mapjs-json folder
+                ensure_directory(argmap_output_file_path)
                 -- TODO: This should be a utility function, since used elsewhere
                 --  Or could maybe use os.execute() to run argmap2mup using correct input and output, rather than pandoc.pipe
                 local f = assert(io.open(argmap_output_file_path, 'w'))

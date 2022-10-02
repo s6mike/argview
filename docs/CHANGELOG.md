@@ -11,6 +11,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.8
+
+- Fix errors caused by missing output files:
+  - `scripts/bash_aliases_argmap.sh`: Add `mkdir --parent` before any file generation.
+  - `src/pandoc-argmap.lua`: Add `ensure_directory()` to do same.
+  - Add error messages for when the directory creation fails.
+  - Add `test/input/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_argmap2.json` to ensure rendering test 5 passes.
+    - Update `test/input/Example1-ClearlyFalse-WhiteSwan-simplified-1mapjs.html` to reference this file.
+  - `test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup`: Update example output file with fix.
+- `test/input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md`: minor comment updates.
+- `.gitignore`: Update to ensure `output-bak` ignored when testing missing folder.
+
 ## argmap 4.8.7
 
 - Fix empty ideas and attr having value [] instead of {}, which breaks mapjs logic:
@@ -18,7 +30,7 @@
     - Add Default_to_nil() so that empty ideas variable can be omitted instead of being [].
       - 2 functions return this function output, instead of returning ideas value directly.
     - attr initialised to nil instead of {} so that it will be omitted if left empty.
-    - Add check for empty input to stop crash.
+    - Add check for empty argmap.yml input to stop crash.
 - `src/config_argmap.lua`:
   - Add 'Local Lua' debugger path to `package.path` (LUA_CPATH) in case it's missing.
 

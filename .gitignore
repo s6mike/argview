@@ -12,7 +12,7 @@ mapjs-example/node_modules
 mapjs-example/site
 examples/*
 output/*
-test/output/*
+test/output*/*
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png
 results
 .DS_Store

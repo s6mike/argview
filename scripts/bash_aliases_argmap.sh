@@ -55,6 +55,7 @@ __save_env() {
 a2m() {                                    # a2m test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
   NAME=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
     OUTPUT=${2:-$PATH_MJS_JSON/$NAME.json} &&
+    mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
     argmap2mup "$1" >"$OUTPUT" &&
     echo "$OUTPUT" # Output path can be piped
 }
@@ -71,6 +72,7 @@ a2mu() { # a2mu test/output/Example1_simple.yml
 m2a() { # m2a test/output/Example1_simple.mup
   NAME=$(basename --suffix=".json" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.yml}
+  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   mup2argmap "$1" >"$OUTPUT" &&
     echo "$OUTPUT" # Output path can be piped
 }
@@ -78,6 +80,7 @@ m2a() { # m2a test/output/Example1_simple.mup
 # Convert to tikz
 a2t() { # a2t test/output/Example1_simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
+    mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
     argmap2tikz "$1" >"${2:-$DIR_HTML_OUTPUT/$NAME.tex}" &&
     echo "${2:-$DIR_HTML_OUTPUT/$NAME.tex}"
 }
@@ -86,6 +89,7 @@ a2t() { # a2t test/output/Example1_simple.yml
 md2hf() { # md2h test/input/example.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
+  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
   # If so, how would I easily update it?
   # Useful? --metadata=curdir:X
@@ -101,7 +105,9 @@ j2hf() {             # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSw
   INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   NAME=$(basename --suffix=".json" "$INPUT")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
-  PATH_OUTPUT_JSON=$DIR_MJS_JSON/$NAME.json # Assumes file is in the JSON output folder
+  PATH_OUTPUT_JSON=$DIR_MJS_JSON/$NAME.json       # Assumes file is in the JSON output folder
+  mkdir --parent "$(dirname "$OUTPUT")"           # Ensures output folder exists
+  mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
   echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
   open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
@@ -116,7 +122,7 @@ a2hf() { # a2hf test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
 md2htm() { # md2htm test/input/example-updated.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
-
+  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   # TODO: Put this into new function?
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
@@ -129,6 +135,7 @@ md2htm() { # md2htm test/input/example-updated.md
 md2pdf() { # md2pdf test/input/example.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.pdf}
+  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
   open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.pdf"

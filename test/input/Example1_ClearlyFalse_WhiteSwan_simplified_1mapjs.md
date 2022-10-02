@@ -3,8 +3,8 @@ title: Example 1.1 - All swans are white.
 template: pandoc-templates/mapjs/mapjs-main-html5.html
 # TODO: These might be better in a defaults file:
 #   https://workflowy.com/#/ee624e71f40c
-# css: test/mapjs-default-styles.css
-# mapjs-output-js: test/bundle.js
+# css: mapjs/site/mapjs-default-styles.css
+# mapjs-output-js: mapjs/site/js/bundle.js
 # lua-filter: "$WORKSPACE/src/pandoc-argmap.lua"
 # data-dir: "$PANDOC_DATA_DIR"
 argmaps: true
