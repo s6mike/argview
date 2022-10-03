@@ -12,6 +12,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.12
+
+- `scripts/bash_aliases_argmap.sh`: Fix `j2hf()` to work with files from input folder too, though now path argument has to be in `mapjs/site` folder.
+
 ## argmap 4.8.11
 
 - `test/input/mapjs-json/legacy-mapjs-example-map.json`: Add legacy mapjs `example-map.json` to `mapjs-json` input folder.

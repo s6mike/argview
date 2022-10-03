@@ -2,6 +2,9 @@
 
 # argmap functions
 
+# TODO: Use realpath to simplify relative path juggling
+#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+
 ## Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
 
 echo "Running ${BASH_SOURCE[0]}"
@@ -87,6 +90,8 @@ a2t() { # a2t test/output/Example1_simple.yml
 
 # Convert markdown to full page html
 md2hf() { # md2h test/input/example.md
+  # TODO: Use realpath to simplify relative path juggling
+  #   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
@@ -98,16 +103,20 @@ md2hf() { # md2h test/input/example.md
   pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
   open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
+  # TODO construct link from server details and output it?
 }
 
 # shellcheck disable=SC2120 # Disables lint error
-j2hf() {             # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_argmap2.json
-  INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
-  NAME=$(basename --suffix=".json" "$INPUT")
+j2hf() { # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_argmap2.json
+  # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
+  # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
+  NAME=$(basename --suffix=".json" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
-  PATH_OUTPUT_JSON=$DIR_MJS_JSON/$NAME.json       # Assumes file is in the JSON output folder
-  mkdir --parent "$(dirname "$OUTPUT")"           # Ensures output folder exists
-  mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
+  # This will only work if path to $1 is through site folder.
+  #  TODO: Check and copy to input folder?
+  PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
+  # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
   echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
   open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
