@@ -3,6 +3,7 @@
 ## TODO
 
 - Review and commit keyboard shortcuts changes
+- Use realpath to simplify relative path juggling e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - Start to use - not _ in filenames. Change auto generation e.g. output folder since web stuff is better with -.
@@ -10,6 +11,11 @@
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.8.11
+
+- `test/input/mapjs-json/legacy-mapjs-example-map.json`: Add legacy mapjs `example-map.json` to `mapjs-json` input folder.
+- `test/input/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_argmap2.json`: pretty print content.
 
 ## argmap 4.8.10
 
