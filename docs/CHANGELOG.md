@@ -13,6 +13,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.15
+
+- `.gitignore`: Add `tmp/` folders. e.g. `mapjs/tmp`.
+
 ## argmap 4.8.14
 
 - Add fixed, renamed and prettified test files to `examples/`,`test/input/` and `test/output/` e.g. `test/input/mapjs-json/example1-clearly-false-whiteswan-simplified-1mapjs-argmap2.json`.
