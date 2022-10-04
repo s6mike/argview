@@ -413,14 +413,14 @@ theme:
 ...
 ]=])
 
-function Default_to_nil(o)
+local function default_to_nil(var)
   -- Setting ideas to nil instead of {} means that it will not be included in object if it stays empty.
   -- Which means that JSON output will not be set to [], which screws up mapjs data structure.
-  if next(o) == nil then
+  if next(var) == nil then
     return nil
   end
 
-  return o
+  return var
 end
 
 function pipe_in_out(cmd, s)
@@ -508,7 +508,7 @@ function parse_claims(t)
       end
     end
   end
-  return Default_to_nil(o)
+  return default_to_nil(o)
 end
 
 function parse_reasons(t)
@@ -531,10 +531,12 @@ function parse_reasons(t)
         ["group"] = group,
         ["parentConnector"] = { ["width"] = strength, ["label"] = label }
       }
+      -- Ensures that empty parentConnector is omitted rather than using [], which breaks mapjs:
+      attr["parentConnector"] = default_to_nil(attr["parentConnector"])
       o[id] = { ["title"] = "group", ["id"] = gid, ["attr"] = attr, ["ideas"] = ideas }
     end
   end
-  return Default_to_nil(o)
+  return default_to_nil(o)
 end
 
 function help()

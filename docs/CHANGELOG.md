@@ -12,6 +12,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.13
+
+Files created from argmap2mup now work with MindMup. Fix #11.
+
+- `src/argmap2mup.lua`:
+  - Fix empty `"attr": {"parentConnector":` so it's omitted instead of having value [], which breaks mapjs logic.
+    - Delete output `.json`/`.mup` files containing `"parentConnector": []`.
+  - Change `default_to_nil()` to be local function (better practice).
+- [README.md](../README.md): Update to reflect fix.
+
 ## argmap 4.8.12
 
 - `scripts/bash_aliases_argmap.sh`: Fix `j2hf()` to work with files from input folder too, though now path argument has to be in `mapjs/site` folder.
@@ -847,7 +857,7 @@ BUG:
 - [README.md](../README.md):
   - Fix headline map link to link to published version (should be available until Jan 2023).
   - Make some sections collapsible: Installation, Syntax Rules and pandoc-argmap.lua
-  - Add reference to issue 11: generated .mup files don't always work on mindmup, but can be used with legacy mindmup.
+  - Add reference to issue 11: generated .mup files don't always work on MindMup, but can be used with legacy mindmup.
 - example/example.yml: Update to match documentation.
 
 ## argmap 3.1.4
