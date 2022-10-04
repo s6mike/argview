@@ -17,7 +17,7 @@ source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 ## browser aliases
 alias argdb='open-debug'
-alias argdb1='open-debug $DIR_HTML_SERVER_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html'
+alias argdb1='open-debug $DIR_HTML_SERVER_OUTPUT/example1_clearly-false-white-swan-simplified-1mapjs.html'
 alias argdbe='open-debug output/example-map.html'
 
 ## webpack aliases

@@ -10,12 +10,15 @@ __start_mapjs_webserver
 # Ensure server running before runnig first html test.
 #   TODO: Would be better to store the time here and then pause the difference before running html tests.
 # sleep 1.5
+# Or would this work?
+#   wait
 
 echo 'Attempting to delete old test outputs.'
 
 __clean_repo
-# rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-# rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+
+# rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified.yml"
+# rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
@@ -50,7 +53,7 @@ __test() {
     echo -en "$PRE "
 
     # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
-    if "$1" "$2" >/dev/null; then
+    if "$1" "$2" >>"$PATH_TEST_LOG"; then
         echo -e "${COL_PASS}Pass${COL_RESET}"
     else
         echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
@@ -85,11 +88,12 @@ if [ "$1" != html ]; then
 fi
 
 # map renders
-__test md2hf "$INPUT_FILE_MD0"                             #5
-__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML"        #6
-__test md2hf "$INPUT_FILE_MD"                              #7
-__test md2hf "$INPUT_FILE_MD2"                             #8
-__test md2hf "$INPUT_FILE_MD_META"                         #9
+__test md2hf "$INPUT_FILE_MD0"                      #5
+__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #6
+__test md2hf "$INPUT_FILE_MD"                       #7
+__test md2hf "$INPUT_FILE_MD2"                      #8
+__test md2hf "$INPUT_FILE_MD_META"                  #9
+# To make browser test visible, add 'head' as first arg
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #10 add child button works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #11 left click works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #12 undo/redo button works
@@ -102,5 +106,6 @@ fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
 echo "If first html test failed, check whether webserver was running."
+echo "Test cafe log location: $PATH_TEST_LOG"
 
 exit $FAILCOUNT

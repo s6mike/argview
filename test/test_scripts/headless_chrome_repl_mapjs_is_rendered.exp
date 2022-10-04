@@ -41,7 +41,7 @@ if {$force_conservative} {
 # -Don
 
 # Reads first passed argument
-set PATH_HTML_PAGE [lindex $argv 0];
+set PATH_INPUT_FILE_HTML [lindex $argv 0];
 set PATH_LOG_FILE_EXPECT [lindex $argv 1];
 set PORT_DEV_SERVER [lindex $argv 2];
 
@@ -59,14 +59,15 @@ set timeout 2
 # tmp folder should be in git_projects
 
 # Switch comments if want to see browser run:
-# spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_HTML_PAGE
-spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_HTML_PAGE
+#	 Can see command in console, however expect script won't work so this will always fail.
+# spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
+spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
 
 match_max 100000
 expect -exact ">>> "
 sleep .1
 
-# TODO: Could check for more than one thing, or execute interactive JS
+# TODO: Could check for more than one thing, or execute interactive JS 
 # TODO Could also try to pass the number of nodes onto next step to check that the interaction gave the correct result
 send -- "document.getElementsByClassName('mapjs-node').length>=1\r"
 expect -exact "document.getElementsByClassName('mapjs-node').length>=1\r"

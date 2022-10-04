@@ -19,9 +19,9 @@
             "name": "Lua Debugger a2m",
             "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             "arg": [
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
                 ">",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.json"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -58,9 +58,9 @@
                 "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
             },
             "args": [
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
                 ">",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
+                "${workspaceFolder}/test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -78,9 +78,9 @@
                 "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/mup2argmap.lua"
             },
             "args": [
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.mup",
+                "${workspaceFolder}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json",
                 ">",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.yml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -97,9 +97,9 @@
                 "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2tikz.lua"
             },
             "args": [
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
                 ">",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified.tex"
+                "${workspaceFolder}/test/output/example1_clearly-false-white-swan_simplified.tex"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -117,9 +117,9 @@
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.md",
+                "${workspaceFolder}/test/input/example1_clearly-false-white-swan-simplified-1mapjs.md",
                 "-o",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_debug.html",
+                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
                 "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
@@ -141,9 +141,9 @@
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.md",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified-meta-mapjs.md",
                 "-o",
-                "${workspaceFolder}/test/output/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs_debug.html",
+                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified-meta-mapjs.html",
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
                 "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
@@ -190,7 +190,7 @@
             },
             "args": [
                 "-u",
-                "${workspaceFolder}/test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -219,7 +219,7 @@
             "type": "chrome",
             "name": "Debug html with 2 mapjs",
             "request": "launch",
-            "file": "test/output/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html",
+            "file": "test/output/example1-clearly-false-white-swan-simplified-2mapjs.html",
             "runtimeArgs": [
                 "--allow-file-access-from-files"
             ],

@@ -172,17 +172,18 @@ fi
 #   exit 1
 # }
 
-# For dev web server:
-# Link up test/output with mapjs/site
-ln -s "$WORKSPACE/test/output" "$PATH_MJS_HOME/site/."
-
 # TODO Use env variables instead of hardcoded folders
 # Create json and png output folders otherwise pandoc-argmap.lua won't work
 mkdir --parent "$WORKSPACE/test/output/mapjs-json"
 mkdir --parent "$WORKSPACE/test/output/png"
 
+# For dev web server:
+# Link up test/output and test/input with mapjs/site
+ln -s "$DIR_HTML_OUTPUT" "$PATH_MJS_SITE/."
+ln -s "$DIR_HTML_INPUT" "$PATH_MJS_SITE/."
+
 # Add index.html
-ln -s "$PATH_MJS_HOME/site/output/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html" "$PATH_MJS_HOME/site/index.html"
+ln -s "$PATH_MJS_SITE/$PATH_INPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
 
 #nodejs installed with conda
 

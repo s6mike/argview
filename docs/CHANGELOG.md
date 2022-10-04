@@ -2,6 +2,7 @@
 
 ## TODO
 
+- Add `docs/example2-white-swan-complex-mindmup.png`?
 - Review and commit keyboard shortcuts changes
 - Use realpath to simplify relative path juggling e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 - Minor temp webpack changes:
@@ -11,6 +12,22 @@
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.8.14
+
+- Add fixed, renamed and prettified test files to `examples/`,`test/input/` and `test/output/` e.g. `test/input/mapjs-json/example1-clearly-false-whiteswan-simplified-1mapjs-argmap2.json`.
+- `test/input/mapjs-json/example1-simple-replicated-in-mapjs-legacy.json`: Add a duplicate of my simple example in legacy mapjs for comparison purposes.
+- Add `test/input/mapjs-json/example2-clearly-false-white-swan-minus-inline-objections.mup`, created in mindmup.
+  - Add `docs/example2-white-swan-complex-argmapjs-4_8_13.png`: screenshot of above file viewed using mapjs.
+- Move legacy mapjs index.html to `test/input/legacy-mapjs-example-map.html` since input folder more logical location.
+- Update symbolic link: `mapjs/site/index.html`
+  - Update env variables in these files to simplify symbolic link maintenance when file names change:
+    - `mapjs/scripts/mapjs.env`
+    - `scripts/install.sh`
+- Update with renamed file paths: `scripts/argmap.env`, `scripts/bash_aliases_argmap.sh`, `.vscode/launch.json`, `test/input/example1-clearlyfalse-white-swan-simplified-1mapjs.html` etc.
+- `test/test_scripts/tests.sh`: Log test results for reference:
+  - `scripts/argmap.env`: Add env variable for test log path.
+- Add comments to some script files.
 
 ## argmap 4.8.13
 

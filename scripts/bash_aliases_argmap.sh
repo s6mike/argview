@@ -31,16 +31,17 @@ __reset_repo() {
 }
 
 __clean_repo() {
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.yml"
-  # rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.mup"
-  rm "$PATH_MJS_JSON/Example1_ClearlyFalse_WhiteSwan_simplified.json"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified.tex"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.pdf"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_0mapjs.html"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs.html"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_2mapjs.html"
-  rm "$DIR_HTML_OUTPUT/Example1_ClearlyFalse_WhiteSwan_simplified_meta_mapjs.html"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified.yml"
+  # rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
+  rm "$PATH_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.html"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified-1mapjs.html"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified-2mapjs.html"
+  rm "$DIR_HTML_OUTPUT/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
   rm "$DIR_HTML_OUTPUT/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
+  rm "$PATH_TEST_LOG"
   # rm "$INPUT_FILE_JSON"
 }
 
@@ -53,9 +54,9 @@ __save_env() {
 ## argmap functions
 
 # Convert to map.json, writes it to test/output/mapjs-json/
-# lua argmap2mup test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml > test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified.json
+# lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                    # a2m test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
+a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml
   NAME=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
     OUTPUT=${2:-$PATH_MJS_JSON/$NAME.json} &&
     mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
@@ -64,7 +65,7 @@ a2m() {                                    # a2m test/input/Example1_ClearlyFals
 }
 
 # Convert to map.js and upload
-a2mu() { # a2mu test/output/Example1_simple.yml
+a2mu() { # a2mu test/output/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
     argmap2mup --upload --name "$NAME.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
     echo "Uploaded: $1 to GDrive."
@@ -72,7 +73,7 @@ a2mu() { # a2mu test/output/Example1_simple.yml
 
 # Convert map.js to argmap yaml format
 # TODO add option for .mup vs .json output
-m2a() { # m2a test/output/Example1_simple.mup
+m2a() { # m2a test/output/example1-simple.mup
   NAME=$(basename --suffix=".json" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.yml}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
@@ -81,7 +82,7 @@ m2a() { # m2a test/output/Example1_simple.mup
 }
 
 # Convert to tikz
-a2t() { # a2t test/output/Example1_simple.yml
+a2t() { # a2t test/output/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
     mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
     argmap2tikz "$1" >"${2:-$DIR_HTML_OUTPUT/$NAME.tex}" &&
@@ -107,13 +108,14 @@ md2hf() { # md2h test/input/example.md
 }
 
 # shellcheck disable=SC2120 # Disables lint error
-j2hf() { # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplified_1mapjs_argmap2.json
+j2hf() { # j2hf test/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
   # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   NAME=$(basename --suffix=".json" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
   # This will only work if path to $1 is through site folder.
   #  TODO: Check and copy to input folder?
+  #  TODO if in test/ folder, substitute mapjs/site
   PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
@@ -122,7 +124,7 @@ j2hf() { # j2hf test/output/mapjs-json/Example1_ClearlyFalse_WhiteSwan_simplifie
   open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
 }
 
-a2hf() { # a2hf test/input/Example1_ClearlyFalse_WhiteSwan_simplified.yml
+a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
   a2m "$1" | j2hf
 }
 
@@ -153,7 +155,7 @@ md2pdf() { # md2pdf test/input/example.md
 # Deprecated
 
 ## Deprecated, use a2m() for converting argmap to .mup/.json and use __build_mapjs to rebuild app
-a2jo() { # m2a output/mapjs-json-input/Example1_simple.yml
+a2jo() { # m2a output/mapjs-json-input/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.json}
   a2m "$1" "$OUTPUT"

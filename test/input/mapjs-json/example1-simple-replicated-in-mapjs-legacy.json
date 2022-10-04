@@ -1,0 +1,54 @@
+{
+  "id": "root",
+  "formatVersion": 3,
+  "ideas": {
+    "4": {
+      "title": "Map 2: All swans are white.",
+      "id": 24,
+      "attr": {
+        "position": [
+          -87,
+          -123.99999618530273,
+          1
+        ]
+      },
+      "ideas": {
+        "1": {
+          "title": "group",
+          "id": 27,
+          "attr": {
+            "contentLocked": true,
+            "group": "supporting"
+          },
+          "ideas": {
+            "1": {
+              "title": "Every swan I’ve ever seen is white.",
+              "id": 28
+            },
+            "2": {
+              "title": "These swans are representative of all swans.",
+              "id": 29
+            }
+          }
+        },
+        "-1": {
+          "title": "group",
+          "id": 32,
+          "attr": {
+            "contentLocked": true,
+            "group": "opposing"
+          },
+          "ideas": {
+            "1": {
+              "title": "Not all swans are white.",
+              "id": 33
+            }
+          }
+        }
+      }
+    }
+  },
+  "attr": {},
+  "title": "text options",
+  "links": []
+}
