@@ -14,7 +14,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	const handleRangeError = function (e, calling_function_name) {
 		if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
 			console.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
-			debugger;
+			// debugger;
 			return false;
 		} else {
 			logMyErrors(e); // pass exception object to error handler

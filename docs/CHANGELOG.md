@@ -7,11 +7,15 @@
 - Use realpath to simplify relative path juggling e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
-- Start to use - not _ in filenames. Change auto generation e.g. output folder since web stuff is better with -.
 - Move `mapjs/site/mapjs-default-styles.css` to `mapjs/site/css`?
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.8.20
+
+- `mapjs/site/input/mapjs-json/example1-clearly-false-white-swan-simplified.json`: Update with fixed version.
+- `mapjs/src/core/content/content.js`: Comment out debugger statement in `handleRangeError()` since issue seems to be resolved now.
 
 ## argmap 4.8.19
 
