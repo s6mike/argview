@@ -15,14 +15,14 @@ module.exports = function Theme(themeJson) {
 		const weight = attributeValue(['node'], themeStyles, ['text', 'font', 'weight'], 'semibold'),
 			size = attributeValue(['node'], themeStyles, ['text', 'font', 'size'], themeFallbackValues.nodeTheme.font.size),
 			lineSpacing = attributeValue(['node'], themeStyles, ['text', 'font', 'lineSpacing'], themeFallbackValues.nodeTheme.font.lineSpacing);
-		return {size: size, weight: weight, lineGap: lineSpacing};
+		return { size: size, weight: weight, lineGap: lineSpacing };
 	};
 	self.getNodeMargin = function (themeStyles) {
 		return attributeValue(['node'], themeStyles, ['text', 'margin'], themeFallbackValues.nodeTheme.margin);
 	};
 	self.name = themeJson && themeJson.name;
 	self.connectorEditingContext = themeJson && themeJson.connectorEditingContext;
-	//TODO: rempve blockParentConnectorOverride once site has been live for a while
+	// TODO: Remove blockParentConnectorOverride once site has been live for a while
 	self.blockParentConnectorOverride = themeJson && themeJson.blockParentConnectorOverride;
 
 	self.attributeValue = (prefixes, styles, postfixes, fallback) => attributeValue(prefixes, styles, postfixes, fallback);
@@ -52,11 +52,11 @@ module.exports = function Theme(themeJson) {
 			childConnector = themeAttributeUtils.attributeForPath(themeDictionary, ['connector', childConnectorStyle]),
 			parentConnector = parentConnectorStyle && themeAttributeUtils.attributeForPath(themeDictionary, ['connector', parentConnectorStyle]),
 			combinedStyle = parentConnectorStyle && (parentConnectorStyle + '.' + childConnectorStyle),
-			combinedConnector = combinedStyle &&  themeAttributeUtils.attributeForPath(themeDictionary, ['connector', combinedStyle]),
-			connectorStyle  = (combinedConnector && combinedStyle) || (parentConnector && parentConnectorStyle) || childConnectorStyle || 'default',
+			combinedConnector = combinedStyle && themeAttributeUtils.attributeForPath(themeDictionary, ['connector', combinedStyle]),
+			connectorStyle = (combinedConnector && combinedStyle) || (parentConnector && parentConnectorStyle) || childConnectorStyle || 'default',
 			controlPoint = themeAttributeUtils.connectorControlPoint(themeDictionary, position, connectorStyle),
 			connectorDefaults = Object.assign({}, themeFallbackValues.connectorTheme),
-			returnedConnector =  Object.assign({}, combinedConnector || parentConnector || childConnector || connectorDefaults);
+			returnedConnector = Object.assign({}, combinedConnector || parentConnector || childConnector || connectorDefaults);
 		if (!returnedConnector.label) {
 			returnedConnector.label = connectorDefaults.label;
 		}
@@ -109,7 +109,7 @@ module.exports = function Theme(themeJson) {
 			childConnector = themeAttributeUtils.attributeForPath(themeDictionary, ['connector', childConnectorStyle]) || connectorDefaults,
 			autoColor = getAutoColor(),
 			result = {
-				attr: (currentAttribs && currentAttribs.parentConnector && {parentConnector: currentAttribs.parentConnector}) || {},
+				attr: (currentAttribs && currentAttribs.parentConnector && { parentConnector: currentAttribs.parentConnector }) || {},
 				removed: []
 			};
 

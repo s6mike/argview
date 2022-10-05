@@ -13,6 +13,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.19
+
+- `scripts/bash_aliases_argmap.sh`: Update `j2hf()` to open browser with debug port open, to simplify debugging.
+- `mapjs/src/core/theme/theme.js`: Reformat comment manually and auto-format code.
+
 ## argmap 4.8.18
 
 - Update `test/input/example1-clearly-false-white-swan-simplified-1mapjs.html` with css changes.
@@ -24,6 +29,7 @@
 
 - Consolidate css styles and override mapjs-container's overflow: auto style for easier viewing of large maps:
   - `mapjs/src/browser/dom-map-widget.js`: Remove line adding overflow: auto to mapjs-container's style.
+    - ISSUE #2 introduced: clicking in container restores `overflow: auto` to `element.style`: Must be another piece of code updating it again.
   - `mapjs/site/mapjs-default-styles.css`: Add css from `pandoc-templates/mapjs/mapjs-inline-styles.css` (embedded directly into html).
     - Remove `pandoc-templates/mapjs/mapjs-inline-styles.css` and references in template files:
       - `pandoc-templates/mapjs/mapjs-quick-json.html`
