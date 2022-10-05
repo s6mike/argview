@@ -15,6 +15,13 @@
 
 ## argmap 4.8.18
 
+- Update `test/input/example1-clearly-false-white-swan-simplified-1mapjs.html` with css changes.
+  - Fix some inconsistent filenames in `test/input`, missed in v4.8.14.
+    - Update path variables in `scripts/argmap.env`
+    - Update index file symbolic link: `mapjs/site/index.html`
+
+## argmap 4.8.17
+
 - Consolidate css styles and override mapjs-container's overflow: auto style for easier viewing of large maps:
   - `mapjs/src/browser/dom-map-widget.js`: Remove line adding overflow: auto to mapjs-container's style.
   - `mapjs/site/mapjs-default-styles.css`: Add css from `pandoc-templates/mapjs/mapjs-inline-styles.css` (embedded directly into html).
