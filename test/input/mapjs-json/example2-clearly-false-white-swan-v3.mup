@@ -552,7 +552,17 @@
                             "1": {
                               "title": "This black swan is a photo-shopped fake.",
                               "id": "14.7233.0a46019f3-35f8.fe2f2c911",
-                              "ideas": {}
+                              "ideas": {
+                                "1": {
+                                  "title": "Why do you think this is fake?",
+                                  "id": "95.3f25.f66dbdea8-1ae3.d20af906c",
+                                  "attr": {
+                                    "styleNames": [
+                                      "sticky_note"
+                                    ]
+                                  }
+                                }
+                              }
                             }
                           }
                         }
@@ -627,6 +637,39 @@
                     }
                   },
                   "id": "98.39c0.20fcbfa62-22a5.8d66050d3"
+                }
+              }
+            },
+            "3": {
+              "title": "group",
+              "id": "111.39c0.20fcbfa62-22a5.8d66050d3",
+              "attr": {
+                "contentLocked": true,
+                "group": "opposing"
+              },
+              "ideas": {
+                "1": {
+                  "title": "The colour of doves and seagulls is not relevant to the colour of swans.",
+                  "id": "112.39c0.20fcbfa62-22a5.8d66050d3",
+                  "attr": {}
+                }
+              }
+            },
+            "4": {
+              "title": "group",
+              "id": 119,
+              "attr": {
+                "contentLocked": true,
+                "group": "opposing"
+              },
+              "ideas": {
+                "1": {
+                  "title": "These statements do not logically lead to the conclusion that all swans are white.",
+                  "id": 120
+                },
+                "2": {
+                  "title": "They do not even relate to each other.",
+                  "id": "129.84ca.a828f2c38-acdc.71e10c7eb"
                 }
               }
             },
@@ -730,24 +773,54 @@
             "2": {
               "title": "These swans are representative of all swans.",
               "id": "18.c60c.0d964d93e-384b.f5e19a118",
-              "ideas": {},
+              "ideas": {
+                "5": {
+                  "title": "group",
+                  "id": "86.284b.9e18170f5-2dfc.554a800f5",
+                  "ideas": {
+                    "1": {
+                      "title": "Illogical because tomorrow you may see a swan which is not white.\n",
+                      "id": "40.284b.9e18170f5-2dfc.554a800f5",
+                      "attr": {
+                        "style": {
+                          "fontFamily": "Mono"
+                        },
+                        "note": {
+                          "index": 22,
+                          "text": "Observing individuals doesn't prove anything about the whole population."
+                        }
+                      },
+                      "ideas": {}
+                    }
+                  },
+                  "attr": {
+                    "group": "opposing",
+                    "contentLocked": true,
+                    "parentConnector": {
+                      "label": "X",
+                      "arrow": "both"
+                    }
+                  }
+                }
+              },
               "attr": {
                 "style": {
                   "fontFamily": "Sans"
                 }
               }
             },
-            "3": {
+            "4": {
               "title": "group",
-              "id": "120.7bce.cc3be74cf-6294.6699e1ba",
+              "id": "123.84ca.a828f2c38-acdc.71e10c7eb",
               "attr": {
                 "contentLocked": true,
                 "group": "opposing"
               },
               "ideas": {
                 "1": {
-                  "title": "# Logical Fallacy Observing individuals doesn't prove anything about the whole population.",
-                  "id": "121.7bce.cc3be74cf-6294.6699e1ba"
+                  "title": "# Logical Fallacy\n\nObserving individuals doesn't prove anything about the whole population.",
+                  "id": "124.84ca.a828f2c38-acdc.71e10c7eb",
+                  "attr": {}
                 }
               }
             }
@@ -810,11 +883,8 @@
           "url": "/assets/progress/testing/flat/failure.png"
         }
       }
-    },
-    "storyboards": [
-      "Storyboard 1"
-    ]
+    }
   },
-  "title": "Example1_ClearlyFalse_WhiteSwan_with_inline_objection",
+  "title": "Example 2: Clearly False -WhiteSwan",
   "links": []
 }

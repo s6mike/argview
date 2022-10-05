@@ -13,6 +13,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.16
+
+- `test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup`: Add new version of example 2, with better inline objections, removing older ones.
+
 ## argmap 4.8.15
 
 - `.gitignore`: Add `tmp/` folders. e.g. `mapjs/tmp`.
