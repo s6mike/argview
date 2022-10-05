@@ -18,9 +18,9 @@
   <meta name="description" content="$description-meta$" />
   $endif$
   <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
-  <style>
-    $mapjs-inline-styles.css()$
-  </style>
+  <!-- Moved to mapjs-default-styles.css
+    mapjs-inline-styles.css()
+  -->
   $for(css)$
   <link rel="stylesheet" href="$css$" />
   $endfor$

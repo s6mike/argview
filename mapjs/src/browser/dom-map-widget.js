@@ -107,7 +107,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 				.append(svgContainer)
 				.updateStage();
 		let previousPinchScale = false;
-		element.css('overflow', 'auto').attr('tabindex', 1);
+		// Moved this into mapjs-default-styles.css file for mapjs-container so easier to override.
+		// element.css('overflow', 'auto').attr('tabindex', 1);
 		if (mapModel.getInputEnabled()) {
 			(dragContainer || element).simpleDraggableContainer();
 		}

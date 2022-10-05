@@ -1,3 +1,35 @@
+/* Below styles added from html file (maps-inline-styles.css) */
+
+/* margin: 0 bit extreme when there is other content, perhaps apply this to the mapjs container only */
+body {
+	margin: 0;
+}
+
+.mapjs_control {
+	min-height: 64px !important;
+	overflow-y: scroll;
+	padding: 5px;
+}
+
+.container_argmapjs {
+	/* overflow from theme.css: */
+	/* Testing with visible instead for convenience: */
+	/* overflow: auto; */
+	overflow: visible;
+
+	background-color: #FFFFFF;
+	height: calc(100% - 60px) !important;
+	width: 100%;
+	border: 1px dashed black;
+	min-height: 250px !important;
+}
+
+/* div[data-mapjs-role=stage] {
+  transform: translate3d(calc(75% - 140px), 110%, 0) !important;
+} */
+
+/* Above styles added from html file (maps-inline-styles.css) */
+
 .mapjs-node {
 	margin: 0;
 	padding: 7px;

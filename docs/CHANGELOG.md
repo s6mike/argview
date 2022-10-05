@@ -2,7 +2,7 @@
 
 ## TODO
 
-- Add `docs/example2-white-swan-complex-mindmup.png`?
+- Update and add `docs/example2-white-swan-complex-mindmup.png`?
 - Review and commit keyboard shortcuts changes
 - Use realpath to simplify relative path juggling e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 - Minor temp webpack changes:
@@ -12,6 +12,15 @@
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.8.18
+
+- Consolidate css styles and override mapjs-container's overflow: auto style for easier viewing of large maps:
+  - `mapjs/src/browser/dom-map-widget.js`: Remove line adding overflow: auto to mapjs-container's style.
+  - `mapjs/site/mapjs-default-styles.css`: Add css from `pandoc-templates/mapjs/mapjs-inline-styles.css` (embedded directly into html).
+    - Remove `pandoc-templates/mapjs/mapjs-inline-styles.css` and references in template files:
+      - `pandoc-templates/mapjs/mapjs-quick-json.html`
+      - `pandoc-templates/mapjs/mapjs-main-html5.html`
 
 ## argmap 4.8.16
 
