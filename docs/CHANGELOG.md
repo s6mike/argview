@@ -12,6 +12,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.21
+
+- `test/devtools-recordings/argmap-keys-undo-redo.json`: Add (currently failing) test for issue where undo/redo keys don't work unless a node has focus.
+  - Rename `test/devtools-recordings/argmap-button-undo-redo.json` to clearly distinguish from above.
+  - `mapjs/scripts/mapjs.env`: Add/update variables for above scripts.
+  - `test/test_scripts/tests.sh`: Add above test, though comment out for now to stop pre-commit hook failing.
+- `test/test_scripts/mapjs_bisect_supporting_group.sh`: Remove since obsolete.
+
 ## argmap 4.8.20
 
 - `mapjs/site/input/mapjs-json/example1-clearly-false-white-swan-simplified.json`: Update with fixed version.

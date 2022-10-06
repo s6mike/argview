@@ -1,0 +1,79 @@
+{
+  "title": "argmap-keys-undo-redo",
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": "Example 1.1 - All swans are white."
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols_argmap2 > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 6.625,
+      "offsetX": 26.68359375
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==7"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Control"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "z"
+    },
+    {
+      "type": "keyUp",
+      "key": "z",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "target": "main",
+      "key": "Control"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==6"
+    },
+    {
+      "type": "keyDown",
+      "key": "Control",
+      "target": "main"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "y"
+    },
+    {
+      "type": "keyUp",
+      "key": "y",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "Control",
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==7"
+    }
+  ]
+}
