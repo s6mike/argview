@@ -4,13 +4,18 @@
 
 - Update and add `docs/example2-white-swan-complex-mindmup.png`?
 - Review and commit keyboard shortcuts changes
-- Use realpath to simplify relative path juggling e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - Move `mapjs/site/mapjs-default-styles.css` to `mapjs/site/css`?
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.9.0
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Add argmap specific `open-debug()`, which can open from abs or relative path to either site or test folder, plus default to simpler html page.
+  - Update `j2hf()` for same input file flexibility and default html page.
 
 ## argmap 4.8.22
 

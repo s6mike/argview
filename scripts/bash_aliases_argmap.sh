@@ -1,20 +1,47 @@
 #!/usr/bin/env bash
 
-# argmap functions
+echo "Running ${BASH_SOURCE[0]}"
 
-# TODO: Use realpath to simplify relative path juggling
-#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+# argmap aliases
+alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
+
+# argmap functions
 
 ## Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
 
-echo "Running ${BASH_SOURCE[0]}"
-
 ## browser functions
+
+# TODO: Use realpath to simplify relative path juggling
+#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
 
 # TODO try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   Maybe review mapjs tests.
 
 ## version control functions
+
+# TODO: Use realpath to simplify relative path juggling
+#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+
+# TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
+# TODO: user data dir doesn't seem to work, showing normal linux browser
+# For opening html pages with debug port open
+open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
+  INPUT_PATH="${1:-$PATH_INPUT_FILE_HTML}"
+  case $INPUT_PATH in
+  /*)
+    FULL_PATH=$INPUT_PATH
+    ;;
+  *)
+    FULL_PATH=$DIR_HTML/$INPUT_PATH
+    ;;
+  esac
+  # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
+  SITE_PATH="${FULL_PATH/test/"mapjs/site"}"
+  # echo "SITE_PATH: $SITE_PATH"
+  PATH_PAGE=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$SITE_PATH")
+  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$CHROME_DATA_DIR" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$PATH_PAGE" 2>/dev/null &
+  disown # stops browser blocking terminal and allows all tabs to open in single window.
+}
 
 # Checks `src/` for lua files with leftover test/debug code.
 # Used by pre-commit hook
@@ -109,20 +136,21 @@ md2hf() { # md2h test/input/example.md
 }
 
 # shellcheck disable=SC2120 # Disables lint error
-j2hf() { # j2hf test/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json
+j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
   # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
-  NAME=$(basename --suffix=".json" "$1")
-  OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
-  # This will only work if path to $1 is through site folder.
+  INPUT="${1:-$INPUT_FILE_JSON}"
+  # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
+  SITE_PATH="${INPUT/test/"mapjs/site"}"
+  NAME=$(basename --suffix=".json" "$SITE_PATH")
+  HTML_OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
   #  TODO: Check and copy to input folder?
-  #  TODO if in test/ folder, substitute mapjs/site
-  PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
-  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
+  PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$SITE_PATH")
+  mkdir --parent "$(dirname "$HTML_OUTPUT")" # Ensures output folder exists
   # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
-  echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$OUTPUT"
-  open-debug "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
+  echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+    echo "$HTML_OUTPUT"
+  open-debug "$HTML_OUTPUT"
 }
 
 a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
@@ -140,7 +168,7 @@ md2htm() { # md2htm test/input/example-updated.md
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
+  open-debug "$DIR_HTML_SERVER_OUTPUT/$NAME.html"
 }
 
 # Convert markdown to pdf
