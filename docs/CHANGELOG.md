@@ -12,6 +12,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.8.22
+
+- `test/input/`:
+  - Remove unnecessary json file.
+  - Re-organise contents into sub-folders.
+  - Rename some for consistency.
+- `mapjs/site/index.html`: Update to symbolic link to point to simpler html page.
+- `scripts/argmap.env`: Update above input file paths including simpler `index.html`
+- `scripts/bash_aliases_mapjs.sh`: Update aliases for opening output files to reflect updated input files.
+- `test/devtools-recordings`: Update 3 recordings broken by `index.html` having different toolbar id.
+
 ## argmap 4.8.21
 
 - `test/devtools-recordings/argmap-keys-undo-redo.json`: Add (currently failing) test for issue where undo/redo keys don't work unless a node has focus.

@@ -2,15 +2,6 @@
   "title": "argmap-add-child",
   "steps": [
     {
-      "type": "setViewport",
-      "width": 695,
-      "height": 837,
-      "deviceScaleFactor": 1,
-      "isMobile": false,
-      "hasTouch": false,
-      "isLandscape": false
-    },
-    {
       "type": "navigate",
       "url": "http://localhost:9001/",
       "assertedEvents": [
@@ -29,7 +20,7 @@
           "aria/add"
         ],
         [
-          "#testcontrols_argmap2 > input.addSubIdea"
+          "#testcontrols_1 > input.addSubIdea"
         ]
       ],
       "offsetY": 7.025390625,
