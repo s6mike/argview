@@ -11,6 +11,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.1
+
+- `mapjs/src/browser/dom-map-widget.js`: Commented out lines which automatically set container css property `overlay` to `auto` or `hidden` after interactions, so that my preferred css setting of `visible` is not changed. This ensures that full map is always visible.
+
 ## argmap 4.9.0
 
 - `scripts/bash_aliases_argmap.sh`:

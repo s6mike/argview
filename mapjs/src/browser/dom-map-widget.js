@@ -115,16 +115,17 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 
 		if (!touchEnabled) {
 			element.scrollWhenDragging(mapModel.getInputEnabled); //no need to do this for touch, this is native
-			element.on('mm:start-dragging-shadow', function (e) {
-				if (e.target !== element[0]) {
-					element.css('overflow', 'hidden');
-				}
-			});
-			$(document).on('mouseup', function () {
-				if (element.css('overflow') !== 'auto') {
-					element.css('overflow', 'auto');
-				}
-			});
+			// Keeps elements visible when dragging them out of the container:
+			// element.on('mm:start-dragging-shadow', function (e) {
+			// 	if (e.target !== element[0]) {
+			// 		element.css('overflow', 'hidden');
+			// 	}
+			// });
+			// $(document).on('mouseup', function () {
+			// 	if (element.css('overflow') !== 'auto') {
+			// 		element.css('overflow', 'auto');
+			// 	}
+			// });
 		} else {
 			element.on('doubletap', function (event) {
 				if (mapModel.requestContextMenu(event.gesture.center.pageX, event.gesture.center.pageY)) {
