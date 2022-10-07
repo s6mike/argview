@@ -11,6 +11,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.3
+
+- Add `test/input/html/example2-clearly-false-white-swan-v3.mup.html` (full white swan argument) to repo for testing etc.
+
 ## argmap 4.9.2
 
 - `scripts/bash_aliases_argmap.sh`: Update `j2hf()` to remove `.mup` suffixes as well as `.json`
