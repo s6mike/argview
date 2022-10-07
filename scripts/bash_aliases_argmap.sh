@@ -142,7 +142,9 @@ j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplif
   INPUT="${1:-$INPUT_FILE_JSON}"
   # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
   SITE_PATH="${INPUT/test/"mapjs/site"}"
+  # Removes either suffix:
   NAME=$(basename --suffix=".json" "$SITE_PATH")
+  NAME=$(basename --suffix=".mup" "$NAME")
   HTML_OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.html}
   #  TODO: Check and copy to input folder?
   PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$SITE_PATH")
