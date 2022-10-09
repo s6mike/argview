@@ -97,8 +97,7 @@ __test md2hf "$INPUT_FILE_MD_META"                  #9
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #10 add child button works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #11 left click works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #12 undo/redo button works
-# TODO Fix: This currently fails (and has never passed), because keys only work when a node has focus, and focus is lost after undo key.
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO" #13 undo/redo keys works
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO" #13 undo/redo keys fails in testcafe, first ctrl-z step didn't work.
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"  #14 add link works
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD" #15 edit first child node
 

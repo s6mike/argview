@@ -1,5 +1,6 @@
 $-- This file is used by pandoc-templates/mapjs/mapjs-quick-json.html
 $mapjs-testcontrols.html()$
-<div id="container_argmapjs" class="container_argmapjs">
+$-- tabindex ensures that container can receive focus, so keyboard shortcuts can work in it
+<div id="container_argmapjs" class="container_argmapjs" tabindex="0">
   <script type="application/json" class="argmap_json" src="$path-json-source$"></script>
 </div>

@@ -11,6 +11,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.4
+
+- `mapjs/src/browser/dom-map-widget.js`: Restore missing tabindex attribute to container, which is needed for divs to get focus (see [tabindex - HTML: HyperText Markup Language | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)). This was breaking keyboard shortcuts after clicking on blank part of the container (svg canvas), an issue introduced in v4.8.17.
+- Add `tabindex` to lua code which generates html so not dependent on js code alone:
+  - `src/pandoc-argmap.lua`
+  - `pandoc-templates/mapjs/mapjs-map.html`
+- Update notes on `test/test_scripts/tests.sh`.
+
 ## argmap 4.9.3
 
 - Add `test/input/html/example2-clearly-false-white-swan-v3.mup.html` (full white swan argument) to repo for testing etc.
@@ -70,6 +78,7 @@
 - Consolidate css styles and override mapjs-container's overflow: auto style for easier viewing of large maps:
   - `mapjs/src/browser/dom-map-widget.js`: Remove line adding overflow: auto to mapjs-container's style.
     - ISSUE #2 introduced: clicking in container restores `overflow: auto` to `element.style`: Must be another piece of code updating it again.
+    - ISSUE this line also assigned a tab index to the container, which is necessary for sequential keyboard navigation. This stopped keyboard shortcuts working after clicking on blank part of container (svg canvas). Fixed in v4.9.4
   - `mapjs/site/mapjs-default-styles.css`: Add css from `pandoc-templates/mapjs/mapjs-inline-styles.css` (embedded directly into html).
     - Remove `pandoc-templates/mapjs/mapjs-inline-styles.css` and references in template files:
       - `pandoc-templates/mapjs/mapjs-quick-json.html`

@@ -276,9 +276,10 @@ local function CodeBlock(block)
                 -- Gives each control a unique id aligned with the container.
                 local argmap_controls_html = argmap_controls_html_raw:gsub("%$BLOCK_ID%$", block_id)
 
+                -- tabindex ensures that container can receive focus, for keyboard shortcuts to work in it
                 local rawhtml = argmap_controls_html ..
                     "\n<div id=\"container_"
-                    .. block_id .. "\" class=\"container_argmapjs\">\n"
+                    .. block_id .. "\" class=\"container_argmapjs\" tabindex=\"0\">\n"
                     .. "  <script type=\"application/json\" "
                     -- .. " id=\"" .. block_id .. ".json\" "
                     .. "class=\"argmap_json\" src=\""
