@@ -40,6 +40,7 @@ dumb)
 *) ;;
 esac
 
+# Or try: if [ "$color_prompt" = yes ]; then
 if [ $COLOUR = 'true' ]; then
     echo "Colour supported"
     COL_PASS='\033[0;32m' # Green

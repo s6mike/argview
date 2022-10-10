@@ -11,6 +11,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.5
+
+- `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Updated chrome crash dumps dir to be `/tmp`, rather than inside project directory.
+
 ## argmap 4.9.4
 
 - `mapjs/src/browser/dom-map-widget.js`: Restore missing tabindex attribute to container, which is needed for divs to get focus (see [tabindex - HTML: HyperText Markup Language | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)). This was breaking keyboard shortcuts after clicking on blank part of the container (svg canvas), an issue introduced in v4.8.17.

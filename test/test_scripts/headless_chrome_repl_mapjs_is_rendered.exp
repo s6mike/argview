@@ -45,6 +45,10 @@ set PATH_INPUT_FILE_HTML [lindex $argv 0];
 set PATH_LOG_FILE_EXPECT [lindex $argv 1];
 set PORT_DEV_SERVER [lindex $argv 2];
 
+# Sets the crash dumps dir for chrome to ~/tmp
+# variable path_tmp_folder [file dirname $PATH_LOG_FILE_EXPECT]/../../tmp
+variable path_tmp_folder /tmp
+
 # Default logfile value
 if {$PATH_LOG_FILE_EXPECT eq ""} {set PATH_LOG_FILE_EXPECT /home/s6mike/git_projects/expect_log.txt};
 
@@ -56,12 +60,10 @@ log_user 0
 # Was -1, meaning no timeout
 set timeout 2
 
-# tmp folder should be in git_projects
-
 # Switch comments if want to see browser run:
 #	 Can see command in console, however expect script won't work so this will always fail.
-# spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
-spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=../tmp http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
+# spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=$path_tmp_folder http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
+spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=$path_tmp_folder http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
 
 match_max 100000
 expect -exact ">>> "
