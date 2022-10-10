@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.8
+
+- `scripts/bash_aliases_mapjs.sh`: Add alias `pmj` to run webpack pack on mapjs.
+
 ## argmap 4.9.7
 
 - [mapjs/README.md](../mapjs/README.md): Update mapjs keyboard shortcut section.

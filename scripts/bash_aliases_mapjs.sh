@@ -26,6 +26,7 @@ alias dfs='diff_staged_file' # dfs package.json package.diff
 alias smj='node_stop'
 alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
+alias pmj='webpack_pack'
 # Overwrite aliases from default bash_aliases
 # alias wss='npm run server --prefix "$PATH_MJS_HOME"'
 
