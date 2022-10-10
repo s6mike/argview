@@ -3,13 +3,16 @@
 ## TODO
 
 - Update and add `docs/example2-white-swan-complex-mindmup.png`?
-- Review and commit keyboard shortcuts changes
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - Move `mapjs/site/mapjs-default-styles.css` to `mapjs/site/css`?
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.9.7
+
+- [mapjs/README.md](../mapjs/README.md): Update mapjs keyboard shortcut section.
 
 ## argmap 4.9.6
 

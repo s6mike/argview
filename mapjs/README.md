@@ -54,42 +54,47 @@ This library depends on the following projects:
 You can only select one node at a time, selected nodes have a drop shadow. When you add nodes they are added relative to the selected node.
 You can activate multiple nodes at once, these are highlighted with a dotted line. When you delete or toggle nodes, you affect all the active nodes.
 
-|Key Combination|Effect|
-|----------------|---|
-`space` `f2` | Edit node text
-`del` `backspace` | Remove active nodes
-`return`| Add node below
-`shift+return`| Add node above
-`shift+tab`| Add node left
-`tab` `insert` | Add node right
-`ctrl+click` | Select clicked node
-`shift+click` | Activate clicked node
+| Key Combination | Normal Horizontal Maps | Top-Down Maps |
+|-----------------|----------------------------|---|
+`return`  | Add sibling node after | Add child node after
+`shift+return` | Add sibling node before | Add parent node
+`tab` `insert`  | Add child node | Insert sibling node after
+`shift+tab` | Insert parent node | Insert sibling node before
+
+| Key Combination | Effect |
+|-----------------|---|
+`shift+return` *while editing node text* | Start new line of text
+`space` `f2` | Edit text of currently selected node
+`del` `backspace` | Delete active nodes
 `alt+click` | Add link to clicked node
-`down`| Select node below
-`up`| Select node above
-`left`| Select node left
-`right`| Select node right
-`shift+down`| Activate node below
-`shift+up`| Activate node above
-`shift+left`| Activate node left
-`shift+right`| Activate node right
+`down` | Select node below
+`up` | Select node above
+`left` | Select node left
+`right` | Select node right
+`shift+click` | Activate clicked node
+`shift+down` | Activate node below
+`shift+up` | Activate node above
+`shift+left` | Activate node left
+`shift+right` | Activate node right
 `meta+down` `ctrl+down` | Move active nodes below
 `meta+up` `ctrl+up`| Move active nodes above
 `meta+right` `ctrl+right` | Move active nodes right
 `meta+left` `ctrl+left` | Move active nodes left
-`c meta+x ctrl+x` | Cut
-`p meta+v ctrl+v` | Paste
-`y meta+c ctrl+c` | Copy
-`ctrl+shift+v meta+shift+v` | Paste Style (custom colours)
+`c` `meta+x` `ctrl+x` | Cut
+`p` `meta+v` `ctrl+v` | Paste
+`y` `meta+c` `ctrl+c` | Copy
+`ctrl+shift+v` `meta+shift+v` | Paste Style (custom colours)
 `f` `/` | Toggle collapse / reveal
 `u` `meta+z` `ctrl+z` | Undo
-`r` `meta+shift+z` `ctrl+shift+z` `meta+y` `ctrl+y`| Redo
-`meta+plus ctrl+plus z` | Zoom in
-`meta+minus ctrl+minus shift+z` | Zoom out
-`Esc 0 meta+0 ctrl+0` | Reset view / zoom
-`[`| Activate children
-`{`| Activate node and children
-`=`| Activate sibling nodes
-`.`| Deactivate all but selected node
-`a`| Add / Open attachment
-`i`| Edit icon
+`r` `meta+shift+z` `ctrl+shift+z` `meta+y` `ctrl+y` | Redo
+`meta+plus` `ctrl+plus z` | Zoom in
+`meta+minus` `ctrl+minus` `shift+z` | Zoom out
+`esc` `0` | Activate root node of current selected tree, centre screen on it and reset zoom
+`1-9` | Activate all nodes at that level (in all trees)
+`[` | Activate descendants
+`{` | Activate node and descendants
+`=` | Activate sibling nodes
+`.` | Deactivate all but selected node
+`a` `click on paperclip icon` | Add / Open attachment
+`click on link icon` | Open url
+`i` | Edit icon *(Doesn't currently do anything!)*
