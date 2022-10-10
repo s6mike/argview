@@ -186,17 +186,23 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 			}
 
 		});
+		// ISSUE: Listening at document level is unintuitive, should add this at container level like the rest.
+		// 	https://github.com/s6mike/mapjs/issues/4
 		$(document).on('keydown', function (e) {
 			const functions = {
 				'U+003D': 'scaleUp',
 				'U+002D': 'scaleDown',
 				61: 'scaleUp',
-				173: 'scaleDown'
+				173: 'scaleDown',
+				187: 'scaleUp',
+				189: 'scaleDown',
 			};
 			let mappedFunction;
 			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {
-				if (e.originalEvent && e.originalEvent.keyIdentifier) { /* webkit */
-					mappedFunction = functions[e.originalEvent.keyIdentifier];
+				// ISSUE: keyCode event works, but is deprecated
+				//	https://github.com/s6mike/mapjs/issues/3
+				if (e.originalEvent && e.originalEvent.keyCode) { /* webkit */
+					mappedFunction = functions[e.originalEvent.keyCode];
 				} else if (e.key === 'MozPrintableKey') {
 					mappedFunction = functions[e.which];
 				}

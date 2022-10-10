@@ -11,6 +11,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.6
+
+- mapjs/src/browser/dom-map-widget.js`: Fix zoom in/out keyboard shortcuts:
+  - Now using keyCode, instead of keyIdentifier which didn't work. However, keyCode is deprecated: ISSUE s6mike/mapjs#3
+  - Add 2 missing key codes.
+
 ## argmap 4.9.5
 
 - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Updated chrome crash dumps dir to be `/tmp`, rather than inside project directory.
