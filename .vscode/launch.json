@@ -223,6 +223,7 @@
             "runtimeArgs": [
                 "--allow-file-access-from-files"
             ],
+            "webRoot": "${workspaceFolder}/${config:env.path_mjs_home}",
             "sourceMaps": true,
             "cleanUp": "onlyTab",
             // "profileStartup": true,
@@ -232,6 +233,7 @@
             "request": "attach",
             "name": "Attach to browser 9221 (argmap debug)",
             "port": 9221,
+            "webRoot": "${workspaceFolder}/${config:env.path_mjs_home}",
             "sourceMaps": true,
         }
     ]

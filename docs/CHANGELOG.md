@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.10
+
+- `scripts/bash_aliases_argmap.sh`: Fix `open-debug()` bug with handling relative path to workspace.
+
+## argmap 4.9.9
+
+- `.vscode/launch.json`: Fix mapjs debug source mapping (webRoot) so breakpoints work properly.
+  - `.vscode/settings.json`: Set variable for mapjs folder, used in webRoot path.
+
 ## argmap 4.9.8
 
 - `scripts/bash_aliases_mapjs.sh`: Add alias `pmj` to run webpack pack on mapjs.
