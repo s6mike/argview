@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.11
+
+- `docs/`:
+  - Add screenshots using argmap theme:  
+    - `mapjs-example-brunellus-argmap-theme.png`, `docs/mapjs-in-html-example.png`: Brunellus example, updated in [README.md](../README.md).
+      - Add `test/input/html/example-updated.html` for example screenshots to link to.
+    - `example2-white-swan-complex-argmapjs-argmap-theme.png`: better screenshot of mapjs argument, using argument map theme.
+      - Rename default theme screenshot for clarity.
+
 ## argmap 4.9.10
 
 - `scripts/bash_aliases_argmap.sh`: Fix `open-debug()` bugs with handling default and relative paths to workspace.
