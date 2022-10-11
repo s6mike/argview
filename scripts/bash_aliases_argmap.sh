@@ -25,14 +25,14 @@ alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/
 # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
 # TODO: user data dir doesn't seem to work, showing normal linux browser
 # For opening html pages with debug port open
-open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
-  INPUT_PATH="${1:-$PATH_INPUT_FILE_HTML}"
+open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/example2-clearly-false-white-swan-v3.html
+  INPUT_PATH="${1:-$DIR_HTML/$PATH_INPUT_FILE_HTML}"
   case $INPUT_PATH in
   /*)
     FULL_PATH=$INPUT_PATH
     ;;
   *)
-    FULL_PATH=$DIR_HTML/$INPUT_PATH
+    FULL_PATH=$WORKSPACE/$INPUT_PATH
     ;;
   esac
   # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:

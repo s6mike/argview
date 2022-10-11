@@ -12,7 +12,7 @@
 
 ## argmap 4.9.10
 
-- `scripts/bash_aliases_argmap.sh`: Fix `open-debug()` bug with handling relative path to workspace.
+- `scripts/bash_aliases_argmap.sh`: Fix `open-debug()` bugs with handling default and relative paths to workspace.
 
 ## argmap 4.9.9
 
