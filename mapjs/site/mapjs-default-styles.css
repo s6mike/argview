@@ -6,6 +6,8 @@ body {
 }
 
 .mapjs_control {
+	position: sticky;
+	z-index: 1;
 	min-height: 64px !important;
 	overflow-y: scroll;
 	padding: 5px;
@@ -24,9 +26,10 @@ body {
 	min-height: 250px !important;
 }
 
-/* div[data-mapjs-role=stage] {
-  transform: translate3d(calc(75% - 140px), 110%, 0) !important;
-} */
+div[data-mapjs-role=stage] {
+	transform: translate3d(960px, 0, 0) !important;
+	/* transform: translate3d(calc(75% - 140px), 110%, 0) !important; */
+}
 
 /* Above styles added from html file (maps-inline-styles.css) */
 

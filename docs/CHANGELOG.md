@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.15
+
+- Fix css so maps are positioned better and toolbar is placed at higher z-index so buttons aren't blocked.
+
 ## argmap 4.9.14
 
 - Update code and html generation to handle multiple containers on a page properly.
