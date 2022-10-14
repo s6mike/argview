@@ -5,6 +5,7 @@ module.exports = {
 	// TODO: Change so this is set automatically when mode is set
 	// Use for development:
 	devtool: 'cheap-module-eval-source-map',
+	// devtool: 'eval-source-map',
 	// Use for production:
 	// devtool: 'source-map',
 	output: {

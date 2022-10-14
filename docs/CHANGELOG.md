@@ -10,6 +10,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.13
+
+- Add functions for theme switching and merging:
+  - `mapjs/src/start.js`
+  - `mapjs/src/argmapjs-utilities.js`
+- Add lodash as dependency.
+- Update themes, make source files `.json`.
+
 ## argmap 4.9.12
 
 - `mapjs/webpack.config.js`: Change `devtool: 'cheap-module-eval-source-map'`for faster build time (not for production use).

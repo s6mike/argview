@@ -7,7 +7,17 @@ const MAPJS = require('./npm-main'),
 	themeProvider = require('../src/theme'),
 	content = MAPJS.content,
 
-	init = function () {
+// QUESTION: Can I loop through these somehow instead without having to know the name of each one?
+// 	new MAPJS.Theme[x] ?
+MAPJS.arg = require('../src/themes/argmap-theme.json');
+MAPJS.argumentMapping = require('../src/themes/argument-mapping.json');
+MAPJS.topdown = require('../src/themes/top-down-simple.json');
+MAPJS.compact = require('../src/themes/compact.json');
+MAPJS.v1 = require('../src/themes/v1.json');
+MAPJS.md = require('../src/themes/deep_merged_x.json');
+MAPJS.m2 = require('../src/themes/merged_x2.json');
+
+const init = function () {
 		'use strict';
 		let domMapController = false;
 
@@ -50,14 +60,41 @@ function addMap(container, testMap) {
 				return false;
 			}
 
-			if (!window.themeCSS) {
+	// Used to only apply if there wasn't already a theme, but now we want to replace it
+	if (window.themeCSS) {
+		jQuery('#themeCSS')[0].remove()
+	}
 				jQuery('<style id="themeCSS" type="text/css"></style>').appendTo('head').text(themeCSS);
-			}
+
 			return true;
-		},
-		themeJson = themeProvider.default || MAPJS.defaultTheme,
+};
+
+// TODO: Move to mapModel.changeTheme() in map-model.js
+// Changes theme of all maps on page
+// 	TODO: Make this apply to a specific map only
+const changeTheme = function (map, themeJson = themeProvider.default) {
+	// QUESTION: Should I build this into function in case themeJson invalid?
+	//	 themeJson = themeProvider.default || MAPJS.defaultTheme;
+	// QUESTION: Should I add getTheme to map?
 		theme = new MAPJS.Theme(themeJson),
 		getTheme = () => theme;
+	map.mapModel.setThemeSource(getTheme);
+
+	layoutThemeStyle(themeJson);
+
+	// Can't reset map with setIdea if domMapController hasn't been defined yet
+	// 	This is run at start of init(), so why is it undefined on first run?
+	// 		let domMapController = false;
+	// Could check for whether mapModel has a layoutCalculator function instead
+	if (map && typeof map.domMapController !== 'undefined') {
+		// ISSUE: This call breaks on second map, I guess since layout calculator wasn't set for new domMapController
+		// So really need to check for layout calculator
+		map.mapModel.setIdea(idea);
+	}
+
+	return getTheme;
+}
+
 
 	jQuery.fn.attachmentEditorWidget = function (mapModel) {
 		return this.each(function () {
@@ -77,7 +114,7 @@ function addMap(container, testMap) {
 
 	window.jQuery = jQuery;
 
-	container.domMapWidget(console, mapModel, touchEnabled);
+	getTheme = changeTheme(map, themeJson)
 
 	domMapController = new MAPJS.DomMapController(
 		mapModel,
