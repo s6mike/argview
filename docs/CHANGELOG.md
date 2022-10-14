@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.14
+
+- Update code and html generation to handle multiple containers on a page properly.
+
 ## argmap 4.9.13
 
 - Add functions for theme switching and merging:

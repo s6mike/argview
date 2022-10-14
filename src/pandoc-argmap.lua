@@ -277,13 +277,13 @@ local function CodeBlock(block)
                 local argmap_controls_html = argmap_controls_html_raw:gsub("%$BLOCK_ID%$", block_id)
 
                 -- tabindex ensures that container can receive focus, for keyboard shortcuts to work in it
-                local rawhtml = argmap_controls_html ..
-                    "\n<div id=\"container_"
+                --  TODO: as per controls, read in `pandoc-templates/mapjs/mapjs-map.html` and subsitute dynamically, instead of generating this html:
+                local rawhtml = "<div id=\"container_"
                     .. block_id .. "\" class=\"container_argmapjs\" tabindex=\"0\">\n"
                     .. "  <script type=\"application/json\" "
                     -- .. " id=\"" .. block_id .. ".json\" "
                     .. "class=\"argmap_json\" src=\""
-                    .. mapjs_url .. "\"></script>\n" .. "</div>"
+                    .. mapjs_url .. "\"></script>\n" .. argmap_controls_html .. "\n</div>"
 
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then

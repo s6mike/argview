@@ -4,17 +4,23 @@
   <input type="button" class="scaleUp" value="+"></input>
   <input type="button" class="scaleDown" value="-"></input>
   <input type="button" class="addSubIdea" value="add"></input>
-  <input type="button" onclick="mapModel.insertIntermediateGroup('click', {group:'supporting'})"
+  <input type="button"
+    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
     value="parent reason"></input>
-  <input type="button" onclick="mapModel.addGroupSubidea('click', {group:'supporting'})"
+  <input type="button"
+    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.addGroupSubidea('click', {group:'supporting'})"
     value="supporting group"></input>
-  <input type="button" onclick="mapModel.addGroupSubidea('click', {group:'opposing'})" value="opposing group"></input>
+  <input type="button"
+    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.addGroupSubidea('click', {group:'opposing'})"
+    value="opposing group"></input>
   <input type="button" class="editNode" value="edit"></input>
   <input type="button" class="removeSubIdea" value="delete"></input>
   <input type="button" class="insertIntermediate" value="insert parent"></input>
   <input type="button" class="toggleCollapse" value="exp/col"></input>
-  <input type="button" onclick="mapModel.setInputEnabled(false)" value="disable"></input>
-  <input type="button" onclick="mapModel.setInputEnabled(true)" value="enable"></input>
+  <input type="button" onclick="mapInstance['container_$BLOCK_ID$'].mapModel.setInputEnabled(false)"
+    value="disable"></input>
+  <input type="button" onclick="mapInstance['container_$BLOCK_ID$'].mapModel.setInputEnabled(true)"
+    value="enable"></input>
   <input type="button" class="undo" value="undo"></input>
   <input type="button" class="redo" value="redo"></input>
   <input type="button" data-mm-action="export-image" value="Export To Image" />
@@ -26,9 +32,9 @@
   <input type="button" class="insertRoot" value="add root node"></input>
   <input type="button" class="makeSelectedNodeRoot" value="make root"></input>
   Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
-  Frames: <span id="framerate"></span>
-  Cycle: <span id="cyclerate"></span>
-  <div id="linkEditWidget">
+  Frames: <span id="framerate_$BLOCK_ID$" class="framerate"></span>
+  Cycle: <span id="cyclerate_$BLOCK_ID$" class="cyclerate"></span>
+  <div id="linkEditWidget_$BLOCK_ID$" class="linkEditWidget">
     <input class="delete" type="button" value="Delete"></input>
     <select class="color">
       <option value="red">Red</option>
