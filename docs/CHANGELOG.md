@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.18
+
+- Add devtools recordings to test add supporting group button for 2 different pages.
+
 ## argmap 4.9.17
 
 - Fix template bug with container ID which broke add parent and supporting/opposing groups, and update templates.

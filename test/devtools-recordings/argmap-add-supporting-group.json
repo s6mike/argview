@@ -1,0 +1,39 @@
+{
+  "title": "argmap-add-supporting-group",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": ""
+        }
+      ],
+      "url": "http://localhost:9001/"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==6"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/supporting group"
+        ],
+        [
+          "#testcontrols > input[type=button]:nth-child(6)"
+        ]
+      ],
+      "offsetX": 63.80390930175781,
+      "offsetY": 12.627450942993164,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==8"
+    }
+  ]
+}

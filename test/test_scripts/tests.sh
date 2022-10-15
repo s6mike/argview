@@ -101,6 +101,8 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #12 undo/redo button 
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO" #13 undo/redo keys fails in testcafe, first ctrl-z step didn't work.
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"  #14 add link works
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD" #15 edit first child node
+# testcafe_run test/devtools-recordings/argmap-add-supporting-group-e2v3.json
+# test/devtools-recordings/argmap-add-supporting-group.json
 
 if [ "$1" != html ]; then
     __test md2pdf "$INPUT_FILE_MD0" #14
