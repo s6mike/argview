@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.16
+
+- Fix css to improve map positioning.
+- `mapjs/src/themes/mapjs-argument-mapping.json`: Rename for clarity.
+
 ## argmap 4.9.15
 
 - Fix css so maps are positioned better and toolbar is placed at higher z-index so buttons aren't blocked.

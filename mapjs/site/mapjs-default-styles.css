@@ -7,7 +7,7 @@ body {
 
 .mapjs_control {
 	position: sticky;
-	z-index: 1;
+	z-index: 10;
 	min-height: 64px !important;
 	overflow-y: scroll;
 	padding: 5px;
@@ -18,20 +18,28 @@ body {
 	/* Testing with visible instead for convenience: */
 	/* overflow: auto; */
 	overflow: visible;
-
 	background-color: #FFFFFF;
-	height: calc(100% - 60px) !important;
+	/* height: calc(100% - 60px) !important; */
 	width: 100%;
 	border: 1px dashed black;
 	min-height: 250px !important;
 }
 
 div[data-mapjs-role=stage] {
-	transform: translate3d(960px, 0, 0) !important;
-	/* transform: translate3d(calc(75% - 140px), 110%, 0) !important; */
+	transform: translate(100%, calc(30% - 30px)) !important;
+	width: 100%;
+	/* transform: translate(960px, 0) !important; */
+	/* translate(960px, calc(100% - 350px)) !important */
+	/* transform: translate(calc(75% - 140px), 110%) !important; */
 }
 
 /* Above styles added from html file (maps-inline-styles.css) */
+
+/* TODO should add this to argmap theme instead and argmap2mup should read it instead of it being hardcoded */
+.mapjs-node.selected {
+	border-style: solid !important;
+	border-width: 1.5px !important;
+}
 
 .mapjs-node {
 	margin: 0;
@@ -43,6 +51,7 @@ div[data-mapjs-role=stage] {
 	-ms-user-select: none;
 	color: #4F4F4F;
 	cursor: hand;
+
 }
 
 .mapjs-node .resize-node {
@@ -160,7 +169,7 @@ div[data-mapjs-role=stage] {
 	position: absolute;
 	margin: 0px;
 	padding: 0px;
-	z-index: 1;
+	/* z-index: 1; */
 }
 
 .mapjs-link-hit:hover {
