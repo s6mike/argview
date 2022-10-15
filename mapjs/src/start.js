@@ -10,7 +10,7 @@ let mapInstance = {}; // New object for keeping data for keeping various mapjs o
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 // 	new MAPJS.Theme[x] ?
 MAPJS.arg = require('../src/themes/argmap-theme.json');
-MAPJS.argumentMapping = require('../src/themes/argument-mapping.json');
+MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
 MAPJS.topdown = require('../src/themes/top-down-simple.json');
 MAPJS.compact = require('../src/themes/compact.json');
 MAPJS.v1 = require('../src/themes/v1.json');

@@ -1,25 +1,25 @@
-<!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with $BLOCK_ID$ substituted by filter -->
+<!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
 <div id="testcontrols_$BLOCK_ID$" class="mapjs_control">
   <input type="button" class="resetView" value="0"></input>
   <input type="button" class="scaleUp" value="+"></input>
   <input type="button" class="scaleDown" value="-"></input>
   <input type="button" class="addSubIdea" value="add"></input>
   <input type="button"
-    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
+    onclick="mapInstance[this.parentElement.parentElement.id].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
     value="parent reason"></input>
   <input type="button"
-    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.addGroupSubidea('click', {group:'supporting'})"
+    onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'supporting'})"
     value="supporting group"></input>
   <input type="button"
-    onclick="mapInstance['container_$BLOCK_ID$'].mapModel.addGroupSubidea('click', {group:'opposing'})"
+    onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'opposing'})"
     value="opposing group"></input>
   <input type="button" class="editNode" value="edit"></input>
   <input type="button" class="removeSubIdea" value="delete"></input>
   <input type="button" class="insertIntermediate" value="insert parent"></input>
   <input type="button" class="toggleCollapse" value="exp/col"></input>
-  <input type="button" onclick="mapInstance['container_$BLOCK_ID$'].mapModel.setInputEnabled(false)"
+  <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)"
     value="disable"></input>
-  <input type="button" onclick="mapInstance['container_$BLOCK_ID$'].mapModel.setInputEnabled(true)"
+  <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)"
     value="enable"></input>
   <input type="button" class="undo" value="undo"></input>
   <input type="button" class="redo" value="redo"></input>
