@@ -98,6 +98,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 				.attr('data-mapjs-role', 'stage')
 				.appendTo(element)
 				.data({
+					// As long as style top (offset y) and viewBox 2nd co-ordinate are the same, connections and nodes will align vertically.
+					// 	TODO: So prob best to set both to 0
+					// 	Prob ditto for let and 1st co-ordinate.
 					'offsetX': element.innerWidth() / 2,
 					'offsetY': element.innerHeight() / 2,
 					'width': element.innerWidth() - 20,

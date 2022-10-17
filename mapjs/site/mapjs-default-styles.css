@@ -8,7 +8,7 @@ body {
 .mapjs_control {
 	position: sticky;
 	z-index: 10;
-	min-height: 64px !important;
+	min-height: 66px !important;
 	overflow-y: scroll;
 	padding: 5px;
 }
@@ -26,7 +26,9 @@ body {
 }
 
 div[data-mapjs-role=stage] {
-	transform: translate(100%, calc(30% - 30px)) !important;
+	/* Have changed update-stage.js to get y value of 30% instead of overriding here*/
+	/* transform: translate(100%, calc(30% - 30px)) !important; */
+	/* transform: translate3d(100%, 30%) !important; */
 	width: 100%;
 	/* transform: translate(960px, 0) !important; */
 	/* translate(960px, calc(100% - 350px)) !important */

@@ -5,10 +5,17 @@
 - Update and add `docs/example2-white-swan-complex-mindmup.png`?
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
-- Move `mapjs/site/mapjs-default-styles.css` to `mapjs/site/css`?
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.9.21
+
+- `mapjs/src/browser/update-stage.js`: Update transform3d and transform y value to always be 30% instead of using offsetY based on height. This aligns top of map higher up on page.
+- `mapjs/site/mapjs-default-styles.css`:
+  - Comment out css transform overrides for `div[data-mapjs-role=stage]`. This also fixes broken zoom in/out.
+  - Increase `.mapjs_control` min-height so that link-edit-widget appearance doesn't shift map down by a few pixels (unless control wraps an extra line).
+- `mapjs/src/browser/dom-map-widget.js`: Add comments about controlling svg layout.
 
 ## argmap 4.9.20
 

@@ -9,22 +9,24 @@ jQuery.fn.updateStage = function () {
 			'width': Math.round(data.width - data.offsetX),
 			'height': Math.round(data.height - data.offsetY),
 			'transform-origin': 'top left',
-			'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px, 0)'
+			// 'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px, 0)'
+			'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, 30%, 0)'
 		},
 		svgContainer = this.find('[data-mapjs-role=svg-container]')[0];
 	if (data.scale && data.scale !== 1) {
-		size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)';
+		// size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)';
+		size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, 30%)';
 	}
 	this.css(size);
 	if (svgContainer) {
 		svgContainer.setAttribute('viewBox',
-			'' + Math.round(-1 * data.offsetX) + ' ' +  Math.round(-1 * data.offsetY) + ' ' + Math.round(data.width) + ' ' + Math.round(data.height)
+			'' + Math.round(-1 * data.offsetX) + ' ' + Math.round(-1 * data.offsetY) + ' ' + Math.round(data.width) + ' ' + Math.round(data.height)
 		);
 		svgContainer.setAttribute('style',
 			'top:' + Math.round(-1 * data.offsetY) + 'px; ' +
 			'left:' + Math.round(-1 * data.offsetX) + 'px; ' +
-			'width:' +  Math.round(data.width) + 'px; ' +
-			'height:' +  Math.round(data.height) + 'px;'
+			'width:' + Math.round(data.width) + 'px; ' +
+			'height:' + Math.round(data.height) + 'px;'
 		);
 	}
 	return this;
