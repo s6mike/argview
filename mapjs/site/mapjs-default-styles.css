@@ -53,8 +53,7 @@ div[data-mapjs-role=stage] {
 	-webkit-user-select: none;
 	-ms-user-select: none;
 	color: #4F4F4F;
-	cursor: hand;
-
+	cursor: pointer;
 	font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300 !important;
 	font-size: 12px !important;

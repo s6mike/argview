@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.25
+
+- Make mouse into pointing finger (`pointer`) when hovering over node.
+
 ## argmap 4.9.24
 
 - Make default node font larger and bolder:
