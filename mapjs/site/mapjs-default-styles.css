@@ -120,8 +120,12 @@ div[data-mapjs-role=stage] {
 	opacity: 0.4;
 }
 
-.mapjs-node[mapjs-level="1"] {
-	background-color: #22AAE0;
+.mapjs-node.level_1[mapjs-level="1"] {
+	font-weight: 400 !important;
+	background-color: #cbf0ff !important;
+	border-color: #017eaf;
+	border-style: groove;
+	border-radius: 16px;
 }
 
 .mapjs-decorations {

@@ -9,9 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.26
+
+- `mapjs/site/mapjs-default-styles.css`: Make root nodes more distinctive.
+
 ## argmap 4.9.25
 
-- Make mouse into pointing finger (`pointer`) when hovering over node.
+- `mapjs/site/mapjs-default-styles.css`: Make mouse into pointing finger (`pointer`) when hovering over node.
 
 ## argmap 4.9.24
 
