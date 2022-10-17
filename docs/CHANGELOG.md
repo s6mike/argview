@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.20
+
+- Remove legacy screenshots:
+  - `docs/mapjs-example2-white-swan-complex-argmapjs-argmap-theme.png`
+  - `docs/mapjs-example2-white-swan-complex-argmapjs-default-theme.png`
+
 ## argmap 4.9.19
 
 - Fix `Arrow` button in `linkEditWidget`. Was based on button active state, which seems weird and didn't work. Now just toggles between `to` and `false`.
