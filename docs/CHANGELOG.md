@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.27
+
+- `mapjs/site/mapjs-default-styles.css`: Give nodes a faint grey background.
+
 ## argmap 4.9.26
 
 - `mapjs/site/mapjs-default-styles.css`: Make root nodes more distinctive.

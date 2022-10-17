@@ -18,7 +18,7 @@ body {
 	/* Testing with visible instead for convenience: */
 	/* overflow: auto; */
 	overflow: visible;
-	background-color: #FFFFFF;
+	background-color: transparent;
 	/* height: calc(100% - 60px) !important; */
 	width: 100%;
 	border: 1px dashed black;
@@ -53,6 +53,7 @@ div[data-mapjs-role=stage] {
 	-webkit-user-select: none;
 	-ms-user-select: none;
 	color: #4F4F4F;
+	background-color: #f9f7f7 !important;
 	cursor: pointer;
 	font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300 !important;
@@ -94,6 +95,10 @@ div[data-mapjs-role=stage] {
 
 .mapjs-add-link .mapjs-node {
 	cursor: alias;
+}
+
+.mapjs-node.attr_group {
+	background-color: transparent !important;
 }
 
 .mapjs-node span[contenteditable=true] {
