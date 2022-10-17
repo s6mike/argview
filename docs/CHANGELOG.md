@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.22
+
+- `mapjs/site/mapjs-default-styles.css`: Remove black outline that appears on page load, by adding `outline: none` for `.container_argmapjs`.
+
 ## argmap 4.9.21
 
 - `mapjs/src/browser/update-stage.js`: Update transform3d and transform y value to always be 30% instead of using offsetY based on height. This aligns top of map higher up on page.

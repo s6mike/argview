@@ -23,6 +23,7 @@ body {
 	width: 100%;
 	border: 1px dashed black;
 	min-height: 250px !important;
+	outline: none;
 }
 
 div[data-mapjs-role=stage] {
