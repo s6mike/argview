@@ -55,6 +55,10 @@ div[data-mapjs-role=stage] {
 	color: #4F4F4F;
 	cursor: hand;
 
+	font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
+	font-weight: 300 !important;
+	font-size: 12px !important;
+	line-height: 15px;
 }
 
 .mapjs-node .resize-node {
@@ -98,13 +102,6 @@ div[data-mapjs-role=stage] {
 	-moz-user-select: text;
 	-webkit-user-select: text;
 	-ms-user-select: text;
-}
-
-.mapjs-node {
-	font-family: -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
-	font-weight: 500;
-	font-size: 12px;
-	line-height: 15px;
 }
 
 .mapjs-node span {

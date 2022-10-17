@@ -42,10 +42,10 @@
         "margin": 5,
         "font": {
           "lineSpacing": 2,
-          "sizePx": 13.3,
           "lineSpacingPx": 2.6,
-          "weight": "light",
-          "size": 10
+          "sizePx": 13.3,
+          "weight": 300,
+          "size": 12
         },
         "alignment": "start",
         "maxWidth": 146,

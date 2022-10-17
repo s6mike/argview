@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.24
+
+- Make default node font larger and bolder:
+  - `mapjs/site/mapjs-default-styles.css`:
+    - Combine separated `.mapjs-node` settings.
+    - Update font settings to be larger and bolder, using `!important`.
+  - `mapjs/src/themes/argmap-theme.json`: Update node font weight and size, although this doesn't seem to affect map because a different style is being set somewhere.
+
 ## argmap 4.9.23
 
 - `mapjs/src/start.js`: Set `mapjs/src/themes/argmap-theme.json` to be default theme instead of idea.theme (mapjs file theme), so easier to change theme settings in future.
