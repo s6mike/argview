@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.23
+
+- `mapjs/src/start.js`: Set `mapjs/src/themes/argmap-theme.json` to be default theme instead of idea.theme (mapjs file theme), so easier to change theme settings in future.
+
 ## argmap 4.9.22
 
 - `mapjs/site/mapjs-default-styles.css`: Remove black outline that appears on page load, by adding `outline: none` for `.container_argmapjs`.

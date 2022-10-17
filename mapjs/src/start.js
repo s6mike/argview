@@ -108,8 +108,9 @@ const addMap = function (container, mapJson) {
 		// 	Or are there generic methods I can separate out from object ones?
 		map.mapModel = new MAPJS.MapModel([]),
 
+		// Easier to maintain theme file so making that default:
 		// themeJson = themeProvider.default || MAPJS.defaultTheme;
-		themeJson = idea.theme || MAPJS.arg || themeProvider.default || MAPJS.defaultTheme,
+		themeJson = MAPJS.arg || idea.theme || themeProvider.default || MAPJS.defaultTheme,
 
 		// TODO: Might only need one of these for the whole page, rather than for each container:
 		jQuery.fn.attachmentEditorWidget = function (mapModel) {
