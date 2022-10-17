@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.19
+
+- Fix `Arrow` button in `linkEditWidget`. Was based on button active state, which seems weird and didn't work. Now just toggles between `to` and `false`.
+
 ## argmap 4.9.18
 
 - Add devtools recordings to test add supporting group button for 2 different pages.

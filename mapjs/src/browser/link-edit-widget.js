@@ -20,7 +20,9 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 			});
 			colorElement.val(linkStyle.color).change();
 			lineStyleElement.val(linkStyle.lineStyle);
-			arrowElement[linkStyle.arrow ? 'addClass' : 'removeClass']('active');
+			// This tampers with whether button is active after being clicked, when it should be deciding impact on arrow.
+			// Seems counterproductive, disabling.
+			// arrowElement[linkStyle.arrow ? 'addClass' : 'removeClass']('active');
 		});
 		mapModel.addEventListener('mapMoveRequested', function () {
 			element.hide();
@@ -35,13 +37,14 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		colorElement.change(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'color', jQuery(this).val());
 		});
-		// Fixes lineystle selector:
+		// Fixes linestyle selector:
 		// lineStyleElement.find('a').click(function () {
 		lineStyleElement.change(function () {
 			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'lineStyle', jQuery(this).val()); // Changed from text() to val() so that value is set correctly.
 		});
 		arrowElement.click(function () {
-			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', !arrowElement.hasClass('active'));
+			// Easier to toggle arrow value from within updateLinkStyle function than based on any kind of button state
+			mapModel.updateLinkStyle('mouse', currentLink.ideaIdFrom, currentLink.ideaIdTo, 'arrow', undefined);
 		});
 		// Removing so menu stays visible after mouse over or link change.
 		// element.mouseleave(element.hide.bind(element));

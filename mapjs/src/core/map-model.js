@@ -447,6 +447,10 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		}
 		if (isInputEnabled) {
 			analytic('updateLinkStyle:' + prop, source);
+			if (prop == 'arrow') {
+				// If arrow button pressed, toggle arrow value.
+				value = merged.arrow ? false : 'to';
+			}
 			merged[prop] = value;
 			idea.updateLinkAttr(ideaIdFrom, ideaIdTo, 'style', merged);
 		}
