@@ -39,7 +39,7 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/exam
   SITE_PATH="${FULL_PATH/test/"mapjs/site"}"
   # echo "SITE_PATH: $SITE_PATH"
   PATH_PAGE=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$SITE_PATH")
-  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$CHROME_DATA_DIR" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$PATH_PAGE" 2>/dev/null &
+  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$PATH_PAGE" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
 

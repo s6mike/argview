@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.38
+
+- Move chrome debug profile out of tmp folder into misc folder so settings stay consistent:
+  - Set up new env variable for misc folder.
+  - Rename chrome debug profile variable to PATH_CHROME_PROFILE_DEBUG and update to new location.
+  - Update other .env and script files.
+- Update .gitignore
+
 ## argmap 4.9.37
 
 - `mapjs/src/start.js`: Add comments for clarity.
