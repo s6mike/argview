@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.35
+
+- `mapjs/src/themes/argmap-theme.json`: Give supporting connector text white background instead of transparent for clarity (now matches opposing).
+
 ## argmap 4.9.34
 
 - Increase size of text in both nodes and connectors to 14px.
