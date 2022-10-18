@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.30
+
+- `mapjs/src/themes/argmap-theme.json`: Make outline for selected and activated group nodes blue like regular nodes, rather than red / green.
+
 ## argmap 4.9.29
 
 - `mapjs/site/mapjs-default-styles.css`: Make node drag/drop clearer:

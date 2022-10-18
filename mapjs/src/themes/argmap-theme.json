@@ -288,7 +288,7 @@
         "line": {
           "style": "dotted",
           "width": 3,
-          "color": "#00FF00"
+          "color": "#22AAE0"
         },
         "type": "surround"
       },
@@ -333,7 +333,7 @@
         "line": {
           "style": "dotted",
           "width": 3,
-          "color": "#FF0000"
+          "color": "#22AAE0"
         },
         "type": "surround"
       },
@@ -345,7 +345,7 @@
         "line": {
           "style": "dashed",
           "width": 3,
-          "color": "#00FF00"
+          "color": "#22AAE0"
         },
         "type": "surround"
       },
@@ -357,7 +357,7 @@
         "line": {
           "style": "dashed",
           "width": 3,
-          "color": "#FF0000"
+          "color": "#22AAE0"
         },
         "type": "surround"
       },
