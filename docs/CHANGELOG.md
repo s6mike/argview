@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.31
+
+- `mapjs/src/themes/argmap-theme.json`: Make white backgrounds transparent.
+
 ## argmap 4.9.30
 
 - `mapjs/src/themes/argmap-theme.json`: Make outline for selected and activated group nodes blue like regular nodes, rather than red / green.

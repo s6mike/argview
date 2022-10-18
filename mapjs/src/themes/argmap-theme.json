@@ -24,7 +24,7 @@
           "h": "center"
         }
       },
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "transparent",
       "shadow": [
         {
           "radius": 2,
@@ -486,8 +486,8 @@
           "ratio": 0.8,
           "aboveEnd": 15
         },
-        "borderColor": "white",
-        "backgroundColor": "white",
+        "borderColor": "transparent",
+        "backgroundColor": "transparent",
         "text": {
           "font": {
             "weight": "normal",
