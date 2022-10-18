@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.32
+
+- Tidy comments and format code.
+
 ## argmap 4.9.31
 
 - `mapjs/src/themes/argmap-theme.json`: Make white backgrounds transparent.

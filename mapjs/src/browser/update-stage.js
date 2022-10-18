@@ -9,6 +9,7 @@ jQuery.fn.updateStage = function () {
 			'width': Math.round(data.width - data.offsetX),
 			'height': Math.round(data.height - data.offsetY),
 			'transform-origin': 'top left',
+			// This change is so the argmap theme's root node is near the top of the container, might not be so good for regular mind-map layout.
 			// 'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px, 0)'
 			'transform': 'translate3d(' + Math.round(data.offsetX) + 'px, 30%, 0)'
 		},

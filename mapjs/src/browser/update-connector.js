@@ -26,7 +26,8 @@ jQuery.fn.updateConnector = function (optional) {
 		let pathElement, hitElement;
 		const element = jQuery(this),
 			connectorAttr = element.data('attr'),
-			allowParentConnectorOverride = !theme || !(theme.connectorEditingContext || theme.blockParentConnectorOverride) || (theme.connectorEditingContext && theme.connectorEditingContext.allowed && theme.connectorEditingContext.allowed.length), //TODO: rempve blockParentConnectorOverride once site has been live for a while
+			// TODO: Remove blockParentConnectorOverride once site has been live for a while
+			allowParentConnectorOverride = !theme || !(theme.connectorEditingContext || theme.blockParentConnectorOverride) || (theme.connectorEditingContext && theme.connectorEditingContext.allowed && theme.connectorEditingContext.allowed.length),
 			connection = buildConnection(element, optional),
 			applyLabel = function () {
 				const labelText = (connectorAttr && connectorAttr.label) || '',
@@ -54,11 +55,11 @@ jQuery.fn.updateConnector = function (optional) {
 		element.data('position', Object.assign({}, connection.position));
 		pathElement = element.find('path.mapjs-connector');
 		hitElement = element.find('path.mapjs-link-hit');
-		element.css(Object.assign(convertPositionToTransform(connection.position), {stroke: connection.color}));
+		element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }));
 		if (pathElement.length === 0) {
 			pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
 		}
-		//TODO: if the map was translated (so only the relative position changed), do not re-update the curve!!!!
+		// TODO: if the map was translated (so only the relative position changed), do not re-update the curve!
 		pathElement.attr({
 			'd': connection.d,
 			'stroke-width': connection.width,

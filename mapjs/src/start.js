@@ -127,12 +127,10 @@ const addMap = function (container, mapJson) {
 		};
 
 	// Moved this section to init()
-	// // TODO: This stuff only needed once, not per map
 	// window.onerror = console.error; // Stops annoying pop ups when there's an error.
 	// window.jQuery = jQuery;
 
 	jQcontainer.domMapWidget(console, map.mapModel, touchEnabled);
-
 	getTheme = changeTheme(map, themeJson)
 
 	// different stage for each container so need to have one for each container
