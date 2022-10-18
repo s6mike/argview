@@ -9,6 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.29
+
+- `mapjs/site/mapjs-default-styles.css`: Make node drag/drop clearer:
+  - Make red border wider and dotted.
+  - Reduce dragged node opacity.
+  - Change mouse cursor when dragging.
+
 ## argmap 4.9.28
 
 - `mapjs/site/mapjs-default-styles.css`: Separate out css for text (non-group) nodes using `.mapjs-node:not(.attr_group)`, so that group nodes don't have a fill colour.

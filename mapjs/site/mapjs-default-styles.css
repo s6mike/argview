@@ -87,10 +87,6 @@ div[data-mapjs-role=stage] {
 	outline: none;
 }
 
-.mapjs-node.droppable {
-	border: 1px solid red;
-}
-
 .mapjs-add-link {
 	cursor: crosshair;
 }
@@ -124,9 +120,15 @@ div[data-mapjs-role=stage] {
 }
 
 .mapjs-node.dragging {
-	opacity: 0.4;
+	opacity: 0.6 !important;
+	cursor: grabbing;
 }
 
+.mapjs-node.droppable {
+	border: 2.5px dashed red !important;
+	/* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
+	cursor: copy !important;
+}
 
 .mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
 	font-weight: 400 !important;
