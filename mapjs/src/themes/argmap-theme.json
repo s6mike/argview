@@ -45,7 +45,7 @@
           "lineSpacingPx": 2.6,
           "sizePx": 13.3,
           "weight": 300,
-          "size": 12
+          "size": 14
         },
         "alignment": "start",
         "maxWidth": 146,
@@ -237,7 +237,7 @@
         "alignment": "center",
         "font": {
           "lineSpacing": 2.5,
-          "sizePx": 12,
+          "sizePx": 14,
           "lineSpacingPx": 3.25,
           "weight": "bold",
           "size": 9
@@ -402,7 +402,7 @@
           "font": {
             "weight": "normal",
             "size": 9,
-            "sizePx": 12
+            "sizePx": 14
           },
           "color": "#4F4F4F"
         }
@@ -447,7 +447,7 @@
           "font": {
             "weight": "normal",
             "size": 9,
-            "sizePx": 12
+            "sizePx": 14
           },
           "color": "#FF0000"
         }
@@ -492,7 +492,7 @@
           "font": {
             "weight": "normal",
             "size": 9,
-            "sizePx": 12
+            "sizePx": 14
           },
           "color": "#339966"
         }

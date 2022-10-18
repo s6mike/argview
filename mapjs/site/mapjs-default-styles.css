@@ -60,7 +60,7 @@ div[data-mapjs-role=stage] {
 	background-color: #f9f7f7 !important;
 	font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300 !important;
-	font-size: 12px !important;
+	font-size: 14px;
 }
 
 .mapjs-node .resize-node {
@@ -76,6 +76,7 @@ div[data-mapjs-role=stage] {
 
 .mapjs-connector-text {
 	font-family: NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
+	font-size: 14px;
 }
 
 .resize-node:hover {
@@ -131,6 +132,7 @@ div[data-mapjs-role=stage] {
 }
 
 .mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
+	font-size: 16px;
 	font-weight: 400 !important;
 	background-color: #cbf0ff !important;
 	border-color: #017eaf;

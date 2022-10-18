@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.34
+
+- Increase size of text in both nodes and connectors to 14px.
+
 ## argmap 4.9.33
 
 - Highlight selected links so that it's clearer which the linkEditWidget will affect:
