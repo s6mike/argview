@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.36
+
+- `mapjs/src/browser/update-connector-text.js`:
+  - Changes calculation of connector text position so it's nearer the parent node. Not entirely successfully: the x position isn't very good because the mapjs-connector ClientRects.left and .right don't seem to relate to the actual boundary of the element. So, this change divides the impact of the new x position calculation by 100.
+  - Also renamed a variable for clarity.
+
 ## argmap 4.9.35
 
 - `mapjs/src/themes/argmap-theme.json`: Give supporting connector text white background instead of transparent for clarity (now matches opposing).
