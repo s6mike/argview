@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.37
+
+- `mapjs/src/start.js`: Add comments for clarity.
+
 ## argmap 4.9.36
 
 - `mapjs/src/browser/update-connector-text.js`:

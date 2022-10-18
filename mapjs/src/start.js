@@ -9,6 +9,7 @@ let mapInstance = {}; // New object for keeping data for keeping various mapjs o
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 // 	new MAPJS.Theme[x] ?
+// To change, call e.g. changeTheme(map, MAPJS.v1)
 MAPJS.arg = require('../src/themes/argmap-theme.json');
 MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
 MAPJS.topdown = require('../src/themes/top-down-simple.json');
@@ -69,8 +70,9 @@ const layoutThemeStyle = function (themeJson) {
 	return true;
 };
 
-// TODO: Move to mapModel.changeTheme() in map-model.js
 // Changes theme of all maps on page
+// 	To change, call e.g. changeTheme(map, MAPJS.v1)
+// 	TODO: Move to mapModel.changeTheme() in map-model.js
 // 	TODO: Make this apply to a specific map only
 const changeTheme = function (map, themeJson = themeProvider.default) {
 	// QUESTION: Should I build this into function in case themeJson invalid?
