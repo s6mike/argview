@@ -196,6 +196,10 @@ div[data-mapjs-role=stage] {
 	transition: opacity .2s;
 }
 
+.selected-link .mapjs-link {
+	outline: 1px dashed #8e22e0;
+}
+
 .drag-shadow {
 	opacity: 0.5;
 }

@@ -9,6 +9,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.33
+
+- Highlight selected links so that it's clearer which the linkEditWidget will affect:
+  - `mapjs/src/core/map-model.js`: Update `selectLink()` to add `selected-link` class to links when selected (and remove from old link).
+    - Also node IDs can contain dots ('.')
+      e.g. `test/input/html/example2-clearly-false-white-swan-v3.html`
+    so rewrite ID . with _, consistent with how they appear in HTML.  
+  - `mapjs/site/mapjs-default-styles.css`: Add outline styling to .map-js element child of `.selected-link`.
+  - To simplify testing links, add:
+    - `test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json`
+    - `test/input/html/example1-clearly-false-white-swan-simplified-with-links.html`
+
 ## argmap 4.9.32
 
 - Tidy comments and format code.

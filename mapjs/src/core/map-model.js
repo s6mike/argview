@@ -763,6 +763,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		analytic('addLink', source);
 		idea.addLink(currentlySelectedIdeaId, nodeIdTo);
 	};
+
 	this.selectLink = function (source, link, selectionPoint) {
 		if (!isEditingEnabled) {
 			return false;
@@ -771,8 +772,22 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		if (!link) {
 			return false;
 		}
+
+		// Remove class 'selected' from previously selected link, add it to newly selected link
+		//	Also node IDs can contain dots ('.') so rewrite ID . with _, consistent with how they appear in HTML.
+		// QUESTION: Should this be toggle so two clicks would unselect?
+		// 	Would need to change link-edit-widget behaviour too.
+		const link_id = [link.type, link.ideaIdFrom, link.ideaIdTo].join('_').replaceAll('.', '_');
+		const link_element = document.getElementById(link_id);
+		if (link_element && !link_element.classList.contains('selected-link')) {
+			// TODO: Would be more efficient to remember the selected link and then remove the class from it without having to find it again.
+			const old_selected_link = document.getElementsByClassName('selected-link')[0];
+			(old_selected_link ? old_selected_link.classList.remove('selected-link') : undefined);
+			link_element.classList.add('selected-link');
+		};
 		self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));
 	};
+
 	this.selectConnector = function (source, connector, selectionPoint) {
 		if (!isEditingEnabled) {
 			return false;
