@@ -46,19 +46,21 @@ div[data-mapjs-role=stage] {
 
 .mapjs-node {
 	margin: 0;
-	padding: 7px;
 	z-index: 2;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
+	cursor: pointer;
+	line-height: 15px;
+}
+
+.mapjs-node:not(.attr_group) {
 	color: #4F4F4F;
 	background-color: #f9f7f7 !important;
-	cursor: pointer;
 	font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300 !important;
 	font-size: 12px !important;
-	line-height: 15px;
 }
 
 .mapjs-node .resize-node {
@@ -125,7 +127,8 @@ div[data-mapjs-role=stage] {
 	opacity: 0.4;
 }
 
-.mapjs-node.level_1[mapjs-level="1"] {
+
+.mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
 	font-weight: 400 !important;
 	background-color: #cbf0ff !important;
 	border-color: #017eaf;

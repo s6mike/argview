@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.9.28
+
+- `mapjs/site/mapjs-default-styles.css`: Separate out css for text (non-group) nodes using `.mapjs-node:not(.attr_group)`, so that group nodes don't have a fill colour.
+
 ## argmap 4.9.27
 
 - `mapjs/site/mapjs-default-styles.css`: Give nodes a faint grey background.
