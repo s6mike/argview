@@ -27,7 +27,7 @@ $.fn.scrollWhenDragging = function (scrollPredicate) {
 		});
 	});
 };
-$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer, centerSelectedNodeOnOrientationChange) {
+$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange) {
 	'use strict';
 	const hotkeyEventHandlers = {
 		'return': 'insertDown',
@@ -133,6 +133,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, dragContainer
 			// 		element.css('overflow', 'auto');
 			// 	}
 			// });
+			element.imageDropWidget(imageInsertController);
 		} else {
 			element.on('doubletap', function (event) {
 				if (mapModel.requestContextMenu(event.gesture.center.pageX, event.gesture.center.pageY)) {

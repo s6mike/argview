@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.0
+
+- Add image drag and drop:
+  - Revert commit eb634329af9af66211bfc07d5f9088acb602734b and merge files
+  - Add `mapjs/src/browser/get-data-uri-and-dimensions.js` from commit c16ddf39d8173260366b1e00c182432d4da6cf1a
+  - Update mapjs [README.md](../mapjs/README.md) with basic instructions including new drag and drop image functionality.
+- ISSUE: Highlight link doesn't seem to work any more (from v4.9.33)
+
 ## argmap 4.9.38
 
 - Move chrome debug profile out of tmp folder into misc folder so settings stay consistent:

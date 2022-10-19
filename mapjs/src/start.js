@@ -103,7 +103,8 @@ const addMap = function (container, mapJson) {
 	map = mapInstance[container.id] = {};
 	// map = mapInstance[container.id];
 	jQcontainer = jQuery(container),
-
+		// Do I need one of these for each container?
+		imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
 		idea = content(mapJson),
 		touchEnabled = false,
 		// QUESTION: do only need 1 mapModel for all the maps?
@@ -132,7 +133,7 @@ const addMap = function (container, mapJson) {
 	// window.onerror = console.error; // Stops annoying pop ups when there's an error.
 	// window.jQuery = jQuery;
 
-	jQcontainer.domMapWidget(console, map.mapModel, touchEnabled);
+	jQcontainer.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
 	getTheme = changeTheme(map, themeJson)
 
 	// different stage for each container so need to have one for each container
@@ -142,6 +143,7 @@ const addMap = function (container, mapJson) {
 		map.mapModel,
 		jQcontainer.find('[data-mapjs-role=stage]'),
 		touchEnabled,
+		imageInsertController,
 		undefined, // resourceTranslator
 		getTheme
 	);
@@ -164,6 +166,10 @@ const addMap = function (container, mapJson) {
 	// Second link widget doesn't work, might need to do this for all in the class, not just one
 	jQuery('.arrow').click(function () {
 		jQuery(this).toggleClass('active');
+	});
+
+	imageInsertController.addEventListener('imageInsertError', function (reason) {
+		console.error('image insert error', reason);
 	});
 
 	jQcontainer.on('drop', function (e) {

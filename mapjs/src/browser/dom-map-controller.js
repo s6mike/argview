@@ -21,7 +21,7 @@ require('./find-line');
 require('./create-reorder-bounds');
 
 
-module.exports = function DomMapController(mapModel, stageElement, touchEnabled, resourceTranslator, themeSource, options) {
+module.exports = function DomMapController(mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator, themeSource, options) {
 	'use strict';
 	let stageMargin = (options && options.stageMargin),
 		stageVisibilityMargin = (options && options.stageVisibilityMargin),
@@ -287,6 +287,12 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	viewPort.on('scroll', function () {
 		viewPortDimensions = undefined;
 	});
+	if (imageInsertController) {
+		imageInsertController.addEventListener('imageInserted', function (dataUrl, imgWidth, imgHeight, evt) {
+			const point = stagePositionForPointEvent(evt);
+			mapModel.dropImage(dataUrl, imgWidth, imgHeight, point && point.x, point && point.y);
+		});
+	}
 	mapModel.addEventListener('nodeCreated', function (node) {
 		let currentReorderBoundary;
 		const element = stageElement.createNode(node)

@@ -17,6 +17,7 @@ describe('DomMapController', function () {
 		viewPort,
 		themeFromSource,
 		mapModel,
+		imageInsertController,
 		domMapController,
 		resourceTranslator,
 		themeSource;
@@ -27,12 +28,13 @@ describe('DomMapController', function () {
 		mapModel = observable(jasmine.createSpyObj('mapModel', ['setLayoutCalculator', 'selectConnector', 'getReorderBoundary', 'dropImage', 'clickNode', 'positionNodeAt', 'dropNode', 'openAttachment', 'toggleCollapse', 'undo', 'editNode', 'isEditingEnabled', 'editNode', 'setInputEnabled', 'getInputEnabled', 'updateTitle', 'getNodeIdAtPosition', 'selectNode', 'getCurrentlySelectedIdeaId', 'requestContextMenu', 'setNodeWidth']));
 		mapModel.getInputEnabled.and.returnValue(true);
 		mapModel.isEditingEnabled.and.returnValue(true);
+		imageInsertController = observable({});
 		viewPort = jQuery('<div>').appendTo('body');
 		stage = jQuery('<div>').css('overflow', 'scroll').appendTo(viewPort);
 		resourceTranslator = jasmine.createSpy('resourceTranslator');
 
 		themeSource = () => themeFromSource;
-		domMapController = new DomMapController(mapModel, stage, false, resourceTranslator, themeSource);
+		domMapController = new DomMapController(mapModel, stage, false, imageInsertController, resourceTranslator, themeSource);
 	});
 	afterEach(function () {
 		viewPort.remove();
@@ -936,15 +938,15 @@ describe('DomMapController', function () {
 						resourceTranslator = jasmine.createSpy('resourceTranslator');
 					});
 					it('should subscribe to mapModel nodeEditRequested event when no options supplied', function () {
-						domMapController = new DomMapController(mapModel, stage, false, resourceTranslator, themeSource);
+						domMapController = new DomMapController(mapModel, stage, false, imageInsertController, resourceTranslator, themeSource);
 						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 					it('should subscribe to mapModel nodeEditRequested event when no options.inlineEditingDisabled is false', function () {
-						domMapController = new DomMapController(mapModel, stage, false, resourceTranslator, themeSource, {inlineEditingDisabled: false});
+						domMapController = new DomMapController(mapModel, stage, false, imageInsertController, resourceTranslator, themeSource, {inlineEditingDisabled: false});
 						expect(mapModel.addEventListener).toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 					it('should not subscribe to mapModel nodeEditRequested event when true', function () {
-						domMapController = new DomMapController(mapModel, stage, false, resourceTranslator, themeSource, {inlineEditingDisabled: true});
+						domMapController = new DomMapController(mapModel, stage, false, imageInsertController, resourceTranslator, themeSource, {inlineEditingDisabled: true});
 						expect(mapModel.addEventListener).not.toHaveBeenCalledWith('nodeEditRequested', jasmine.any(Function));
 					});
 				});
@@ -1399,6 +1401,17 @@ describe('DomMapController', function () {
 						expect(stage.data('height')).toEqual(expectedStageHeight);
 					});
 				});
+			});
+		});
+		describe('image drag and drop', function () {
+			it('converts event coordinates to stage coordinates and delegates to mapModel.dropImage', function () {
+				viewPort.css({'width': '100px', 'height': '50px', 'overflow': 'scroll', 'top': '10px', 'left': '10px', 'position': 'absolute'});
+				stage.data({offsetX: 200, offsetY: 100, width: 300, height: 150, scale: 2}).updateStage();
+				viewPort.scrollLeft(20);
+				viewPort.scrollTop(10);
+				imageInsertController.dispatchEvent('imageInserted', 'http://url', 666, 777, {pageX: 70, pageY: 50});
+				expect(mapModel.dropImage).toHaveBeenCalledWith('http://url', 666, 777, -160, -75);
+				expect(resourceTranslator).not.toHaveBeenCalled();
 			});
 		});
 	});

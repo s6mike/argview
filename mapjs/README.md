@@ -48,10 +48,46 @@ This library depends on the following projects:
 - [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
 - [Color JS](https://github.com/harthur/color)
 
-## Keyboard Shortcuts
+## Node Selection
 
-You can only select one node at a time, selected nodes have a drop shadow. When you add nodes they are added relative to the selected node.
-You can activate multiple nodes at once, these are highlighted with a dotted line. When you delete or toggle nodes, you affect all the active nodes.
+- You can only select one node at a time, selected nodes have a drop shadow.
+  - When you add nodes they are added relative to th selected node.
+- You can activate multiple nodes at once, these are highlighted with a dotted line.
+  - When you delete or toggle nodes, this affects all active nodes.
+
+## Node Editing
+
+- New nodes automatically give you text focus so you can start adding its initial text.
+- Clicking on a node twice lets you edit the node's text.
+- Typing in a url will add a clickable link icon to the node allowing you to open that url in another tab. The url's text will not be displayed in the node except when editing it.
+- You can add an image to a node by dragging a file or web page image into it.
+- Click `open attachment` button to open `add attachment` pop-up.
+
+## Links
+
+- Links are arbitrary straight line connections between nodes that are not part of the tree structure.
+- You can create them with `alt+click` or with the `add link` toolbar button.
+- You can select links by clicking on them:
+  - This displays the Edit Link buttons underneath the main toolbar buttons:
+    - These can be used to delete the link or change their colour, style or toggle an arrow.
+  - The selected link is highlighted with a dotted purple line.
+
+## Mouse Operations
+
+- Click inside a node to select it.
+- Click twice inside a node to edit the text.
+- `shift+click`: Activates a node.
+- Menu Toolbar at top has buttons for a number of operations, yet to be documented.
+- Dragging and dropping:
+  - Root nodes only: drag into an open space to re-position.
+  - Child nodes: Make it into a new root node by dragging it into open space.
+  - Re-order nodes by dragging and dropping onto another node: you will see a red dotted highlight around the target node.
+  - You can drag images from files or other web pages into the map, either into existing nodes, or into open space to create new nodes.
+- `alt+click` on a node adds a link from your currently selected node to the clicked node.
+- Clicking on a link icon opens up the url in a new tab.
+- Clicking on an attachment icon opens the `add attachment` pop-up.
+
+## Keyboard Shortcuts
 
 | Key Combination | Normal Horizontal Maps | Top-Down Maps |
 |-----------------|----------------------------|---|
