@@ -199,7 +199,8 @@ div[data-mapjs-role=stage] {
 }
 
 .selected-link .mapjs-link {
-	outline: 1px dashed #8e22e0;
+	/* 1px outline doesn't always show up in chrome. */
+	outline: 1.5px dashed #8e22e0;
 }
 
 .drag-shadow {

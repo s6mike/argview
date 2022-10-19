@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.1
+
+- `mapjs/site/mapjs-default-styles.css`: Update selected link (purple dashed) outline to 1.5px since 1px invisible in chrome sometimes.
+
 ## argmap 4.10.0
 
 - Add image drag and drop:
