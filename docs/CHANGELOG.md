@@ -9,6 +9,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.2
+
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`: Capitalise all toolbar buttons' first word for consistency with link edit widget.
+  - Update `test/input/html/` files.
+
 ## argmap 4.10.1
 
 - `mapjs/site/mapjs-default-styles.css`: Update selected link (purple dashed) outline to 1.5px since 1px invisible in chrome sometimes.
