@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.3
+
+- `mapjs/src/browser/dom-map-controller.js`: Enable right click to bring up context menu when hovering over nodes.
+
 ## argmap 4.10.2
 
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Capitalise all toolbar buttons' first word for consistency with link edit widget.

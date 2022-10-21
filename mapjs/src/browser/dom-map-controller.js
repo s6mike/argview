@@ -373,8 +373,10 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 			.on('contextmenu', function (event) {
 				mapModel.selectNode(node.id);
 				if (mapModel.requestContextMenu(event.pageX, event.pageY)) {
-					event.preventDefault();
-					return false;
+					// Want context menu to be available over nodes too:
+					// event.preventDefault();
+					// return false;
+					return true;
 				}
 			})
 			.on('mm:stop-dragging', function (evt) {
