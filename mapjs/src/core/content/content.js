@@ -389,8 +389,16 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	};
 	contentAggregate.sameSideSiblingIds = function (subIdeaId) {
 		// ISSUE: idea.sameSideSiblingIds(nodeId) can return deleted grouping (e.g. green, supporting) node, which means node is undefined in next line:
-		const parentIdea = contentAggregate.findParent(subIdeaId),
-			currentRank = parentIdea.findChildRankById(subIdeaId);
+
+		// This line was throwing error on root node, so re-applied fix from commit 'allow insertIntermediate to add parent(s) to root nodes' (`98059f9ff83a681d13ab764f4b03068766211d2d`):
+		// const parentIdea = contentAggregate.findParent(subIdeaId),
+		let parentIdea;
+		if (contentAggregate.isRootNode(subIdeaId)) {
+			parentIdea = contentAggregate;
+		} else {
+			parentIdea = contentAggregate.findParent(subIdeaId);
+		}
+		var currentRank = parentIdea.findChildRankById(subIdeaId);
 		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) {
 			return i.id;
 		}), subIdeaId);

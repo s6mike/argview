@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.4
+
+- `mapjs/src/core/content/content.js`: Fix error thrown when insert parent on root node, by re-applying code from commit 'allow insertIntermediate to add parent(s) to root nodes' (`98059f9ff83a681d13ab764f4b03068766211d2d`).
+
 ## argmap 4.10.3
 
 - `mapjs/src/browser/dom-map-controller.js`: Enable right click to bring up context menu when hovering over nodes.
