@@ -9,6 +9,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.6
+
+- Add `test/input/html/example1-clearly-false-white-swan-simplified-2mapjs.html` to input folder for easier testing.
+- `mapjs/src/start.js`: Remove comment about bug which has since been fixed.
+
 ## argmap 4.10.5
 
 - `mapjs/src/core/map-model.js`: 'Parent reason' now works on root nodes. However:

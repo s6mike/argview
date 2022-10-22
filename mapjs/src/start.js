@@ -163,7 +163,6 @@ const addMap = function (container, mapJson) {
 
 	map.mapModel.setIdea(idea);
 
-	// Second link widget doesn't work, might need to do this for all in the class, not just one
 	jQuery('.arrow').click(function () {
 		jQuery(this).toggleClass('active');
 	});
