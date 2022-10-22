@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.7
+
+- `mapjs/src/themes/argmap-theme.json`: Update connection labels' `ratio` and `aboveEnd` parameters (used by `mapjs/src/browser/calc-label-center-point.js`) so labels are positioned better.
+
 ## argmap 4.10.6
 
 - Add `test/input/html/example1-clearly-false-white-swan-simplified-2mapjs.html` to input folder for easier testing.
