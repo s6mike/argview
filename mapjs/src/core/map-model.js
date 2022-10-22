@@ -508,7 +508,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		if (!isEditingEnabled) {
 			return false;
 		}
-		if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
+		// This line stops parent reason being added to root node:
+		// if (!isInputEnabled || idea.isRootNode(currentlySelectedIdeaId)) {
+		if (!isInputEnabled) {
 			return false;
 		}
 		analytic('insertIntermediate', source);

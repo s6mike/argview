@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.5
+
+- `mapjs/src/core/map-model.js`: 'Parent reason' now works on root nodes. However:
+  - First parent grouping doesn't show up until a parent is added. This is general issue with groupings - they don't display when orphaned.
+  - Original root node doesn't stop looking like root node until new parent root node added. Again, this is a separate issue.
+
 ## argmap 4.10.4
 
 - `mapjs/src/core/content/content.js`: Fix error thrown when insert parent on root node, by re-applying code from commit 'allow insertIntermediate to add parent(s) to root nodes' (`98059f9ff83a681d13ab764f4b03068766211d2d`).
