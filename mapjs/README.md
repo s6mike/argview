@@ -132,4 +132,4 @@ This library depends on the following projects:
 `.` | Deactivate all but selected node
 `a` `click on paperclip icon` | Add / Open attachment
 `click on link icon` | Open url
-`i` | Edit icon *(Doesn't currently do anything!)*
+`i` | Edit icon *(Reserved - doesn't currently do anything)*

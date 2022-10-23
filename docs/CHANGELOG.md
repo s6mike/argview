@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.8
+
+- Minor doc update: [mapjs/README.md](../mapjs/README.md)
+
 ## argmap 4.10.7
 
 - `mapjs/src/themes/argmap-theme.json`: Update connection labels' `ratio` and `aboveEnd` parameters (used by `mapjs/src/browser/calc-label-center-point.js`) so labels are positioned better.
