@@ -134,6 +134,7 @@ div[data-mapjs-role=stage] {
 .mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
 	font-size: 16px;
 	font-weight: 400 !important;
+	text-align: center !important;
 	background-color: #cbf0ff !important;
 	border-color: #017eaf;
 	border-style: groove;
