@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.10
+
+- `mapjs/site/mapjs-default-styles.css`: Replace non-existent properties ('background-height', 'background-width') for `.mapjs-reorder-bounds` with correct `background-size`.
+
 ## argmap 4.10.9
 
 - Fix linting errors, mainly from new VSCode markdown checker:
