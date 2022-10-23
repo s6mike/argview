@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.9
+
+- Fix linting errors, mainly from new VSCode markdown checker:
+  - Broken links
+  - Missing input file: `test/input/html/example-updated_.html`
+  - Dictionary error
+  - Bullet point lint warnings.
+
 ## argmap 4.10.8
 
 - Minor doc update: [mapjs/README.md](../mapjs/README.md)
@@ -977,7 +985,7 @@ BUG:
 
 - Develop argmapjs prototype:
 
-  - Merge with local custom branch of repo [`s6mike/mapjs-webpack-example at custom`](https://github.com/s6mike/mapjs-webpack-example/tree/custom). See [README.md](../README.md#using-mapjs-to-display-argmaps) for more details.
+  - Merge with local custom branch of repo [`s6mike/mapjs-webpack-example at custom`](https://github.com/s6mike/mapjs-webpack-example/tree/custom). See [README.md](../README.md#displaying-argmaps-with-mapjs) for more details.
     - mapjs project files are in `mapjs` folder.
     - `scripts`:
       - `scripts/bash_aliases_argmap.sh`:
@@ -997,7 +1005,7 @@ BUG:
     - Add `examples/example.json` (generated from example.yml) to repo as an example for mapjs.
     - Remove commands to delete MJS_WP_MAP which is now `examples/example.json`
   
-    - See [CHANGELOG-mapjs.md](mapjs/docs/CHANGELOG-mapjs.md) for more details.
+    - See [CHANGELOG-mapjs.md](../mapjs/docs/CHANGELOG-mapjs.md) for more details.
     - [README.md](../README.md):
       - Add mapjs and troubleshooting sections.
       - Add `docs/mapjs-example.png` to repo for use in [README.md](../README.md).
@@ -1131,11 +1139,11 @@ BUG:
 
 ## argmap 3.1.11
 
-- [CONTRIBUTIONS.md](../CONTRIBUTIONS.md): Update for clarity.
+- [CONTRIBUTIONS.md](../CONTRIBUTING.md): Update for clarity.
 
 ## argmap 3.1.10
 
-- [CONTRIBUTIONS.md](../CONTRIBUTIONS.md): Update for clarity.
+- [CONTRIBUTIONS.md](../CONTRIBUTING.md): Update for clarity.
 
 ## argmap 3.1.9
 
@@ -1249,7 +1257,7 @@ BUG:
 
 ## argmap 1.0.1
 
-- Update [README](README.md), [license](LICENSE).
+- Update [README](../README.md), [license](../LICENSE).
 - Add this CHANGELOG.md file.
 
 ## argmap 1.0.0
