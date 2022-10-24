@@ -9,6 +9,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.11.2
+
+- `test/output/example1-clearly-false-white-swan-simplified.yml`: Update to reflect new output based on updated input .json file:
+  - `test/input/example1-clearly-false-white-swan-simplified.yml`: Update reference input file too.
+
 ## argmap 4.11.1
 
 - Fix `test/devtools-recordings`:
