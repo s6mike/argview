@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.10.12
+
+- Add input file for testing: `test/input/html/example1-clearly-false-white-swan-simplified-1mapjs.html`. 
+
 ## argmap 4.10.11
 
 - `mapjs/site/mapjs-default-styles.css`: Centre align root node text.
