@@ -54,7 +54,9 @@
         "mup2argmap",
         "pandoc-argmap",
         "parisiensis",
-        "testcontrols"
+        "subidea",
+        "testcontrols",
+        "undofunc"
     ],
     "cSpell.ignoreWords": [
         "Libes",
