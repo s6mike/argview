@@ -9,11 +9,23 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.0
+
+- `mapjs/src/start.js`:
+  - FEATURE CHANGE: Paste dragged mapjs files into container, instead of replacing the old one.
+    - Better because it's:
+      - Less destructive.
+      - Allows undo / redo.
+      - Additionally, my implementation happens to stop non-mapjs `.json` files making any change to the map, fixing issue introduced in v4.12.0
+    - ISSUE: Only supports the same features as paste, so does not currently support links or themes.
+- [mapjs/README.md](../mapjs/README.md): Update to reflect above.
+
 ## argmap 4.12.0
 
 - `mapjs/src/start.js`:
   - Fix issue stopping drag and drop `.mup` files into the container, introduced in v4.9.14
-  - Update to accept `.json` files too.
+  - Update to accept `.json` files too, so now any mapjs file should work.
+    - ISSUE: Unfortunately, dragging non-mapjs `.json` files into container replaces map with empty root node.
 - Document in [mapjs/README.md](../mapjs/README.md): Can drag and drop `.mup` and `.json` files into the container to display them instead of the current map.
 
 ## argmap 4.11.4

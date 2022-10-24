@@ -36,6 +36,7 @@ const init = function () {
 			console.debug("script_src: ", script_src);
 
 			// TODO: switch to await/async for simpler code and debugging.
+			// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
 			fetch(script_src)
 				.then(response => response.json())
 				.then(data => addMap(container, data))
@@ -181,8 +182,15 @@ const addMap = function (container, mapJson) {
 			if (/\.(json|mup)$/.test(fileInfo.name)) {
 				const oFReader = new window.FileReader();
 				oFReader.onload = function (oFREvent) {
-					map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
+					// Less destructive to paste JSON file data into container as new map(s), instead of replacing existing map.
+					// TODO: However, paste doesn't include links, themes etc
+					// map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
+					container_idea = mapInstance[this.target_container_id].mapModel.getIdea();
+					result = container_idea.pasteMultiple('root', JSON.parse(oFREvent.target.result).ideas);
 				};
+				// This passes the target container's id to the File Reader window:
+				//	QUESTION: Is there a better way of doing this?
+				oFReader.target_container_id = e.delegateTarget.id;
 				oFReader.readAsText(fileInfo, 'UTF-8');
 			}
 		}
