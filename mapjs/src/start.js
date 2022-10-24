@@ -172,15 +172,16 @@ const addMap = function (container, mapJson) {
 	});
 
 	jQcontainer.on('drop', function (e) {
+		// QUESTION: Should maybe separate this into a callable function so that it can be used as general file import function?
 		const dataTransfer = e.originalEvent.dataTransfer;
 		e.stopPropagation();
 		e.preventDefault();
 		if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
 			const fileInfo = dataTransfer.files[0];
-			if (/\.mup$/.test(fileInfo.name)) {
+			if (/\.(json|mup)$/.test(fileInfo.name)) {
 				const oFReader = new window.FileReader();
 				oFReader.onload = function (oFREvent) {
-					mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
+					map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
 				};
 				oFReader.readAsText(fileInfo, 'UTF-8');
 			}

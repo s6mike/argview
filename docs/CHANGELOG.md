@@ -9,6 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.12.0
+
+- `mapjs/src/start.js`:
+  - Fix issue stopping drag and drop `.mup` files into the container, introduced in v4.9.14
+  - Update to accept `.json` files too.
+- Document in [mapjs/README.md](../mapjs/README.md): Can drag and drop `.mup` and `.json` files into the container to display them instead of the current map.
+
 ## argmap 4.11.4
 
 - Update screenshots to use latest mapjs appearance:
@@ -233,6 +240,7 @@
 ## argmap 4.9.14
 
 - Update code and html generation to handle multiple containers on a page properly.
+- ISSUE: This introduced a bug with dragging and dropping `.mup` files into the container to display them. Fixed in 4.12.0
 
 ## argmap 4.9.13
 

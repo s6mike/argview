@@ -86,6 +86,7 @@ This library depends on the following projects:
   - Child nodes: Make it into a new root node by dragging it into open space.
   - Re-order nodes by dragging and dropping onto another node: you will see a red dotted highlight around the target node.
   - You can drag images from files or other web pages into the map, either into existing nodes, or into open space to create new nodes.
+  - You can drag `.mup` files or `.json` files containing the `.mup` data structure into a container to replace the current map with the file displayed as a map.
 - `alt+click` on a node adds a link from your currently selected node to the clicked node.
 - Clicking on a link icon opens up the url in a new tab.
 - Clicking on an attachment icon opens the `add attachment` pop-up.
