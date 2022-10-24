@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.11.4
+
+- Update screenshots to use latest mapjs appearance:
+  - Update docs to use latest screenshots:
+    - `test/input/html/example-updated.html`: Update example input html.
+      - Update links to it in [README.md](../README.md).
+    - Add mapjs example screenshot to [mapjs README](../mapjs/README.md).
+
 ## argmap 4.11.3
 
 - `mapjs/site/mapjs-default-styles.css`: Update comments.
