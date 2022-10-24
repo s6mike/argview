@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.11.1
+
+- Fix `test/devtools-recordings`:
+  - Fix toolbar id used in `supporting-group` recordings.
+  - Remove arias from recordings since these are unnecessary.
+
 ## argmap 4.11.0
 
 - When dragging images, show border round node it will drop onto:

@@ -17,9 +17,6 @@
       "target": "main",
       "selectors": [
         [
-          "aria/add"
-        ],
-        [
           "#testcontrols_1 > input.addSubIdea"
         ]
       ],
