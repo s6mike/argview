@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.11.3
+
+- `mapjs/site/mapjs-default-styles.css`: Update comments.
+
 ## argmap 4.11.2
 
 - `test/output/example1-clearly-false-white-swan-simplified.yml`: Update to reflect new output based on updated input .json file:
@@ -18,7 +22,7 @@
 
 - Fix `test/devtools-recordings`:
   - Fix toolbar id used in `supporting-group` recordings.
-  - Remove arias from recordings since these are unnecessary.
+  - Remove aria directives from recordings since these are unnecessary.
 
 ## argmap 4.11.0
 

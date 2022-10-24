@@ -1,7 +1,7 @@
 /* Below styles added from html file (maps-inline-styles.css) */
 
-/* margin: 0 bit extreme when there is other content, perhaps apply this to the mapjs container only */
 body {
+	/* margin: 0 bit extreme when there is other content, perhaps apply this to the mapjs container only */
 	margin: 0;
 }
 
@@ -38,7 +38,6 @@ div[data-mapjs-role=stage] {
 
 /* Above styles added from html file (maps-inline-styles.css) */
 
-/* TODO should add this to argmap theme instead and argmap2mup should read it instead of it being hardcoded */
 .mapjs-node.selected {
 	border-style: solid !important;
 	border-width: 1.5px !important;
