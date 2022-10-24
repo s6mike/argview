@@ -599,5 +599,8 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	['nodeTitleChanged', 'nodeAttrChanged', 'nodeLabelChanged', 'nodeMoved', 'nodeRemoved', 'nodeCreated', 'connectorCreated', 'connectorRemoved', 'linkCreated', 'linkRemoved', 'linkAttrChanged', 'connectorAttrChanged'].forEach(evt => {
 		mapModel.addEventListener(evt, () => record(evt));
 	});
+	// Adding to domMapController so I can call it from image-drop-widget
+	// QUESTION: More elegant way?
+	self.stagePositionForPointEvent = stagePositionForPointEvent;
 };
 

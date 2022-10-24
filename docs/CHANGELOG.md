@@ -9,9 +9,19 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.11.0
+
+- When dragging images, show border round node it will drop onto:
+  - API change:  `mapjs/src/browser/dom-map-controller.js`: Add `stagePositionForPointEvent()` to `domMapController` object so it can be called from `mapjs/src/browser/image-drop-widget.js` to detect droppable node.
+  - `mapjs/src/browser/image-drop-widget.js`:
+    - Add code for detecting current droppable target and adding 'droppable' class to it.
+      - ISSUES: This does not seem to work well for group nodes or second of two containers on page.
+    - Add code to remove this class when leaving droppable target.
+  - `mapjs/src/core/map-model.js`: Add comment re possible improvement.
+
 ## argmap 4.10.12
 
-- Add input file for testing: `test/input/html/example1-clearly-false-white-swan-simplified-1mapjs.html`. 
+- Add input file for testing: `test/input/html/example1-clearly-false-white-swan-simplified-1mapjs.html`.
 
 ## argmap 4.10.11
 

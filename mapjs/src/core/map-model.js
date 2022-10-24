@@ -1195,6 +1195,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 				y <= node.y + node.height;
 		},
 			node = _.find(layoutModel.getLayout().nodes, isPointOverNode);
+		// QUESTION: Returns node.id, why not whole node?
 		return node && node.id;
 	};
 	self.autoPosition = function (nodeId) {
