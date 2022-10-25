@@ -1,0 +1,118 @@
+{
+  "title": "argmap-keys-zoom-in-zoom-reset",
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+          "title": "example1-clearly-false-white-swan-simplified"
+        }
+      ]
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('[data-mapjs-role=\"stage\"]').style.transform.search('scale')==-1"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_3 > span"
+        ]
+      ],
+      "offsetY": 13.3450927734375,
+      "offsetX": 52.499969482421875,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Control"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "="
+    },
+    {
+      "type": "keyUp",
+      "key": "=",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "=",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "Control",
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "s=document.querySelector('[data-mapjs-role=\"stage\"]').style.transform, s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(',')[0]==1.25"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "0"
+    },
+    {
+      "type": "keyUp",
+      "key": "0",
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('[data-mapjs-role=\"stage\"]').style.transform.search('scale')==-1"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Control"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "="
+    },
+    {
+      "type": "keyUp",
+      "key": "=",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "=",
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "Control",
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "s=document.querySelector('[data-mapjs-role=\"stage\"]').style.transform, s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(',')[0]==1.25"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Escape"
+    },
+    {
+      "type": "keyUp",
+      "key": "Escape",
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('[data-mapjs-role=\"stage\"]').style.transform.search('scale')==-1"
+    }
+  ]
+}

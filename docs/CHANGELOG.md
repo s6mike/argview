@@ -9,6 +9,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.2
+
+- `test/devtools-recordings/`:
+  - Add 5 new recordings to test: zooming, add parent to root, edit link, delete grandchild
+  - Remove viewport step of existing recordings.
+  - `mapjs/scripts/mapjs.env`: Add env variables for recordings.
+  - `test/test_scripts/tests.sh`: Add tests for recordings.
+    - Only 1 of them works in TestCafe: Add parent to root.
+
 ## argmap 4.13.1
 
 - Update vscode workspace dictionary.

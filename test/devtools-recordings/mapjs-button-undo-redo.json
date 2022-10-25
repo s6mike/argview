@@ -2,15 +2,6 @@
   "title": "mapjs-button-undo-redo",
   "steps": [
     {
-      "type": "setViewport",
-      "width": 1129,
-      "height": 929,
-      "deviceScaleFactor": 1,
-      "isMobile": false,
-      "hasTouch": false,
-      "isLandscape": false
-    },
-    {
       "type": "navigate",
       "url": "http://localhost:9000/",
       "assertedEvents": [

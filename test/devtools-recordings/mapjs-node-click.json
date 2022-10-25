@@ -2,15 +2,6 @@
   "title": "mapjs-node-click",
   "steps": [
     {
-      "type": "setViewport",
-      "width": 782,
-      "height": 837,
-      "deviceScaleFactor": 1,
-      "isMobile": false,
-      "hasTouch": false,
-      "isLandscape": false
-    },
-    {
       "type": "navigate",
       "url": "http://localhost:9000/",
       "assertedEvents": [

@@ -98,11 +98,18 @@ __test md2hf "$INPUT_FILE_MD_META"                  #9
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #10 add child button works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #11 left click works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #12 undo/redo button works
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO" #13 undo/redo keys fails in testcafe, first ctrl-z step didn't work.
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"  #14 add link works
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD" #15 edit first child node
-# testcafe_run test/devtools-recordings/argmap-add-supporting-group-e2v3.json
-# test/devtools-recordings/argmap-add-supporting-group.json
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"  #13
+
+# These don't work
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO"      #14 undo/redo keys fails in testcafe, first ctrl-z step didn't work.
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #15 add link works
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD"    #16 edit first child node
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #17 ERROR: Action "selector" argument error: missing ) after argument list
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #18
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ZOOM"         #19
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_ZOOM"           #20
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD"   #21
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK"           #22
 
 if [ "$1" != html ]; then
     __test md2pdf "$INPUT_FILE_MD0" #14

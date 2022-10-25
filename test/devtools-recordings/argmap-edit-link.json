@@ -1,0 +1,133 @@
+{
+  "title": "argmap-edit-link",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+          "title": "example1-clearly-false-white-swan-simplified"
+        }
+      ],
+      "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_1 > span"
+        ]
+      ],
+      "offsetX": 81.5,
+      "offsetY": 28.345077514648438,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Alt"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Every swan I’ve ever seen is white."
+        ],
+        [
+          "#node_5"
+        ]
+      ],
+      "offsetX": 56,
+      "offsetY": 1.8450927734375,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyUp",
+      "target": "main",
+      "key": "Alt"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "!mapInstance['container_argmap1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > button.arrow"
+        ]
+      ],
+      "offsetX": 9.137252807617188,
+      "offsetY": 10.372543334960938,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-arrow')[0].style.display=='none'"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > button.arrow"
+        ]
+      ],
+      "offsetX": 9.137252807617188,
+      "offsetY": 10.372543334960938,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "!document.getElementsByClassName('mapjs-arrow')[0].style.display"
+    },
+    {
+      "type": "change",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > select.lineStyle"
+        ]
+      ],
+      "value": "dashed"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-link')[0].getAttribute('stroke-dasharray')"
+    },
+    {
+      "type": "change",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > select.color"
+        ]
+      ],
+      "value": "blue"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-arrow')[0].getAttribute('fill')=='blue'"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > input.delete"
+        ]
+      ],
+      "offsetX": 39,
+      "offsetY": 7.3725433349609375,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "!document.getElementsByClassName('mapjs-arrow')[0]"
+    }
+  ]
+}

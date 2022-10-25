@@ -1,0 +1,103 @@
+{
+  "title": "argmap-delete-grandchild",
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+          "title": "example1-clearly-false-white-swan-simplified"
+        }
+      ]
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==6"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_5 > span"
+        ]
+      ],
+      "offsetY": 13.3450927734375,
+      "offsetX": 102.5,
+      "deviceType": "pen"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Add"
+        ],
+        [
+          "#testcontrols_1 > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 6.745094299316406,
+      "offsetX": 26.34313201904297,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyDown",
+      "key": "b"
+    },
+    {
+      "type": "keyUp",
+      "key": "b"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Add"
+        ],
+        [
+          "#testcontrols_1 > input.addSubIdea"
+        ]
+      ],
+      "offsetY": 9.745094299316406,
+      "offsetX": 28.34313201904297,
+      "deviceType": "pen"
+    },
+    {
+      "type": "change",
+      "value": "c",
+      "selectors": [
+        [
+          "#node_8 > span"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==8"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Delete"
+        ],
+        [
+          "#testcontrols_1 > input.removeSubIdea"
+        ]
+      ],
+      "offsetY": 9.745094299316406,
+      "offsetX": 24.67645263671875,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==7"
+    }
+  ]
+}

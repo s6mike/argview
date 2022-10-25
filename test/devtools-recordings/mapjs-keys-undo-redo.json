@@ -2,15 +2,6 @@
   "title": "mapjs-keys-undo-redo",
   "steps": [
     {
-      "type": "setViewport",
-      "width": 693,
-      "height": 807,
-      "deviceScaleFactor": 1,
-      "isMobile": false,
-      "hasTouch": false,
-      "isLandscape": false
-    },
-    {
       "type": "navigate",
       "url": "http://localhost:9000/",
       "assertedEvents": [

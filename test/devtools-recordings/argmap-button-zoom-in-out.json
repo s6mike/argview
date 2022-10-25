@@ -1,0 +1,66 @@
+{
+  "title": "argmap-button-zoom-in-out",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+          "title": "example1-clearly-false-white-swan-simplified"
+        }
+      ],
+      "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('[data-mapjs-role=\"stage\"]').style.transform.search('scale')==-1"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols_1 > input.scaleDown"
+        ]
+      ],
+      "offsetX": 5.784313201904297,
+      "offsetY": 9.745094299316406
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "s=document.querySelector('[data-mapjs-role=\"stage\"]').style.transform, s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(',')[0]==0.8"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols_1 > input.resetView"
+        ]
+      ],
+      "offsetX": 5,
+      "offsetY": 4.745094299316406,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('[data-mapjs-role=\"stage\"]').style.transform.search('scale')==-1"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#testcontrols_1 > input.scaleUp"
+        ]
+      ],
+      "offsetX": 16.57843017578125,
+      "offsetY": 12.745094299316406
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "s=document.querySelector('[data-mapjs-role=\"stage\"]').style.transform, s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(',')[0]==1.25"
+    }
+  ]
+}
