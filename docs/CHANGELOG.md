@@ -9,6 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.5
+
+- `mapjs/src/core/map-model.js`: Fix bug with highlighting selected links when 2 containers on page, by properly distinguishing between the containers:
+  - Selecting link on one container would remove the selection border from selected link in the other container.
+  - Selecting a link in the lower container would select any links with identical element id in the upper container instead.
+  (Unfortunately, map element IDs are currently only unique within a container, not on a page as they should be).
+
 ## argmap 4.13.4
 
 - Add test page with 2 different maps: `test/input/markdown/2-maps-swan-donkey.md`.
@@ -183,6 +190,8 @@
   - To simplify testing links, add:
     - `test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json`
     - `test/input/html/example1-clearly-false-white-swan-simplified-with-links.html`
+
+  ISSUE: Bug with highlighting selected links when 2 containers on page, fixed in v4.13.5
 
 ## argmap 4.9.32
 

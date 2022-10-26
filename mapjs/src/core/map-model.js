@@ -780,10 +780,14 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		// QUESTION: Should this be toggle so two clicks would unselect?
 		// 	Would need to change link-edit-widget behaviour too.
 		const link_id = [link.type, link.ideaIdFrom, link.ideaIdTo].join('_').replaceAll('.', '_');
-		const link_element = document.getElementById(link_id);
+		// This identifies current container so that only relevant links are affected:
+		const container_element = event.currentTarget.activeElement;
+		console.log('container_element: ', container_element)
+		// Can only use getElementbyId at doc level so using querySelector instead:
+		const link_element = container_element.querySelector('#' + link_id)
 		if (link_element && !link_element.classList.contains('selected-link')) {
 			// TODO: Would be more efficient to remember the selected link and then remove the class from it without having to find it again.
-			const old_selected_link = document.getElementsByClassName('selected-link')[0];
+			const old_selected_link = container_element.getElementsByClassName('selected-link')[0];
 			(old_selected_link ? old_selected_link.classList.remove('selected-link') : undefined);
 			link_element.classList.add('selected-link');
 		};
