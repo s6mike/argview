@@ -412,7 +412,7 @@
       "type": "no-connector",
       "line": {
         "width": 4,
-        "color": "#FF0000"
+        "color": "#FFAFAF"
       },
       "label": {
         "position": {
@@ -434,7 +434,7 @@
       "type": "vertical-quadratic-s-curve",
       "line": {
         "width": 3,
-        "color": "#FF0000"
+        "color": "#FFAFAF"
       },
       "label": {
         "position": {
@@ -449,7 +449,7 @@
             "size": 9,
             "sizePx": 14
           },
-          "color": "#FF0000"
+          "color": "#FFAFAF"
         }
       }
     },
@@ -457,7 +457,7 @@
       "type": "no-connector",
       "line": {
         "width": 4,
-        "color": "#339966"
+        "color": "#277D52"
       },
       "label": {
         "position": {
@@ -471,7 +471,7 @@
             "size": 6,
             "sizePx": 9
           },
-          "color": "#339966"
+          "color": "#277D52"
         }
       }
     },
@@ -479,7 +479,7 @@
       "type": "vertical-quadratic-s-curve",
       "line": {
         "width": 3,
-        "color": "#339966"
+        "color": "#277D52"
       },
       "label": {
         "position": {
@@ -494,7 +494,7 @@
             "size": 9,
             "sizePx": 14
           },
-          "color": "#339966"
+          "color": "#277D52"
         }
       }
     },

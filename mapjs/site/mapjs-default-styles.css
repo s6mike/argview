@@ -135,7 +135,7 @@ div[data-mapjs-role=stage] {
 	font-weight: 400 !important;
 	text-align: center !important;
 	background-color: #cbf0ff !important;
-	border-color: #017eaf;
+	border-color: #0e96cb;
 	border-style: groove;
 	border-radius: 16px;
 }
@@ -200,7 +200,7 @@ div[data-mapjs-role=stage] {
 
 .selected-link .mapjs-link {
 	/* 1px outline doesn't always show up in chrome. */
-	outline: 1.5px dashed #8e22e0;
+	outline: 1.5px dashed #c67bff;
 }
 
 .drag-shadow {

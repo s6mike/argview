@@ -9,6 +9,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.3
+
+- `mapjs/src/themes/argmap-theme.json`: Change opposing, supporting, node selection / activation and link selection colours for higher contrast (for colour blind users). Opposing much pinker now.
+- `test/`: Add input files with thinner opposing lines so easier to compare contrast visibility.
+
 ## argmap 4.13.2
 
 - `test/devtools-recordings/`:
