@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.6
+
+- `src/config_argmap.lua`: Stop os.getenv("LUA_PATH") throwing error when returning nil with Markdown Preview Enhanced VSCode extension.
+
 ## argmap 4.13.5
 
 - `mapjs/src/core/map-model.js`: Fix bug with highlighting selected links when 2 containers on page, by properly distinguishing between the containers:

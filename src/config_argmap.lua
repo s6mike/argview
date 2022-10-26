@@ -57,7 +57,8 @@ end)
 -- Set to .DEBUG to activate logging
 Logger:setLevel(logging.ERROR)
 
-Logger:debug("LUA_PATH: " .. os.getenv("LUA_PATH"))
+-- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
+Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))
 
 -- Logger:debug("message: ".. message) -- tables can't be concatenated so use separate debug message.
 
