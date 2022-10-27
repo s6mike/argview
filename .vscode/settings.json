@@ -103,8 +103,10 @@
     "markdown-preview-enhanced.usePandocParser": true,
     "markdown-preview-enhanced.enableScriptExecution": true,
     "markdown-preview-enhanced.pandocArguments": [
-        "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua", // Variables don't work in this fi
-        "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
+        "--template=/home/s6mike/git_projects/argmap/pandoc-templates/mapjs/mapjs-main-html5.html", // Variables don't work in this field
+        "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua", // Variables don't work in this field
+        // "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-hello.lua", // Variables don't work in this field
+        "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc", // Don't think variable is working in this field either
         // "--output=/home/s6mike/git_projects/argmap/test/output/test.html",
     ],
     "launch": {

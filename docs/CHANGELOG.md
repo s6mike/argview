@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.7
+
+- `.vscode/settings.json`: Add pandoc template argument to Markdown Preview Enhanced extension's pandoc settings.
+
 ## argmap 4.13.6
 
 - `src/config_argmap.lua`: Stop os.getenv("LUA_PATH") throwing error when returning nil with Markdown Preview Enhanced VSCode extension.
