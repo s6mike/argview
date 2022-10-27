@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.8
+
+- `scripts/bash_aliases_argmap.sh`: Minor `a2mu()` improvement: Report uploaded filename, not input filename.
+
 ## argmap 4.13.7
 
 - `.vscode/settings.json`: Add pandoc template argument to Markdown Preview Enhanced extension's pandoc settings.

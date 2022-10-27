@@ -95,7 +95,7 @@ a2m() {                                    # a2m test/input/example1-clearly-fal
 a2mu() { # a2mu test/output/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
     argmap2mup --upload --name "$NAME.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
-    echo "Uploaded: $1 to GDrive."
+    echo "Uploaded: $NAME.mup to GDrive."
 }
 
 # Convert map.js to argmap yaml format
