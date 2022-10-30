@@ -415,7 +415,7 @@ theme:
 
 local function default_to_nil(var)
   -- Setting ideas to nil instead of {} means that it will not be included in object if it stays empty.
-  -- Which means that JSON output will not be set to [], which screws up mapjs data structure.
+  -- Which means that JSON output will not be set to [] (which screws up mapjs data structure).
   if next(var) == nil then
     return nil
   end
@@ -479,9 +479,8 @@ function parse_claims(t)
         if not name then
           name = claim
         end
-        -- Setting to nil means that it will not be included in object if it stays empty.
-        -- Which means that JSON output will not be set to [], which screws up mapjs data structure.
-        local attr = nil
+        local attr = {}
+
         -- claims that begin with a '-' are styled as implicit premises
         if string.match(claim, "^-.*") then
           claim = string.sub(claim, 2, -1)
@@ -494,15 +493,17 @@ function parse_claims(t)
         if note then
           note = markdown_to_plain(note)
           gn = gn + 1
+
           attr["note"] = {
             ["index"] = gn,
             ["text"] = note
           }
         end
+
         o[id] = {
           ["title"] = claim,
           ["id"] = gid,
-          ["attr"] = attr,
+          ["attr"] = default_to_nil(attr), -- default_to_nil(attr) stops empty attr breaking json output.
           ["ideas"] = parse_reasons(v)
         }
       end

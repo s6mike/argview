@@ -9,6 +9,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.11
+
+- `src/argmap2mup.lua`: Fix issue with handling notes created in v4.8.7:
+  - Initialise `attr` as {} again, so that no error is thrown when notes are used in the yaml input (e.g. with input `examples/example-2.yml`).
+    - Instead, applies `default_to_nil()` to `attr` at end of function.
+  - Update some comments.
+  - `.vscode/launch.json`: Update to debug `examples/example-2.yml`.
+
 ## argmap 4.13.10
 
 - `docs/`: Update screenshots (new connector colours).
@@ -507,6 +515,8 @@ Files created from argmap2mup now work with MindMup. Fix #11.
     - Add Default_to_nil() so that empty ideas variable can be omitted instead of being [].
       - 2 functions return this function output, instead of returning ideas value directly.
     - attr initialised to nil instead of {} so that it will be omitted if left empty.
+      - ISSUE: This fix causes an error to be thrown when notes are used in the yaml input (e.g. with input `examples/example-2.yml`).
+        - Fixed in v4.13.11
     - Add check for empty argmap.yml input to stop crash.
 - `src/config_argmap.lua`:
   - Add 'Local Lua' debugger path to `package.path` (LUA_CPATH) in case it's missing.

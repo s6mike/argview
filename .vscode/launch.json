@@ -19,6 +19,21 @@
             "name": "Lua Debugger a2m",
             "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             "arg": [
+                "${workspaceFolder}/examples/example-2.yml",
+            ],
+            "env": {
+                "PATH": "${config:lua.debug.settings.env.path}",
+                "LUA_PATH": "${config:lua.debug.settings.path}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
+            },
+            "stopOnEntry": true,
+        },
+        {
+            "type": "lua",
+            "request": "launch",
+            "name": "Lua Debugger a2m",
+            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "arg": [
                 "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
                 ">",
                 "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.json"
