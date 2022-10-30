@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.12
+
+- `src/argmap2mup.lua`: Update map uploaded message to show whole MindMup url, not just the GDrive file ID.
+
 ## argmap 4.13.11
 
 - `src/argmap2mup.lua`: Fix issue with handling notes created in v4.8.7:

@@ -639,7 +639,11 @@ function main()
         "--mime \"application/vnd.mindmup\"",
         mup)
       local gdrive_id = string.match(gdriveoutput, "Uploaded ([^%s]*) at")
-      return gdrive_id
+      -- Could instead return gdrive URL:
+      --  "https://drive.google.com/file/d/" .. gdrive_id .. "/edit"
+      local url = "https://drive.mindmup.com/map/" .. gdrive_id
+
+      return url
     else
       Logger:debug("return mup: " .. mup)
       return mup
