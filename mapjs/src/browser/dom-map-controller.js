@@ -26,7 +26,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	let stageMargin = (options && options.stageMargin),
 		stageVisibilityMargin = (options && options.stageVisibilityMargin),
 		currentDroppable = false,
-		stats = false,
+		stats = {},
 		viewPortDimensions;
 
 	const self = this,
@@ -568,9 +568,11 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				})
 				.catch(function () {
 					mapModel.setInputEnabled(true);
-					if (editingNew) {
+					if (editingNew) { // Undoes node creation if no text added.
 						mapModel.undo('internal');
 					}
+					// Add this line to keep node:
+					// 	mapModel.updateTitle(nodeId, editingElement.data('title'), editingNew);
 					editingElement.focus();
 				});
 		});

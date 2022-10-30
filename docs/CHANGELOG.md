@@ -9,6 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.9
+
+- `mapjs/src/browser/dom-map-controller.js`:
+  - Apply 2 fixes from [garlic0708 mindmup commit](https://github.com/mindmup/mapjs/commit/45ce477c400d5d8a67c86758bc8d0643e2f8828b):
+    - Fix stats by initialising as {}
+    - Add comments showing how to keep new node even if text isn't edited.
+
 ## argmap 4.13.8
 
 - `scripts/bash_aliases_argmap.sh`: Minor `a2mu()` improvement: Report uploaded filename, not input filename.
