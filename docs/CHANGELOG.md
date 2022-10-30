@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.14
+
+- Remove obsolete archived input files:
+  - `test/input/archived/Example1_ClearlyFalse_WhiteSwan.mup`
+  - `test/output/example1-clearly-false-white-swan-simplified.yml`
+
 ## argmap 4.13.13
 
 - Add test for argmap2mup with `examples/example-2.yml` (which uses notes):
