@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.13
+
+- Add test for argmap2mup with `examples/example-2.yml` (which uses notes):
+  - `scripts/argmap.env`: Create env var `INPUT_FILE_YML_NOTES` for this file.
+  - `test/test_scripts/tests.sh`: Add argmap2mup test using this variable.
+
 ## argmap 4.13.12
 
 - `src/argmap2mup.lua`: Update map uploaded message to show whole MindMup url, not just the GDrive file ID.
@@ -316,7 +322,7 @@
 
 ## argmap 4.9.14
 
-- Update code and html generation to handle multiple containers on a page properly.
+- Update code and html generation to handle multiple containers on a page properly. FIX #22.
 - ISSUE: This introduced a bug with dragging and dropping `.mup` files into the container to display them. Fixed in 4.12.0
 
 ## argmap 4.9.13
