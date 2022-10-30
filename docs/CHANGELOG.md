@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.10
+
+- `docs/`: Update screenshots (new connector colours).
+
 ## argmap 4.13.9
 
 - `mapjs/src/browser/dom-map-controller.js`:
