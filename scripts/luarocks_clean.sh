@@ -6,13 +6,14 @@
 # ROCKSPEC_FILE=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
 # luarocks remove --global "$ROCKSPEC_FILE"
 
-luarocks remove argmap
-luarocks remove lualogging
-luarocks remove lyaml
-luarocks remove penlight
-luarocks remove rxi-json-lua
-luarocks remove luasocket
-luarocks remove luafilesystem
+luarocks --tree lua_modules remove argmap
+luarocks --tree lua_modules remove lualogging
+luarocks --tree lua_modules remove lyaml
+luarocks --tree lua_modules remove api7-lua-tinyyaml
+luarocks --tree lua_modules remove penlight
+luarocks --tree lua_modules remove rxi-json-lua
+luarocks --tree lua_modules remove luasocket
+luarocks --tree lua_modules remove luafilesystem
 
 echo "Remaining luarocks:"
-luarocks list
+luarocks --tree lua_modules list

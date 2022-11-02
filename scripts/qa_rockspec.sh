@@ -22,6 +22,7 @@ echo -e "***Deleting: $INSTALL_DIR/$LUA_FOLDER ***\n"
 
 rm -R "$LUA_FOLDER"
 
+# luarocks --tree lua_modules make --only-deps argmap-4.13.22-9.rockspec # YAML_LIBDIR="$CONDA_PREFIX/lib/"
 luarocks --tree "$INSTALL_DIR/$LUA_FOLDER" make --only-deps "$ROCKSPEC_FILE" YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
 # Alternative to using YAML_LIBDIR:

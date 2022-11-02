@@ -2,13 +2,17 @@
 
 ## TODO
 
-- Update .rockspec version number
-- Update and add `docs/example2-white-swan-complex-mindmup.png`?
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.13.22
+
+- `argmap-4.13.22-9.rockspec`: Update with new tinyyaml module.
+- `scripts/luarocks_clean.sh`: Add missing --tree from luarocks calls, so uninstalls apply to local yaml_modules not global.
+- Fix small misc things, update comments.
 
 ## argmap 4.13.21
 
@@ -16,9 +20,6 @@
   - `scripts/argmap.env`: Update env variable `PATH` to check local src folder first, this means lua files will be called from there instead of conda env bin where possible.
   - `scripts/bash_aliases_argmap.sh`: Update all references to lua files to include `.lua` extension so they use the local file rather than the symlinked command without the extension.
   - Keeping symlinks for calling from outside of project, but shouldn't need them within project.
-
-Fixed lyaml install issue introduced around v4.13.15
-Could have been any commit between 4.13.18 and this one which fixed it.
 
 ## argmap 4.13.20
 
@@ -35,6 +36,9 @@ Could have been any commit between 4.13.18 and this one which fixed it.
 ## argmap 4.13.18
 
 - `src/config_argmap.lua`: Fix package.cpath reference, which was to invalid argumend conda env path.
+  - Think this fixes lyaml install issue introduced around v4.13.15.
+    - Presumably rockspec external_dependencies parameter (used to find YAML library) uses CPATH.
+    - Though didn't test this, so could have been any commit between v4.13.18 and v4.13.21 which fixed it.
 
 ## argmap 4.13.17
 
