@@ -15,6 +15,4 @@ dependencies:
   - expect
 variables:
   CONDA_ENV_ARGMAP: argmap
-  LUA_CPATH: /home/s6mike/git_projects/argmap/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argmap/lib/lua/5.3/?.so;/opt/miniconda3/envs/argmap/lib/lua/5.3/loadall.so;./?.so;
-  LUA_PATH: /home/s6mike/git_projects/argmap/src/?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?.lua;/home/s6mike/git_projects/argmap/lua_modules/share/lua/5.3/?/init.lua;/opt/miniconda3/envs/argmap/share/lua/5.3/?.lua;/opt/miniconda3/envs/argmap/share/lua/5.3/?/init.lua;./?.lua;./?/init.lua;
 prefix: /opt/miniconda3/envs/argmap
