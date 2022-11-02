@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.18
+
+- `src/config_argmap.lua`: Fix package.cpath reference, which was to invalid argumend conda env path.
+
 ## argmap 4.13.17
 
 - `src/config_argmap.lua`: Remove duplicate entry in `package.path` and split `package.cpath` into two concatenated strings for readability.
@@ -17,7 +21,7 @@
 ## argmap 4.13.16
 
 - Use pure lua yaml module [`tinyyaml`](https://github.com/api7/lua-tinyyaml) instead of c binding [`lyaml`](https://github.com/gvvaughan/lyaml). This will allow it to be run client side when fengari-web used.
-  - `src/argmap2mup.lua`: Update to use new tinyyaml and remove terminating `...` from yaml block, which seems to break tinyyaml.
+  - `src/argmap2mup.lua`: Update to use new tinyyaml and remove terminating `...` from yaml block, which seems to break tinyyaml. (See <https://github.com/api7/lua-tinyyaml/issues/22>)
   - Update `argmap-4.6.1-8.rockspec`
   - `test/`:
     - `input/example1-clearly-false-white-swan-simplified.yml`: Remove terminating `...` from yaml block, which seems to break tinyyaml.
@@ -28,6 +32,7 @@
 ## argmap 4.13.15
 
 - `.vscode/launch.json`: Distinguish duplicate launch profile names.
+- ISSUE: Lua dependency lyaml c module broken after reinstall round about now.
 
 ## argmap 4.13.14
 

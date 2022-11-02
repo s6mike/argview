@@ -29,7 +29,7 @@ package.path = os.getenv("LUA_PATH") or
 
 package.cpath = os.getenv("LUA_CPATH") or
     config.project_folder ..
-    "/lua_modules/lib/lua/5.3/?.so;" .. "/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;"
+    "/lua_modules/lib/lua/5.3/?.so;" .. "/opt/miniconda3/envs/argmap/lib/lua/5.3/?.so;"
     .. package.cpath
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
