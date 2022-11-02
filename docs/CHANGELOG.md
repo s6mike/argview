@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.15
+
+- `.vscode/launch.json`: Distinguish duplicate launch profile names.
+
 ## argmap 4.13.14
 
 - Remove obsolete archived input files:

@@ -16,7 +16,7 @@
         {
             "type": "lua",
             "request": "launch",
-            "name": "Lua Debugger a2m",
+            "name": "Lua Debugger a2m notes example",
             "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             "arg": [
                 "${workspaceFolder}/examples/example-2.yml",
