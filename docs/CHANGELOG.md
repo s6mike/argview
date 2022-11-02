@@ -2,12 +2,24 @@
 
 ## TODO
 
+- Update .rockspec version number
 - Update and add `docs/example2-white-swan-complex-mindmup.png`?
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
+
+## argmap 4.13.16
+
+- Use pure lua yaml module [`tinyyaml`](https://github.com/api7/lua-tinyyaml) instead of c binding [`lyaml`](https://github.com/gvvaughan/lyaml).
+  - `src/argmap2mup.lua`: Update to use new tinyyaml and remove terminating `...` from yaml block, which seems to break tinyyaml.
+  - Update `argmap-4.6.1-8.rockspec`
+  - `test/`:
+    - `input/example1-clearly-false-white-swan-simplified.yml`: Remove terminating `...` from yaml block, which seems to break tinyyaml.
+    - `test/output/example1-clearly-false-white-swan-simplified.yml`: Delete since redundant.
+  - Add to project dictionary: `.vscode/settings.json`
+- `.gitignore`: Remove obsolete directory.
 
 ## argmap 4.13.15
 

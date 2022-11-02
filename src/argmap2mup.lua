@@ -7,9 +7,9 @@ local config_argmap = require 'config_argmap'
 
 -- uses pl.app.parse_args() to parse cli options
 local pl = require 'pl.import_into' ()
-
 -- uses lyaml to parse yaml
-local lyaml = require 'lyaml'
+-- local lyaml = require 'lyaml'
+local tyaml = require 'tinyyaml'
 local json = require 'rxi-json-lua'
 
 -- initialize the output map
@@ -29,7 +29,13 @@ local public = ""
 
 -- a long string containing all the styling needed for argument maps
 -- TODO: move this yaml template into a file and load the file. Will make code more readable and better for version control.
-local template = lyaml.load([=[
+
+-- TODO: Switch with yaml_load so I can use c version when run as standalone script
+-- If this doesn't work, refer to: https://stackoverflow.com/questions/24227557/is-there-aliasing-in-lua-similar-to-ruby
+
+-- Using pure lua yaml parser
+-- local template = lyaml.load([=[
+local template = tyaml.parse([=[
 ---
 formatVersion: 3
 id: root
@@ -410,7 +416,6 @@ theme:
             size: 6
             sizePx: 9gg
             weight: normal
-...
 ]=])
 
 local function default_to_nil(var)
@@ -604,7 +609,11 @@ function main()
       input = io.read("*all")
       Logger:debug("input = io.read(\" * all \"), input: " .. input)
     end
-    local argmap = lyaml.load(input)
+
+    -- Trying pure lua yaml parser
+    -- local argmap = lyaml.load(input)
+    local argmap = tyaml.parse(input)
+
     output = template
     output["ideas"] = parse_claims(argmap)
     output["title"] = name

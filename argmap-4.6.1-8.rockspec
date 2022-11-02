@@ -18,9 +18,10 @@ supported_platforms = {"linux"}
 dependencies = {
    "lua ~> 5.3",
    "lualogging ~> 1.6.0-2",
-   "lyaml ~> 6.2.7-1",
    "penlight ~> 1.12.0-2",
    "rxi-json-lua ~> e1dbe93-0",
+   "api7-lua-tinyyaml ~> 0.4.2-0",
+   "lyaml ~> 6.2.7-1",
 }
 external_dependencies = {
    YAML = {library="libyaml.so"}
