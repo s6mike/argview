@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.21
+
+- Argmap uses local lua files only:
+  - `scripts/argmap.env`: Update env variable `PATH` to check local src folder first, this means lua files will be called from there instead of conda env bin where possible.
+  - `scripts/bash_aliases_argmap.sh`: Update all references to lua files to include `.lua` extension so they use the local file rather than the symlinked command without the extension.
+  - Keeping symlinks for calling from outside of project, but shouldn't need them within project.
+
+Fixed lyaml install issue introduced around v4.13.15
+Could have been any commit between 4.13.18 and this one which fixed it.
+
 ## argmap 4.13.20
 
 - `scripts/argmap.env`: Update `LUA_PATH` and `LUA_CPATH` to check only local paths, not central conda env folder.

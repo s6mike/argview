@@ -87,14 +87,14 @@ a2m() {                                    # a2m test/input/example1-clearly-fal
   NAME=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
     OUTPUT=${2:-$PATH_MJS_JSON/$NAME.json} &&
     mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
-    argmap2mup "$1" >"$OUTPUT" &&
+    argmap2mup.lua "$1" >"$OUTPUT" &&
     echo "$OUTPUT" # Output path can be piped
 }
 
 # Convert to map.js and upload
 a2mu() { # a2mu test/output/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
-    argmap2mup --upload --name "$NAME.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
+    argmap2mup.lua --upload --name "$NAME.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
     echo "Uploaded: $NAME.mup to GDrive."
 }
 
@@ -104,7 +104,7 @@ m2a() { # m2a test/output/example1-simple.mup
   NAME=$(basename --suffix=".json" "$1")
   OUTPUT=${2:-$DIR_HTML_OUTPUT/$NAME.yml}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
-  mup2argmap "$1" >"$OUTPUT" &&
+  mup2argmap.lua "$1" >"$OUTPUT" &&
     echo "$OUTPUT" # Output path can be piped
 }
 
@@ -112,7 +112,7 @@ m2a() { # m2a test/output/example1-simple.mup
 a2t() { # a2t test/output/example1-simple.yml
   NAME=$(basename --suffix=".yml" "$1") &&
     mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
-    argmap2tikz "$1" >"${2:-$DIR_HTML_OUTPUT/$NAME.tex}" &&
+    argmap2tikz.lua "$1" >"${2:-$DIR_HTML_OUTPUT/$NAME.tex}" &&
     echo "${2:-$DIR_HTML_OUTPUT/$NAME.tex}"
 }
 
