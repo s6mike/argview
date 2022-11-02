@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.20
+
+- `scripts/argmap.env`: Update `LUA_PATH` and `LUA_CPATH` to check only local paths, not central conda env folder.
+
 ## argmap 4.13.19
 
 - Fix argmap config so it works properly when installed in other folders:
