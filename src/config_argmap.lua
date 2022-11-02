@@ -20,7 +20,7 @@ package.path = os.getenv("LUA_PATH") or
     config.project_folder ..
     "/lua_modules/share/lua/5.3/?/init.lua;" ..
     config.project_folder ..
-    "/lua_modules/share/lua/5.3/?.lua;" .. config.project_folder .. "/lua_modules/share/lua/5.3/?/init.lua;"
+    "/lua_modules/share/lua/5.3/?.lua;"
     .. package.path
 
 -- Currently using lua-debugger, see: https://workflowy.com/#/8b71cb424dda
@@ -29,7 +29,7 @@ package.path = os.getenv("LUA_PATH") or
 
 package.cpath = os.getenv("LUA_CPATH") or
     config.project_folder ..
-    "/lua_modules/lib/lua/5.3/?.so;/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;"
+    "/lua_modules/lib/lua/5.3/?.so;" .. "/opt/miniconda3/envs/argumend/lib/lua/5.3/?.so;"
     .. package.cpath
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction

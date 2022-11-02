@@ -10,9 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.13.17
+
+- `src/config_argmap.lua`: Remove duplicate entry in `package.path` and split `package.cpath` into two concatenated strings for readability.
+
 ## argmap 4.13.16
 
-- Use pure lua yaml module [`tinyyaml`](https://github.com/api7/lua-tinyyaml) instead of c binding [`lyaml`](https://github.com/gvvaughan/lyaml).
+- Use pure lua yaml module [`tinyyaml`](https://github.com/api7/lua-tinyyaml) instead of c binding [`lyaml`](https://github.com/gvvaughan/lyaml). This will allow it to be run client side when fengari-web used.
   - `src/argmap2mup.lua`: Update to use new tinyyaml and remove terminating `...` from yaml block, which seems to break tinyyaml.
   - Update `argmap-4.6.1-8.rockspec`
   - `test/`:
