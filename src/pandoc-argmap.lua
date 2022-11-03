@@ -82,15 +82,19 @@ local function argmap2image(src, filetype, outfile)
     local o = nil
     local tmp = os.tmpname()
     local tmpdir = string.match(tmp, "^(.*[\\/])") or "."
-    local opts = { "-s" }
+    local opts = { config_argmap.project_folder .. "/src/argmap2tikz.lua" }
+    opts[#opts + 1] = "-s"
     if format == "latex" or format == "beamer" then
         -- for any format other than raw tikz we need a standalone tex file
-        opts = {}
+        opts = { opts[1] } -- This drops the opts but keeps the lua script path
     end
 
     -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
     -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
-    local tex = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
+
+    -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
+    -- local tex = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
+    local tex = pandoc.pipe('lua', opts, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
         o = tex
@@ -172,7 +176,10 @@ local function CodeBlock(block)
 
         -- REVIEW: Much of following code not required?
         -- TODO: have stopped opt "-p" forcing upload, but might want to remove this flag too/instead.
-        local argmap2mup_opts = { "-p" } -- Defaults to publicly accessible map.
+
+        -- Now using lua as main command, which means relevant lua script is now the first opt:
+        local argmap2mup_opts = { config_argmap.project_folder .. "/src/argmap2mup.lua" }
+        argmap2mup_opts[#argmap2mup_opts + 1] = "-p" -- Defaults to publicly accessible map.
         local name = block.attributes["name"]
         if name and name ~= "" then
             argmap2mup_opts[#argmap2mup_opts + 1] = "-n"
@@ -191,11 +198,14 @@ local function CodeBlock(block)
         end
         if format == "markdown" and block.attributes["tidy"] == "true" then
             -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE:
-            -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
+            --  e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
+            --  Think this stops me using C libraries, but switching to tinyyaml should allow this for argmap2mup (not mup2argmap though)
 
             -- convert and upload to google drive, and return a yaml
             -- argument map with the gid as attribute.
-            local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
+            -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
+            -- local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
+            local output = pandoc.pipe('lua', argmap2mup_opts, original)
             gid = trim(output)
 
             -- This sets the identifier and the classes:
@@ -210,11 +220,12 @@ local function CodeBlock(block)
             local argmap_format = block.attributes["to"] or meta_to
 
             -- TODO: might be able to avoid /src part by using PANDOC_SCRIPT_FILE
-            -- argmap2mup converts yaml to mindmup
+            -- argmap2mup.lua converts yaml to mindmup
 
-            -- Now I've changed argmap2mup, this may output the JSON rather than the upload gid
-            local output_extra_line = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts
-                , original)
+            -- Now I've changed argmap2mup.lua, this may output the JSON rather than the upload gid
+            -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
+            -- local output_extra_line = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
+            local output_extra_line = pandoc.pipe('lua', argmap2mup_opts, original)
 
             local output = trim(output_extra_line)
 
@@ -241,7 +252,7 @@ local function CodeBlock(block)
 
                 local block_id = block.attr.identifier
 
-                -- TODO: use lua solution instead (use regex or upgrade pandoc)
+                -- TODO: use lua solution instead (use regex or upgrade pandoc, which may be possible if using pure lua yaml module)
                 -- Cheat method to run os command and get output back (should really use to pipe input to output via os command).
                 local input_filename_extra_line = pandoc.pipe("basename", { "--suffix=.md", PANDOC_STATE.input_files[1] }
                     , "")

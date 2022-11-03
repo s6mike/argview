@@ -31,11 +31,11 @@
   ]
   \pgfsetcornersarced{\pgfpoint{.5mm}{.5mm}}  \graph [layered layout, grow down, level distance=5em, tail anchor=center, edge quotes={fill=yellow!25,inner sep=3pt}, head anchor=center]
   {
-    c1/"All swans are white."[claim]
+    c1/"Map 2: All swans are white."[claim]
       --[line width=1.2pt, opposingedge]       r2/"" [opposing={line width=1.2pt}] // [ tree layout ] {
         c3/"Not all swans are white."[claim],
       },
-    c1/"All swans are white."[claim]
+    c1/"Map 2: All swans are white."[claim]
       --[line width=1.2pt, supportingedge]       r4/"" [supporting={line width=1.2pt}] // [ tree layout ] {
         c5/"These swans are representative of all swans."[claim],
         c6/"Every swan I've ever seen is white."[claim],
