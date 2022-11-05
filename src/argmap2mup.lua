@@ -2,15 +2,39 @@
 
 -- a pipe that parses a yaml argument map and generates a JSON encoded mindmup map.
 
--- Sets up shared 'environment' variables:
-local config_argmap = require 'config_argmap'
+-- Set which yaml library is used
+--  Will override it when running clientside if it's incompatible.
+Module_yaml = 'tinyyaml' -- or lyaml
 
--- uses pl.app.parse_args() to parse cli options
-local pl = require 'pl.import_into' ()
--- uses lyaml to parse yaml
--- local lyaml = require 'lyaml'
-local tyaml = require 'tinyyaml'
+-- Needed for both client and serverside:
 local json = require 'rxi-json-lua'
+
+-- Declare here so scope is whole file
+local pl, config_argmap, tyaml, lyaml -- TODO: remove some of these?
+
+-- Checks whether this is main script or an imported package
+-- Since I'm also seting the two global variables from the calling script, this isn't really necessary any longer
+-- TODO - only need to run this if Script_context = nil
+if pcall(debug.getlocal, 4, 1) then -- Only used client side:
+  Script_context = 'client'
+  Logger:debug("Hello web!")
+  Module_yaml = 'tinyyaml' -- Ensure we're using pure lua yaml for client side
+else -- Only used server side (technically when file called directly rather than required by another script):
+  Script_context = 'server'
+  -- Sets up shared 'environment' variables and requires Logger:
+  config_argmap = require 'config_argmap'
+  Logger:debug("Hello terminal!")
+  -- uses pl.app.parse_args() to parse cli options
+  pl = require 'pl.import_into' ()
+end
+
+if Module_yaml == 'lyaml' then -- uses lyaml to parse yaml
+  lyaml = require 'lyaml'
+  -- local yaml_load = lyaml.load
+else
+  tyaml = require 'tinyyaml' -- QUESTION: Switch back to lyaml for serverside?
+  -- local yaml_load = tyaml.parse
+end
 
 -- initialize the output map
 local output = { ["ideas"] = {} }
@@ -589,10 +613,10 @@ function parse_options(a)
 end
 
 function main()
+  -- print(args) -- What is this line for? Debugging?
   Logger:debug("arg: ")
   Logger:debug(arg)
 
-  -- print(args) -- What is this line for? Debugging? In which case, is there a log function?
   local opts = parse_options(arg)
 
   if opts["help"] then
@@ -660,4 +684,6 @@ function main()
   end
 end
 
-print(main())
+if Script_context == 'server' then
+  print(main())
+end

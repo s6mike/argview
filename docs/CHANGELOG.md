@@ -14,7 +14,7 @@
   - Currently lua scripts don't have any impact client side, but don't break anything either.
   - `src/js/fengari-web.js`: Runs lua VM in the browser. No access to os or io, or lua modules with c bindings. Hence switch to `tinyyaml` in previous release.
   - `src/argmap2mup.lua`: Check whether client or server side, and set variable `script_context` to `server` or `client` to stop any calls to os or io.
-  - `src/argmap2mup_test.lua`: Lua script called from web page, temporary solution for setting up env for argmap2mup to run in.
+  - `src/client_argmap2mapjs.lua`: Lua script called from web page, temporary solution for setting up env for argmap2mup to run in.
   - `pandoc-templates/mapjs/`: Add fengari-web and argmap2mup-test scripts to both templates.
   - `mapjs/site`: Add symbolic links so `src/`, `lua_modules/`, `test/output` folders and `fengari-web.js` available to web page.
     - `scripts/install.sh`: Add symbolic link creation code.
