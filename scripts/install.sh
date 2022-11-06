@@ -201,8 +201,9 @@ __build_mapjs
 # SECTION 5: Clientside Lua
 # ---------------------------------------------------
 
-# Ensures fengari script available to site
+# Ensures fengari script and source map available to site
 ln -s "$WORKSPACE/src/js/fengari-web.js" "$PATH_MJS_SITE/js/fengari-web.js"
+ln -s "$WORKSPACE/src/js/fengari-web.js.map" "$PATH_MJS_SITE/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
 ln -s "$WORKSPACE/src" "$PATH_MJS_SITE/lua"
 ln -s "$WORKSPACE/lua_modules" "$PATH_MJS_SITE/lua_modules"

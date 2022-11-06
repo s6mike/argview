@@ -8,6 +8,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.15.2
+
+- Add fengari-web source map: `src/js/fengari-web.js.map`
+  - Symlinking to it from `mapjs/site/js` but for some reason that's not appearing in git repo.
+    - `scripts/install.sh`: Add symlink command.
+  - `src/js/fengari-web.js`: Add reference comment to it.
+- `.gitignore`: Remove obsolete entries.
+  
 ## argmap 4.15.1
 
 - Fix `selectLink()`, which from v4.13.5 was using deprecated window.event object to identify which container a link was in (because links are not guaranteed to have unique element IDs). Hence this function was not working consistently, and breaking regression test.
