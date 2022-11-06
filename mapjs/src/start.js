@@ -108,9 +108,12 @@ const addMap = function (container, mapJson) {
 		imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
 		idea = content(mapJson),
 		touchEnabled = false,
-		// QUESTION: do only need 1 mapModel for all the maps?
+		// QUESTION: Do we need a separate mapModel for each map?
 		// 	Or are there generic methods I can separate out from object ones?
 		map.mapModel = new MAPJS.MapModel([]),
+		// So it's easier to look up container from mapModel:
+		//  Useful because unfortunately, element ids only unique per container
+		map.mapModel.containerElement = container,
 
 		// Easier to maintain theme file so making that default:
 		// themeJson = themeProvider.default || MAPJS.defaultTheme;

@@ -8,6 +8,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.15.1
+
+- Fix `selectLink()`, which from v4.13.5 was using deprecated window.event object to identify which container a link was in (because links are not guaranteed to have unique element IDs). Hence this function was not working consistently, and breaking regression test.
+  - `mapjs/src/start.js`: Add reference to container element to mapModel during initialisation process.
+  - `mapjs/src/core/map-model.js`: Instead of using event to identify the container, use the container element reference.
+- `.vscode/settings.json`: Add ignored word.
+
 ## argmap 4.15.0
 
 - `src/argmap2mup.lua`:
@@ -144,6 +151,8 @@
   - Selecting link on one container would remove the selection border from selected link in the other container.
   - Selecting a link in the lower container would select any links with identical element id in the upper container instead.
   (Unfortunately, map element IDs are currently only unique within a container, not on a page as they should be).
+
+ISSUE: Fix used deprecated `window.event` object, which resulted in inconsistent behaviour including devtools recording test. Fixed in v4.16.1 by adding reference to container element to mapModel in `start.js`.
 
 ## argmap 4.13.4
 
