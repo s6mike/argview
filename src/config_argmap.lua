@@ -43,7 +43,7 @@ PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_HTML_OUTPUT .. "/" .. DIR_MJS
 DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
 
 
-local logging = require "logging"
+local logging = require 'logging'
 Logger = logging.new(function(self, level, message)
     io.stderr:write(message)
     io.stderr:write("\n")

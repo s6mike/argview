@@ -6,6 +6,8 @@
 --  Will override it when running clientside if it's incompatible.
 Module_yaml = 'tinyyaml' -- or lyaml
 
+local a2m = {}
+
 -- Needed for both client and serverside:
 local json = require 'rxi-json-lua'
 
@@ -59,7 +61,7 @@ local public = ""
 
 -- Using pure lua yaml parser
 -- local template = lyaml.load([=[
-local template = tyaml.parse([=[
+a2m.template = tyaml.parse([=[
 ---
 formatVersion: 3
 id: root
@@ -476,6 +478,9 @@ local function trim(s)
 end
 
 function markdown_to_plain(s)
+  if Script_context == 'client' then
+    return s
+  end
   return trim(pipe_in_out("pandoc --wrap=none -t plain -f markdown", s))
 end
 
@@ -489,7 +494,7 @@ function parse_special(t, s)
   return nil
 end
 
-function parse_claims(t)
+function a2m.parse_claims(t)
   -- initialize the output table
   local o = {}
   -- initialize a local counter for ids
@@ -538,6 +543,7 @@ function parse_claims(t)
       end
     end
   end
+
   return default_to_nil(o)
 end
 
@@ -556,7 +562,7 @@ function parse_reasons(t)
       end
       local label = parse_special(v, "label")
       local strength = parse_special(v, "strength")
-      local ideas = parse_claims(v)
+      local ideas = a2m.parse_claims(v)
       local attr = { ["contentLocked"] = "true",
         ["group"] = group,
         ["parentConnector"] = { ["width"] = strength, ["label"] = label }
@@ -616,6 +622,7 @@ function main()
   -- print(args) -- What is this line for? Debugging?
   Logger:debug("arg: ")
   Logger:debug(arg)
+  Logger:debug("end arg")
 
   local opts = parse_options(arg)
 
@@ -638,8 +645,8 @@ function main()
     -- local argmap = lyaml.load(input)
     local argmap = tyaml.parse(input)
 
-    output = template
-    output["ideas"] = parse_claims(argmap)
+    output = a2m.template
+    output["ideas"] = a2m.parse_claims(argmap)
     output["title"] = name
     local mup = json.encode(output)
 
@@ -687,3 +694,5 @@ end
 if Script_context == 'server' then
   print(main())
 end
+
+return a2m

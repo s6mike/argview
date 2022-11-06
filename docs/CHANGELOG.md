@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.15.0
+
+- `src/argmap2mup.lua`:
+  - Return `a2m` object so that `parse_claims()` and `template`(mapjs theme) can be called externally.
+  - Update `markdown_to_plain` so that it doesn't do anything when run from browser (since that uses `io` object which is not available to fengari-web).
+- `src/config_argmap.lua`: Minor formatting fix for consistency.
 
 ## argmap 4.14.1
 
