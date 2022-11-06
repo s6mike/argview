@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+
+## argmap 4.14.1
+
+- `test/input/big_input.yml`: Add to test handling large yaml files.
+
 ## argmap 4.14.0
 
 - Update argmap scripts to run either server side, as before, or client side, using fengari-web:

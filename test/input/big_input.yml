@@ -1,0 +1,335 @@
+"Map 2: All swans are white.":
+  r2:
+    Every swan I’ve ever seen is white.: []
+    These swans are representative of all swans.: []
+  o1:
+    Not all swans are white.: []
+    "Map 2: All swans are white.":
+      r2:
+        Every swan I’ve ever seen is white.: []
+        These swans are representative of all swans.: []
+      o1:
+        Not all swans are white.: []
+        "Map 2: All swans are white.":
+          r2:
+            Every swan I’ve ever seen is white.: []
+            These swans are representative of all swans.: []
+          o1:
+            Not all swans are white.: []
+            "Map 2: All swans are white.":
+              r2:
+                Every swan I’ve ever seen is white.: []
+                These swans are representative of all swans.: []
+              o1:
+                Not all swans are white.: []
+                "Map 2: All swans are white.":
+                  r2:
+                    Every swan I’ve ever seen is white.: []
+                    These swans are representative of all swans.: []
+                  o1:
+                    Not all swans are white.: []
+                    "Map 2: All swans are white.":
+                      r2:
+                        Every swan I’ve ever seen is white.: []
+                        These swans are representative of all swans.: []
+                      o1:
+                        Not all swans are white.: []
+                        "Map 2: All swans are white.":
+                          r2:
+                            Every swan I’ve ever seen is white.: []
+                            These swans are representative of all swans.: []
+                          o1:
+                            Not all swans are white.: []
+                            "Map 2: All swans are white.":
+                              r2:
+                                Every swan I’ve ever seen is white.: []
+                                These swans are representative of all swans.: []
+                              o1:
+                                Not all swans are white.: []
+                                "Map 2: All swans are white.":
+                                  r2:
+                                    Every swan I’ve ever seen is white.: []
+                                    ? These swans are representative of all swans.
+                                    : []
+                                  o1:
+                                    Not all swans are white.: []
+                                    "Map 2: All swans are white.":
+                                      r2:
+                                        Every swan I’ve ever seen is white.: []
+                                        ? These swans are representative of all swans.
+                                        : []
+                                      o1:
+                                        Not all swans are white.: []
+                                        "Map 2: All swans are white.":
+                                          r2:
+                                            Every swan I’ve ever seen is white.:
+                                              []
+                                            ? These swans are representative of all swans.
+                                            : []
+                                          o1:
+                                            Not all swans are white.: []
+                                            "Map 2: All swans are white.":
+                                              r2:
+                                                ? Every swan I’ve ever seen is white.
+                                                : []
+                                                ? These swans are representative of all swans.
+                                                : []
+                                              o1:
+                                                Not all swans are white.: []
+                                                "Map 2: All swans are white.":
+                                                  r2:
+                                                    ? Every swan I’ve ever seen is white.
+                                                    : []
+                                                    ? These swans are representative of all swans.
+                                                    : []
+                                                  o1:
+                                                    Not all swans are white.: []
+                                                    ? "Map 2: All swans are white."
+                                                    : r2:
+                                                        ? Every swan I’ve ever seen is white.
+                                                        : []
+                                                        ? These swans are representative of all swans.
+                                                        : []
+                                                      o1:
+                                                        ? Not all swans are white.
+                                                        : []
+                                                        ? "Map 2: All swans are white."
+                                                        : r2:
+                                                            ? Every swan I’ve ever seen is white.
+                                                            : []
+                                                            ? These swans are representative of all swans.
+                                                            : []
+                                                          o1:
+                                                            ? Not all swans are white.
+                                                            : []
+                                                            ? "Map 2: All swans are white."
+                                                            : r2:
+                                                                ? Every swan I’ve ever seen is white.
+                                                                : []
+                                                                ? These swans are representative of all swans.
+                                                                : []
+                                                              o1:
+                                                                ? Not all swans are white.
+                                                                : []
+                                                                ? "Map 2: All swans are white."
+                                                                : r2:
+                                                                    ? Every swan I’ve ever seen is white.
+                                                                    : []
+                                                                    ? These swans are representative of all swans.
+                                                                    : []
+                                                                  o1:
+                                                                    ? Not all swans are white.
+                                                                    : []
+                                                                    ? "Map 2: All swans are white."
+                                                                    : r2:
+                                                                        ? Every swan I’ve ever seen is white.
+                                                                        : []
+                                                                        ? These swans are representative of all swans.
+                                                                        : []
+                                                                      o1:
+                                                                        ? Not all swans are white.
+                                                                        : []
+                                                                        ? "Map 2: All swans are white."
+                                                                        : r2:
+                                                                            ? Every swan I’ve ever seen is white.
+                                                                            : []
+                                                                            ? These swans are representative of all swans.
+                                                                            : []
+                                                                          o1:
+                                                                            ? Not all swans are white.
+                                                                            : []
+                                                                            ? "Map 2: All swans are white."
+                                                                            : ? r2
+                                                                              : ? Every swan I’ve ever seen is white.
+                                                                                : [
+                                                                                    ,
+                                                                                  ]
+                                                                                ? These swans are representative of all swans.
+                                                                                : [
+                                                                                    ,
+                                                                                  ]
+                                                                              ? o1
+                                                                              : ? Not all swans are white.
+                                                                                : [
+                                                                                    ,
+                                                                                  ]
+                                                                                ? "Map 2: All swans are white."
+                                                                                : ? r2
+                                                                                  : ? Every swan I’ve ever seen is white.
+                                                                                    : [
+                                                                                        ,
+                                                                                      ]
+                                                                                    ? These swans are representative of all swans.
+                                                                                    : [
+                                                                                        ,
+                                                                                      ]
+                                                                                  ? o1
+                                                                                  : ? Not all swans are white.
+                                                                                    : [
+                                                                                        ,
+                                                                                      ]
+                                                                                    ? "Map 2: All swans are white."
+                                                                                    : ? r2
+                                                                                      : ? Every swan I’ve ever seen is white.
+                                                                                        : [
+                                                                                            ,
+                                                                                          ]
+                                                                                        ? These swans are representative of all swans.
+                                                                                        : [
+                                                                                            ,
+                                                                                          ]
+                                                                                      ? o1
+                                                                                      : ? Not all swans are white.
+                                                                                        : [
+                                                                                            ,
+                                                                                          ]
+                                                                                        ? "Map 2: All swans are white."
+                                                                                        : ? r2
+                                                                                          : ? Every swan I’ve ever seen is white.
+                                                                                            : [
+                                                                                                ,
+                                                                                              ]
+                                                                                            ? These swans are representative of all swans.
+                                                                                            : [
+                                                                                                ,
+                                                                                              ]
+                                                                                          ? o1
+                                                                                          : ? Not all swans are white.
+                                                                                            : [
+                                                                                                ,
+                                                                                              ]
+                                                                                            ? "Map 2: All swans are white."
+                                                                                            : ? r2
+                                                                                              : ? Every swan I’ve ever seen is white.
+                                                                                                : [
+                                                                                                    ,
+                                                                                                  ]
+                                                                                                ? These swans are representative of all swans.
+                                                                                                : [
+                                                                                                    ,
+                                                                                                  ]
+                                                                                              ? o1
+                                                                                              : ? Not all swans are white.
+                                                                                                : [
+                                                                                                    ,
+                                                                                                  ]
+                                                                                                ? "Map 2: All swans are white."
+                                                                                                : ? r2
+                                                                                                  : ? Every swan I’ve ever seen is white.
+                                                                                                    : [
+                                                                                                        ,
+                                                                                                      ]
+                                                                                                    ? These swans are representative of all swans.
+                                                                                                    : [
+                                                                                                        ,
+                                                                                                      ]
+                                                                                                  ? o1
+                                                                                                  : ? Not all swans are white.
+                                                                                                    : [
+                                                                                                        ,
+                                                                                                      ]
+                                                                                                    ? "Map 2: All swans are white."
+                                                                                                    : ? r2
+                                                                                                      : ? Every swan I’ve ever seen is white.
+                                                                                                        : [
+                                                                                                            ,
+                                                                                                          ]
+                                                                                                        ? These swans are representative of all swans.
+                                                                                                        : [
+                                                                                                            ,
+                                                                                                          ]
+                                                                                                      ? o1
+                                                                                                      : ? Not all swans are white.
+                                                                                                        : [
+                                                                                                            ,
+                                                                                                          ]
+                                                                                                        ? "Map 2: All swans are white."
+                                                                                                        : ? r2
+                                                                                                          : ? Every swan I’ve ever seen is white.
+                                                                                                            : [
+                                                                                                                ,
+                                                                                                              ]
+                                                                                                            ? These swans are representative of all swans.
+                                                                                                            : [
+                                                                                                                ,
+                                                                                                              ]
+                                                                                                          ? o1
+                                                                                                          : ? Not all swans are white.
+                                                                                                            : [
+                                                                                                                ,
+                                                                                                              ]
+                                                                                                            ? "Map 2: All swans are white."
+                                                                                                            : ? r2
+                                                                                                              : ? Every swan I’ve ever seen is white.
+                                                                                                                : [
+                                                                                                                    ,
+                                                                                                                  ]
+                                                                                                                ? These swans are representative of all swans.
+                                                                                                                : [
+                                                                                                                    ,
+                                                                                                                  ]
+                                                                                                              ? o1
+                                                                                                              : ? Not all swans are white.
+                                                                                                                : [
+                                                                                                                    ,
+                                                                                                                  ]
+                                                                                                                ? "Map 2: All swans are white."
+                                                                                                                : ? r2
+                                                                                                                  : ? Every swan I’ve ever seen is white.
+                                                                                                                    : [
+                                                                                                                        ,
+                                                                                                                      ]
+                                                                                                                    ? These swans are representative of all swans.
+                                                                                                                    : [
+                                                                                                                        ,
+                                                                                                                      ]
+                                                                                                                  ? o1
+                                                                                                                  : ? Not all swans are white.
+                                                                                                                    : [
+                                                                                                                        ,
+                                                                                                                      ]
+                                                                                                                    ? "Map 2: All swans are white."
+                                                                                                                    : ? r2
+                                                                                                                      : ? Every swan I’ve ever seen is white.
+                                                                                                                        : [
+                                                                                                                            ,
+                                                                                                                          ]
+                                                                                                                        ? These swans are representative of all swans.
+                                                                                                                        : [
+                                                                                                                            ,
+                                                                                                                          ]
+                                                                                                                      ? o1
+                                                                                                                      : ? Not all swans are white.
+                                                                                                                        : [
+                                                                                                                            ,
+                                                                                                                          ]
+                                                                                                                        ? "Map 2: All swans are white."
+                                                                                                                        : ? r2
+                                                                                                                          : ? Every swan I’ve ever seen is white.
+                                                                                                                            : [
+                                                                                                                                ,
+                                                                                                                              ]
+                                                                                                                            ? These swans are representative of all swans.
+                                                                                                                            : [
+                                                                                                                                ,
+                                                                                                                              ]
+                                                                                                                          ? o1
+                                                                                                                          : ? Not all swans are white.
+                                                                                                                            : [
+                                                                                                                                ,
+                                                                                                                              ]
+                                                                                                                            ? "Map 2: All swans are white."
+                                                                                                                            : ? r2
+                                                                                                                              : ? Every swan I’ve ever seen is white.
+                                                                                                                                : [
+                                                                                                                                    ,
+                                                                                                                                  ]
+                                                                                                                                ? These swans are representative of all swans.
+                                                                                                                                : [
+                                                                                                                                    ,
+                                                                                                                                  ]
+                                                                                                                              ? o1
+                                                                                                                              : ? Not all swans are white.
+                                                                                                                                : [
+                                                                                                                                    ,
+                                                                                                                                  ]
