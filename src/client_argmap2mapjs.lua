@@ -11,89 +11,85 @@ Script_context = 'client'
 package.path = "/lua_modules/share/lua/5.3/?.lua;" ..
     "/lua/?.lua;" .. "/lua_modules/share/lua/5.3/?/init.lua;" .. package.path
 
+-- Reequires are all loaded with xhr
 local tyaml = require 'tinyyaml'
 local json = require 'rxi-json-lua'
 local logging = require 'logging'
-
-Logger = logging.new(function(self, level, message)
-  -- Might be able to instead use: `window.console:log(x)` -- Or maybe console.debug?
-  print(message)
-  print("\n")
-end)
-
--- Set to .DEBUG to activate logging
-Logger:setLevel(logging.DEBUG)
-
-Logger:debug("Hello a2m test debug!")
-
--- Need to define Logger before calling this:
-local a2m = require 'argmap2mup'
-
--- arg contains the arguments which would be passed to argmap2mup if run in the shell.
--- local input_yaml = 'mapjs/site/input/example1-clearly-false-white-swan-simplified.yml'
--- local output = {}
-
--- TODO: read file from path
--- Borrowed from Example 3 in https://www.ucl.ac.uk/~rmhajc0/fengarilua.html
 
 local js = require "js"
 local window = js.global
 local document = window.document
 
-local fileChooser = document:getElementById("file")
-local textArea = document:querySelector("textarea")
+-- Customised for browser use
+Logger = logging.new(function(self, level, message)
+  if level == 'INFO' then
+    window.console:log(message)
+  else
+    window.console:debug(message)
+  end
 
+  return true
+end)
+
+-- Set to .DEBUG to activate logging
+-- Logger:debug("message: ".. message) -- tables can't be concatenated so use separate debug message.
+Logger:setLevel(logging.DEBUG)
+
+-- Need to define Logger before calling this:
+local a2m = require 'argmap2mup'
+
+-- Adapted from Example 3 in https://www.ucl.ac.uk/~rmhajc0/fengarilua.html
+local file_picker_argmap = document:getElementById('file_picker_argmap1')
+local input_argmap = document:getElementById('input_argmap1')
+local submit_input_argmap = document:getElementById('submit_input_argmap1')
+
+-- Returns mapjs JSON data
 local function argmap2mapjs(yaml_data)
-  -- Logger:debug("yaml_data: " .. yaml_data)
   local argmap = tyaml.parse(yaml_data)
-  -- Logger:debug("argmap: ")
-  -- Logger:debug(argmap)
 
   -- Then create output and encode it:
   local output = a2m.template
   output["ideas"] = a2m.parse_claims(argmap)
   -- TODO: add:
   -- output["title"] = name
+  -- pass myFile.name into empty idea.name? #idea ?
 
-  -- Logger:debug("output: ")
-  -- Logger:debug(output)
-  local mup = json.encode(output)
-
-  -- window.mapInstance.container_argmap1.mapModel
-  -- mapModel.setIdea(content(JSON.parse(mup)));
-  -- Have removed content
-  -- TODO: Need to use correct mapModel
-  -- push mup to JS?
-  window.mup = mup
-  -- mapInstance[this.target_container_id].mapModel.getIdea();
-  -- window.mapInstance.container_argmap1.mapModel.setIdea(JSON.parse(mup));
-
-  return mup
+  local mapjs = json.encode(output)
+  return mapjs
 end
 
-local function read()
-  local myFile = fileChooser.files[0]
+-- Reads yaml from text area, passes it to argmap2mapjs(), then sends output to mapjs function.
+local function convert_yaml()
+  -- Parse yaml
+  local yaml_data = input_argmap.value
+
+  local mapjs = argmap2mapjs(yaml_data)
+  -- TODO: Need to look up correct mapModel
+  -- mapInstance[this.target_container_id].mapModel.getIdea();
+  -- function() return "window.changeMap(window.mapInstance.container_argmap1, window.mapjs)" end)
+  local container = window.mapInstance.container_argmap1
+  -- QUESTION: Could instead write to the JSON script item?
+  -- First argument in call: container being passed as this. Not sure why
+  window.loadMap(container, mapjs)
+end
+
+local function read_file()
+  local myFile = file_picker_argmap.files[0]
   print("myFile.name: " .. myFile.name)
   local reader = js.new(window.FileReader)
   reader.onload = function()
-    textArea.value = reader.result
-
-    -- Parse yaml
-    local yaml_data = reader.result
-
-    argmap2mapjs(yaml_data)
-
+    input_argmap.value = reader.result
   end
 
   -- Think this is what triggers the onload, but not certain:
   reader:readAsText(myFile)
-
 end
 
--- Restore this and comment out the lines after
--- fileChooser:addEventListener("change", function() read() end)
+file_picker_argmap:addEventListener("change", function() read_file() end)
+submit_input_argmap:addEventListener("click", function() convert_yaml() end)
 
-local yaml_data = [=[
+-- ISSUE: Apparently textArea does not support value, instead this text should be nested inside the text area object
+input_argmap.value = [=[
 ---
 "Map 2: All swans are white.":
   r2:
@@ -103,12 +99,5 @@ local yaml_data = [=[
     Not all swans are white.: []
 ]=]
 
-local mup = argmap2mapjs(yaml_data)
-Logger:debug("mapjs (- theme): " .. mup)
-
--- Can I send mup to JS?
--- Could also write to the JSON script item?
-Logger:debug("mapjs (- theme): " .. mup)
-
--- Can I send mup to JS?
--- Could also write to the JSON script item?
+-- Use this if I want to convert to mapjs on load
+-- local mapjs = argmap2mapjs(yaml_data)

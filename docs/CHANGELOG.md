@@ -8,6 +8,23 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.16.0
+
+- Add basic yaml load/edit/submit to quick template UI:
+  - `pandoc-templates/mapjs/mapjs-quick-json.html`:
+    - Add large textarea for yaml load and edit.
+    - Add file picker input to load files into text area.
+    - Add submit button to update mapjs container with yaml input by calling `submit_yaml()`.
+  - `mapjs/src/start.js`: Added `loadMap()` to load JSON into container.
+  - `src/client_argmap2mapjs.lua`:
+    - Add `submit_yaml()` to read yaml from text area, pass it to `argmap2mapjs`, then send output to mapjs `loadMap()` function, so can now hand edit data as well as open files.
+    - Restore change event listener to fileChooser, which reads file into text area.
+    - Add click event listener to submit button which calls `submit_yaml()`.
+    - Remove call which converted the the yaml data to mapjs format.
+    - Customise logger function so console filtering works as expected.
+
+NEW ISSUE: Sometimes getting mapjs error `Uncaught TypeError: Cannot read properties of undefined (reading 'setIdea')`. This stops submit working until reload.
+
 ## argmap 4.15.3
 
 - `test/test_scripts/tests.sh`: Add webpack command before test to ensure latest mapjs code being tested.
