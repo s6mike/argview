@@ -3,6 +3,7 @@
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
+webpack_pack
 __start_mapjs_webserver
 
 # Have switched rendering to be second test.

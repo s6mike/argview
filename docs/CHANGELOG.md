@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.15.3
+
+- `test/test_scripts/tests.sh`: Add webpack command before test to ensure latest mapjs code being tested.
+
 ## argmap 4.15.2
 
 - Add fengari-web source map: `src/js/fengari-web.js.map`
