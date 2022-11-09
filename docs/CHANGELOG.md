@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.16.2
+
+- `test/input/big_input.yml`: Last 50% invalid YAML, probably a formatting issue, have removed that section.
+
 ## argmap 4.16.1
 
 - `mapjs/src/start.js`: 
