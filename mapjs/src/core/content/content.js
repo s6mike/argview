@@ -207,6 +207,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		redoStacks = {},
 
 		batches = {},
+		// Adds undo and redo stacks to idea, in case I want to access this for debugging etc:
+		// contentAggregate.eventStacks = eventStacks;
+		// contentAggregate.redoStacks = redoStacks;
+
 		notifyChange = function (method, args, originSession) {
 			if (originSession) {
 				contentAggregate.dispatchEvent('changed', method, args, originSession);

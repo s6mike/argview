@@ -71,13 +71,21 @@ const layoutThemeStyle = function (themeJson) {
 	return true;
 };
 
-// TODO: add this somewhere else. Should be called by listener and other functions like initialisation and drag and drop?
-// 	Or could add it to mapModel class and then don't need the container argument at all
+// TODO: Need to re-use some of this in combination with addMap(), drag and drop.
+// QUESTION:Add this function to mapModel class? Then don't need the container argument at all
 window.loadMap = function (mapJson) {
 	// For some reason, first argument in call: container being passed as this. Not sure why
+
 	// TODO: Need to use correct mapModel
 	//	 mapInstance[this.target_container_id].mapModel.getIdea();
-	this.mapModel.setIdea(content(JSON.parse(mapJson)));
+	old_idea = map.mapModel.getIdea();
+	// Batch ensures that operations are atomic
+	// So counts as a single undo/redo step
+	return old_idea.batch(function () {
+		old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
+		map.mapModel.removeSubIdea('root', 'loadMap');
+		return true;
+	});
 }
 
 // Changes theme of all maps on page
@@ -196,9 +204,11 @@ const addMap = function (container, mapJson) {
 				oFReader.onload = function (oFREvent) {
 					// Less destructive to paste JSON file data into container as new map(s), instead of replacing existing map.
 					// TODO: However, paste doesn't include links, themes etc
+					// 	Or is that just because we use parse().ideas only?
 					// map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
 					container_idea = mapInstance[this.target_container_id].mapModel.getIdea();
 					result = container_idea.pasteMultiple('root', JSON.parse(oFREvent.target.result).ideas);
+					// TODO: Return result?
 				};
 				// This passes the target container's id to the File Reader window:
 				//	QUESTION: Is there a better way of doing this?
@@ -207,34 +217,16 @@ const addMap = function (container, mapJson) {
 			}
 		}
 	});
-
-	// Reference: Old drag and drop
-	// container.on('drop', function (e) {
-	// 	const dataTransfer = e.originalEvent.dataTransfer;
-	// 	e.stopPropagation();
-	// 	e.preventDefault();
-	// 	if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-	// 		const fileInfo = dataTransfer.files[0];
-	// 		if (/\.mup$/.test(fileInfo.name)) {
-	// 			const oFReader = new window.FileReader();
-	// 			oFReader.onload = function (oFREvent) {
-	// 				mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
-	// 			};
-	// 			oFReader.readAsText(fileInfo, 'UTF-8');
-	// 		}
-	// 	}
-	// });
-
 };
 
 document.addEventListener('DOMContentLoaded', init);
 
 // Hacky way to test
-window.setTimeout(function () {
-	b = document.getElementById("submit");
-	if (b) {
-		// Automatically click button to speed up testing
-		b.click();
-	}
-}, 400 /* but after 400 ms */);
+// window.setTimeout(function () {
+// 	b = document.getElementById("submit");
+// 	if (b) {
+// 		// Automatically click button to speed up testing
+// 		b.click();
+// 	}
+// }, 400 /* but after 400 ms */);
 

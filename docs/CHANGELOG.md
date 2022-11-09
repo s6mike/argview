@@ -8,6 +8,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
 - Add references to argmap specs?
 
+## argmap 4.16.1
+
+- `mapjs/src/start.js`: 
+  - Update `loadMap()` to batch up a paste of loaded map, plus deletes the old one, so that undo/redo can be used to restore old map.
+  - Disabled automated submit button after load.
+- `mapjs/src/core/content/content.js`: Add comments for how to access the undo/redo history (eventStacks and redoStacks), in case needed for debugging.
+- `.vscode/settings.json`: Add spelling.
+
 ## argmap 4.16.0
 
 - Add basic yaml load/edit/submit to quick template UI:
