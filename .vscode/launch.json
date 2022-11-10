@@ -16,6 +16,21 @@
         {
             "type": "lua",
             "request": "launch",
+            "name": "Lua Debugger a2m multiline example",
+            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "arg": [
+                "${workspaceFolder}/test/issues/WhiteSwan_minus_inline_objections_restoring.yml",
+            ],
+            "env": {
+                "PATH": "${config:lua.debug.settings.env.path}",
+                "LUA_PATH": "${config:lua.debug.settings.path}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
+            },
+            "stopOnEntry": true,
+        },
+        {
+            "type": "lua",
+            "request": "launch",
             "name": "Lua Debugger a2m notes example",
             "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
             "arg": [
