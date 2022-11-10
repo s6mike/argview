@@ -6,7 +6,11 @@
   - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
-- Add references to argmap specs?
+  - Add references to argmap specs spreadsheet?
+
+## argmap 4.16.3
+
+- `test/issues/`: Remove 2 mup files since they now work correctly.
 
 ## argmap 4.16.2
 
