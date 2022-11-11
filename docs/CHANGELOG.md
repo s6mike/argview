@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.5
+
+- `mapjs/src/argmapjs-utilities.js`: Comment out `mergeObjects()` since no longer needed.
+- `mapjs/package.json`: Remove `lodash` dependency since only needed for `mergeObjects()`. May re-introduce instead of `underscore`.
+
 ## argmap 4.16.4
 
 - Started debugging multi-line YAML example:

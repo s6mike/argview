@@ -40,22 +40,24 @@ ideas_pp = function (ideas, level = -1, keys = []) {
 
 // ideas_pp(idea);
 
+// Commented out since not needed any longer:
+
 // Two different ways of combining two theme files, see which one works best
 // order matters in both merge types, better results from having idea.theme as second argument.
 // 	Assume that value of second used where there is a clash.
-const mergeObjects = function (theme1 = themeProvider.default, theme2 = idea.theme, method = "lodash") {
-  switch (method) {
+// const mergeObjects = function (theme1 = themeProvider.default, theme2 = idea.theme, method = "lodash") {
+//   switch (method) {
 
-    case "lodash":
-      const deep_merge = require('lodash/merge');
-      var merged_theme = deep_merge(theme1, theme2);
-      break;
+//     case "lodash":
+//       const deep_merge = require('lodash/merge');
+//       var merged_theme = deep_merge(theme1, theme2);
+//       break;
 
-    default:
-      // QUESTION: This spread operator (...x) worked before: maybe debugger uses ES6 but webpack doesn't?
-      // var merged_theme = { ...theme1, ...theme1 };
-      var merged_theme = Object.assign({}, theme1, theme2);
+//     default:
+//       // QUESTION: This spread operator (...x) worked before: maybe debugger uses ES6 but webpack doesn't?
+//       // var merged_theme = { ...theme1, ...theme1 };
+//       var merged_theme = Object.assign({}, theme1, theme2);
 
-  }
-  return merged_theme
-};
+//   }
+//   return merged_theme
+// };
