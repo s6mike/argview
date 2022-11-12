@@ -8,6 +8,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.8
+
+- Upgrade mapjs dependencies to fix security issues:
+  - `mapjs/package.json`:
+    - New versions.
+    - Remove dev dependency `appraise.js`
+  - `mapjs/package-lock.json`: Ditto.
+  - `mapjs/webpack.config.js`: Update for webpack-server v4.
+
 ## argmap 4.16.7
 
 - Comment out fengari-web scripts from html templates since focusing on mapjs for now:

@@ -2,10 +2,13 @@
 const path = require('path');
 module.exports = {
 	entry: './src/start',
+	mode: 'development',
 	// TODO: Change so this is set automatically when mode is set
 	// Use for development:
-	devtool: 'cheap-module-eval-source-map',
-	// devtool: 'eval-source-map',
+	// configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
+	devtool: 'eval-cheap-module-source-map',
+	
+	
 	// Use for production:
 	// devtool: 'source-map',
 	output: {
@@ -13,7 +16,8 @@ module.exports = {
 		path: path.resolve(__dirname, 'site/js/')
 	},
 	devServer: {
-		contentBase: path.join(__dirname, 'site'),
-		port: process.env.PORT_DEV_SERVER
+		static: path.join(__dirname, 'site'),
+		port: process.env.PORT_DEV_SERVER,
+
 	}
 };
