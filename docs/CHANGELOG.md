@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.9
+
+- `mapjs/package.json`: Add `webpack-bundle-analyzer` to look for webpack bundle optimisation opportunities.
+- `mapjs/webpack.config.js`: Add comments for using `webpack-bundle-analyzer` during build process.
+
 ## argmap 4.16.8
 
 - Upgrade mapjs dependencies to fix security issues:
