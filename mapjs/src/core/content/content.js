@@ -12,15 +12,15 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
 	// New function to handle max call stack size exceeded errors
 	const handleRangeError = function (e, calling_function_name) {
-		if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
-			console.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
-			// debugger;
-			return false;
-		} else {
-			logMyErrors(e); // pass exception object to error handler
-			return true;
-		}
-	},
+			if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
+				console.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
+				// debugger;
+				return false;
+			} else {
+				logMyErrors(e); // pass exception object to error handler
+				return true;
+			}
+		},
 		invalidateIdCache = function () {
 			cachedId = undefined;
 		},
@@ -102,7 +102,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			// Deletes empty group without breaking undo/redo
 			contentIdea.deleteIfEmptyGroup = function (originSession) {
 				contentIdea.isEmptyGroup() ? commandProcessors.removeSubIdea(originSession, contentIdea.id) : null;
-			}
+			};
 
 			contentIdea.find = function (predicate) {
 				const current = predicate(contentIdea) ? [_.pick(contentIdea, 'id', 'title')] : [];
@@ -402,7 +402,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		} else {
 			parentIdea = contentAggregate.findParent(subIdeaId);
 		}
-		var currentRank = parentIdea.findChildRankById(subIdeaId);
+		const currentRank = parentIdea.findChildRankById(subIdeaId);
 		return _.without(_.map(_.pick(parentIdea.ideas, sameSideSiblingRanks(parentIdea, currentRank)), function (i) {
 			return i.id;
 		}), subIdeaId);
@@ -472,7 +472,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		if (contentAggregate.isRootNode(subIdeaId)) {
 			return false;
 		}
-		var child_rank = parentIdea.containsDirectChild(subIdeaId)
+		const child_rank = parentIdea.containsDirectChild(subIdeaId);
 		// Fix: child having rank 0 was being treated as false.
 		if (child_rank !== false && !isNaN(child_rank) && child_rank != null) { // != null means also false for undefined
 			return parentIdea;
@@ -505,8 +505,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			inBatch = batches[activeSession],
 			performBatchOperations = function () {
 				const batchArgs = _.map(inBatch, function (event) {
-					return [event.eventMethod].concat(event.eventArgs);
-				}),
+						return [event.eventMethod].concat(event.eventArgs);
+					}),
 					batchUndoFunctions = _.sortBy(
 						_.map(inBatch, function (event) {
 							return event.undoFunction;
@@ -733,8 +733,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		}
 
 		const canRemove = function () {
-			return !contentAggregate.isRootNode(subIdeaId) || _.size(contentAggregate.ideas) > 1;
-		},
+				return !contentAggregate.isRootNode(subIdeaId) || _.size(contentAggregate.ideas) > 1;
+			},
 			performRemove = function () {
 				// No longer needs to be looked up since it was created earlier:
 				// const parent = contentAggregate.findParent(subIdeaId) || contentAggregate,
@@ -753,7 +753,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 				delete parent.ideas[oldRank];
 
 				// If parent is now an empty group, delete it:
-				parent.deleteIfEmptyGroup(originSession)
+				parent.deleteIfEmptyGroup(originSession);
 
 				contentAggregate.links = _.reject(contentAggregate.links, function (link) {
 					return removedNodeIds[link.ideaIdFrom] || removedNodeIds[link.ideaIdTo];
@@ -808,15 +808,15 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			},
 			performInsert = function () {
 				const createIdeaParams = () => {
-					const params = {
-						title: title,
-						id: optionalNewId
-					};
-					if (optionalAttr) {
-						params.attr = optionalAttr;
-					}
-					return params;
-				},
+						const params = {
+							title: title,
+							id: optionalNewId
+						};
+						if (optionalAttr) {
+							params.attr = optionalAttr;
+						}
+						return params;
+					},
 					oldIdea = parentIdea.ideas[childRank],
 					newIdea = init(createIdeaParams());
 
@@ -874,7 +874,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 				delete oldParent.ideas[oldRank];
 
 				// If parent is now an empty group, delete it without breaking undo/redo:
-				oldParent.deleteIfEmptyGroup(originSession)
+				oldParent.deleteIfEmptyGroup(originSession);
 
 				logChange('changeParent', [ideaId, newParentId], function () {
 					updateAttr(idea, 'position', oldPosition);
@@ -1126,13 +1126,13 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	};
 	commandProcessors.storeResource = function (originSession, resourceBody, optionalKey) {
 		const maxIdForSession = function () {
-			const keys = _.keys(contentAggregate.resources),
-				filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys,
-				intKeys = _.map(filteredKeys, function (string) {
-					return parseInt(string, 10);
-				});
-			return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
-		},
+				const keys = _.keys(contentAggregate.resources),
+					filteredKeys = sessionKey ? _.filter(keys, RegExp.prototype.test.bind(new RegExp('\\/' + sessionKey + '$'))) : keys,
+					intKeys = _.map(filteredKeys, function (string) {
+						return parseInt(string, 10);
+					});
+				return _.isEmpty(intKeys) ? 0 : _.max(intKeys);
+			},
 			nextResourceId = function () {
 				const intId = maxIdForSession() + 1;
 				return intId + uniqueResourcePostfix;

@@ -13,8 +13,8 @@ jQuery.fn.queueFadeOut = function (theme) {
 		return removeElement();
 	}
 	return element
-	.on('transitionend', removeElement)
-	.css('opacity', 0);
+		.on('transitionend', removeElement)
+		.css('opacity', 0);
 	setTimeout(removeElement, 500);
 };
 

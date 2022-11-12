@@ -30,36 +30,36 @@ $.fn.scrollWhenDragging = function (scrollPredicate) {
 $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange) {
 	'use strict';
 	const hotkeyEventHandlers = {
-		'return': 'insertDown',
-		'shift+return': 'insertUp',
-		'shift+tab': 'insertLeft',
-		'tab insert': 'insertRight',
-		'del backspace': 'removeSubIdea',
-		'left': 'selectNodeLeft',
-		'up': 'selectNodeUp',
-		'right': 'selectNodeRight',
-		'shift+right': 'activateNodeRight',
-		'shift+left': 'activateNodeLeft',
-		'meta+right ctrl+right': 'moveRight',
-		'meta+left ctrl+left': 'moveLeft',
-		'meta+up ctrl+up': 'moveUp',
-		'meta+down ctrl+down': 'moveDown',
-		'shift+up': 'activateNodeUp',
-		'shift+down': 'activateNodeDown',
-		'down': 'selectNodeDown',
-		'space f2': 'editNode',
-		'f': 'toggleCollapse',
-		'c meta+x ctrl+x': 'cut',
-		'p meta+v ctrl+v': 'paste',
-		'y meta+c ctrl+c': 'copy',
-		'ctrl+shift+v meta+shift+v': 'pasteStyle',
-		'u meta+z ctrl+z': 'undo',
-		'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
-		'meta+plus ctrl+plus z': 'scaleUp',
-		'meta+minus ctrl+minus shift+z': 'scaleDown',
-		'Esc 0 meta+0 ctrl+0': 'resetView',
+			'return': 'insertDown',
+			'shift+return': 'insertUp',
+			'shift+tab': 'insertLeft',
+			'tab insert': 'insertRight',
+			'del backspace': 'removeSubIdea',
+			'left': 'selectNodeLeft',
+			'up': 'selectNodeUp',
+			'right': 'selectNodeRight',
+			'shift+right': 'activateNodeRight',
+			'shift+left': 'activateNodeLeft',
+			'meta+right ctrl+right': 'moveRight',
+			'meta+left ctrl+left': 'moveLeft',
+			'meta+up ctrl+up': 'moveUp',
+			'meta+down ctrl+down': 'moveDown',
+			'shift+up': 'activateNodeUp',
+			'shift+down': 'activateNodeDown',
+			'down': 'selectNodeDown',
+			'space f2': 'editNode',
+			'f': 'toggleCollapse',
+			'c meta+x ctrl+x': 'cut',
+			'p meta+v ctrl+v': 'paste',
+			'y meta+c ctrl+c': 'copy',
+			'ctrl+shift+v meta+shift+v': 'pasteStyle',
+			'u meta+z ctrl+z': 'undo',
+			'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
+			'meta+plus ctrl+plus z': 'scaleUp',
+			'meta+minus ctrl+minus shift+z': 'scaleDown',
+			'Esc 0 meta+0 ctrl+0': 'resetView'
 		// 'Esc': 'cancelCurrentAction'
-	},
+		},
 		charEventHandlers = {
 			'[': 'activateChildren',
 			'{': 'activateNodeAndChildren',
@@ -113,8 +113,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 		// Moved this css overflow:auto setting to mapjs-default-styles.css file, so it's easier to override mapjs-container setting.
 		// element.css('overflow', 'auto').attr('tabindex', 1);
 		// tabindex ensures that container can receive focus
-		// Set index to 0 rather than 1 because 1 is considered bad practice for accessibility. 
-		// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#sect2 
+		// Set index to 0 rather than 1 because 1 is considered bad practice for accessibility.
+		// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#sect2
 		element.attr('tabindex', 0);
 		if (mapModel.getInputEnabled()) {
 			(dragContainer || element).simpleDraggableContainer();
@@ -199,7 +199,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				61: 'scaleUp',
 				173: 'scaleDown',
 				187: 'scaleUp',
-				189: 'scaleDown',
+				189: 'scaleDown'
 			};
 			let mappedFunction;
 			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {

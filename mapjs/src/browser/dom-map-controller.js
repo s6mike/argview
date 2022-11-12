@@ -398,7 +398,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				} else {
 					// Check finalPosition not undefined:
 					if (!finalPosition) {
-						return false
+						return false;
 					}
 					finalPosition.width = element.outerWidth();
 					finalPosition.height = element.outerHeight();

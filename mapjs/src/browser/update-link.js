@@ -16,12 +16,12 @@ const jQuery = require('jquery'),
 					arrowElement = createSVG('path').attr('class', 'mapjs-arrow').appendTo(element);
 				}
 				arrowElement
-				.attr({
-					d: arrow,
-					fill: connection.lineProps.color,
-					'stroke-width': connection.lineProps.width
-				})
-				.show();
+					.attr({
+						d: arrow,
+						fill: connection.lineProps.color,
+						'stroke-width': connection.lineProps.width
+					})
+					.show();
 			});
 			arrowElements.slice(connection.arrows.length).hide();
 		} else {

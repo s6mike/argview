@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.12
+
+- `mapjs/src`: Save changes from `npm run lint -- --fix`.
+- Save output as `mapjs/lint_errors.txt`
+
 ## argmap 4.16.11
 
 - `mapjs/package.json`: Add lint command as script.

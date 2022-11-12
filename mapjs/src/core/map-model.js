@@ -175,7 +175,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 			}
 			layoutModel.setLayout(newLayout);
 			// Logging node layout to console to help with debugging:
-			idea_pp(idea)
+			idea_pp(idea);
 			if (!self.isInCollapse) {
 				self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
 			}
@@ -333,9 +333,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	};
 	// This seems to be triggered by mouseup not mousedown
 	this.clickNode = function (id, event) {
-		const button = event && event.button && event.button !== -1;
-		// 'which', unlike button, seems to get populated on mouse up.
-		const which = event.which;
+		const button = event && event.button && event.button !== -1,
+			// 'which', unlike button, seems to get populated on mouse up.
+		 which = event.which;
 		if (event && event.altKey) {
 			self.toggleLink('mouse', id);
 		} else if (event && event.shiftKey) {
@@ -779,11 +779,11 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		//	Also node IDs can contain dots ('.') so rewrite ID . with _, consistent with how they appear in HTML.
 		// QUESTION: Should this be toggle so two clicks would unselect?
 		// 	Would need to change link-edit-widget behaviour too.
-		const link_id = [link.type, link.ideaIdFrom, link.ideaIdTo].join('_').replaceAll('.', '_');
-		// Unfortunately links are not guaranteed to have a unique ID, because code was written assuming a single container on the page, but now supports multiple containers, which may have links between identical node IDs.
-		// Can  identify current container using this.container_element (which is assigned in start.js), so that only relevant links are affected:
-		// Can only use getElementById at doc level so using querySelector instead:
-		const link_element = this.containerElement.querySelector('#' + link_id)
+		const link_id = [link.type, link.ideaIdFrom, link.ideaIdTo].join('_').replaceAll('.', '_'),
+			// Unfortunately links are not guaranteed to have a unique ID, because code was written assuming a single container on the page, but now supports multiple containers, which may have links between identical node IDs.
+			// Can  identify current container using this.container_element (which is assigned in start.js), so that only relevant links are affected:
+			// Can only use getElementById at doc level so using querySelector instead:
+		 link_element = this.containerElement.querySelector('#' + link_id);
 		if (link_element && !link_element.classList.contains('selected-link')) {
 			// TODO: Would be more efficient to remember the selected link and then remove the class from it without having to find it again.
 			const old_selected_link = this.containerElement.getElementsByClassName('selected-link')[0];
@@ -1073,15 +1073,15 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	//node activation and selection
 	(function () {
 		const applyToNodeDirection = function (source, analyticTag, method, direction) {
-			if (!isInputEnabled) {
-				return;
-			}
-			analytic(analyticTag, source);
-			const relId = layoutModel['nodeId' + direction](currentlySelectedIdeaId);
-			if (relId) {
-				method.apply(self, [relId]);
-			}
-		},
+				if (!isInputEnabled) {
+					return;
+				}
+				analytic(analyticTag, source);
+				const relId = layoutModel['nodeId' + direction](currentlySelectedIdeaId);
+				if (relId) {
+					method.apply(self, [relId]);
+				}
+			},
 			applyFuncs = {};
 
 		['Left', 'Right', 'Up', 'Down'].forEach(function (direction) {
@@ -1192,11 +1192,11 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	self.getNodeIdAtPosition = function (x, y) {
 		const isPointOverNode = function (node) { //move to mapModel candidate
 			/*jslint eqeq: true*/
-			return x >= node.x &&
+				return x >= node.x &&
 				y >= node.y &&
 				x <= node.x + node.width &&
 				y <= node.y + node.height;
-		},
+			},
 			node = _.find(layoutModel.getLayout().nodes, isPointOverNode);
 		// QUESTION: Returns node.id, why not whole node?
 		return node && node.id;
@@ -1218,7 +1218,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 					const node = layoutModel.getNode(id);
 					// Check node is not undefined:
 					if (!node) {
-						return false
+						return false;
 					}
 					if (y < node.y && node.y < verticallyClosestNode.y) {
 						verticallyClosestNode = node;
@@ -1378,12 +1378,12 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	};
 	self.dropImage = function (dataUrl, imgWidth, imgHeight, x, y, metaData) {
 		const dropOn = function (ideaId, position) {
-			const scaleX = Math.min(imgWidth, 300) / imgWidth,
-				scaleY = Math.min(imgHeight, 300) / imgHeight,
-				scale = Math.min(scaleX, scaleY),
-				existing = idea.getAttrById(ideaId, 'icon');
-			self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId, metaData);
-		},
+				const scaleX = Math.min(imgWidth, 300) / imgWidth,
+					scaleY = Math.min(imgHeight, 300) / imgHeight,
+					scale = Math.min(scaleX, scaleY),
+					existing = idea.getAttrById(ideaId, 'icon');
+				self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId, metaData);
+			},
 			addNew = function () {
 				idea.startBatch();
 				const newId = addSubIdea(currentlySelectedIdeaId);
@@ -1421,8 +1421,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 							// siblings sometimes contains initial undefined value, so this should stop an error being thrown
 							//	 See https://workflowy.com/#/6c9851b2d1f5
 							// TODO: Is undefined sibling sign of a bug?
-							return node ? node.y : undefined;
-						}),
+								return node ? node.y : undefined;
+							}),
 							bottoms = _.map(siblings, function (node) {
 								// siblings sometimes contains initial undefined value, so this should stop an error being thrown
 								//	 See https://workflowy.com/#/6c9851b2d1f5

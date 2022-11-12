@@ -16,12 +16,10 @@ jQuery.fn.createLink = function (l, optional) {
 			'nodeTo': stage.nodeWithId(l.ideaIdTo),
 			attr: (l.attr && l.attr.style) || {}
 		},
-		element = createSVG('g')
-		.attr({
+		element = createSVG('g').attr({
 			'id': linkKey(l),
 			'data-mapjs-role': 'link'
-		})
-		.data(elementData),
+		}).data(elementData),
 		connection = linkBuilder(elementData.nodeFrom.getDataBox(), elementData.nodeTo.getDataBox(), elementData.attrs, theme);
 	element.css(Object.assign(convertPositionToTransform(connection.position), {stroke: connection.lineProps.color}));
 	element.appendTo(this);
