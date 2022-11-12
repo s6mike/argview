@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.11
+
+- `mapjs/package.json`: Add lint command as script.
+
 ## argmap 4.16.10
 
 - `mapjs/webpack.config.js`: Change webpack output file from `bundle.js` to `main.bundle.js` in preparation for optimising bundle.
