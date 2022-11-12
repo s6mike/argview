@@ -1,5 +1,5 @@
 /*jshint loopfunc:true */
-/*global module, require*/
+/*global module, require, logMyErrors */
 const _ = require('underscore'),
 	observable = require('../util/observable'),
 	contentUpgrade = require('./content-upgrade');
@@ -101,6 +101,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
 			// Deletes empty group without breaking undo/redo
 			contentIdea.deleteIfEmptyGroup = function (originSession) {
+				// eslint-disable-next-line no-use-before-define
 				contentIdea.isEmptyGroup() ? commandProcessors.removeSubIdea(originSession, contentIdea.id) : null;
 			};
 
@@ -474,6 +475,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		}
 		const child_rank = parentIdea.containsDirectChild(subIdeaId);
 		// Fix: child having rank 0 was being treated as false.
+		// eslint-disable-next-line eqeqeq
 		if (child_rank !== false && !isNaN(child_rank) && child_rank != null) { // != null means also false for undefined
 			return parentIdea;
 		}
@@ -724,9 +726,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	commandProcessors.removeSubIdea = function (originSession, subIdeaId) {
 		// Due to fix I added, possible to now try to remove idea which has already been removed.
 		// So checking for that first, by checking for parent now instead of later on.
-		// Using var so it's function scope and can be used in performRemove
+		// Declaring here so it's function scope and can be used in performRemove
+		let parent;
 		try {
-			var parent = contentAggregate.findParent(subIdeaId) || contentAggregate;
+			parent = contentAggregate.findParent(subIdeaId) || contentAggregate;
 		} catch (e) {
 			// New function to handle max call stack size exceeded errors
 			return handleRangeError(e, 'removeSubIdea');
@@ -745,6 +748,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
 				// This fails if oldRank is 0, need to test for undefined etc instead:
 				// if (!oldRank) {
+				// eslint-disable-next-line eqeqeq
 				if (oldRank == null || oldRank === false || isNaN(oldRank)) { // == null tests for undefined too
 					return false;
 				}

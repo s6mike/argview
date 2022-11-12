@@ -1,4 +1,4 @@
-/*global require, module */
+/*global require, module, idea_pp */
 const _ = require('underscore'),
 	MemoryClipboard = require('./clipboard'),
 	LayoutModel = require('./layout/layout-model'),
@@ -335,7 +335,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	this.clickNode = function (id, event) {
 		const button = event && event.button && event.button !== -1,
 			// 'which', unlike button, seems to get populated on mouse up.
-		 which = event.which;
+			which = event.which;
 		if (event && event.altKey) {
 			self.toggleLink('mouse', id);
 		} else if (event && event.shiftKey) {
@@ -447,7 +447,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		}
 		if (isInputEnabled) {
 			analytic('updateLinkStyle:' + prop, source);
-			if (prop == 'arrow') {
+			if (prop === 'arrow') {
 				// If arrow button pressed, toggle arrow value.
 				value = merged.arrow ? false : 'to';
 			}
@@ -783,7 +783,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 			// Unfortunately links are not guaranteed to have a unique ID, because code was written assuming a single container on the page, but now supports multiple containers, which may have links between identical node IDs.
 			// Can  identify current container using this.container_element (which is assigned in start.js), so that only relevant links are affected:
 			// Can only use getElementById at doc level so using querySelector instead:
-		 link_element = this.containerElement.querySelector('#' + link_id);
+			link_element = this.containerElement.querySelector('#' + link_id);
 		if (link_element && !link_element.classList.contains('selected-link')) {
 			// TODO: Would be more efficient to remember the selected link and then remove the class from it without having to find it again.
 			const old_selected_link = this.containerElement.getElementsByClassName('selected-link')[0];

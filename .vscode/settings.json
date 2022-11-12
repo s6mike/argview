@@ -68,6 +68,8 @@
         "argm",
         "argmaplua",
         "argth",
+        "dleft",
+        "dright",
         "mappack",
         "muplua",
         "tikzlua"

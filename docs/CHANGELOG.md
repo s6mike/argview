@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.14
+
+- Fix remaining eslint errors manually, except:
+- `mapjs/src/browser/update-connector-text.js`: Revert linting changes from v4.16.12 since this broke link editing.
+
 ## argmap 4.16.13
 
 - `mapjs/.eslintrc.json`: Update with configuration from newly installed VSCode extension: [ESLint - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).

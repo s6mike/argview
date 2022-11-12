@@ -1,8 +1,9 @@
-/*global require */
+/*jslint browser: true */
+/*global require, map */
 const jQuery = require('jquery');
 jQuery.fn.imageDropWidget = function (imageInsertController) {
 	'use strict';
-	this.on('dragleave dragend', function (e) {
+	this.on('dragleave dragend', function () {
 		jQuery('.droppable').removeClass('droppable');
 	}).on('dragenter dragover', function (e) {
 		const stageDropCoordinates = map.domMapController.stagePositionForPointEvent(e),

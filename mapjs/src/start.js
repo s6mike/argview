@@ -1,11 +1,7 @@
 /* mapjs entry point: Initialises, plus function to load JSON and embed visualisation into a container. */
+/*global require, document, window, console, idea */
 
-/*global require, document, window, console */
-const MAPJS = require('./npm-main'),
-	jQuery = require('jquery'),
-	themeProvider = require('../src/theme'),
-	content = MAPJS.content,
-	mapInstance = {}; // New object for keeping data for keeping various mapjs objects separate
+const MAPJS = require('./npm-main');
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 // 	new MAPJS.Theme[x] ?
@@ -18,45 +14,15 @@ MAPJS.v1 = require('../src/themes/v1.json');
 MAPJS.md = require('../src/themes/deep_merged_x.json');
 MAPJS.m2 = require('../src/themes/merged_x2.json');
 
-const init = function () {
-		'use strict';
-		// let domMapController = false;
-
-		// Looks for class not id, so can capture a number of containers each with own id.
-		const containers = document.getElementsByClassName('container_argmapjs');
-
-		if (containers.length > 0) { // Checks there are mapjs requests
-		// jQuery(containers).each(function (container) {
-			for (const container of containers) {
-			// containers.foreach(function (container) {
-			// TODO: check for 0 > script > 1
-			//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-			// const script_src = jQuery(this).children('script.argmap_json').attr('src');
-				const script_src = container.getElementsByClassName('argmap_json')[0].getAttribute('src');
-				console.debug('script_src: ', script_src);
-
-				// TODO: switch to await/async for simpler code and debugging.
-				// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
-				fetch(script_src)
-					.then(response => response.json())
-					.then(data => addMap(container, data))
-				// .then((data) => console.debug(data))
-					.catch(error => console.error(error));
-			}
-
-			// TODO: This stuff only needed once, not per map
-			window.onerror = console.error; // Stops annoying pop ups when there's an error.
-			window.jQuery = jQuery;
-			window.mapInstance = mapInstance;
-
-		} else { // If no mapjs requests:
-			console.debug('No requests for mapjs detected.');
-		};
-	},
+const jQuery = require('jquery'),
+	themeProvider = require('../src/theme'),
+	content = MAPJS.content,
+	mapInstance = {}, // New object for keeping data for keeping various mapjs objects separate
 
 	// Injects Theme CSS into page
 	// So can't easily make themes independent for each container without making css directives container independent
 	layoutThemeStyle = function (themeJson) {
+		'use strict';
 		const themeCSS = themeJson && new MAPJS.ThemeProcessor().process(themeJson).css;
 		if (!themeCSS) {
 			return false;
@@ -69,37 +35,20 @@ const init = function () {
 		jQuery('<style id="themeCSS" type="text/css"></style>').appendTo('head').text(themeCSS);
 
 		return true;
-	};
+	},
 
-// TODO: Need to re-use some of this in combination with addMap(), drag and drop.
-// QUESTION:Add this function to mapModel class? Then don't need the container argument at all
-window.loadMap = function (mapJson) {
-	// For some reason, first argument in call: container being passed as this. Not sure why
-
-	// TODO: Need to use correct mapModel
-	//	 mapInstance[this.target_container_id].mapModel.getIdea();
-	old_idea = map.mapModel.getIdea();
-	// Batch ensures that operations are atomic
-	// So counts as a single undo/redo step
-	return old_idea.batch(function () {
-		old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
-		map.mapModel.removeSubIdea('root', 'loadMap');
-		return true;
-	});
-};
-
-// Changes theme of all maps on page
-// 	To change, call e.g. changeTheme(map, MAPJS.v1)
-// 	TODO: Move to mapModel.changeTheme() in map-model.js
-// 	TODO: Make this apply to a specific map only
-const changeTheme = function (map, themeJson = themeProvider.default) {
-	// QUESTION: Should I build this into function in case themeJson invalid?
-	//	 themeJson = themeProvider.default || MAPJS.defaultTheme;
-	// QUESTION: Should I add getTheme to map?
-		theme = new MAPJS.Theme(themeJson),
-		getTheme = () => theme;
+	// Changes theme of all maps on page
+	// 	To change, call e.g. changeTheme(map, MAPJS.v1)
+	// 	TODO: Move to mapModel.changeTheme() in map-model.js
+	// 	TODO: Make this apply to a specific map only
+	// eslint-disable-next-line strict
+	changeTheme = function (map, themeJson = themeProvider.default) {
+		// QUESTION: Should I build this into function in case themeJson invalid?
+		//	 themeJson = themeProvider.default || MAPJS.defaultTheme;
+		// QUESTION: Should I add getTheme to map?
+		const theme = new MAPJS.Theme(themeJson),
+			getTheme = () => theme;
 		map.mapModel.setThemeSource(getTheme);
-
 		layoutThemeStyle(themeJson);
 
 		// Can't reset map with setIdea if domMapController hasn't been defined yet
@@ -117,24 +66,28 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 
 	// Add a (ideally) separate map to each container div on the page.
 	addMap = function (container, mapJson) {
-	// console.debug("mapJson: ", mapJson);
-		map = mapInstance[container.id] = {};
-		// map = mapInstance[container.id];
-		jQcontainer = jQuery(container),
-		// Do I need one of these for each container?
-		imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
-		idea = content(mapJson),
-		touchEnabled = false,
+		'use strict';
+		// console.debug("mapJson: ", mapJson);
 		// QUESTION: Do we need a separate mapModel for each map?
 		// 	Or are there generic methods I can separate out from object ones?
-		map.mapModel = new MAPJS.MapModel([]),
+		// map = mapInstance[container.id];
+		const map = mapInstance[container.id] = {};
+		map.mapModel = new MAPJS.MapModel([]);
 		// So it's easier to look up container from mapModel:
 		//  Useful because unfortunately, element ids only unique per container
-		map.mapModel.containerElement = container,
+		map.mapModel.containerElement = container;
 
-		// Easier to maintain theme file so making that default:
-		// themeJson = themeProvider.default || MAPJS.defaultTheme;
-		themeJson = MAPJS.arg || idea.theme || themeProvider.default || MAPJS.defaultTheme,
+		// eslint-disable-next-line one-var
+		const jQcontainer = jQuery(container),
+			// Do I need one of these for each container?
+			imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
+			idea = content(mapJson),
+			touchEnabled = false,
+
+			// Easier to maintain theme file so making that default:
+			// themeJson = themeProvider.default || MAPJS.defaultTheme;
+			themeJson = MAPJS.arg || idea.theme || themeProvider.default || MAPJS.defaultTheme,
+			getTheme = changeTheme(map, themeJson);
 
 		// TODO: Might only need one of these for the whole page, rather than for each container:
 		jQuery.fn.attachmentEditorWidget = function (mapModel) {
@@ -155,7 +108,6 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 		// window.jQuery = jQuery;
 
 		jQcontainer.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
-		getTheme = changeTheme(map, themeJson);
 
 		// different stage for each container so need to have one for each container
 		// Using container.id as index for relevant controller
@@ -168,7 +120,8 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 			undefined, // resourceTranslator
 			getTheme
 		);
-		//jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
+
+		// jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
 		// activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange
 
 		// jQuery('body').mapToolbarWidget(map.mapModel);
@@ -193,7 +146,7 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 		});
 
 		jQcontainer.on('drop', function (e) {
-		// QUESTION: Should maybe separate this into a callable function so that it can be used as general file import function?
+			// QUESTION: Should maybe separate this into a callable function so that it can be used as general file import function?
 			const dataTransfer = e.originalEvent.dataTransfer;
 			e.stopPropagation();
 			e.preventDefault();
@@ -202,13 +155,14 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 				if (/\.(json|mup)$/.test(fileInfo.name)) {
 					const oFReader = new window.FileReader();
 					oFReader.onload = function (oFREvent) {
-					// Less destructive to paste JSON file data into container as new map(s), instead of replacing existing map.
-					// TODO: However, paste doesn't include links, themes etc
-					// 	Or is that just because we use parse().ideas only?
-					// map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
-						container_idea = mapInstance[this.target_container_id].mapModel.getIdea();
-						result = container_idea.pasteMultiple('root', JSON.parse(oFREvent.target.result).ideas);
-					// TODO: Return result?
+						// Less destructive to paste JSON file data into container as new map(s), instead of replacing existing map.
+						// TODO: However, paste doesn't include links, themes etc
+						// 	Or is that just because we use parse().ideas only?
+						// map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
+						const container_idea = mapInstance[this.target_container_id].mapModel.getIdea(),
+							// eslint-disable-next-line no-unused-vars
+							result = container_idea.pasteMultiple('root', JSON.parse(oFREvent.target.result).ideas);
+						// TODO: Return result?
 					};
 					// This passes the target container's id to the File Reader window:
 					//	QUESTION: Is there a better way of doing this?
@@ -217,7 +171,62 @@ const changeTheme = function (map, themeJson = themeProvider.default) {
 				}
 			}
 		});
+	},
+
+	init = function () {
+		'use strict';
+		// let domMapController = false;
+
+		// Looks for class not id, so can capture a number of containers each with own id.
+		const containers = document.getElementsByClassName('container_argmapjs');
+
+		if (containers.length > 0) { // Checks there are mapjs requests
+			// jQuery(containers).each(function (container) {
+			for (const container of containers) {
+				// containers.foreach(function (container) {
+				// TODO: check for 0 > script > 1
+				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
+				// const script_src = jQuery(this).children('script.argmap_json').attr('src');
+				const script_src = container.getElementsByClassName('argmap_json')[0].getAttribute('src');
+				console.debug('script_src: ', script_src);
+
+				// TODO: switch to await/async for simpler code and debugging.
+				// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
+				fetch(script_src)
+					.then(response => response.json())
+					.then(data => addMap(container, data))
+					// .then((data) => console.debug(data))
+					.catch(error => console.error(error));
+			}
+
+			// TODO: This stuff only needed once, not per map
+			window.onerror = console.error; // Stops annoying pop ups when there's an error.
+			window.jQuery = jQuery;
+			window.mapInstance = mapInstance;
+
+		} else { // If no mapjs requests:
+			console.debug('No requests for mapjs detected.');
+		};
 	};
+
+// TODO: Need to re-use some of this in combination with addMap(), drag and drop.
+// QUESTION:Add this function to mapModel class? Then don't need the container argument at all
+window.loadMap = function (mapJson) {
+	'use strict';
+	// For some reason, first argument in call: container being passed as this. Not sure why
+
+	// TODO: Need to use correct mapModel
+	//	 mapInstance[this.target_container_id].mapModel.getIdea();
+	const map = window.map,
+		old_idea = map.mapModel.getIdea();
+	// Batch ensures that operations are atomic
+	// So counts as a single undo/redo step
+	return old_idea.batch(function () {
+		old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
+		map.mapModel.removeSubIdea('root', 'loadMap');
+		return true;
+	});
+};
 
 document.addEventListener('DOMContentLoaded', init);
 
