@@ -13,9 +13,17 @@ module.exports = {
 	// Use for production:
 	// devtool: 'source-map',
 	output: {
-		filename: 'bundle.js',
+		filename: '[name].bundle.js',
+		// chunkFilename: "[name].chunk.js",
 		path: path.resolve(__dirname, 'site/js/')
 	},
+
+	// optimization: {
+	// 	splitChunks: {
+	// 		chunks: 'all',
+	// 	},
+	// },
+
 	devServer: {
 		static: path.join(__dirname, 'site'),
 		port: process.env.PORT_DEV_SERVER,

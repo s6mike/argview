@@ -6,7 +6,7 @@ archived
 lua_modules/
 mapjs/node_modules
 mapjs/site/output
-mapjs/site/js/bundle.js
+mapjs/site/js/*bundle.js
 examples/*
 test/output*/*
 tmp/

@@ -12,4 +12,4 @@ SpecRunner.html
 npm-debug.log
 site/js/
 test/bundle*
-examples/assets/webpack-bundle.js
+mapjs/examples/assets/webpack-*.js
