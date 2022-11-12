@@ -21,6 +21,7 @@
   "homepage": "https://www.mindmup.com",
   "version": "4.1.0",
   "scripts": {
+    "env": "env",
     "report": "webpack --mode production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json",
     "testc": "npm run test-start",
     "test-start": "npm run start && npm run test-cafe",

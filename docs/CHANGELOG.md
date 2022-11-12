@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.17
+
+- `mapjs/package.json`: Add `env` script to check npm env variables:
+  - Use `npm run env | grep npm`.
+
 ## argmap 4.16.16
 
 - `test/input/html/`: Update html test input files to reflect fix in v4.16.10
