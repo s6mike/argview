@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.19
+
+- Add `.github/workflows/codeql.yml` so github scans js code for issue.
+
 ## argmap 4.16.18
 
 - `mapjs/package.json`: Replace source for `jquery.hotkeys`: use npm `^0.1.0` instead of github.
