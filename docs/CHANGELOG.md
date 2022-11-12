@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.20
+
+- `mapjs/specs/core/content/content-spec.js`: Fix regex error reported by codeQL.
+
 ## argmap 4.16.19
 
 - Add `.github/workflows/codeql.yml` so github scans js code for issue.

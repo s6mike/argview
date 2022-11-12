@@ -2665,7 +2665,7 @@ describe('content aggregate', function () {
 		it('stores a resource without cloning (to save memory) and returns the new resource ID in the format NUM/UNIQUE-UUID/', function () {
 			const arr = [1, 2, 3, 4, 5],
 				result = underTest.storeResource(arr);
-			expect(result).toMatch(/^[0-9/+\/[a-z0-9-]*\/$/);
+			expect(result).toMatch(/^[0-9]+\/[a-z0-9-]+\/$/);
 			expect(underTest.resources[result]).toEqual(arr);
 			arr.push(6);
 			expect(underTest.resources[result][5]).toBe(6);
@@ -2687,7 +2687,7 @@ describe('content aggregate', function () {
 		it('appends the session key to the unique ID if session exists', function () {
 			const secondcontent = content({title: 'test'}, 'session1'),
 				secondKey = secondcontent.storeResource('123');
-			expect(secondKey).toMatch(/^[0-9/+\/[a-z0-9-]*\/session1$/);
+			expect(secondKey).toMatch(/^[0-9]+\/[a-z0-9-]+\/session1$/);
 		});
 		it('retrieves the resource contentAggregate without cloning (to save memory)', function () {
 			underTest.resources = {abc: [1, 2, 3]};
