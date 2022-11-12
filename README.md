@@ -759,7 +759,7 @@ You can adapt the above for your own DIY approach:
 
 1 ) Create a JSON file using `src/argmap2mup`, and put it somewhere accessible from your web page.
 
-2 ) Embed it into an html page using html like this, replacing [JSON file path] with the path:
+2 ) Embed it into an html page using html like this, replacing `[JSON file path]` with the path:
 
 ``` html
 <div id="container_argmap1" class="container_argmapjs">

@@ -23,14 +23,21 @@ const createSVG = require('./create-svg'),
 		const g = getTextElement(parentElement, labelText, 'g', centrePoint),
 			rectElement = g && getTextElement(g, labelText, 'rect'),
 			textElement = g && getTextElement(g, labelText),
-			textDOM = textElement && textElement[0],
-			rectDOM = rectElement && rectElement[0],
-			translate = {};
+			textDOM = textElement && textElement[0];
 
-		let textDimensions = false;
-		if (!textDOM) {
+		if (!textDOM) { // This has to be checked before trying to get linkDimensions.
 			return false;
-		}
+		};
+		let textDimensions = false;
+		// eslint-disable-next-line one-var
+		const rectDOM = rectElement && rectElement[0],
+			translate = {},
+			linkDimensions = parentElement[0].getElementsByClassName('mapjs-connector')[0].getClientRects()[0],
+			// Want connector label to be nearer parent node:
+			// 	Again, this is more for argmap, so may not work well in other themes.
+			dleft = (linkDimensions.left - centrePoint.x),
+			dright = (linkDimensions.right - centrePoint.x);
+
 		textDOM.style.stroke = 'none';
 		textDOM.style.fill = labelTheme.text.color;
 		textDOM.style.fontSize = labelTheme.text.font.sizePx + 'px';
@@ -38,11 +45,7 @@ const createSVG = require('./create-svg'),
 		textDOM.style.dominantBaseline = 'hanging';
 		textElement.text(labelText.trim());
 		textDimensions = textDOM.getClientRects()[0];
-		let linkDimensions = parentElement[0].getElementsByClassName('mapjs-connector')[0].getClientRects()[0];
-		// Want connector label to be nearer parent node:
-		// 	Again, this is more for argmap, so may not work well in other themes.
-		let dleft = (linkDimensions.left - centrePoint.x);
-		let dright = (linkDimensions.right - centrePoint.x);
+
 		// translate.x number not very good, the mapjs-connector ClientRects.left and .right don't seem to relate to the actual boundary of the element.
 		// TODO: Not sure why not, might be that BoundingClientRect or BBox works better. Or might need to look up location of parent node instead.
 		// translate.x = Math.round(centrePoint.x - textDimensions.width / 2);

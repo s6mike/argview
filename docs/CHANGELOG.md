@@ -8,10 +8,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.15
+
+- `mapjs/src/browser/update-connector-text.js`: Fix lint errors without breaking link selection.
+
 ## argmap 4.16.14
 
 - Fix remaining eslint errors manually, except:
-- `mapjs/src/browser/update-connector-text.js`: Revert linting changes from v4.16.12 since this broke link editing.
+- `mapjs/src/browser/update-connector-text.js`: Revert linting changes from v4.16.12 since this broke link selection.
 
 ## argmap 4.16.13
 
@@ -22,6 +26,8 @@
 - `mapjs/src`: Save changes from `npm run lint -- --fix`.
 - Save output as `mapjs/lint_errors.txt`
 
+ISSUE: Change in `mapjs/src/browser/update-connector-text.js` broke link selection.
+
 ## argmap 4.16.11
 
 - `mapjs/package.json`: Add lint command as script.
@@ -30,6 +36,8 @@
 
 - `mapjs/webpack.config.js`: Change webpack output file from `bundle.js` to `main.bundle.js` in preparation for optimising bundle.
   - Update dependencies on `bundle.js`
+
+ISSUE: Forgot to update html files in `test/input/html/`.
 
 ## argmap 4.16.9
 
