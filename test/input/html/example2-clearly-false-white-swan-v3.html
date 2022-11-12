@@ -20,6 +20,11 @@
     <h1 class="title">example2-clearly-false-white-swan-v3</h1>
                   </header>
       
+  <legend>Argmap Input</legend> <textarea id="input_argmap1" name="input_argmap" class="input_argmap" rows="15"
+    cols="60"></textarea>
+  <div><input type="file" accept=".yml,.yaml,.json,.mup" id="file_picker_argmap1" class="file_picker_argmap" /></div>
+  <div><input type="button" id="submit_input_argmap1" class="submit_input_argmap" value="Submit" />
+  </div>
   <div id="container_argmap1" class="container_argmapjs" tabindex="0">
     <script type="application/json" class="argmap_json" src="/input/mapjs-json/example2-clearly-false-white-swan-v3.mup"></script>
     <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
@@ -73,7 +78,9 @@
     </div></div>
   <style id="themecss">
   </style>
-  <script src="/js/bundle.js"></script>
+  <script src="/js/main.bundle.js" type="text/javascript"></script>
+  <!-- <script src="/js/fengari-web.js" type="text/javascript" async></script> -->
+  <!-- <script src="/lua/client_argmap2mapjs.lua" type="application/lua" async></script> -->
   </body>
 
 </html>

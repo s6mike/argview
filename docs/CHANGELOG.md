@@ -8,9 +8,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.16
+
+- `test/input/html/`: Update html test input files to reflect fix in v4.16.10
+- Remove `test/input/html/example1-clearly-false-white-swan-simplified-with-links.html` since no related input file.
+
 ## argmap 4.16.15
 
 - `mapjs/src/browser/update-connector-text.js`: Fix lint errors without breaking link selection.
+- [README.md](../README.md): Fix lint error.
 
 ## argmap 4.16.14
 
