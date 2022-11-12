@@ -8,6 +8,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.18
+
+- `mapjs/package.json`: Replace source for `jquery.hotkeys`: use npm `^0.1.0` instead of github.
+  - Update `mapjs/package-lock.json`.
+
 ## argmap 4.16.17
 
 - `mapjs/package.json`: Add `env` script to check npm env variables:

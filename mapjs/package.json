@@ -51,7 +51,7 @@
     "hammerjs": "^1.1.3",
     "jquery": "^3.6.1",
     "jquery-hammerjs": "^1.1.3",
-    "jquery.hotkeys": "git://github.com/jeresig/jquery.hotkeys",
+    "jquery.hotkeys": "^0.1.0",
     "monotone-convex-hull-2d": "^1.0.1",
     "polybooljs": "^1.1.1",
     "underscore": "^1.13.6"
