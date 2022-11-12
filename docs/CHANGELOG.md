@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.13
+
+- `mapjs/.eslintrc.json`: Update with configuration from newly installed VSCode extension: [ESLint - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
+
 ## argmap 4.16.12
 
 - `mapjs/src`: Save changes from `npm run lint -- --fix`.
