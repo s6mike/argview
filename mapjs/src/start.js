@@ -221,7 +221,7 @@ const addMap = function (container, mapJson) {
 
 document.addEventListener('DOMContentLoaded', init);
 
-// Hacky way to test
+// // Hacky way to test
 // window.setTimeout(function () {
 // 	b = document.getElementById("submit");
 // 	if (b) {

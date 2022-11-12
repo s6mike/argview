@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.7
+
+- Comment out fengari-web scripts from html templates since focusing on mapjs for now:
+  - `pandoc-templates/mapjs/mapjs-quick-json.html`
+  - `pandoc-templates/mapjs/mapjs-main-html5.html`
+
 ## argmap 4.16.6
 
 - Add `test/output/html` so all html output files in one place.
