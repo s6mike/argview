@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.21
+
+- `mapjs/package.json`: Update scripts `start` and `server` to call `webpack serve` instead of `webpack-dev-server`.
+
 ## argmap 4.16.20
 
 - `mapjs/specs/core/content/content-spec.js`: Fix regex error reported by codeQL.
