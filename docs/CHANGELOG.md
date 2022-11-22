@@ -2,11 +2,18 @@
 
 ## TODO
 
+- Can add doc terminator to yaml code once I know how to add tiny-yaml commit fix as a dependency.
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.16.22
+
+- Fix last few lint errors:
+- `mapjs/webpack.config.js`: Fix lint error for env variable `process`.
+- `mapjs/specs/browser/update-stage-spec.js`: Indentation.
 
 ## argmap 4.16.21
 

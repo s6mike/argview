@@ -1,4 +1,4 @@
-/*global require, module, __dirname */
+/*global require, module, __dirname, process */
 const path = require('path');
 // const BundleAnalyzerPlugin =
 // 	require("webpack-bundle-analyzer").BundleAnalyzerPlugin
@@ -26,7 +26,6 @@ module.exports = {
 
 	devServer: {
 		static: path.join(__dirname, 'site'),
-		port: process.env.PORT_DEV_SERVER,
-
+		port: process.env.PORT_DEV_SERVER
 	}
 };
