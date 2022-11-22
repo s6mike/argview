@@ -12,6 +12,28 @@ module.exports = {
 	// plugins: [new BundleAnalyzerPlugin()],
 	// Use for production:
 	// devtool: 'source-map',
+	module: {
+		rules: [
+			{
+				test: require.resolve('jquery.hotkeys'),
+				use: [
+					{
+						loader: 'imports-loader',
+						options: {
+							// Replacing: require('imports-loader?jQuery=jquery!jquery.hotkeys');
+							type: 'commonjs',
+							imports:
+							{
+								syntax: 'single',
+								moduleName: 'jquery',
+								name: 'jQuery'
+							}
+						}
+					}
+				]
+			}
+		]
+	},
 	output: {
 		filename: '[name].bundle.js',
 		// chunkFilename: "[name].chunk.js",

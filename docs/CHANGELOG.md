@@ -9,6 +9,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.24
+
+- Update `imports-loader` to 4.0.1:
+  - Remove `imports-loader` call from `mapjs/src/browser/dom-map-widget.js` and add to `mapjs/webpack.config.js` using latest API.
+
 ## argmap 4.16.23
 
 - `mapjs/package.json`: Update all dependencies to latest version except `jquery-hammerjs`, `exports-loader` and `imports-loader`, which all throw build errors when upgraded to latest version.

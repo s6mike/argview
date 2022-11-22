@@ -3,7 +3,8 @@ const $ = require('jquery'),
 	_ = require('underscore'),
 	createSVG = require('./create-svg');
 
-require('imports-loader?jQuery=jquery!jquery.hotkeys');
+// Moved import-loader call to webpack.config.js instead:
+require('jquery.hotkeys');
 
 $.fn.scrollWhenDragging = function (scrollPredicate) {
 	'use strict';
