@@ -1,6 +1,7 @@
 /*global require*/
 const $ = require('jquery'),
-	Hammer = require('exports-loader?Hammer!jquery-hammerjs/jquery.hammer-full.js'),
+	// Moved exports-loader call to webpack.config.js
+	Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
 	onDrag = function (e) {
 		'use strict';
 		$(this).trigger(

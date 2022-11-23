@@ -51,6 +51,8 @@ This library depends on the following projects:
 - [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
 - [Color JS](https://github.com/harthur/color)
 
+As of 23 Nov 22, it runs with the latest versions of all of these, except [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js) v2.0.0, which requires an insecure version of jQuery, so instead uses v1.1.3.
+
 ## Node Selection
 
 - You can only select one node at a time, selected nodes have a drop shadow.

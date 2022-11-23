@@ -15,13 +15,25 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: require.resolve('jquery-hammerjs/jquery.hammer-full.js'),
+				loader: 'exports-loader',
+				options: {
+					type: 'commonjs',
+					// Replacing: Hammer = require('exports-loader?Hammer!jquery-hammerjs/jquery.hammer-full.js')
+					exports: {
+						syntax: 'single',
+						name: 'Hammer'
+					}
+				}
+			},
+			{
 				test: require.resolve('jquery.hotkeys'),
 				use: [
 					{
 						loader: 'imports-loader',
 						options: {
-							// Replacing: require('imports-loader?jQuery=jquery!jquery.hotkeys');
 							type: 'commonjs',
+							// Replacing: require('imports-loader?jQuery=jquery!jquery.hotkeys')
 							imports:
 							{
 								syntax: 'single',

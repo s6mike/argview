@@ -687,6 +687,8 @@ To set this up, you will need to:
 
 This builds the client side JavaScript file which activates the maps: `mapjs/site/js/main.bundle.js`. This needs to be added to any page displaying the map in .json format.
 
+See [mapjs/README.md](mapjs/README.md) for more details about mapjs.
+
 ### Creating html pages containing mapjs with Pandoc
 
 You can convert an argmap inside a markdown file into html containing `mapjs` by doing the following:

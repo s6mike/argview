@@ -9,6 +9,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.25
+
+- Update `exports-loader` to 4.0.0:
+  - Remove `exports-loader` call from `mapjs/src/browser/hammer-draggable.js` and add to `mapjs/webpack.config.js` using latest API.
+- Update [mapjs/README.md](../mapjs/README.md) to explain that latest `jquery-hammerjs` (v2.0.0) introduces an insecure version of jQuery so using previous version (v1.1.3) instead.
+  - Update [README.md](../README.md) to refer to above README.
+
 ## argmap 4.16.24
 
 - Update `imports-loader` to 4.0.1:
