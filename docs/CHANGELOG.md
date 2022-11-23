@@ -9,6 +9,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.26
+
+- `mapjs/package.json`: Make `npm-check-updates` a dev dependency.
+  - `mapjs/package-lock.json`: Update to reflect above change.
+- `mapjs/stats.json`: Update webpack bundle analysis report.
+
 ## argmap 4.16.25
 
 - Update `exports-loader` to 4.0.0:
