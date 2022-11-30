@@ -9,6 +9,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.27
+
+- `argmap-4.13.22-9.rockspec`: Update tinyyaml dependency to 0.4.3, so no issue with terminating string `...`.
+
 ## argmap 4.16.26
 
 - `mapjs/package.json`: Make `npm-check-updates` a dev dependency.
