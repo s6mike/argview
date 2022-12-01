@@ -2,12 +2,17 @@
 
 ## TODO
 
-- Can add doc terminator to yaml code once I know how to add tiny-yaml commit fix as a dependency.
 - Minor temp webpack changes:
   - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.16.28
+
+- `mapjs/package.json`: Add `engine` field to set current npm and node version.
+  - node version matches environment.yml, but npm version not set anywhere, which is why I'm tracking it here.
+  - `mapjs/package-lock.json`: This now uses `"lockfileVersion": 3,`, not sure implications.
 
 ## argmap 4.16.27
 
