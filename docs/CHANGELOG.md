@@ -8,6 +8,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.16.29
+
+- `mapjs/src/browser/image-drop-widget.js`: Fix 2 bugs:
+  - Broken drag and drop (both images and mup JSON), threw console error `Uncaught ReferenceError: map is not defined webpack-internal:///./src/browser/image-drop-widget.js 9 32 ReferenceError: map is not defined`. Think it was introduced around v4.16.8.
+  - Broken undefined check which was introduced in v4.11.0 when drag and drop border first added. This broke mup JSON drag and drop from around when above issue was introduced.
+
 ## argmap 4.16.28
 
 - `mapjs/package.json`: Add `engine` field to set current npm and node version.
@@ -119,6 +125,8 @@ ISSUE: Forgot to update html files in `test/input/html/`.
     - Remove dev dependency `appraise.js`
   - `mapjs/package-lock.json`: Ditto.
   - `mapjs/webpack.config.js`: Update for webpack-server v4.
+
+BUG: Think this bug console error was introduced in this version: `Uncaught ReferenceError: map is not defined webpack-internal:///./src/browser/image-drop-widget.js 9 32 ReferenceError: map is not defined`. Fixed in 4.16.29.
 
 ## argmap 4.16.7
 
@@ -405,6 +413,7 @@ ISSUE: Fix used deprecated `window.event` object, which resulted in inconsistent
     - Add code for detecting current droppable target and adding 'droppable' class to it.
       - ISSUES: This does not seem to work well for group nodes or second of two containers on page.
     - Add code to remove this class when leaving droppable target.
+    - BUG: Broken undefined check (forgot the quotes around undefined). This had unexpected side effects including breaking mup json drag and drop from around v14.16.8
   - `mapjs/src/core/map-model.js`: Add comment re possible improvement.
 
 ## argmap 4.10.12

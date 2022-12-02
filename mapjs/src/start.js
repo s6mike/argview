@@ -222,6 +222,7 @@ window.loadMap = function (mapJson) {
 	// Batch ensures that operations are atomic
 	// So counts as a single undo/redo step
 	return old_idea.batch(function () {
+		// TODO: should be possible to paste onto the node that was dragged onto, instead of root.
 		old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
 		map.mapModel.removeSubIdea('root', 'loadMap');
 		return true;

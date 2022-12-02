@@ -1,16 +1,18 @@
 /*jslint browser: true */
-/*global require, map */
+/*global require, mapInstance */
 const jQuery = require('jquery');
 jQuery.fn.imageDropWidget = function (imageInsertController) {
 	'use strict';
 	this.on('dragleave dragend', function () {
 		jQuery('.droppable').removeClass('droppable');
 	}).on('dragenter dragover', function (e) {
-		const stageDropCoordinates = map.domMapController.stagePositionForPointEvent(e),
+		const map = mapInstance[this.id],
+			stageDropCoordinates = map.domMapController.stagePositionForPointEvent(e),
+			// QUESTION: why return node id and not reference to node in getNodeIdAtPosition()?
+			// Would avoid issues with ambiguous node IDs
 			nodeAtDrop = stageDropCoordinates && map.mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y);
-		if (typeof (nodeAtDrop) !== undefined) {
-			// ISSUE: TODO: This is not a good way to access node, better the function return the node or I look it up some other way
-			jQuery('#node_' + nodeAtDrop).addClass('droppable');
+		if (typeof (nodeAtDrop) !== 'undefined') {
+			this.querySelector('#node_' + nodeAtDrop).classList.add('droppable');
 		}
 		if (e.originalEvent.dataTransfer) {
 			return false;
