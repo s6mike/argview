@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.1
+
+- `mapjs/src/browser/image-drop-widget.js`: Replace some jQuery calls with vanilla JS.
+
 ## argmap 4.17.0
 
 - `mapjs/src/start.js`: Can drag mup JSON onto a node to add it to the node. Otherwise it will follow previous behaviour and be added as a new root.
