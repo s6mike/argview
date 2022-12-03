@@ -8,6 +8,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.3
+
+- `mapjs/webpack.config.js`:
+  - Put rules at end of file for easier reading.
+  - Set watch mode to true and set dev server to watch `src/**.js` so that any mapjs changes will automatically apply to next brower reload.
+    - `mapjs/package.json`: Add `&` to webpack command so that watch mode doesn't block terminal.
+
 ## argmap 4.17.2
 
 - `mapjs/package.json`: Change `main` field to `browser`, since the package is intended for clientside use only.

@@ -30,7 +30,7 @@
     "start": "webpack serve &",
     "test-cafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",
     "testcafe-command": "testcafe",
-    "pack": "webpack",
+    "pack": "webpack &",
     "lint": "eslint src",
     "pretest-old": "eslint specs src && rm -rf testem/compiled",
     "test-core": "node specs/support/jasmine-runner.js",
