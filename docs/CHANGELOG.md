@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.2
+
+- `mapjs/package.json`: Change `main` field to `browser`, since the package is intended for clientside use only.
+
 ## argmap 4.17.1
 
 - `mapjs/src/browser/image-drop-widget.js`: Replace some jQuery calls with vanilla JS.
