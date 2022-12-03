@@ -150,19 +150,28 @@ const jQuery = require('jquery'),
 			const dataTransfer = e.originalEvent.dataTransfer;
 			e.stopPropagation();
 			e.preventDefault();
+
 			if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
 				const fileInfo = dataTransfer.files[0];
 				if (/\.(json|mup)$/.test(fileInfo.name)) {
 					const oFReader = new window.FileReader();
 					oFReader.onload = function (oFREvent) {
+						const current_map = mapInstance[this.target_container_id],
+							current_mapModel = current_map.mapModel,
+							container_idea = current_mapModel.getIdea(),
+							// Borrowed from image-drop-widget.js
+							// TODO: Should combine into one function
+							stageDropCoordinates = current_map.domMapController.stagePositionForPointEvent(e),
+							// QUESTION: why return node id and not reference to node in getNodeIdAtPosition()?
+							// Would avoid issues with ambiguous node IDs
+							nodeAtDrop = stageDropCoordinates && current_mapModel.getNodeIdAtPosition(stageDropCoordinates.x, stageDropCoordinates.y),
+							pasteNode = (typeof (nodeAtDrop) !== 'undefined') ? nodeAtDrop : 'root';   // This is where new map will get pasted
+
 						// Less destructive to paste JSON file data into container as new map(s), instead of replacing existing map.
 						// TODO: However, paste doesn't include links, themes etc
 						// 	Or is that just because we use parse().ideas only?
-						// map.mapModel.setIdea(content(JSON.parse(oFREvent.target.result)));
-						const container_idea = mapInstance[this.target_container_id].mapModel.getIdea(),
-							// eslint-disable-next-line no-unused-vars
-							result = container_idea.pasteMultiple('root', JSON.parse(oFREvent.target.result).ideas);
-						// TODO: Return result?
+						// QUESTION: worth returning a result value from pasteMultiple?
+						container_idea.pasteMultiple(pasteNode, JSON.parse(oFREvent.target.result).ideas);
 					};
 					// This passes the target container's id to the File Reader window:
 					//	QUESTION: Is there a better way of doing this?
