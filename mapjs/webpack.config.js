@@ -1,10 +1,8 @@
 /*global require, module, __dirname, process */
 const path = require('path');
-// const BundleAnalyzerPlugin =
-// 	require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 module.exports = {
 	watch: true,
-	entry: './src/start',
+	entry: [path.resolve(__dirname, 'src/start')],
 	mode: 'development',
 	// mode: 'production',
 	// TODO: Change so this is set automatically when mode is set
@@ -17,20 +15,21 @@ module.exports = {
 	output: {
 		filename: '[name].bundle.js',
 		// chunkFilename: "[name].chunk.js",
-		path: path.resolve(__dirname, 'site/js/')
+		path: path.resolve(__dirname, 'site/js/'),
+		clean: true,
 	},
 	// optimization: {
 	// 	splitChunks: {
 	// 		chunks: 'all',
-	// 		name: 'vendor' //,
+	// 		name: 'vendor',
 	// 		// minSize: 10000,
-	// 		// maxSize: 250000
-	// 	}
+	// 		// maxSize: 250000,
+	// 	},
 	// },
 	devServer: {
 		static: path.join(__dirname, 'site'),
 		port: process.env.PORT_DEV_SERVER,
-		watchFiles: ['src/**.js']
+		watchFiles: ['src/**.js'],
 	},
 	module: {
 		rules: [
@@ -39,12 +38,11 @@ module.exports = {
 				loader: 'exports-loader',
 				options: {
 					type: 'commonjs',
-					// Replacing: Hammer = require('exports-loader?Hammer!jquery-hammerjs/jquery.hammer-full.js')
 					exports: {
 						syntax: 'single',
-						name: 'Hammer'
-					}
-				}
+						name: 'Hammer',
+					},
+				},
 			},
 			{
 				test: require.resolve('jquery.hotkeys'),
@@ -53,17 +51,16 @@ module.exports = {
 						loader: 'imports-loader',
 						options: {
 							type: 'commonjs',
-							// Replacing: require('imports-loader?jQuery=jquery!jquery.hotkeys')
 							imports:
 							{
 								syntax: 'single',
 								moduleName: 'jquery',
-								name: 'jQuery'
-							}
-						}
-					}
-				]
-			}
-		]
-	}
+								name: 'jQuery',
+							},
+						},
+					},
+				],
+			},
+		],
+	},
 };
