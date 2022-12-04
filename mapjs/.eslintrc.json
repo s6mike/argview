@@ -55,6 +55,10 @@
     "no-unused-vars": "error",
     "no-const-assign": "error",
     "prefer-const": "error",
-    "no-var": "error"
+    "no-var": "error",
+    "comma-dangle": [
+      "error",
+      "only-multiline"
+    ]
   }
 }

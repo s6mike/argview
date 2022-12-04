@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.4
+
+`mapjs/.eslintrc.json`: Update rules so dangling commas are (only) allowed in multi-line objects and arrays.
+
 ## argmap 4.17.3
 
 - `mapjs/webpack.config.js`:
