@@ -35,7 +35,7 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/exam
     FULL_PATH=$WORKSPACE/$INPUT_PATH
     ;;
   esac
-  # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
+  # Substitutes mapjs/site for test so it's using site folder, then removes leading part of path so its relative to site/:
   SITE_PATH="${FULL_PATH/test/"mapjs/site"}"
   # echo "SITE_PATH: $SITE_PATH"
   PATH_PAGE=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$SITE_PATH")
@@ -130,8 +130,9 @@ md2hf() { # md2h test/input/example.md
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  # QUESTION: Change to open-debug? Might want to make debug default, but with test option for normal.
-  open-server "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
+  # QUESTION: Might want to make debug default, but with test option for normal?
+  #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
+  open-debug "$OUTPUT"
   # TODO construct link from server details and output it?
 }
 
@@ -170,7 +171,8 @@ md2htm() { # md2htm test/input/example-updated.md
   # https://workflowy.com/#/ee624e71f40c
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  open-debug "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
+  open-debug "$OUTPUT"
+  # open-debug "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
 }
 
 # Convert markdown to pdf

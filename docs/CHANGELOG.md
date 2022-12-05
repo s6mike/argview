@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.6
+
+- `scripts/bash_aliases_argmap.sh`: Update `md2hf()` to use debug browser profile instead of default linux one.
+
 ## argmap 4.17.5
 
 - `mapjs/webpack.config.js`:
