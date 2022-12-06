@@ -8,6 +8,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.8
+
+- Fix tests, need to use output file rather than input, to ensure using latest js:
+  - `scripts/argmap.env`:
+    - Add env variable for output file.
+  - `test/test_scripts/tests.sh`:
+    - Add `j2hf()` command to create test html file needed for Testcafe tests.
+    - Add warning that if Testcafe tests all fail that it might be due to input JSON mup file missing.
+  - `scripts/install.sh`: Update symbolic link `mapjs/site/index.html` to point to file in output folder not input.
+  - Update `test/input/html/example1-clearly-false-white-swan-simplified.html` to use newer template.
+
 ## argmap 4.17.7
 
 - `scripts/bash_aliases_mapjs.sh`: Update `testcafe_run()` to disable extensions, in order to fix error messages from some of them.

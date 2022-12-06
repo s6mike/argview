@@ -182,7 +182,7 @@ ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_MJS_SITE/."
 ln -s "$DIR_HTML_INPUT" "$PATH_MJS_SITE/."
 
 # Add index.html
-ln -s "$PATH_MJS_SITE/$PATH_INPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
+ln -s "$PATH_MJS_SITE/$PATH_OUTPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
 
 #nodejs installed with conda
 

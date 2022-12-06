@@ -96,6 +96,12 @@ __test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #7
 __test md2hf "$INPUT_FILE_MD"                       #8
 __test md2hf "$INPUT_FILE_MD2"                      #9
 __test md2hf "$INPUT_FILE_MD_META"                  #10
+
+# create html file needed for testcafe tests
+# Will still fail if json file missing, but it's part of repo.
+# TODO: add option for not opening the output, since this is just to set up tests.
+j2hf "$INPUT_FILE_JSON"
+
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #11 add child button works
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #12 left click works
@@ -119,6 +125,7 @@ fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
 echo "If first html test failed, check whether webserver was running."
+echo "If all testcafe test failed, check that $INPUT_FILE_JSON exists."
 echo "Test cafe log location: $PATH_TEST_LOG"
 
 exit $FAILCOUNT
