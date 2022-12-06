@@ -182,7 +182,8 @@ md2pdf() { # md2pdf test/input/example.md
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
   pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
-  open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.pdf"
+  open-debug "$OUTPUT"
+  # open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.pdf"
 }
 
 # Deprecated
