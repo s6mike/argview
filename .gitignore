@@ -16,9 +16,4 @@ results
 testem/compiled
 pub
 lib
-#grunt and jasmine artificats
-SpecRunner.html
-.grunt
-.sublime*
-.tern-port
 npm-debug.log

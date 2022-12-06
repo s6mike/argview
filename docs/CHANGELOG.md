@@ -8,6 +8,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.17.10
+
+- Tidy files: `mapjs/package.json`, `.gitignore`.
+
 ## argmap 4.17.9
 
 - `scripts/bash_aliases_argmap.sh`: Update `md2pdf()` to open output in debug browser, for consistency and to avoid error messages from default linux chrome profile.
