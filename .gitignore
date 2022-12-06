@@ -3,6 +3,7 @@ argmap.code-workspace
 !.vscode/launch.json
 !.vscode/settings.json
 archived
+includes/webpack-dist-tags.html
 lua_modules/
 mapjs/node_modules
 mapjs/site/output

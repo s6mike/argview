@@ -1,23 +1,33 @@
 /*global require, module, __dirname, process */
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 	watch: true,
 	entry: [path.resolve(__dirname, 'src/start')],
 	mode: 'development',
 	// mode: 'production',
-	// TODO: Change so this is set automatically when mode is set
-	// Use for development:
-	// configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
-	devtool: 'eval-cheap-module-source-map',
-	// plugins: [new BundleAnalyzerPlugin()],
 	// Use for production:
-	// devtool: 'source-map',
+	// 	TODO: Change so this is set automatically when mode is set:
+	// 	devtool: 'source-map',
+	// Use for development:
+	// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
+	devtool: 'eval-cheap-module-source-map',
 	output: {
 		filename: '[name].bundle.js',
-		// chunkFilename: "[name].chunk.js",
+		chunkFilename: '[name].chunk.js',
 		path: path.resolve(__dirname, 'site/js/'),
 		clean: true,
 	},
+	plugins: [
+		// [new BundleAnalyzerPlugin()],
+		new HtmlWebpackPlugin({
+			// TODO: use more robust publicPath
+			//	 publicPath: path.resolve(__dirname, 'site/js/'),
+			publicPath: '/js/',
+			template: path.resolve(__dirname, '/src/templates/template-webpack-dist-tags.html'),
+			filename: path.resolve(__dirname, '../includes/webpack-dist-tags.html'),
+		}),
+	],
 	// optimization: {
 	// 	splitChunks: {
 	// 		chunks: 'all',

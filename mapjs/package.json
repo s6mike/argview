@@ -66,6 +66,7 @@
     "eslint-config-defaults": "^9.0.0",
     "exports-loader": "^4.0.0",
     "fs-readdir-recursive": "^1.1.0",
+    "html-webpack-plugin": "^4.5.2",
     "imports-loader": "^4.0.1",
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^7.0.0",

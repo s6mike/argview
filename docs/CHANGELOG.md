@@ -2,11 +2,21 @@
 
 ## TODO
 
-- Minor temp webpack changes:
-  - package.json, webpack in attempt to streamline test process.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.18.0
+
+- `mapjs/webpack.config.js`: Generate html partial `includes/webpack-dist-tags.html` containing script tags only, using `template-webpack-dist-tags.html`.
+  - `package.json`, `package-lock.json`: Add template as dependency.
+  - Add `mapjs/src/templates/template-webpack-dist-tags.html` for generating the html partial.
+- Update 2 pandoc templates to use this partial instead of `mapjs-output-js` meta data.
+- `.gitignore`: Ignore the html partial since it's generated, and will change regularly anyway.
+- `mapjs/scripts/mapjs.env`: Add `DIR_MJS_JS` and remove `FILE_MJS_JS`.
+- `scripts/bash_aliases_argmap.sh`:
+ - Add `get-site-path()` using code from `open-debug()`.
+    - Refactor `open-debug()` to call above function.
 
 ## argmap 4.17.10
 
@@ -33,7 +43,7 @@
 
 ## argmap 4.17.6
 
-- `scripts/bash_aliases_argmap.sh`: Update `md2hf()` to use debug browser profile instead of default linux one.
+- `scripts/bash_aliases_argmap.sh`: Update `md2hf()` to use debug browser profile by calling `open-debug()` instead of default linux one.
 
 ## argmap 4.17.5
 

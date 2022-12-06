@@ -9,39 +9,42 @@ alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/
 
 ## Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
 
-## browser functions
-
 # TODO: Use realpath to simplify relative path juggling
 #   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+
+## browser functions
 
 # TODO try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   Maybe review mapjs tests.
 
-## version control functions
-
-# TODO: Use realpath to simplify relative path juggling
-#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
-
-# TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
-# TODO: user data dir doesn't seem to work, showing normal linux browser
-# For opening html pages with debug port open
-open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/example2-clearly-false-white-swan-v3.html
-  INPUT_PATH="${1:-$DIR_HTML/$PATH_INPUT_FILE_HTML}"
-  case $INPUT_PATH in
+get-site-path() {
+  input_path="${1}"
+  case $input_path in
   /*)
-    FULL_PATH=$INPUT_PATH
+    FULL_PATH=$input_path
     ;;
   *)
-    FULL_PATH=$WORKSPACE/$INPUT_PATH
+    FULL_PATH=$WORKSPACE/$input_path
     ;;
   esac
   # Substitutes mapjs/site for test so it's using site folder, then removes leading part of path so its relative to site/:
-  SITE_PATH="${FULL_PATH/test/"mapjs/site"}"
-  # echo "SITE_PATH: $SITE_PATH"
-  PATH_PAGE=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$SITE_PATH")
-  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$PATH_PAGE" 2>/dev/null &
+  site_path="${FULL_PATH/test/"mapjs/site"}"
+  # echo "site_path: $site_path"
+  output_path=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$site_path")
+  echo "$output_path"
+}
+
+# For opening html pages with debug port open
+open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/example2-clearly-false-white-swan-v3.html
+  # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
+  # TODO: user data dir doesn't seem to work, showing normal linux browser
+  input_path="${1:-$DIR_HTML/$PATH_INPUT_FILE_HTML}"
+  site_path=$(get-site-path "$input_path")
+  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.
 }
+
+## version control functions
 
 # Checks `src/` for lua files with leftover test/debug code.
 # Used by pre-commit hook
@@ -161,7 +164,7 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
 }
 
 # Convert markdown to html fragment
-# TODO: lua filter should include main.js etc even for fragment
+# TODO: lua filter should include webpack js output etc even for fragment
 md2htm() { # md2htm test/input/example-updated.md
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
@@ -204,4 +207,5 @@ a2mo() {
 
 ## Mark functions for export to use in other scripts:
 export -f __reset_repo __clean_repo __check_repo __save_env
+export -f get-site-path
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf
