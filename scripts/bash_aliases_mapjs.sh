@@ -72,7 +72,7 @@ diff_mapjs() { # dmj all_mapjs_fixes_latest_modified.diff
   EXCLUSIONS_OUTPUT=()
   EXCLUSIONS_INPUT=(package-lock.json .gitignore docs/CHANGELOG-mapjs.md README.md)
   for e in "${EXCLUSIONS_INPUT[@]}"; do
-    EXCLUSIONS_OUTPUT+=("':(exclude)$e'")
+    EXCLUSIONS_OUTPUT+=("':(exclude)$e'") # Populates array
   done
 
   DIFF_COMMAND="git diff --no-color --ignore-all-space e30f8d835e028febe2e951e422c313ac304a0431 HEAD -- . ${EXCLUSIONS_OUTPUT[*]} >$DIFF_FILENAME"
@@ -93,10 +93,11 @@ diff_staged_file() { # dfs package.json package.diff
 testcafe_run() { # tcr
   DEFAULT_SCRIPT="$PATH_REPLAY_SCRIPT"
   if [ "$1" == head ]; then
-    BROWSER_TESTCAFE='chrome --no-default-browser-check'
+    # TODO: Add option to use --speed 0.1
+    BROWSER_TESTCAFE='chrome --no-default-browser-check --disable-extensions'
     PATH_REPLAY_SCRIPT=${2:-$DEFAULT_SCRIPT}
   else
-    BROWSER_TESTCAFE='chrome:headless --no-default-browser-check'
+    BROWSER_TESTCAFE='chrome:headless --no-default-browser-check --disable-extensions'
     PATH_REPLAY_SCRIPT=${1:-$DEFAULT_SCRIPT}
   fi
   # __bisect_init
