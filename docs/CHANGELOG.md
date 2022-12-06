@@ -2,9 +2,14 @@
 
 ## TODO
 
+- Try and split js files into small enough chunks that I get fewer error messages from production build.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.18.1
+
+- `mapjs/webpack.config.js`: Split output into main and vendor js files.
 
 ## argmap 4.18.0
 
@@ -15,7 +20,7 @@
 - `.gitignore`: Ignore the html partial since it's generated, and will change regularly anyway.
 - `mapjs/scripts/mapjs.env`: Add `DIR_MJS_JS` and remove `FILE_MJS_JS`.
 - `scripts/bash_aliases_argmap.sh`:
- - Add `get-site-path()` using code from `open-debug()`.
+  - Add `get-site-path()` using code from `open-debug()`.
     - Refactor `open-debug()` to call above function.
 
 ## argmap 4.17.10

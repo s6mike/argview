@@ -28,14 +28,14 @@ module.exports = {
 			filename: path.resolve(__dirname, '../includes/webpack-dist-tags.html'),
 		}),
 	],
-	// optimization: {
-	// 	splitChunks: {
-	// 		chunks: 'all',
-	// 		name: 'vendor',
-	// 		// minSize: 10000,
-	// 		// maxSize: 250000,
-	// 	},
-	// },
+	optimization: {
+		splitChunks: {
+			chunks: 'all',
+			name: 'vendor',
+			// minSize: 10000,
+			// maxSize: 250000,
+		},
+	},
 	devServer: {
 		static: path.join(__dirname, 'site'),
 		port: process.env.PORT_DEV_SERVER,
