@@ -7,6 +7,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.3
+
+- Make tests more robust by using npm package `wait-for` to wait for files to be ready for test:
+  - `test/test_scripts/tests.sh`: Add `wait-for` calls in relevant places.
+  - `package.json`, `package-lock.json`: Add `wait-for`.
+
 ## argmap 4.18.2
 
 - Use html output files in all devtools recordings so that latest js

@@ -12,22 +12,18 @@ __start_mapjs_webserver
 #   TODO: Would be better to store the time here and then pause the difference before running html tests.
 # sleep 1.5
 # Or would this work?
-#   wait
 
 echo 'Attempting to delete old test outputs.'
 
 __clean_repo
 
-# rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yml"
-# rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
-
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
 # Though may not be consistently same name anyway, would need to create with fix name
 
-COLOUR='true' # true
+COLOUR='true'
 TESTNUM=1
-FAILCOUNT=0 #count failed tests, also acts at return code at end; 0 = success
+FAILCOUNT=0 # count failed tests, also acts at return code at end; 0 = success
 
 COL_PASS=""
 COL_FAIL="<< "
@@ -90,17 +86,23 @@ if [ "$1" != html ]; then
 # __test a2jo "$INPUT_FILE_YML"
 fi
 
-# map renders
-__test md2hf "$INPUT_FILE_MD0"                      #6
-__test __test_mapjs_renders "$PATH_INPUT_FILE_HTML" #7
-__test md2hf "$INPUT_FILE_MD"                       #8
-__test md2hf "$INPUT_FILE_MD2"                      #9
-__test md2hf "$INPUT_FILE_MD_META"                  #10
+# map rendering
+npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$WORKSPACE/includes/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
+    # create html file needed for testcafe and rendering tests
+    # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
-# create html file needed for testcafe tests
-# Will still fail if json file missing, but it's part of repo.
-# TODO: add option for not opening the output, since this is just to set up tests.
-j2hf "$INPUT_FILE_JSON"
+    # j2hf will still fail if json file missing, but it's part of repo.
+    # TODO: add option for not opening the output, since this is just to set up tests.
+    j2hf "$INPUT_FILE_JSON"
+
+__test md2hf "$INPUT_FILE_MD0" #6
+# Use wait-on --log if diagnostics needed (also verbose option)
+npx --prefix "$PATH_MJS_HOME" wait-on --timeout 3000 "$PATH_MJS_HOME/site/$PATH_OUTPUT_FILE_HTML" &&
+    # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
+    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #7
+__test md2hf "$INPUT_FILE_MD"                            #8
+__test md2hf "$INPUT_FILE_MD2"                           #9
+__test md2hf "$INPUT_FILE_MD_META"                       #10
 
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #11 add child button works
