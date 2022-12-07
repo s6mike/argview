@@ -3,11 +3,11 @@
   "steps": [
     {
       "type": "navigate",
-      "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
       "assertedEvents": [
         {
           "type": "navigation",
-          "url": "http://localhost:9001/input/html/example1-clearly-false-white-swan-simplified.html",
+          "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
           "title": "example1-clearly-false-white-swan-simplified"
         }
       ]

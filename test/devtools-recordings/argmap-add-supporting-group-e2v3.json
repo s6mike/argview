@@ -6,11 +6,11 @@
       "assertedEvents": [
         {
           "type": "navigation",
-          "url": "http://localhost:9001/input/html/example2-clearly-false-white-swan-v3.html",
+          "url": "http://localhost:9001/output/html/example2-clearly-false-white-swan-v3.html",
           "title": ""
         }
       ],
-      "url": "http://localhost:9001/input/html/example2-clearly-false-white-swan-v3.html"
+      "url": "http://localhost:9001/output/html/example2-clearly-false-white-swan-v3.html"
     },
     {
       "type": "waitForExpression",

@@ -7,6 +7,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.2
+
+- Use html output files in all devtools recordings so that latest js
+always used.
+
 ## argmap 4.18.1
 
 - `mapjs/webpack.config.js`: Split output into main and vendor js files.
