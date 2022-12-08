@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.6
+
+- `test/input/html`: Remove obsolete html test input files now that mapjs source js can change more frequently.
+  - Update remaining input files to use current scripts, plus some script comments.
+
 ## argmap 4.18.5
 
 - `mapjs/webpack.config.js`: Update comments.
