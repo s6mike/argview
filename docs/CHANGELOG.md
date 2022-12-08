@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.9
+
+- Update all packages to latest except `jquery-hammerjs`.
+
 ## argmap 4.18.8
 
 - `mapjs/webpack.config.js`:
