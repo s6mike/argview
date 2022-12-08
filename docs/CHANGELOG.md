@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.10
+
+- `argmap-4.18.10-10.rockspec`: Update rockspec to reflect new release version.
+
 ## argmap 4.18.9
 
 - Update all packages to latest except `jquery-hammerjs`.
@@ -135,6 +139,8 @@ always used.
 ## argmap 4.16.27
 
 - `argmap-4.13.22-9.rockspec`: Update tinyyaml dependency to 0.4.3, so no issue with terminating string `...`.
+
+Should have updated rockspec to 4.16.27-10. Updated in v4.18.10
 
 ## argmap 4.16.26
 
