@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.8
+
+- `mapjs/webpack.config.js`:
+  - Add `contenthash` to output, to ensure old versions not cached.
+  - Add `moduleIds: 'deterministic'` to ensure hash only changes when content changes, not when module install order changes.
+
 ## argmap 4.18.7
 
 - `test/test_scripts/tests.sh`: Increased timeout for webpack html partial creation, since this dependency was failing tests when js needed to be rebuilt.

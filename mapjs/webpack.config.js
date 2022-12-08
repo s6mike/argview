@@ -14,7 +14,7 @@ module.exports = {
 	// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
 	devtool: 'eval-cheap-module-source-map',
 	output: {
-		filename: '[name].bundle.js',
+		filename: '[name].bundle.[contenthash].js',
 		chunkFilename: '[name].chunk.js',
 		path: path.resolve(__dirname, 'site/js/'),
 		clean: true,
@@ -30,6 +30,7 @@ module.exports = {
 		}),
 	],
 	optimization: {
+		moduleIds: 'deterministic',
 		splitChunks: {
 			chunks: 'all',
 			name: 'vendor',
