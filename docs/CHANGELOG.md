@@ -2,10 +2,13 @@
 
 ## TODO
 
-- Try and split js files into small enough chunks that I get fewer error messages from production build.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.18.5
+
+- `mapjs/webpack.config.js`: Update comments.
 
 ## argmap 4.18.4
 

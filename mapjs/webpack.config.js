@@ -1,6 +1,7 @@
 /*global require, module, __dirname, process */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
 	watch: true,
 	entry: [path.resolve(__dirname, 'src/start')],
@@ -19,7 +20,7 @@ module.exports = {
 		clean: true,
 	},
 	plugins: [
-		// [new BundleAnalyzerPlugin()],
+		// new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
 			// TODO: use more robust publicPath
 			//	 publicPath: path.resolve(__dirname, 'site/js/'),
@@ -33,7 +34,8 @@ module.exports = {
 			chunks: 'all',
 			name: 'vendor',
 			// minSize: 10000,
-			// maxSize: 250000,
+			// // production warning is at 244 KiB = 31232
+			// maxSize: 31232
 		},
 	},
 	devServer: {
