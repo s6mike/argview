@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.7
+
+- `test/test_scripts/tests.sh`: Increased timeout for webpack html partial creation, since this dependency was failing tests when js needed to be rebuilt.
+
 ## argmap 4.18.6
 
 - `test/input/html`: Remove obsolete html test input files now that mapjs source js can change more frequently.
