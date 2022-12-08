@@ -9,8 +9,9 @@ alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/
 
 ## Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
 
-# TODO: Use realpath to simplify relative path juggling
-#   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+## browser functions
+
+# TODO: Use get-site-path() to simplify relative path juggling
 
 ## browser functions
 
@@ -35,7 +36,7 @@ get-site-path() {
 }
 
 # For opening html pages with debug port open
-open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/input/html/example2-clearly-false-white-swan-v3.html
+open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   input_path="${1:-$DIR_HTML/$PATH_INPUT_FILE_HTML}"
@@ -145,16 +146,17 @@ j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplif
   # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   INPUT="${1:-$INPUT_FILE_JSON}"
   # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
-  SITE_PATH="${INPUT/test/"mapjs/site"}"
+
   # Removes either suffix:
-  NAME=$(basename --suffix=".json" "$SITE_PATH")
+  NAME=$(basename --suffix=".json" "$INPUT")
   NAME=$(basename --suffix=".mup" "$NAME")
   HTML_OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
-  #  TODO: Check and copy to input folder?
-  PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$SITE_PATH")
   mkdir --parent "$(dirname "$HTML_OUTPUT")" # Ensures output folder exists
+
+  #  TODO: Check and copy to input folder?
+  PATH_OUTPUT_JSON=/$(get-site-path "$INPUT")
   # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
-  echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$HTML_OUTPUT"
   open-debug "$HTML_OUTPUT"
 }

@@ -7,6 +7,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.4
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Fix file path bug in `j2hf()` and refactor, using `get-site-path()`, so that it works when called from outside root directory.
+  - Tidy up comments.
+
 ## argmap 4.18.3
 
 - Make tests more robust by using npm package `wait-for` to wait for files to be ready for test:
