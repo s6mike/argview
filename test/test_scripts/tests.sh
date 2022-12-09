@@ -4,7 +4,7 @@
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 webpack_pack
-__start_mapjs_webserver
+webpack_server_start
 
 # Have switched rendering to be second test.
 # Before moving to first, need to fix race condition with web server

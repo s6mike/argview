@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.13
+
+- `test/test_scripts/tests.sh`: Update to use `webpack_server_start()` instead of deprecated `__start_mapjs_webserver()`.
+
 ## argmap 4.18.12
 
 - `mapjs/webpack.config.js`: Move `publicPath` to be output parameter for tidyness.
