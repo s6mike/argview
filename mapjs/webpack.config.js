@@ -14,17 +14,17 @@ module.exports = {
 	// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
 	devtool: 'eval-cheap-module-source-map',
 	output: {
+		path: path.resolve(__dirname, 'site/js/'),
+		// TODO: use more robust publicPath
+		//	 publicPath: path.resolve(__dirname, 'site/js/'),
+		publicPath: '/js/',
 		filename: '[name].bundle.[contenthash].js',
 		chunkFilename: '[name].chunk.js',
-		path: path.resolve(__dirname, 'site/js/'),
 		clean: true,
 	},
 	plugins: [
 		// new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
-			// TODO: use more robust publicPath
-			//	 publicPath: path.resolve(__dirname, 'site/js/'),
-			publicPath: '/js/',
 			template: path.resolve(__dirname, '/src/templates/template-webpack-dist-tags.html'),
 			filename: path.resolve(__dirname, '../includes/webpack-dist-tags.html'),
 		}),

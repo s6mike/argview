@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.12
+
+- `mapjs/webpack.config.js`: Move `publicPath` to be output parameter for tidyness.
+
 ## argmap 4.18.11
 
 - Check in symbolic link for `mapjs/site/output` folder to `test/output`.
