@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.11
+
+- Check in symbolic link for `mapjs/site/output` folder to `test/output`.
+  - Update `.gitignore` to allow this.
+
 ## argmap 4.18.10
 
 - `argmap-4.18.10-10.rockspec`: Update rockspec to reflect new release version.
