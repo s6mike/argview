@@ -13,8 +13,6 @@ alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/
 
 # TODO: Use get-site-path() to simplify relative path juggling
 
-## browser functions
-
 # TODO try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   Maybe review mapjs tests.
 
@@ -39,7 +37,7 @@ get-site-path() {
 open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
-  input_path="${1:-$DIR_HTML/$PATH_INPUT_FILE_HTML}"
+  input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
   site_path=$(get-site-path "$input_path")
   google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
   disown # stops browser blocking terminal and allows all tabs to open in single window.

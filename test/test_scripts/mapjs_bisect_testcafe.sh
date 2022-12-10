@@ -81,7 +81,7 @@ if [ "$REBUILD" = true ]; then # Only runs if not in test mode
     npm install --prefix "$PATH_MJS_HOME" --legacy-peer-deps
   fi
 
-  npm run --prefix "$PATH_MJS_HOME" server &
+  npm run --prefix "$PATH_MJS_HOME" start &
   # PID=$!
 
   # wait $!

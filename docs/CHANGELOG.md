@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.14
+
+- `scripts`:
+  - `scripts/bash_aliases_mapjs.sh`: Add function dependencies from general bash scripts.
+  - `scripts/bash_aliases_argmap.sh`: Minor fix and tidy up.
+
 ## argmap 4.18.13
 
 - `test/test_scripts/tests.sh`: Update to use `webpack_server_start()` instead of deprecated `__start_mapjs_webserver()`.

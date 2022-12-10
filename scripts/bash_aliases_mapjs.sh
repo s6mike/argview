@@ -27,8 +27,8 @@ alias smj='node_stop'
 alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
 alias pmj='webpack_pack'
-# Overwrite aliases from default bash_aliases
-# alias wss='npm run server --prefix "$PATH_MJS_HOME"'
+alias wss='webpack_server_start' # Simply runs server
+alias wpi='webpack_install'
 
 # mapjs functions
 
@@ -120,13 +120,17 @@ __test_mapjs_renders() {
   fi
 }
 
-# Deprecated
+# Start webpack after git checkout
+webpack_install() { # wpb
+  # Should only install new stuff. Should install in local folder if its set
+  npm install --prefix "$PATH_MJS_HOME" # --force
+  # TODO: But can also monitor package.json for changes and install automatically instead: https://workflowy.com/#/f666070d7b23
+  # wait &&
+  # npm exec webpack # Shouldn't be needed if webpack server does it automatically
+}
 
-# Deprecated use webpack_server_start # wss
-# If I want to turn off the dev server, call smj
-__start_mapjs_webserver() {
-  npm --prefix "$PATH_MJS_HOME" run start &
-  disown # stops server blocking terminal and ensures that it stays running even after terminal closes.
+webpack_pack() { #pmj
+  npm --prefix "$PATH_MJS_HOME" run pack
 }
 
 ## Deprecated
@@ -143,6 +147,7 @@ __stop_mapjs_webserver() { #smj
 ## Deprecated just use start
 alias rmj='__restart_mapjs_webserver'
 
+# Deprecated
 __restart_mapjs_webserver() { #rmj
   node_stop
   __start_mapjs_webserver
@@ -159,7 +164,13 @@ __restart_mapjs_webserver() { #rmj
 #   disown # stops browser blocking terminal and allows all tabs to open in single window.
 # }
 
+# Starts server
+webpack_server_start() { # wss
+  npm run --prefix "$PATH_MJS_HOME" start &
+  disown
+}
+
 ## Mark functions for export to use in other scripts:
-export -f __build_mapjs __start_mapjs_webserver __run_mapjs_legacy #__stop_mapjs_webserver __restart_mapjs_webserver
+export -f webpack_install webpack_pack webpack_server_start # webpack_pack_open webpack_build_open
 export -f open-debug
 export -f testcafe_run __test_mapjs_renders
