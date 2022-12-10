@@ -3,8 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
-	watch: true,
-	entry: [path.resolve(__dirname, 'src/start')],
+	entry: [path.resolve(__dirname, 'src/start.js')],
 	mode: 'development',
 	// mode: 'production',
 	// Use for production:
@@ -18,8 +17,11 @@ module.exports = {
 		// TODO: use more robust publicPath
 		//	 publicPath: path.resolve(__dirname, 'site/js/'),
 		publicPath: '/js/',
-		filename: '[name].bundle.[contenthash].js',
-		chunkFilename: '[name].chunk.js',
+		// Setting filename as anything except '[name].js' breaks one of HMR/watch mode/live reloading
+		//  Think watch mode may have fixed this but then get warning when running server
+		//  TODO: either solve this or set this name in production only:
+		// filename: '[name].[contenthash].bundle.js',
+		chunkFilename: '[name].[contenthash].bundle.js', // This is used for on-demand-loaded chunk files.
 		clean: true,
 	},
 	plugins: [
@@ -42,7 +44,7 @@ module.exports = {
 	devServer: {
 		static: path.join(__dirname, 'site'),
 		port: process.env.PORT_DEV_SERVER,
-		watchFiles: ['src/**.js'],
+		// watchFiles: ['src/**.js'],
 	},
 	module: {
 		rules: [

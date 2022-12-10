@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.18.15
+
+- `mapjs/webpack.config.js`: Update config so live reloading works (filename has to be `[name].js`), and remove watch mode options to avoid annoying warning when serving.
+
+ISSUE: This means no hashing to avoid caching issues, so will need to fix this before production ready.
+
 ## argmap 4.18.14
 
 - `scripts`:
