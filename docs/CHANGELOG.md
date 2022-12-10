@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.19.1
+
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`: Tidy up html and add aria-label (usually matching value, to be refined later) to all input elements.
+
 ## argmap 4.19.0
 
 - `scripts/bash_aliases_mapjs.sh`:

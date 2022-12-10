@@ -4,38 +4,42 @@
   <input type="button" class="scaleUp" value="+"></input>
   <input type="button" class="scaleDown" value="-"></input>
   <input type="button" class="addSubIdea" value="Add"></input>
+  <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
+  <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
+  <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
+  <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
   <input type="button"
     onclick="mapInstance[this.parentElement.parentElement.id].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
-    value="Parent reason"></input>
+    value="Parent reason" aria-label="Parent reason" />
   <input type="button"
     onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'supporting'})"
-    value="Supporting group"></input>
+    value="Supporting group" aria-label="Supporting group" />
   <input type="button"
     onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'opposing'})"
-    value="Opposing group"></input>
-  <input type="button" class="editNode" value="Edit"></input>
-  <input type="button" class="removeSubIdea" value="Delete"></input>
-  <input type="button" class="insertIntermediate" value="Insert parent"></input>
-  <input type="button" class="toggleCollapse" value="Exp/col"></input>
+    value="Opposing group" aria-label="Opposing group" />
+  <input type="button" class="editNode" value="Edit" aria-label="Edit" />
+  <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
+  <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
+  <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
   <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)"
-    value="Disable"></input>
+    value="Disable" aria-label="Disable" />
   <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)"
-    value="Enable"></input>
-  <input type="button" class="undo" value="Undo"></input>
-  <input type="button" class="redo" value="Redo"></input>
-  <input type="button" data-mm-action="export-image" value="Export to image" />
-  <input type="button" class="cut" value="Cut"></input>
-  <input type="button" class="copy" value="Copy"></input>
-  <input type="button" class="paste" value="Paste"></input>
-  <input type="button" class="openAttachment" value="Open attachment"></input>
-  <input type="button" class="toggleAddLinkMode" value="Add link"></input>
-  <input type="button" class="insertRoot" value="Add root node"></input>
-  <input type="button" class="makeSelectedNodeRoot" value="Make root"></input>
-  Background: <input type="text" class='updateStyle' data-mm-target-property='background'></input>
+    value="Enable" aria-label="Enable" />
+  <input type="button" class="undo" value="Undo" aria-label="Undo" />
+  <input type="button" class="redo" value="Redo" aria-label="Redo" />
+  <input type="button" data-mm-action="export-image" value="Export to image" aria-label="Export to image" />
+  <input type="button" class="cut" value="Cut" aria-label="Cut" />
+  <input type="button" class="copy" value="Copy" aria-label="Copy" />
+  <input type="button" class="paste" value="Paste" aria-label="Paste" />
+  <input type="button" class="openAttachment" value="Open attachment" aria-label="Open attachment" />
+  <input type="button" class="toggleAddLinkMode" value="Add link" aria-label="Add link" />
+  <input type="button" class="insertRoot" value="Add root node" aria-label="Add root node" />
+  <input type="button" class="makeSelectedNodeRoot" value="Make root" aria-label="Make root" />
+  Background: <input type="text" class='updateStyle' data-mm-target-property='background' aria-label="" />
   Frames: <span id="framerate_$BLOCK_ID$" class="framerate"></span>
   Cycle: <span id="cyclerate_$BLOCK_ID$" class="cyclerate"></span>
   <div id="linkEditWidget_$BLOCK_ID$" class="linkEditWidget">
-    <input class="delete" type="button" value="Delete"></input>
+    <input class="delete" type="button" value="Delete" aria-label="Delete" />
     <select class="color">
       <option value="red">Red</option>
       <option value="blue">Blue</option>
