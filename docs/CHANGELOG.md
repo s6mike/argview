@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.4
+
+- `includes/argmap-head-element.html`: Fix accessibility warning in both templates' viewport settings.
+
 ## argmap 4.20.3
 
 - `pandoc-templates/mapjs/`: Replace head element in both templates with partial `includes/argmap-head-element.html`.
