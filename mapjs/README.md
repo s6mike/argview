@@ -118,6 +118,11 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 `shift+up` | Activate node above
 `shift+left` | Activate node left
 `shift+right` | Activate node right
+`1-9` | Activate all nodes at that level (in all trees)
+`[` | Activate descendants
+`{` | Activate node and descendants
+`=` | Activate sibling nodes
+`.` | Deactivate all but selected node
 `meta+down` `ctrl+down` | Move active nodes below
 `meta+up` `ctrl+up`| Move active nodes above
 `meta+right` `ctrl+right` | Move active nodes right
@@ -132,11 +137,7 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 `meta+plus` `ctrl+plus z` | Zoom in
 `meta+minus` `ctrl+minus` `shift+z` | Zoom out
 `esc` `0` | Activate root node of current selected tree, centre screen on it and reset zoom
-`1-9` | Activate all nodes at that level (in all trees)
-`[` | Activate descendants
-`{` | Activate node and descendants
-`=` | Activate sibling nodes
-`.` | Deactivate all but selected node
+`alt+s` | Download current map as a JSON file
 `a` `click on paperclip icon` | Add / Open attachment
 `click on link icon` | Open url
 `i` | Edit icon *(Reserved - doesn't currently do anything)*

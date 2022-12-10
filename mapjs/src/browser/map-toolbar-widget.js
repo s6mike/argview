@@ -3,7 +3,7 @@ const jQuery = require('jquery');
 jQuery.fn.mapToolbarWidget = function (mapModel) {
 	'use strict';
 	const clickMethodNames =
-		['insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
+		['saveMap', 'insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
 			'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
 
 		changeMethodNames = ['updateStyle'];

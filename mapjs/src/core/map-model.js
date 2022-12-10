@@ -731,6 +731,12 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		analytic('decorationAction', source);
 		self.dispatchEvent('decorationActionRequested', nodeId, decorationType);
 	};
+	this.saveMap = function (source) {
+		analytic('loadMap', source);
+		const mapJson = this.getIdea(),
+			mapOutput = JSON.stringify(mapJson);
+		window.downloadToFile(mapOutput, mapJson.title + '.json', 'application/json');
+	};
 	this.openAttachment = function (source, nodeId) {
 		analytic('openAttachment', source);
 		nodeId = nodeId || currentlySelectedIdeaId;

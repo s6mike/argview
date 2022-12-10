@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.0
+
+- Save Map functionality:
+  - Add `downloadToFile()` utility function to `mapjs/src/argmapjs-utilities.js`
+  - Add `Save` button to `pandoc-templates/mapjs/mapjs-testcontrols.html`
+  - Add `saveMap()` to `mapjs/src/core/map-model.js`
+    - Add it to `clickMethodNames` in `mapjs/src/browser/map-toolbar-widget.js`
+    - Add `alt+s` keyboard shorcut to `mapjs/src/browser/dom-map-widget.js` and [README.md](../mapjs/README.md)
+
 ## argmap 4.19.1
 
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Tidy up html and add aria-label (usually matching value, to be refined later) to all input elements.

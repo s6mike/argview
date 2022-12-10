@@ -58,7 +58,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'r meta+shift+z ctrl+shift+z meta+y ctrl+y': 'redo',
 			'meta+plus ctrl+plus z': 'scaleUp',
 			'meta+minus ctrl+minus shift+z': 'scaleDown',
-			'Esc 0 meta+0 ctrl+0': 'resetView'
+			'Esc 0 meta+0 ctrl+0': 'resetView',
+			'alt+s': 'saveMap',
 		// 'Esc': 'cancelCurrentAction'
 		},
 		charEventHandlers = {
