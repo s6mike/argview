@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.2
+
+- `mapjs/webpack.config.js`: Turn overlay off and progress on.
+
 ## argmap 4.20.1
 
 - Move argmap input html out of `pandoc-templates/mapjs/mapjs-quick-json.html` and into `includes/argmap-input-widget.html`, including it as a partial.

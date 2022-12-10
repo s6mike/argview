@@ -24,6 +24,15 @@ module.exports = {
 		chunkFilename: '[name].[contenthash].bundle.js', // This is used for on-demand-loaded chunk files.
 		clean: true,
 	},
+	devServer: {
+		static: path.join(__dirname, 'site'),
+		port: process.env.PORT_DEV_SERVER,
+		client: {
+			progress: true,
+			overlay: false,
+		},
+		// watchFiles: ['src/**.js'],
+	},
 	plugins: [
 		// new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
@@ -40,11 +49,6 @@ module.exports = {
 			// // production warning is at 244 KiB = 31232
 			// maxSize: 31232
 		},
-	},
-	devServer: {
-		static: path.join(__dirname, 'site'),
-		port: process.env.PORT_DEV_SERVER,
-		// watchFiles: ['src/**.js'],
 	},
 	module: {
 		rules: [
