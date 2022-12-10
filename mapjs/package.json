@@ -26,7 +26,7 @@
     "testc": "npm run test-start",
     "test-start": "npm run start && npm run test-cafe",
     "stop": "killall node",
-    "start": "webpack serve",
+    "start": "webpack serve &",
     "test-cafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",
     "testcafe-command": "testcafe",
     "pack": "webpack &",

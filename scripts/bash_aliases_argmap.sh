@@ -37,6 +37,7 @@ get-site-path() {
 open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
+  __check_server_on
   input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
   site_path=$(get-site-path "$input_path")
   google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
@@ -122,6 +123,7 @@ a2t() { # a2t test/output/example1-simple.yml
 md2hf() { # md2h test/input/example.md
   # TODO: Use realpath to simplify relative path juggling
   #   e.g. PATH_OUTPUT_JSON=/$(realpath --no-symlinks --relative-to=mapjs/site "$1")
+  __check_server_on
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
@@ -142,6 +144,7 @@ md2hf() { # md2h test/input/example.md
 j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
   # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
+  __check_server_on
   INPUT="${1:-$INPUT_FILE_JSON}"
   # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
 
@@ -166,6 +169,7 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
 # Convert markdown to html fragment
 # TODO: lua filter should include webpack js output etc even for fragment
 md2htm() { # md2htm test/input/example-updated.md
+  __check_server_on
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
@@ -180,6 +184,7 @@ md2htm() { # md2htm test/input/example-updated.md
 
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md
+  __check_server_on
   NAME=$(basename --suffix=".md" "$1")
   OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/$NAME.pdf}
   mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists

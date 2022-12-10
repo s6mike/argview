@@ -23,12 +23,12 @@ alias argdbe='open-debug input/html/legacy-mapjs-example-map.html'
 ## webpack aliases
 alias dmj='diff_mapjs'
 alias dfs='diff_staged_file' # dfs package.json package.diff
-alias smj='node_stop'
 alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
+alias wpi='webpack_install'
 alias pmj='webpack_pack'
 alias wss='webpack_server_start' # Simply runs server
-alias wpi='webpack_install'
+alias wsh='webpack_server_halt'
 
 # mapjs functions
 
@@ -38,6 +38,12 @@ alias wpi='webpack_install'
 #   Maybe review mapjs tests.
 
 ## webpack functions
+
+__check_server_on() { # runs server if it's off
+  if [ "$SERVER_ON" != true ]; then
+    webpack_server_start
+  fi
+}
 
 __build_mapjs() { # bmj
   # Deletes webconfig output
@@ -106,6 +112,7 @@ testcafe_run() { # tcr
 }
 
 __test_mapjs_renders() {
+  __check_server_on
   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
@@ -139,9 +146,9 @@ alias __open-mapjs='open-server'
 alias __open-chrome-debug='open-debug'
 alias __chrome-attach-mapjs='open-debug'
 
-## Deprecated, use node_stop instead
-__stop_mapjs_webserver() { #smj
+webpack_server_halt() { #wsh
   npm --prefix "$PATH_MJS_HOME" run stop
+  SERVER_ON=false
 }
 
 ## Deprecated just use start
@@ -149,8 +156,8 @@ alias rmj='__restart_mapjs_webserver'
 
 # Deprecated
 __restart_mapjs_webserver() { #rmj
-  node_stop
-  __start_mapjs_webserver
+  webpack_server_halt
+  webpack_server_start
 }
 
 ## Deprecated, use open-server instead
@@ -166,11 +173,17 @@ __restart_mapjs_webserver() { #rmj
 
 # Starts server
 webpack_server_start() { # wss
-  npm run --prefix "$PATH_MJS_HOME" start &
-  disown
+  export SERVER_ON=true
+  if npm --prefix "$PATH_MJS_HOME" run start; then
+    true
+  else
+    SERVER_ON=false
+  fi
+  # & disown
 }
 
 ## Mark functions for export to use in other scripts:
+export -f __check_server_on __build_mapjs __run_mapjs_legacy
 export -f webpack_install webpack_pack webpack_server_start # webpack_pack_open webpack_build_open
 export -f open-debug
 export -f testcafe_run __test_mapjs_renders

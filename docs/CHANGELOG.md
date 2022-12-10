@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.19.0
+
+- `scripts/bash_aliases_mapjs.sh`:
+  - Add functions and aliases:
+    - `__check_server_on()` to start webserver if it's off. Uses new `SERVER_ON` variable, which unfortunately doesn't know devServer state. There should be built in variable but can't see it.
+    - `webpack_server_halt()` to turn webserver off and set new `SERVER_ON=false`.
+  - Update functions:
+    - `webpack_server_start()` to set `SERVER_ON=true`.
+    - Other functions to use new functions above.
+- `scripts/bash_aliases_argmap.sh`: Update all commands which open a browser to call `__check_server_on()` first.
+- `scripts/` and `test/test_scripts`: Update to use new functions above, comments, minor formatting improvements.
+  
 ## argmap 4.18.15
 
 - `mapjs/webpack.config.js`: Update config so live reloading works (filename has to be `[name].js`), and remove watch mode options to avoid annoying warning when serving.

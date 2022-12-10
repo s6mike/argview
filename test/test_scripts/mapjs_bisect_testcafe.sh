@@ -9,8 +9,9 @@
 # Bisect Setup
 # ------------
 
-# shellcheck source=/home/s6mike/scripts/argmap_scripts/bash_aliases_mapjs.sh
-source "$HOME/scripts/argmap_scripts/bash_aliases_mapjs.sh"
+bash_aliases_argmap.sh
+# shellcheck source=/home/s6mike/scripts_links/argmap_scripts/bash_aliases_mapjs.sh
+source "$HOME/scripts_links/argmap_scripts/bash_aliases_mapjs.sh"
 
 TEST_MODE=false      # false allows git commands to remove any changes.
 APPLY_PATCH=true     # false stops patch being applied
@@ -73,7 +74,6 @@ fi
 source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 if [ "$REBUILD" = true ]; then # Only runs if not in test mode
-
   # webpack_build
   node_stop
 
@@ -86,7 +86,6 @@ if [ "$REBUILD" = true ]; then # Only runs if not in test mode
 
   # wait $!
   sleep 1.5
-
 fi
 
 # TODO: Ideally want to read node_count_before and pass it into the JSON script as a variable to compare it to.

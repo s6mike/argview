@@ -195,6 +195,7 @@ ln -s "$PATH_MJS_SITE/$PATH_OUTPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
 
 # QUESTION: Do I need above cd if I'm using prefix?
 npm --prefix "$PATH_MJS_HOME" install
+# QUESTION: Use force instead?
 npm audit fix --prefix "$PATH_MJS_HOME" --legacy-peer-deps >npm_audit_output.txt
 
 __build_mapjs
