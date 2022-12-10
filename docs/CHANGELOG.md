@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.3
+
+- `pandoc-templates/mapjs/`: Replace head element in both templates with partial `includes/argmap-head-element.html`.
+
 ## argmap 4.20.2
 
 - `mapjs/webpack.config.js`: Turn overlay off and progress on.
