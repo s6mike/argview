@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.5
+
+- `mapjs/src/argmapjs-utilities.js`: Fix bug in `downloadToFile()` caused by calling `removeChild()` on revoked element.
+
 ## argmap 4.20.4
 
 - `includes/argmap-head-element.html`: Fix accessibility warning in both templates' viewport settings.

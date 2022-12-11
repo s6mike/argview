@@ -3,8 +3,6 @@
 // TODO: switch to lodash and test
 const _ = require('underscore');
 
-// getTheme = () => theme;
-
 // May not be compatible with all modern browsers
 window.downloadToFile = function (content, filename, contentType) {
 	'use strict';
@@ -16,9 +14,7 @@ window.downloadToFile = function (content, filename, contentType) {
 	download_anchor.click();
 
 	URL.revokeObjectURL(download_anchor.href);
-	document.body.removeChild(download_anchor);
 };
-
 
 // eslint-disable-next-line strict
 window.idea_pp = function (idea, level = -1, key = []) {
