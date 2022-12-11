@@ -5,8 +5,8 @@ jQuery.fn.mapToolbarWidget = function (mapModel) {
 	const clickMethodNames =
 		['saveMap', 'insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
 			'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
+		changeMethodNames = [`readFile`, 'updateStyle'];
 
-		changeMethodNames = ['updateStyle'];
 	return this.each(function () {
 		const element = jQuery(this);
 		let preventRoundtrip = false;
@@ -28,13 +28,16 @@ jQuery.fn.mapToolbarWidget = function (mapModel) {
 			});
 		});
 		changeMethodNames.forEach(function (methodName) {
-			element.find('.' + methodName).change(function () {
+			element.find('.' + methodName).change(function (event) {
 				if (preventRoundtrip) {
 					return;
 				}
 				const tool = jQuery(this);
 				if (tool.data('mm-target-property')) {
-					mapModel[methodName]('toolbar', tool.data('mm-target-property'), tool.val());
+					// QUESTION: could pass the tool rather than separate properties? Would give more flexibility for functions
+					//	 Need to refactor called functions
+					// Calls methodName function within mapModel
+					mapModel[methodName]('toolbar', tool.data('mm-target-property'), tool.val(), event);
 				}
 			});
 		});

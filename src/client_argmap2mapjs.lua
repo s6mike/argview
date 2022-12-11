@@ -73,6 +73,7 @@ local function convert_yaml()
   window.loadMap(container, mapjs)
 end
 
+-- TODO: This is now implemented in map-model.js as readFile, so call that instead
 local function read_file()
   local myFile = file_picker_argmap.files[0]
   print("myFile.name: " .. myFile.name)

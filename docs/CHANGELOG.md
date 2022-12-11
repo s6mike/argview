@@ -6,6 +6,27 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.0
+
+- Load Map functionality:
+  - Add `readFile` file input element to `pandoc-templates/mapjs/mapjs-testcontrols.html`
+  - `mapjs/src/core/map-model.js`:
+    - Add methods:
+      - `readFile()`: Reads mapjs JSON file picked using `readFile` element and passes data to `loadMap()`.
+      - `loadMap()`: Loads the file data as a new map.
+      - `handleKey_loadMap`: Triggers file picker when `alt+o` pressed.
+  - `mapjs/src/start.js`:
+    - Move `loadMap()` to here from `mapjs/src/core/map-model.js`.
+    - Add reference to `content()` to `mapModel` object: hacky way to allow calls to `content()` from `loadMap()`.
+  - `mapjs/src/browser/map-toolbar-widget.js`:
+    - Add `readFile` to `changeMethodNames` so picking a file reads it.
+    - Pass event object to all `clickMethodNames` calls.
+  - `mapjs/src/browser/dom-map-widget.js`:
+    - Add `alt+o` keyboard shorcut to call `handleKey_loadMap()`.
+      - Pass event object to all `hotkeyEventHandlers` calls.
+    - [README.md](../mapjs/README.md): Add `alt+o` keyboard shortcut.
+  - `src/client_argmap2mapjs.lua`: Add TODO comment for when this is re-introduced.
+
 ## argmap 4.20.6
 
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Populate missed `aria-label` for `updateStyle` input element.

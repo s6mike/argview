@@ -731,6 +731,55 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		analytic('decorationAction', source);
 		self.dispatchEvent('decorationActionRequested', nodeId, decorationType);
 	};
+	this.handleKey_loadMap = function (source, event) {
+		analytic('handleKeyLoadMap', source);
+		const container = event.currentTarget,
+			fileButton = container.getElementsByClassName('readFile')[0];
+		fileButton.click();
+	};
+
+	// TODO: Add support for multiple files
+	// 	When the (file input element) multiple Boolean attribute is specified, the file input allows the user to select more than one file.
+	// 	Could either load them as separate map roots, or open a container for each one
+	//  	If load is part of toolbar then only former makes sense
+	this.readFile = function (source, data_target, filename, event) {
+		analytic('loadMap', source);
+		const fileList = event.target.files;
+		if (fileList.length > 0) { // fileList can change from a file to no file
+			const file = fileList[0],
+				reader = new window.FileReader;
+
+			reader.onload = function () {
+				self.loadMap(reader.result, data_target, true);
+			};
+
+			// Think this triggers the onload, but not certain:
+			reader.readAsText(file);
+		}
+	};
+
+	// TODO: Need to re-use some of this in combination with addMap(), drag and drop, cut and paste.
+	// TODO: Should have error catching/sanitation for file type/data
+	// Called by `readFile()` above and also client_argmap2mapjs.lua
+	this.loadMap = function (mapJson, target_container_id, replace) {
+		const mapM = this,
+			old_idea = mapM.getIdea();
+
+		// Batch ensures that operations are atomic
+		// So counts as a single undo/redo step
+		return old_idea.batch(function () {
+			if (replace) {
+				// Was hoping that nesting this inside batch would enable undo, but does not.
+				const new_idea = mapM.content(JSON.parse(mapJson));
+				mapM.setIdea(new_idea);
+			} else {
+				old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
+				mapM.removeSubIdea('root', 'loadMap');
+			}
+		});
+
+		return true;
+	};
 	this.saveMap = function (source) {
 		analytic('loadMap', source);
 		const mapJson = this.getIdea(),

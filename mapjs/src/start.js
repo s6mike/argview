@@ -77,6 +77,9 @@ const jQuery = require('jquery'),
 		//  Useful because unfortunately, element ids only unique per container
 		map.mapModel.containerElement = container;
 
+		// Hacky solution so that I can call content from map-model.js: loadMap
+		map.mapModel.content = content;
+
 		// eslint-disable-next-line one-var
 		const jQcontainer = jQuery(container),
 			// Do I need one of these for each container?
@@ -212,31 +215,10 @@ const jQuery = require('jquery'),
 			window.onerror = console.error; // Stops annoying pop ups when there's an error.
 			window.jQuery = jQuery;
 			window.mapInstance = mapInstance;
-
 		} else { // If no mapjs requests:
 			console.debug('No requests for mapjs detected.');
 		};
 	};
-
-// TODO: Need to re-use some of this in combination with addMap(), drag and drop.
-// QUESTION:Add this function to mapModel class? Then don't need the container argument at all
-window.loadMap = function (mapJson) {
-	'use strict';
-	// For some reason, first argument in call: container being passed as this. Not sure why
-
-	// TODO: Need to use correct mapModel
-	//	 mapInstance[this.target_container_id].mapModel.getIdea();
-	const map = window.map,
-		old_idea = map.mapModel.getIdea();
-	// Batch ensures that operations are atomic
-	// So counts as a single undo/redo step
-	return old_idea.batch(function () {
-		// TODO: should be possible to paste onto the node that was dragged onto, instead of root.
-		old_idea.pasteMultiple('root', JSON.parse(mapJson).ideas);
-		map.mapModel.removeSubIdea('root', 'loadMap');
-		return true;
-	});
-};
 
 document.addEventListener('DOMContentLoaded', init);
 
