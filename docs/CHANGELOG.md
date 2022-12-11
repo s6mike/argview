@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.1
+
+- `pandoc-templates/mapjs/mapjs-map.html`: Add aria label to container div.
+
 ## argmap 4.21.0
 
 - Load Map functionality:
