@@ -6,10 +6,24 @@ jQuery.fn.mapToolbarWidget = function (mapModel) {
 		['saveMap', 'insertIntermediate', 'scaleUp', 'scaleDown', 'addSubIdea', 'editNode', 'removeSubIdea', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
 			'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
 		changeMethodNames = [`readFile`, 'updateStyle'];
+		// keyDownEnterMethodNames = ['handleKey_loadMap'];
 
 	return this.each(function () {
 		const element = jQuery(this);
 		let preventRoundtrip = false;
+
+		// Found alternative solution: allow the file input to be selected,
+		// then use css pseudo selector :focus-within to make it look like the label is highlighted
+		// keyDownEnterMethodNames.forEach(function (methodName) {
+		// 	element.find('.' + methodName).on('keydown', function (event) {
+		// 		if (event.key === 'Enter') {
+		// 			if (mapModel[methodName]) {
+		// 				mapModel[methodName]('toolbar', event, this.parentElement); // this.parentElement is container
+		// 				event.stopPropagation(); // Stops enter bubbling up to container and adding a node.
+		// 			};
+		// 		};
+		// 	});
+		// });
 		mapModel.addEventListener('nodeSelectionChanged', function () {
 			preventRoundtrip = true;
 			element.find('.updateStyle[data-mm-target-property]').val(function () {

@@ -1,8 +1,8 @@
 <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
 <div id="testcontrols_$BLOCK_ID$" class="mapjs_control">
-<!-- <label>Upload a mapjs json file:</label> -->
-<input type="file" class="readFile" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
-  data-mm-target-property='container_argmap$BLOCK_ID$' /><br />
+  <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
+      class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
+      data-mm-target-property='container_argmap$BLOCK_ID$' /></label>
   <input type="button" class="saveMap" value="Save" aria-label="Save" />
   <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
   <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />

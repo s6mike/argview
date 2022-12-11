@@ -175,7 +175,9 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				if (actOnKeys) {
 					event.stopImmediatePropagation();
 					event.preventDefault();
-					mapModel[mappedFunction]('keyboard', event);
+					const container = event.currentTarget;
+					// No longer need this container argument; keeping in case it's useful later.
+					mapModel[mappedFunction]('keyboard', event, container);
 				}
 			});
 		});

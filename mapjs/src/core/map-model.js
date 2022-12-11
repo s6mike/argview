@@ -725,16 +725,18 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 			self.selectNode(localRoot);
 			self.dispatchEvent('mapViewResetRequested');
 		}
-
 	};
 	this.decorationAction = function (source, nodeId, decorationType) {
 		analytic('decorationAction', source);
 		self.dispatchEvent('decorationActionRequested', nodeId, decorationType);
 	};
-	this.handleKey_loadMap = function (source, event) {
+
+	// This now only needed for `alt+o` shortcut, since file input can be tabbed to while pretending that 'Load' button is selected.
+	// 	So container no longer needed as argument but leaving in for now.
+	this.handleKey_loadMap = function (source, event, container) {
 		analytic('handleKeyLoadMap', source);
-		const container = event.currentTarget,
-			fileButton = container.getElementsByClassName('readFile')[0];
+		// const container = event.currentTarget,
+		const fileButton = container.getElementsByClassName('readFile')[0];
 		fileButton.click();
 	};
 

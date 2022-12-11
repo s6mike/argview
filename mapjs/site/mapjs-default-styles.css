@@ -5,6 +5,22 @@ body {
 	margin: 0;
 }
 
+/*  See https://zellwk.com/blog/hide-content-accessibly/ */
+.hide-accessibly {
+	pointer-events: none;
+	/* Like opacity:0 but supports hardware acceleration */
+	filter: opacity(0);
+	position: absolute;
+}
+
+.buttonStyle:focus-within {
+	outline: auto;
+}
+
+.buttonStyle:hover {
+	background-color: #e5e5e5;
+}
+
 .mapjs_control {
 	position: sticky;
 	z-index: 10;

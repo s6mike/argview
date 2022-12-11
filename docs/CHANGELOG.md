@@ -6,6 +6,20 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+
+## argmap 4.21.2
+
+- Use 'Load' label instead of file input element for easier styling.
+  - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Wrap label around file-input element; add classes for styling and interaction.
+  - `mapjs/site/mapjs-default-styles.css`:
+    - Add `.hide-accessibly` to position the element absolutely, hide it and stop any mouse pointer interactions with it.
+      - NOTE: There are accessibility implications for all of these options, see [A new (and easy) way to hide content accessibly | Zell Liew](https://zellwk.com/blog/hide-content-accessibly/) for a discussion.
+    - Add `:focus-within` for label to look like it's tab selected when actually the file input element is. This means that hitting enter will still open the file dialogue.
+      This solution means the following changes are no longer necessary. Left in, in case useful later:
+      - `mapjs/src/browser/map-toolbar-widget.js`: Add copmmented code for alternative solution using `keyDownEnterMethodNames()` function to loop through a new `keyDownEnterMethodNames` array and call the class as a function. This calls `handleKey_loadMap()` when tab navigation used to activate the 'Load' label.
+        - `mapjs/src/core/map-model.js`: Add container parameter to `handleKey_loadMap` so it can handle enter key events on 'Load' label.
+        - `mapjs/src/browser/dom-map-widget.js`: Update to use container parameter in all hotkeyEventHandler calls.
+
 ## argmap 4.21.1
 
 - `pandoc-templates/mapjs/mapjs-map.html`: Add aria label to container div.
@@ -1543,7 +1557,7 @@ BUG:
 
 - `scripts`
   - `bash_aliases_argmap.sh`:
-    `__pack_mapjs()`: Remove env variable argument since specific .json files no longer requested during webpack build process.
+    `__pack_mapjs()`: Remove env variable argument since specific `.json` files no longer requested during webpack build process.
 - `mapjs-example/webpack.config.js`: Remove env variable functionality.
   
 ## argmap 3.8.1
