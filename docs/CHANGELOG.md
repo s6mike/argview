@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.20.6
+
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`: Populate missed `aria-label` for `updateStyle` input element.
+
 ## argmap 4.20.5
 
 - `mapjs/src/argmapjs-utilities.js`: Fix bug in `downloadToFile()` caused by calling `removeChild()` on revoked element.
