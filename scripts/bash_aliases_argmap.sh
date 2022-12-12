@@ -132,7 +132,7 @@ md2hf() { # md2h test/input/example.md
   # Useful? --metadata=curdir:X
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
-  pandoc "$1" --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-main-html5.html" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$OUTPUT"
   # QUESTION: Might want to make debug default, but with test option for normal?
   #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
@@ -157,7 +157,8 @@ j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplif
   #  TODO: Check and copy to input folder?
   PATH_OUTPUT_JSON=/$(get-site-path "$INPUT")
   # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
-  echo "" | pandoc --template "$WORKSPACE/pandoc-templates/mapjs/mapjs-quick-json.html" --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  # Add --metadata=argmap-input:true to enable argmap input functionality:
+  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$HTML_OUTPUT"
   open-debug "$HTML_OUTPUT"
 }

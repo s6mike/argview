@@ -6,6 +6,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.5
+
+- `pandoc-templates/mapjs/mapjs-main-html5.html`: Combine `pandoc-templates/mapjs/mapjs-quick-json.html` into this one using meta-data boolean and if statement to selectively include quick container section.
+  - `scripts/argmap.env`: Add env variable `FILE_TEMPLATE_HTML_ARGMAP` to store template location and use this in scripts.
+  - `scripts/bash_aliases_argmap.sh`:
+    - Update `j2hf()` to use template `pandoc-templates/mapjs/mapjs-main-html5.html` and set meta-data for quick container.
+  - Delete `pandoc-templates/mapjs/mapjs-quick-json.html` now it's unused.
+  - `pandoc-templates/mapjs/mapjs-map.html`: Update comments.
+- Add another conditional for optionally adding the `argmap-input` functionality.
+  - Update `j2hf()` and `md2hf()` to use new env variable `FILE_TEMPLATE_HTML_ARGMAP`.
+  
 ## argmap 4.21.4
 
 - `mapjs/site/mapjs-default-styles.css`:

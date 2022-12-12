@@ -35,13 +35,22 @@ $../../includes/argmap-head-element.html()$
   </nav>
   $endif$
   $body$
+  ${if(argmap-input)}
+  $../../includes/argmap-input-widget.html()$
+  ${endif}
+  ${if(quick-container)}
+  $mapjs-map.html()$
+  ${endif}
+
   <style id="themecss">
   </style>
   $../../includes/webpack-dist-tags.html()$
-  $-- <!-- <script src="/js/fengari-web.js" type="text/javascript" async></script> --><!-- <script src="/lua/client_argmap2mapjs.lua" type="application/lua" async></script> -->
+  ${if(argmap-input)}
+  <script src="/js/fengari-web.js" type="text/javascript" async></script>
+  <script src="/lua/client_argmap2mapjs.lua" type="application/lua" async></script>
+  ${endif}
   $for(include-after)$
   $include-after$
   $endfor$
 </body>
-
 </html>
