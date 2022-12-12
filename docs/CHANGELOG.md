@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.6
+
+- `mapjs/webpack.config.js`: Fix webpack html output to be just scripts, no head tags, using templateContent instead of template.
+  - Delete unnecessary `mapjs/src/templates/template-webpack-dist-tags.html`
+
 ## argmap 4.21.5
 
 - `pandoc-templates/mapjs/mapjs-main-html5.html`: Combine `pandoc-templates/mapjs/mapjs-quick-json.html` into this one using meta-data boolean and if statement to selectively include quick container section.
@@ -87,7 +92,7 @@
 
 ## argmap 4.20.1
 
-- Move argmap input html out of `pandoc-templates/mapjs/mapjs-quick-json.html` and into `includes/argmap-input-widget.html`, including it as a partial.
+- Move argmap input html out of `pandoc-templates/mapjs/mapjs-quick-json.html` and into `includes/argmap-input.html`, including it as a partial.
   - Comment it out for now.
 
 ## argmap 4.20.0

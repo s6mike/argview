@@ -36,8 +36,10 @@ module.exports = {
 	plugins: [
 		// new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
-			template: path.resolve(__dirname, '/src/templates/template-webpack-dist-tags.html'),
 			filename: path.resolve(__dirname, '../includes/webpack-dist-tags.html'),
+			// Outputs script tags only:
+			inject: 'body',
+			templateContent: '',
 		}),
 	],
 	optimization: {
