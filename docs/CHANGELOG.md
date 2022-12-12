@@ -6,6 +6,9 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.3
+
+- `mapjs/site/mapjs-default-styles.css`: Add `.buttonStyle` to style the label like a button.
 
 ## argmap 4.21.2
 
