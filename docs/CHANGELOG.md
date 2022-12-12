@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.4
+
+- `mapjs/site/mapjs-default-styles.css`:
+  - `cursor`: For nodes change to `grab`, since pointer should only be used for links.
+    - Except when editing text, then use `text` cursor.
+
 ## argmap 4.21.3
 
 - `mapjs/site/mapjs-default-styles.css`: Add `.buttonStyle` to style the label like a button.

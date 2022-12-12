@@ -89,8 +89,8 @@ div[data-mapjs-role=stage] {
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
-	cursor: pointer;
 	line-height: 15px;
+	cursor: grab;
 }
 
 .mapjs-node:not(.attr_group) {
@@ -143,6 +143,7 @@ div[data-mapjs-role=stage] {
 	-moz-user-select: text;
 	-webkit-user-select: text;
 	-ms-user-select: text;
+	cursor: text;
 }
 
 .mapjs-node span {
