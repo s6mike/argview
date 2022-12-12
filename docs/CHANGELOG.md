@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.7
+
+- `mapjs/webpack.config.js`: Turn off client progress since it fills debug output, annoying.
+
 ## argmap 4.21.6
 
 - `mapjs/webpack.config.js`: Fix webpack html output to be just scripts, no head tags, using templateContent instead of template.

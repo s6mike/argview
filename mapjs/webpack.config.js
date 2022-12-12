@@ -28,8 +28,8 @@ module.exports = {
 		static: path.join(__dirname, 'site'),
 		port: process.env.PORT_DEV_SERVER,
 		client: {
-			progress: true,
 			overlay: false,
+			progress: false,
 		},
 		// watchFiles: ['src/**.js'],
 	},
