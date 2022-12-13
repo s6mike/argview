@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.8
+
+- `scripts/bash_aliases_argmap.sh`: `md2hf()`:
+  - Add default input file.
+  - Make local variables lower case for readability.
+
 ## argmap 4.21.7
 
 - `mapjs/webpack.config.js`: Turn off client progress since it fills debug output, annoying.
