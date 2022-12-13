@@ -34,14 +34,15 @@ $../../includes/argmap-head-element.html()$
     $table-of-contents$
   </nav>
   $endif$
-  $body$
-  ${if(argmap-input)}
-  $../../includes/argmap-input-widget.html()$
-  ${endif}
-  ${if(quick-container)}
-  $mapjs-map.html()$
-  ${endif}
-
+  <main>
+    $body$
+    ${if(argmap-input)}
+    $../../includes/argmap-input-widget.html()$
+    ${endif}
+    ${if(quick-container)}
+    $mapjs-map.html()$
+    ${endif}
+  </main>
   <style id="themecss">
   </style>
   $../../includes/webpack-dist-tags.html()$

@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.9
+
+- Make templates and includes more accessible:
+  - Add tags: main, article, section
+  - Add roles to divs.
+  - Add heading to map container include.
+  - Add aria-labels to select elements.
+
 ## argmap 4.21.8
 
 - `scripts/bash_aliases_argmap.sh`: `md2hf()`:
