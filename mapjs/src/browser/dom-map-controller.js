@@ -564,7 +564,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 				.then(function (newText) {
 					mapModel.setInputEnabled(true);
 					mapModel.updateTitle(nodeId, newText, editingNew);
-					editingElement.focus();
+					stageElement.focus();
 				})
 				.catch(function () {
 					mapModel.setInputEnabled(true);
@@ -573,7 +573,7 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 					}
 					// Add this line to keep node:
 					// 	mapModel.updateTitle(nodeId, editingElement.data('title'), editingNew);
-					editingElement.focus();
+					stageElement.focus();
 				});
 		});
 	}

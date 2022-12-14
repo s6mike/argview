@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.14
+
+- Fix so keyboard shortcuts work immediately after editing node:
+  - `mapjs/src/browser/dom-map-controller.js`: Put focus on svg stage after successful or aborted edit ('Esc').
+
 ## argmap 4.21.13
 
 - Fix tab navigation by:
