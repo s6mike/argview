@@ -35,10 +35,10 @@ $../../includes/argmap-head-element.html()$
   </nav>
   $endif$
   <main>
-    $body$
     ${if(argmap-input)}
     $../../includes/argmap-input-widget.html()$
     ${endif}
+    $body$
     ${if(quick-container)}
     $mapjs-map.html()$
     ${endif}

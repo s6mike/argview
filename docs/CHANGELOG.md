@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.10
+
+- `pandoc-templates/mapjs/mapjs-main-html5.html`: Move `argmap-input` partial to before body so it works better with markdown output.
+
 ## argmap 4.21.9
 
 - Make templates and includes more accessible:
