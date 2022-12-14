@@ -15,7 +15,6 @@
 
 # TODO: check whether these are already installed
 # conda install lua5.3
-
 # conda install -c anaconda-platform luarocks
 
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
