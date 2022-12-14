@@ -4,6 +4,7 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # argmap aliases
 alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
+alias j2hfa='j2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
 
 # argmap functions
 
@@ -20,14 +21,14 @@ get-site-path() {
   input_path="${1}"
   case $input_path in
   /*)
-    FULL_PATH=$input_path
+    full_path=$input_path
     ;;
   *)
-    FULL_PATH=$WORKSPACE/$input_path
+    full_path=$WORKSPACE/$input_path
     ;;
   esac
   # Substitutes mapjs/site for test so it's using site folder, then removes leading part of path so its relative to site/:
-  site_path="${FULL_PATH/test/"mapjs/site"}"
+  site_path="${full_path/test/"mapjs/site"}"
   # echo "site_path: $site_path"
   output_path=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$site_path")
   echo "$output_path"
@@ -86,52 +87,54 @@ __save_env() {
 # Convert to map.json, writes it to test/output/mapjs-json/
 # lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml
-  NAME=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
-    OUTPUT=${2:-$PATH_MJS_JSON/$NAME.json} &&
-    mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
-    lua "$WORKSPACE/src/argmap2mup.lua" "$1" >"$OUTPUT" &&
-    echo "$OUTPUT" # Output path can be piped
+a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml (output path)
+  name=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
+    output=${2:-$PATH_MJS_JSON/$name.json} &&
+    echo "output: $output" "${@:2}" &&
+    mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
+    lua "$WORKSPACE/src/argmap2mup.lua" "$1" >"$output" &&
+    echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
 }
 
 # Convert to map.js and upload
 a2mu() { # a2mu test/output/example1-simple.yml
-  NAME=$(basename --suffix=".yml" "$1") &&
-    lua "$WORKSPACE/src/argmap2mup.lua" --upload --name "$NAME.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
-    echo "Uploaded: $NAME.mup to GDrive."
+  name=$(basename --suffix=".yml" "$1") &&
+    lua "$WORKSPACE/src/argmap2mup.lua" --upload --name "$name.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
+    echo "Uploaded: $name.mup to GDrive."
 }
 
 # Convert map.js to argmap yaml format
 # TODO add option for .mup vs .json output
-m2a() { # m2a test/output/example1-simple.mup
-  NAME=$(basename --suffix=".json" "$1")
-  OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/$NAME.yml}
-  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
-  lua "$WORKSPACE/src/mup2argmap.lua" "$1" >"$OUTPUT" &&
-    echo "$OUTPUT" # Output path can be piped
+m2a() { # m2a test/output/example1-simple.mup (output path)
+  name=$(basename --suffix=".json" "$1")
+  output=${2:-$DIR_PUBLIC_OUTPUT/$name.yml}
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+  lua "$WORKSPACE/src/mup2argmap.lua" "$1" >"$output" &&
+    echo "$output" # Output path can be piped
 }
 
 # Convert to tikz
-a2t() { # a2t test/output/example1-simple.yml
-  NAME=$(basename --suffix=".yml" "$1") &&
-    mkdir --parent "$(dirname "$OUTPUT")" && # Ensures output folder exists
-    lua "$WORKSPACE/src/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$NAME.tex}" &&
-    echo "${2:-$DIR_PUBLIC_OUTPUT/$NAME.tex}"
+a2t() { # a2t test/output/example1-simple.yml (output path)
+  name=$(basename --suffix=".yml" "$1") &&
+    mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")" && # Ensures output folder exists
+    lua "$WORKSPACE/src/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$name.tex}" &&
+    echo "${2:-$DIR_PUBLIC_OUTPUT/$name.tex}"
 }
 
 # Convert markdown to full page html
-md2hf() { # md2h test/input/example.md
-  __check_server_on
+md2hf() { # md2h test/input/example.md (output filename) (optional pandoc arguments)
+  # __check_server_on # No point since open-debug runs it too.
   input="${1:-$INPUT_FILE_MD}"
   name=$(basename --suffix=".md" "$input")
-  output=${2:-$DIR_PUBLIC_OUTPUT/html/$name.html}
+  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
   # If so, how would I easily update it?
   # Useful? --metadata=curdir:X
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
-  pandoc "$input" --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
+  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   # QUESTION: Might want to make debug default, but with test option for normal?
   #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$name.html"
@@ -139,27 +142,29 @@ md2hf() { # md2h test/input/example.md
   # TODO construct link from server details and output it?
 }
 
-# shellcheck disable=SC2120 # Disables lint error
-j2hf() { # j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json
+# j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json (output filename) (optional pandoc arguments)
+# shellcheck disable=SC2120 # Disables lint error from a2hf() passing to j2hf
+j2hf() { # j2hfa Default output with argmap input activated
+  # __check_server_on # No point since open-debug runs it too.
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
-  # INPUT=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
-  __check_server_on
-  INPUT="${1:-$INPUT_FILE_JSON}"
+  # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
+  input="${1:-$INPUT_FILE_JSON}"
   # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
 
   # Removes either suffix:
-  NAME=$(basename --suffix=".json" "$INPUT")
-  NAME=$(basename --suffix=".mup" "$NAME")
-  HTML_OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
-  mkdir --parent "$(dirname "$HTML_OUTPUT")" # Ensures output folder exists
+  name=$(basename --suffix=".json" "$input")
+  name=$(basename --suffix=".mup" "$name")
+  html_output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
+  mkdir --parent "$(dirname "$html_output")" # Ensures output folder exists
 
   #  TODO: Check and copy to input folder?
-  PATH_OUTPUT_JSON=/$(get-site-path "$INPUT")
-  # mkdir --parent "$(dirname "$PATH_OUTPUT_JSON")" # Ensures JSON output folder exists
+  path_output_json=/$(get-site-path "$input")
+  # mkdir --parent "$(dirname "$path_output_json")" # Ensures JSON output folder exists
+  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # Add --metadata=argmap-input:true to enable argmap input functionality:
-  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$NAME" --metadata=path-json-source:"$PATH_OUTPUT_JSON" --metadata=css:"$MJS_CSS" -o "$HTML_OUTPUT" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$HTML_OUTPUT"
-  open-debug "$HTML_OUTPUT"
+  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+    echo "$html_output"
+  open-debug "$html_output"
 }
 
 a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
@@ -168,30 +173,31 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
 
 # Convert markdown to html fragment
 # TODO: lua filter should include webpack js output etc even for fragment
-md2htm() { # md2htm test/input/example-updated.md
-  __check_server_on
-  NAME=$(basename --suffix=".md" "$1")
-  OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/html/$NAME.html}
-  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
+md2htm() { # md2htm test/input/example-updated.md (output filename) (optional pandoc arguments)
+  # __check_server_on # No point since open-debug runs it too.
+  name=$(basename --suffix=".md" "$1")
+  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # TODO: Put this into new function?
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
-  pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$OUTPUT"
-  open-debug "$OUTPUT"
-  # open-debug "$DIR_HTML_SERVER_OUTPUT/html/$NAME.html"
+  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
+  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+    echo "$output"
+  open-debug "$output"
 }
 
 # Convert markdown to pdf
-md2pdf() { # md2pdf test/input/example.md
-  __check_server_on
-  NAME=$(basename --suffix=".md" "$1")
-  OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/$NAME.pdf}
-  mkdir --parent "$(dirname "$OUTPUT")" # Ensures output folder exists
-  pandoc "$1" -o "$OUTPUT" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$OUTPUT"
-  open-debug "$OUTPUT"
-  # open-server "$DIR_HTML_SERVER_OUTPUT/$NAME.pdf"
+md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
+  # __check_server_on # No point since open-debug runs it too.
+  name=$(basename --suffix=".md" "$1")
+  output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
+  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+    echo "$output"
+  open-debug "$output"
+  # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
 }
 
 # Deprecated

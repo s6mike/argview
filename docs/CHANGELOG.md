@@ -6,9 +6,23 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.11
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Use lower case for local variables.
+  - All functions which use pandoc e.g. `j2hf()`:
+    - Add `--metadata=lang:$LANGUAGE_PANDOC` to pandoc call so language always gets populated.
+      - `scripts/argmap.env`: Add `LANGUAGE_PANDOC=en`.
+    - Change 2nd argument to be filename rather than file path for simplicity.
+    - Update to pass extra arguments (3rd onwards) to pandoc.
+      - Add `j2hfa` alias for activating argmap input functionality by passing extra metadata argument.
+      - Update `a2m()` to pass extra arguments (2nd onwards) to output in case piped into `j2hf()`.
+      - Remove calls to `__check_server_on` if open-debug is called, since this also runs the same check.
+  - Fix bug in `a2t()` so it can create folder in correct path.
+  
 ## argmap 4.21.10
 
-- `pandoc-templates/mapjs/mapjs-main-html5.html`: Move `argmap-input` partial to before body so it works better with markdown output.
+- `pandoc-templates/mapjs/mapjs-main-html5.html`: Move `argmap-input` partial to before body so it works better with markdown input.
 
 ## argmap 4.21.9
 
