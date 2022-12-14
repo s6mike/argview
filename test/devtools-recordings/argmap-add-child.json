@@ -17,7 +17,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 > input.addSubIdea"
+          "#testcontrols_1 input.addSubIdea"
         ]
       ],
       "offsetY": 7.025390625,

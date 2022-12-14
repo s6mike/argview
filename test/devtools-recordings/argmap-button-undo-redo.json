@@ -17,7 +17,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 > input.addSubIdea"
+          "#testcontrols_1 input.addSubIdea"
         ]
       ],
       "offsetY": 6.328125,
@@ -32,7 +32,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 > input.undo"
+          "#testcontrols_1 input.undo"
         ]
       ],
       "offsetY": 6.328125,
@@ -47,7 +47,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 > input.redo"
+          "#testcontrols_1 input.redo"
         ]
       ],
       "offsetY": 12.328125,

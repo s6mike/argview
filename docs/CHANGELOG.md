@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.12
+
+- `test/devtools-recordings/`
+  - Fix recordings broken by semantic elements being added to toolbar for accessibility.
+
 ## argmap 4.21.11
 
 - `scripts/bash_aliases_argmap.sh`:
