@@ -290,7 +290,8 @@ local function CodeBlock(block)
                 -- tabindex ensures that container can receive focus, for keyboard shortcuts to work in it
                 --  TODO: as per controls, read in `pandoc-templates/mapjs/mapjs-map.html` and subsitute dynamically, instead of generating this html:
                 local rawhtml = "<div id=\"container_"
-                    .. block_id .. "\" class=\"container_argmapjs\" tabindex=\"0\">\n"
+                    -- .. block_id .. "\" class=\"container_argmapjs\" tabindex=\"0\">\n"
+                    .. block_id .. "\" class=\"container_argmapjs\">\n"
                     .. "  <script type=\"application/json\" "
                     -- .. " id=\"" .. block_id .. ".json\" "
                     .. "class=\"argmap_json\" src=\""

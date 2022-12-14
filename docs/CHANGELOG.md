@@ -6,6 +6,19 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.13
+
+- Fix tab navigation by:
+  - Removing tabindex from:
+    - mapjs container:
+      - `pandoc-templates/mapjs/mapjs-map.html`
+      - `src/pandoc-argmap.lua`
+    - nodes: `mapjs/src/browser/create-node.js`
+    - svgContainer etc: `mapjs/src/browser/dom-map-widget.js`:
+      - Disabling tab keyboard shortcuts.
+      - Adding tabindex=0 to svg stage.
+- Also added trailing commas to above js files.
+
 ## argmap 4.21.12
 
 - `test/devtools-recordings/`

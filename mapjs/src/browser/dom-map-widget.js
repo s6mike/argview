@@ -33,8 +33,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 	const hotkeyEventHandlers = {
 			'return': 'insertDown',
 			'shift+return': 'insertUp',
-			'shift+tab': 'insertLeft',
-			'tab insert': 'insertRight',
+			// 'shift+tab': 'insertLeft',
+			// 'tab insert': 'insertRight',
 			'del backspace': 'removeSubIdea',
 			'left': 'selectNodeLeft',
 			'up': 'selectNodeUp',
@@ -61,7 +61,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'Esc 0 meta+0 ctrl+0': 'resetView',
 			'alt+o': 'handleKey_loadMap',
 			'alt+s': 'saveMap',
-			// 'Esc': 'cancelCurrentAction'
+			// 'Esc': 'cancelCurrentAction',
 		},
 		charEventHandlers = {
 			'[': 'activateChildren',
@@ -70,7 +70,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'.': 'activateSelectedNode',
 			'/': 'toggleCollapse',
 			'a': 'openAttachment',
-			'i': 'editIcon'
+			'i': 'editIcon',
 		},
 		self = this;
 	let actOnKeys = true;
@@ -87,11 +87,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				.css({
 					position: 'absolute',
 					top: 0,
-					left: 0
+					left: 0,
 				})
 				.attr({
 					'data-mapjs-role': 'svg-container',
-					'class': 'mapjs-draw-container'
+					'class': 'mapjs-draw-container',
+					// 'tabindex': 0,
 				}),
 			stage = $('<div>')
 				.css(
@@ -108,17 +109,16 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 					'offsetY': element.innerHeight() / 2,
 					'width': element.innerWidth() - 20,
 					'height': element.innerHeight() - 20,
-					'scale': 1
+					'scale': 1,
 				})
+				.attr('tabindex', 0) //  ensures that keyboard shortcuts work on map
 				.append(svgContainer)
 				.updateStage();
 		let previousPinchScale = false;
 		// Moved this css overflow:auto setting to mapjs-default-styles.css file, so it's easier to override mapjs-container setting.
-		// element.css('overflow', 'auto').attr('tabindex', 1);
-		// tabindex ensures that container can receive focus
+		// element.css('overflow', 'auto').attr('tabindex', 0);
 		// Set index to 0 rather than 1 because 1 is considered bad practice for accessibility.
 		// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#sect2
-		element.attr('tabindex', 0);
 		if (mapModel.getInputEnabled()) {
 			(dragContainer || element).simpleDraggableContainer();
 		}
@@ -204,7 +204,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				61: 'scaleUp',
 				173: 'scaleDown',
 				187: 'scaleUp',
-				189: 'scaleDown'
+				189: 'scaleDown',
 			};
 			let mappedFunction;
 			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {
