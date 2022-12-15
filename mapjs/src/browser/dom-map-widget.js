@@ -92,6 +92,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 				.attr({
 					'data-mapjs-role': 'svg-container',
 					'class': 'mapjs-draw-container',
+					'role': 'img',
+					'aria-label': 'Argument Map showing supporting and opposing relationships between text nodes.',
 					// 'tabindex': 0,
 				}),
 			stage = $('<div>')

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.18
+
+- `mapjs/src/browser/dom-map-widget.js`: Add `role` and `aria-label` to svg container for accessibility.
+
 ## argmap 4.21.17
 
 - `mapjs/src/browser/dom-map-widget.js`: Add new keyboard shortcuts for insert node left and insert node right ('alt+left', 'alt+right').
