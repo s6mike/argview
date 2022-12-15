@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.16
+
+- Update `jquery` and `npm-check-updates`: `mapjs/package.json`, `mapjs/package-lock.json`.
+
 ## argmap 4.21.15
 
 - Upgrade npm to 9.2.0 and update `engines` field to reflect in `mapjs/package.json`, `mapjs/package-lock.json`.
