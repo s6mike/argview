@@ -33,8 +33,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 	const hotkeyEventHandlers = {
 			'return': 'insertDown',
 			'shift+return': 'insertUp',
-			// 'shift+tab': 'insertLeft',
-			// 'tab insert': 'insertRight',
+			'alt+left': 'insertLeft',
+			'alt+right': 'insertRight',
 			'del backspace': 'removeSubIdea',
 			'left': 'selectNodeLeft',
 			'up': 'selectNodeUp',

@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.17
+
+- `mapjs/src/browser/dom-map-widget.js`: Add new keyboard shortcuts for insert node left and insert node right ('alt+left', 'alt+right').
+  - [mapjs/README.md](../mapjs/README.md): Update with new keys.
+
 ## argmap 4.21.16
 
 - Update `jquery` and `npm-check-updates`: `mapjs/package.json`, `mapjs/package-lock.json`.

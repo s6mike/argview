@@ -100,8 +100,8 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 |-----------------|----------------------------|---|
 `return`  | Add sibling node after | Add child node after
 `shift+return` | Add sibling node before | Add parent node
-`tab` `insert`  | Add child node | Insert sibling node after
-`shift+tab` | Insert parent node | Insert sibling node before
+`alt+right` `insert`  | Add child node | Insert sibling node after
+`alt+left` | Insert parent node | Insert sibling node before
 
 | Key Combination | Effect |
 |-----------------|---|
