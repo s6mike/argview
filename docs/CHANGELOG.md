@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.20
+
+- `mapjs/src/themes/argmap-theme.json`: Make supporting green darker to improve contrast and accessibility.
+
 ## argmap 4.21.19
 
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`:

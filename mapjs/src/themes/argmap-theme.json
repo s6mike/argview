@@ -457,7 +457,7 @@
       "type": "no-connector",
       "line": {
         "width": 4,
-        "color": "#277D52"
+        "color": "#095F11"
       },
       "label": {
         "position": {
@@ -471,7 +471,7 @@
             "size": 6,
             "sizePx": 9
           },
-          "color": "#277D52"
+          "color": "#095F11"
         }
       }
     },
@@ -479,7 +479,7 @@
       "type": "vertical-quadratic-s-curve",
       "line": {
         "width": 3,
-        "color": "#277D52"
+        "color": "#095F11"
       },
       "label": {
         "position": {
@@ -494,7 +494,7 @@
             "size": 9,
             "sizePx": 14
           },
-          "color": "#277D52"
+          "color": "#095F11"
         }
       }
     },
