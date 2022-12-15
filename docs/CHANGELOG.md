@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.19
+
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`:
+  - Add aria-labels for accessibility.
+  - Remove unnecessary div.
+
 ## argmap 4.21.18
 
 - `mapjs/src/browser/dom-map-widget.js`: Add `role` and `aria-label` to svg container for accessibility.

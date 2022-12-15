@@ -1,59 +1,57 @@
 <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
 <div id="testcontrols_$BLOCK_ID$" class="mapjs_control" role="menubar">
   <section>
-    <div role="menubar">
-      <div role="toolbar">
-        <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
-            class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
-            data-mm-target-property='container_argmap$BLOCK_ID$' /></label>
-        <input type="button" class="saveMap" value="Save" aria-label="Save" />
-        <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
-        <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
-        <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
-        <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
-        <input type="button"
-          onclick="mapInstance[this.parentElement.parentElement.id].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
-          value="Parent reason" aria-label="Parent reason" />
-        <input type="button"
-          onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'supporting'})"
-          value="Supporting group" aria-label="Supporting group" />
-        <input type="button"
-          onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'opposing'})"
-          value="Opposing group" aria-label="Opposing group" />
-        <input type="button" class="editNode" value="Edit" aria-label="Edit" />
-        <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
-        <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
-        <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-        <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)"
-          value="Disable" aria-label="Disable" />
-        <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)"
-          value="Enable" aria-label="Enable" />
-        <input type="button" class="undo" value="Undo" aria-label="Undo" />
-        <input type="button" class="redo" value="Redo" aria-label="Redo" />
-        <input type="button" data-mm-action="export-image" value="Export to image" aria-label="Export to image" />
-        <input type="button" class="cut" value="Cut" aria-label="Cut" />
-        <input type="button" class="copy" value="Copy" aria-label="Copy" />
-        <input type="button" class="paste" value="Paste" aria-label="Paste" />
-        <input type="button" class="openAttachment" value="Open attachment" aria-label="Open attachment" />
-        <input type="button" class="toggleAddLinkMode" value="Add link" aria-label="Add link" />
-        <input type="button" class="insertRoot" value="Add root node" aria-label="Add root node" />
-        <input type="button" class="makeSelectedNodeRoot" value="Make root" aria-label="Make root" />
-        Background: <input type="text" class='updateStyle' data-mm-target-property='background' aria-label="Node Colour" />
-        Frames: <span id="framerate_$BLOCK_ID$" class="framerate"></span>
-        Cycle: <span id="cyclerate_$BLOCK_ID$" class="cyclerate"></span>
-      </div>
-      <div id="linkEditWidget_$BLOCK_ID$" class="linkEditWidget" role="toolbar">
-        <input class="delete" type="button" value="Delete" aria-label="Delete" />
-        <select class="color" aria-label="Colour">
-          <option value="red">Red</option>
-          <option value="blue">Blue</option>
-        </select>
-        <select class="lineStyle" aria-label="Line style">
-          <option value="solid">Solid</option>
-          <option value="dashed">Dashed</option>
-        </select>
-        <button class="arrow">Arrow</button>
-      </div>
+    <div role="toolbar" aria-label="Node editing">
+      <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
+          class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
+          data-mm-target-property='container_argmap$BLOCK_ID$' /></label>
+      <input type="button" class="saveMap" value="Save" aria-label="Save" />
+      <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
+      <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
+      <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
+      <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
+      <input type="button"
+        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
+        value="Parent reason" aria-label="Parent reason" />
+      <input type="button"
+        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'supporting'})"
+        value="Supporting group" aria-label="Supporting group" />
+      <input type="button"
+        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'opposing'})"
+        value="Opposing group" aria-label="Opposing group" />
+      <input type="button" class="editNode" value="Edit" aria-label="Edit" />
+      <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
+      <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
+      <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
+      <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)"
+        value="Disable" aria-label="Disable" />
+      <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)"
+        value="Enable" aria-label="Enable" />
+      <input type="button" class="undo" value="Undo" aria-label="Undo" />
+      <input type="button" class="redo" value="Redo" aria-label="Redo" />
+      <input type="button" data-mm-action="export-image" value="Export to image" aria-label="Export to image" />
+      <input type="button" class="cut" value="Cut" aria-label="Cut" />
+      <input type="button" class="copy" value="Copy" aria-label="Copy" />
+      <input type="button" class="paste" value="Paste" aria-label="Paste" />
+      <input type="button" class="openAttachment" value="Open attachment" aria-label="Open attachment" />
+      <input type="button" class="toggleAddLinkMode" value="Add link" aria-label="Add link" />
+      <input type="button" class="insertRoot" value="Add root node" aria-label="Add root node" />
+      <input type="button" class="makeSelectedNodeRoot" value="Make root" aria-label="Make root" />
+      Background: <input type="text" class='updateStyle' data-mm-target-property='background' aria-label="Node Colour" />
+      Frames: <span id="framerate_$BLOCK_ID$" class="framerate"></span>
+      Cycle: <span id="cyclerate_$BLOCK_ID$" class="cyclerate"></span>
+    </div>
+    <div id="linkEditWidget_$BLOCK_ID$" class="linkEditWidget" role="toolbar" aria-label="Link editing">
+      <input class="delete" type="button" value="Delete" aria-label="Delete" />
+      <select class="color" aria-label="Colour">
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+      </select>
+      <select class="lineStyle" aria-label="Line style">
+        <option value="solid">Solid</option>
+        <option value="dashed">Dashed</option>
+      </select>
+      <button class="arrow">Arrow</button>
     </div>
   </section>
 </div>
