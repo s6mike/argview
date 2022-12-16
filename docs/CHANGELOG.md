@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.22
+
+- Pretty print `test/input/mapjs-json/example-updated.json`.
+
 ## argmap 4.21.21
 
 - `pandoc-templates/mapjs/mapjs-main-html5.html`: Add simple footer to website.
