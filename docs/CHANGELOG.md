@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.24
+
+- `mapjs/src/start.js`: Remove `console.debug()` line.
+
 ## argmap 4.21.23
 
 - `.vscode/launch.json`: Add lua debug profile for pandoc call with lua filter, though I couldn't get it to work.

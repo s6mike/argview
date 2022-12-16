@@ -67,7 +67,6 @@ const jQuery = require('jquery'),
 	// Add a (ideally) separate map to each container div on the page.
 	addMap = function (container, mapJson) {
 		'use strict';
-		// console.debug("mapJson: ", mapJson);
 		// QUESTION: Do we need a separate mapModel for each map?
 		// 	Or are there generic methods I can separate out from object ones?
 		// map = mapInstance[container.id];
