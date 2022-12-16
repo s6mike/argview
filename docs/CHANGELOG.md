@@ -6,11 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 4.21.6
+
+## argmap 4.21.27
+
+- Update some dependencies following npm update: `mapjs/package-lock.json`
+
+## argmap 4.21.26
 
 - `pandoc-templates/mapjs/mapjs-main-html5.html`: Add blank line so html output cleaner.
 
-## argmap 4.21.5
+## argmap 4.21.25
 
 - `src/pandoc-argmap.lua`: Reads container from `pandoc-templates/mapjs/mapjs-map.html`, removes comments, substitutes the toolbar html, block_ids and JSON file path.
   - `scripts/argmap.env`: Add env variables for templates location.
@@ -74,7 +79,7 @@
       - `src/pandoc-argmap.lua`
     - nodes: `mapjs/src/browser/create-node.js`
     - svgContainer etc: `mapjs/src/browser/dom-map-widget.js`:
-      - Disabling tab keyboard shortcuts.
+      - BREAKING: Disabling tab keyboard shortcuts (insert node left and right).
       - Adding tabindex=0 to svg stage.
 - Also added trailing commas to above js files.
 
