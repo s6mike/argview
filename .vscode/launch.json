@@ -61,6 +61,30 @@
             "stopOnEntry": true,
         },
         {
+            // Getting error:
+            //  /home/s6mike/.local/bin/pandoc:1: unexpected symbol near '<\127>'
+            "type": "lua",
+            "request": "launch",
+            "name": "Lua Debugger: pandoc-argmap.lua",
+            "program": "/home/s6mike/.local/bin/pandoc",
+            "arg": [
+                "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
+                "${workspaceFolder}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md",
+                "-o",
+                "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
+                "--lua-filter pandoc-argmap.lua",
+                "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
+                "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
+                "--metadata=css:../../mapjs/site/mapjs-default-styles.css"
+            ],
+            "env": {
+                "PATH": "${config:lua.debug.settings.env.path}",
+                "LUA_PATH": "${config:lua.debug.settings.path}",
+                "LUA_CPATH": "${config:lua.debug.settings.cpath}"
+            },
+            "stopOnEntry": true
+        },
+        {
             "type": "lua-local",
             "request": "launch",
             "name": "Lua Local: cat example | argmap2mup",
@@ -147,7 +171,7 @@
             },
             "args": [
                 "--template ${workspaceFolder}/pandoc-templates/mapjs/mapjs-main-html5.html",
-                "${workspaceFolder}/test/input/example1_clearly-false-white-swan-simplified-1mapjs.md",
+                "${workspaceFolder}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md",
                 "-o",
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
                 "--lua-filter pandoc-argmap.lua",
