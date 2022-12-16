@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.6
+
+- `pandoc-templates/mapjs/mapjs-main-html5.html`: Add blank line so html output cleaner.
+
 ## argmap 4.21.5
 
 - `src/pandoc-argmap.lua`: Reads container from `pandoc-templates/mapjs/mapjs-map.html`, removes comments, substitutes the toolbar html, block_ids and JSON file path.
