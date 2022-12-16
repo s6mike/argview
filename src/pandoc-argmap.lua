@@ -279,23 +279,17 @@ local function CodeBlock(block)
                 f:write(output)
                 f:close()
 
-                -- QUESTION: Better to build html using pandoc functions rather than with rawhtml?
-                local argmap_controls_path = config_argmap.project_folder ..
-                    "/pandoc-templates/mapjs/mapjs-testcontrols.html"
-                local _, argmap_controls_html_raw = pandoc.mediabag.fetch(argmap_controls_path)
+                -- Reads in the html files and then combines them with substitutions
+                local _, argmap_controls_html_raw = pandoc.mediabag.fetch(PATH_TEMPLATE_ARGMAP_CONTROLS)
+                local _, html_raw_argmap_container = pandoc.mediabag.fetch(PATH_TEMPLATE_ARGMAP_CONTAINER)
 
-                -- Gives each control a unique id aligned with the container.
-                local argmap_controls_html = argmap_controls_html_raw:gsub("%$BLOCK_ID%$", block_id)
-
-                -- tabindex ensures that container can receive focus, for keyboard shortcuts to work in it
-                --  TODO: as per controls, read in `pandoc-templates/mapjs/mapjs-map.html` and subsitute dynamically, instead of generating this html:
-                local rawhtml = "<div id=\"container_"
-                    -- .. block_id .. "\" class=\"container_argmapjs\" tabindex=\"0\">\n"
-                    .. block_id .. "\" class=\"container_argmapjs\">\n"
-                    .. "  <script type=\"application/json\" "
-                    -- .. " id=\"" .. block_id .. ".json\" "
-                    .. "class=\"argmap_json\" src=\""
-                    .. mapjs_url .. "\"></script>\n" .. argmap_controls_html .. "\n</div>"
+                --  % escapes special characters
+                -- First gsub strips away pandoc line comments `$-- `
+                -- Second ensures each id is unique
+                local rawhtml = html_raw_argmap_container:gsub("%$%-%- [^\n]*\n?", ""):
+                    gsub("%$mapjs%-testcontrols%.html%(%)%$",
+                        argmap_controls_html_raw)
+                    :gsub("%$BLOCK_ID%$", block_id):gsub("%$path%-json%-source%$", mapjs_url)
 
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then

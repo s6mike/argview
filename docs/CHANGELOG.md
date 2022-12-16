@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.5
+
+- `src/pandoc-argmap.lua`: Reads container from `pandoc-templates/mapjs/mapjs-map.html`, removes comments, substitutes the toolbar html, block_ids and JSON file path.
+  - `scripts/argmap.env`: Add env variables for templates location.
+  - `src/config_argmap.lua`: Read above env variables (with defaults).
+  - `pandoc-templates/mapjs/mapjs-map.html`: Update container id format so lua code ID generation logic can be left as is.
+
 ## argmap 4.21.24
 
 - `mapjs/src/start.js`: Remove `console.debug()` line.

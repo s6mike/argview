@@ -42,6 +42,14 @@ DIR_PUBLIC_OUTPUT = os.getenv("DIR_PUBLIC_OUTPUT") or (config.project_folder .. 
 PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_MJS_JSON)
 DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
 
+PATH_FOLDER_TEMPLATES_MAPJS = os.getenv("PATH_FOLDER_TEMPLATES_MAPJS") or config.project_folder ..
+    "/pandoc-templates/mapjs"
+
+-- Reads the container and controls html
+PATH_TEMPLATE_ARGMAP_CONTAINER = os.getenv("PATH_TEMPLATE_ARGMAP_CONTAINER") or
+    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-map.html"
+PATH_TEMPLATE_ARGMAP_CONTROLS = os.getenv("PATH_TEMPLATE_ARGMAP_CONTROLS") or
+    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-testcontrols.html"
 
 local logging = require 'logging'
 Logger = logging.new(function(self, level, message)
