@@ -124,7 +124,7 @@ a2t() { # a2t test/output/example1-simple.yml (output path)
 # Convert markdown to full page html
 md2hf() { # md2h test/input/example.md (output filename) (optional pandoc arguments)
   # __check_server_on # No point since open-debug runs it too.
-  input="${1:-$INPUT_FILE_MD}"
+  input="${1:-$INPUT_FILE_MD2}"
   name=$(basename --suffix=".md" "$input")
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists

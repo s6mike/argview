@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.32
+
+- `scripts/bash_aliases_argmap.sh`: Change default input for `md2hf()` so that output has 2 mapjs containers.
+
 ## argmap 4.21.31
 
 - `mapjs/package.json`: Add scripts to use ':' instead of '-' e.g. `test:start`, as this is the convention. Will delete alternative version later as breaking change.
