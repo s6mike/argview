@@ -188,15 +188,17 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			});
 		});
 		if (!touchEnabled) {
-			$(window).on('resize', function () {
-				mapModel.resetView();
-			});
+			// No real reason to reset the maps when window is resized (which includes zooming)
+			// $(window).on('resize', function () {
+			// 	mapModel.resetView();
+			// });
 		}
 
 		$(window).on('orientationchange', function () {
 			if (centerSelectedNodeOnOrientationChange) {
 				mapModel.centerOnNode(mapModel.getSelectedNodeId());
 			} else {
+				// QUESTION: Is it really necessary to reset the view when the orientation changes?
 				mapModel.resetView();
 			}
 

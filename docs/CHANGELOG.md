@@ -7,6 +7,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.36
+
+- `mapjs/src/browser/dom-map-widget.js`:
+  - Fix issue (4.21.30): Zooming window body in/out only works once, then focus goes to container and zooms that.
+    - Zooming triggers window.resize listener which calls `resetView()` on map. No reason to reset view when window resizes so commented this out.
+
 ## argmap 4.21.35
 
 - Minor test fixes.
@@ -39,7 +45,7 @@
     - Use vanilla JS instead of jQuery.
   - `pandoc-templates/mapjs/mapjs-map.html`: Add tabindex="-1" to container element so it can receive keyboard events.
 
-- ISSUE: Clicking on body then zooming in/out only works once then focus goes to container and zooms that.
+- ISSUE: Clicking on body then zooming in/out only works once then focus goes to container and zooms that. Fixed in 4.21.36
 
 ## argmap 4.21.29
 
