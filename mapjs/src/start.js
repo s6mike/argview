@@ -126,11 +126,11 @@ const jQuery = require('jquery'),
 		// jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
 		// activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange
 
-		// jQuery('body').mapToolbarWidget(map.mapModel);
 		// jQuery('body').attachmentEditorWidget(map.mapModel);
 		// jQuery('#linkEditWidget').linkEditWidget(map.mapModel);
 
-		jQcontainer.mapToolbarWidget(map.mapModel);
+		map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel);
+		// jQcontainer.mapToolbarWidget(map.mapModel);
 		jQcontainer.attachmentEditorWidget(map.mapModel);
 		jQcontainer.find('.linkEditWidget').linkEditWidget(map.mapModel);
 

@@ -13,6 +13,7 @@ module.exports = {
 	content: require('./core/content/content'),
 	observable: require('./core/util/observable'),
 	DomMapController: require('./browser/dom-map-controller'),
+	MapToolbarWidget: require('./browser/map-toolbar-widget.js'),
 	ThemeProcessor: require('./core/theme/theme-processor'),
 	Theme: require('./core/theme/theme'),
 	defaultTheme: require('./core/theme/default-theme'),

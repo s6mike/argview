@@ -11,22 +11,19 @@
       <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
       <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
       <input type="button"
-        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.insertIntermediateGroup('click', {group:'supporting'})"
-        value="Parent reason" aria-label="Parent reason" />
+        value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason" data-group="supporting" />
       <input type="button"
-        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'supporting'})"
-        value="Supporting group" aria-label="Supporting group" />
+        value="Supporting group" class="addGroupSubidea" aria-label="Supporting group" data-group="supporting" />
       <input type="button"
-        onclick="mapInstance[this.parentElement.parentElement.id].mapModel.addGroupSubidea('click', {group:'opposing'})"
-        value="Opposing group" aria-label="Opposing group" />
+        value="Opposing group" class="addGroupSubidea" aria-label="Opposing group" data-group="opposing" />
       <input type="button" class="editNode" value="Edit" aria-label="Edit" />
       <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
       <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
       <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-      <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)"
-        value="Disable" aria-label="Disable" />
-      <input type="button" onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)"
-        value="Enable" aria-label="Enable" />
+      <!-- onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(false)" -->
+      <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable" data-set-input-enabled="false" />
+      <!-- onclick="mapInstance[this.parentElement.parentElement.id].mapModel.setInputEnabled(true)" -->
+      <input type="button" value="Enable" class="setInputEnabled" aria-label="Enable" data-set-input-enabled="true" />
       <input type="button" class="undo" value="Undo" aria-label="Undo" />
       <input type="button" class="redo" value="Redo" aria-label="Redo" />
       <input type="button" data-mm-action="export-image" value="Export to image" aria-label="Export to image" />

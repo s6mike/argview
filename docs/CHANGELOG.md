@@ -6,6 +6,20 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.28
+
+- Fix broken support/oppose/parent buttons and refactor related code:
+  - `mapjs/src/start.js`: Define `mapToolbarWidget` in `MAPJS` (`npm-main.js`) instead of`jQuery.fn`
+  - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Edit buttons with `onclick` listeners:
+    - Replace `onclick` listeners with data attributes, consistent with other buttons.
+    - Add classes for the function calls.
+  -`mapjs/src/browser/map-toolbar-widget.js`:
+    - Use`module.export` instead of `jQuery.fn`
+    - Add updated buttons' classes to `clickMethodNames` array.
+    - Update clickMethodNames iterator to:
+      - Use vanilla JS instead of jQuery.
+      - Map click listener to all buttons with the class, not just the first.
+      - Pass the whole element dataset as the second argument, so compatible with target functions.
 
 ## argmap 4.21.27
 
