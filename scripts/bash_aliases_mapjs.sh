@@ -100,7 +100,7 @@ testcafe_run() { # tcr
   DEFAULT_SCRIPT="$PATH_REPLAY_SCRIPT"
   if [ "$1" == head ]; then
     # TODO: Add option to use --speed 0.1
-    BROWSER_TESTCAFE='chrome --no-default-browser-check --disable-extensions'
+    BROWSER_TESTCAFE='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
     PATH_REPLAY_SCRIPT=${2:-$DEFAULT_SCRIPT}
   else
     BROWSER_TESTCAFE='chrome:headless --no-default-browser-check --disable-extensions'

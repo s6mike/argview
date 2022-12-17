@@ -8,9 +8,13 @@
         {
           "type": "navigation",
           "url": "http://localhost:9001/",
-          "title": "Example 1.1 - All swans are white."
+          "title": "example1-clearly-false-white-swan-simplified"
         }
       ]
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==6"
     },
     {
       "type": "click",
