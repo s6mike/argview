@@ -108,7 +108,7 @@ testcafe_run() { # tcr
   fi
   # __bisect_init
   echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm --prefix "$PATH_MJS_HOME" run testcafe-command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+  npm --prefix "$PATH_MJS_HOME" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
 }
 
 __test_mapjs_renders() {
@@ -140,11 +140,10 @@ webpack_pack() { #pmj
   npm --prefix "$PATH_MJS_HOME" run pack
 }
 
-## Deprecated
-alias __open-server='open-server'
-alias __open-mapjs='open-server'
-alias __open-chrome-debug='open-debug'
-alias __chrome-attach-mapjs='open-debug'
+# webpack_pack_open() {
+#   npm --prefix "$PATH_MJS_HOME" run pack
+#   webpack_server_open "$1"
+# }
 
 webpack_server_halt() { #wsh
   npm --prefix "$PATH_MJS_HOME" run stop

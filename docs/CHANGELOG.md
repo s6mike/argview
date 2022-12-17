@@ -2,9 +2,17 @@
 
 ## TODO
 
+- Remove deprecated scripts from argmap aliases and package.json
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 4.21.31
+
+- `mapjs/package.json`: Add scripts to use ':' instead of '-' e.g. `test:start`, as this is the convention. Will delete alternative version later as breaking change.
+- `bash_aliases_mapjs.sh`:
+  - Update `testcafe_run()` to use new package.json script `testcafe:command`.
+  - Delete deprecated internal functions.
 
 ## argmap 4.21.30
 
