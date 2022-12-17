@@ -20,7 +20,6 @@ require('./create-link');
 require('./find-line');
 require('./create-reorder-bounds');
 
-
 module.exports = function DomMapController(mapModel, stageElement, touchEnabled, imageInsertController, resourceTranslator, themeSource, options) {
 	'use strict';
 	let stageMargin = (options && options.stageMargin),
@@ -557,17 +556,18 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
 	/* editing */
 	if (!options || !options.inlineEditingDisabled) {
 		mapModel.addEventListener('nodeEditRequested', function (nodeId, shouldSelectAll, editingNew) {
-			const editingElement = stageElement.nodeWithId(nodeId);
-			mapModel.setInputEnabled(false);
+			const editingElement = stageElement.nodeWithId(nodeId),
+				source = `nodeEditRequested`; // Dummy value, adding it plus undefined so function compatible with button function call
+			mapModel.setInputEnabled(source, undefined, false);
 			viewPort.finish(); /* close any pending scroll animations */
 			editingElement.editNode(shouldSelectAll)
 				.then(function (newText) {
-					mapModel.setInputEnabled(true);
+					mapModel.setInputEnabled(source, undefined, true);
 					mapModel.updateTitle(nodeId, newText, editingNew);
 					stageElement.focus();
 				})
 				.catch(function () {
-					mapModel.setInputEnabled(true);
+					mapModel.setInputEnabled(source, undefined, true);
 					if (editingNew) { // Undoes node creation if no text added.
 						mapModel.undo('internal');
 					}

@@ -19,6 +19,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		layoutCalculator,
 		currentlySelectedIdeaId;
 
+	// TODO: Apparently `const self = this` is now bad practice, so try removing and updating references if necessary
+	// 	Or can just rename self to something else
 	const self = this,
 		autoThemedIdeaUtils = (optional && optional.autoThemedIdeaUtils) || require('./content/auto-themed-idea-utils'),
 		clipboard = clipboardProvider || new MemoryClipboard(),
@@ -307,7 +309,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	this.getEditingEnabled = function () {
 		return isEditingEnabled;
 	};
-	this.setInputEnabled = function (value, holdFocus) {
+	this.setInputEnabled = function (source, dataset, value, holdFocus) {
+		(typeof value === 'undefined') ? value = dataset.setInputEnabled === 'true' : undefined;
 		if (isInputEnabled !== value) {
 			isInputEnabled = value;
 			self.dispatchEvent('inputEnabledChanged', value, !!holdFocus);

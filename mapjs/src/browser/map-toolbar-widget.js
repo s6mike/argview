@@ -5,7 +5,7 @@ module.exports = function mapToolbarWidget(mapModel) {
 // jQuery.fn.mapToolbarWidget = function (mapModel) {
 	'use strict';
 	const clickMethodNames =
-		['saveMap', 'scaleUp', 'scaleDown', 'addSubIdea', 'insertIntermediateGroup', 'addGroupSubidea', 'editNode', 'removeSubIdea', 'insertIntermediate', 'toggleCollapse', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
+		['saveMap', 'scaleUp', 'scaleDown', 'addSubIdea', 'insertIntermediateGroup', 'addGroupSubidea', 'editNode', 'removeSubIdea', 'insertIntermediate', 'toggleCollapse', 'setInputEnabled', 'addSiblingIdea', 'undo', 'redo', 'copy', 'cut', 'paste',
 			'resetView', 'openAttachment', 'toggleAddLinkMode', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon', 'insertRoot', 'makeSelectedNodeRoot'],
 		changeMethodNames = [`readFile`, 'updateStyle'],
 

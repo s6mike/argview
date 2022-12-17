@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.29
+
+- Fix broken enable/disable buttons, same approach as in previous commit:
+  - `mapjs/src/browser/map-toolbar-widget.js`: Add `setInputEnabled` to `clickMethodNames` array.
+  - `mapjs/src/core/map-model.js`: Update `setInputEnabled()` signature for compatibility with `map-toolbar-widget.js` button click handling, then read from data set to set input enabled value.
+  - `mapjs/src/browser/dom-map-controller.js`: Update calls to `setInputEnabled()`  to use new function signature.
+
 ## argmap 4.21.28
 
 - Fix broken support/oppose/parent buttons and refactor related code:
