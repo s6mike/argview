@@ -7,6 +7,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.33
+
+- Fix `Add` button broken in 4.21.28:
+  - `mapjs/src/browser/map-toolbar-widget.js`: `clickMethodNames` checks whether `DOMMapString` is empty, if so sets it to `undefined`.
+
 ## argmap 4.21.32
 
 - `scripts/bash_aliases_argmap.sh`: Change default input for `md2hf()` so that output has 2 mapjs containers.
@@ -49,6 +54,8 @@
       - Use vanilla JS instead of jQuery.
       - Map click listener to all buttons with the class, not just the first.
       - Pass the whole element dataset as the second argument, so compatible with target functions.
+
+- ISSUE: This breaks the `Add` button since the empty `DOMMapString` passed as second argument breaks the `addSubIdea()` function. Fixed in v4.21.33
 
 ## argmap 4.21.27
 

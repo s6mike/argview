@@ -32,7 +32,11 @@ module.exports = function mapToolbarWidget(mapModel) {
 		for (const button of buttons) {
 			button.addEventListener('click', function () {
 				if (mapModel[methodName]) {
-					mapModel[methodName]('toolbar', button.dataset);
+					let button_data = button.dataset;
+					if (Object.keys(button_data).length === 0) {
+						button_data = undefined;
+					}
+					mapModel[methodName]('toolbar', button_data);
 				}
 			});
 		};
