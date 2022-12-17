@@ -1,4 +1,4 @@
-/*global require, document, window */
+/*global require, window */
 const $ = require('jquery'),
 	_ = require('underscore'),
 	createSVG = require('./create-svg');
@@ -72,11 +72,15 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'a': 'openAttachment',
 			'i': 'editIcon',
 		},
+		// Bad practice: self = this
+		// 	QUESTION: try removing?
+		// 		self not defined when this runs
 		self = this;
 	let actOnKeys = true;
 	mapModel.addEventListener('inputEnabledChanged', function (canInput, holdFocus) {
 		actOnKeys = canInput;
 		if (canInput && !holdFocus) {
+			// QUESTION: Should focus be canvas instead of self (container)?
 			self.focus();
 		}
 	});
@@ -199,7 +203,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 		});
 		// ISSUE: Listening at document level is unintuitive, should add this at container level like the rest.
 		// 	https://github.com/s6mike/mapjs/issues/4
-		$(document).on('keydown', function (e) {
+		mapModel.containerElement.addEventListener('keydown', function (e) {
+		// $(document).on('keydown', function (e) {
 			const functions = {
 				'U+003D': 'scaleUp',
 				'U+002D': 'scaleDown',
@@ -212,8 +217,11 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			if (e && !e.altKey && (e.ctrlKey || e.metaKey)) {
 				// ISSUE: keyCode event works, but is deprecated
 				//	https://github.com/s6mike/mapjs/issues/3
-				if (e.originalEvent && e.originalEvent.keyCode) { /* webkit */
-					mappedFunction = functions[e.originalEvent.keyCode];
+				//	TODO: Use KeyboardEvent.key instead
+				// if (e.originalEvent && e.originalEvent.keyCode) { /* webkit */
+				if (e.isTrusted && e.keyCode) { /* webkit */
+					mappedFunction = functions[e.keyCode];
+				// mappedFunction = functions[e.originalEvent.keyCode];
 				} else if (e.key === 'MozPrintableKey') {
 					mappedFunction = functions[e.which];
 				}
@@ -224,7 +232,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 					}
 				}
 			}
-		}).on('wheel mousewheel', function (e) {
+		});
+		$(document).on('wheel mousewheel', function (e) {
 			const scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
 			if (scroll < 0 && element.scrollLeft() === 0) {
 				e.preventDefault();

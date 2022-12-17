@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.30
+
+- Fix zoom in/out keys to apply to container not whole document:
+  - `mapjs/src/browser/dom-map-widget.js`:
+    - Move keydown listener from `document` to relevant container element (`mapModel.containerElement`).
+    - Use vanilla JS instead of jQuery.
+  - `pandoc-templates/mapjs/mapjs-map.html`: Add tabindex="-1" to container element so it can receive keyboard events.
+
+- ISSUE: Clicking on body then zooming in/out only works once then focus goes to container and zooms that.
+
 ## argmap 4.21.29
 
 - Fix broken enable/disable buttons, same approach as in previous commit:
@@ -228,6 +238,8 @@
 ## argmap 4.20.2
 
 - `mapjs/webpack.config.js`: Turn overlay off and progress on.
+
+ISSUE with zooming in two maps present, though focus doesn't leave element when zooming.
 
 ## argmap 4.20.1
 
