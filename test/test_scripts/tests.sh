@@ -106,9 +106,9 @@ __test md2hf "$INPUT_FILE_MD2"                           #9
 __test md2hf "$INPUT_FILE_MD_META"                       #10
 
 # To make browser test visible, add 'head' as first arg
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #11 add child button works
-__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #12 left click works
-__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #13 undo/redo button works
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #11 add child button
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #12 left click
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #13 undo/redo button
 __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"  #14
 
 # These don't work

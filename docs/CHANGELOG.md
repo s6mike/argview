@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.34
+
+- Minor comment updates.
+
 ## argmap 4.21.33
 
 - Fix `Add` button broken in 4.21.28:
