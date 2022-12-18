@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.39
+
+- `mapjs/src/start.js`: Remove obsolete comments.
+
 ## argmap 4.21.38
 
 - `mapjs/src/core/content/content.js`: Fix bug with undoing link attributes not working. Was cloning link, so undo was applied to clone, not original link.

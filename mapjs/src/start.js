@@ -11,8 +11,6 @@ MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
 MAPJS.topdown = require('../src/themes/top-down-simple.json');
 MAPJS.compact = require('../src/themes/compact.json');
 MAPJS.v1 = require('../src/themes/v1.json');
-MAPJS.md = require('../src/themes/deep_merged_x.json');
-MAPJS.m2 = require('../src/themes/merged_x2.json');
 
 const jQuery = require('jquery'),
 	themeProvider = require('../src/theme'),
@@ -69,7 +67,6 @@ const jQuery = require('jquery'),
 		'use strict';
 		// QUESTION: Do we need a separate mapModel for each map?
 		// 	Or are there generic methods I can separate out from object ones?
-		// map = mapInstance[container.id];
 		const map = mapInstance[container.id] = {};
 		map.mapModel = new MAPJS.MapModel([]);
 		// So it's easier to look up container from mapModel:
@@ -87,7 +84,6 @@ const jQuery = require('jquery'),
 			touchEnabled = false,
 
 			// Easier to maintain theme file so making that default:
-			// themeJson = themeProvider.default || MAPJS.defaultTheme;
 			themeJson = MAPJS.arg || idea.theme || themeProvider.default || MAPJS.defaultTheme,
 			getTheme = changeTheme(map, themeJson);
 
@@ -105,15 +101,10 @@ const jQuery = require('jquery'),
 			});
 		};
 
-		// Moved this section to init()
-		// window.onerror = console.error; // Stops annoying pop ups when there's an error.
-		// window.jQuery = jQuery;
-
 		jQcontainer.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
 
 		// different stage for each container so need to have one for each container
 		// Using container.id as index for relevant controller
-		// domMapController[jQcontainer[0].id] = new MAPJS.DomMapController(
 		map.domMapController = new MAPJS.DomMapController(
 			map.mapModel,
 			jQcontainer.find('[data-mapjs-role=stage]'),
@@ -123,20 +114,9 @@ const jQuery = require('jquery'),
 			getTheme
 		);
 
-		// jQuery('#themecss').themeCssWidget(themeProvider, new MAPJS.ThemeProcessor(), mapModel, domMapController);
-		// activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange
-
-		// jQuery('body').attachmentEditorWidget(map.mapModel);
-		// jQuery('#linkEditWidget').linkEditWidget(map.mapModel);
-
 		map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel);
-		// jQcontainer.mapToolbarWidget(map.mapModel);
 		jQcontainer.attachmentEditorWidget(map.mapModel);
 		jQcontainer.find('.linkEditWidget').linkEditWidget(map.mapModel);
-
-		// Moved this part into init()
-		// window.map.mapModel = map.mapModel;
-
 		map.mapModel.setIdea(idea);
 
 		jQuery('.arrow').click(function () {
@@ -186,18 +166,14 @@ const jQuery = require('jquery'),
 
 	init = function () {
 		'use strict';
-		// let domMapController = false;
 
 		// Looks for class not id, so can capture a number of containers each with own id.
 		const containers = document.getElementsByClassName('container_argmapjs');
 
 		if (containers.length > 0) { // Checks there are mapjs requests
-			// jQuery(containers).each(function (container) {
 			for (const container of containers) {
-				// containers.foreach(function (container) {
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-				// const script_src = jQuery(this).children('script.argmap_json').attr('src');
 				const script_src = container.getElementsByClassName('argmap_json')[0].getAttribute('src');
 				console.debug('script_src: ', script_src);
 
@@ -206,12 +182,11 @@ const jQuery = require('jquery'),
 				fetch(script_src)
 					.then(response => response.json())
 					.then(data => addMap(container, data))
-					// .then((data) => console.debug(data))
 					.catch(error => console.error(error));
 			}
 
 			// TODO: This stuff only needed once, not per map
-			window.onerror = console.error; // Stops annoying pop ups when there's an error.
+			window.onerror = console.error;
 			window.jQuery = jQuery;
 			window.mapInstance = mapInstance;
 		} else { // If no mapjs requests:
