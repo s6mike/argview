@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.37
+
+- Fix `test/devtools-recordings/argmap-edit-link.json` to work with updated quick template.
+
 ## argmap 4.21.36
 
 - `mapjs/src/browser/dom-map-widget.js`:

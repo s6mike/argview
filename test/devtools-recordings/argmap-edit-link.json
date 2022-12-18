@@ -2,15 +2,24 @@
   "title": "argmap-edit-link",
   "steps": [
     {
+      "type": "setViewport",
+      "width": 1564,
+      "height": 874,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
       "type": "navigate",
+      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
       "assertedEvents": [
         {
           "type": "navigation",
           "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
           "title": "example1-clearly-false-white-swan-simplified"
         }
-      ],
-      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html"
+      ]
     },
     {
       "type": "click",
@@ -20,8 +29,8 @@
           "#node_1 > span"
         ]
       ],
-      "offsetX": 81.5,
-      "offsetY": 28.345077514648438,
+      "offsetY": 19.825469970703125,
+      "offsetX": 111.5,
       "deviceType": "pen"
     },
     {
@@ -34,14 +43,11 @@
       "target": "main",
       "selectors": [
         [
-          "aria/Every swan I’ve ever seen is white."
-        ],
-        [
-          "#node_5"
+          "#node_5 > span"
         ]
       ],
-      "offsetX": 56,
-      "offsetY": 1.8450927734375,
+      "offsetY": 3.325469970703125,
+      "offsetX": 41,
       "deviceType": "pen"
     },
     {
@@ -51,53 +57,19 @@
     },
     {
       "type": "waitForExpression",
-      "expression": "!mapInstance['container_argmap1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
+      "expression": "!mapInstance['container_1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
     },
     {
       "type": "click",
       "target": "main",
       "selectors": [
         [
-          "#linkEditWidget_1 > button.arrow"
+          "#link_1_5 > path.mapjs-link-hit.noTransition"
         ]
       ],
-      "offsetX": 9.137252807617188,
-      "offsetY": 10.372543334960938,
+      "offsetY": 40.325469970703125,
+      "offsetX": -4,
       "deviceType": "pen"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-arrow')[0].style.display=='none'"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "#linkEditWidget_1 > button.arrow"
-        ]
-      ],
-      "offsetX": 9.137252807617188,
-      "offsetY": 10.372543334960938,
-      "deviceType": "pen"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "!document.getElementsByClassName('mapjs-arrow')[0].style.display"
-    },
-    {
-      "type": "change",
-      "target": "main",
-      "selectors": [
-        [
-          "#linkEditWidget_1 > select.lineStyle"
-        ]
-      ],
-      "value": "dashed"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-link')[0].getAttribute('stroke-dasharray')"
     },
     {
       "type": "change",
@@ -110,24 +82,48 @@
       "value": "blue"
     },
     {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-arrow')[0].getAttribute('fill')=='blue'"
+      "type": "change",
+      "value": "dashed",
+      "selectors": [
+        [
+          "aria/Line style"
+        ],
+        [
+          "#linkEditWidget_1 > select.lineStyle"
+        ]
+      ],
+      "target": "main"
     },
     {
       "type": "click",
       "target": "main",
       "selectors": [
         [
-          "#linkEditWidget_1 > input.delete"
+          "aria/Arrow"
+        ],
+        [
+          "#linkEditWidget_1 > button"
         ]
       ],
-      "offsetX": 39,
-      "offsetY": 7.3725433349609375,
+      "offsetY": 11.852935791015625,
+      "offsetX": 26.137252807617188,
       "deviceType": "pen"
     },
     {
-      "type": "waitForExpression",
-      "expression": "!document.getElementsByClassName('mapjs-arrow')[0]"
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Link editing",
+          "aria/Delete"
+        ],
+        [
+          "#linkEditWidget_1 > input"
+        ]
+      ],
+      "offsetY": 8.852935791015625,
+      "offsetX": 37,
+      "deviceType": "pen"
     }
   ]
 }
