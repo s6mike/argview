@@ -14,7 +14,6 @@ module.exports = function content(contentAggregate, initialSessionId) {
 	const handleRangeError = function (e, calling_function_name) {
 			if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
 				console.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
-				// debugger;
 				return false;
 			} else {
 				logMyErrors(e); // pass exception object to error handler
@@ -1058,7 +1057,9 @@ module.exports = function content(contentAggregate, initialSessionId) {
 			if (link.ideaIdFrom === ideaIdOne && link.ideaIdTo === ideaIdTwo) { //eslint-disable-line eqeqeq
 				contentAggregate.links.splice(i, 1);
 				logChange('removeLink', [ideaIdOne, ideaIdTwo], function () {
-					contentAggregate.links.push(_.clone(link));
+					// Fixes bug with undoing link attribute changes not working
+					//  Was cloning link, so undo was applied to clone, not original link.
+					contentAggregate.links.push(link);
 				}, originSession);
 				return true;
 			}
@@ -1111,7 +1112,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
 		return false;
 	};
 	contentAggregate.redo = function () {
-		return contentAggregate.execCommand('redo', arguments);
+		return contentAggregate.execCommand('redo', arguments); // Calls commandProcessors for the command
 	};
 	commandProcessors.redo = function (originSession) {
 		let topEvent = false;
