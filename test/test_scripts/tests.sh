@@ -95,6 +95,8 @@ npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$WORKSPACE/includes/webpa
     # j2hf will still fail if json file missing, but it's part of repo.
     # TODO: add option for not opening the output, since this is just to set up tests.
     j2hf "$INPUT_FILE_JSON"
+j2hf "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
+j2hf "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
 __test md2hf "$INPUT_FILE_MD0" #6
 # Use wait-on --log if diagnostics needed (also verbose option)
@@ -106,24 +108,26 @@ __test md2hf "$INPUT_FILE_MD2"                           #9
 __test md2hf "$INPUT_FILE_MD_META"                       #10
 
 # To make browser test visible, add 'head' as first arg
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"         #11 add child button
-__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"       #12 left click
-__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO" #13 undo/redo button
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"  #14
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"            #11 add child button
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #12 left click
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO"    #13 undo/redo button
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #14
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #15
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #16
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #17
+__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 
 # These don't work
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO"      #15 undo/redo keys fails in testcafe, first ctrl-z step didn't work.
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #16 add link works
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD"    #17 edit first child node
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #18 ERROR: Action "selector" argument error: missing ) after argument list
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #19
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ZOOM"         #20
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_ZOOM"           #21
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD"   #22
-# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK"           #23
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD"    # edit first child node
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ZOOM"
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_KEYS_ZOOM"
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD"
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_NEW"
+# __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES"
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #15
+    __test md2pdf "$INPUT_FILE_MD0" #19
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."

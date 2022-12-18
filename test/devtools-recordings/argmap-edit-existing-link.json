@@ -1,5 +1,5 @@
 {
-  "title": "argmap-edit-link",
+  "title": "argmap-edit-existing-link",
   "steps": [
     {
       "type": "setViewport",
@@ -12,11 +12,11 @@
     },
     {
       "type": "navigate",
-      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
+      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html",
       "assertedEvents": [
         {
           "type": "navigation",
-          "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
+          "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html",
           "title": "example1-clearly-false-white-swan-simplified"
         }
       ]
@@ -72,29 +72,6 @@
       "deviceType": "pen"
     },
     {
-      "type": "change",
-      "target": "main",
-      "selectors": [
-        [
-          "#linkEditWidget_1 > select.color"
-        ]
-      ],
-      "value": "blue"
-    },
-    {
-      "type": "change",
-      "value": "dashed",
-      "selectors": [
-        [
-          "aria/Line style"
-        ],
-        [
-          "#linkEditWidget_1 > select.lineStyle"
-        ]
-      ],
-      "target": "main"
-    },
-    {
       "type": "click",
       "target": "main",
       "selectors": [
@@ -102,7 +79,7 @@
           "aria/Arrow"
         ],
         [
-          "#linkEditWidget_1 > button"
+          "#linkEditWidget_1 > button.arrow"
         ]
       ],
       "offsetY": 11.852935791015625,

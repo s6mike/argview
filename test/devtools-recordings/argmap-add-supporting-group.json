@@ -21,11 +21,11 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 > input[type=button][value=\"Supporting group\"]"
+          "#testcontrols_1 input[value='Supporting group']"
         ]
       ],
-      "offsetX": 63.80390930175781,
-      "offsetY": 12.627450942993164
+      "offsetY": 9.745094299316406,
+      "offsetX": 61.12744140625
     },
     {
       "type": "waitForExpression",

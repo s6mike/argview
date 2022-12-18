@@ -7,6 +7,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.40
+
+- `test/test_scripts/tests.sh`: Add 4 new tests which are now working.
+- `test/devtools-recordings/`:
+  - Fix recordings to work with updated templates.
+  - Fix broken recordings to work in Testcafe:
+    - By replacing `\"` with `'`.
+    - Due to it being particularly about offsetX/Y values (not sure why they are needed for Testcafe click selectors to work).
+  - Add some variations on edit-link recording.
+- `scripts/argmap.env`: Add new input variables for test dependencies.
+- `mapjs/scripts/mapjs.env`: Fix incorrect path for `PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK` and add new variables.
+
 ## argmap 4.21.39
 
 - `mapjs/src/start.js`: Remove obsolete comments.

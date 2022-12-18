@@ -24,8 +24,8 @@
           "#testcontrols_1 input.addSubIdea"
         ]
       ],
-      "offsetY": 7.025390625,
-      "offsetX": 13.400390625
+      "offsetY": 9.745094299316406,
+      "offsetX": 61.12744140625
     },
     {
       "type": "waitForExpression",

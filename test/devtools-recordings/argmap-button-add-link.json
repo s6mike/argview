@@ -17,7 +17,7 @@
       "target": "main",
       "selectors": [
         [
-          ".mapjs_control > input.toggleAddLinkMode"
+          ".mapjs_control input.toggleAddLinkMode"
         ]
       ],
       "offsetY": 0,

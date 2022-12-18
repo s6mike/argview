@@ -1,0 +1,137 @@
+{
+  "title": "argmap-edit-existing-link-all-attributes",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1564,
+      "height": 874,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html",
+      "assertedEvents": [
+        {
+          "type": "navigation",
+          "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html",
+          "title": "example1-clearly-false-white-swan-simplified"
+        }
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_1 > span"
+        ]
+      ],
+      "offsetY": 19.825469970703125,
+      "offsetX": 111.5,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyDown",
+      "target": "main",
+      "key": "Alt"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#node_5 > span"
+        ]
+      ],
+      "offsetY": 3.325469970703125,
+      "offsetX": 41,
+      "deviceType": "pen"
+    },
+    {
+      "type": "keyUp",
+      "target": "main",
+      "key": "Alt"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "!mapInstance['container_1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#link_1_5 > path.mapjs-link-hit.noTransition"
+        ]
+      ],
+      "offsetY": 40.325469970703125,
+      "offsetX": -4,
+      "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementById('linkEditWidget_1').checkVisibility()"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('#linkEditWidget_1 > select.color').checkVisibility()"
+    },
+    {
+      "type": "change",
+      "target": "main",
+      "selectors": [
+        [
+          "#linkEditWidget_1 > select.color"
+        ]
+      ],
+      "value": "blue"
+    },
+    {
+      "type": "change",
+      "value": "solid",
+      "selectors": [
+        [
+          "aria/Line style"
+        ],
+        [
+          "#linkEditWidget_1 > select.lineStyle"
+        ]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Arrow"
+        ],
+        [
+          "#linkEditWidget_1 > button.arrow"
+        ]
+      ],
+      "offsetY": 11.852935791015625,
+      "offsetX": 26.137252807617188,
+      "deviceType": "pen"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Link editing",
+          "aria/Delete"
+        ],
+        [
+          "#linkEditWidget_1 > input"
+        ]
+      ],
+      "offsetY": 8.852935791015625,
+      "offsetX": 37,
+      "deviceType": "pen"
+    }
+  ]
+}
