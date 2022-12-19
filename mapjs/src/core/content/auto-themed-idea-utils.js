@@ -25,7 +25,7 @@ const calcIdeaLevel = require('./calc-idea-level'),
 	},
 	recalcIdeasAutoNodeAttrs = (activeContent, themeObj, idea, level, numberOfSiblings) => {
 		'use strict';
-		// console.log('recalcIdeasAutoNodeAttrs idea.id', idea.id, 'level', level, 'numberOfSiblings', numberOfSiblings); //eslint-disable-line
+		// console.debug('recalcIdeasAutoNodeAttrs idea.id', idea.id, 'level', level, 'numberOfSiblings', numberOfSiblings); //eslint-disable-line
 		if (level > 0) {
 			recalcAutoNodeAttrs(activeContent, themeObj, idea, level, numberOfSiblings);
 		}

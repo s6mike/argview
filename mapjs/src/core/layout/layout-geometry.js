@@ -50,7 +50,7 @@ const _ = require('underscore'),
 		}
 
 		// if (true || matchingShapes.length) {
-		// 	console.log('matchingShapes.length === poly1.length', matchingShapes.length === poly1.length, 'matchingShapes', matchingShapes, 'poly1', poly1, 'poly2', poly2);
+		// 	console.debug('matchingShapes.length === poly1.length', matchingShapes.length === poly1.length, 'matchingShapes', matchingShapes, 'poly1', poly1, 'poly2', poly2);
 
 		// }
 		return matchingShapes().length === poly1.length;
@@ -182,7 +182,7 @@ const _ = require('underscore'),
 		const x = vector1[0] + vector2[0],
 			y = vector1[1] + vector2[1];
 		if (isNaN(x) || isNaN(y)) {
-			//console.log('addVectors invalid-args x', x, 'y', y, 'vector1', vector1, 'vector2', vector2);
+			//console.debug('addVectors invalid-args x', x, 'y', y, 'vector1', vector1, 'vector2', vector2);
 			throw new Error('invalid-args');
 		}
 		return [x, y];
@@ -192,7 +192,7 @@ const _ = require('underscore'),
 		const x = vector1[0] - vector2[0],
 			y = vector1[1] - vector2[1];
 		if (isNaN(x) || isNaN(y)) {
-			//console.log('subtractVectors invalid-args vector1', vector1, 'vector2', vector2);
+			//console.debug('subtractVectors invalid-args vector1', vector1, 'vector2', vector2);
 			throw new Error('invalid-args');
 		}
 		return [x, y];

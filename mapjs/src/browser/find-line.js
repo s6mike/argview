@@ -9,7 +9,7 @@ jQuery.fn.findLine = function (line) {
 	} else if (line && line.type === 'link') {
 		return this.find('#' + linkKey(line));
 	}
-	console.log('invalid.line', line); //eslint-disable-line
+	console.error('invalid.line', line); //eslint-disable-line
 	throw 'invalid-args';
 };
 
