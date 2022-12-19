@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.43
+
+- `argmap-4.21.43-11.rockspec`: Add new release version.
+
 ## argmap 4.21.42
 
 - `mapjs/src/`: Rewrite `console.log` as `console.debug` or `console.error`
