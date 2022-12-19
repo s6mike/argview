@@ -108,7 +108,7 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 `shift+return` *while editing node text* | Start new line of text
 `space` `f2` | Edit text of currently selected node
 `del` `backspace` | Delete active nodes
-`alt+click` | Add link to clicked node
+`alt+click` | Add link between clicked node and selected node.
 `down` | Select node below
 `up` | Select node above
 `left` | Select node left

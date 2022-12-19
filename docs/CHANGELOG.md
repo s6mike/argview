@@ -7,6 +7,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 4.21.41
+
+- [mapjs/README.md](../mapjs/README.md): Minor improvement.
+
 ## argmap 4.21.40
 
 - `test/test_scripts/tests.sh`: Add 4 new tests which are now working.
