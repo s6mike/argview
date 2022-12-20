@@ -122,8 +122,8 @@ __test_mapjs_renders() {
   if [[ "$result" == "true"* ]]; then
     return 0 # success
   else       # if headless chrome fails to render any map nodes
-    return 1 #fail
     echo "Render Failed"
+    return 1 #fail
   fi
 }
 

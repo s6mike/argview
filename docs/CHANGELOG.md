@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.6
+
+- `scripts/bash_aliases_mapjs.sh`: Fix `__test_mapjs_renders()` bug.
+
 ## argmap 5.0.5
 
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Ensure background text input not separated from label by wrapping in label and using `.wrapper` class.
