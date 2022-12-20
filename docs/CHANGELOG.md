@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.4
+
+- `mapjs/src/browser/map-toolbar-widget.js`: Align `clickMethodNames` with toolbar layout.
+
 ## argmap 5.0.3
 
 - Delete obsolete debug profile.
