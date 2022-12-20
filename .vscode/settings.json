@@ -143,5 +143,6 @@
         "PATH_MJS_JSON",
     ],
     // Used by launch.json
-    "env.path_mjs_home": "/mapjs"
+    "env.path_mjs_home": "/mapjs",
+    "env.path_public": "${workspaceFolder}/mapjs/public"
 }

@@ -10,6 +10,6 @@ SpecRunner.html
 .sublime*
 .tern-port
 npm-debug.log
-site/js/
+public/js/
 test/bundle*
 mapjs/examples/assets/webpack-*.js

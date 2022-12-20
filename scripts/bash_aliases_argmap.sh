@@ -3,7 +3,7 @@
 echo "Running ${BASH_SOURCE[0]}"
 
 # argmap aliases
-alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
+alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
 alias j2hfa='j2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
 
 # argmap functions
@@ -27,15 +27,15 @@ get-site-path() {
     full_path=$WORKSPACE/$input_path
     ;;
   esac
-  # Substitutes mapjs/site for test so it's using site folder, then removes leading part of path so its relative to site/:
-  site_path="${full_path/test/"mapjs/site"}"
+  # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
+  site_path="${full_path/test/$DIR_MJS/$DIR_PUBLIC}"
   # echo "site_path: $site_path"
-  output_path=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME"/site "$site_path")
+  output_path=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME/$DIR_PUBLIC" "$site_path")
   echo "$output_path"
 }
 
 # For opening html pages with debug port open
-open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/site/output/html/example2-clearly-false-white-swan-v3.html
+open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   __check_server_on
@@ -122,6 +122,8 @@ a2t() { # a2t test/output/example1-simple.yml (output path)
 }
 
 # Convert markdown to full page html
+# IDEA: Could combine md2htm by checking for an argument like --fragment and witholding template argument etc
+#   Would need to use getopts and then pop the --fragment so that the number of other arguments are not affected
 md2hf() { # md2h test/input/example.md (output filename) (optional pandoc arguments)
   # __check_server_on # No point since open-debug runs it too.
   input="${1:-$INPUT_FILE_MD2}"
@@ -142,14 +144,14 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   # TODO construct link from server details and output it?
 }
 
-# j2hf site/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json (output filename) (optional pandoc arguments)
+# j2hf public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json (output filename) (optional pandoc arguments)
 # shellcheck disable=SC2120 # Disables lint error from a2hf() passing to j2hf
 j2hf() { # j2hfa Default output with argmap input activated
   # __check_server_on # No point since open-debug runs it too.
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
   # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   input="${1:-$INPUT_FILE_JSON}"
-  # Substitutes mapjs/site for test so its using site folder, then removes leading part of path:
+  # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
 
   # Removes either suffix:
   name=$(basename --suffix=".json" "$input")

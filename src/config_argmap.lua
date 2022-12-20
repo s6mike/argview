@@ -47,7 +47,7 @@ PATH_FOLDER_TEMPLATES_MAPJS = os.getenv("PATH_FOLDER_TEMPLATES_MAPJS") or config
 
 -- Reads the container and controls html
 PATH_TEMPLATE_ARGMAP_CONTAINER = os.getenv("PATH_TEMPLATE_ARGMAP_CONTAINER") or
-    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-map.html"
+    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-map-container.html"
 PATH_TEMPLATE_ARGMAP_CONTROLS = os.getenv("PATH_TEMPLATE_ARGMAP_CONTROLS") or
     PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-testcontrols.html"
 

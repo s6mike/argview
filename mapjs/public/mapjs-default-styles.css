@@ -82,6 +82,10 @@ div[data-mapjs-role=stage] {
 	border-width: 1.5px !important;
 }
 
+.wrapper {
+	white-space: nowrap;
+}
+
 .mapjs-node {
 	margin: 0;
 	z-index: 2;

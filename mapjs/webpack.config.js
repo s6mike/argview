@@ -13,9 +13,9 @@ module.exports = {
 	// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
 	devtool: 'eval-cheap-module-source-map',
 	output: {
-		path: path.resolve(__dirname, 'site/js/'),
+		path: path.resolve(__dirname, 'public/js/'),
 		// TODO: use more robust publicPath
-		//	 publicPath: path.resolve(__dirname, 'site/js/'),
+		//	 publicPath: path.resolve(__dirname, 'public/js/'),
 		publicPath: '/js/',
 		// Setting filename as anything except '[name].js' breaks one of HMR/watch mode/live reloading
 		//  Think watch mode may have fixed this but then get warning when running server
@@ -25,7 +25,7 @@ module.exports = {
 		clean: true,
 	},
 	devServer: {
-		static: path.join(__dirname, 'site'),
+		static: path.join(__dirname, 'public'),
 		port: process.env.PORT_DEV_SERVER,
 		client: {
 			overlay: false,

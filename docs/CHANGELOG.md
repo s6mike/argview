@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.1
+
+- Rename `mapjs/site` folder as `mapjs/public`.
+- Rename container template partial as `pandoc-templates/mapjs/mapjs-map-container.html`
+- Update everything impacted by these changes.
+
 ## argmap 5.0.0
 
 BREAKING

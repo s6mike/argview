@@ -685,7 +685,7 @@ To set this up, you will need to:
 
 2. Call `npm run --prefix [path to mapjs folder] pack` to build the app with webpack.
 
-This builds the client side JavaScript file which activates the maps: `mapjs/site/js/main.bundle.js`. This needs to be added to any page displaying the map in .json format.
+This builds the client side JavaScript file which activates the maps: `mapjs/public/js/main.bundle.js`. This needs to be added to any page displaying the map in .json format.
 
 See [mapjs/README.md](mapjs/README.md) for more details about mapjs.
 
@@ -744,7 +744,7 @@ e.g.
 e.g.
 
 ``` shell
-pandoc input/example-updated.md --template /pandoc-templates/mapjs/mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/site/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua > output.html
+pandoc input/example-updated.md --template /pandoc-templates/mapjs/mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/public/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua > output.html
 ```
 
 3 ) Open `output.html` in a browser to see the map.
@@ -772,7 +772,7 @@ You can adapt the above for your own DIY approach:
 The container and script classes must be as above. The container div id can be as you wish.
 
 3 ) Add the mapjs script built from webpack:
-  `<script src="/mapjs-example/site/main.js"></script>`
+  `<script src="/mapjs-example/public/main.js"></script>`
 
 4 ) Add the included stylesheet to ensure the mapjs is formatted properly:
   `<link rel="stylesheet" href="mapjs-default-styles.css" />`

@@ -74,8 +74,8 @@
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
-                "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
-                "--metadata=css:../../mapjs/site/mapjs-default-styles.css"
+                "--metadata=mapjs-output-js:${env.path_public}/js/bundle.js",
+                "--metadata=css:${env.path_public}/mapjs-default-styles.css"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -176,8 +176,8 @@
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
-                "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
-                "--metadata=css:../../mapjs/site/mapjs-default-styles.css"
+                "--metadata=mapjs-output-js:${env.path_public}/js/bundle.js",
+                "--metadata=css:${env.path_public}/mapjs-default-styles.css"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -200,8 +200,8 @@
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html",
                 "--lua-filter pandoc-argmap.lua",
                 "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc",
-                "--metadata=mapjs-output-js:${workspaceFolder}/mapjs/site/js/bundle.js",
-                "--metadata=css:../../mapjs/site/mapjs-default-styles.css"
+                "--metadata=mapjs-output-js:${env.path_public}/js/bundle.js",
+                "--metadata=css:${env.path_public}/mapjs-default-styles.css"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
