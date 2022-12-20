@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.8
+
+  -`test/test_scripts/tests.sh`:
+    - 2 test recordings still not working consistnetly in Testcafe, so commenting out.
+    - Update to use new env variables.
+
 ## argmap 5.0.7
 
 - `scripts/install.sh`: Remove any leftover symbolic links before replacing with new ones.
