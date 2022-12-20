@@ -176,11 +176,16 @@ mkdir --parent "$WORKSPACE/test/output/png"
 mkdir --parent "$WORKSPACE/test/output/html"
 
 # For dev web server:
-# Link up test/output and test/input with mapjs/site
+# Link up test/output and test/input with mapjs/public
+
+rm "$PATH_MJS_SITE/$(basename "$DIR_PUBLIC_OUTPUT")"
 ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_MJS_SITE/."
+
+rm "$PATH_MJS_SITE/$(basename "$DIR_HTML_INPUT")"
 ln -s "$DIR_HTML_INPUT" "$PATH_MJS_SITE/."
 
 # Add index.html
+rm "$PATH_MJS_SITE/index.html"
 ln -s "$PATH_MJS_SITE/$PATH_OUTPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
 
 #nodejs installed with conda

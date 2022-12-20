@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.7
+
+- `scripts/install.sh`: Remove any leftover symbolic links before replacing with new ones.
+
 ## argmap 5.0.6
 
 - `scripts/bash_aliases_mapjs.sh`: Fix `__test_mapjs_renders()` bug.
