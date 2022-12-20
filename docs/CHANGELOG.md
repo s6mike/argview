@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.5
+
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`: Ensure background text input not separated from label by wrapping in label and using `.wrapper` class.
+  - `.wrapper` already set to have style `white-space: nowrap;` in earlier change to `mapjs/public/mapjs-default-styles.css`.
+
 ## argmap 5.0.4
 
 - `mapjs/src/browser/map-toolbar-widget.js`: Align `clickMethodNames` with toolbar layout.
