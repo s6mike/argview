@@ -18,7 +18,6 @@ alias argmup='__chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1r
 
 #TODO: need to delete previous file, best way? Separate output folder or just delete all .json in test/output folder?
 alias argmo='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup; a2mo $INPUT_FILE_YML'
-# alias argmj='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.json; a2jo $INPUT_FILE_YML'
 alias argmh0='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html; rm $DIR_PUBLIC_OUTPUT/png/12ff0311ebc308e94fe0359b761fa405b605f126.png; md2hf $INPUT_FILE_MD0'
 alias argmh='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html; rm $DIR_PUBLIC_OUTPUT/png/920713d1a74abe16c16b3fb103f893e64c5fb3ca.png; md2hf $INPUT_FILE_MD'
 alias argmh2='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html; md2hf $INPUT_FILE_MD2'

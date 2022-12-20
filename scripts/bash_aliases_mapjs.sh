@@ -140,35 +140,10 @@ webpack_pack() { #pmj
   npm --prefix "$PATH_MJS_HOME" run pack
 }
 
-# webpack_pack_open() {
-#   npm --prefix "$PATH_MJS_HOME" run pack
-#   webpack_server_open "$1"
-# }
-
 webpack_server_halt() { #wsh
   npm --prefix "$PATH_MJS_HOME" run stop
   SERVER_ON=false
 }
-
-## Deprecated just use start
-alias rmj='__restart_mapjs_webserver'
-
-# Deprecated
-__restart_mapjs_webserver() { #rmj
-  webpack_server_halt
-  webpack_server_start
-}
-
-## Deprecated, use open-server instead
-
-# For opening html pages in linux browser containing mapjs files
-# __open-mapjs() {
-#   #   Alternatives:
-#   #     Embed JSON directly in html
-#   #     https://stackoverflow.com/questions/64140887/how-to-solve-cors-origin-issue-when-trying-to-get-data-of-a-json-file-from-local
-#   google-chrome --disable-extensions --hide-crash-restore-bubble --allow-file-access-from-files --no-default-browser-check --window-size=500,720 "http://localhost:$PORT_DEV_SERVER/$1" 2>/dev/null &
-#   disown # stops browser blocking terminal and allows all tabs to open in single window.
-# }
 
 # Starts server
 webpack_server_start() { # wss

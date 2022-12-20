@@ -33,8 +33,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 	const hotkeyEventHandlers = {
 			'return': 'insertDown',
 			'shift+return': 'insertUp',
-			'alt+left': 'insertLeft',
-			'alt+right': 'insertRight',
+			',': 'insertLeft',
+			'.': 'insertRight',
 			'del backspace': 'removeSubIdea',
 			'left': 'selectNodeLeft',
 			'up': 'selectNodeUp',
@@ -70,7 +70,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 			'.': 'activateSelectedNode',
 			'/': 'toggleCollapse',
 			'a': 'openAttachment',
-			'i': 'editIcon',
+			// 'i': 'editIcon',
 		},
 		// Bad practice: self = this
 		// 	QUESTION: try removing?

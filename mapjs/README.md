@@ -100,8 +100,8 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 |-----------------|----------------------------|---|
 `return`  | Add sibling node after | Add child node after
 `shift+return` | Add sibling node before | Add parent node
-`alt+right` `insert`  | Add child node | Insert sibling node after
-`alt+left` | Insert parent node | Insert sibling node before
+`.` `insert`  | Add child node | Insert sibling node after
+`,` | Insert parent node | Insert sibling node before
 
 | Key Combination | Effect |
 |-----------------|---|
@@ -141,4 +141,3 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 `alt+s` | Download current map as a JSON file
 `a` `click on paperclip icon` | Add / Open attachment
 `click on link icon` | Open url
-`i` | Edit icon *(Reserved - doesn't currently do anything)*

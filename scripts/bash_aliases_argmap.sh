@@ -200,22 +200,6 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
 }
 
-# Deprecated
-
-## Deprecated, use a2m() for converting argmap to .mup/.json and use __build_mapjs to rebuild app
-a2jo() { # m2a output/mapjs-json-input/example1-simple.yml
-  NAME=$(basename --suffix=".yml" "$1")
-  OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/$NAME.json}
-  a2m "$1" "$OUTPUT"
-}
-
-## Deprecated, use a2jo instead.
-a2mo() {
-  NAME=$(basename --suffix=".yml" "$1") &&
-    OUTPUT=${2:-$DIR_PUBLIC_OUTPUT/$NAME.json} &&
-    a2m "$1" "$OUTPUT"
-}
-
 ## Mark functions for export to use in other scripts:
 export -f __reset_repo __clean_repo __check_repo __save_env
 export -f get-site-path

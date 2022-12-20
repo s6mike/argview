@@ -2,10 +2,30 @@
 
 ## TODO
 
-- Remove deprecated scripts from argmap aliases and package.json
+- Remove buttons:
+  - `Parent reason`: Since it's not really useful:
+    - `mapjs/src/browser/map-toolbar-widget.js`: Remove from clickMethodNames array.
+    - `mapjs/src/core/map-model.js`: Remove functionality.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 5.0.0
+
+BREAKING
+
+- `mapjs/src/browser/dom-map-widget.js`: Change keyboard shortcuts for add sibling before and after to: `,` and `.`
+  - [mapjs/README.md](../mapjs/README.md): Update documentation to reflect this.
+  - Update `test/devtools-recordings/argmap-edit-first-child.json` to use new keyboard shortcuts.
+- `pandoc-templates/mapjs/mapjs-testcontrols.html`: Remove buttons from toolbar:
+  - `Export to image`, 'Frames' and 'Cycle': Since I can't find their functionality.
+  - Also remove `editIcon()` related functionality and keyboard shortcut: `mapjs/src/core/map-model.js`
+- Remove legacy / deprecated functions and scripts:
+  - `mapjs/package.json`
+  - `scripts/bash_aliases_argmap.sh`
+  - `scripts/bash_aliases_mapjs.sh`
+  - `test/test_scripts/bash_aliases_argmap_test.sh`
+  - `test/test_scripts/tests.sh`
 
 ## argmap 4.21.43
 

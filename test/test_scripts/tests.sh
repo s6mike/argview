@@ -83,7 +83,6 @@ if [ "$1" != html ]; then
     __test m2a "$INPUT_FILE_JSON"      #3
     __test a2t "$INPUT_FILE_YML"       #4
     __test a2mu "$INPUT_FILE_YML"      #5
-# __test a2jo "$INPUT_FILE_YML"
 fi
 
 # map rendering
