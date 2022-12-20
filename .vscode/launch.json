@@ -271,19 +271,6 @@
         },
         {
             "type": "chrome",
-            "name": "Debug html with 2 mapjs",
-            "request": "launch",
-            "file": "test/output/example1-clearly-false-white-swan-simplified-2mapjs.html",
-            "runtimeArgs": [
-                "--allow-file-access-from-files"
-            ],
-            "webRoot": "${workspaceFolder}/${config:env.path_mjs_home}",
-            "sourceMaps": true,
-            "cleanUp": "onlyTab",
-            // "profileStartup": true,
-        },
-        {
-            "type": "chrome",
             "request": "attach",
             "name": "Attach to browser 9221 (argmap debug)",
             "port": 9221,

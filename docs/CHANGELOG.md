@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.3
+
+- Delete obsolete debug profile.
+
 ## argmap 5.0.2
 
 - Delete obsolete rockspec: `argmap-4.18.10-10.rockspec`.
