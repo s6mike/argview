@@ -1,7 +1,34 @@
 // TODO: Remove or namespace globals
 
 // TODO: switch to lodash and test
-const _ = require('underscore');
+const _ = require('underscore'),
+	CONTAINER_CLASS = 'container_argmapjs';
+
+// Can pass element or event
+window.getContainerID = function (elementOrEvent) {
+	'use strict';
+	const containers = document.getElementsByClassName(CONTAINER_CLASS);
+
+	switch (containers.length) {
+		case 0:
+			return false;
+		case 1:
+			return containers[0].id;
+		default: // If more than 1 container, then see if it's an event with a currentTarget
+			const currentTarget = elementOrEvent.currentTarget;
+			if (currentTarget) { // If elementOrEvent is an event
+				// if current target is container then get id, else set the element to the target.
+				if (currentTarget.class === CONTAINER_CLASS) {
+					return currentTarget.id;
+				} else {
+					elementOrEvent = elementOrEvent.target; // elementOrEvent is now an element;
+				}
+			}
+			// elementOrEvent is an element:
+			return (elementOrEvent.closest) ? elementOrEvent.closest('.' + CONTAINER_CLASS).id : false;
+	}
+	return false; // Should never be called
+};
 
 // May not be compatible with all modern browsers
 window.downloadToFile = function (content, filename, contentType) {

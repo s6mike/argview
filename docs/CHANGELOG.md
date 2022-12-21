@@ -10,6 +10,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.9
+
+- Disable drag and drop when edit mode disabled (`Disable` button):
+  - `mapjs/src/browser/hammer-draggable.js`: Node drag and drop.
+  - `mapjs/src/browser/image-insert-controller.js`: Image drag and drop.
+  - `mapjs/src/start.js`: Mapjs JSON drag and drop.
+  - `mapjs/src/argmapjs-utilities.js`: Helper function to get current mapjs container id when passed an event or element.
+
 ## argmap 5.0.8
 
   -`test/test_scripts/tests.sh`:

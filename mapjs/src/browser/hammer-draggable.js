@@ -1,7 +1,9 @@
-/*global require*/
+/*global require, mapInstance, getContainerID*/
 const $ = require('jquery'),
 	// Moved exports-loader call to webpack.config.js
 	Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
+	// mapModel = mapInstance[getContainerID(this)].mapModel,
+
 	onDrag = function (e) {
 		'use strict';
 		$(this).trigger(
@@ -19,17 +21,21 @@ const $ = require('jquery'),
 	},
 	onShadowDrag = function (e) {
 		'use strict';
-		$(this).trigger(
-			$.Event('mm:start-dragging-shadow', {
-				relatedTarget: this,
-				gesture: e.gesture
-			})
-		);
-		e.stopPropagation();
-		e.preventDefault();
-		if (e.gesture) {
-			e.gesture.stopPropagation();
-			e.gesture.preventDefault();
+		// TODO: Move mapModel definition to outer scope if possible:
+		const mapModel = mapInstance[getContainerID(this)].mapModel;
+		if (mapModel.getInputEnabled()) {
+			$(this).trigger(
+				$.Event('mm:start-dragging-shadow', {
+					relatedTarget: this,
+					gesture: e.gesture
+				})
+			);
+			e.stopPropagation();
+			e.preventDefault();
+			if (e.gesture) {
+				e.gesture.stopPropagation();
+				e.gesture.preventDefault();
+			}
 		}
 	};
 

@@ -1,4 +1,4 @@
-/*global module, require, FileReader */
+/*global module, require, FileReader, mapInstance, getContainerID */
 const jQuery = require('jquery'),
 	_ = require('underscore'),
 	observable = require('../core/util/observable'),
@@ -33,13 +33,16 @@ module.exports = function ImageInsertController(corsProxyUrl, resourceConverter)
 		);
 	};
 	self.insertFiles = function (files, evt) {
-		jQuery.each(files, function (idx, fileInfo) {
-			if (/^image\//.test(fileInfo.type)) {
-				jQuery.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
-					self.insertDataUrl(dataUrl, evt);
-				});
-			}
-		});
+		const mapModel = mapInstance[getContainerID(evt.currentTarget)].mapModel;
+		if (mapModel.getInputEnabled()) {
+			jQuery.each(files, function (idx, fileInfo) {
+				if (/^image\//.test(fileInfo.type)) {
+					jQuery.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
+						self.insertDataUrl(dataUrl, evt);
+					});
+				}
+			});
+		};
 	};
 	self.insertHtmlContent = function (htmlContent, evt) {
 		const images = htmlContent.match(/img[^>]*src="([^"]*)"/);
