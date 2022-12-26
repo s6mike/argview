@@ -10,9 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.12
+
+- Update rockspec for new release: `argmap-5.0.12-12.rockspec`
+
 ## argmap 5.0.11
 
-- `src/client_argmap2mapjs.lua`: Add comment 
+- `src/client_argmap2mapjs.lua`: Add comment
 
 ## argmap 5.0.10
 
