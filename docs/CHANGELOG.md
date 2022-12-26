@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.11
+
+- `src/client_argmap2mapjs.lua`: Add comment 
+
 ## argmap 5.0.10
 
 - Update all mapjs dependencies to latest except `jquery-hammerjs` (`mapjs/package.json` and `mapjs/package-lock.json`).

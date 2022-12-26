@@ -65,6 +65,7 @@ local function convert_yaml()
 
   local mapjs = argmap2mapjs(yaml_data)
   -- TODO: Need to look up correct mapModel
+  --  If poss, use getCurrentContainerID()
   -- mapInstance[this.target_container_id].mapModel.getIdea();
   -- function() return "window.changeMap(window.mapInstance.container_argmap1, window.mapjs)" end)
   local container = window.mapInstance.container_argmap1
