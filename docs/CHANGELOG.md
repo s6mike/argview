@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.14
+
+- Add `.editorconfig` for consistent formatting.
+
 ## argmap 5.0.13
 
 - Fix `mapjs/package.json` to refer to this repo rather than original mindmup repo.
