@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.13
+
+- Fix `mapjs/package.json` to refer to this repo rather than original mindmup repo.
+  - Update `mapjs/package-lock.json` to match.
+
 ## argmap 5.0.12
 
 - Update rockspec for new release: `argmap-5.0.12-12.rockspec`

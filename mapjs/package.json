@@ -1,11 +1,11 @@
 {
-  "name": "@mindmup/mapjs",
+  "name": "@s6mike/mapjs",
   "license": "MIT",
-  "description": "Mind mapping visualisation library, using SVG, developed for MindMup",
+  "description": "JavaScript Mind Map visualisation and management library using SVG. Developed for MindMup, with additional bugfixes.",
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mindmup/mapjs.git"
+    "url": "git+https://github.com/s6mike/mapjs.git"
   },
   "keywords": [
     "mindmup",
@@ -16,9 +16,9 @@
     "packages"
   ],
   "bugs": {
-    "url": "https://github.com/mindmup/mapjs/issues"
+    "url": "https://github.com/s6mike/mapjs/issues"
   },
-  "homepage": "https://www.mindmup.com",
+  "homepage": "https://github.com/s6mike/mapjs/",
   "version": "4.1.0",
   "scripts": {
     "env": "env",
