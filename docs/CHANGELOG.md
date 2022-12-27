@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.16
+
+- `mapjs/src/argmapjs-utilities.js`: Update comment.
+
 ## argmap 5.0.15
 
 - Remove `mapjs/packages/core-dependencies/package.json` since it seems unnecessary.

@@ -1,4 +1,4 @@
-// TODO: Remove or namespace globals
+// TODO: Remove or namespace globals, use module.exports
 
 // TODO: switch to lodash and test
 const _ = require('underscore'),
