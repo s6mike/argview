@@ -19,7 +19,7 @@
     "url": "https://github.com/s6mike/mapjs/issues"
   },
   "homepage": "https://github.com/s6mike/mapjs/",
-  "version": "4.1.0",
+  "version": "5.0.17",
   "scripts": {
     "env": "env",
     "report": "webpack --mode production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json",

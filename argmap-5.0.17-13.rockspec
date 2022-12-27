@@ -1,9 +1,9 @@
 rockspec_format="3.0"
 package = "argmap"
-version = "5.0.12-12"
+version = "5.0.17-13"
 source = {
    url = "git+ssh://git@github.com/s6mike/argmap.git",
-   tag = "v5.0.12",
+   tag = "v5.0.17",
 }
 description = {
    summary = "Tools for working with argument maps.",
@@ -12,7 +12,7 @@ description = {
    issues_url = "https://github.com/s6mike/argmap/issues",
    license = "MIT",
    maintainer = "Michael Hayes <es6.mike@gmail.com>",
-   labels = {"argumentation", "mindmap"},
+   labels = {"argumentation", "argument-maps", "argument-mapping", "markdown", "pandoc", "pandoc-filter", "mindmap", "mindmup"},
 }
 supported_platforms = {"linux"}
 dependencies = {

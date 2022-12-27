@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.17
+
+- Update rockspec for new release: `argmap-5.0.17-13.rockspec`.
+  - Update labels.
+- Update `mapjs/package.json` version.
+
 ## argmap 5.0.16
 
 - `mapjs/src/argmapjs-utilities.js`: Update comment.
