@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmapjs 5.0.18
+
+- [README.md](../README.md): Fix broken links by restoring `test/input/example-updated.html`.
+
 ## argmap 5.0.17
 
 - Update rockspec for new release: `argmap-5.0.17-13.rockspec`.
