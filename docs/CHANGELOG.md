@@ -10,7 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmapjs 5.0.18
+## argmap 5.0.19
+
+- [mapjs/LICENSE](../mapjs/LICENSE): Add my own copyright for subsequent mapjs work.
+  - [LICENSE](../LICENSE): Minor update to wording.
+
+## argmap 5.0.18
 
 - [README.md](../README.md): Fix broken links by restoring `test/input/example-updated.html`.
 
