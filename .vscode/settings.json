@@ -144,5 +144,10 @@
     ],
     // Used by launch.json
     "env.path_mjs_home": "/mapjs",
-    "env.path_public": "${workspaceFolder}/mapjs/public"
+    "env.path_public": "${workspaceFolder}/mapjs/public",
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "Lua.format.enable": false,
+    "Lua.completion.displayContext": 1
 }

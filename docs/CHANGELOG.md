@@ -10,9 +10,19 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.25
+
+- Re-arrange templates and includes into new folder structure
+
+## argmap 5.0.24
+
+- Update formatting config:
+  - `.vscode/settings.json`: Disable lua format on save (was joining lines for no reason) and tweak default format on save settings.
+  - `.editorconfig`: Set max line length to 120 characters.
+
 ## argmap 5.0.23
 
-- `mapjs/package.json`: Re-order and add useful fields :
+- `mapjs/package.json`: Re-order and add useful fields  to u:
   - `author` and `contributors`.
   - `os` and `cpu`.
   - Additional `keywords` and longer description.
