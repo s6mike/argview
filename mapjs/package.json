@@ -1,25 +1,36 @@
 {
   "name": "@s6mike/mapjs",
+  "version": "5.0.17",
+  "homepage": "https://github.com/s6mike/mapjs/",
   "license": "MIT",
-  "description": "JavaScript Mind Map visualisation and management library using SVG. Developed for MindMup, with additional bugfixes.",
+  "description": "JavaScript Mind Map visualisation and management library using SVG. Developed for MindMup, with additional bugfixes and customisations.",
+  "author": "Michael Hayes (https://github.com/s6mike/)",
+  "contributors": [
+    "Gojko Adzic (https://github.com/gojko)",
+    "David de Florinier (https://github.com/davedf)",
+    "Damjan Vujnovic (https://github.com/SamuraiPrinciple)"
+  ],
+  "keywords": [
+    "mindmap",
+    "argument-maps",
+    "mindmup",
+    "svg"
+  ],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "type": "commonjs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/s6mike/mapjs.git"
   },
-  "keywords": [
-    "mindmup",
-    "svg"
-  ],
-  "files": [
-    "src",
-    "packages"
-  ],
   "bugs": {
     "url": "https://github.com/s6mike/mapjs/issues"
   },
-  "homepage": "https://github.com/s6mike/mapjs/",
-  "version": "5.0.17",
+  "browser": "src/npm-main.js",
   "scripts": {
     "env": "env",
     "report": "webpack --mode production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json",
@@ -35,7 +46,6 @@
     "node": "~16.13.1",
     "npm": "~9.2.0"
   },
-  "browser": "src/npm-main.js",
   "overrides": {
     "find-babel-config@1.2.0": {
       "json5": "2.2.2"
@@ -69,5 +79,8 @@
     "webpack-bundle-analyzer": "^4.7.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
-  }
+  },
+  "files": [
+    "src"
+  ]
 }

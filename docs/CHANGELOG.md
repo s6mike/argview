@@ -10,6 +10,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.23
+
+- `mapjs/package.json`: Re-order and add useful fields :
+  - `author` and `contributors`.
+  - `os` and `cpu`.
+  - Additional `keywords` and longer description.
+  - Remove redundant "packages" from `files`.
+
 ## argmap 5.0.22
 
 - `mapjs/package.json`: Update testcafe and eslint dependencies to latest version.
