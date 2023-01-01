@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.22
+
+- `mapjs/package.json`: Update testcafe and eslint dependencies to latest version.
+  - Add 'overrides' to ensure that json5 version of 2.2.2 is used by TestCafe dependency, to avoid security vulnerability.
+  - `mapjs/package-lock.json`: Update to reflect above changes.
+
 ## argmap 5.0.21
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Encapsulate properly as module:
