@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.20
+
+- `mapjs/.eslintrc.json`: Fix indent: change from tab to space which has been convention throughout s6mike/mapjs.
+
 ## argmap 5.0.19
 
 - [mapjs/LICENSE](../mapjs/LICENSE): Add my own copyright for subsequent mapjs work.
