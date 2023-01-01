@@ -1,8 +1,9 @@
-/*global module, require, FileReader, mapInstance, getContainerID */
+/*global module, require, FileReader, mapInstance, Utilities */
 const jQuery = require('jquery'),
 	_ = require('underscore'),
 	observable = require('../core/util/observable'),
-	getDataURIAndDimensions = require('./get-data-uri-and-dimensions');
+	getDataURIAndDimensions = require('./get-data-uri-and-dimensions'),
+	Utilities = require('../core/util/mapjs-utilities');
 module.exports = function ImageInsertController(corsProxyUrl, resourceConverter) {
 	'use strict';
 	const self = observable(this),
@@ -33,7 +34,7 @@ module.exports = function ImageInsertController(corsProxyUrl, resourceConverter)
 		);
 	};
 	self.insertFiles = function (files, evt) {
-		const mapModel = mapInstance[getContainerID(evt.currentTarget)].mapModel;
+		const mapModel = mapInstance[Utilities.getContainerID(evt.currentTarget)].mapModel;
 		if (mapModel.getInputEnabled()) {
 			jQuery.each(files, function (idx, fileInfo) {
 				if (/^image\//.test(fileInfo.type)) {

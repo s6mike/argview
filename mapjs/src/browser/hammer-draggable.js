@@ -1,8 +1,9 @@
-/*global require, mapInstance, getContainerID*/
+/*global require, mapInstance, Utilities*/
 const $ = require('jquery'),
 	// Moved exports-loader call to webpack.config.js
 	Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
-	// mapModel = mapInstance[getContainerID(this)].mapModel,
+	Utilities = require('../core/util/mapjs-utilities');
+	// mapModel = mapInstance[Utilities.getContainerID(this)].mapModel,
 
 	onDrag = function (e) {
 		'use strict';
@@ -22,7 +23,7 @@ const $ = require('jquery'),
 	onShadowDrag = function (e) {
 		'use strict';
 		// TODO: Move mapModel definition to outer scope if possible:
-		const mapModel = mapInstance[getContainerID(this)].mapModel;
+		const mapModel = mapInstance[Utilities.getContainerID(this)].mapModel;
 		if (mapModel.getInputEnabled()) {
 			$(this).trigger(
 				$.Event('mm:start-dragging-shadow', {

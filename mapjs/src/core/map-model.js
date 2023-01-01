@@ -2,7 +2,8 @@
 const _ = require('underscore'),
 	MemoryClipboard = require('./clipboard'),
 	LayoutModel = require('./layout/layout-model'),
-	observable = require('./util/observable');
+	observable = require('./util/observable'),
+	Utilities = require('./util/mapjs-utilities');
 
 module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
 	'use strict';
@@ -177,7 +178,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 			}
 			layoutModel.setLayout(newLayout);
 			// Logging node layout to console to help with debugging:
-			idea_pp(idea);
+			Utilities.idea_pp(idea);
 			if (!self.isInCollapse) {
 				self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
 			}
@@ -789,7 +790,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 		analytic('loadMap', source);
 		const mapJson = this.getIdea(),
 			mapOutput = JSON.stringify(mapJson);
-		window.downloadToFile(mapOutput, mapJson.title + '.json', 'application/json');
+		Utilities.downloadToFile(mapOutput, mapJson.title + '.json', 'application/json');
 	};
 	this.openAttachment = function (source, nodeId) {
 		analytic('openAttachment', source);

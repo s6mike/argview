@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 5.0.21
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Encapsulate properly as module:
+  - Move from `mapjs/src/` to subfolder `core/util/` and rename file.
+  - Add to `module.exports` and update internal function references.
+  - `mapjs/src/npm-main.js`: Remove require of `mapjs-utilities.js` for whole module, instead depdendents require as needed.
+  - Dependents: `mapjs/src/browser/hammer-draggable.js`, `mapjs/src/browser/image-insert-controller.js`, `mapjs/src/core/map-model.js`:
+    - Require utilities and update references to functions.
+
 ## argmap 5.0.20
 
 - `mapjs/.eslintrc.json`: Fix indent: change from tab to space which has been convention throughout s6mike/mapjs.
