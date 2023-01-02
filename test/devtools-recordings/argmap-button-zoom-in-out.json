@@ -21,7 +21,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 input.scaleDown"
+          "#widget_controls_1 input.scaleDown"
         ]
       ],
       "offsetX": 5.784313201904297,
@@ -36,7 +36,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 input.resetView"
+          "#widget_controls_1 input.resetView"
         ]
       ],
       "offsetX": 5,
@@ -52,7 +52,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1 input.scaleUp"
+          "#widget_controls_1 input.scaleUp"
         ]
       ],
       "offsetX": 16.57843017578125,

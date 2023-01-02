@@ -1,5 +1,5 @@
 <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
-<div id="testcontrols_$BLOCK_ID$" class="mapjs_control" role="menubar">
+<div id="widget_controls_$BLOCK_ID$" class="mapjs_control" role="menubar">
   <section>
     <div role="toolbar" aria-label="Node editing">
       <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
@@ -10,17 +10,18 @@
       <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
       <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
       <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
-      <input type="button"
-        value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason" data-group="supporting" />
-      <input type="button"
-        value="Supporting group" class="addGroupSubidea" aria-label="Supporting group" data-group="supporting" />
-      <input type="button"
-        value="Opposing group" class="addGroupSubidea" aria-label="Opposing group" data-group="opposing" />
+      <input type="button" value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason"
+        data-group="supporting" />
+      <input type="button" value="Supporting group" class="addGroupSubidea" aria-label="Supporting group"
+        data-group="supporting" />
+      <input type="button" value="Opposing group" class="addGroupSubidea" aria-label="Opposing group"
+        data-group="opposing" />
       <input type="button" class="editNode" value="Edit" aria-label="Edit" />
       <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
       <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
       <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-      <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable" data-set-input-enabled="false" />
+      <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable"
+        data-set-input-enabled="false" />
       <input type="button" value="Enable" class="setInputEnabled" aria-label="Enable" data-set-input-enabled="true" />
       <input type="button" class="undo" value="Undo" aria-label="Undo" />
       <input type="button" class="redo" value="Redo" aria-label="Redo" />

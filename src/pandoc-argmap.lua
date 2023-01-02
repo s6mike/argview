@@ -280,6 +280,8 @@ local function CodeBlock(block)
                 f:close()
 
                 -- Reads in the html files and then combines them with substitutions
+                -- TODO: Try using pandoc.template.compile instead
+                --  https://beta.workflowy.com/#/a2357475328a
                 local _, html_raw_argmap_controls = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTROLS)
                 local _, html_raw_argmap_container = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTAINER)
 
@@ -287,7 +289,7 @@ local function CodeBlock(block)
                 -- First gsub strips away pandoc line comments `$-- `
                 -- Second ensures each id is unique
                 local rawhtml = html_raw_argmap_container:gsub("%$%-%- [^\n]*\n?", "")
-                    :gsub("%$../includes/mapjs%-testcontrols%.html%(%)%$",
+                    :gsub("%$../includes/mapjs%-widget%-controls%.html%(%)%$",
                          html_raw_argmap_controls)
                     :gsub("%$BLOCK_ID%$", block_id):gsub("%$path%-json%-source%$", mapjs_url)
 

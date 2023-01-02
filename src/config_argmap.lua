@@ -47,7 +47,7 @@ PATH_DIR_TEMPLATES = os.getenv("PATH_DIR_TEMPLATES") or config.PATH_DIR_LAYOUTS 
 PATH_DIR_INCLUDES = os.getenv("PATH_DIR_INCLUDES") or config.PATH_DIR_LAYOUTS .. "/includes" -- Reads the container and controls html
 
 PATH_INCLUDES_ARGMAP_CONTROLS = os.getenv("PATH_INCLUDES_ARGMAP_CONTROLS") or
-    config.PATH_DIR_INCLUDES .. "/mapjs-testcontrols.html"
+    config.PATH_DIR_INCLUDES .. "/mapjs-widget-controls.html"
 
 -- Reads the container and controls html
 PATH_INCLUDES_ARGMAP_CONTAINER = os.getenv("PATH_INCLUDES_ARGMAP_CONTAINER") or

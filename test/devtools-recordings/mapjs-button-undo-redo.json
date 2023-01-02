@@ -20,7 +20,7 @@
           "aria/add"
         ],
         [
-          "#testcontrols_argmap2 > input.addSubIdea"
+          "#widget_controls_argmap2 > input.addSubIdea"
         ]
       ],
       "offsetY": 6.328125,
@@ -38,7 +38,7 @@
           "aria/undo"
         ],
         [
-          "#testcontrols_argmap2 > input.undo"
+          "#widget_controls_argmap2 > input.undo"
         ]
       ],
       "offsetY": 6.328125,
@@ -56,7 +56,7 @@
           "aria/redo"
         ],
         [
-          "#testcontrols_argmap2 > input.redo"
+          "#widget_controls_argmap2 > input.redo"
         ]
       ],
       "offsetY": 12.328125,

@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 6.0.1
+
+- Rename controls widget partial to `src/layouts/includes/mapjs-widget-controls.html` and update element ID:
+  - `src/layouts/includes/mapjs-map-container.html`: Update includes reference.
+  - `scripts/argmap.env`, `src/config_argmap.lua`, `.vscode/settings.json`, `.vscode/launch.json`: Update relevant variables.
+  - `src/pandoc-argmap.lua`: Update gsub statement so new includes reference is replaced.
+  - `test/devtools-recordings/`: Update recordings to reference correct widget ID.
+  - `test/input/example-updated.html`: Update widget ID.
+  - `.vscode/settings.json`: Remove testcontrols from dictionary.
+
 ## argmap 6.0.0 BREAKING
 
 - `src/layouts`: Move templates and includes into new folder structure.

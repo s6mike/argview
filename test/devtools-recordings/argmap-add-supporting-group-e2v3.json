@@ -21,7 +21,7 @@
       "target": "main",
       "selectors": [
         [
-          "#testcontrols_1  input[type=button][value='Supporting group']"
+          "#widget_controls_1  input[type=button][value='Supporting group']"
         ]
       ],
       "offsetX": 63.80390930175781,

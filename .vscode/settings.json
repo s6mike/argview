@@ -56,7 +56,6 @@
         "pandoc-argmap",
         "parisiensis",
         "subidea",
-        "testcontrols",
         "themecss",
         "tinyyaml",
         "undofunc"
@@ -80,10 +79,13 @@
     "lua.luacheckPath": "",
     "lua.debug.settings.luaVersion": "5.3",
     "lua.debug.settings.conda_env.argmap": "argmap",
+    "lua.debug.settings.argmap.path.src": "${workspaceFolder}/src",
     "lua.debug.settings.argmap.src.folder": "src",
+    "lua.debug.settings.argmap.path.src.lua": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/lua",
+    "lua.debug.settings.argmap.path.src.template.main": "${config:lua.debug.settings.argmap.path.src}/layouts/templates/pandoc-mapjs-main-html5.html",
     "lua.debug.settings.system_root": "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmap}",
     "lua.debug.settings.env.path": "/home/s6mike/.local/bin:${config:lua.debug.settings.system_root}/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
-    "lua.debug.settings.path": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
+    "lua.debug.settings.path": "${config:lua.debug.settings.argmap.path.src.lua}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
     "lua.debug.settings.cpath": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so;./?.so;",
     "Lua.runtime.version": "Lua 5.3",
     "Lua.misc.parameters": [
@@ -92,7 +94,7 @@
     ],
     "Lua.workspace.library": [
         // "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua",
-        "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua",
+        "${config:lua.debug.settings.argmap.path.src.lua}/?.lua",
         "${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua",
@@ -109,9 +111,9 @@
     "markdown-preview-enhanced.usePandocParser": true,
     "markdown-preview-enhanced.enableScriptExecution": true,
     "markdown-preview-enhanced.pandocArguments": [
-        "--template=/home/s6mike/git_projects/argmap/pandoc-templates/mapjs/mapjs-main-html5.html", // Variables don't work in this field
-        "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-argmap.lua", // Variables don't work in this field
-        // "--lua-filter=/home/s6mike/git_projects/argmap/src/pandoc-hello.lua", // Variables don't work in this field
+        "--template=/home/s6mike/git_projects/argmap/src/layouts/templates/pandoc-mapjs-main-html5.html", // Variables don't work in this field
+        "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-argmap.lua", // Variables don't work in this field
+        // "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-hello.lua", // Variables don't work in this field
         "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc", // Don't think variable is working in this field either
         // "--output=/home/s6mike/git_projects/argmap/test/output/html/test.html",
     ],
@@ -132,7 +134,7 @@
     "Lua.runtime.path": [
         "?.lua",
         "?/init.lua",
-        "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/?.lua"
+        "${config:lua.debug.settings.argmap.path.src.lua}/?.lua"
     ],
     "Lua.diagnostics.globals": [
         "pandoc",
