@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 7.0.1
+
+- `scripts/install.sh`: Add code to delete symlinks before re-creating them, to simplify updates.
+
 ## argmap 7.0.0 BREAKING
 
 - Move lua files to `src/lua/`:

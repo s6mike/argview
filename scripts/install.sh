@@ -6,7 +6,7 @@
 # SECTION 0:
 # ----------
 
-# a) Review: intialised values in `scripts/argmap_init_script.sh`
+# a) Review: intialised values in `scripts/argmap.env` and `scripts/argmap_init_script.sh`
 
 # SECTION 1:
 # ----------
@@ -52,7 +52,8 @@ apt-get install texlive-luatex
 
 # TODO: for other users would need to install argmap in current directory
 
-chmod u+x src/*
+chmod u+x "$PATH_DIR_ARGMAP_LUA/"*
+chmod u+x "$PATH_FOLDER_ARGMAP_SRC/js/"*
 
 # Link up pre-commit hook
 ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
@@ -98,9 +99,12 @@ if [ "$1" == 'conda' ]; then
   # a) Review: intialised values in `environment.yml`
 
   # ln -s source_file symbolic_link
-  ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
-  ln -s "$WORKSPACE/src/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
-  ln -s "$WORKSPACE/src/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
+  rm "$CONDA_PREFIX/bin/argmap2mup"
+  ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
+  rm "$CONDA_PREFIX/bin/argmap2tikz"
+  ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
+  rm "$CONDA_PREFIX/bin/mup2argmap"
+  ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
 
   # pandoc data-folder:
   # local: ~/.local/share/pandoc/
@@ -114,23 +118,25 @@ if [ "$1" == 'conda' ]; then
 
   # Adds .lua files to pandoc data-folder:
 
-  # ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
 
   mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
-  ln -s "$WORKSPACE/src/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
+  rm "$CONDA_PREFIX/share/pandoc/filters/pandoc-argmap.lua"
+  ln -s "$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "$CONDA_PREFIX/share/pandoc/filters/"
 
   # TODO is this necessary? Forget why
-  # ln -s "$WORKSPACE/src/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
 
   # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
   # Need to use sudo for both:
   # Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
   # So these shouldn't be needed any longer:
   # mkdir --parents /usr/local/share/lua/5.3/
-  # ln -s "$WORKSPACE/src/config_argmap.lua" /usr/local/share/lua/5.3/
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" /usr/local/share/lua/5.3/
 
   # Fixed issue with vscode-pandoc not finding config_argmap with this link:
-  ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
+  rm "$CONDA_PREFIX/share/lua/5.3/config_argmap.lua"
+  ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
 
   # latex templates e.g. examples/example-template.latex need to go here:
   mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
@@ -148,7 +154,7 @@ if [ "$1" == 'conda' ]; then
 
   # Added since after uninstalling global lua, vscode-pandoc extension fails.
   # Wondering if adding this link (from section 2), would help:
-  #   ln -s "$WORKSPACE/src/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  #   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
 
   ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
@@ -206,10 +212,11 @@ __build_mapjs
 
 # SECTION 5: Clientside Lua
 # ---------------------------------------------------
+# TODO: These links probably need re-creating (add rm commands)
 
 # Ensures fengari script and source map available to site
-ln -s "$WORKSPACE/src/js/fengari-web.js" "$PATH_MJS_SITE/js/fengari-web.js"
-ln -s "$WORKSPACE/src/js/fengari-web.js.map" "$PATH_MJS_SITE/js/fengari-web.js.map"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_MJS_SITE/js/fengari-web.js"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_MJS_SITE/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
-ln -s "$WORKSPACE/src" "$PATH_MJS_SITE/lua"
+ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_MJS_SITE/lua"
 ln -s "$WORKSPACE/lua_modules" "$PATH_MJS_SITE/lua_modules"
