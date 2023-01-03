@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.1
+
+`test/test_scripts/tests.sh`: Fix incorrect path due to using wrong env variable.
+
 ## argmap 8.0.0
 
 - `scripts/argmap.env`: Remove deprecated variables.

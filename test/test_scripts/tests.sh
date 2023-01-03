@@ -87,7 +87,7 @@ fi
 
 # map rendering
 # npx --prefix "$PATH_MJS_HOME" wait-on --timeout 5000 "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" &&
-npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$WORKSPACE/includes/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
+npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
     # create html file needed for testcafe and rendering tests
     # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
