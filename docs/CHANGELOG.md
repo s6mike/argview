@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.0
+
+- `scripts/argmap.env`: Remove deprecated variables.
+
+BREAKING: All env variable changes can potentially be breaking. Use new variables instead to fix.
+
 ## argmap 7.2.0
 
 - `scripts/argmap.env`:
@@ -51,7 +57,7 @@
   - `.vscode/settings.json`: Add new env variable for (new) lua code location, and use it instead of previous hardcoded path.
     - `.vscode/launch.json`: Use new env variable instead of previous hardcoded path.
 
-BREAKING: All env variable changes could potentially be breaking. Updating new variables in argmap.env should fix this.
+BREAKING: All env variable changes can potentially be breaking. Updating new variables in argmap.env should fix this.
   
 ## argmap 6.0.1
 
@@ -74,7 +80,7 @@ BREAKING: All env variable changes could potentially be breaking. Updating new v
   - `mapjs/webpack.config.js`: Update html plugin output to correct folder.
     - `mapjs/scripts/mapjs.env`: Add new env variable to pass to webpack, derived from `argmap.env` `PATH_DIR_INCLUDES` when available.
 
-BREAKING: All env variable changes could potentially be breaking. Updating new variables in argmap.env should fix this.
+BREAKING: All env variable changes can potentially be breaking. Updating new variables in argmap.env should fix this.
 
 ## argmap 5.0.24
 
