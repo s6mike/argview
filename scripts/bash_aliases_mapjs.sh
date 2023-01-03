@@ -103,6 +103,7 @@ testcafe_run() { # tcr
     BROWSER_TESTCAFE='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
     PATH_REPLAY_SCRIPT=${2:-$DEFAULT_SCRIPT}
   else
+    # Try timing speed and then compare with using: --experimental-proxyless
     BROWSER_TESTCAFE='chrome:headless --no-default-browser-check --disable-extensions'
     PATH_REPLAY_SCRIPT=${1:-$DEFAULT_SCRIPT}
   fi

@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 7.1.1
+
+- `scripts/bash_aliases_mapjs.sh`: Add comment.
+- `scripts/argmap.env`: Delete comments.
+
 ## argmap 7.1.0
 
 - `scripts/bash_aliases_argmap.sh`:
@@ -73,7 +78,7 @@ BREAKING: All env variable changes could potentially be breaking. Updating new v
 
 ## argmap 5.0.23
 
-- `mapjs/package.json`: Re-order and add useful fields  to u:
+- `mapjs/package.json`: Re-order and add useful fields:
   - `author` and `contributors`.
   - `os` and `cpu`.
   - Additional `keywords` and longer description.
