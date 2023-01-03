@@ -1,7 +1,7 @@
 -- Configures global variables for lua files.
 
 -- If this file showing up as not found, then in calling file add:
--- package.path = "/home/s6mike/git_projects/argmap/src/?.lua;" .. package.path
+-- package.path = "/home/s6mike/git_projects/argmap/src/lua/?.lua;" .. package.path
 
 -- Use to add breakpoint:
 -- if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
@@ -12,11 +12,12 @@ local config = {}
 
 -- QUESTION: Use PANDOC_SCRIPT_FILE instead?
 config.project_folder = os.getenv("WORKSPACE") or "/home/s6mike/git_projects/argmap"
+-- QUESTION: Should I changes this from a global variable to part of config?
+PATH_DIR_ARGMAP_LUA = os.getenv("PATH_DIR_ARGMAP_LUA") or config.project_folder .. "/src/lua"
 
 -- Didn't work from extension:
 package.path = os.getenv("LUA_PATH") or
-    config.project_folder ..
-    "/src/?.lua;" ..
+    PATH_DIR_ARGMAP_LUA .. "?.lua;" ..
     config.project_folder ..
     "/lua_modules/share/lua/5.3/?/init.lua;" ..
     config.project_folder ..
@@ -43,15 +44,15 @@ PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_M
 DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
 
 PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html
-PATH_DIR_TEMPLATES = os.getenv("PATH_DIR_TEMPLATES") or config.PATH_DIR_LAYOUTS .. "/templates" -- Reads the container and controls html
-PATH_DIR_INCLUDES = os.getenv("PATH_DIR_INCLUDES") or config.PATH_DIR_LAYOUTS .. "/includes" -- Reads the container and controls html
+PATH_DIR_TEMPLATES = os.getenv("PATH_DIR_TEMPLATES") or PATH_DIR_LAYOUTS .. "/templates" -- Reads the container and controls html
+PATH_DIR_INCLUDES = os.getenv("PATH_DIR_INCLUDES") or PATH_DIR_LAYOUTS .. "/includes" -- Reads the container and controls html
 
 PATH_INCLUDES_ARGMAP_CONTROLS = os.getenv("PATH_INCLUDES_ARGMAP_CONTROLS") or
-    config.PATH_DIR_INCLUDES .. "/mapjs-widget-controls.html"
+    PATH_DIR_INCLUDES .. "/mapjs-widget-controls.html"
 
 -- Reads the container and controls html
 PATH_INCLUDES_ARGMAP_CONTAINER = os.getenv("PATH_INCLUDES_ARGMAP_CONTAINER") or
-    config.PATH_DIR_INCLUDES .. "/mapjs-map-container.html"
+    PATH_DIR_INCLUDES .. "/mapjs-map-container.html"
 
 local logging = require 'logging'
 Logger = logging.new(function(self, level, message)
@@ -66,7 +67,7 @@ end)
 
 -- Set to .DEBUG to activate logging
 Logger:setLevel(logging.ERROR)
-Logger:setLevel(logging.DEBUG)
+-- Logger:setLevel(logging.DEBUG)
 
 
 -- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension

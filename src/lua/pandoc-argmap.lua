@@ -82,7 +82,8 @@ local function argmap2image(src, filetype, outfile)
     local o = nil
     local tmp = os.tmpname()
     local tmpdir = string.match(tmp, "^(.*[\\/])") or "."
-    local opts = { config_argmap.project_folder .. "/src/argmap2tikz.lua" }
+    -- Surely can just assume they are in the same directory?
+    local opts = { PATH_DIR_ARGMAP_LUA .. "/argmap2tikz.lua" }
     opts[#opts + 1] = "-s"
     if format == "latex" or format == "beamer" then
         -- for any format other than raw tikz we need a standalone tex file
@@ -93,7 +94,7 @@ local function argmap2image(src, filetype, outfile)
     -- e.g. io.stderr:write("**SCRIPT_FILE: " .. PANDOC_SCRIPT_FILE .. "\n\n")
 
     -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
-    -- local tex = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2tikz.lua", opts, src) -- convert map to standalone tex
+    -- local tex = pandoc.pipe(PATH_DIR_ARGMAP_LUA .. "/argmap2tikz.lua", opts, src) -- convert map to standalone tex
     local tex = pandoc.pipe('lua', opts, src) -- convert map to standalone tex
     if format == 'latex' or format == 'beamer' then
         -- for latex, just return raw tex
@@ -178,7 +179,7 @@ local function CodeBlock(block)
         -- TODO: have stopped opt "-p" forcing upload, but might want to remove this flag too/instead.
 
         -- Now using lua as main command, which means relevant lua script is now the first opt:
-        local argmap2mup_opts = { config_argmap.project_folder .. "/src/argmap2mup.lua" }
+        local argmap2mup_opts = { PATH_DIR_ARGMAP_LUA .. "/argmap2mup.lua" }
         argmap2mup_opts[#argmap2mup_opts + 1] = "-p" -- Defaults to publicly accessible map.
         local name = block.attributes["name"]
         if name and name ~= "" then
@@ -204,7 +205,7 @@ local function CodeBlock(block)
             -- convert and upload to google drive, and return a yaml
             -- argument map with the gid as attribute.
             -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
-            -- local output = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
+            -- local output = pandoc.pipe(PATH_DIR_ARGMAP_LUA .. "/argmap2mup.lua", argmap2mup_opts, original)
             local output = pandoc.pipe('lua', argmap2mup_opts, original)
             gid = trim(output)
 
@@ -224,7 +225,7 @@ local function CodeBlock(block)
 
             -- Now I've changed argmap2mup.lua, this may output the JSON rather than the upload gid
             -- So code works even when shebang directive not included in lua script, using lua as pipe's command, so adding script as first argument:
-            -- local output_extra_line = pandoc.pipe(config_argmap.project_folder .. "/src/argmap2mup.lua", argmap2mup_opts, original)
+            -- local output_extra_line = pandoc.pipe(PATH_DIR_ARGMAP_LUA .. "/argmap2mup.lua", argmap2mup_opts, original)
             local output_extra_line = pandoc.pipe('lua', argmap2mup_opts, original)
 
             local output = trim(output_extra_line)

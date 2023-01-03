@@ -80,12 +80,12 @@
     "lua.debug.settings.luaVersion": "5.3",
     "lua.debug.settings.conda_env.argmap": "argmap",
     "lua.debug.settings.argmap.path.src": "${workspaceFolder}/src",
-    "lua.debug.settings.argmap.src.folder": "src",
-    "lua.debug.settings.argmap.path.src.lua": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/lua",
-    "lua.debug.settings.argmap.path.src.template.main": "${config:lua.debug.settings.argmap.path.src}/layouts/templates/pandoc-mapjs-main-html5.html",
+    // Looks like setting can have maximum of 5 dots, since this one failed when adding another:
+    "lua.debug.settings.argmap.path.src-lua": "${config:lua.debug.settings.argmap.path.src}/lua",
+    "lua.debug.settings.argmap.path.src-template-main": "${config:lua.debug.settings.argmap.path.src}/layouts/templates/pandoc-mapjs-main-html5.html",
     "lua.debug.settings.system_root": "/opt/miniconda3/envs/${config:lua.debug.settings.conda_env.argmap}",
     "lua.debug.settings.env.path": "/home/s6mike/.local/bin:${config:lua.debug.settings.system_root}/bin:/opt/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
-    "lua.debug.settings.path": "${config:lua.debug.settings.argmap.path.src.lua}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
+    "lua.debug.settings.path": "${config:lua.debug.settings.argmap.path.src-lua}/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?.lua;${workspaceFolder}/lua_modules/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua;${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua;",
     "lua.debug.settings.cpath": "${workspaceFolder}/lua_modules/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so;${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so;./?.so;",
     "Lua.runtime.version": "Lua 5.3",
     "Lua.misc.parameters": [
@@ -94,7 +94,7 @@
     ],
     "Lua.workspace.library": [
         // "/home/s6mike/.vscode/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger/?.lua",
-        "${config:lua.debug.settings.argmap.path.src.lua}/?.lua",
+        "${config:lua.debug.settings.argmap.path.src-lua}/?.lua",
         "${config:lua.debug.settings.system_root}/share/lua/5.3/?/init.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.lua",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?/init.lua",
@@ -134,7 +134,7 @@
     "Lua.runtime.path": [
         "?.lua",
         "?/init.lua",
-        "${config:lua.debug.settings.argmap.path.src.lua}/?.lua"
+        "${config:lua.debug.settings.argmap.path.src-lua}/?.lua"
     ],
     "Lua.diagnostics.globals": [
         "pandoc",

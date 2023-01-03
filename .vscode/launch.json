@@ -17,7 +17,7 @@
             "type": "lua",
             "request": "launch",
             "name": "Lua Debugger a2m multiline example",
-            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
                 "${workspaceFolder}/test/issues/WhiteSwan_minus_inline_objections_restoring.yml",
             ],
@@ -32,7 +32,7 @@
             "type": "lua",
             "request": "launch",
             "name": "Lua Debugger a2m notes example",
-            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
                 "${workspaceFolder}/examples/example-2.yml",
             ],
@@ -47,7 +47,7 @@
             "type": "lua",
             "request": "launch",
             "name": "Lua Debugger a2m",
-            "program": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua",
+            "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
                 "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
                 ">",
@@ -68,7 +68,7 @@
             "name": "Lua Debugger: pandoc-argmap.lua",
             "program": "/home/s6mike/.local/bin/pandoc",
             "arg": [
-                "--template ${config:lua.debug.settings.argmap.path.src.template.main}",
+                "--template ${config:lua.debug.settings.argmap.path.src-template-main}",
                 "${workspaceFolder}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md",
                 "-o",
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
@@ -94,7 +94,7 @@
             "args": [
                 "${workspaceFolder}/examples/example.yml",
                 "|",
-                "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
+                "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -109,7 +109,7 @@
             "request": "launch",
             "name": "Lua Local: argmap2mup",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
+                "command": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua"
             },
             "args": [
                 "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
@@ -129,7 +129,7 @@
             "request": "launch",
             "name": "Lua Local: mup2argmap",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/mup2argmap.lua"
+                "command": "${config:lua.debug.settings.argmap.path.src-lua}/mup2argmap.lua"
             },
             "args": [
                 "${workspaceFolder}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json",
@@ -148,7 +148,7 @@
             "request": "launch",
             "name": "Lua Local: argmap2tikz",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2tikz.lua"
+                "command": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2tikz.lua"
             },
             "args": [
                 "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
@@ -170,7 +170,7 @@
                 "command": "pandoc"
             },
             "args": [
-                "--template ${config:lua.debug.settings.argmap.path.src.template.main}",
+                "--template ${config:lua.debug.settings.argmap.path.src-template-main}",
                 "${workspaceFolder}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md",
                 "-o",
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-debug.html",
@@ -184,7 +184,8 @@
                 "LUA_PATH": "${config:lua.debug.settings.path}",
                 "LUA_CPATH": "${config:lua.debug.settings.cpath}"
             },
-            "stopOnEntry": true
+            "stopOnEntry": true,
+            "verbose": true,
         },
         {
             "type": "lua-local",
@@ -194,7 +195,7 @@
                 "command": "pandoc"
             },
             "args": [
-                "--template ${config:lua.debug.settings.argmap.path.src.template.main}",
+                "--template ${config:lua.debug.settings.argmap.path.src-template-main}",
                 "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified-meta-mapjs.md",
                 "-o",
                 "${workspaceFolder}/test/output/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html",
@@ -240,7 +241,7 @@
             "request": "launch",
             "name": "Debug argmap2mup gdrive upload",
             "program": {
-                "command": "${workspaceFolder}/${config:lua.debug.settings.argmap.src.folder}/argmap2mup.lua"
+                "command": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua"
             },
             "args": [
                 "-u",

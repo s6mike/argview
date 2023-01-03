@@ -47,10 +47,10 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 
 ## version control functions
 
-# Checks `src/` for lua files with leftover test/debug code.
+# Checks `src/lua` for lua files with leftover test/debug code.
 # Used by pre-commit hook
 __check_repo() {
-  grep -Frni "$WORKSPACE/src" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+  grep -Frni "$PATH_DIR_ARGMAP_LUA" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
 }
 
 # Used by pre-commit hook
@@ -92,14 +92,14 @@ a2m() {                                    # a2m test/input/example1-clearly-fal
     output=${2:-$PATH_MJS_JSON/$name.json} &&
     echo "output: $output" "${@:2}" &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
-    lua "$WORKSPACE/src/argmap2mup.lua" "$1" >"$output" &&
+    lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
 }
 
 # Convert to map.js and upload
 a2mu() { # a2mu test/output/example1-simple.yml
   name=$(basename --suffix=".yml" "$1") &&
-    lua "$WORKSPACE/src/argmap2mup.lua" --upload --name "$name.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
+    lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" --upload --name "$name.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
     echo "Uploaded: $name.mup to GDrive."
 }
 
@@ -109,7 +109,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
   name=$(basename --suffix=".json" "$1")
   output=${2:-$DIR_PUBLIC_OUTPUT/$name.yml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  lua "$WORKSPACE/src/mup2argmap.lua" "$1" >"$output" &&
+  lua "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
 }
 
@@ -117,7 +117,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 a2t() { # a2t test/output/example1-simple.yml (output path)
   name=$(basename --suffix=".yml" "$1") &&
     mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")" && # Ensures output folder exists
-    lua "$WORKSPACE/src/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$name.tex}" &&
+    lua "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$name.tex}" &&
     echo "${2:-$DIR_PUBLIC_OUTPUT/$name.tex}"
 }
 
@@ -135,7 +135,7 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   # QUESTION: Might want to make debug default, but with test option for normal?
   #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$name.html"
@@ -182,7 +182,7 @@ md2htm() { # md2htm test/input/example-updated.md (output filename) (optional pa
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
 }
@@ -194,7 +194,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"

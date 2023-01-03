@@ -10,6 +10,24 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 7.0.0 BREAKING
+
+- Move lua files to `src/lua/`:
+  - `src/lua/`:
+    - `config_argmap.lua`: Add new global variable for (new) lua code location, and use it instead of previous hardcoded paths.
+    - `pandoc-argmap.lua`: Use new global variable for pipe calls, instead of hardcoded paths.
+  - `argmap-7.0.0-14.rockspec`: Update config and make new release.
+  - `scripts/`:
+    - `/argmap.env`: Add new env variable for (new) lua code location, and use it instead of previous hardcoded path.
+      - `bash_aliases_argmap.sh`, `install.sh`: Use new env variable instead of previous hardcoded path.
+    - `test/`:
+      - `test_scripts/bash_aliases_argmap_test.sh`: Use new env variable instead of previous hardcoded path.
+      - `input/`: Update yaml headers to use new shell env variable.
+  - `.vscode/settings.json`: Add new env variable for (new) lua code location, and use it instead of previous hardcoded path.
+    - `.vscode/launch.json`: Use new env variable instead of previous hardcoded path.
+
+BREAKING: All env variable changes could potentially be breaking. Updating new variables in argmap.env should fix this.
+  
 ## argmap 6.0.1
 
 - Rename controls widget partial to `src/layouts/includes/mapjs-widget-controls.html` and update element ID:
@@ -75,7 +93,7 @@ BREAKING: All env variable changes could potentially be breaking. Updating new v
 
 - [README.md](../README.md): Fix broken links by restoring `test/input/example-updated.html`.
 
-## argmap 5.0.17
+## argmap 5.0.17 Release Version
 
 - Update rockspec for new release: `argmap-5.0.17-13.rockspec`.
   - Update labels.
@@ -98,7 +116,7 @@ BREAKING: All env variable changes could potentially be breaking. Updating new v
 - Fix `mapjs/package.json` to refer to this repo rather than original mindmup repo.
   - Update `mapjs/package-lock.json` to match.
 
-## argmap 5.0.12
+## argmap 5.0.12 Release Version
 
 - Update rockspec for new release: `argmap-5.0.12-12.rockspec`
 
@@ -172,7 +190,7 @@ BREAKING
   - `test/test_scripts/bash_aliases_argmap_test.sh`
   - `test/test_scripts/tests.sh`
 
-## argmap 4.21.43
+## argmap 4.21.43 Release Version
 
 - `argmap-4.21.43-11.rockspec`: Add new release version.
 
@@ -530,7 +548,7 @@ ISSUE: This means no hashing to avoid caching issues, so will need to fix this b
 - Check in symbolic link for `mapjs/site/output` folder to `test/output`.
   - Update `.gitignore` to allow this.
 
-## argmap 4.18.10
+## argmap 4.18.10 Release Version
 
 - `argmap-4.18.10-10.rockspec`: Update rockspec to reflect new release version.
 

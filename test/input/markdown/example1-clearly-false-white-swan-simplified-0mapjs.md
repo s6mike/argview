@@ -5,7 +5,7 @@ template: pandoc-templates/mapjs/mapjs-main-html5.html
 #   https://workflowy.com/#/ee624e71f40c
 # css: test/mapjs-default-styles.css
 # mapjs-output-js: test/bundle.js
-# lua-filter: "$WORKSPACE/src/pandoc-argmap.lua"
+# lua-filter: "$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua"
 # data-dir: "$PANDOC_DATA_DIR"
 argmaps: true
 ---
