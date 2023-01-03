@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.2
+
+- `argmap-8.0.2-15.rockspec`: Remove extra 0 from version number.
+  - Update rockspec for new version.
+
 ## argmap 8.0.1
 
 `test/test_scripts/tests.sh`: Fix incorrect path due to using wrong env variable.
@@ -51,7 +56,7 @@ BREAKING: All env variable changes can potentially be breaking. Use new variable
   - `src/lua/`:
     - `config_argmap.lua`: Add new global variable for (new) lua code location, and use it instead of previous hardcoded paths.
     - `pandoc-argmap.lua`: Use new global variable for pipe calls, instead of hardcoded paths.
-  - `argmap-7.0.0-14.rockspec`: Update config and make new release.
+  - `argmap-7.0.0-14.rockspec`: Update config and make new release. (ISSUE: version number in file had extra 0, so it won't run. Fixed in 8.0.2).
   - `scripts/`:
     - `/argmap.env`: Add new env variable for (new) lua code location, and use it instead of previous hardcoded path.
       - `bash_aliases_argmap.sh`, `install.sh`: Use new env variable instead of previous hardcoded path.
