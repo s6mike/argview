@@ -184,15 +184,15 @@ mkdir --parent "$WORKSPACE/test/output/html"
 # For dev web server:
 # Link up test/output and test/input with mapjs/public
 
-rm "$PATH_MJS_SITE/$(basename "$DIR_PUBLIC_OUTPUT")"
-ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_MJS_SITE/."
+rm "$PATH_DIR_PUBLIC/$(basename "$DIR_PUBLIC_OUTPUT")"
+ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_DIR_PUBLIC/."
 
-rm "$PATH_MJS_SITE/$(basename "$DIR_HTML_INPUT")"
-ln -s "$DIR_HTML_INPUT" "$PATH_MJS_SITE/."
+rm "$PATH_DIR_PUBLIC/$(basename "$DIR_HTML_INPUT")"
+ln -s "$DIR_HTML_INPUT" "$PATH_DIR_PUBLIC/."
 
 # Add index.html
-rm "$PATH_MJS_SITE/index.html"
-ln -s "$PATH_MJS_SITE/$PATH_OUTPUT_FILE_HTML" "$PATH_MJS_SITE/index.html"
+rm "$PATH_DIR_PUBLIC/index.html"
+ln -s "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" "$PATH_DIR_PUBLIC/index.html"
 
 #nodejs installed with conda
 
@@ -215,8 +215,8 @@ __build_mapjs
 # TODO: These links probably need re-creating (add rm commands)
 
 # Ensures fengari script and source map available to site
-ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_MJS_SITE/js/fengari-web.js"
-ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_MJS_SITE/js/fengari-web.js.map"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_DIR_PUBLIC/js/fengari-web.js"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_DIR_PUBLIC/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
-ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_MJS_SITE/lua"
-ln -s "$WORKSPACE/lua_modules" "$PATH_MJS_SITE/lua_modules"
+ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_DIR_PUBLIC/lua"
+ln -s "$WORKSPACE/lua_modules" "$PATH_DIR_PUBLIC/lua_modules"

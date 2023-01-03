@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 7.2.0
+
+- `scripts/argmap.env`:
+  - Deprecate env variable `PATH_MJS_SITE`, replace with new env variable `PATH_DIR_PUBLIC`.
+  - Replace missed `PATH_DIR_INCLUDES` with `PATH_DIR_INCLUDES`.
+
 ## argmap 7.1.1
 
 - `scripts/bash_aliases_mapjs.sh`: Add comment.

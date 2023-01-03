@@ -30,7 +30,7 @@ get-site-path() {
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
   site_path="${full_path/test/$DIR_MJS/$DIR_PUBLIC}"
   # echo "site_path: $site_path"
-  output_path=$(realpath --no-symlinks --relative-to="$PATH_MJS_HOME/$DIR_PUBLIC" "$site_path")
+  output_path=$(realpath --no-symlinks --relative-to="$PATH_DIR_PUBLIC" "$site_path")
   echo "$output_path"
 }
 
@@ -185,7 +185,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --include-after-body "$PATH_FOLDER_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --include-after-body "$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
 }
