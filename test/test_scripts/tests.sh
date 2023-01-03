@@ -91,28 +91,30 @@ npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$WORKSPACE/includes/webpa
     # create html file needed for testcafe and rendering tests
     # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
-    # j2hf will still fail if json file missing, but it's part of repo.
+    # j2hf will still fail if json file missing, but it's part of repo so that shouldn't happen.
     # TODO: add option for not opening the output, since this is just to set up tests.
     j2hf "$INPUT_FILE_JSON"
 j2hf "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
 j2hf "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
-__test md2hf "$INPUT_FILE_MD0" #6
+__test md2htm "$INPUT_FILE_MD" #6
+__test md2hf "$INPUT_FILE_MD0" #7
+
 # Use wait-on --log if diagnostics needed (also verbose option)
 npx --prefix "$PATH_MJS_HOME" wait-on --timeout 3000 "$PATH_MJS_SITE/$PATH_OUTPUT_FILE_HTML" &&
     # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
-    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #7
-__test md2hf "$INPUT_FILE_MD"                            #8
-__test md2hf "$INPUT_FILE_MD2"                           #9
-__test md2hf "$INPUT_FILE_MD_META"                       #10
+    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #8
+__test md2hf "$INPUT_FILE_MD"                            #9
+__test md2hf "$INPUT_FILE_MD2"                           #10
+__test md2hf "$INPUT_FILE_MD_META"                       #11
 
 # To make browser test visible, add 'head' as first arg
-__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #11 left click
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #12
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #13
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #14
-__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #15
-__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #16
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #12 left click
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #13
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #14
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #15
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #16
+__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #17
 
 # These don't work
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"            #11 add child button

@@ -24,5 +24,6 @@ alias argmh2='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simpl
 alias argmhmeta='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html; md2hf $INPUT_FILE_MD_META'
 alias argmp='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.pdf; md2pdf $INPUT_FILE_MD'
 alias argmph='rm $DIR_PUBLIC_OUTPUT/example.pdf; rm $DIR_PUBLIC_OUTPUT/header.tex; $PATH_DIR_ARGMAP_LUA/argmap2tikz.lua -i > $DIR_PUBLIC_OUTPUT/header.tex; pandoc $INPUT_FILE_MD -o $DIR_PUBLIC_OUTPUT/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $DIR_PUBLIC_OUTPUT/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $DIR_PUBLIC_OUTPUT/example.pdf"'
+alias argmf='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
 alias argt='$WORKSPACE/test/test_scripts/tests.sh'
 alias argth='$WORKSPACE/test/test_scripts/tests.sh html'

@@ -67,6 +67,7 @@ __clean_repo() {
   rm "$PATH_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
+  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
@@ -172,17 +173,19 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
 }
 
 # Convert markdown to html fragment
-# TODO: lua filter should include webpack js output etc even for fragment
-md2htm() { # md2htm test/input/example-updated.md (output filename) (optional pandoc arguments)
-  # __check_server_on # No point since open-debug runs it too.
-  name=$(basename --suffix=".md" "$1")
+# QUESTION Would it be better to swap round md2htm and m2dhf names?
+# Currently using include after body, which works fine.
+#   QUESTION: Use lua filter to include webpack js output instead?
+md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (optional pandoc arguments)
+  input="${1:-$INPUT_FILE_MD}"
+  name=$(basename --suffix=".md" "$input")-fragment
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # TODO: Put this into new function?
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --include-after-body "$PATH_FOLDER_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
 }

@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 7.1.0
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Fix `md2htm()` so it includes mapjs `webpack-dist-tags.html` output, and now displays mapjs.
+  - Add default value for `md2htm()`.
+  - Update `__clean_repo()`.
+  - `test/test_scripts/`:
+    - `bash_aliases_argmap_test.sh`: Add shortcut for above
+    - `tests.sh`: Add above as above as test.
+
 ## argmap 7.0.1
 
 - `scripts/install.sh`: Add code to delete symlinks before re-creating them, to simplify updates.
