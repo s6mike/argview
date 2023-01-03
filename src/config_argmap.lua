@@ -42,14 +42,16 @@ DIR_PUBLIC_OUTPUT = os.getenv("DIR_PUBLIC_OUTPUT") or (config.project_folder .. 
 PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_MJS_JSON)
 DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
 
-PATH_FOLDER_TEMPLATES_MAPJS = os.getenv("PATH_FOLDER_TEMPLATES_MAPJS") or config.project_folder ..
-    "/pandoc-templates/mapjs"
+PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html
+PATH_DIR_TEMPLATES = os.getenv("PATH_DIR_TEMPLATES") or config.PATH_DIR_LAYOUTS .. "/templates" -- Reads the container and controls html
+PATH_DIR_INCLUDES = os.getenv("PATH_DIR_INCLUDES") or config.PATH_DIR_LAYOUTS .. "/includes" -- Reads the container and controls html
+
+PATH_INCLUDES_ARGMAP_CONTROLS = os.getenv("PATH_INCLUDES_ARGMAP_CONTROLS") or
+    config.PATH_DIR_INCLUDES .. "/mapjs-testcontrols.html"
 
 -- Reads the container and controls html
-PATH_TEMPLATE_ARGMAP_CONTAINER = os.getenv("PATH_TEMPLATE_ARGMAP_CONTAINER") or
-    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-map-container.html"
-PATH_TEMPLATE_ARGMAP_CONTROLS = os.getenv("PATH_TEMPLATE_ARGMAP_CONTROLS") or
-    PATH_FOLDER_TEMPLATES_MAPJS .. "/mapjs-testcontrols.html"
+PATH_INCLUDES_ARGMAP_CONTAINER = os.getenv("PATH_INCLUDES_ARGMAP_CONTAINER") or
+    config.PATH_DIR_INCLUDES .. "/mapjs-map-container.html"
 
 local logging = require 'logging'
 Logger = logging.new(function(self, level, message)
@@ -64,6 +66,8 @@ end)
 
 -- Set to .DEBUG to activate logging
 Logger:setLevel(logging.ERROR)
+Logger:setLevel(logging.DEBUG)
+
 
 -- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
 Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))

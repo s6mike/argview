@@ -280,15 +280,15 @@ local function CodeBlock(block)
                 f:close()
 
                 -- Reads in the html files and then combines them with substitutions
-                local _, argmap_controls_html_raw = pandoc.mediabag.fetch(PATH_TEMPLATE_ARGMAP_CONTROLS)
-                local _, html_raw_argmap_container = pandoc.mediabag.fetch(PATH_TEMPLATE_ARGMAP_CONTAINER)
+                local _, html_raw_argmap_controls = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTROLS)
+                local _, html_raw_argmap_container = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTAINER)
 
                 --  % escapes special characters
                 -- First gsub strips away pandoc line comments `$-- `
                 -- Second ensures each id is unique
-                local rawhtml = html_raw_argmap_container:gsub("%$%-%- [^\n]*\n?", ""):
-                    gsub("%$mapjs%-testcontrols%.html%(%)%$",
-                        argmap_controls_html_raw)
+                local rawhtml = html_raw_argmap_container:gsub("%$%-%- [^\n]*\n?", "")
+                    :gsub("%$../includes/mapjs%-testcontrols%.html%(%)%$",
+                         html_raw_argmap_controls)
                     :gsub("%$BLOCK_ID%$", block_id):gsub("%$path%-json%-source%$", mapjs_url)
 
                 return pandoc.RawBlock(format, rawhtml)

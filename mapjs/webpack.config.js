@@ -36,7 +36,10 @@ module.exports = {
 	plugins: [
 		// new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
-			filename: path.resolve(__dirname, '../includes/webpack-dist-tags.html'),
+			// QUESTION: Would it be better to be using path.resolve and relative path, instead of absolute path?
+			// 	Could use realpath to generate the relative path
+			// filename: path.resolve(__dirname, '../src/layouts/includes/webpack-dist-tags.html'),
+			filename: process.env.PATH_MJS_HTML_DIST_TAGS + '/webpack-dist-tags.html',
 			// Outputs script tags only:
 			inject: 'body',
 			templateContent: '',

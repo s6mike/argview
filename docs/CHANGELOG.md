@@ -10,9 +10,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 5.0.25
+## argmap 6.0.0 BREAKING
 
-- Re-arrange templates and includes into new folder structure
+- `src/layouts`: Move templates and includes into new folder structure.
+  - Update all includes and templates to use new include paths.
+  - `scripts/`: Add and update env variables to use new paths.
+  - `src/`:
+    - `config_argmap.lua`: Update to match new env variables.
+    - `pandoc-argmap.lua`: Update to use new env variables and to replace new path to control widget include.
+  - `mapjs/webpack.config.js`: Update html plugin output to correct folder.
+    - `mapjs/scripts/mapjs.env`: Add new env variable to pass to webpack, derived from `argmap.env` `PATH_DIR_INCLUDES` when available.
+
+BREAKING: All env variable changes could potentially be breaking. Updating new variables in argmap.env should fix this.
 
 ## argmap 5.0.24
 

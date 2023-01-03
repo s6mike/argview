@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$" $if(dir)$ dir="$dir$" $endif$>
-$../../includes/argmap-head-element.html()$
+$../includes/argmap-head-element.html()$
 
 <body>
   $for(include-before)$
@@ -36,16 +36,16 @@ $../../includes/argmap-head-element.html()$
   $endif$
   <main>
     ${if(argmap-input)}
-    $../../includes/argmap-input-widget.html()$
+    $../includes/argmap-input-widget.html()$
     ${endif}
     $body$
     ${if(quick-container)}
-    $mapjs-map-container.html()$
+    $../includes/mapjs-map-container.html()$
     ${endif}
   </main>
   <style id="themecss">
   </style>
-  $../../includes/webpack-dist-tags.html()$
+  $../includes/webpack-dist-tags.html()$
   ${if(argmap-input)}
   <script src="/js/fengari-web.js" type="text/javascript" async></script>
   <script src="/lua/client_argmap2mapjs.lua" type="application/lua" async></script>

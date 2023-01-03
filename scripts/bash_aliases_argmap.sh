@@ -125,7 +125,6 @@ a2t() { # a2t test/output/example1-simple.yml (output path)
 # IDEA: Could combine md2htm by checking for an argument like --fragment and witholding template argument etc
 #   Would need to use getopts and then pop the --fragment so that the number of other arguments are not affected
 md2hf() { # md2h test/input/example.md (output filename) (optional pandoc arguments)
-  # __check_server_on # No point since open-debug runs it too.
   input="${1:-$INPUT_FILE_MD2}"
   name=$(basename --suffix=".md" "$input")
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
@@ -136,7 +135,7 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$WORKSPACE/src/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   # QUESTION: Might want to make debug default, but with test option for normal?
   #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$name.html"
@@ -147,7 +146,6 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
 # j2hf public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json (output filename) (optional pandoc arguments)
 # shellcheck disable=SC2120 # Disables lint error from a2hf() passing to j2hf
 j2hf() { # j2hfa Default output with argmap input activated
-  # __check_server_on # No point since open-debug runs it too.
   # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
   # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
   input="${1:-$INPUT_FILE_JSON}"
@@ -164,7 +162,7 @@ j2hf() { # j2hfa Default output with argmap input activated
   # mkdir --parent "$(dirname "$path_output_json")" # Ensures JSON output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # Add --metadata=argmap-input:true to enable argmap input functionality:
-  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$html_output"
   open-debug "$html_output"
 }
