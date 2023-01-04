@@ -33,6 +33,7 @@ source scripts/argmap_init_script.sh
 export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAP/bin:$PATH
 
 # Export conda environment argmap to yaml file
+#  QUESTION: Surely these two lines do the same thing?
 conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$ENV_FILE"
 
 __save_env
@@ -53,6 +54,7 @@ __save_env
 # fi
 
 # Run test script tests.sh
+#  TODO: I've since some of above functionality to test script, so now there will be duplication.
 test/test_scripts/tests.sh
 
 TEST_EXIT=$?

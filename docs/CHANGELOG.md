@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.3
+
+- `test/test_scripts/tests.sh`: lint rockspec as test, plus update `conda.env`.
+  - `scripts/git_hooks/pre-commit`: Add comments.
+
 ## argmap 8.0.2
 
 - `argmap-8.0.2-15.rockspec`: Remove extra 0 from version number.

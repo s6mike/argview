@@ -51,7 +51,7 @@ __test() {
     echo -en "$PRE "
 
     # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
-    if "$1" "$2" >>"$PATH_TEST_LOG"; then
+    if "$@" >>"$PATH_TEST_LOG"; then
         echo -e "${COL_PASS}Pass${COL_RESET}"
     else
         echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
@@ -78,11 +78,18 @@ __test() {
 # done
 
 if [ "$1" != html ]; then
-    __test a2m "$INPUT_FILE_YML"       #1
-    __test a2m "$INPUT_FILE_YML_NOTES" #2
-    __test m2a "$INPUT_FILE_JSON"      #3
-    __test a2t "$INPUT_FILE_YML"       #4
-    __test a2mu "$INPUT_FILE_YML"      #5
+    # Check/update config
+    __save_env
+
+    # TODO: Put this into function
+    rockspec_file=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+    __test luarocks lint "$rockspec_file"                      #1
+
+    __test a2m "$INPUT_FILE_YML"       #2
+    __test a2m "$INPUT_FILE_YML_NOTES" #3
+    __test m2a "$INPUT_FILE_JSON"      #4
+    __test a2t "$INPUT_FILE_YML"       #5
+    __test a2mu "$INPUT_FILE_YML"      #6
 fi
 
 # map rendering
@@ -97,24 +104,24 @@ npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpac
 j2hf "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
 j2hf "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
-__test md2htm "$INPUT_FILE_MD" #6
-__test md2hf "$INPUT_FILE_MD0" #7
+__test md2htm "$INPUT_FILE_MD" #7
+__test md2hf "$INPUT_FILE_MD0" #8
 
 # Use wait-on --log if diagnostics needed (also verbose option)
 npx --prefix "$PATH_MJS_HOME" wait-on --timeout 3000 "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" &&
     # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
-    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #8
-__test md2hf "$INPUT_FILE_MD"                            #9
-__test md2hf "$INPUT_FILE_MD2"                           #10
-__test md2hf "$INPUT_FILE_MD_META"                       #11
+    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #9
+__test md2hf "$INPUT_FILE_MD"                            #10
+__test md2hf "$INPUT_FILE_MD2"                           #11
+__test md2hf "$INPUT_FILE_MD_META"                       #12
 
 # To make browser test visible, add 'head' as first arg
-__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #12 left click
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #13
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #14
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #15
-__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #16
-__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #17
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #13 left click
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #14
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #15
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #16
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #17
+__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 
 # These don't work
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"            #11 add child button
@@ -128,7 +135,7 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #17
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES"
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #17
+    __test md2pdf "$INPUT_FILE_MD0" #19
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
