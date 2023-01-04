@@ -134,9 +134,28 @@ if [ "$1" == 'conda' ]; then
   # mkdir --parents /usr/local/share/lua/5.3/
   # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" /usr/local/share/lua/5.3/
 
-  # Fixed issue with vscode-pandoc not finding config_argmap with this link:
+  # -----
+  # For vscode pandoc extensions:
+
+  # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
+  #   QUESTION: Do I need first of these?
   rm "$CONDA_PREFIX/share/lua/5.3/config_argmap.lua"
   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
+  rm "$CONDA_PREFIX/share/pandoc/config_argmap.lua"
+  ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/pandoc/"
+
+  #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
+  rm /js
+  ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
+
+  # 3. Install rockspec in global scope
+  rockspec_file=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+  # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
+  #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
+
+  luarocks remove
+  luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
+  # -----
 
   # latex templates e.g. examples/example-template.latex need to go here:
   mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"

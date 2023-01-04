@@ -101,7 +101,13 @@
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/?.so",
         "${config:lua.debug.settings.system_root}/lib/lua/5.3/loadall.so",
     ],
-    "pandoc.htmlOptString": "--lua-filter=pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
+    // https://stackoverflow.com/questions/48661253/how-to-pass-variables-to-pandoc-for-use-in-html-template:
+    //  "pandoc.htmlOptString": "-s -f gfm -t html5 --template=pandoc-template.html"
+    // TODO: Try template
+    // For opening on server:
+    "pandoc.htmlOptString": "-o /home/s6mike/git_projects/argmap/test/output/html/vscode-pandoc-output.html --include-after-body /home/s6mike/git_projects/argmap/src/layouts/includes/webpack-dist-tags.html --metadata=css:/mapjs-default-styles.css --metadata=lang:en --lua-filter=pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
+    // For opening in local browser (need to use --allow-file-access-from-files to stop CORS issues, and symlink js and json dependencies):
+    // "pandoc.htmlOptString": "--include-after-body /home/s6mike/git_projects/argmap/src/layouts/includes/webpack-dist-tags.html --metadata=css:/home/s6mike/git_projects/argmap/mapjs/public/mapjs-default-styles.css --metadata=lang:en --lua-filter=pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
     "pandoc.pdfOptString": "--lua-filter pandoc-argmap.lua --pdf-engine lualatex --template examples/example-template.latex --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
     "pandoc.epubOptString": "--lua-filter pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
     "pandoc.docbookOptString": "--lua-filter pandoc-argmap.lua --data-dir=/opt/miniconda3/envs/argmap/share/pandoc",
@@ -112,9 +118,11 @@
     "markdown-preview-enhanced.enableScriptExecution": true,
     "markdown-preview-enhanced.pandocArguments": [
         "--template=/home/s6mike/git_projects/argmap/src/layouts/templates/pandoc-mapjs-main-html5.html", // Variables don't work in this field
-        "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-argmap.lua", // Variables don't work in this field
-        // "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-hello.lua", // Variables don't work in this field
-        "--data-dir=${config:lua.debug.settings.system_root}/share/pandoc", // Don't think variable is working in this field either
+        "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-hello.lua", // Variables don't work in this field
+        // "--lua-filter=/home/s6mike/git_projects/argmap/src/lua/pandoc-argmap.lua", // Variables don't work in this field
+        "--data-dir=/opt/miniconda3/envs/argmap/share/pandoc", // Don't think variable is working in this field either
+        // "--include-after-body /home/s6mike/git_projects/argmap/src/layouts/includes/webpack-dist-tags.html",
+        "--metadata=css:/home/s6mike/git_projects/argmap/mapjs/public/mapjs-default-styles.css"
         // "--output=/home/s6mike/git_projects/argmap/test/output/html/test.html",
     ],
     "launch": {
@@ -127,7 +135,7 @@
         "configurations": [],
         "compounds": []
     },
-    "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": false,
+    "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": true,
     "markdown-preview-enhanced.breakOnSingleNewLine": false,
     "markdown-preview-enhanced.frontMatterRenderingOption": "table",
     "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,

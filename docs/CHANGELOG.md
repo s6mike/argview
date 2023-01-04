@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.5
+
+- `.vscode/settings.json`: Update settings for VSCode Pandoc extensions `markdown-preview-enhanced` and `vscode-pandoc`.
+- `scripts/install.sh`: Separate and update commands for allowing VSCode Pandoc extensions to use lua filter.
+
+Enough to get `vscode-pandoc` working, but it's not for realtime editing so no advantage over `md2hf()`.
+
 ## argmap 8.0.4
 
 - `scripts/qa_rockspec.sh`: Change local variables to lower case for consistency.
