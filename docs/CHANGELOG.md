@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.0.4
+
+- `scripts/qa_rockspec.sh`: Change local variables to lower case for consistency.
+
 ## argmap 8.0.3
 
 - `test/test_scripts/tests.sh`: lint rockspec as test, plus update `conda.env`.
