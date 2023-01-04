@@ -163,7 +163,7 @@ j2hf() { # j2hfa Default output with argmap input activated
   # mkdir --parent "$(dirname "$path_output_json")" # Ensures JSON output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # Add --metadata=argmap-input:true to enable argmap input functionality:
-  echo "" | pandoc --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  echo "" | pandoc --template="$FILE_TEMPLATE_HTML_ARGMAP_MAIN" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$html_output"
   open-debug "$html_output"
 }
@@ -173,10 +173,9 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
 }
 
 # Convert markdown to html fragment
-# QUESTION Would it be better to swap round md2htm and m2dhf names?
-# Currently using include after body, which works fine.
-#   QUESTION: Use lua filter to include webpack js output instead?
-md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (optional pandoc arguments)
+#   Currently using include after body, which works fine, but uses default template so it's no longer a fragment
+#   Looks like best way to generate a working html fragment probably to use lua filter to add the JS and CSS to the output html. This would also make mapjs more self contained - wouldn't add extra js/css to page if no container.
+md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (optional pandoc arguments) # DEPRECATED AND RESERVED
   input="${1:-$INPUT_FILE_MD}"
   name=$(basename --suffix=".md" "$input")-fragment
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
@@ -185,7 +184,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --include-after-body "$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
 }

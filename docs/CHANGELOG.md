@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.1.0
+
+- `scripts/bash_aliases_argmap.sh`:
+  - DEPRECATED: `md2htm()` since adding js with pandoc instead of through template simply uses default template. So output is still not an html fragment.
+    - Might be viable if I update `pandoc-argmap.lua` filter to add relevant CSS and JS dependencies.
+
 ## argmap 8.0.5
 
 - `.vscode/settings.json`: Update settings for VSCode Pandoc extensions `markdown-preview-enhanced` and `vscode-pandoc`.
