@@ -1,9 +1,12 @@
 /*global require */
 const jQuery = require('jquery');
-jQuery.fn.linkEditWidget = function (mapModel) {
+
+// TODO: Remove jQuery
+module.exports = function linkEditWidget(mapModel, linkEditWidgetElement) {
+	// jQuery.fn.linkEditWidget = function (mapModel) {
 	'use strict';
-	return this.each(function () {
-		const element = jQuery(this),
+	// return this.each(function () {
+	const element = jQuery(linkEditWidgetElement),
 			colorElement = element.find('.color'),
 			lineStyleElement = element.find('.lineStyle'),
 			arrowElement = element.find('.arrow');
@@ -48,5 +51,6 @@ jQuery.fn.linkEditWidget = function (mapModel) {
 		});
 		// Removing so menu stays visible after mouse over or link change.
 		// element.mouseleave(element.hide.bind(element));
-	});
+	// });
+	return element;
 };

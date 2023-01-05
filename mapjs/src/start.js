@@ -66,21 +66,21 @@ const jQuery = require('jquery'),
 	},
 
 	// Add a (ideally) separate map to each container div on the page.
-	addMap = function (container, mapJson) {
+	addMap = function (containerElement, mapJson) {
 		'use strict';
 		// QUESTION: Do we need a separate mapModel for each map?
 		// 	Or are there generic methods I can separate out from object ones?
-		const map = mapInstance[container.id] = {};
+		const map = mapInstance[containerElement.id] = {};
 		map.mapModel = new MAPJS.MapModel([]);
-		// So it's easier to look up container from mapModel:
+		// So it's easier to look up containerElement from mapModel:
 		//  Useful because unfortunately, element ids only unique per container
-		map.mapModel.containerElement = container;
+		map.mapModel.containerElement = containerElement;
 
 		// Hacky solution so that I can call content from map-model.js: loadMap
 		map.mapModel.content = content;
 
 		// eslint-disable-next-line one-var
-		const jQcontainer = jQuery(container),
+		const jQcontainer = jQuery(containerElement),
 			// Do I need one of these for each container?
 			imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
 			idea = content(mapJson),
@@ -117,9 +117,16 @@ const jQuery = require('jquery'),
 			getTheme
 		);
 
-		map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel);
+		const containerBlock = containerElement.parentElement,
+			toolbarElement = containerBlock.getElementsByClassName('toolbar')[0],
+			linkEditWidgetElement = containerBlock.getElementsByClassName('linkEditWidget')[0];
+
+		// QUESTION: Do I need to store mapToolbarWidget and linkEditWidget?
+		map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel, toolbarElement);
+		// TODO: change this to not need jQcontainer
 		jQcontainer.attachmentEditorWidget(map.mapModel);
-		jQcontainer.find('.linkEditWidget').linkEditWidget(map.mapModel);
+		// jQcontainer.find('.linkEditWidget').linkEditWidget(map.mapModel);
+		map.linkEditWidget = new MAPJS.LinkEditWidget(map.mapModel, linkEditWidgetElement);
 		map.mapModel.setIdea(idea);
 
 		jQuery('.arrow').click(function () {
@@ -176,21 +183,21 @@ const jQuery = require('jquery'),
 	init = function () {
 		'use strict';
 
-		// Looks for class not id, so can capture a number of containers each with own id.
-		const containers = document.getElementsByClassName('container_argmapjs');
+		// Looks for class not id, so can capture a number of containerElements each with own id.
+		const containerElements = document.getElementsByClassName('container_argmapjs');
 
-		if (containers.length > 0) { // Checks there are mapjs requests
-			for (const container of containers) {
+		if (containerElements.length > 0) { // Checks there are mapjs requests
+			for (const containerElement of containerElements) {
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-				const script_src = container.getElementsByClassName('argmap_json')[0].getAttribute('src');
+				const script_src = containerElement.getElementsByClassName('argmap_json')[0].getAttribute('src');
 				// console.debug('script_src: ', script_src);
 
 				// TODO: switch to await/async for simpler code and debugging.
 				// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
 				fetch(script_src)
 					.then(response => response.json())
-					.then(data => addMap(container, data))
+					.then(data => addMap(containerElement, data))
 					.catch(error => console.error(error));
 			}
 

@@ -10,6 +10,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.1.1
+
+- Fix: Argmap nodes obscuring footer link.
+  - `mapjs/public/mapjs-default-styles.css`: Change container's overflow style from`visible`to`auto` so that argmap can't affect anything outside container.
+    - Move draw-container styling directives to be next to other container element directives.
+  - `src/layouts/includes/mapjs-map-container.html`: Move toolbar outside of container so that there is more space for map.
+  - `mapjs/src/browser/map-toolbar-widget.js`: Update code for locating toolbar now it's outside container. Pass the element to the constructor function now, which seems more elegant. Though using toolbar element rather than its control (role = menubar) parent.
+  - `mapjs/src/browser/link-edit-widget.js`: Same as `map-toolbar-widget.js`, but also use `module.export` instead of `jQuery.fn`, same change as made to `map-toolbar-widget.js` in 4.21.28
+    - `mapjs/src/npm-main.js`: Add `LinkEditWidget` to `module.exports`.
+  - `mapjs/src/start.js`: Update constructor calls for above 2 widgets.
+
 ## argmap 9.1.0
 
 - Add `LICENSE.spdx` to root and mapjs folders.

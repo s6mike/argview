@@ -55,8 +55,7 @@ body {
 .container_argmapjs {
 	/* overflow from theme.css: */
 	/* Testing with visible instead for convenience: */
-	/* overflow: auto; */
-	overflow: visible;
+	overflow: auto;
 	background-color: transparent;
 	/* height: calc(100% - 60px) !important; */
 	width: 100%;
@@ -76,6 +75,13 @@ div[data-mapjs-role=stage] {
 }
 
 /* Above styles added from html file (maps-inline-styles.css) */
+
+.mapjs-draw-container {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	/* z-index: 1; */
+}
 
 .mapjs-node.selected {
 	border-style: solid !important;
@@ -222,13 +228,6 @@ div[data-mapjs-role=stage] {
 .mapjs-attachment:hover {
 	background-image: url(svg/icon-paperclip-active.svg);
 
-}
-
-.mapjs-draw-container {
-	position: absolute;
-	margin: 0px;
-	padding: 0px;
-	/* z-index: 1; */
 }
 
 .mapjs-link-hit:hover {
