@@ -96,6 +96,8 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 
 ## Keyboard Shortcuts
 
+The map must have keyboard focus for these to work:
+
 | Key Combination | Normal Horizontal Maps | Top-Down Maps |
 |-----------------|----------------------------|---|
 `return`  | Add sibling node after | Add child node after
@@ -106,9 +108,9 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 | Key Combination | Effect |
 |-----------------|---|
 `shift+return` *while editing node text* | Start new line of text
-`space` `f2` | Edit text of currently selected node
+`f2` `space` | Edit text of currently selected node (space also selects all)
 `del` `backspace` | Delete active nodes
-`alt+click` | Add link between clicked node and selected node.
+`alt+click` | Add link between clicked node and selected node
 `down` | Select node below
 `up` | Select node above
 `left` | Select node left
