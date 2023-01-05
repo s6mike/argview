@@ -181,7 +181,7 @@ const jQuery = require('jquery'),
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
 				const script_src = container.getElementsByClassName('argmap_json')[0].getAttribute('src');
-				console.debug('script_src: ', script_src);
+				// console.debug('script_src: ', script_src);
 
 				// TODO: switch to await/async for simpler code and debugging.
 				// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
@@ -196,7 +196,7 @@ const jQuery = require('jquery'),
 			window.jQuery = jQuery;
 			window.mapInstance = mapInstance;
 		} else { // If no mapjs requests:
-			console.debug('No requests for mapjs detected.');
+			console.warn("No mapjs containers found in web page's source html.");
 		};
 	};
 

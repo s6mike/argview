@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.1.2
+
+- Remove / update console message calls:
+  - `mapjs/src/start.js`: Change 1 log command to warning for not finding a mapjs container.
+  - `mapjs/src/core/map-model.js`
+
 ## argmap 8.1.1
 
 - `mapjs/README.md`: Fix broken link.
