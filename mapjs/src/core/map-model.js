@@ -786,8 +786,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 
 		return true;
 	};
-	this.saveMap = function (source) {
-		analytic('loadMap', source);
+	this.downloadMap = function (source) {
+		analytic('downloadMap', source);
 		const mapJson = this.getIdea(),
 			mapOutput = JSON.stringify(mapJson);
 		Utilities.downloadToFile(mapOutput, mapJson.title + '.json', 'application/json');

@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.0.0
+
+- Rename `saveMap()` to `downloadMap()` since it's better description, and to avoid clashing with possible future functionality.
+  - `src/layouts/includes/mapjs-widget-controls.html`: Update button classes so they will call new functions. BREAKING
+  - `mapjs/src/browser/map-toolbar-widget.js`: Update button class name in `clickMethodNames`.
+  - `mapjs/src/browser/dom-map-widget.js`: Update function for keyboard shortcut.
+  - `mapjs/src/core/map-model.js`: Update function name.
+
+ BREAKING - Button class update means external scripts may break from upgrade since button class is effectively a public API.
+
 ## argmap 8.1.2
 
 - Remove / update console message calls:
