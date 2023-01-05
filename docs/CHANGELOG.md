@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 8.1.1
+
+- `mapjs/README.md`: Fix broken link.
+  - `mapjs/docs/legacy-mapjs-example-map.html`: Add to doc folder to ensure link doesn't break.
+
 ## argmap 8.1.0
 
 - `scripts/bash_aliases_argmap.sh`:
