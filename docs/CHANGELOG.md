@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.1.0
+
+- Add `LICENSE.spdx` to root and mapjs folders.
+- Add `SPDX-License-Identifier` to both `LICENSE` files.
+- Add `SPDX-License-Identifier` and copyright to both `README.md` files and few other key files: md, js, lua, html.
+
 ## argmap 9.0.1
 
 - `mapjs/README.md`: Minor improvements for clarity.
@@ -2441,3 +2447,6 @@ Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 
 Note that test files, and bash script functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 Though documentation is not yet precise and comprehensive! Lua code is well documented, but my scripts still need to be properly documented.
+
+Copyright 2022 Michael Hayes and the argmap contributors
+SPDX-License-Identifier: MIT

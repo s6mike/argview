@@ -143,3 +143,6 @@ The map must have keyboard focus for these to work:
 `alt+s` | Download current map as a JSON file
 `a` `click on paperclip icon` | Add / Open attachment
 `click on link icon` | Open url
+
+Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors
+SPDX-License-Identifier: MIT

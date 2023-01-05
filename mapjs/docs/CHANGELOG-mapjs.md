@@ -132,3 +132,6 @@
 ----------------
 
 Uses [Semantic Versioning 2.0.0](https://semver.org/) and [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
+
+Copyright 2022 Michael Hayes and the mapjs contributors
+SPDX-License-Identifier: MIT
