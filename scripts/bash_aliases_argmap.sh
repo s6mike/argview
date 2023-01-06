@@ -41,8 +41,10 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   __check_server_on
   input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
   site_path=$(get-site-path "$input_path")
-  google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
-  disown # stops browser blocking terminal and allows all tabs to open in single window.
+  if [ "$site_path" != "" ]; then
+    google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
+    disown # stops browser blocking terminal and allows all tabs to open in single window.
+  fi
 }
 
 ## version control functions

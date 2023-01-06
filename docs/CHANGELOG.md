@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.4.2
+
+- `scripts/bash_aliases_argmap.sh`: Fix `open-debug()` to not open with default page if input file does not exist.
+
 ## argmap 9.4.1
 
 - `test/test_scripts/tests.sh`: Make output format more logical.
