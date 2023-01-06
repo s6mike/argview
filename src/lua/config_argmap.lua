@@ -43,7 +43,7 @@ DIR_MJS_JSON = os.getenv("DIR_MJS_JSON") or "mapjs-json"
 
 -- QUESTION: Should I be using a path join function?
 DIR_PUBLIC_OUTPUT = os.getenv("DIR_PUBLIC_OUTPUT") or (config.project_folder .. "/test/output")
-PATH_MJS_JSON = os.getenv("PATH_MJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_MJS_JSON)
+PATH_DIR_PUBLIC_MJS_JSON = os.getenv("PATH_DIR_PUBLIC_MJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_MJS_JSON)
 DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
 
 PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html

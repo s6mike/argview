@@ -93,7 +93,7 @@ __reset_repo() {
 __clean_repo() {
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yml"
   # rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
-  rm "$PATH_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
+  rm "$PATH_DIR_PUBLIC_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
@@ -119,7 +119,7 @@ __save_env() {
 # TODO add option for .mup vs .json output
 a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml (output path)
   name=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
-    output=${2:-$PATH_MJS_JSON/$name.json} &&
+    output=${2:-$PATH_DIR_PUBLIC_MJS_JSON/$name.json} &&
     echo "output: $output" "${@:2}" &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$1" >"$output" &&

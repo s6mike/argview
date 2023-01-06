@@ -271,7 +271,7 @@ local function CodeBlock(block)
 
                 -- Create JSON file in aboslute path:
                 -- QUESTION: Should I be using a path join function?
-                local argmap_output_file_path = PATH_MJS_JSON .. "/" .. output_filename
+                local argmap_output_file_path = PATH_DIR_PUBLIC_MJS_JSON .. "/" .. output_filename
 
                 -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
                 local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MJS_JSON .. "/" .. output_filename

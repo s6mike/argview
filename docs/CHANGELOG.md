@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.4.0
+
+- `mapjs/scripts/mapjs.env`:
+  - Deprecate `PATH_MJS_JSON` and add `PATH_DIR_PUBLIC_MJS_JSON` in its place.
+  - Deprecate `DIR_MJS_JS` since no longer used.
+
 ## argmap 9.3.0
 
 - `scripts/bash_aliases_mapjs.sh`: Deprecate some old unused aliases.

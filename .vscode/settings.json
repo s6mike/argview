@@ -150,7 +150,7 @@
         "PANDOC_STATE",
         "Logger",
         "DIR_MJS_JSON",
-        "PATH_MJS_JSON",
+        "PATH_DIR_PUBLIC_MJS_JSON",
     ],
     // Used by launch.json
     "env.path_mjs_home": "/mapjs",
