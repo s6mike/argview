@@ -10,6 +10,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.2.1
+
+- `scripts/bash_aliases_argmap.sh`: Add `__update_repo()` to run a number of repo checks and updates, including:
+  - Add `__check_js_debug()` to check for uncommented console.debug commands in js code:
+    - `mapjs/scripts/mapjs.env`: Add new `PATH_DIR_MJS_SRC_JS` env variable for `mapjs/src/js`.
+  - Update `__check_lua_debug()` to only find uncommented debug log directives.
+  - `test/test_scripts/tests.sh`: Call`__update_repo()` after tests.
+
 ## argmap 9.2.0
 
 - Fix issue where README was linking to a deleted example document:

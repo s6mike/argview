@@ -47,13 +47,39 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 
 ## version control functions
 
+__update_repo() { # Running at end of test script
+  __gen_doc_map
+  __save_env
+  # __reset_repo  # Decided not to delete script output in case there are clues
+  # __clean_repo # Decided not to delete script output in case there are clues
+  __check_lua_debug
+  __check_js_debug
+}
+
 __gen_doc_map() {                                                # Generates page for README.md example link destination
   path_output=$(md2hf -p test/input/markdown/example-updated.md) # -p activates pipe mode
   mv "$path_output" "$WORKSPACE/docs/"
 }
+
+# Checks `src/lua` for lua files with leftover debug code.
+# Used by __update_repo() (called from test script) and pre-commit hook (duplication)
+__check_lua_debug() {
+  printf "\nChecking lua files for uncommented DEBUG mode directives. Should only be 1:\n"
+  # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
+  # 2nd grep: Fixed text, case insensitive
+  grep -rnv '^\s*--' "$PATH_DIR_ARGMAP_LUA" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+  # grep -rv '^\s*--' "$PATH_DIR_MJS_SRC_JS" | grep -Fi -e 'console.debug' -e 'Utilities.idea_pp('
+  echo "-------------"
+}
+
+# Checks `mapjs/src` for lua files with uncommented debug code.
 # Used by pre-commit hook
-__check_repo() {
-  grep -Frni "$PATH_DIR_ARGMAP_LUA" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+__check_js_debug() {
+  printf "\nChecking js files for uncommented console.debug commands. Should only be 1:\n"
+  # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
+  # 2nd grep: Fixed text, case insensitive
+  grep -rnv '^\s*//' "$PATH_DIR_MJS_SRC_JS" | grep -Fie 'console.debug' -e 'Utilities.idea_pp('
+  echo "-------------"
 }
 
 # Used by pre-commit hook
@@ -223,6 +249,6 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_repo __save_env
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo
 export -f get-site-path
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf

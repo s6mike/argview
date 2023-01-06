@@ -78,9 +78,6 @@ __test() {
 # done
 
 if [ "$1" != html ]; then
-    # Check/update config
-    __save_env
-
     # TODO: Put this into function
     rockspec_file=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
     __test luarocks lint "$rockspec_file"                      #1
@@ -136,6 +133,8 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 
 if [ "$1" != html ]; then
     __test md2pdf "$INPUT_FILE_MD0" #19
+    # Check/update config
+    __update_repo
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
