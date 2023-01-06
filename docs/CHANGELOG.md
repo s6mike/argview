@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.1.3
+
+- `src/layouts/includes/mapjs-map-container.html`: Fix accessibility error about roles by removing `aria-label` from mapjs container.
+Think it was because it no longer has interactive elements nested inside it.
+
 ## argmap 9.1.2
 
 - Fix failing devtools recording which was using wrong nodes. Not sure why this suddenly broke.
