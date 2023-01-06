@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.4.1
+
+- `test/test_scripts/tests.sh`: Make output format more logical.
+
 ## argmap 9.4.0
 
 - `mapjs/scripts/mapjs.env`:

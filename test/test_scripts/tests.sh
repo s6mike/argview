@@ -133,13 +133,16 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 
 if [ "$1" != html ]; then
     __test md2pdf "$INPUT_FILE_MD0" #19
-    # Check/update config
-    __update_repo
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
 echo "If first html test failed, check whether webserver was running."
 echo "If all testcafe test failed, check that $INPUT_FILE_JSON exists."
 echo "Test cafe log location: $PATH_TEST_LOG"
+
+if [ "$1" != html ]; then
+    # Check/update config
+    __update_repo
+fi
 
 exit $FAILCOUNT
