@@ -16,33 +16,32 @@
                   </header>
       <main>
         <p>This is an example of an argument about a donkey!</p>
-        <article class="argmap">
-          <h2>Example Argument map</h2>
-          <div id="container_" class="container_argmapjs" tabindex="-1" aria-label="Argument map visualisation">
-            <script type="application/json" class="argmap_json" src="/output/mapjs-json/example-updated_.json"></script>
-            <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
+        <article class="argmapBlock">
+            <h2>Example Argument map</h2>
+          <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
         <div id="widget_controls_" class="mapjs_control" role="menubar">
           <section>
-            <div role="toolbar" aria-label="Node editing">
+            <div role="toolbar" aria-label="Node editing" class="toolbar">
               <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
                   class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
                   data-mm-target-property='container_argmap' /></label>
-              <input type="button" class="saveMap" value="Save" aria-label="Save" />
+              <input type="button" class="downloadMap" value="Save" aria-label="Save" />
               <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
               <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
               <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
               <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
-              <input type="button"
-                value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason" data-group="supporting" />
-              <input type="button"
-                value="Supporting group" class="addGroupSubidea" aria-label="Supporting group" data-group="supporting" />
-              <input type="button"
-                value="Opposing group" class="addGroupSubidea" aria-label="Opposing group" data-group="opposing" />
+              <input type="button" value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason"
+                data-group="supporting" />
+              <input type="button" value="Supporting group" class="addGroupSubidea" aria-label="Supporting group"
+                data-group="supporting" />
+              <input type="button" value="Opposing group" class="addGroupSubidea" aria-label="Opposing group"
+                data-group="opposing" />
               <input type="button" class="editNode" value="Edit" aria-label="Edit" />
               <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
               <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
               <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-              <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable" data-set-input-enabled="false" />
+              <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable"
+                data-set-input-enabled="false" />
               <input type="button" value="Enable" class="setInputEnabled" aria-label="Enable" data-set-input-enabled="true" />
               <input type="button" class="undo" value="Undo" aria-label="Undo" />
               <input type="button" class="redo" value="Redo" aria-label="Redo" />
@@ -70,6 +69,8 @@
             </div>
           </section>
         </div>
+          <div id="container_" class="container_argmapjs" tabindex="-1">
+            <script type="application/json" class="argmap_json" src="/output/mapjs-json/example-updated_.json"></script>
           </div>
         </article>
       </main>

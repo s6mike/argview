@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.2.0
+
+- Fix issue where README was linking to a deleted example document:
+  - `docs/example-updated.html`: Move `example-updated.html` here from `test/input/`.
+    - [README.md](../README.md): Update links to new location.
+- `scripts/bash_aliases_argmap.sh`: Add `__gen_doc_map()` to generate map then move it to above location.
+  - This solution breaks because opening browser echoes messages, so...
+  - Update `md2hf()` to accept -p option for 'pipe mode' which echoes the output file but doesn't open it in the browser.
+
 ## argmap 9.1.3
 
 - `src/layouts/includes/mapjs-map-container.html`: Fix accessibility error about roles by removing `aria-label` from mapjs container.

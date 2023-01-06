@@ -47,7 +47,10 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 
 ## version control functions
 
-# Checks `src/lua` for lua files with leftover test/debug code.
+__gen_doc_map() {                                                # Generates page for README.md example link destination
+  path_output=$(md2hf -p test/input/markdown/example-updated.md) # -p activates pipe mode
+  mv "$path_output" "$WORKSPACE/docs/"
+}
 # Used by pre-commit hook
 __check_repo() {
   grep -Frni "$PATH_DIR_ARGMAP_LUA" -e 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
@@ -126,6 +129,18 @@ a2t() { # a2t test/output/example1-simple.yml (output path)
 # IDEA: Could combine md2htm by checking for an argument like --fragment and witholding template argument etc
 #   Would need to use getopts and then pop the --fragment so that the number of other arguments are not affected
 md2hf() { # md2h test/input/example.md (output filename) (optional pandoc arguments)
+  # doesn't open browser if -p used for Pipe mode
+  OPTIND=1
+  while getopts ":p" option; do # Leading ':' in ":p" removes error message if no recognised options
+    case $option in
+    p) # pipe mode - passed on filename instead of opening browser
+      local pipe=true
+      ;;
+    *) ;;
+    esac
+  done
+  # echo "pipe: $pipe"
+  shift "$((OPTIND - 1))"
   input="${1:-$INPUT_FILE_MD2}"
   name=$(basename --suffix=".md" "$input")
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
@@ -136,12 +151,17 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+
+  if [ "$pipe" == true ]; then
     echo "$output"
+    return 0
+  fi
+
   # QUESTION: Might want to make debug default, but with test option for normal?
   #  open-server "$DIR_HTML_SERVER_OUTPUT/html/$name.html"
-  open-debug "$output"
   # TODO construct link from server details and output it?
+  open-debug "$output"
 }
 
 # j2hf public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs-argmap2.json (output filename) (optional pandoc arguments)

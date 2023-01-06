@@ -605,7 +605,7 @@ You can display MindMup JSON files on a web page as an interactive mindmap witho
 
 Here is an example:
 
-|[![Argument Map Example 1 in mapjs format](docs/mapjs-example-brunellus-argmap-theme.png)](test/input/example-updated.html "Argument Mapjs Example 1 - Brunellus")|
+|[![Argument Map Example 1 in mapjs format](docs/mapjs-example-brunellus-argmap-theme.png)](docs/example-updated.html "Argument Mapjs Example 1 - Brunellus")|
 |-------------------------------|
 
 mapjs is an earlier, open source version of MindMup, and while it does not look as attractive, it provides similar functionality.
@@ -670,7 +670,7 @@ For all other formats, it uploads the MindMup file to Google Drive and generates
 
 ## Generating Interactive Argument Maps (mapjs)
 
- |[![Argument Map Example 1 in mapjs format, embedded in html page](docs/mapjs-in-html-example.png)](test/input/example-updated.html "Argument Mapjs Example 1")|
+ |[![Argument Map Example 1 in mapjs format, embedded in html page](docs/mapjs-in-html-example.png)](docs/example-updated.html "Argument Mapjs Example 1")|
  |----------------|
 
 This interactive mindmap format is an alternative way to display your argument maps in html pages.
