@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.3.0
+
+- `scripts/bash_aliases_mapjs.sh`: Deprecate some old unused aliases.
+
 ## argmap 9.2.1
 
 - `scripts/bash_aliases_argmap.sh`: Add `__update_repo()` to run a number of repo checks and updates, including:
