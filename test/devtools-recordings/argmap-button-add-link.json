@@ -17,7 +17,7 @@
       "target": "main",
       "selectors": [
         [
-          ".mapjs_control input.toggleAddLinkMode"
+          "#node_1 > span"
         ]
       ],
       "offsetY": 0,
@@ -28,7 +28,7 @@
       "target": "main",
       "selectors": [
         [
-          "#node_4 > span"
+          ".mapjs_control input.toggleAddLinkMode"
         ]
       ],
       "offsetY": 0,

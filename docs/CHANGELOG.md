@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.1.2
+
+- Fix failing devtools recording which was using wrong nodes. Not sure why this suddenly broke.
+
 ## argmap 9.1.1
 
 - Fix: Argmap nodes obscuring footer link.
