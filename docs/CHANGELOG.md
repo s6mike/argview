@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.4.5
+
+- `test/devtools-recordings/argmap-edit-existing-link.json`: Fail when link edit unsucessful.
+
 ## argmap 9.4.4
 
 - `.vscode/settings.json`: Minor formatting improvement.

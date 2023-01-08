@@ -87,6 +87,10 @@
       "deviceType": "pen"
     },
     {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('#link_1_5 > path.mapjs-arrow').style.display == 'none'"
+    },
+    {
       "type": "click",
       "target": "main",
       "selectors": [
@@ -101,6 +105,10 @@
       "offsetY": 8.852935791015625,
       "offsetX": 37,
       "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelectorAll('#link_1_5').length == 0"
     }
   ]
 }
