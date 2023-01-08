@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.6.1
+
+- Use new functions from prev release to throw error if main toolbar
+  or linkEditWidget are not configured because selectors break.
+
+- `mapjs/src/start.js`:
+  - Use new functions from prev release to ensureto throw error if main toolbar or linkEditWidget are not configured because selectors break.
+  - Add `console.debug` message to show current environment type.
+
 ## argmap 9.6.0
 
 - `mapjs/src/core/util/mapjs-utilities.js`:

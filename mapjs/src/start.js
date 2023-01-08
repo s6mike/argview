@@ -3,8 +3,10 @@
 
 /* mapjs entry point: Initialises, plus function to load JSON and embed visualisation into a container. */
 /*global require, document, window, console, idea */
-
-const MAPJS = require('./npm-main');
+console.debug(process.env.NODE_ENV + " mode");
+const Utilities = require('./core/util/mapjs-utilities'),
+	MAPJS = require('./npm-main'),
+	Try = Utilities.trycatch;
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 // 	new MAPJS.Theme[x] ?
@@ -117,16 +119,22 @@ const jQuery = require('jquery'),
 			getTheme
 		);
 
-		const containerBlock = containerElement.parentElement,
-			toolbarElement = containerBlock.getElementsByClassName('toolbar')[0],
-			linkEditWidgetElement = containerBlock.getElementsByClassName('linkEditWidget')[0];
+		// Set up Widgets
+		const containerInstance = containerElement.parentElement,
+			toolbarElement = Try(
+				() => Utilities.getElementMJS('toolbar', containerInstance),
+			),
+			linkEditWidgetElement = Try(
+				() => Utilities.getElementMJS('linkEditWidget', containerInstance),
+			);
 
 		// QUESTION: Do I need to store mapToolbarWidget and linkEditWidget?
 		map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel, toolbarElement);
-		// TODO: change this to not need jQcontainer
+		// TODO: Do this without jQcontainer
 		jQcontainer.attachmentEditorWidget(map.mapModel);
-		// jQcontainer.find('.linkEditWidget').linkEditWidget(map.mapModel);
 		map.linkEditWidget = new MAPJS.LinkEditWidget(map.mapModel, linkEditWidgetElement);
+
+		// Draw map
 		map.mapModel.setIdea(idea);
 
 		jQuery('.arrow').click(function () {
