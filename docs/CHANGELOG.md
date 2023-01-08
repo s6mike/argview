@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.0
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Add `MyLogger()` so that custom console object can be used for all logging,  allowing full control
+ over internal logging while leaving original console intact for browser based use.
+  - Custom logger currently disables `log()` and `debug()` in production environment.
+
 ## argmap 9.6.2
 
 - `scripts/bash_aliases_argmap.sh`: Add `git-rebase-interactive-prep()` to backup logs and stash files etc before starting a rebase.

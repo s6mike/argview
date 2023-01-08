@@ -3,7 +3,29 @@
 const _ = require('underscore'),
   CONTAINER_CLASS = 'container_argmapjs';
 
+function MyLogger(console_original, environment = process.env.NODE_ENV) {
+  const new_logger = Object.create(console_original);
+
+  // Override some console functions based on environment
+  if (environment === 'production') {
+    // Disables console.log and console.debug in production mode.
+    // 	QUESTION: change so that it logs the data elsewhere?
+    new_logger.debug = () => { };
+    new_logger.log = () => { };
+  } else {
+    // QUESTION: Add a min level so that the logging level can be easily changed
+    //  See https://www.npmjs.com/package/picolog for ideas
+    new_logger.log = (message, level = 'log') => {
+      console[level](message);
+    };
+  }
+
+  return new_logger;
+}
+
 module.exports = {
+  // QUESTION: How to move above constructor definition into module.exports object?
+  MyLogger,
 
   // Parameterized try catch function
   //  Simplifies environment based catching
@@ -71,7 +93,6 @@ module.exports = {
     URL.revokeObjectURL(download_anchor.href);
   },
 
-  // eslint-disable-next-line strict
   idea_pp: (idea, level = -1, key = []) => {
     if (idea) {
       const type = idea.attr ? (idea.attr.group ? `${idea.attr.group}` : '') : '',
@@ -89,7 +110,7 @@ module.exports = {
     return;
   },
 
-  // eslint-disable-next-line strict
+  // Call with ideas_pp(idea);
   ideas_pp: (ideas, level = -1, keys = []) => {
     // Want to start with extra line break, but it doesn't appear where I expect.
     // level == -1 ? console.debug('') : null;
@@ -110,8 +131,6 @@ module.exports = {
     level -= 1;
     return;
   }
-
-  // ideas_pp(idea);
 
   // Commented out since not needed any longer:
 
