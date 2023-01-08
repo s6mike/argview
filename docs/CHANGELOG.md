@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.4.4
+
+- `.vscode/settings.json`: Minor formatting improvement.
+
 ## argmap 9.4.3
 
 - `mapjs/public/mapjs-default-styles.css`: Beautified formatting - changed all tabs to spaces.

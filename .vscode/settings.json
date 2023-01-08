@@ -159,5 +159,5 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "Lua.format.enable": false,
-    "Lua.completion.displayContext": 1
+    "Lua.completion.displayContext": 1,
 }
