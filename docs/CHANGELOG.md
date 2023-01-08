@@ -10,10 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.6.2
+
+- `scripts/bash_aliases_argmap.sh`: Add `git-rebase-interactive-prep()` to backup logs and stash files etc before starting a rebase.
+
 ## argmap 9.6.1
 
-- Use new functions from prev release to throw error if main toolbar
-  or linkEditWidget are not configured because selectors break.
+- Use new functions from prev release to throw error if main toolbar or linkEditWidget are not configured because selectors break.
 
 - `mapjs/src/start.js`:
   - Use new functions from prev release to ensureto throw error if main toolbar or linkEditWidget are not configured because selectors break.

@@ -5,6 +5,7 @@ echo "Running ${BASH_SOURCE[0]}"
 # argmap aliases
 alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
 alias j2hfa='j2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
+alias grip='git-rebase-interactive-prep'
 
 # argmap functions
 
@@ -112,6 +113,22 @@ __save_env() {
   conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$ENV_FILE"
   # TODO: Prepare Environment YAML For Distribution
   # https://workflowy.com/#/b0011d3b3ba1
+}
+
+# TODO move to general aliases file?
+git-rebase-interactive-prep() { # grip
+  # TODO: backup current branch - tho need to choose name
+  save_name="pre-rebase-wip"
+  git log >../misc/gitlog_backup.txt
+  code ../misc/gitlog_backup.txt
+  cp docs/CHANGELOG.md ../misc/CHANGELOG_BACKUP.md
+  code ../misc/CHANGELOG_BACKUP.md
+  git add -A              # Add all untracked files so they are not lost
+  git stash -m $save_name # Stashes are good because they accumulate, while git save will overwrite.
+  git stash apply
+  git branch -D $save_name
+  git save $save_name
+  git stash apply # Ensures that all files are still in place in case I run process again with a minor change.
 }
 
 ## argmap functions
@@ -239,7 +256,6 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
 
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
-  # __check_server_on # No point since open-debug runs it too.
   name=$(basename --suffix=".md" "$1")
   output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
@@ -251,6 +267,6 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo git-rebase-interactive-prep
 export -f get-site-path
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf
