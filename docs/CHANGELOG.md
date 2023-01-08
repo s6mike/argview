@@ -10,6 +10,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.5.0
+
+- `mapjs/webpack.config.js`:
+  - Pass env and argv into webpack config to enable config to be changed for production environment. This is so I can handle errors differently in production:
+    - No need to use `webpack.DefinePlugin()` because `process.env.NODE_ENV` automatically has correct value. See: <https://webpack.js.org/configuration/mode/>.
+    - Add commented out `DefinePlugin` directives which are not needed yet.
+  - Set performance hints to false to stop distracting messages about file bundle sizes (once app is live will test improved configs).
+- `mapjs/package.json`:
+  - Add `start:prod` to start server in production mode.
+  - Update `start` to always be in development mode.
+  - Update `pack` to provide more error details when necessary.
+
 ## argmap 9.4.5
 
 - `test/devtools-recordings/argmap-edit-existing-link.json`: Fail when link edit unsucessful.
