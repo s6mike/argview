@@ -5,6 +5,11 @@ body {
   margin: 0;
 }
 
+/* Default visibility - widget will show when a link is selected. */
+.linkEditWidget {
+  display: none;
+}
+
 /*  See https://zellwk.com/blog/hide-content-accessibly/ */
 .hide-accessibly {
   pointer-events: none;

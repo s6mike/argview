@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.5.1
+
+- `mapjs/public/mapjs-default-styles.css`: Hide linkEditWidget by default in case the selector which configures it breaks.
+
 ## argmap 9.5.0
 
 - `mapjs/webpack.config.js`:
