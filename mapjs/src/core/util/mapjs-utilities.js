@@ -4,6 +4,36 @@ const _ = require('underscore'),
   CONTAINER_CLASS = 'container_argmapjs';
 
 module.exports = {
+
+  // Parameterized try catch function
+  //  Simplifies environment based catching
+  //  Allows use of constants with try-catch
+  trycatch: (t, c) => {
+    // Set default exception here:
+    c = (exception) => {
+      if (process.env.NODE_ENV === 'production') {
+        console.error('Caught: ' + exception);
+      } else {
+        throw exception;
+      }
+    };
+
+    try {
+      return t()
+    } catch (exception) {
+      return c(exception)
+    };
+  },
+
+  // Get element from class and optional parent element
+  getElementMJS: (className, parentElement = document) => {
+    const elements = parentElement.getElementsByClassName(className);
+    if (elements.length) {
+      return elements[0];
+    }
+    throw new Error('getElementMJS(): Element of class ' + className + ' not found in ' + parentElement.tagName + '.' + parentElement.classList[0]);
+  },
+
   // Can pass element or event
   getContainerID: (elementOrEvent) => {
     const containers = document.getElementsByClassName(CONTAINER_CLASS);

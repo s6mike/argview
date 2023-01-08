@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.6.0
+
+- `mapjs/src/core/util/mapjs-utilities.js`:
+  - Add `getElementMJS()` so error is thrown when selector fails to find element. This should make it clearer when a selector breaks.
+  - Add `trycatch()` to standardise error handling so that errors are reported to console in production (will also be easier to add logging), but break the app more obviously in dev environment.
+    - An additional benefit is that constants can be used in combination with try catch.
+  
 ## argmap 9.5.1
 
 - `mapjs/public/mapjs-default-styles.css`: Hide linkEditWidget by default in case the selector which configures it breaks.
