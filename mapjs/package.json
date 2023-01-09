@@ -33,15 +33,15 @@
   "browser": "src/npm-main.js",
   "scripts": {
     "env": "env",
-    "report": "webpack --mode production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json",
     "test:start": "npm run start && npm run testcafe",
     "stop": "killall node",
     "start": "webpack serve --mode=development &",
     "start:prod": "webpack serve --mode=production &",
     "testcafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",
     "testcafe:command": "testcafe",
-    "pack": "webpack --stats-children --stats-error-details &",
-    "lint": "eslint src"
+    "pack": "webpack --mode=development --stats-children --stats-error-details &",
+    "lint": "eslint src",
+    "report": "webpack --mode=production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json"
   },
   "engines": {
     "node": "~16.13.1",

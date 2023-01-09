@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.9
+
+- `mapjs/package.json`:
+  - Configure `pack` script to be in development mode again, since in production mode the output format of the html webpack plugin changes to xhtml (defer="defer").
+    - Rearrange scripts into a more logical order.
+
 ## argmap 9.7.8
 
 - `scripts/bash_aliases_mapjs.sh`: Add comment.
