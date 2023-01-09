@@ -59,8 +59,8 @@ __update_repo() { # Running at end of test script
   __check_js_debug
 }
 
-__gen_doc_map() {                                                # Generates page for README.md example link destination
-  path_output=$(md2hf -p test/input/markdown/example-updated.md) # -p activates pipe mode
+__gen_doc_map() {                                                             # Generates page for README.md example link destination
+  path_output=$(md2hf -p "$WORKSPACE/test/input/markdown/example-updated.md") # -p activates pipe mode
   mv "$path_output" "$WORKSPACE/docs/"
 }
 

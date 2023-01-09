@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.5
+
+- Change relative paths to absolute to avoid surprises when running from mapjs folder:
+  - `scripts/bash_aliases_argmap.sh`
+  - `test/test_scripts/bash_aliases_argmap_test.sh`
+
 ## argmap 9.7.4
 
 - `scripts/bash_aliases_argmap.sh`: No need to check code for stray `idea_pp()` now I've ensured it's disabled in in production.
