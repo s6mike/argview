@@ -101,19 +101,23 @@ module.exports = {
   //  QUESTION: What's best way to check?
   // IDEA: Could add this and ideas_pp() to MyLogger instead. Or possibly override existing console pretty print
   idea_pp: (idea, level = -1, key = []) => {
-    if (idea) {
-      const type = idea.attr ? (idea.attr.group ? `${idea.attr.group}` : '') : '',
-        rank = key && key !== '' ? ` ${key}: ` : '';
-      let indent = level > 0 ? '  '.repeat(level) : '';
-      parseInt(key) > 0 ? indent += ' ' : null; // So ranks with minus sign align
-      // TODO FIX: when running as script, _.pick causes an issue if underscore.js not available
-      Logger.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
-      if (idea.ideas) {
-        // eslint-disable-next-line no-use-before-define
-        module.exports.ideas_pp(idea.ideas, level, Object.keys(idea.ideas));
+    // Quick fix to avoid wasting time doing this in production mode.
+    //  TODO: Add this to Logging object and set it to {} in production mode.
+    if (process.env.NODE_ENV !== 'production') {
+      if (idea) {
+        const type = idea.attr ? (idea.attr.group ? `${idea.attr.group}` : '') : '',
+          rank = key && key !== '' ? ` ${key}: ` : '';
+        let indent = level > 0 ? '  '.repeat(level) : '';
+        parseInt(key) > 0 ? indent += ' ' : null; // So ranks with minus sign align
+        // TODO FIX: when running as script, _.pick causes an issue if underscore.js not available
+        Logger.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
+        if (idea.ideas) {
+          // eslint-disable-next-line no-use-before-define
+          module.exports.ideas_pp(idea.ideas, level, Object.keys(idea.ideas));
+        }
       }
+      level -= 1;
     }
-    level -= 1;
     return;
   },
 

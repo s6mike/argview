@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.2
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Disable `idea_pp()` in production mode.
+
 ## argmap 9.7.1
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Create new Logger instance and call it from `idea_pp()`.
