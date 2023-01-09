@@ -149,7 +149,7 @@ if [ "$1" == 'conda' ]; then
   ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
 
   # 3. Install rockspec in global scope
-  rockspec_file=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+  rockspec_file=$(find "$WORKSPACE" ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
   # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
   #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
 

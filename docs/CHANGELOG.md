@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.3
+
+- `test/test_scripts/tests.sh`: Update find rockspec command to always search root project folder so that it doesn't break if called from sub directory.
+  - `scripts/`: Make same update in other scripts.
+
 ## argmap 9.7.2
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Disable `idea_pp()` in production mode.

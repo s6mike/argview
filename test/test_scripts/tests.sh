@@ -3,6 +3,7 @@
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
+# QUESTION: Any need to ensure its always running in dev mode?
 webpack_pack
 __check_server_on
 
@@ -79,8 +80,8 @@ __test() {
 
 if [ "$1" != html ]; then
     # TODO: Put this into function
-    rockspec_file=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
-    __test luarocks lint "$rockspec_file"                      #1
+    rockspec_file=$(find "$WORKSPACE" ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+    __test luarocks lint "$rockspec_file"                                   #1
 
     __test a2m "$INPUT_FILE_YML"       #2
     __test a2m "$INPUT_FILE_YML_NOTES" #3

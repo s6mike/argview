@@ -3,7 +3,7 @@
 # clean up Lua Rocks from global library
 
 # This might only be necessary if rockspec installed globally
-# ROCKSPEC_FILE=$(find ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+# rockspec_file=$(find "$WORKSPACE" ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
 # luarocks remove --global "$ROCKSPEC_FILE"
 
 luarocks --tree lua_modules remove argmap
