@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.6
+
+- `mapjs/public/mapjs-default-styles.css`: Fix minor css lint issues.
+
 ## argmap 9.7.5
 
 - Change relative paths to absolute to avoid surprises when running from mapjs folder:

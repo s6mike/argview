@@ -27,14 +27,13 @@ body {
   text-align: center;
   cursor: default;
   box-sizing: border-box;
-  border-radius: 2px;
-  border-width: 2px;
   background-color: buttonface;
   color: buttontext;
   padding: 2px 6px;
   font-family: Arial;
   font-size: 13.33px;
   font-weight: 400;
+  border-radius: 2px;
   border-width: 1px;
   border-style: outset;
   border-color: buttonborder;
@@ -65,6 +64,7 @@ body {
   /* height: calc(100% - 60px) !important; */
   width: 100%;
   border: 1px dashed black;
+  box-sizing: border box;
   min-height: 250px !important;
   outline: none;
 }
@@ -83,8 +83,8 @@ div[data-mapjs-role=stage] {
 
 .mapjs-draw-container {
   position: absolute;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   /* z-index: 1; */
 }
 
