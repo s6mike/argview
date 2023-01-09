@@ -148,6 +148,8 @@ webpack_server_halt() { #wsh
 }
 
 # Starts server
+# TODO: Add argument for starting in production mode (start:prod)
+#   And possibly one for restarting in different mode by calling webpack_server_halt
 webpack_server_start() { # wss
   export SERVER_ON=true
   if npm --prefix "$PATH_MJS_HOME" run start; then

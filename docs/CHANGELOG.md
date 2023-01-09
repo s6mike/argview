@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.8
+
+- `scripts/bash_aliases_mapjs.sh`: Add comment.
+
 ## argmap 9.7.7
 
 - `scripts/bash_aliases_argmap.sh`: Add `__find_rockspec()` and fix current rockspec search broken in 9.7.3
