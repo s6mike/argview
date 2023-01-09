@@ -177,8 +177,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 				layoutCompleteOptions = { themeChanged: true };
 			}
 			layoutModel.setLayout(newLayout);
-			// Logging node layout to console to help with debugging:
-			// Utilities.idea_pp(idea);
+			// Logs node layout to console to help with debugging:
+			Utilities.idea_pp(idea);
 			if (!self.isInCollapse) {
 				self.dispatchEvent('layoutChangeComplete', layoutCompleteOptions);
 			}

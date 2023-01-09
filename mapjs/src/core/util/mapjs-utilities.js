@@ -23,9 +23,13 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
   return new_logger;
 }
 
+// Setting this up here so it's ready for idea_pp
+//  TODO: If I move idea_pp to MyLogger then I can be more flexible with where I initialise it
+Logger = new MyLogger(console);
+
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
-  MyLogger,
+  Logger,
 
   // Parameterized try catch function
   //  Simplifies environment based catching
@@ -34,7 +38,7 @@ module.exports = {
     // Set default exception here:
     c = (exception) => {
       if (process.env.NODE_ENV === 'production') {
-        console.error('Caught: ' + exception);
+        Logger.error('Caught: ' + exception);
       } else {
         throw exception;
       }
@@ -93,6 +97,9 @@ module.exports = {
     URL.revokeObjectURL(download_anchor.href);
   },
 
+  // TODO: Only run all this is logging is enabled.
+  //  QUESTION: What's best way to check?
+  // IDEA: Could add this and ideas_pp() to MyLogger instead. Or possibly override existing console pretty print
   idea_pp: (idea, level = -1, key = []) => {
     if (idea) {
       const type = idea.attr ? (idea.attr.group ? `${idea.attr.group}` : '') : '',
@@ -100,7 +107,7 @@ module.exports = {
       let indent = level > 0 ? '  '.repeat(level) : '';
       parseInt(key) > 0 ? indent += ' ' : null; // So ranks with minus sign align
       // TODO FIX: when running as script, _.pick causes an issue if underscore.js not available
-      console.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
+      Logger.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
       if (idea.ideas) {
         // eslint-disable-next-line no-use-before-define
         module.exports.ideas_pp(idea.ideas, level, Object.keys(idea.ideas));
@@ -113,7 +120,7 @@ module.exports = {
   // Call with ideas_pp(idea);
   ideas_pp: (ideas, level = -1, keys = []) => {
     // Want to start with extra line break, but it doesn't appear where I expect.
-    // level == -1 ? console.debug('') : null;
+    // level == -1 ? Logger.debug('') : null;
     level += 1;
     if (!ideas) {
       level -= 1;

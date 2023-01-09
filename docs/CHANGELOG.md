@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.1
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Create new Logger instance and call it from `idea_pp()`.
+  - Replace console with Logger (including where commented out) throughout whole app.
+
 ## argmap 9.7.0
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Add `MyLogger()` so that custom console object can be used for all logging,  allowing full control

@@ -38,7 +38,7 @@ module.exports = function observable(base) {
 				try {
 					return listenerDetails.listener.apply(undefined, args) === false;
 				} catch (e) {
-					console.trace('dispatchEvent failed', e, listenerDetails);
+					Logger.trace('dispatchEvent failed', e, listenerDetails);
 				}
 
 			});

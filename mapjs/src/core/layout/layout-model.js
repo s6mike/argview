@@ -107,7 +107,7 @@ module.exports = function LayoutModel(emptyLayout) {
 			});
 		},
 		getPreferred = (referenceNode, nodes, xRatio, yRatio) => {
-			// console.debug('getPreferred', 'layout', layout, 'referenceNode', referenceNode, 'nodes', nodes); //eslint-disable-line
+			// Logger.debug('getPreferred', 'layout', layout, 'referenceNode', referenceNode, 'nodes', nodes); //eslint-disable-line
 			if (self.getOrientation() === 'standard') {
 				const siblings = nodes.filter((node) => referenceNode.parentId && referenceNode.parentId === node.parentId);
 				if (siblings.length) {

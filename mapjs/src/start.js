@@ -1,12 +1,13 @@
-/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors
-	 SPDX - License - Identifier: MIT */
+/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors SPDX - License - Identifier: MIT */
+/* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
-/* mapjs entry point: Initialises, plus function to load JSON and embed visualisation into a container. */
 /*global require, document, window, console, idea */
-console.debug(process.env.NODE_ENV + " mode");
+
 const Utilities = require('./core/util/mapjs-utilities'),
 	MAPJS = require('./npm-main'),
 	Try = Utilities.trycatch;
+
+Logger.log(process.env.NODE_ENV + " mode");
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 // 	new MAPJS.Theme[x] ?
@@ -142,7 +143,7 @@ const jQuery = require('jquery'),
 		});
 
 		imageInsertController.addEventListener('imageInsertError', function (reason) {
-			console.error('image insert error', reason);
+			Logger.error('image insert error', reason);
 		});
 
 		jQcontainer.on('drop', function (e) {
@@ -199,22 +200,22 @@ const jQuery = require('jquery'),
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
 				const script_src = containerElement.getElementsByClassName('argmap_json')[0].getAttribute('src');
-				// console.debug('script_src: ', script_src);
+				// Logger.debug('script_src: ', script_src);
 
 				// TODO: switch to await/async for simpler code and debugging.
 				// QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
 				fetch(script_src)
 					.then(response => response.json())
 					.then(data => addMap(containerElement, data))
-					.catch(error => console.error(error));
+					.catch(error => Logger.error(error));
 			}
 
 			// TODO: This stuff only needed once, not per map
-			window.onerror = console.error;
+			window.onerror = Logger.error;
 			window.jQuery = jQuery;
 			window.mapInstance = mapInstance;
 		} else { // If no mapjs requests:
-			console.warn("No mapjs containers found in web page's source html.");
+			Logger.warn("No mapjs containers found in web page's source html.");
 		};
 	};
 
