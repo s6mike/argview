@@ -65,23 +65,22 @@ __gen_doc_map() {                                                # Generates pag
 }
 
 # Checks `src/lua` for lua files with leftover debug code.
-# Used by __update_repo() (called from test script) and pre-commit hook (duplication)
+# Used by pre-commit hook
 __check_lua_debug() {
-  printf "\nChecking lua files for uncommented DEBUG mode directives. Should only be 1:\n"
+  printf "\nChecking lua files for uncommented DEBUG mode directives. Expecting 1 only:\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
   grep -rnv '^\s*--' "$PATH_DIR_ARGMAP_LUA" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
-  # grep -rv '^\s*--' "$PATH_DIR_MJS_SRC_JS" | grep -Fi -e 'console.debug' -e 'Utilities.idea_pp('
   echo "-------------"
 }
 
 # Checks `mapjs/src` for lua files with uncommented debug code.
-# Used by pre-commit hook
+# Used by __update_repo() (called from test script) and pre-commit hook (duplication)
 __check_js_debug() {
-  printf "\nChecking js files for uncommented console.debug commands. Should only be 1:\n"
+  printf "\nChecking js files for uncommented console.debug commands. Expecting 0.\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
-  grep -rnv '^\s*//' "$PATH_DIR_MJS_SRC_JS" | grep -Fie 'console.debug' -e 'Utilities.idea_pp('
+  grep -rnv '^\s*//' "$PATH_DIR_MJS_SRC_JS" | grep -Fie 'console.debug'
   echo "-------------"
 }
 

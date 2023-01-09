@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.4
+
+- `scripts/bash_aliases_argmap.sh`: No need to check code for stray `idea_pp()` now I've ensured it's disabled in in production.
+
 ## argmap 9.7.3
 
 - `test/test_scripts/tests.sh`: Update find rockspec command to always search root project folder so that it doesn't break if called from sub directory.
