@@ -7,7 +7,7 @@
 #   Will need option to not reinstall dependencies.
 
 # If there is more than 1 rockspec, might run wrong one, or maybe both?
-rockspec_file=$(find "$WORKSPACE" ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+rockspec_file=$(_find_rockspec) # Gets absolute path
 
 echo "*** Checking: $rockspec_file ***"
 

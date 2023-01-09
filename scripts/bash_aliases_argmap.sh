@@ -59,6 +59,10 @@ __update_repo() { # Running at end of test script
   __check_js_debug
 }
 
+__find_rockspec() {
+  find "$WORKSPACE" -type f -name "argmap-*.rockspec"
+}
+
 __gen_doc_map() {                                                             # Generates page for README.md example link destination
   path_output=$(md2hf -p "$WORKSPACE/test/input/markdown/example-updated.md") # -p activates pipe mode
   mv "$path_output" "$WORKSPACE/docs/"
@@ -266,6 +270,6 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo git-rebase-interactive-prep
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
 export -f get-site-path
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf

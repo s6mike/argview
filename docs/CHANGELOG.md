@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.7
+
+- `scripts/bash_aliases_argmap.sh`: Add `__find_rockspec()` and fix current rockspec search broken in 9.7.3
+  - `scripts/`, `test/test_scripts/tests.sh`: Replace rockspec search with above function.
+
 ## argmap 9.7.6
 
 - `mapjs/public/mapjs-default-styles.css`: Fix minor css lint issues.
@@ -26,7 +31,7 @@
 
 ## argmap 9.7.3
 
-- `test/test_scripts/tests.sh`: Update find rockspec command to always search root project folder so that it doesn't break if called from sub directory.
+- `test/test_scripts/tests.sh`: Update find rockspec command to always search root project folder so that it doesn't break if called from sub directory. ISSUE: This broke it by returning same file twice when in main directory.
   - `scripts/`: Make same update in other scripts.
 
 ## argmap 9.7.2

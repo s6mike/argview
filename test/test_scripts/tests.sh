@@ -80,7 +80,7 @@ __test() {
 
 if [ "$1" != html ]; then
     # TODO: Put this into function
-    rockspec_file=$(find "$WORKSPACE" ~+ -type f -name "argmap-*.rockspec") # Gets absolute path
+    rockspec_file=$(__find_rockspec) # Gets absolute path
     __test luarocks lint "$rockspec_file"                                   #1
 
     __test a2m "$INPUT_FILE_YML"       #2
