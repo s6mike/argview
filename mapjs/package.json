@@ -35,6 +35,7 @@
     "env": "env",
     "test:start": "npm run start && npm run testcafe",
     "stop": "killall node",
+    "stop:force": "fuser -k $PORT_DEV_SERVER/tcp",
     "start": "webpack serve --mode=development &",
     "start:prod": "webpack serve --mode=production &",
     "testcafe": "testcafe 'chrome:headless --no-default-browser-check' /home/s6mike/git_projects/argmap/test/devtools-recordings/add_supporting_group.json",

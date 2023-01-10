@@ -142,7 +142,13 @@ webpack_pack() { #pmj
   npm --prefix "$PATH_MJS_HOME" run pack
 }
 
+# TODO: Add force option to this function
 webpack_server_halt() { #wsh
+  # If kill doesn't work, then use `npm run stop:force`
+  # This does: `fuser -k $PORT_DEV_SERVER/tcp`
+  # Else:
+  #   `killall -9 node` will.
+  #   `PID=fuser 9001/tcp; kill -9 $PID`;
   npm --prefix "$PATH_MJS_HOME" run stop
   SERVER_ON=false
 }

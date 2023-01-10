@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.7.10
+
+- `mapjs/package.json`: Add `stop:force` for if stop fails.
+- `scripts/bash_aliases_mapjs.sh`: Add comments with alternative solutions.
+
 ## argmap 9.7.9
 
 - `mapjs/package.json`:
