@@ -1,0 +1,53 @@
+---
+########
+# MAPJS config data
+# To be used by js, lua filters and pandoc templates
+# Copyright 2022 Michael Hayes and the mapjs contributors
+# SPDX - License - Identifier: MIT
+########
+
+# Template Elements
+
+argmap_collection:
+  tag: article
+  class: argmap-collection
+argmap_grouping:
+  tag: article
+  class: argmap
+  parent: argmap_collection
+
+mapjs_instance:
+  tag: div
+  class: mapjs-app
+  parent: mapjs_grouping
+mapjs_map:
+  id: container_$BLOCK_ID$
+  tag: div
+  class: container_argmapjs #mapjs_container
+  parent: mapjs_app
+mapjs_src_data:
+  tag: script
+  class: argmap_json
+  src: $path-json-source$
+  parent: mapjs_map
+
+mapjs_control:
+  id: menubar-mapjs-$BLOCK_ID$
+  tag: div
+  class: menubar-mapjs
+  role: menubar
+  parent: mapjs_instance
+toolbar_main:
+  tag: div
+  class: toolbar-mapjs-main
+  role: toolbar
+  aria_label: Edit nodes
+  parent: mapjs_control
+toolbar_edit_links:
+  id: toolbar-edit-links-$BLOCK_ID$
+  tag: div
+  class: toolbar-mapjs-edit-links
+  role: toolbar
+  aria_label: Edit links
+  parent: mapjs_control
+...

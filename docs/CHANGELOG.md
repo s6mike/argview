@@ -10,6 +10,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.8.0
+
+- `mapjs/src/config-mapjs.yml`: Add yaml config file.
+- `mapjs/src/core/util/mapjs-utilities.js`, `mapjs/src/start.js`: Read yaml config file using `yaml-loader` inline and set `CONTAINER_CLASS` value.
+- `mapjs/package.json`: Add yaml-loader dependency.
+  - `mapjs/package-lock.json`: Ditto.
+- `mapjs/webpack.config.js`: Add commented out attempts at configuring `yaml-loader` rules.
+
 ## argmap 9.7.10
 
 - `mapjs/package.json`: Add `stop:force` for if stop fails.

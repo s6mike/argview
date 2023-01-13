@@ -1,7 +1,9 @@
 /*global module*/
 // TODO: switch to lodash and test
 const _ = require('underscore'),
-  CONTAINER_CLASS = 'container_argmapjs';
+  // { default: config } = require('../../config-mapjs.yml'),
+  { default: config } = require('yaml-loader!../../config-mapjs.yml'),
+  CONTAINER_CLASS = config.mapjs_map.class;
 
 function MyLogger(console_original, environment = process.env.NODE_ENV) {
   const new_logger = Object.create(console_original);

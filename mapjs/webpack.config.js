@@ -23,6 +23,16 @@ module.exports = (env, argv) => {
 			chunkFilename: '[name].[contenthash].bundle.js', // This is used for on-demand-loaded chunk files.
 			clean: true,
 		},
+		// resolve: { modules: [path.resolve(__dirname, 'src'), 'node_modules'] },
+		// resolve: {
+		// 	modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+		// 	alias: { yaml: 'yaml-loader', Src: path.resolve(__dirname, 'src') },
+		// },
+		// resolveLoader: {
+		// 	alias: { yaml: 'yaml-loader', Src: path.resolve(__dirname, 'src') },
+		// 	modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+		// 	extensions: ['.yml', '.yaml'],
+		// },
 		devServer: {
 			static: path.join(__dirname, 'public'),
 			port: process.env.PORT_DEV_SERVER,
@@ -66,6 +76,14 @@ module.exports = (env, argv) => {
 		},
 		module: {
 			rules: [
+				// {
+				// 	test: /\.ya?ml$/,
+				// 	// include: path.resolve('src/config-mapjs.yml'),
+				// 	// type: 'javascript/auto',
+				// 	// type: 'json',
+				// 	// enforce: 'pre',
+				// 	use: 'yaml-loader',
+				// },	
 				{
 					test: require.resolve('jquery-hammerjs/jquery.hammer-full.js'),
 					loader: 'exports-loader',

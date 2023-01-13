@@ -2,9 +2,11 @@
 /* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
 /*global require, document, window, console, idea */
-
 const Utilities = require('./core/util/mapjs-utilities'),
 	MAPJS = require('./npm-main'),
+	// { default: config } = require('../../config-mapjs.yml'),
+	{ default: CONFIG } = require('yaml-loader!./config-mapjs.yml'),
+	CONTAINER_CLASS = CONFIG.mapjs_map.class,
 	Try = Utilities.trycatch;
 
 Logger.log(process.env.NODE_ENV + " mode");
@@ -193,12 +195,13 @@ const jQuery = require('jquery'),
 		'use strict';
 
 		// Looks for class not id, so can capture a number of containerElements each with own id.
-		const containerElements = document.getElementsByClassName('container_argmapjs');
+		const containerElements = document.getElementsByClassName(CONTAINER_CLASS);
 
 		if (containerElements.length > 0) { // Checks there are mapjs requests
 			for (const containerElement of containerElements) {
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
+				// TODO: Get argmap_json from config 
 				const script_src = containerElement.getElementsByClassName('argmap_json')[0].getAttribute('src');
 				// Logger.debug('script_src: ', script_src);
 
