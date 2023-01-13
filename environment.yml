@@ -1,7 +1,7 @@
 name: argmap
 channels:
-  - anaconda
   - conda-forge
+  - anaconda
   - defaults
 dependencies:
   - anaconda/linux-64::luarocks==3.7.0=lua53h06a4308_0

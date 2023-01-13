@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.8.2
+
+- `environment.yml`: Save conda env export with channel order changed for some reason.
+
 ## argmap 9.8.1
 
 - Update `src/layouts/includes/mapjs-map-container.html` with new container class.
