@@ -23,7 +23,7 @@ mapjs_instance:
 mapjs_map:
   id: container_$BLOCK_ID$
   tag: div
-  class: container_argmapjs #mapjs_container
+  class: mapjs-container # container_argmapjs
   parent: mapjs_app
 mapjs_src_data:
   tag: script

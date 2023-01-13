@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.8.1
+
+- Update `src/layouts/includes/mapjs-map-container.html` with new container class.
+  - `mapjs/src/config-mapjs.yml`: Update to use new container class.
+- `docs/example-updated.html`: Update with new template output.
+
 ## argmap 9.8.0
 
 - `mapjs/src/config-mapjs.yml`: Add yaml config file.
