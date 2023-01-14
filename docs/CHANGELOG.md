@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.1.0
+
+- `src/layouts/includes/mapjs-map-container.html`: Add new `div.argmap_app` element to group controls and map together without heading, to be keyboard focus target; and update to match `mapjs/src/config-mapjs.yml`.
+
 ## argmap 10.0.0
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Change main and link edit toolbar element classes. BREAKING

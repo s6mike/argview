@@ -1,10 +1,12 @@
 $-- This file is used by `src/layouts/templates/pandoc-mapjs-main-html5.html` when quick-container is set to true
 $-- tabindex ensures that container can receive focus, so keyboard shortcuts can work in it
-<article class="argmapBlock">
+<article class="argmap">
   $-- TODO: Should use the argmap block title as h2 instead of this arbitrary one:
   <h2>Example Argument map</h2>
+  <div class="mapjs-app">
   $../includes/mapjs-widget-controls.html()$
   <div id="container_$BLOCK_ID$" class="mapjs-container" tabindex="-1">
-    <script type="application/json" class="argmap_json" src="$path-json-source$"></script>
+    <script type="application/json" class="argmap-json" src="$path-json-source$"></script>
+  </div>
   </div>
 </article>
