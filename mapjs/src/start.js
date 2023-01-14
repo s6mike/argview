@@ -195,6 +195,7 @@ const jQuery = require('jquery'),
 		'use strict';
 
 		// Looks for class not id, so can capture a number of containerElements each with own id.
+		// TODO: Use getElementMJS()
 		const containerElements = document.getElementsByClassName(CONTAINER_CLASS);
 
 		if (containerElements.length > 0) { // Checks there are mapjs requests

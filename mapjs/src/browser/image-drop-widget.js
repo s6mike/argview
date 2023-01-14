@@ -4,6 +4,7 @@ const jQuery = require('jquery');
 jQuery.fn.imageDropWidget = function (imageInsertController) {
 	'use strict';
 	this.on('dragleave dragend', function () {
+		// TODO: Use getElementMJS()
 		Array.from(this.getElementsByClassName('droppable')).forEach((el) => el.classList.remove('droppable'));
 	}).on('dragenter dragover', function (e) {
 		const map = mapInstance[this.id],
@@ -28,6 +29,7 @@ jQuery.fn.imageDropWidget = function (imageInsertController) {
 			htmlContent = dataTransfer.getData('text/html');
 			imageInsertController.insertHtmlContent(htmlContent, e.originalEvent);
 		}
+		// TODO: Use getElementMJS()
 		Array.from(this.getElementsByClassName('droppable')).forEach((el) => el.classList.remove('droppable'));
 	});
 	return this;

@@ -16,6 +16,7 @@ module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
 
 	mapModel.addEventListener('nodeSelectionChanged', function () {
 		preventRoundtrip = true;
+		// TODO: Use getElementMJS() ?
 		jQToolbarWidgetElement.find('.updateStyle[data-mm-target-property]').val(function () {
 			return mapModel.getSelectedStyle(jQuery(this).data('mm-target-property'));
 		}).change();
@@ -23,6 +24,7 @@ module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
 	});
 
 	mapModel.addEventListener('addLinkModeToggled', function () {
+		// TODO: Use getElementMJS()
 		jQToolbarWidgetElement.find('.toggleAddLinkMode').toggleClass('active');
 	});
 
@@ -42,6 +44,7 @@ module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
 	});
 
 	changeMethodNames.forEach(function (methodName) {
+		// TODO: Use getElementMJS()
 		jQToolbarWidgetElement.find('.' + methodName).change(function (event) {
 			if (preventRoundtrip) {
 				return;

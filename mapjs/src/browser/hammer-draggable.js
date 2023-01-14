@@ -1,6 +1,5 @@
 /*global require, mapInstance, Utilities*/
 const $ = require('jquery'),
-	// Moved exports-loader call to webpack.config.js
 	Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
 	Utilities = require('../core/util/mapjs-utilities');
 	// mapModel = mapInstance[Utilities.getContainerID(this)].mapModel,

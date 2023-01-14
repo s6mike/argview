@@ -39,15 +39,24 @@ mapjs_control:
   parent: mapjs_instance
 toolbar_main:
   tag: div
-  class: toolbar-mapjs-main
+  class: toolbar # toolbar-mapjs-main
   role: toolbar
   aria_label: Edit nodes
   parent: mapjs_control
 toolbar_edit_links:
   id: toolbar-edit-links-$BLOCK_ID$
   tag: div
-  class: toolbar-mapjs-edit-links
+  class: linkEditWidget # toolbar-mapjs-edit-links
   role: toolbar
   aria_label: Edit links
   parent: mapjs_control
+toolbar_fileButton:
+  class: readFile
+
+# Map elements
+
+node:
+  class: mapjs-node
+connector:
+  class: mapjs-connector
 ...

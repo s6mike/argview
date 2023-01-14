@@ -90,6 +90,8 @@ fi
 
 # TODO: Ideally want to read node_count_before and pass it into the JSON script as a variable to compare it to.
 #   See https://workflowy.com/#/33d0bdfaf875
+
+# TODO: Read class from config file: node.class
 # node_count_before = document.getElementsByClassName('mapjs-node').length
 
 # Run Test

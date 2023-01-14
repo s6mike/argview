@@ -71,6 +71,7 @@ sleep .1
 
 # TODO: Could check for more than one thing, or execute interactive JS 
 # TODO Could also try to pass the number of nodes onto next step to check that the interaction gave the correct result
+# TODO: Read class from config file: node.class
 send -- "document.getElementsByClassName('mapjs-node').length>=1\r"
 expect -exact "document.getElementsByClassName('mapjs-node').length>=1\r"
 expect -re "{\"result\":{\"type\":\"boolean\",\"value\":(true|false)}}\r"

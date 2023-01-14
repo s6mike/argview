@@ -740,6 +740,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 	this.handleKey_loadMap = function (source, event, container) {
 		analytic('handleKeyLoadMap', source);
 		// const container = event.currentTarget,
+		// TODO: Get classname from config
 		const fileButton = container.getElementsByClassName('readFile')[0];
 		fileButton.click();
 	};
