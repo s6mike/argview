@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.1
+
+- `mapjs/public/mapjs-default-styles.css`: Update to reflect new element classes etc. Fixes buttons being hidden behind map container.
+
 ## argmap 10.2.0
 
 - `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add new `article` element to group all argmaps on page, for accessibility.
