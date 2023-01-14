@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.5
+
+- `test/devtools-recordings/`: Fix link edit recordings:
+  - Fix edit existing links so that they aren't removing the link they are meant to edit.
+  - Check that link edits happen.
+  - Check that link deletes happen.
+
 ## argmap 10.2.4
 
 - Revert "9.8.2 fix(config): Update conda env export:"
@@ -35,7 +42,7 @@
 
 - `src/layouts/includes/mapjs-map-container.html`: Add new `div.argmap_app` element to group controls and map together without heading, to be keyboard focus target; and update to match `mapjs/src/config-mapjs.yml`.
 
-## argmap 10.0.0
+## argmap 10.0.0 BREAKING
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Change main and link edit toolbar element classes. BREAKING
   - `mapjs/src/config-mapjs.yml`: Update config to reflect UI changes and rename json script class.

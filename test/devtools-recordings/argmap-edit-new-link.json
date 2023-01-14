@@ -12,14 +12,14 @@
     },
     {
       "type": "navigate",
-      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
       "assertedEvents": [
         {
           "type": "navigation",
           "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html",
           "title": "example1-clearly-false-white-swan-simplified"
         }
-      ]
+      ],
+      "url": "http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified.html"
     },
     {
       "type": "click",
@@ -29,8 +29,8 @@
           "#node_1 > span"
         ]
       ],
-      "offsetY": 19.825469970703125,
       "offsetX": 111.5,
+      "offsetY": 19.825469970703125,
       "deviceType": "pen"
     },
     {
@@ -46,8 +46,8 @@
           "#node_5 > span"
         ]
       ],
-      "offsetY": 3.325469970703125,
       "offsetX": 41,
+      "offsetY": 3.325469970703125,
       "deviceType": "pen"
     },
     {
@@ -60,18 +60,6 @@
       "expression": "!mapInstance['container_1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
     },
     {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "#link_1_5 > path.mapjs-link-hit.noTransition"
-        ]
-      ],
-      "offsetY": 40.325469970703125,
-      "offsetX": -4,
-      "deviceType": "pen"
-    },
-    {
       "type": "change",
       "target": "main",
       "selectors": [
@@ -82,8 +70,12 @@
       "value": "blue"
     },
     {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('#link_1_5 > path.mapjs-link').getAttribute('stroke-dasharray')==''"
+    },
+    {
       "type": "change",
-      "value": "dashed",
+      "target": "main",
       "selectors": [
         [
           "aria/Line style"
@@ -92,7 +84,15 @@
           "#linkEditWidget_1 > select.lineStyle"
         ]
       ],
-      "target": "main"
+      "value": "dashed"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelector('#link_1_5 > path.mapjs-link').getAttribute('stroke-dasharray')=='4, 4'"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelectorAll('#link_1_5 > path.mapjs-arrow')[0].style.display == ''"
     },
     {
       "type": "click",
@@ -105,9 +105,13 @@
           "#linkEditWidget_1 > button.arrow"
         ]
       ],
-      "offsetY": 11.852935791015625,
       "offsetX": 26.137252807617188,
+      "offsetY": 11.852935791015625,
       "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelectorAll('#link_1_5 > path.mapjs-arrow')[0].style.display == 'none'"
     },
     {
       "type": "click",
@@ -121,9 +125,13 @@
           "#linkEditWidget_1 > input"
         ]
       ],
-      "offsetY": 8.852935791015625,
       "offsetX": 37,
+      "offsetY": 8.852935791015625,
       "deviceType": "pen"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.querySelectorAll('#link_1_5').length == 0"
     }
   ]
 }
