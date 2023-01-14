@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.4
+
+- Revert "9.8.2 fix(config): Update conda env export:"
+
 ## argmap 10.2.3
 
 - [README.md](../README.md): Update with new element classes etc.
@@ -46,7 +50,7 @@ BREAKING: Changing classes for UI. Any user html customisations will be broken.
 
 - Add comments to various mapjs src and test files regarding opportunities to use config file variables.
 
-## argmap 9.8.2
+## argmap 9.8.2 REVERTED
 
 - `environment.yml`: Save conda env export with channel order changed for some reason.
 
