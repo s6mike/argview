@@ -765,7 +765,7 @@ You can adapt the above for your own DIY approach:
 
 ``` html
 <div id="container_argmap1" class="container_argmapjs">
-  <script type="application/json" class="argmap_json" src="[JSON file path]"></script>
+  <script type="application/json" class="argmap-json" src="[JSON file path]"></script>
 </div>
 ```
 

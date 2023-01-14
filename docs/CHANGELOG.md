@@ -10,13 +10,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.3
+
+- [README.md](../README.md): Update with new element classes etc.
+
 ## argmap 10.2.2
 
-- `test/devtools-recordings/`: Update to reflect new element classes etc.
+- `test/devtools-recordings/`: Update with new element classes etc.
 
 ## argmap 10.2.1
 
-- `mapjs/public/mapjs-default-styles.css`: Update to reflect new element classes etc. Fixes buttons being hidden behind map container.
+- `mapjs/public/mapjs-default-styles.css`: Update with new element classes etc. Fixes buttons being hidden behind map container.
 
 ## argmap 10.2.0
 
