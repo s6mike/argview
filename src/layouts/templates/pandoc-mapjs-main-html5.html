@@ -40,10 +40,12 @@ $../includes/argmap-head-element.html()$
     ${if(argmap-input)}
     $../includes/argmap-input-widget.html()$
     ${endif}
-    $body$
-    ${if(quick-container)}
-    $../includes/mapjs-map-container.html()$
-    ${endif}
+    <article class="argmap-collection">
+      $body$
+      ${if(quick-container)}
+      $../includes/mapjs-map-container.html()$
+      ${endif}
+    </article>
   </main>
   <style id="themecss">
   </style>

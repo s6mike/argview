@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.0
+
+- `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add new `article` element to group all argmaps on page, for accessibility.
+  - `docs/example-updated.html`: Update with latest template changes.
+
 ## argmap 10.1.0
 
 - `src/layouts/includes/mapjs-map-container.html`: Add new `div.argmap_app` element to group controls and map together without heading, to be keyboard focus target; and update to match `mapjs/src/config-mapjs.yml`.
