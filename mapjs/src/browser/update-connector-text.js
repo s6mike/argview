@@ -1,5 +1,6 @@
 /*global module, require */
 const createSVG = require('./create-svg'),
+	{ default: CONFIG } = require('yaml-loader!../config-mapjs.yml'),
 	getTextElement = function (parentElement, labelText, elementType, centrePoint) {
 		'use strict';
 		elementType = elementType || 'text';
@@ -32,8 +33,8 @@ const createSVG = require('./create-svg'),
 		// eslint-disable-next-line one-var
 		const rectDOM = rectElement && rectElement[0],
 			translate = {},
-			// TODO: Get classname from config
-			linkDimensions = parentElement[0].getElementsByClassName('mapjs-connector')[0].getClientRects()[0],
+			CONNECTOR_CLASS = CONFIG.connector.class,
+			linkDimensions = parentElement[0].getElementsByClassName(CONNECTOR_CLASS)[0].getClientRects()[0],
 			// Want connector label to be nearer parent node:
 			// 	Again, this is more for argmap, so may not work well in other themes.
 			dleft = (linkDimensions.left - centrePoint.x),

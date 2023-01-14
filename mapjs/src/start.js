@@ -7,6 +7,7 @@ const Utilities = require('./core/util/mapjs-utilities'),
 	// { default: config } = require('../../config-mapjs.yml'),
 	{ default: CONFIG } = require('yaml-loader!./config-mapjs.yml'),
 	CONTAINER_CLASS = CONFIG.mapjs_map.class,
+	MAPJS_SRC_CLASS = CONFIG.mapjs_src_data.class,
 	Try = Utilities.trycatch;
 
 Logger.log(process.env.NODE_ENV + " mode");
@@ -124,11 +125,12 @@ const jQuery = require('jquery'),
 
 		// Set up Widgets
 		const containerInstance = containerElement.parentElement,
+			// TODO define both config variables at top
 			toolbarElement = Try(
-				() => Utilities.getElementMJS('toolbar', containerInstance),
+				() => Utilities.getElementMJS(CONFIG.toolbar_main.class, containerInstance),
 			),
 			linkEditWidgetElement = Try(
-				() => Utilities.getElementMJS('linkEditWidget', containerInstance),
+				() => Utilities.getElementMJS(CONFIG.toolbar_edit_links.class, containerInstance),
 			);
 
 		// QUESTION: Do I need to store mapToolbarWidget and linkEditWidget?
@@ -202,8 +204,8 @@ const jQuery = require('jquery'),
 			for (const containerElement of containerElements) {
 				// TODO: check for 0 > script > 1
 				//	See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-				// TODO: Get argmap_json from config 
-				const script_src = containerElement.getElementsByClassName('argmap_json')[0].getAttribute('src');
+				// TODO: Use getElementMJS()
+				const script_src = containerElement.getElementsByClassName(MAPJS_SRC_CLASS)[0].getAttribute('src');
 				// Logger.debug('script_src: ', script_src);
 
 				// TODO: switch to await/async for simpler code and debugging.

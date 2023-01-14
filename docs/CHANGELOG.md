@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 9.8.4
+
+- `mapjs/src/`: Use config file variables in more files.
+
 ## argmap 9.8.3
 
 - Add comments to various mapjs src and test files regarding opportunities to use config file variables.
