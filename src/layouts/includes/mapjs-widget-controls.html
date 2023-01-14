@@ -1,7 +1,7 @@
 <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
-<div id="widget_controls_$BLOCK_ID$" class="mapjs_control" role="menubar">
+<div id="menubar-mapjs-$BLOCK_ID$" class="menubar-mapjs" role="menubar">
   <section>
-    <div role="toolbar" aria-label="Node editing" class="toolbar">
+    <div class="toolbar-mapjs-main" role="toolbar" aria-label="Node editing">
       <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
           class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
           data-mm-target-property='container_argmap$BLOCK_ID$' /></label>
@@ -10,19 +10,19 @@
       <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
       <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
       <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
-      <input type="button" value="Parent reason" class="insertIntermediateGroup" aria-label="Parent reason"
+      <input type="button" class="insertIntermediateGroup" value="Parent reason" aria-label="Parent reason"
         data-group="supporting" />
-      <input type="button" value="Supporting group" class="addGroupSubidea" aria-label="Supporting group"
+      <input type="button" class="addGroupSubidea" value="Supporting group" aria-label="Supporting group"
         data-group="supporting" />
-      <input type="button" value="Opposing group" class="addGroupSubidea" aria-label="Opposing group"
+      <input type="button" class="addGroupSubidea" value="Opposing group" aria-label="Opposing group"
         data-group="opposing" />
       <input type="button" class="editNode" value="Edit" aria-label="Edit" />
       <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
       <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
       <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-      <input type="button" value="Disable" class="setInputEnabled" aria-label="Disable"
+      <input type="button" class="setInputEnabled" value="Disable" aria-label="Disable"
         data-set-input-enabled="false" />
-      <input type="button" value="Enable" class="setInputEnabled" aria-label="Enable" data-set-input-enabled="true" />
+      <input type="button" class="setInputEnabled" value="Enable" aria-label="Enable" data-set-input-enabled="true" />
       <input type="button" class="undo" value="Undo" aria-label="Undo" />
       <input type="button" class="redo" value="Redo" aria-label="Redo" />
       <input type="button" class="cut" value="Cut" aria-label="Cut" />
@@ -35,7 +35,7 @@
       <label class="wrapper">Background: <input type="text" class='updateStyle' data-mm-target-property='background'
           aria-label="Node Colour" /></label>
     </div>
-    <div id="linkEditWidget_$BLOCK_ID$" class="linkEditWidget" role="toolbar" aria-label="Link editing">
+    <div id="linkEditWidget_$BLOCK_ID$" class="toolbar-mapjs-edit-links" role="toolbar" aria-label="Link editing">
       <input class="delete" type="button" value="Delete" aria-label="Delete" />
       <select class="color" aria-label="Colour">
         <option value="red">Red</option>

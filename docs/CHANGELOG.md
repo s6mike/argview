@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.0.0
+
+- `src/layouts/includes/mapjs-widget-controls.html`: Change main and link edit toolbar element classes. BREAKING
+  - `mapjs/src/config-mapjs.yml`: Update config to reflect UI changes and rename json script class.
+
+BREAKING: Changing classes for UI. Any user html customisations will be broken.
+
 ## argmap 9.8.4
 
 - `mapjs/src/`: Use config file variables in more files.

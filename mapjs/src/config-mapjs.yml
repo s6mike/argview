@@ -23,11 +23,11 @@ mapjs_instance:
 mapjs_map:
   id: container_$BLOCK_ID$
   tag: div
-  class: mapjs-container # container_argmapjs
+  class: mapjs-container
   parent: mapjs_app
 mapjs_src_data:
   tag: script
-  class: argmap_json
+  class: argmap-json
   src: $path-json-source$
   parent: mapjs_map
 
@@ -39,14 +39,14 @@ mapjs_control:
   parent: mapjs_instance
 toolbar_main:
   tag: div
-  class: toolbar # toolbar-mapjs-main
+  class: toolbar-mapjs-main
   role: toolbar
   aria_label: Edit nodes
   parent: mapjs_control
 toolbar_edit_links:
   id: toolbar-edit-links-$BLOCK_ID$
   tag: div
-  class: linkEditWidget # toolbar-mapjs-edit-links
+  class: toolbar-mapjs-edit-links
   role: toolbar
   aria_label: Edit links
   parent: mapjs_control
