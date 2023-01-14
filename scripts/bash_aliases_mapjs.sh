@@ -166,8 +166,13 @@ webpack_server_start() { # wss
   # & disown
 }
 
+__check_npm_updates() {
+  printf "\nChecking for out of date npm modules. Expecting 1 only:\n"
+  npm --prefix "$PATH_MJS_HOME" outdated
+}
+
 ## Mark functions for export to use in other scripts:
 export -f __check_server_on __build_mapjs __run_mapjs_legacy
-export -f webpack_install webpack_pack webpack_server_start # webpack_pack_open webpack_build_open
+export -f webpack_install webpack_pack webpack_server_start __check_npm_updates # webpack_pack_open webpack_build_open
 export -f open-debug
 export -f testcafe_run __test_mapjs_renders

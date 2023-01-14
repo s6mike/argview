@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.2.6
+
+- `scripts/bash_aliases_mapjs.sh`: Add `__check_npm_updates()` to check for out of date npm modules.
+  - `scripts/bash_aliases_argmap.sh`: Call it from `__update_repo()`.
+
 ## argmap 10.2.5
 
 - `test/devtools-recordings/`: Fix link edit recordings:
