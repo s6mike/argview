@@ -36,7 +36,7 @@
           "aria/Add"
         ],
         [
-          "#widget_controls_1 input.addSubIdea"
+          "#menubar-mapjs-1 input.addSubIdea"
         ]
       ],
       "offsetY": 6.745094299316406,
@@ -59,7 +59,7 @@
           "aria/Add"
         ],
         [
-          "#widget_controls_1 input.addSubIdea"
+          "#menubar-mapjs-1 input.addSubIdea"
         ]
       ],
       "offsetY": 9.745094299316406,
@@ -88,7 +88,7 @@
           "aria/Delete"
         ],
         [
-          "#widget_controls_1 input.removeSubIdea"
+          "#menubar-mapjs-1 input.removeSubIdea"
         ]
       ],
       "offsetY": 9.745094299316406,

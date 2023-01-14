@@ -17,7 +17,7 @@
       "target": "main",
       "selectors": [
         [
-          "#widget_controls_1 input.addSubIdea"
+          "#menubar-mapjs-1 input.addSubIdea"
         ]
       ],
       "offsetY": 9.745094299316406,
@@ -32,7 +32,7 @@
       "target": "main",
       "selectors": [
         [
-          "#widget_controls_1 input.undo"
+          "#menubar-mapjs-1 input.undo"
         ]
       ],
       "offsetY": 6.328125,
@@ -47,7 +47,7 @@
       "target": "main",
       "selectors": [
         [
-          "#widget_controls_1 input.redo"
+          "#menubar-mapjs-1 input.redo"
         ]
       ],
       "offsetY": 12.328125,

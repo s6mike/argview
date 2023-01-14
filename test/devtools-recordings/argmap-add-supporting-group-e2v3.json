@@ -21,7 +21,7 @@
       "target": "main",
       "selectors": [
         [
-          "#widget_controls_1  input[type=button][value='Supporting group']"
+          "#menubar-mapjs-1  input[type=button][value='Supporting group']"
         ]
       ],
       "offsetX": 63.80390930175781,

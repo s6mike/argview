@@ -28,7 +28,7 @@
       "target": "main",
       "selectors": [
         [
-          ".mapjs_control input.toggleAddLinkMode"
+          ".menubar-mapjs input.toggleAddLinkMode"
         ]
       ],
       "offsetY": 0,
