@@ -200,7 +200,7 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" "${@:3}" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
 
   if [ "$pipe" == true ]; then
     echo "$output"
@@ -232,7 +232,7 @@ j2hf() { # j2hfa Default output with argmap input activated
   # mkdir --parent "$(dirname "$path_output_json")" # Ensures JSON output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # Add --metadata=argmap-input:true to enable argmap input functionality:
-  echo "" | pandoc --template="$FILE_TEMPLATE_HTML_ARGMAP_MAIN" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  echo "" | pandoc --metadata-file="$PATH_FILE_MJS_CONFIG" --template="$FILE_TEMPLATE_HTML_ARGMAP_MAIN" -o "$html_output" "${@:3}" --metadata=quick-container:true --metadata=BLOCK_ID:"1" --metadata title="$name" --metadata=path-json-source:"$path_output_json" --metadata=css:"$MJS_CSS" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$html_output"
   open-debug "$html_output"
 }
@@ -253,7 +253,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   # Or use a defaults file:
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
 }
@@ -264,7 +264,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"

@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.3.0
+
+- `scripts/bash_aliases_argmap.sh`: Add `mapjs/src/config-mapjs.yml` as metadata file argument to all pandoc calls, so data can be used in templates.
+  - `scripts/bash_aliases_argmap.sh`: Add env variable for `mapjs/src/config-mapjs.yml` path.
+
 ## argmap 10.2.6
 
 - `scripts/bash_aliases_mapjs.sh`: Add `__check_npm_updates()` to check for out of date npm modules.
