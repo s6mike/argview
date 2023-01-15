@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.3.1
+
+- `src/layouts/templates/pandoc-mapjs-main-html5.html`: Replace hardcoded article.argmap-collection element with meta-data variables from mapjs config file.
+
 ## argmap 10.3.0
 
 - `scripts/bash_aliases_argmap.sh`: Add `mapjs/src/config-mapjs.yml` as metadata file argument to all pandoc calls, so data can be used in templates.
