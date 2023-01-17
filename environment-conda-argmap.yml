@@ -5,9 +5,7 @@ channels:
   - defaults
 dependencies:
   - anaconda/linux-64::luarocks==3.7.0=lua53h06a4308_0
-  - texlive-core
   - pandoc=2.9.2.1
-  - imagemagick
   - conda-forge/linux-64::unzip==6.0=h7f98852_3
   - anaconda/linux-64::yaml==0.2.5=h7b6447c_0
   - anaconda/linux-64::nodejs==16.13.1=hb931c9a_0

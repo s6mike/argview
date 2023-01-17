@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.3.3
+
+- `environment-conda-argmap.yml`: Rename conda env file from `environment.yml` before adding new environment.yml files.
+  - Update references in various files.
+
 ## argmap 10.3.2
 
 - Update eslint to latest version:

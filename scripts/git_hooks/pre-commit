@@ -34,7 +34,7 @@ export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAP/bin:$PATH
 
 # Export conda environment argmap to yaml file
 #  QUESTION: Surely these two lines do the same thing?
-conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$ENV_FILE"
+conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$PATH_FILE_ENV_CONDA"
 
 __save_env
 
@@ -48,7 +48,7 @@ __save_env
 #     echo "Conda environment changed. Staging new env.yml"
 
 # Leave env.yml out of staging until I've fixed
-# git add $ENV_FILE
+# git add $PATH_FILE_ENV_CONDA
 
 #     exit 1
 # fi
