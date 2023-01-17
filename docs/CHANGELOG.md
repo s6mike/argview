@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.8.5
+
+- `src/layouts/includes/mapjs-widget-controls.html`: Update comments and minor formatting fix.
+- `src/layouts/includes/mapjs-map-container.html`: Update comments.
+
 ## argmap 10.8.4
 
 - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Fix failed test by updating regex. Think chrome headless output format had changed to include extra brace, so removed newline at end so regex not trying to match to end of line.
@@ -114,7 +119,7 @@ ISSUE: `imagemagick` and `texlive-core` no longer in conda env file. imagemagick
 
 ## argmap 10.2.4
 
-- Revert "9.8.2 fix(config): Update conda env export:"
+- Revert "9.8.2 fix(config): Update conda env export"
 
 ## argmap 10.2.3
 
