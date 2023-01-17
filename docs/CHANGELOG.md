@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.6.3
+
+- `test/test_scripts/bash_aliases_argmap_test.sh`: Add tests and functions ready for new config files.
+
 ## argmap 10.6.2
 
 - `test/test_scripts/tests.sh`: Centralise, create and move functions to `test/test_scripts/bash_aliases_argmap_test.sh` for portability.

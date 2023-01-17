@@ -54,6 +54,10 @@ __init_tests() {
   fi
 }
 
+check_var_value() {
+  [[ $($1) == "$2" ]] &>/dev/null
+}
+
 # This function is not considered part of a public API, and therefore updates may change them without warning.
 __test() {
   PRE="Test $TESTNUM:"
@@ -68,6 +72,19 @@ __test() {
   fi
 
   TESTNUM=$((TESTNUM + 1))
+}
+
+test_getvar() {
+  __init_tests
+  __test check_var_value "getvar bla" "$([[ $? -eq 1 ]])"                              #1
+  __test check_var_value "getvar bla.bla" "$([[ $? -eq 1 ]])"                          #2
+  __test check_var_value "getvar lang" en                                              #3
+  __test check_var_value "getvar node" "class: mapjs-node"                             #4
+  __test check_var_value "getvar node.class" mapjs-node                                #5
+  __test check_var_value "getvar PATH_MJS_HOME" /home/s6mike/git_projects/argmap/mapjs #6
+  __test check_var_value "getvar LIST_FILES_CONFIG" "- /home/s6mike/git_projects/argmap/environment-argmap.yml
+- /home/s6mike/git_projects/argmap/src/config-argmap.yml
+- /home/s6mike/git_projects/argmap/mapjs/src/config-mapjs.yml" #7
 }
 
 export -f __init_tests check_var_value __test test_getvar
