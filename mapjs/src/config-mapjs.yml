@@ -1,7 +1,7 @@
 ---
 ########
 # MAPJS config data
-# To be used by js, lua filters and pandoc templates
+# For use in mapjs code, layouts and pandoc filters.
 # Copyright 2022 Michael Hayes and the mapjs contributors
 # SPDX - License - Identifier: MIT
 ########
@@ -21,7 +21,7 @@ mapjs_instance:
   class: mapjs-app
   parent: mapjs_grouping
 mapjs_map:
-  id: container_$BLOCK_ID$
+  id: container_${BLOCK_ID-(1)}
   tag: div
   class: mapjs-container
   parent: mapjs_app
@@ -32,7 +32,7 @@ mapjs_src_data:
   parent: mapjs_map
 
 mapjs_control:
-  id: menubar-mapjs-$BLOCK_ID$
+  id: menubar-mapjs-${BLOCK_ID-(1)}
   tag: div
   class: menubar-mapjs
   role: menubar
@@ -44,7 +44,7 @@ toolbar_main:
   aria_label: Edit nodes
   parent: mapjs_control
 toolbar_edit_links:
-  id: toolbar-edit-links-$BLOCK_ID$
+  id: toolbar-edit-links-${BLOCK_ID-(1)}
   tag: div
   class: toolbar-mapjs-edit-links
   role: toolbar

@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.6.4
+
+- Add 2 new YAML config files:
+  - `environment-argmap.yml`: File locations etc for use in scripts, layouts and lua code.
+  - `src/config-argmap.yml`: Argmap config data for use in lua code, layouts and scripts
+- `mapjs/src/config-mapjs.yml`: Update existing mapjs config file to have default values for ${BLOCK_ID} - which won't have a value until called by pandoc. This is so that missing value errors aren't thrown by yq in bash.
+
 ## argmap 10.6.3
 
 - `test/test_scripts/bash_aliases_argmap_test.sh`: Add tests and functions ready for new config files.

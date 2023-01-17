@@ -1,0 +1,45 @@
+---
+########
+# Argmap environment data
+# For use in scripts, layouts and lua code.
+# Copyright 2022 Michael Hayes and the mapjs contributors
+# SPDX - License - Identifier: MIT
+########
+
+# Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
+
+# Paths
+
+## project
+WORKSPACE: /home/s6mike/git_projects/argmap
+# ARRAY_FILES_CONFIG: {${PATH_FILE_CONDA_ENV}, ${PATH_FILE_CONFIG_ARGMAP}, ${PATH_FILE_CONFIG_MJS}}
+
+LIST_FILES_CONFIG:
+  - ${PATH_FILE_ENV_ARGMAP} # This file
+  - ${PATH_FILE_CONFIG_ARGMAP}
+  - ${PATH_FILE_CONFIG_MJS}
+  # - ${PATH_FILE_CONDA_ENV}
+
+## conda
+CONDA_ENV_ARGMAP: argmap
+PATH_FILE_CONDA_ENV: ${WORKSPACE}/environment-conda-argmap.yml
+
+## argmap
+PATH_DIR_SCRIPTS: $WORKSPACE/scripts
+PATH_FILE_CONFIG_ARGMAP: ${WORKSPACE}/src/config-argmap.yml
+PATH_FILE_ENV_ARGMAP: ${WORKSPACE}/environment-argmap.yml # This file
+
+## mapjs
+DIR_MJS: mapjs
+PATH_DIR_MJS: ${WORKSPACE}/${DIR_MJS}
+PATH_FILE_CONFIG_MJS: ${PATH_DIR_MJS}/src/config-mapjs.yml
+
+## pandoc
+PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
+
+# Not used, but for reference:
+DIR_PROJECTS: $(dirname "$WORKSPACE") # Needed for scripts/argmap.env tmp chrome profile
+
+# Deprecated
+PATH_MJS_HOME: $PATH_DIR_MJS
+...

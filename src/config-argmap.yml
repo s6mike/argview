@@ -1,0 +1,12 @@
+---
+########
+# Argmap config data
+# For use in lua code, layouts and scripts.
+# Copyright 2022 Michael Hayes and the mapjs contributors
+# SPDX - License - Identifier: MIT
+########
+
+# Argmap document metadata
+
+lang: en
+...
