@@ -12,11 +12,14 @@ export PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 # For trying stuff:
 #   source "$WORKSPACE/scripts/experiment.sh"
 
+# shellcheck source=/home/s6mike/git_projects/argmap/scripts/init_read_config.sh
+source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 
 # Needed for scripts/argmap.env tmp chrome profile:
 DIR_PROJECTS=$(dirname "$WORKSPACE")
 export DIR_PROJECTS
 
+# TODO: Migrate this to environment-argmap.yml using jq functions
 export PATH_MISC_DEV=$DIR_PROJECTS/misc
 
 # TODO use $PATH_DIR_SCRIPTS instead of $WORKSPACE/scripts

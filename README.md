@@ -108,6 +108,8 @@ Tested with:
 
 6. To display MindMup JSON files on a web page as an interactive mindmap, without using the [MindMup website](https://www.mindmup.com/), see [Installing mapjs](#installing-mapjs).
 
+7. The various scripts also rely on yaml configuration files and reads them using the yq binary [mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV and properties processor](https://github.com/mikefarah/yq/#install).
+
 See `environment.yml` for conda environment export of non-lua dependencies and version numbers.
 
 --------------------------------

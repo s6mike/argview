@@ -232,7 +232,10 @@ npm audit fix --prefix "$PATH_MJS_HOME" --legacy-peer-deps >npm_audit_output.txt
 
 __build_mapjs
 
-# SECTION 5: Clientside Lua
+# SECTION 5: yq
+sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+
+# SECTION X: Clientside Lua
 # ---------------------------------------------------
 # TODO: These links probably need re-creating (add rm commands)
 

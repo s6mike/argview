@@ -10,6 +10,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.7.0
+
+- Add shell config reading functionality:
+  - `scripts/init_read_config.sh`:
+    - `getvar()`: Abstracts variable lookups to access variables regardless of which yaml file or environment variables they are in (alias `gv`).
+      - Other functions, aliases and env variables to support `getvar()` to read the yaml config files, create shell environment variables from them. Relies on [yq](https://mikefarah.gitbook.io/yq/).
+      - Initialises necessary path variables from new config files for `getvar()`.
+  - `scripts/argmap_init_script.sh`: Run `init_read_config` during initialisation.
+  - `scripts/install.sh`: Install `yq` binary.
+    - [README.md](../README.md): Add `yq` to dependencies list.
+
 ## argmap 10.6.4
 
 - Add 2 new YAML config files:
