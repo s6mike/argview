@@ -195,13 +195,12 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
-  # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
-  # If so, how would I easily update it?
+  # QUESTION: Is it worth putting some of these settings into a defaults file?
   # Useful? --metadata=curdir:X
   # css here overrides the template value, which may not be what I want. Not sure best way to handle.
   # https://workflowy.com/#/ee624e71f40c
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" "${@:3}" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" -o "$output" --template="$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
 
   if [ "$pipe" == true ]; then
     echo "$output"
