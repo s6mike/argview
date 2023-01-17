@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.8.4
+
+- `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Fix failed test by updating regex. Think chrome headless output format had changed to include extra brace, so removed newline at end so regex not trying to match to end of line.
+
 ## argmap 10.8.3
 
 - `environment-conda-argmap.yml`: Restore `imagemagick` and `texlive-core` to fix issue with generating .PNGs, above were removed from conda env file in 10.3.3

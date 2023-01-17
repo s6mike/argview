@@ -74,7 +74,7 @@ sleep .1
 # TODO: Read class from config file: node.class
 send -- "document.getElementsByClassName('mapjs-node').length>=1\r"
 expect -exact "document.getElementsByClassName('mapjs-node').length>=1\r"
-expect -re "{\"result\":{\"type\":\"boolean\",\"value\":(true|false)}}\r"
+expect -re "{\"result\":{\"type\":\"boolean\",\"value\":(true|false)}}"
 # {\"result\":{\"description\":\"12\",\"type\":\"number\",\"value\":12}}\r
 expect -exact ">>> "
 send -- "quit\r"
