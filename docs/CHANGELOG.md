@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.8.2
+
+- `src/lua/pandoc-argmap.lua`: Use container include file properly: use pandoc.pipe with pandoc command itself but no input, and the container include file as the template, so that template variables are populated with meta data from the config files etc.
+
 ## argmap 10.8.1
 
 - `scripts/bash_aliases_argmap.sh`: Update `md2hf()` to use new config files - they can simply be passed as meta data files and all config data will be available to the template.

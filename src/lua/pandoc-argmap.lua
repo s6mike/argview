@@ -283,20 +283,21 @@ local function CodeBlock(block)
                 f:write(output)
                 f:close()
 
-                -- Reads in the html files and then combines them with substitutions
-                -- TODO: Try using pandoc.template.compile instead
+                -- To generate each container instance's html, uses pandoc.pipe with pandoc command itself but no input, using the container include file as the template, so that template variables are populated with meta data from the config files etc.
+                -- TODO: Try using pandoc.template.compile instead. Not available until 2.17.0.1 (2022-01-14)
                 --  https://beta.workflowy.com/#/a2357475328a
-                local _, html_raw_argmap_controls = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTROLS)
-                local _, html_raw_argmap_container = pandoc.mediabag.fetch(PATH_INCLUDES_ARGMAP_CONTAINER)
+                    -- Earlier solution:
+                    -- local writer_options = {
+                    --     variables = { title = "hello world"}
+                    --     -- template = PATH_INCLUDES_ARGMAP_CONTAINER,
+                    -- }
+                    -- local converted_variable = "$title$" -- pandoc.write("$title$", 'html', writer_options)
+                    -- rawhtml = "<h3>" .. utils.stringify(converted_variable) .. "</h3>" .. rawhtml
 
-                --  % escapes special characters
-                -- First gsub strips away pandoc line comments `$-- `
-                -- Second ensures each id is unique
-                local rawhtml = html_raw_argmap_container:gsub("%$%-%- [^\n]*\n?", "")
-                    :gsub("%$../includes/mapjs%-widget%-controls%.html%(%)%$",
-                         html_raw_argmap_controls)
-                    :gsub("%$BLOCK_ID%$", block_id):gsub("%$path%-json%-source%$", mapjs_url)
-
+                -- TODO: Better solution, lookup metadata etc using config data (config variables, globals or env variables)
+                --  QUESTION: Add 'data-dir="$PANDOC_DATA_DIR"' ?
+                local pandoc_args={'--to=' .. format, '--metadata=BLOCK_ID:' .. block_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=/home/s6mike/git_projects/argmap/mapjs/src/config-mapjs.yml', '--metadata=title:"-"'}
+                local rawhtml = pandoc.pipe('pandoc', pandoc_args, '')
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
                 -- convert mup to raw svg
