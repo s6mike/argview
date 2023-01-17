@@ -8,6 +8,10 @@ echo "Running ${BASH_SOURCE[0]}"
 # Needed for non-VSCode environments:
 export WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 
+# For trying stuff:
+#   source "$WORKSPACE/scripts/experiment.sh"
+
+
 # Needed for scripts/argmap.env tmp chrome profile:
 DIR_PROJECTS=$(dirname "$WORKSPACE")
 export DIR_PROJECTS

@@ -9,6 +9,7 @@ mapjs/node_modules
 mapjs/public/output/*
 mapjs/public/js/*bundle.js
 examples/*
+scripts/experiments.sh
 test/output*/*
 tmp/
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png

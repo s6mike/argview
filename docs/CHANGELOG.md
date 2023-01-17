@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.3.4
+
+- `scripts/argmap_init_script.sh`: Add commented out call to new `scripts/experiments.sh` file for running quick tests etc.
+- `.gitignore`: Add experiments file.
+
 ## argmap 10.3.3
 
 - `environment-conda-argmap.yml`: Rename conda env file from `environment.yml` before adding new environment.yml files.
