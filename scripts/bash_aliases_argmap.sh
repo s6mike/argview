@@ -13,12 +13,12 @@ alias grip='git-rebase-interactive-prep'
 
 ## browser functions
 
-# TODO: Use get-site-path() to simplify relative path juggling
+# TODO: Use __get-site-path() to simplify relative path juggling
 
 # TODO try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   Maybe review mapjs tests.
 
-get-site-path() {
+__get-site-path() {
   input_path="${1}"
   case $input_path in
   /*)
@@ -41,7 +41,7 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   __check_server_on
   input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
-  site_path=$(get-site-path "$input_path")
+  site_path=$(__get-site-path "$input_path")
   if [ "$site_path" != "" ]; then
     google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
@@ -194,6 +194,7 @@ md2hf() { # md2h test/input/example.md (output filename) (optional pandoc argume
   name=$(basename --suffix=".md" "$input")
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+
   # QUESTION: Is it worth putting some of these settings into a metadata or defaults file?
   # If so, how would I easily update it?
   # Useful? --metadata=curdir:X
@@ -228,7 +229,7 @@ j2hf() { # j2hfa Default output with argmap input activated
   mkdir --parent "$(dirname "$html_output")" # Ensures output folder exists
 
   #  TODO: Check and copy to input folder?
-  path_output_json=/$(get-site-path "$input")
+  path_output_json=/$(__get-site-path "$input")
   # mkdir --parent "$(dirname "$path_output_json")" # Ensures JSON output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # Add --metadata=argmap-input:true to enable argmap input functionality:
@@ -264,7 +265,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template "$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open-debug "$output"
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
@@ -280,6 +281,15 @@ md2np() {
   code "$output"
 }
 
+# Mark functions for export to use in other scripts:
 export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
+export -f __get-site-path
+export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf md2np
+
+# Deprecated
+#   TODO: Delete
+get-site-path() {
+  __get-site-path
+}
+
 export -f get-site-path
-export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf

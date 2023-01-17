@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.6.0
+
+- `scripts/bash_aliases_argmap.sh`: Deprecate `get-site-path()` in favour of private `__get-site-path()`.
+
 ## argmap 10.5.0
 
 - `scripts/bash_aliases_argmap.sh`: Add `md2np()` for converting markdown to native pandoc AST for debugging purposes.
