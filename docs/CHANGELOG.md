@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.8.3
+
+- `environment-conda-argmap.yml`: Restore `imagemagick` and `texlive-core` to fix issue with generating .PNGs, above were removed from conda env file in 10.3.3
+
 ## argmap 10.8.2
 
 - `src/lua/pandoc-argmap.lua`: Use container include file properly: use pandoc.pipe with pandoc command itself but no input, and the container include file as the template, so that template variables are populated with meta data from the config files etc.
@@ -74,6 +78,8 @@
 
 - `environment-conda-argmap.yml`: Rename conda env file from `environment.yml` before adding new environment.yml files.
   - Update references in various files.
+
+ISSUE: `imagemagick` and `texlive-core` no longer in conda env file. imagemagick not present in file, not sure whether it was removed before or after this change. Fixed in 10.9.1 so that PNGs can be created again.
 
 ## argmap 10.3.2
 
