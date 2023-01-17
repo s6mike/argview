@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.3.2
+
+- Update eslint to latest version:
+  - `mapjs/package.json`
+  - `mapjs/package-lock.json`
+
 ## argmap 10.3.1
 
 - `src/layouts/templates/pandoc-mapjs-main-html5.html`: Replace hardcoded article.argmap-collection element with meta-data variables from mapjs config file.
