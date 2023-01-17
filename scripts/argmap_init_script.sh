@@ -7,6 +7,7 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # Needed for non-VSCode environments:
 export WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
+export PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 
 # For trying stuff:
 #   source "$WORKSPACE/scripts/experiment.sh"
@@ -18,6 +19,7 @@ export DIR_PROJECTS
 
 export PATH_MISC_DEV=$DIR_PROJECTS/misc
 
+# TODO use $PATH_DIR_SCRIPTS instead of $WORKSPACE/scripts
 source "$WORKSPACE/scripts/argmap.env"
 source "$WORKSPACE/scripts/bash_aliases_mapjs.sh"
 
@@ -43,7 +45,6 @@ source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
 
 # Uses config file in the relevant mapjs directory to get correct mapjs paths
 # shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error
-# shellcheck source=/mapjs-example/scripts/mapjs.env # Stops shellcheck lint error
 source "$PATH_MJS_HOME/scripts/mapjs.env"
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"

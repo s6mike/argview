@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.4.0
+
+- `scripts/argmap_init_script.sh`: Add new env variable for scripts folder path.
+
 ## argmap 10.3.4
 
 - `scripts/argmap_init_script.sh`: Add commented out call to new `scripts/experiments.sh` file for running quick tests etc.
