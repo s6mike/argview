@@ -18,60 +18,60 @@
         <article class="argmap-collection">
       <p>This is an example of an argument about a donkey!</p>
       <article class="argmap">
-          <h2>Example Argument map</h2>
+        
+        <h2>Example Argument map</h2>
         <div class="mapjs-app">
         <!-- Used as pandoc partials template by mapjs-quick-json.html; Also read by pandoc-argmap.lua filter, with BLOCK_ID substituted by filter -->
-      <div id="menubar-mapjs-" class="menubar-mapjs" role="menubar">
-        <section>
-          <div class="toolbar-mapjs-main" role="toolbar" aria-label="Node editing">
-            <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
-                class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
-                data-mm-target-property='container_argmap' /></label>
-            <input type="button" class="downloadMap" value="Save" aria-label="Save" />
-            <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
-            <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
-            <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
-            <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
-            <input type="button" class="insertIntermediateGroup" value="Parent reason" aria-label="Parent reason"
-              data-group="supporting" />
-            <input type="button" class="addGroupSubidea" value="Supporting group" aria-label="Supporting group"
-              data-group="supporting" />
-            <input type="button" class="addGroupSubidea" value="Opposing group" aria-label="Opposing group"
-              data-group="opposing" />
-            <input type="button" class="editNode" value="Edit" aria-label="Edit" />
-            <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
-            <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
-            <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
-            <input type="button" class="setInputEnabled" value="Disable" aria-label="Disable"
-              data-set-input-enabled="false" />
-            <input type="button" class="setInputEnabled" value="Enable" aria-label="Enable" data-set-input-enabled="true" />
-            <input type="button" class="undo" value="Undo" aria-label="Undo" />
-            <input type="button" class="redo" value="Redo" aria-label="Redo" />
-            <input type="button" class="cut" value="Cut" aria-label="Cut" />
-            <input type="button" class="copy" value="Copy" aria-label="Copy" />
-            <input type="button" class="paste" value="Paste" aria-label="Paste" />
-            <input type="button" class="openAttachment" value="Open attachment" aria-label="Open attachment" />
-            <input type="button" class="toggleAddLinkMode" value="Add link" aria-label="Add link" />
-            <input type="button" class="insertRoot" value="Add root node" aria-label="Add root node" />
-            <input type="button" class="makeSelectedNodeRoot" value="Make root" aria-label="Make root" />
-            <label class="wrapper">Background: <input type="text" class='updateStyle' data-mm-target-property='background'
-                aria-label="Node Colour" /></label>
-          </div>
-          <div id="linkEditWidget_" class="toolbar-mapjs-edit-links" role="toolbar" aria-label="Link editing">
-            <input class="delete" type="button" value="Delete" aria-label="Delete" />
-            <select class="color" aria-label="Colour">
-              <option value="red">Red</option>
-              <option value="blue">Blue</option>
-            </select>
-            <select class="lineStyle" aria-label="Line style">
-              <option value="solid">Solid</option>
-              <option value="dashed">Dashed</option>
-            </select>
-            <button class="arrow">Arrow</button>
-          </div>
-        </section>
-      </div>
-        <div id="container_" class="mapjs-container" tabindex="-1">
+        <div id="menubar-mapjs-" class="menubar-mapjs" role="menubar">
+          <section>
+            <div class="toolbar-mapjs-main" role="toolbar" aria-label="Node editing">
+              <label class="buttonStyle" title="Upload a mapjs json file (JSON, MUP)">Load<input type="file"
+                  class="readFile hide-accessibly" name="mapjs-json" accept="application/json,.json,.mup" aria-label="Load"
+                  data-mm-target-property="container_argmap" /></label>
+              <input type="button" class="downloadMap" value="Save" aria-label="Save" />
+              <input type="button" class="resetView" value="0" aria-label="Reset zoom" />
+              <input type="button" class="scaleUp" value="+" aria-label="Zoom in" />
+              <input type="button" class="scaleDown" value="-" aria-label="Zoom out" />
+              <input type="button" class="addSubIdea" value="Add" aria-label="Add" />
+              <input type="button" class="insertIntermediateGroup" value="Parent reason" aria-label="Parent reason"
+                data-group="supporting" />
+              <input type="button" class="addGroupSubidea" value="Supporting group" aria-label="Supporting group"
+                data-group="supporting" />
+              <input type="button" class="addGroupSubidea" value="Opposing group" aria-label="Opposing group"
+                data-group="opposing" />
+              <input type="button" class="editNode" value="Edit" aria-label="Edit" />
+              <input type="button" class="removeSubIdea" value="Delete" aria-label="Delete" />
+              <input type="button" class="insertIntermediate" value="Insert parent" aria-label="Insert parent" />
+              <input type="button" class="toggleCollapse" value="Exp/col" aria-label="Exp/col" />
+              <input type="button" class="setInputEnabled" value="Disable" aria-label="Disable"
+                data-set-input-enabled="false" />
+              <input type="button" class="setInputEnabled" value="Enable" aria-label="Enable" data-set-input-enabled="true" />
+              <input type="button" class="undo" value="Undo" aria-label="Undo" />
+              <input type="button" class="redo" value="Redo" aria-label="Redo" />
+              <input type="button" class="cut" value="Cut" aria-label="Cut" />
+              <input type="button" class="copy" value="Copy" aria-label="Copy" />
+              <input type="button" class="paste" value="Paste" aria-label="Paste" />
+              <input type="button" class="openAttachment" value="Open attachment" aria-label="Open attachment" />
+              <input type="button" class="toggleAddLinkMode" value="Add link" aria-label="Add link" />
+              <input type="button" class="insertRoot" value="Add root node" aria-label="Add root node" />
+              <input type="button" class="makeSelectedNodeRoot" value="Make root" aria-label="Make root" />
+              <label class="wrapper">Background: <input type="text" class='updateStyle' data-mm-target-property='background'
+                  aria-label="Node Colour" /></label>
+            </div>
+            <div id="linkEditWidget_" class="toolbar-mapjs-edit-links" role="toolbar" aria-label="Link editing">
+              <input class="delete" type="button" value="Delete" aria-label="Delete" />
+              <select class="color" aria-label="Colour">
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+              </select>
+              <select class="lineStyle" aria-label="Line style">
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+              </select>
+              <button class="arrow">Arrow</button>
+            </div>
+          </section>
+        </div>  <div id="container_" class="mapjs-container" tabindex="-1">
           <script type="application/json" class="argmap-json" src="/output/mapjs-json/example-updated_.json"></script>
         </div>
         </div>

@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.6.1
+
+- Add comments and minor formatting to various files.
+
 ## argmap 10.6.0
 
 - `scripts/bash_aliases_argmap.sh`: Deprecate `get-site-path()` in favour of private `__get-site-path()`.

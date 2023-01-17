@@ -6,6 +6,8 @@
 # SECTION 0:
 # ----------
 
+# TODO Should set up relevant bash to run these automatically
+
 # a) Review: intialised values in `scripts/argmap.env` and `scripts/argmap_init_script.sh`
 
 # SECTION 1:

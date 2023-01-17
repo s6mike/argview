@@ -63,6 +63,7 @@
         {
             // Getting error:
             //  /home/s6mike/.local/bin/pandoc:1: unexpected symbol near '<\127>'
+            //  See https://github.com/hoelzro/linotify/issues/18 for ideas
             "type": "lua",
             "request": "launch",
             "name": "Lua Debugger: pandoc-argmap.lua",

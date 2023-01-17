@@ -688,7 +688,7 @@ function main()
 
       return url
     else
-      Logger:debug("return mup: " .. mup)
+      -- Logger:debug("return mup: " .. mup)
       return mup
     end
   end
