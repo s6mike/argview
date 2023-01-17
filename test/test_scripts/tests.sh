@@ -16,51 +16,11 @@ __check_server_on
 
 echo 'Attempting to delete old test outputs.'
 
-__clean_repo
-
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
 # Though may not be consistently same name anyway, would need to create with fix name
-
-COLOUR='true'
-TESTNUM=1
-FAILCOUNT=0 # count failed tests, also acts at return code at end; 0 = success
-
-COL_PASS=""
-COL_FAIL="<< "
-COL_RESET=""
-
-case "$TERM" in
-dumb)
-    COLOUR='false'
-    echo "Colour not supported by terminal."
-    ;;
-*) ;;
-esac
-
-# Or try: if [ "$color_prompt" = yes ]; then
-if [ $COLOUR = 'true' ]; then
-    echo "Colour supported"
-    COL_PASS='\033[0;32m' # Green
-    COL_FAIL='\033[0;31m' # Red
-    COL_RESET='\033[0m'   # No Color
-fi
-
-# This function is not considered part of a public API, and therefore updates may change them without warning.
-__test() {
-    PRE="Test $TESTNUM:"
-    echo -en "$PRE "
-
-    # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
-    if "$@" >>"$PATH_TEST_LOG"; then
-        echo -e "${COL_PASS}Pass${COL_RESET}"
-    else
-        echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
-        FAILCOUNT=$((FAILCOUNT + 1))
-    fi
-
-    TESTNUM=$((TESTNUM + 1))
-}
+__clean_repo
+__init_tests
 
 # todo turn these into an array
 # array0=(one two three four five six)
@@ -146,4 +106,4 @@ if [ "$1" != html ]; then
     __update_repo
 fi
 
-exit $FAILCOUNT
+exit "$FAILCOUNT"

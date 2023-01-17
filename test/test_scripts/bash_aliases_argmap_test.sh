@@ -27,3 +27,47 @@ alias argmph='rm $DIR_PUBLIC_OUTPUT/example.pdf; rm $DIR_PUBLIC_OUTPUT/header.te
 alias argmf='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm $WORKSPACE/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
 alias argt='$WORKSPACE/test/test_scripts/tests.sh'
 alias argth='$WORKSPACE/test/test_scripts/tests.sh html'
+
+__init_tests() {
+  COLOUR='true'
+  TESTNUM=1
+  FAILCOUNT=0 # count failed tests, also acts at return code at end; 0 = success
+
+  COL_PASS=""
+  COL_FAIL="<< "
+  COL_RESET=""
+
+  case "$TERM" in
+  dumb)
+    COLOUR='false'
+    echo "Colour not supported by terminal."
+    ;;
+  *) ;;
+  esac
+
+  # Or try: if [ "$color_prompt" = yes ]; then
+  if [ $COLOUR = 'true' ]; then
+    echo "Colour supported"
+    COL_PASS='\033[0;32m' # Green
+    COL_FAIL='\033[0;31m' # Red
+    COL_RESET='\033[0m'   # No Color
+  fi
+}
+
+# This function is not considered part of a public API, and therefore updates may change them without warning.
+__test() {
+  PRE="Test $TESTNUM:"
+  echo -en "$PRE "
+
+  # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
+  if "$@" >>"$PATH_TEST_LOG"; then
+    echo -e "${COL_PASS}Pass${COL_RESET}"
+  else
+    echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
+    FAILCOUNT=$((FAILCOUNT + 1))
+  fi
+
+  TESTNUM=$((TESTNUM + 1))
+}
+
+export -f __init_tests check_var_value __test test_getvar
