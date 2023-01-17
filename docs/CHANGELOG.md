@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.5.0
+
+- `scripts/bash_aliases_argmap.sh`: Add `md2np()` for converting markdown to native pandoc AST for debugging purposes.
+
 ## argmap 10.4.0
 
 - `scripts/argmap_init_script.sh`: Add new env variable for scripts folder path.

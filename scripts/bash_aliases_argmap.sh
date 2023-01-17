@@ -270,7 +270,16 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
 }
 
-## Mark functions for export to use in other scripts:
+# Convert markdown to native pandoc output
+md2np() {
+  input="${1:-$INPUT_FILE_MD2}"
+  name=$(basename --suffix=".md" "$input")
+  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+  pandoc "$input" --to=native --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=mapjs-output-js:"$FILE_MJS_JS" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  code "$output"
+}
+
 export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
 export -f get-site-path
 export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf
