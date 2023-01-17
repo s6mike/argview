@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.8.0
+
+- `scripts/argmap.env`: Deprecate redundant env variable definitions which are now available in `environment-argmap.yml`
+
 ## argmap 10.7.0
 
 - Add shell config reading functionality:
