@@ -18,13 +18,12 @@ source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 # Needed for scripts/argmap.env tmp chrome profile:
 DIR_PROJECTS=$(dirname "$WORKSPACE")
 export DIR_PROJECTS
-
-# TODO: Migrate this to environment-argmap.yml using jq functions
 export PATH_MISC_DEV=$DIR_PROJECTS/misc
 
-# TODO use $PATH_DIR_SCRIPTS instead of $WORKSPACE/scripts
-source "$WORKSPACE/scripts/argmap.env"
-source "$WORKSPACE/scripts/bash_aliases_mapjs.sh"
+# shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
+source "$PATH_DIR_SCRIPTS/argmap.env"
+# shellcheck disable=SC1091
+source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
 # source "$HOME/scripts/config.env"
 

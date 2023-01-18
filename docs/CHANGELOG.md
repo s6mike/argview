@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.3
+
+- `scripts/argmap_init_script.sh`: Update 2 paths to use env variable.
+
 ## argmap 10.9.2
 
 Copy all remaining env variables to yaml config files:
