@@ -28,7 +28,7 @@ mapjs_map:
 mapjs_src_data:
   tag: script
   class: argmap-json
-  src: $path-json-source$
+  src: ${path-json-source}
   parent: mapjs_map
 
 mapjs_control:

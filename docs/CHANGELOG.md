@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.1
+
+- `mapjs/src/config-mapjs.yml`: Update to use chosen variable style.
+
 ## argmap 10.9.0
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Use new variables available through the additional metadata added through improved container include.
