@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.2
+
+Copy all remaining env variables to yaml config files:
+
+- `mapjs/environment-mapjs.yml`: Add new config file with mapjs.env variables.
+- `environment-argmap.yml`: Add remaining argmap variables
+  - Update list of config files to include new ones.
+- `.gitignore`: Add PRIVATE* to exclude private files including new private config file.
+- `scripts/init_read_config.sh`: Export path variables for new config files.
+
 ## argmap 10.9.1
 
 - `mapjs/src/config-mapjs.yml`: Update to use chosen variable style.

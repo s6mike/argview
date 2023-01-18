@@ -1,3 +1,4 @@
+PRIVATE*
 argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
