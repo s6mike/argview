@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.5
+
+- Remove symbolic links to `src` and `lua_modules` from `mapjs/public` since they are for clientside lua functionality which isn't ready for use yet.
+
 ## argmap 10.9.4
 
 - `scripts/bash_aliases_argmap.sh`: Remove redundant metadata variables from pandoc calls.
