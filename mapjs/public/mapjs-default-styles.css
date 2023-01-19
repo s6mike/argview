@@ -19,7 +19,7 @@ body {
 }
 
 /* TODO: When changing input button style, add this to all of them so loadFile label is treated the same way. */
-.buttonStyle {
+.button-style {
   appearance: auto;
   user-select: none;
   white-space: pre;
@@ -40,11 +40,11 @@ body {
   border-image: initial;
 }
 
-.buttonStyle:focus-within {
+.button-style:focus-within {
   outline: auto;
 }
 
-.buttonStyle:hover {
+.button-style:hover {
   background-color: #e5e5e5;
 }
 

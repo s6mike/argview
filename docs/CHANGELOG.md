@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.6
+
+- `src/layouts/includes/mapjs-widget-controls.html`: Change to .button-style from .buttonStyle  for consistency.
+  - `mapjs/public/mapjs-default-styles.css`: Update to match.
+
 ## argmap 10.9.5
 
 - Remove symbolic links to `src` and `lua_modules` from `mapjs/public` since they are for clientside lua functionality which isn't ready for use yet.
