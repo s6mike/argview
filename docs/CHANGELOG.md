@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.7
+
+- Add `PRIVATE-environment-argmap-sample.yml` so purpose of PRIVATE-env config file is clearer.
+  - `.gitignore`: Update to allow sample.
+
 ## argmap 10.9.6
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Change to .button-style from .buttonStyle  for consistency.

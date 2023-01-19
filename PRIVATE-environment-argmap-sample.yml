@@ -1,0 +1,10 @@
+########
+# PRIVATE Argmap environment data
+# For use in scripts
+# Copyright 2022 Michael Hayes and the mapjs contributors
+# SPDX - License - Identifier: MIT
+########
+---
+PATH: "${WORKSPACE}/src/lua:etc"  # Value quoted because it contains :
+...
+
