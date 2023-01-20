@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.8
+
+- Comment, change quotes etc.
+
 ## argmap 10.9.7
 
 - Add `PRIVATE-environment-argmap-sample.yml` so purpose of PRIVATE-env config file is clearer.

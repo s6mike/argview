@@ -73,8 +73,8 @@ INPUT_FILE_MD2: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-sw
 INPUT_FILE_MD_META: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
 INPUT_FILE_JSON2: ${WORKSPACE}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
 INPUT_FILE_JSON_LINKS: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
-PATH_INPUT_FILE_HTML: '$(realpath --no-symlinks --relative-to: "${PATH_DIR_PUBLIC}" "${PATH_DIR_PUBLIC}/input/example1-clearly-false-white-swan-simplified.html")'
-PATH_OUTPUT_FILE_HTML: '$(realpath --no-symlinks --relative-to: "${PATH_DIR_PUBLIC}" "${PATH_DIR_PUBLIC}/output/html/example1-clearly-false-white-swan-simplified.html")'
+PATH_INPUT_FILE_HTML: '$(realpath --no-symlinks --relative-to: "${PATH_DIR_PUBLIC}" "${PATH_DIR_PUBLIC}/input/example1-clearly-false-white-swan-simplified.html")' # QUESTION: Does this value need double quoting because it contains : ?
+PATH_OUTPUT_FILE_HTML: '$(realpath --no-symlinks --relative-to: "${PATH_DIR_PUBLIC}" "${PATH_DIR_PUBLIC}/output/html/example1-clearly-false-white-swan-simplified.html")' # QUESTION: Does this value need double quoting because it contains : ?
 
 ## external to project
 PATH_MISC_DEV: ${DIR_PROJECTS}/misc
