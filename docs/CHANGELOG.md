@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.11
+
+- `src/config-argmap.yml`: Move css path reference here from `mapjs/environment-mapjs.yml` and make it a yaml anchor.
+  - Create a `css` list using alias to refer to the anchor so that template will have stylesheet link element for each item in list.
+
 ## argmap 10.9.10
 
 - `mapjs/webpack.config.js`: Add `target: web` just in case (should be default).

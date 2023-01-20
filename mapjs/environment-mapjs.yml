@@ -12,7 +12,6 @@ PATH_FILE_MJS_CONFIG: ${PATH_MJS_HOME}/src/config-mapjs.yml
 
 ## dev webserver values
 ## Leading slash ensures relative to root (mapjs/public)
-MJS_CSS: /mapjs-default-styles.css
 DIR_HTML_SERVER_OUTPUT: output
 
 ## This is absolute, for reading/writing to the correct directory
