@@ -127,7 +127,6 @@ __save_env() {
 a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml (output path)
   name=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$PATH_DIR_PUBLIC_MJS_JSON/$name.json} &&
-    echo "output: $output" "${@:2}" &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
@@ -166,6 +165,72 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)"/pandoc-argmap.lua --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
   echo "$output"
+}
+
+# Creates full page html intelligently based on input type.
+#   Accepts: m, argmap, or json
+#  TODO: Create md2x() which gives choice of output - html, fragment, pdf, native format etc
+2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
+  default_template=""
+
+  # doesn't open browser if -p used for Pipe mode
+  OPTIND=1
+  while getopts ":p" option; do # Leading ':' in ":p" removes error message if no recognised options
+    case $option in
+    p) # pipe mode - Doesn't open browser, so only side effect is outputting filename, so can be piped to next command.
+      local pipe=true
+      ;;
+    *) ;;
+    esac
+  done
+
+  shift "$((OPTIND - 1))"
+
+  input="${1:-$(getvar INPUT_FILE_MD2)}"
+  output_name=$(basename "$input")
+  ext=${output_name#*.}
+
+  # TODO: prob better way to do this:
+  name=${output_name%%.*}
+  # name=$(basename --suffix=".$ext" "$input")
+
+  # echo "Input: $ext"
+  case $ext in
+  yml) # Converts argmap yaml into mindmup json then runs this command again on the output.
+    # QUESTION: Is there a way I can pass data straight into json/mup step instead?
+    2hf "$(a2m "$input")"
+    return 0
+    ;;
+  json | mup) # Injects mindmup json into template
+    # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
+    # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
+
+    #  TODO: Check and copy to input folder?
+    path_output_json=/$(__get_site_path "$input")
+    input=/dev/null # JSON input feeds into template not body
+    args="--metadata=quick-container:true --metadata=MAP_INSTANCE_ID:1 --metadata title=$name --metadata=path-json-source:$path_output_json"
+    ;;
+  md | *) # markdown is default option
+    args=""
+    ;;
+  esac
+
+  # TODO should check whether supplied output has extension already and then act accordingly
+  #   Either strip it or choose output format based on ext
+
+  # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
+  #   TODO ideally would be more flexible with output location e.g. default to standard location but pick either filename or whole directory
+  output=$(getvar DIR_PUBLIC_OUTPUT)/html/${2:-$name}.html
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+
+  set -f # I don't want globbing, but I don't want to quote it because I do want word splitting
+  # shellcheck disable=SC2086
+  pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
+  set +f
+
+  if [ "$pipe" != true ]; then
+    open_debug "$output"
+  fi
 }
 
 # Convert markdown to full page html
