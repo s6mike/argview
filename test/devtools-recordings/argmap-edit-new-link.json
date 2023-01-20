@@ -57,14 +57,14 @@
     },
     {
       "type": "waitForExpression",
-      "expression": "!mapInstance['container_1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
+      "expression": "!mapInstance['container-1'].mapModel.selectLink('mouse', JSON.parse('{\"type\":\"link\",\"ideaIdFrom\":\"1\",\"ideaIdTo\":\"5\",\"attr\":{\"style\":{\"color\":\"red\",\"lineStyle\":\"solid\",\"arrow\":\"to\"}}}'), {x: 714, y: 268})"
     },
     {
       "type": "change",
       "target": "main",
       "selectors": [
         [
-          "#linkEditWidget_1 > select.color"
+          "#toolbar-edit-links-1 > select.color"
         ]
       ],
       "value": "blue"
@@ -81,7 +81,7 @@
           "aria/Line style"
         ],
         [
-          "#linkEditWidget_1 > select.lineStyle"
+          "#toolbar-edit-links-1 > select.lineStyle"
         ]
       ],
       "value": "dashed"
@@ -102,7 +102,7 @@
           "aria/Arrow"
         ],
         [
-          "#linkEditWidget_1 > button.arrow"
+          "#toolbar-edit-links-1 > button.arrow"
         ]
       ],
       "offsetX": 26.137252807617188,
@@ -122,7 +122,7 @@
           "aria/Delete"
         ],
         [
-          "#linkEditWidget_1 > input"
+          "#toolbar-edit-links-1 > input"
         ]
       ],
       "offsetX": 37,

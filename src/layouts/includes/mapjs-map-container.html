@@ -1,12 +1,12 @@
 $-- This file is used by `src/layouts/templates/pandoc-mapjs-main-html5.html` when quick-container is set to true
 $-- Also used as template by pandoc-argmap.lua filter when it pipes pandoc
-<article class="argmap">
+<article class="${argmap_grouping.class}">
   $-- TODO: Should use the argmap block title as h2 instead of this arbitrary one:
   <h2>Example Argument map</h2>
-  <div class="mapjs-app">
-  $../includes/mapjs-widget-controls.html()$
-  <div id="container_$BLOCK_ID$" class="mapjs-container" tabindex="-1">
-    <script type="application/json" class="argmap-json" src="$path-json-source$"></script>
-  </div>
+  <div class="${mapjs_instance.class}">
+    $../includes/mapjs-widget-controls.html()$
+    <div id="${mapjs_map.id-prefix}${MAP_INSTANCE_ID}" class="${mapjs_map.class}" tabindex="-1">
+      <script type="application/json" class="${mapjs_src_data.class}" src="$path-json-source$"></script>
+    </div>
   </div>
 </article>

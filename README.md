@@ -766,7 +766,7 @@ You can adapt the above for your own DIY approach:
 2 ) Embed it into an html page using html like this, replacing `[JSON file path]` with the path:
 
 ``` html
-<div id="container_argmap1" class="container_argmapjs">
+<div id="container-argmap1" class="container-argmapjs">
   <script type="application/json" class="argmap-json" src="[JSON file path]"></script>
 </div>
 ```

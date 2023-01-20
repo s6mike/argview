@@ -23,7 +23,7 @@ mapjs_instance:
   class: mapjs-app
   parent: mapjs_grouping
 mapjs_map:
-  id: container_${BLOCK_ID-(1)}
+  id: ${mapjs_map.id-prefix}${MAP_INSTANCE_ID-(1)}
   id-prefix: container-
   tag: div
   class: mapjs-container
@@ -35,7 +35,7 @@ mapjs_src_data:
   parent: mapjs_map
 
 mapjs_control:
-  id: menubar-mapjs-${BLOCK_ID-(1)}
+  id: ${mapjs_control.id-prefix}${MAP_INSTANCE_ID-(1)}
   id-prefix: menubar-mapjs-
   tag: div
   class: menubar-mapjs
@@ -48,7 +48,7 @@ toolbar_main:
   aria_label: Edit nodes
   parent: mapjs_control
 toolbar_edit_links:
-  id: toolbar-edit-links-${BLOCK_ID-(1)}
+  id: ${toolbar_edit_links.id-prefix}${MAP_INSTANCE_ID-(1)}
   id-prefix: toolbar-edit-links-
   tag: div
   class: toolbar-mapjs-edit-links

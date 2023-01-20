@@ -254,7 +254,7 @@ local function CodeBlock(block)
             elseif argmap_format == "js" then -- if code block has this attribute then convert to mapjs output
                 -- ISSUE: Currently filetype: "png", want "json"
 
-                local block_id = block.attr.identifier
+                local map_instance_id = block.attr.identifier
 
                 -- TODO: use lua solution instead (use regex or upgrade pandoc, which may be possible if using pure lua yaml module)
                 -- Cheat method to run os command and get output back (should really use to pipe input to output via os command).
@@ -267,7 +267,7 @@ local function CodeBlock(block)
                 --          prepend with input filename for:
                 --              test/output/input_file_yml_id.json
                 -- TODO: add _yml name attribute (with _ substitutions for spaces)?
-                local output_filename = input_filename .. "_" .. block_id .. ".json"
+                local output_filename = input_filename .. "_" .. map_instance_id .. ".json"
 
                 -- Create JSON file in aboslute path:
                 -- QUESTION: Should I be using a path join function?
@@ -296,7 +296,7 @@ local function CodeBlock(block)
 
                 -- TODO: Better solution, lookup metadata etc using config data (config variables, globals or env variables)
                 --  QUESTION: Add 'data-dir="$PANDOC_DATA_DIR"' ?
-                local pandoc_args={'--to=' .. format, '--metadata=BLOCK_ID:' .. block_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=/home/s6mike/git_projects/argmap/mapjs/src/config-mapjs.yml', '--metadata=title:"-"'}
+                local pandoc_args={'--to=' .. format, '--metadata=MAP_INSTANCE_ID:' .. map_instance_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=/home/s6mike/git_projects/argmap/mapjs/src/config-mapjs.yml', '--metadata=title:"-"'}
                 local rawhtml = pandoc.pipe('pandoc', pandoc_args, '')
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then

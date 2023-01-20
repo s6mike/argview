@@ -10,6 +10,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.15.0
+
+- Update templates to use metadata:
+  - Use `id-prefix`, which means they will now use hyphenated value.
+  - Change `BLOCK_ID` to `MAP_INSTANCE_ID` for consistency with terminology elsewhere.
+    - `src/lua/pandoc-argmap.lua`: Update variable names in same way.
+  - Replace class attribute values with metadata key references.
+- Update recordings and docs with new values.
+
 ## argmap 10.14.2
 
 - `test/test_scripts`: Use `2hf()` in tests instead of deprecated functions.
