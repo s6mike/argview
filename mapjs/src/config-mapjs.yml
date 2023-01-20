@@ -8,6 +8,8 @@
 
 # Template Elements
 
+# Values representing html classes, ids etc should be kebab case
+
 argmap_collection:
   tag: article
   class: argmap-collection
@@ -22,6 +24,7 @@ mapjs_instance:
   parent: mapjs_grouping
 mapjs_map:
   id: container_${BLOCK_ID-(1)}
+  id-prefix: container-
   tag: div
   class: mapjs-container
   parent: mapjs_app
@@ -33,6 +36,7 @@ mapjs_src_data:
 
 mapjs_control:
   id: menubar-mapjs-${BLOCK_ID-(1)}
+  id-prefix: menubar-mapjs-
   tag: div
   class: menubar-mapjs
   role: menubar
@@ -45,6 +49,7 @@ toolbar_main:
   parent: mapjs_control
 toolbar_edit_links:
   id: toolbar-edit-links-${BLOCK_ID-(1)}
+  id-prefix: toolbar-edit-links-
   tag: div
   class: toolbar-mapjs-edit-links
   role: toolbar

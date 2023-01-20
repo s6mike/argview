@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.12
+
+- `mapjs/src/config-mapjs.yml`:
+  - Add `id-prefix:` keys to container and toolbar elements
+  - For values replace  _underscores -hyphens since this is correct style for html attributes.
+
 ## argmap 10.9.11
 
 - `src/config-argmap.yml`: Move css path reference here from `mapjs/environment-mapjs.yml` and make it a yaml anchor.
