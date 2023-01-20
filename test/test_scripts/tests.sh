@@ -5,7 +5,7 @@
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
 webpack_pack
-__check_server_on
+webpack_server_start
 
 # Have switched rendering to be second test.
 # Before moving to first, need to fix race condition with web server

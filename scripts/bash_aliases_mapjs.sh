@@ -39,12 +39,6 @@ alias wsh='webpack_server_halt'
 
 ## webpack functions
 
-__check_server_on() { # runs server if it's off
-  if [ "$SERVER_ON" != true ]; then
-    webpack_server_start
-  fi
-}
-
 __build_mapjs() { # bmj
   # Deletes webconfig output
   # Convoluted solution, but means I can use relative path from mapjs.env to delete the correct output js directory regardless of mapjs repo used.
@@ -113,7 +107,7 @@ testcafe_run() { # tcr
 }
 
 __test_mapjs_renders() {
-  __check_server_on
+  webpack_server_start
   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$1" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
@@ -141,28 +135,45 @@ webpack_pack() { #pmj
   npm --prefix "$PATH_MJS_HOME" run pack
 }
 
+__is_server_live() {
+  port=${1:-$(getvar PORT_DEV_SERVER)}
+  export SERVER_MODE=${SERVER_MODE:-dev}
+  netstat -tuln | grep :"$port" >>/dev/null
+}
+
 # TODO: Add force option to this function
 webpack_server_halt() { #wsh
-  # If kill doesn't work, then use `npm run stop:force`
-  # This does: `fuser -k $PORT_DEV_SERVER/tcp`
-  # Else:
-  #   `killall -9 node` will.
-  #   `PID=fuser 9001/tcp; kill -9 $PID`;
-  npm --prefix "$PATH_MJS_HOME" run stop
-  SERVER_ON=false
+  port=${1:-$(getvar PORT_DEV_SERVER)}
+  if __is_server_live "$port"; then
+    # If kill doesn't work, then use `npm run stop:force`
+    # This does: `fuser -k $PORT_DEV_SERVER/tcp`
+    # Else:
+    #   `killall -9 node` will.
+    #   `PID=fuser 9001/tcp; kill -9 $PID`;
+    npm --prefix "$PATH_MJS_HOME" run stop
+    export SERVER_ON=false
+    export SERVER_MODE=false
+  else
+    # echo "Server already off"
+    return 1
+  fi
 }
 
 # Starts server
-# TODO: Add argument for starting in production mode (start:prod)
-#   And possibly one for restarting in different mode by calling webpack_server_halt
+#  QUESTION: If mode wrong, restart in desired mode?
 webpack_server_start() { # wss
-  export SERVER_ON=true
-  if npm --prefix "$PATH_MJS_HOME" run start; then
-    true
+  port=${1:-$(getvar PORT_DEV_SERVER)}
+  mode=${2:-dev}
+  if __is_server_live "$port"; then
+    printf "Server already on"
+    if [[ $mode != "$SERVER_MODE" ]]; then
+      printf " but is currently in %s mode." "$SERVER_MODE"
+    fi
+    echo ""
   else
-    SERVER_ON=false
+    npm --prefix "$PATH_MJS_HOME" run start:"$mode"
+    export SERVER_MODE=$mode
   fi
-  # & disown
 }
 
 __check_npm_updates() {
@@ -171,7 +182,18 @@ __check_npm_updates() {
 }
 
 ## Mark functions for export to use in other scripts:
-export -f __check_server_on __build_mapjs __run_mapjs_legacy
-export -f webpack_install webpack_pack webpack_server_start __check_npm_updates # webpack_pack_open webpack_build_open
+export -f __build_mapjs __run_mapjs_legacy
+export -f __is_server_live webpack_server_halt webpack_server_start
+export -f webpack_install webpack_pack __check_npm_updates # webpack_pack_open webpack_build_open
 export -f open_debug
 export -f testcafe_run __test_mapjs_renders
+
+# TODO DEPRECATE
+
+__check_server_on() { # runs server if it's off
+  if __is_server_live; then
+    webpack_server_start "$@"
+  fi
+}
+
+export -f __check_server_on

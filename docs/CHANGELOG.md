@@ -10,6 +10,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.17.0
+
+- `scripts/bash_aliases_mapjs.sh`:
+  - Add `__is_server_live()` to check port is used instead of relying on variable.
+    - Update `webpack_server_halt()` and `webpack_server_start()` to use this.
+    - Update calls in other scripts to use `webpack_server_start()` instead of `__check_server_on()`.
+    - Deprecate `__check_server_on()`.
+  - Update `webpack_server_start()` to accept server port and mode arguments.
+    - `mapjs/package.json`: Add `start:dev` so `webpack_server_start()` can call mode more easily.
+  
 ## argmap 10.16.1
 
 - `test/test_scripts/tests.sh`: Add -q option to dependency generating commands so test results less cluttered.

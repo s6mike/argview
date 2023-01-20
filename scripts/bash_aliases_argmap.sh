@@ -38,7 +38,7 @@ __get_site_path() {
 open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
-  __check_server_on
+  webpack_server_start
   input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
   site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
