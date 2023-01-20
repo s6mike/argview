@@ -33,6 +33,9 @@ module.exports = (env, argv) => {
 		// 	modules: [path.resolve(__dirname, 'src'), 'node_modules'],
 		// 	extensions: ['.yml', '.yaml'],
 		// },
+		// stats: 'minimal',
+		// See here for how to customise stats output more precisely: https://stackoverflow.com/questions/30756804/webpack-silence-output#answer-37664373
+		stats: 'errors-warnings',
 		devServer: {
 			static: path.join(__dirname, 'public'),
 			port: process.env.PORT_DEV_SERVER,
@@ -42,6 +45,10 @@ module.exports = (env, argv) => {
 			},
 			// watchFiles: ['src/**.js'],
 		},
+		// This doesn't seem to have had any effect:
+		// watchOptions: {
+		// 	ignored: '*.yml',
+		// },
 		plugins: [
 			// new BundleAnalyzerPlugin(),
 			new HtmlWebpackPlugin({

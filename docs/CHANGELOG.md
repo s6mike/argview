@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.9
+
+- `mapjs/webpack.config.js`: Add `stats: 'errors-warnings'` so terminal not cluttered up with webpack output, especially when testing.
+  - `mapjs/package.json`: Remove webpack command line arguments which seemed to conflict with above change.
+
 ## argmap 10.9.8
 
 - Comment, change quotes etc.
