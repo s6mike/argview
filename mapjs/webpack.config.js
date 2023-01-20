@@ -6,6 +6,7 @@ const path = require('path'),
 
 module.exports = (env, argv) => {
 	return {
+		target: 'web', // should be default but just in case
 		entry: [path.resolve(__dirname, 'src/start.js')],
 		// Use for development:
 		// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".

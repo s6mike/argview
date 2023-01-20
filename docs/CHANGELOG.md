@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.10
+
+- `mapjs/webpack.config.js`: Add `target: web` just in case (should be default).
+
 ## argmap 10.9.9
 
 - `mapjs/webpack.config.js`: Add `stats: 'errors-warnings'` so terminal not cluttered up with webpack output, especially when testing.
