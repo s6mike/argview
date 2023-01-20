@@ -119,22 +119,6 @@ __save_env() {
   # https://workflowy.com/#/b0011d3b3ba1
 }
 
-# TODO move to general aliases file?
-git-rebase-interactive-prep() { # grip
-  # TODO: backup current branch - tho need to choose name
-  save_name="pre-rebase-wip"
-  git log >../misc/gitlog_backup.txt
-  code ../misc/gitlog_backup.txt
-  cp docs/CHANGELOG.md ../misc/CHANGELOG_BACKUP.md
-  code ../misc/CHANGELOG_BACKUP.md
-  git add -A              # Add all untracked files so they are not lost
-  git stash -m $save_name # Stashes are good because they accumulate, while git save will overwrite.
-  git stash apply
-  git branch -D $save_name
-  git save $save_name
-  git stash apply # Ensures that all files are still in place in case I run process again with a minor change.
-}
-
 ## argmap functions
 
 # Convert to map.json, writes it to test/output/mapjs-json/

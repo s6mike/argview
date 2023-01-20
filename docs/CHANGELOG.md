@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.9.13
+
+- `scripts/bash_aliases_argmap.sh`: Move `git-rebase-interactive-prep()` to my personal bash script since it's not part of app.
+
 ## argmap 10.9.12
 
 - `mapjs/src/config-mapjs.yml`:
