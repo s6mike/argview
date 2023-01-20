@@ -239,7 +239,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   # QUESTION: Update to use pandoc_argmap?
   pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
-  open-debug "$output"
+  open_debug "$output"
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
 }
 
@@ -255,9 +255,8 @@ md2np() {
 }
 
 # Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
-export -f __get-site-path
-export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf md2np
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec
+export -f a2m m2a a2t a2mu md2pdf md2np
 
 # DEPRECATED
 
@@ -359,55 +358,5 @@ a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
   a2m "$1" | j2hf
 }
 
-# Convert markdown to html fragment
-#   Currently using include after body, which works fine, but uses default template so it's no longer a fragment
-#   Looks like best way to generate a working html fragment probably to use lua filter to add the JS and CSS to the output html. This would also make mapjs more self contained - wouldn't add extra js/css to page if no container.
-md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (optional pandoc arguments) # DEPRECATED AND RESERVED
-  input="${1:-$INPUT_FILE_MD}"
-  name=$(basename --suffix=".md" "$input")-fragment
-  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.html
-  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  # TODO: Put this into new function?
-  # Or use a defaults file:
-  # https://workflowy.com/#/ee624e71f40c
-  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$output"
-  open-debug "$output"
-}
-
-# Convert markdown to pdf
-md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
-  name=$(basename --suffix=".md" "$1")
-  output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
-  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
-    echo "$output"
-  open-debug "$output"
-  # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
-}
-
-# Convert markdown to native pandoc output
-md2np() {
-  input="${1:-$INPUT_FILE_MD2}"
-  name=$(basename --suffix=".md" "$input")
-  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
-  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  pandoc "$input" --to=native --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
-  code "$output"
-}
-
-# Mark functions for export to use in other scripts:
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
-export -f __get-site-path
-export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf md2np
-
-# Deprecated
-#   TODO: Delete
-get-site-path() {
-  __get-site-path
-}
-
-export -f get-site-path
+export -f get-site-path __get-site-path md2htm
 export -f md2hf j2hf a2hf

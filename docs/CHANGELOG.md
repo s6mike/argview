@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.13.1
+
+- `scripts/bash_aliases_argmap.sh`: Update `md2pdf()` and `md2np()` to use new metadata and bring inline with other pandoc functions.
+
 ## argmap 10.13.0
 
 - `scripts/bash_aliases_argmap.sh`:
