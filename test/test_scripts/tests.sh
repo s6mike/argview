@@ -57,9 +57,9 @@ npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpac
     # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
     # j2hf will still fail if json file missing, but it's part of repo so that shouldn't happen.
-    2hf -p "$INPUT_FILE_JSON"
-2hf -p "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
-2hf -p "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
+    2hf -pq "$INPUT_FILE_JSON"
+2hf -pq "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
+2hf -pq "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
 __test md2htm "$INPUT_FILE_MD" #7
 __test 2hf "$INPUT_FILE_MD0"   #8

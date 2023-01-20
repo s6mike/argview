@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.16.1
+
+- `test/test_scripts/tests.sh`: Add -q option to dependency generating commands so test results less cluttered.
+
 ## argmap 10.16.0
 
 - `scripts/bash_aliases_argmap.sh`: `2hf()`: Add -q option to stop output path being printed at end.
