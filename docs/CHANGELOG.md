@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.15.1
+
+- `test/devtools-recordings/argmap-edit-existing-link-all-attributes.json`: Remove wrong step.
+
 ## argmap 10.15.0
 
 - Update templates to use metadata:

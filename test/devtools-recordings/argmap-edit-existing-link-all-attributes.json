@@ -70,10 +70,6 @@
     },
     {
       "type": "waitForExpression",
-      "expression": "document.querySelector('#link_1_5 > path.mapjs-link').getAttribute('stroke-dasharray')=='4, 4'"
-    },
-    {
-      "type": "waitForExpression",
       "expression": "document.querySelector('#link_1_5 > path.mapjs-link').getAttribute('stroke-dasharray')==''"
     },
     {
