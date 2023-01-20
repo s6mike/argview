@@ -158,6 +158,16 @@ a2t() { # a2t test/output/example1-simple.yml (output path)
     echo "${2:-$DIR_PUBLIC_OUTPUT/$name.tex}"
 }
 
+pandoc_argmap() { # pandoc_argmap input output template extra_variables
+  input=${1:-""}
+  output=${2:-$(getvar DIR_PUBLIC_OUTPUT)/html/pandoc_argmap-test.html}
+  template=${3:-$(getvar FILE_TEMPLATE_HTML_ARGMAP_MAIN)}
+  # TODO: Could replace this with pandoc_defaults_argmap.yml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
+  #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
+  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)"/pandoc-argmap.lua --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  echo "$output"
+}
+
 # Convert markdown to full page html
 # IDEA: Could combine md2htm by checking for an argument like --fragment and witholding template argument etc
 #   Would need to use getopts and then pop the --fragment so that the number of other arguments are not affected

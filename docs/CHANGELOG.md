@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.10.0
+
+- `scripts/bash_aliases_argmap.sh`: Add `pandoc_argmap()` to run pandoc along with all standard settings and arguments, and ability to use any desired additional arguments.
+  - This can then be called instead of calling pandoc directly.
+  - Uses `PATH_FILE_CONFIG_ARGMAP` and `PATH_FILE_CONFIG_MJS` metadata files so all data in these now available to all pandoc calls.
+
 ## argmap 10.9.13
 
 - `scripts/bash_aliases_argmap.sh`: Move `git-rebase-interactive-prep()` to my personal bash script since it's not part of app.
