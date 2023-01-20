@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.16.0
+
+- `scripts/bash_aliases_argmap.sh`: `2hf()`: Add -q option to stop output path being printed at end.
+  - Move echo command from `pandoc_argmap()` to `2hf()` so it can be managed there.
+
 ## argmap 10.15.1
 
 - `test/devtools-recordings/argmap-edit-existing-link-all-attributes.json`: Remove wrong step.

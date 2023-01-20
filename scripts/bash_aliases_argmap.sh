@@ -161,7 +161,6 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   # TODO: Could replace this with pandoc_defaults_argmap.yml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)"/pandoc-argmap.lua --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
-  echo "$output"
 }
 
 # Creates full page html intelligently based on input type.
@@ -172,9 +171,12 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # doesn't open browser if -p used for Pipe mode
   OPTIND=1
-  while getopts ":p" option; do # Leading ':' in ":p" removes error message if no recognised options
+  while getopts ":qp" option; do # Leading ':' in ":p" removes error message if no recognised options
     case $option in
-    p) # pipe mode - Doesn't open browser, so only side effect is outputting filename, so can be piped to next command.
+    q) # quiet mode - doesn't print output path at end
+      local quiet=true
+      ;;
+    p) # pipe mode - doesn't open browser, so only side effect is outputting filename, so can be piped to next command.
       local pipe=true
       ;;
     *) ;;
@@ -227,6 +229,9 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   if [ "$pipe" != true ]; then
     open_debug "$output"
+  fi
+  if [ "$quiet" != true ]; then
+    echo "$output"
   fi
 }
 
