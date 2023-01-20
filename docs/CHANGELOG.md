@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.14.2
+
+- `test/test_scripts`: Use `2hf()` in tests instead of deprecated functions.
+
 ## argmap 10.14.1
 
 - `scripts/bash_aliases_mapjs.sh`: Use renamed functions rather than deprecated ones.
