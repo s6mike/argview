@@ -10,6 +10,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.13.0
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Deprecate functions which have hyphens in their name and add replacements with underscore, to follow bash naming convention.
+  - Remove `__gen_doc_map()` in favour of using a one line replacement in `__update_repo()`.
+    - Also add  to `__update_repo()` so that it generates legacy-mapjs-example-map from json input.
+
 ## argmap 10.12.0
 
 - `scripts/bash_aliases_argmap.sh`: Deprecate all the 'X2hf()' functions now made redundant by `2hf()`, plus some additional ones to be replaced.

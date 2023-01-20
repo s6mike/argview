@@ -3,9 +3,8 @@
 echo "Running ${BASH_SOURCE[0]}"
 
 # argmap aliases
-alias odb='open-debug' # odb /home/s6mike/git_projects/argmap/mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
-alias j2hfa='j2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
-alias grip='git-rebase-interactive-prep'
+alias odb='open_debug' # odb /home/s6mike/git_projects/argmap/mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
+alias j2hfa='2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
 
 # argmap functions
 
@@ -13,12 +12,12 @@ alias grip='git-rebase-interactive-prep'
 
 ## browser functions
 
-# TODO: Use __get-site-path() to simplify relative path juggling
+# TODO: Use __get_site_path() to simplify relative path juggling
 
 # TODO: try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   QUESTION: review mapjs tests?
 
-__get-site-path() {
+__get_site_path() {
   input_path="${1}"
   case $input_path in
   /*)
@@ -36,12 +35,12 @@ __get-site-path() {
 }
 
 # For opening html pages with debug port open
-open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
+open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   __check_server_on
   input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
-  site_path=$(__get-site-path "$input_path")
+  site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
     google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
@@ -51,7 +50,10 @@ open-debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 ## version control functions
 
 __update_repo() { # Running at end of test script
-  __gen_doc_map
+  echo "Updating repo..."
+  # Update doc examples
+  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/markdown/example-updated.md)" "$(getvar WORKSPACE)/docs/example-updated.html"
+  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar WORKSPACE)/mapjs/docs/legacy-mapjs-example-map.html"
   __save_env
   # __reset_repo  # Decided not to delete script output in case there are clues
   # __clean_repo # Decided not to delete script output in case there are clues
@@ -62,11 +64,6 @@ __update_repo() { # Running at end of test script
 
 __find_rockspec() {
   find "$WORKSPACE" -type f -name "argmap-*.rockspec"
-}
-
-__gen_doc_map() {                                                             # Generates page for README.md example link destination
-  path_output=$(md2hf -p "$WORKSPACE/test/input/markdown/example-updated.md") # -p activates pipe mode
-  mv "$path_output" "$WORKSPACE/docs/"
 }
 
 # Checks `src/lua` for lua files with leftover debug code.
@@ -233,6 +230,35 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   fi
 }
 
+# Convert markdown to pdf
+md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
+  name=$(basename --suffix=".md" "$1")
+  output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+  # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
+  # QUESTION: Update to use pandoc_argmap?
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+    echo "$output"
+  open-debug "$output"
+  # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
+}
+
+# Convert markdown to native pandoc output
+md2np() {
+  input="${1:-$INPUT_FILE_MD2}"
+  name=$(basename --suffix=".md" "$input")
+  output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
+  mkdir --parent "$(dirname "$output")" # Ensures output folder exists
+  # QUESTION: Update to use pandoc_argmap?
+  pandoc "$input" --to=native --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  code "$output"
+}
+
+# Mark functions for export to use in other scripts:
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __gen_doc_map __update_repo __find_rockspec git-rebase-interactive-prep
+export -f __get-site-path
+export -f a2m m2a a2t a2mu md2htm md2hf md2pdf j2hf a2hf md2np
+
 # DEPRECATED
 
 #   TODO: Delete
@@ -245,10 +271,10 @@ __get-site-path() {
 }
 
 # DEPRECATED: Simpler to do as one liner
-# __gen_doc_map() {                                                             # Generates page for README.md example link destination
-#   path_output=$(md2hf -p "$WORKSPACE/test/input/markdown/example-updated.md") # -p activates pipe mode
-#   mv "$path_output" "$WORKSPACE/docs/"
-# }
+__gen_doc_map() {                                                             # Generates page for README.md example link destination
+  path_output=$(md2hf -p "$WORKSPACE/test/input/markdown/example-updated.md") # -p activates pipe mode
+  mv "$path_output" "$WORKSPACE/docs/"
+}
 
 # Convert markdown to html fragment - doesn't currently produce a fragment so DEPRECATED
 #   Currently using include after body, which works fine, but uses default template so it's no longer a fragment
