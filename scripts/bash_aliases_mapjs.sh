@@ -1,25 +1,24 @@
 #!/usr/bin/env bash
 
+echo "Running ${BASH_SOURCE[0]}"
+
 # mapjs functions and aliases
 
 # Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
-
-echo "Running ${BASH_SOURCE[0]}"
 
 # shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
 source "$HOME/scripts/default_vscode_init_script.sh"
 
 # shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
-# echo "PATH_MJS_HOME: $PATH_MJS_HOME"
 source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 # mapjs aliases
 
 # TODO: Delete
 ## browser aliases - DEPRECATED (never use, don't work).
-alias argdb='open-debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html'
-alias argdb2='open-debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html'
-alias argdbe='open-debug input/html/legacy-mapjs-example-map.html'
+alias argdb='open_debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html'
+alias argdb2='open_debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html'
+alias argdbe='open_debug input/html/legacy-mapjs-example-map.html'
 
 ## webpack aliases
 alias dmj='diff_mapjs'
@@ -67,7 +66,7 @@ __run_mapjs_legacy() { #rml
   wait
   REMEMBER_SERVER_PORT=$PORT_DEV_SERVER
   PORT_DEV_SERVER=9000
-  open-debug "$1"
+  open_debug "$1"
   PORT_DEV_SERVER=$REMEMBER_SERVER_PORT
 }
 
@@ -174,5 +173,5 @@ __check_npm_updates() {
 ## Mark functions for export to use in other scripts:
 export -f __check_server_on __build_mapjs __run_mapjs_legacy
 export -f webpack_install webpack_pack webpack_server_start __check_npm_updates # webpack_pack_open webpack_build_open
-export -f open-debug
+export -f open_debug
 export -f testcafe_run __test_mapjs_renders
