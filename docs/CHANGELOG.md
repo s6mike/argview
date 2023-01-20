@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.12.0
+
+- `scripts/bash_aliases_argmap.sh`: Deprecate all the 'X2hf()' functions now made redundant by `2hf()`, plus some additional ones to be replaced.
+
 ## argmap 10.11.0
 
 - `scripts/bash_aliases_argmap.sh`: Add `2hf()` to replace all the 'X2hf()' functions by identifying the input file extension and then processing accordingly.
