@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.14.0
+
+- `scripts/init_read_config.sh`: Update `__yaml2env()` to allow choice of env file to use for looking up values.
+
 ## argmap 10.13.1
 
 - `scripts/bash_aliases_argmap.sh`: Update `md2pdf()` and `md2np()` to use new metadata and bring inline with other pandoc functions.

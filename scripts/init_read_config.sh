@@ -41,14 +41,16 @@ __getvar_from_yaml() { # __getvar_from_yaml PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_
 
 # Looks up each argument in yaml and exports it as env variable
 __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MJS
+  yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
+  shift
   for env_var_name in "$@"; do
-    env_var_value=$(__getvar_from_yaml "$env_var_name" "$PATH_FILE_ENV_ARGMAP")
+    env_var_value=$(__getvar_from_yaml "$env_var_name" "$yaml_file")
     export "$env_var_name"="$env_var_value"
   done
 }
 
 # TODO: Deprecate PATH_MJS_HOME in favour of PATH_DIR_MJS
-__yaml2env DIR_MJS PATH_DIR_MJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
+__yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MJS PATH_DIR_MJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
 
 # readarray YAML_FILES < <(yq -r '.LIST_FILES_CONFIG[] | envsubst(nu,ne)' "$PATH_FILE_ENV_ARGMAP")
 YAML_FILES="$(yq -r '.LIST_FILES_CONFIG[] | envsubst(nu,ne)' "$PATH_FILE_ENV_ARGMAP")"
