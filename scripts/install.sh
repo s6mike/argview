@@ -85,9 +85,9 @@ if [ "$1" == 'conda' ]; then
   # if in folder with environment.yml
   # conda env create
   # Else:
-  # conda env create -f environment.yml
+  # conda env create -f $(getvar PATH_FILE_ENV_CONDA)
   # Or:
-  # conda env update --file environment.yml --prune --name $CONDA_ENV_ARGMAP
+  # conda env update --file $(getvar PATH_FILE_ENV_CONDA) --prune --name $CONDA_ENV_ARGMAP
 
   # If conda activate errors:
   # conda init bash

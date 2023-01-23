@@ -116,7 +116,7 @@ __clean_repo() {
 }
 
 __save_env() {
-  conda env export --from-history --name "$CONDA_ENV_ARGMAP" >"$PATH_FILE_ENV_CONDA"
+  conda env export --from-history --name "$(getvar CONDA_ENV_ARGMAP)" >"$(getvar PATH_FILE_ENV_CONDA)"
   # TODO: Prepare Environment YAML For Distribution
   # https://workflowy.com/#/b0011d3b3ba1
 }

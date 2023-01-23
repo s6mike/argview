@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.0.3
+
+- Since PATH_FILE_ENV_CONDA location has changed, replace references to this variable with `getvar()`.
+
 ## argmap 11.0.2
 
 - `scripts/bash_aliases_argmap.sh`:
