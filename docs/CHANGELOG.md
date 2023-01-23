@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.18.1
+
+- `/home/s6mike/git_projects/argmap/.vscode/launch.json`: Add new profiles for debugging shell script `argmap_init_script`.
+  - `scripts/debug.sh`: Add file to call when debugging specific function.
+
 ## argmap 10.18.0
 
 - `test/test_scripts/bash_aliases_argmap_test.sh`: Update and add tests.

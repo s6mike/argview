@@ -7,11 +7,47 @@
         {
             "type": "bashdb",
             "request": "launch",
-            "name": "Bash debug",
+            "name": "Bash-Debug (select script from list of sh files)",
             "cwd": "${workspaceFolder}",
-            "program": "${file}",
+            "program": "${command:SelectScriptName}",
+            "showDebugOutput": true,
+            "args": []
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "tests.sh",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/test/test_scripts/tests.sh",
+            "showDebugOutput": true,
             "terminalKind": "integrated",
-            // "commandLineArguments": "",
+            "args": [
+                "html"
+            ]
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "debug.sh",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/scripts/debug.sh",
+            "showDebugOutput": true,
+            "terminalKind": "integrated",
+            // "args": [
+            //     "PATH_DIR_PUBLIC"
+            // ]
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "argmap_init_script()",
+            "cwd": "${workspaceFolder}",
+            "program": "/home/s6mike/git_projects/argmap/scripts/argmap_init_script.sh",
+            "showDebugOutput": true,
+            "terminalKind": "integrated",
+            // "args": [
+            //     "PATH_DIR_PUBLIC"
+            // ]
         },
         {
             "type": "lua",
