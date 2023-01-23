@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.21.2
+
+- `/scripts/init_read_config.sh`: Update `getvar()` to return error message if variable not found.
+
 ## argmap 10.21.0
 
 - `/scripts/init_read_config.sh`: Add `log()` to use instead of `echo` for general debugging messages etc. This avoids affecting piped output and will also make it easier to change how debugging information etc is captured.

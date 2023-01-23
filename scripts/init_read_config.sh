@@ -67,14 +67,18 @@ __getvar_yaml_any() { # gvy
   set +f
 }
 
+# TEST: test_getvar()
 getvar() { # gq PATH_FILE_CONFIG_MJS
   variable_name=$1
+  # First checks whether env variable exists
   if checkvar_exists "$variable_name"; then
     result=${!variable_name}
   else
     result=$(__getvar_yaml_any "$variable_name")
+    # TODO cache with env variable?
+    #   export "$variable_name"="$result"
   fi
-  __check_exit_status $? "$result"
+  __check_exit_status $? "$result" "$variable_name not found"
 }
 
 export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar process_all_config_inputs
