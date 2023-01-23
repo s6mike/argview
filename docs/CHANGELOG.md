@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.0.0
+
+- `scripts/init_read_config.sh`:
+  - Update `__getvar_from_yaml()`:
+    - To accept options:
+      - `-e` to interpolate env variables (used to be the default). BREAKING now need to explicitly use `-e` to get previous behaviour.
+      - `-l` to get variables which stores lists. Hope to make this unnecessary in future.
+    - Add useful error message if variable not found.
+  - Generate and use processed config files as part of initialisation process.
+
+BREAKING: __getvar_from_yaml() no longer interpolates env variables by default, need to use `-e` for this option.
+
 ## argmap 10.22.0
 
 - `scripts/init_read_config.sh`: Add:

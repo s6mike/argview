@@ -34,16 +34,38 @@ checkvar_exists() {
 }
 
 # This is used to get yaml data, all other config reading functions call it.
-#   REMEMBER: ${VARIABLES} are only expanded if they are bash env variables, otherwise they are left blank.
-__getvar_from_yaml() { # __getvar_from_yaml PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_ARGMAP
+#  REMEMBER: ${VARS} are only expanded if they are already bash env variables, otherwise they are left blank.
+__getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_ARGMAP
+  # Filters out $variable results at root and list level
+  local query_rest="| explode(.) | ...comments=\"\" | select( . != null and . != \"*\${*}*\" and .[] != \"*\${*}*\")"
+
+  OPTIND=1
+  while getopts ":el" option; do # Leading ':' removes error message if no recognised options
+    case $option in
+    e) # env mode - interpolates env variables
+      local query_rest="| ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
+      ;;
+    l) # (de)list mode - returns a list in argument format
+      local query_list="| .[] "
+      ;;
+    *) ;;
+    esac
+  done
+
+  shift "$((OPTIND - 1))"
+
   variable_name="$1"
   files=("${@:2}") # Takes 2nd argument onwards and uses them all as yaml files
-  yaml_source=("${files[@]:-$PATH_FILE_ENV_ARGMAP}")
+  yaml_source=("${files[@]:-$PATH_FILE_ENV_ARGMAP_PROCESSED}")
 
-  # For this yq: https://github.com/kislyuk/yq, which is on conda
-  # result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MJS $PATH_FILE_CONFIG_ARGMAP)}
-  result=$(yq -r --exit-status --no-doc ".$variable_name | ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne)" "${yaml_source[@]}")
-  __check_exit_status $? "$result"
+  # For python yq: https://github.com/kislyuk/yq, which is on conda
+  #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MJS $PATH_FILE_CONFIG_ARGMAP)}
+
+  # Have set to exclude results with $ in them
+  # result=$(yq -r --exit-status --no-doc ".$variable_name | ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")" "${yaml_source[@]}")
+  result=$(yq -r --exit-status --no-doc ".$variable_name $query_rest $query_list" "${yaml_source[@]}")
+
+  __check_exit_status $? "$result" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
 }
 
 # Looks up each argument in yaml and exports it as env variable
@@ -51,12 +73,16 @@ __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MJS
   yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
   shift
   for env_var_name in "$@"; do
-    env_var_value=$(__getvar_from_yaml "$env_var_name" "$yaml_file")
+    env_var_value=$(__getvar_from_yaml -e "$env_var_name" "$yaml_file")
+    # log "$env_var_name=$env_var_value"
     export "$env_var_name"="$env_var_value"
   done
 }
 
 # TODO: Deprecate PATH_MJS_HOME in favour of PATH_DIR_MJS
+# __yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR PATH_FILE_ENV_ARGMAP_PROCESSED DIR_MJS DIR_PUBLIC PATH_DIR_MJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
+__yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_CONFIG DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
+
 count_characters() {
   target_config_file=$1
   char=${2:-'$'}
@@ -115,6 +141,10 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
 PATH_FILE_ENV_ARGMAP_PROCESSED=$(preprocess_config "" "$PATH_FILE_ENV_ARGMAP")
 export PATH_FILE_ENV_ARGMAP_PROCESSED
 
+# Can't use __yaml2env because it's not set to take the -l option
+LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml -l LIST_FILES_CONFIG_INPUT "$PATH_FILE_ENV_ARGMAP_PROCESSED")
+export LIST_FILES_CONFIG_INPUT
+
 process_all_config_inputs() {
   for config_file_input in "$@"; do
     preprocess_config "$config_file_input"
@@ -131,8 +161,8 @@ set +f
 
 __getvar_yaml_any() { # gvy
   set -f              # I don't want globbing, but I don't want to quote it because I do want word splitting
-  # shellcheck disable=SC2068 # Quoting ${YAML_FILES[@]} stops it expanding
-  __getvar_from_yaml "$1" ${YAML_FILES[@]}
+  # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
+  __getvar_from_yaml "$@" ${LIST_FILES_CONFIG_PROCESSED[@]} ${LIST_FILES_CONFIG_INPUT[@]} # $list_files_config_processed
   set +f
 }
 
