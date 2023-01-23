@@ -66,7 +66,7 @@ module.exports = (env, argv) => {
 			// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
 				// PATH_FILE_CONFIG_MJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_RELATIVE_SRC),
 				PATH_FILE_CONFIG_MJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS),
-			// 	'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
+				PATH_FILE_CONFIG_MJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_PROCESSED),
 			// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
 			// 	Couldn't get this to work:
 			// 		PRODUCTION: JSON.stringify(argv.mode === 'production'),

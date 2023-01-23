@@ -8,6 +8,9 @@ echo "Running ${BASH_SOURCE[0]}"
 alias cv='checkvar_exists'
 alias gv='getvar'
 alias gvy='__getvar_yaml_any'
+alias pc='preprocess_config'
+
+export PATH_FILE_ENV_ARGMAP=$WORKSPACE/config/environment-argmap.yml
 
 # Replace echo with this where not piping output
 log() {
@@ -54,11 +57,77 @@ __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MJS
 }
 
 # TODO: Deprecate PATH_MJS_HOME in favour of PATH_DIR_MJS
-__yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MJS PATH_DIR_MJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
+count_characters() {
+  target_config_file=$1
+  char=${2:-'$'}
+  tr -cd "$char" <"$target_config_file" | wc -c
+}
 
-# readarray YAML_FILES < <(yq -r '.LIST_FILES_CONFIG[] | envsubst(nu,ne)' "$PATH_FILE_ENV_ARGMAP")
-YAML_FILES="$(yq -r '.LIST_FILES_CONFIG[] | envsubst(nu,ne)' "$PATH_FILE_ENV_ARGMAP")"
-export YAML_FILES
+# TODO: combine all non PRIVATE processed variables into one file
+# QUESTIOn: Possible to build defaults file from template referencing other variables, using this function?
+preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yml
+  target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
+  # Strips yaml extension then adds on this one:
+
+  # local mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")
+  local filename
+  filename=$(basename "$target_config_file")
+  target_dir="$(dirname "$target_config_file")/$DIR_PROCESSED"
+  mkdir --parent "$target_dir"
+  output_file="$target_dir/${filename%%.*}-processed.yaml"
+
+  # Get key value pairs with $, omitting nested $var values (e.g. LIST_FILES_CONFIG)
+  #   with_entries(select(.value == "*$*"))'
+  # Get nested key value pairs:
+  #  'with_entries(select(.value.[] == "*$*"))'
+  # Think this solves it (but won't go deeper than 1 list level)
+  yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
+  yq -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
+  # TODO if no values found then quit
+
+  # This line create new file, comment it out and output file will be expanded version of original
+  target_config_file="$output_file"
+
+  # Loops until no $vars left or until processing doesn't reduce dollars.
+  #   Though that might be too strict since it's possible expanding a $ may return another $
+  #   and then count will stay the same even though it's making progress.
+  #   In which case need to count a few repeated loops
+  while
+    dollar_count=$(count_characters "$target_config_file" '$')
+    [[ "$dollar_count" -gt 0 ]] && [ "$dollar_count" != "$prev_dollar_count" ]
+  do
+    # QUESTION: simpler option than pandoc?
+    pandoc /dev/null --output="$output_file" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" || return 1
+
+    target_config_file="$output_file"
+    prev_dollar_count="$dollar_count"
+  done
+
+  if [[ "$dollar_count" -gt 0 ]]; then
+    log "ERROR: Still $dollar_count unprocessed variables in $output_file."
+  fi
+
+  if [[ "$target_config_file" == "$output_file" ]]; then
+    echo "$output_file"
+  fi
+}
+
+PATH_FILE_ENV_ARGMAP_PROCESSED=$(preprocess_config "" "$PATH_FILE_ENV_ARGMAP")
+export PATH_FILE_ENV_ARGMAP_PROCESSED
+
+process_all_config_inputs() {
+  for config_file_input in "$@"; do
+    preprocess_config "$config_file_input"
+  done
+}
+
+# ISSUE: this currently omits mapjs/config/processed/config-mapjs-processed.yaml because it has errors
+#   Doesn't matter because nothing to expand
+set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
+# shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
+LIST_FILES_CONFIG_PROCESSED=$(process_all_config_inputs ${LIST_FILES_CONFIG_INPUT[@]})
+export LIST_FILES_CONFIG_PROCESSED
+set +f
 
 __getvar_yaml_any() { # gvy
   set -f              # I don't want globbing, but I don't want to quote it because I do want word splitting

@@ -160,7 +160,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   template=${3:-$(getvar FILE_TEMPLATE_HTML_ARGMAP_MAIN)}
   # TODO: Could replace this with pandoc_defaults_argmap.yml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
-  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)"/pandoc-argmap.lua --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  # pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
 }
 
 # Creates full page html intelligently based on input type.
@@ -168,6 +169,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 #  TODO: Create md2x() which gives choice of output - html, fragment, pdf, native format etc
 2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
   default_template=""
+
+  #TODO set quite and pipe to false so test can be == false
 
   # doesn't open browser if -p used for Pipe mode
   OPTIND=1
@@ -242,7 +245,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
   # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
@@ -255,7 +258,7 @@ md2np() {
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$input" --to=native --metadata-file="$PATH_FILE_MJS_CONFIG" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
   code "$output"
 }
 
@@ -291,7 +294,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # TODO: Would call pandoc-argument, but it was breaking, and this function is not really very useful anyway, so not bothering.
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_MJS_CONFIG" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" "--metadata=lang:$LANGUAGE_PANDOC" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_CONFIG_MJS" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
 }

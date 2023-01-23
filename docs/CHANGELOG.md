@@ -6,13 +6,20 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.22.0
+
+- `scripts/init_read_config.sh`: Add:
+  - `preprocess_config()`: To process the variables in a config file and output a new 'processed' config file into a `processed/` subfolder with the end values. Iterates so includes some checks to (hopefullY) avoid infinite loops.
+  - `process_all_config_inputs()`: Loops through all config files and generates a processed file if necessary.
+- `scripts/bash_aliases_argmap.sh`, `mapjs/webpack.config.js`: Update pandoc calls to use new metadata files.
+
 ## argmap 10.21.2
 
-- `/scripts/init_read_config.sh`: Update `getvar()` to return error message if variable not found.
+- `scripts/init_read_config.sh`: Update `getvar()` to return error message if variable not found.
 
 ## argmap 10.21.0
 
-- `/scripts/init_read_config.sh`: Add `log()` to use instead of `echo` for general debugging messages etc. This avoids affecting piped output and will also make it easier to change how debugging information etc is captured.
+- `scripts/init_read_config.sh`: Add `log()` to use instead of `echo` for general debugging messages etc. This avoids affecting piped output and will also make it easier to change how debugging information etc is captured.
 
 ## argmap 10.20.0
 
