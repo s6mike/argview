@@ -1,6 +1,6 @@
 /*global require, module, __dirname, process */
 const path = require('path'),
-	// webpack = require('webpack'), // to access built-in plugins	
+	webpack = require('webpack'), // to access built-in plugins	
 	// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
 	HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -61,13 +61,16 @@ module.exports = (env, argv) => {
 				inject: 'body',
 				templateContent: '',
 			}),
-			// new webpack.DefinePlugin({
+			new webpack.DefinePlugin({
 			// 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
 			// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
+				// PATH_FILE_CONFIG_MJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_RELATIVE_SRC),
+				PATH_FILE_CONFIG_MJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS),
 			// 	'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
+			// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
 			// 	Couldn't get this to work:
 			// 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
-			// }),
+			}),
 		],
 		performance: {
 			hints: false

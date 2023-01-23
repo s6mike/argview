@@ -39,7 +39,7 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   webpack_server_start
-  input_path="${1:-$DIR_HTML/$PATH_OUTPUT_FILE_HTML}"
+  input_path="${1:-$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)}"
   site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
     google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
@@ -260,6 +260,7 @@ md2np() {
 }
 
 # Mark functions for export to use in other scripts:
+export -f open_debug
 export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec
 export -f __get_site_path a2m m2a a2t a2mu pandoc_argmap 2hf md2pdf md2np
 

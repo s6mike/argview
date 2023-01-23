@@ -7,8 +7,6 @@
 ########
 
 # Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
-# mapjs.env
-PATH_FILE_MJS_CONFIG: ${PATH_MJS_HOME}/src/config-mapjs.yml
 
 ## dev webserver values
 ## Leading slash ensures relative to root (mapjs/public)
@@ -23,7 +21,7 @@ DIR_HTML_INPUT: ${DIR_HTML}/input                      # Test input folder
 DIR_MJS_JSON: mapjs-json
 PATH_DIR_MJS_SRC_JS: ${PATH_MJS_HOME}/src
 PATH_DIR_PUBLIC_MJS_JSON: ${DIR_PUBLIC_OUTPUT}/${DIR_MJS_JSON}
-PATH_MJS_HTML_DIST_TAGS: "${PATH_DIR_INCLUDES:-${DIR_HTML}/${PATH_OUTPUT_FILE_HTML}}" # Value quoted because it contains :
+PATH_MJS_HTML_DIST_TAGS: ${PATH_DIR_INCLUDES}
 PATH_LOG_FILE_EXPECT: /home/s6mike/git_projects/mapjs-git-bisect/expect_log.txt
 PATH_BISECT_PATCH_FILE: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest.diff
 PATH_REPLAY_SCRIPT: ${WORKSPACE}/test/devtools-recordings/argmap-add-child.json
@@ -38,7 +36,7 @@ PATH_REPLAY_SCRIPT_ADD_SUPPORTING: ${WORKSPACE}/test/devtools-recordings/argmap-
 PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3: ${WORKSPACE}/test/devtools-recordings/argmap-add-supporting-group-e2v3.json
 PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING: ${WORKSPACE}/test/devtools-recordings/argmap-edit-existing-link.json
 
-## Don't work
+## Recordings don't work in testcafe
 PATH_REPLAY_SCRIPT_BUTTON_ZOOM: ${WORKSPACE}/test/devtools-recordings/argmap-button-zoom-in-out.json
 PATH_REPLAY_SCRIPT_KEYS_ZOOM: ${WORKSPACE}/test/devtools-recordings/argmap-keys-zoom-in-zoom-reset.json
 PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD: ${WORKSPACE}/test/devtools-recordings/argmap-delete-grandchild.json
@@ -50,8 +48,10 @@ PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES: ${WORKSPACE}/test/devtools
 PATH_REPLAY_SCRIPT_BUTTON_EDITLINK_ERROR: ${WORKSPACE}/test/devtools-recordings/mapjs-button-editlink-menu-error.json
 PATH_REPLAY_SCRIPT_MOUSE_PAST_EDITLINK: ${WORKSPACE}/test/devtools-recordings/mapjs-mouse-past-linkEditWidget-after-link-click.json
 
-# Deprecated
+# DEPRECATED
 DIR_MJS_JS: ${PATH_DIR_PUBLIC}/js            # DEPRECATED No longer used
-PATH_MJS_JSON: "${PATH_DIR_PUBLIC_MJS_JSON}" # DEPRECATED
+PATH_MJS_JSON: ${PATH_DIR_PUBLIC_MJS_JSON} # DEPRECATED
+# mapjs.env
+PATH_FILE_MJS_CONFIG: ${PATH_FILE_CONFIG_MJS}
 
 ...

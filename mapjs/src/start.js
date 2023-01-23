@@ -4,8 +4,12 @@
 /*global require, document, window, console, idea */
 const Utilities = require('./core/util/mapjs-utilities'),
 	MAPJS = require('./npm-main'),
-	// { default: config } = require('../../config-mapjs.yml'),
-	{ default: CONFIG } = require('yaml-loader!./config-mapjs.yml'),
+	{ default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS),
+	// TODO: Enable and merge this once mapjs_map.id needed
+	// { default: CONFIG2 } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS_PROCESSED),
+	// Might help:
+	// 	- https://stackoverflow.com/questions/63462577/how-to-load-multiple-yaml-files-at-once-in-javascript
+	// 	- https://github.com/survivejs/webpack-merge
 	CONTAINER_CLASS = CONFIG.mapjs_map.class,
 	MAPJS_SRC_CLASS = CONFIG.mapjs_src_data.class,
 	Try = Utilities.trycatch;

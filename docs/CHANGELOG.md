@@ -10,6 +10,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.18.3
+
+- Move config files to `/config/` and `/mapjs/config/` to simplify processing.
+  - Update them with new comments, refine values, add new ones to suppport processing.
+- Update various files with new config file locations etc.
+
 ## argmap 10.18.2
 
 - Update `.gitignore` to exclude new processed config files I'm going to create with pre-processor, plus to correct PRIVATE file exclusion.

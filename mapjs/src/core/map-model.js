@@ -4,7 +4,7 @@ const _ = require('underscore'),
 	LayoutModel = require('./layout/layout-model'),
 	observable = require('./util/observable'),
 	Utilities = require('./util/mapjs-utilities'),
-	{ default: CONFIG } = require('yaml-loader!../config-mapjs.yml');
+	{ default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS);
 
 module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
 	'use strict';

@@ -5,6 +5,6 @@
 # SPDX - License - Identifier: MIT
 ########
 ---
-PATH: "${WORKSPACE}/src/lua:etc"  # Value quoted because it contains :
+PATH: "${WORKSPACE}/src/lua:etc"  # Value quoted because it contains ':'
 ...
 

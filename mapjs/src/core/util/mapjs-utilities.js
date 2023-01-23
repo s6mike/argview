@@ -1,9 +1,16 @@
 /*global module*/
 // TODO: switch to lodash and test
 const _ = require('underscore'),
-  // { default: config } = require('../../config-mapjs.yml'),
-  { default: config } = require('yaml-loader!../../config-mapjs.yml'),
-  CONTAINER_CLASS = config.mapjs_map.class;
+  { default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS),
+  CONTAINER_CLASS = CONFIG.mapjs_map.class;
+
+// function getvar(varname, config_file) {
+//   const { default: CONFIG } = require('yaml-loader!' + path_file_config),
+//     result = CONFIG.varname;
+//   Logger.log("Result: " + result);
+
+//   return result;
+// }
 
 function MyLogger(console_original, environment = process.env.NODE_ENV) {
   const new_logger = Object.create(console_original);
