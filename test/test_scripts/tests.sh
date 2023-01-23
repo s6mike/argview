@@ -65,12 +65,13 @@ __test md2htm "$INPUT_FILE_MD" #7
 __test 2hf "$INPUT_FILE_MD0"   #8
 
 # Use wait-on --log if diagnostics needed (also verbose option)
-npx --prefix "$PATH_MJS_HOME" wait-on --timeout 3000 "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" &&
+PATH_URL_OUTPUT_FILE_EXAMPLE=$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)
+npx --prefix "$PATH_MJS_HOME" wait-on --timeout 3000 "$(getvar PATH_DIR_PUBLIC)/$PATH_URL_OUTPUT_FILE_EXAMPLE" &&
     # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
-    __test __test_mapjs_renders "$PATH_OUTPUT_FILE_HTML" #9
-__test 2hf "$INPUT_FILE_MD"                              #10
-__test 2hf "$INPUT_FILE_MD2"                             #11
-__test 2hf "$INPUT_FILE_MD_META"                         #12
+    __test __test_mapjs_renders "$PATH_URL_OUTPUT_FILE_EXAMPLE" #9
+__test 2hf "$INPUT_FILE_MD"                                     #10
+__test 2hf "$INPUT_FILE_MD2"                                    #11
+__test 2hf "$INPUT_FILE_MD_META"                                #12
 
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #13 left click

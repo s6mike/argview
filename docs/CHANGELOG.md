@@ -10,6 +10,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.19.0
+
+- `scripts/argmap.env`, `config/environment-argmap.yml`, `mapjs/scripts/mapjs.env`: Deprecate env variables in favour of config file.
+  - Update with new variables: `scripts/install.sh`, `test/test_scripts/tests.sh`
+
 ## argmap 10.18.3
 
 - Move config files to `/config/` and `/mapjs/config/` to simplify processing.

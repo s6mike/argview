@@ -206,6 +206,8 @@ mkdir --parent "$WORKSPACE/test/output/html"
 # For dev web server:
 # Link up test/output and test/input with mapjs/public
 
+PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
+
 rm "$PATH_DIR_PUBLIC/$(basename "$DIR_PUBLIC_OUTPUT")"
 ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_DIR_PUBLIC/."
 
@@ -214,7 +216,7 @@ ln -s "$DIR_HTML_INPUT" "$PATH_DIR_PUBLIC/."
 
 # Add index.html
 rm "$PATH_DIR_PUBLIC/index.html"
-ln -s "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" "$PATH_DIR_PUBLIC/index.html"
+ln -s "$PATH_DIR_PUBLIC/$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)" "$PATH_DIR_PUBLIC/index.html"
 
 #nodejs installed with conda
 
