@@ -1,4 +1,4 @@
-PRIVATE*
+*PRIVATE*
 !PRIVATE-environment-argmap-sample.yml
 argmap.code-workspace
 .vscode/*
@@ -21,3 +21,5 @@ testem/compiled
 pub
 lib
 npm-debug.log
+*-processed.yml
+*-processed.yaml

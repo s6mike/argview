@@ -10,6 +10,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 10.18.2
+
+- Update `.gitignore` to exclude new processed config files I'm going to create with pre-processor, plus to correct PRIVATE file exclusion.
+
 ## argmap 10.18.1
 
 - `/home/s6mike/git_projects/argmap/.vscode/launch.json`: Add new profiles for debugging shell script `argmap_init_script`.
