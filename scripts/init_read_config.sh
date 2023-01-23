@@ -9,14 +9,18 @@ alias cv='checkvar_exists'
 alias gv='getvar'
 alias gvy='__getvar_yaml_any'
 
-export PATH_FILE_ENV_ARGMAP=$WORKSPACE/environment-argmap.yml
+# Replace echo with this where not piping output
+log() {
+  printf "%s\n" "$*" >&2
+}
 
 __check_exit_status() {
   exit_status=$1
   result=$2
-  # echo exit_status: $exit_status
   if [[ $exit_status == 0 ]]; then
     echo "$result"
+  else
+    log "$3"
   fi
   return "$exit_status"
 }
@@ -73,4 +77,5 @@ getvar() { # gq PATH_FILE_CONFIG_MJS
   __check_exit_status $? "$result"
 }
 
-export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar
+export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar process_all_config_inputs
+export -f log

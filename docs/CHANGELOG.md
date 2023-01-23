@@ -2,13 +2,17 @@
 
 ## TODO
 
-- Remove buttons:
-  - `Parent reason`: Since it's not really useful:
-    - `mapjs/src/browser/map-toolbar-widget.js`: Remove from clickMethodNames array.
-    - `mapjs/src/core/map-model.js`: Remove functionality.
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
+
+## argmap 10.21.0
+
+- `/scripts/init_read_config.sh`: Add `log()` to use instead of `echo` for general debugging messages etc. This avoids affecting piped output and will also make it easier to change how debugging information etc is captured.
+
+## argmap 10.20.0
+
+- Add pandoc defaults file with pre-processing settings: `/config/pandoc-defaults-config-preprocessor.yml`
 
 ## argmap 10.19.0
 
