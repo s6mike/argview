@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.1.0
+
+- Deprecate env var CONDA_ENV_ARGMAP:
+  - Since `scripts/argmap.env` is only used to set `CONDA_ENV_ARGMAP`, replace call to use it with getvar instead so script can be deleted.
+
 ## argmap 11.0.3
 
 - Since PATH_FILE_ENV_CONDA location has changed, replace references to this variable with `getvar()`.

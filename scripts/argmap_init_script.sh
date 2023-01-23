@@ -31,7 +31,10 @@ source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
 # TODO: should parameterize bash_aliases script path
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/conda.env # Stops shellcheck lint error
-source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
+# DEPRECATED:
+# source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
+CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
+export CONDA_ENV_ARGMAP
 
 # Covered by default init script
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
