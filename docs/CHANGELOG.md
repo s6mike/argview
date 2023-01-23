@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.0.2
+
+- `scripts/bash_aliases_argmap.sh`:
+  - Call `getvar()` instead of referencing env variables
+  - Remove language metadata from pandoc calls since it's now available in metadata (config)files instead.
+
 ## argmap 11.0.1
 
 `src/layouts/templates/pandoc-mapjs-main-html5.html`: Use DEFAULT_LANG from config file.

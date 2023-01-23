@@ -17,22 +17,27 @@ alias j2hfa='2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplif
 # TODO: try shortcut to run test with chrome headless and check that it's correct: https://workflowy.com/#/8aac548986a4
 #   QUESTION: review mapjs tests?
 
+# TEST: test_get_site_path()
 __get_site_path() {
-  input_path="${1}"
+  input_path="$1"
   case $input_path in
   /*)
     full_path=$input_path
     ;;
   *)
-    full_path=$WORKSPACE/$input_path
+    full_path=$(getvar WORKSPACE)/$input_path
     ;;
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
-  site_path="${full_path/test/$DIR_MJS/$DIR_PUBLIC}"
-  # echo "site_path: $site_path"
-  output_path=$(realpath --no-symlinks --relative-to="$PATH_DIR_PUBLIC" "$site_path")
+  site_path="${full_path/test/$(getvar DIR_MJS)/$(getvar DIR_PUBLIC)}"
+  output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$site_path")
   echo "$output_path"
 }
+
+# PATH_INPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$(getvar PATH_DIR_PUBLIC)/input/example1-clearly-false-white-swan-simplified.html")
+# export PATH_INPUT_FILE_HTML
+# PATH_OUTPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$(getvar PATH_DIR_PUBLIC)/output/html/example1-clearly-false-white-swan-simplified.html")
+# export PATH_OUTPUT_FILE_HTML
 
 # For opening html pages with debug port open
 open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
@@ -42,7 +47,7 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   input_path="${1:-$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)}"
   site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
-    google-chrome --remote-debugging-port="$PORT_DEBUG" --user-data-dir="$PATH_CHROME_PROFILE_DEBUG" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$PORT_DEV_SERVER/$site_path" 2>/dev/null &
+    google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$(getvar PORT_DEV_SERVER)/$site_path" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
   fi
 }
@@ -192,9 +197,9 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   output_name=$(basename "$input")
   ext=${output_name#*.}
 
-  # TODO: prob better way to do this:
-  name=${output_name%%.*}
+  # Prev way:
   # name=$(basename --suffix=".$ext" "$input")
+  name=${output_name%%.*}
 
   # echo "Input: $ext"
   case $ext in
@@ -225,7 +230,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   output=$(getvar DIR_PUBLIC_OUTPUT)/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
-  set -f # I don't want globbing, but I don't want to quote it because I do want word splitting
+  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
   # shellcheck disable=SC2086
   pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
   set +f
