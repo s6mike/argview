@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.1.1
+
+- `test/test_scripts/`: Minor comment and echo changes.
+
 ## argmap 11.1.0
 
 - Deprecate env var CONDA_ENV_ARGMAP:
@@ -19,7 +23,7 @@
 
 - `scripts/bash_aliases_argmap.sh`:
   - Call `getvar()` instead of referencing env variables
-  - Remove language metadata from pandoc calls since it's now available in metadata (config)files instead.
+  - Remove language metadata from pandoc calls since it's now available in metadata (config) files instead.
 
 ## argmap 11.0.1
 

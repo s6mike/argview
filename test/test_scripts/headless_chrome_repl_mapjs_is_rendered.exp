@@ -63,6 +63,7 @@ set timeout 2
 # Switch comments if want to see browser run:
 #	 Can see command in console, however expect script won't work so this will always fail.
 # spawn /opt/google/chrome/chrome --repl --crash-dumps-dir=$path_tmp_folder http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
+# Add --dump-dom to get html from page to see what's happening:
 spawn /opt/google/chrome/chrome --headless --repl --crash-dumps-dir=$path_tmp_folder http://localhost:$PORT_DEV_SERVER/$PATH_INPUT_FILE_HTML
 
 match_max 100000

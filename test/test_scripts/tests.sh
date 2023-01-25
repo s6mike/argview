@@ -51,7 +51,6 @@ if [ "$1" != html ]; then
 fi
 
 # map rendering
-# npx --prefix "$PATH_MJS_HOME" wait-on --timeout 5000 "$PATH_DIR_PUBLIC/$PATH_OUTPUT_FILE_HTML" &&
 npx --prefix "$PATH_MJS_HOME" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
     # create html file needed for testcafe and rendering tests
     # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
@@ -99,7 +98,7 @@ fi
 echo "Testing finished, $FAILCOUNT tests failed."
 echo "If first html test failed, check whether webserver was running."
 echo "If all testcafe test failed, check that $INPUT_FILE_JSON exists."
-echo "Test cafe log location: $PATH_TEST_LOG"
+echo "Test log location: $PATH_TEST_LOG"
 
 if [ "$1" != html ]; then
     # Check/update config
