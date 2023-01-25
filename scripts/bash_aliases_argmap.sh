@@ -44,7 +44,7 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   webpack_server_start
-  input_path="${1:-$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)}"
+  input_path="${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}"
   site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
     google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$(getvar PORT_DEV_SERVER)/$site_path" 2>/dev/null &

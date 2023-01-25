@@ -216,7 +216,7 @@ ln -s "$DIR_HTML_INPUT" "$PATH_DIR_PUBLIC/."
 
 # Add index.html
 rm "$PATH_DIR_PUBLIC/index.html"
-ln -s "$PATH_DIR_PUBLIC/$(getvar PATH_URL_OUTPUT_FILE_EXAMPLE)" "$PATH_DIR_PUBLIC/index.html"
+ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_DIR_PUBLIC/index.html"
 
 #nodejs installed with conda
 

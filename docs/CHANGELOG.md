@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.2.0
+
+- `config/environment-argmap.yml`: Deprecate `PATH_URL_OUTPUT_FILE_EXAMPLE` in favour of full path `PATH_FILE_OUTPUT_EXAMPLE` to fix `open-debug()` issue.
+  - Update to use new variable:
+    - `scripts/bash_aliases_argmap.sh` (fixes broken open_debug default)
+    - `scripts/argmap.env`
+    - `mapjs/config/environment-mapjs.yml`
+    - `test/test_scripts/tests.sh`
+
 ## argmap 12.1.4
 
 - `config/environment-argmap.yml`: Fix `PATH_URL_INPUT_FILE_EXAMPLE`'s value.

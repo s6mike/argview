@@ -100,7 +100,7 @@ INPUT_FILE_MD2: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-sw
 INPUT_FILE_MD_META: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
 INPUT_FILE_JSON2: ${WORKSPACE}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
 INPUT_FILE_JSON_LINKS: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
-PATH_URL_OUTPUT_FILE_EXAMPLE: output/html/example1-clearly-false-white-swan-simplified.html 
+PATH_FILE_OUTPUT_EXAMPLE: ${WORKSPACE}/test/output/html/example1-clearly-false-white-swan-simplified.html 
 
 # DEPRECATE?
 PATH_URL_INPUT_FILE_EXAMPLE: input/example1-clearly-false-white-swan-simplified.html
@@ -113,6 +113,7 @@ PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
 # DEPRECATED
+PATH_URL_OUTPUT_FILE_EXAMPLE: output/html/example1-clearly-false-white-swan-simplified.html 
 PATH_MJS_HOME: ${PATH_DIR_MJS}
 ENV_FILE: ${WORKSPACE}/environment.yml
 PATH_FILE_CONDA_ENV: ${WORKSPACE}/environment-conda-argmap.yml
