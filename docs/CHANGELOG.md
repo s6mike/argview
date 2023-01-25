@@ -6,35 +6,39 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 11.1.2
+## argmap 12.1.3
+
+- `docs/CHANGELOG.md`: Update changelog to reflect 10.18.3 being breaking change so renumbering as 11.0.0.
+
+## argmap 12.1.2
 
 - `mapjs/package.json`: Minor update to mapjs dev dependency `npm-check-updates`.
   - `mapjs/package-lock.json`: Ditto.
 
-## argmap 11.1.1
+## argmap 12.1.1
 
 - `test/test_scripts/`: Minor comment and echo changes.
 
-## argmap 11.1.0
+## argmap 12.1.0
 
 - Deprecate env var CONDA_ENV_ARGMAP:
   - Since `scripts/argmap.env` is only used to set `CONDA_ENV_ARGMAP`, replace call to use it with getvar instead so script can be deleted.
 
-## argmap 11.0.3
+## argmap 12.0.3
 
 - Since PATH_FILE_ENV_CONDA location has changed, replace references to this variable with `getvar()`.
 
-## argmap 11.0.2
+## argmap 12.0.2
 
 - `scripts/bash_aliases_argmap.sh`:
   - Call `getvar()` instead of referencing env variables
   - Remove language metadata from pandoc calls since it's now available in metadata (config) files instead.
 
-## argmap 11.0.1
+## argmap 12.0.1
 
 `src/layouts/templates/pandoc-mapjs-main-html5.html`: Use DEFAULT_LANG from config file.
 
-## argmap 11.0.0
+## argmap 12.0.0 BREAKING
 
 - `scripts/init_read_config.sh`:
   - Update `__getvar_from_yaml()`:
@@ -46,35 +50,37 @@
 
 BREAKING: __getvar_from_yaml() no longer interpolates env variables by default, need to use `-e` for this option.
 
-## argmap 10.22.0
+## argmap 11.4.0
 
 - `scripts/init_read_config.sh`: Add:
   - `preprocess_config()`: To process the variables in a config file and output a new 'processed' config file into a `processed/` subfolder with the end values. Iterates so includes some checks to (hopefullY) avoid infinite loops.
   - `process_all_config_inputs()`: Loops through all config files and generates a processed file if necessary.
 - `scripts/bash_aliases_argmap.sh`, `mapjs/webpack.config.js`: Update pandoc calls to use new metadata files.
 
-## argmap 10.21.1
+## argmap 11.3.1
 
 - `scripts/init_read_config.sh`: Update `getvar()` to return error message if variable not found.
 
-## argmap 10.21.0
+## argmap 11.3.0
 
 - `scripts/init_read_config.sh`: Add `log()` to use instead of `echo` for general debugging messages etc. This avoids affecting piped output and will also make it easier to change how debugging information etc is captured.
 
-## argmap 10.20.0
+## argmap 11.2.0
 
 - Add pandoc defaults file with pre-processing settings: `/config/pandoc-defaults-config-preprocessor.yml`
 
-## argmap 10.19.0
+## argmap 11.1.0
 
 - `scripts/argmap.env`, `config/environment-argmap.yml`, `mapjs/scripts/mapjs.env`: Deprecate env variables in favour of config file.
   - Update with new variables: `scripts/install.sh`, `test/test_scripts/tests.sh`
 
-## argmap 10.18.3
+## argmap 11.0.0 BREAKING
 
-- Move config files to `/config/` and `/mapjs/config/` to simplify processing.
+- Move config files to `/config/` and `/mapjs/config/` to simplify processing. BREAKING
   - Update them with new comments, refine values, add new ones to suppport processing.
 - Update various files with new config file locations etc.
+
+BREAKING: Moving env files could break end user's custom env files. Users should move any custom env files to new location (`/config` and `mapjs/config`) to ensure changes aren't lost.
 
 ## argmap 10.18.2
 
