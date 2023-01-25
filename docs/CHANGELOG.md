@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 11.1.2
+
+- `mapjs/package.json`: Minor update to mapjs dev dependency `npm-check-updates`.
+  - `mapjs/package-lock.json`: Ditto.
+
 ## argmap 11.1.1
 
 - `test/test_scripts/`: Minor comment and echo changes.
@@ -48,7 +53,7 @@ BREAKING: __getvar_from_yaml() no longer interpolates env variables by default, 
   - `process_all_config_inputs()`: Loops through all config files and generates a processed file if necessary.
 - `scripts/bash_aliases_argmap.sh`, `mapjs/webpack.config.js`: Update pandoc calls to use new metadata files.
 
-## argmap 10.21.2
+## argmap 10.21.1
 
 - `scripts/init_read_config.sh`: Update `getvar()` to return error message if variable not found.
 

@@ -73,7 +73,7 @@
     "imports-loader": "^4.0.1",
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^7.0.0",
-    "npm-check-updates": "^16.6.2",
+    "npm-check-updates": "^16.6.3",
     "sourcemap-lookup": "~0.0.5",
     "testcafe": "^2.2.0",
     "testem": "^3.10.1",
