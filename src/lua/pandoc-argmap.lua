@@ -269,7 +269,7 @@ local function CodeBlock(block)
                 -- TODO: add _yml name attribute (with _ substitutions for spaces)?
                 local output_filename = input_filename .. "_" .. map_instance_id .. ".json"
 
-                -- Create JSON file in aboslute path:
+                -- Create JSON file at absolute path:
                 -- QUESTION: Should I be using a path join function?
                 local argmap_output_file_path = PATH_DIR_PUBLIC_MJS_JSON .. "/" .. output_filename
 

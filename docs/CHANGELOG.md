@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.2.2
+
+- `mapjs/config/config-mapjs.yml`: Remove element ID default values (1), so that processing works with them.
+  - These were added so that missing value errors aren't thrown by yq in bash, but now the processed values are fetched instead so this shouldn't be an issue.
+- Add comments to 2 files.
+
 ## argmap 12.2.1
 
 - `mapjs/config/environment-mapjs.yml`: Move mapjs variables here from `config/environment-argmap.yml`

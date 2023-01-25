@@ -34,7 +34,8 @@ checkvar_exists() {
 }
 
 # This is used to get yaml data, all other config reading functions call it.
-#  REMEMBER: ${VARS} are only expanded if they are already bash env variables, otherwise they are left blank.
+#  REMEMBER: ${VARS} are only expanded in -e mode, and if they are already bash env variables, otherwise they are left blank.
+# TODO: improve so that if 2 values concatenated and one doesn't expand, the other still does
 __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_ARGMAP
   # Filters out $variable results at root and list level
   local query_rest="| explode(.) | ...comments=\"\" | select( . != null and . != \"*\${*}*\" and .[] != \"*\${*}*\")"
