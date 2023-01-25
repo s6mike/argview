@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.2.3
+
+- `config/environment-argmap.yml`: Minor formatting improvement.
+
 ## argmap 12.2.2
 
 - `mapjs/config/config-mapjs.yml`: Remove element ID default values (1), so that processing works with them.

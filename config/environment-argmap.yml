@@ -26,21 +26,21 @@ PATH_DIR_CONFIG_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
 # LIST_FILES_CONFIG:
 
 LIST_FILES_CONFIG_INPUT:
-  - ${PATH_FILE_ENV_ARGMAP} # This file
-  - ${PATH_FILE_CONFIG_ARGMAP}
-  - ${PATH_FILE_CONFIG_MJS}
-  - ${PATH_FILE_ENV_MAPJS}
-  - ${PATH_FILE_ENV_ARGMAP_PRIVATE}
-  # - ${PATH_FILE_ENV_CONDA}
+- ${PATH_FILE_ENV_ARGMAP} # This file
+- ${PATH_FILE_CONFIG_ARGMAP}
+- ${PATH_FILE_CONFIG_MJS}
+- ${PATH_FILE_ENV_MAPJS}
+- ${PATH_FILE_ENV_ARGMAP_PRIVATE}
+# - ${PATH_FILE_ENV_CONDA}
 
 # Not needed here because bash function generates this list. However, might be needed for other apps?
 # LIST_FILES_CONFIG_PROCESSED:
-#   - ${PATH_FILE_ENV_ARGMAP_PROCESSED}
-#   - ${PATH_FILE_CONFIG_ARGMAP_PROCESSED}
-#   - /home/s6mike/git_projects/argmap/config/processed/PRIVATE-environment-argmap-processed.yaml
-#   - /home/s6mike/git_projects/argmap/mapjs/config/processed/config-mapjs-processed.yaml
-#   - /home/s6mike/git_projects/argmap/mapjs/config/processed/environment-mapjs-processed.yaml
-#   # - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
+# - ${PATH_FILE_ENV_ARGMAP_PROCESSED}
+# - ${PATH_FILE_CONFIG_ARGMAP_PROCESSED}
+# - /home/s6mike/git_projects/argmap/config/processed/PRIVATE-environment-argmap-processed.yaml
+# - /home/s6mike/git_projects/argmap/mapjs/config/processed/config-mapjs-processed.yaml
+# - /home/s6mike/git_projects/argmap/mapjs/config/processed/environment-mapjs-processed.yaml
+# # - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
 
 ## conda
 CONDA_ENV_ARGMAP: argmap
