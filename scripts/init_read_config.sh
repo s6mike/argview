@@ -46,7 +46,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FIL
     e) # env mode - interpolates env variables
       local query_rest="| ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
-    l) # (de)list mode - returns a list in argument format
+    l) # (de)list mode - returns a list in argument format. Though lists no longer seem to be returned in list form, so might not be necessary.
       local query_list="| .[] "
       ;;
     *) ;;
@@ -152,8 +152,6 @@ process_all_config_inputs() {
   done
 }
 
-# ISSUE: this currently omits mapjs/config/processed/config-mapjs-processed.yaml because it has errors
-#   Doesn't matter because nothing to expand
 set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
 # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
 LIST_FILES_CONFIG_PROCESSED=$(process_all_config_inputs ${LIST_FILES_CONFIG_INPUT[@]})
@@ -167,14 +165,17 @@ __getvar_yaml_any() { # gvy
   set +f
 }
 
-# TEST: test_getvar()
+# This looks up variables.
+#   It can pass on -opts to __getvar_yaml_any, but this doesn't happen if value stored in an env variable
+#   So results can be unpredictable.
+#   TEST: test_getvar()
 getvar() { # gq PATH_FILE_CONFIG_MJS
   variable_name=$1
   # First checks whether env variable exists
   if checkvar_exists "$variable_name"; then
     result=${!variable_name}
   else
-    result=$(__getvar_yaml_any "$variable_name")
+    result=$(__getvar_yaml_any "$@")
     # TODO cache with env variable?
     #   export "$variable_name"="$result"
   fi

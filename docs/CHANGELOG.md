@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.0
+
+- `scripts/init_read_config.sh`: Enable `getvar()` to pass '-opts' onto `__getvar_yaml_any()`.
+  - However, this will only happen if an env variable doesn't already exist. So result can be unpredictable.
+
 ## argmap 12.2.3
 
 - `config/environment-argmap.yml`: Minor formatting improvement.
