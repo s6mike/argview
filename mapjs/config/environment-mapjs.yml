@@ -8,6 +8,16 @@
 
 # Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
 
+# Variables
+
+## Config files
+
+PATH_DIR_CONFIG_MAPJS: ${PATH_DIR_MJS}/${DIR_CONFIG}
+PATH_FILE_ENV_MAPJS: ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yml
+PATH_FILE_CONFIG_MJS: ${PATH_DIR_CONFIG_MAPJS}/config-mapjs.yml
+PATH_DIR_CONFIG_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS}/${DIR_PROCESSED}
+PATH_FILE_CONFIG_MJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/config-mapjs-processed.yaml
+
 ## dev webserver values
 ## Leading slash ensures relative to root (mapjs/public)
 DIR_HTML_SERVER_OUTPUT: output

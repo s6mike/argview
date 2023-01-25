@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.2.1
+
+- `mapjs/config/environment-mapjs.yml`: Move mapjs variables here from `config/environment-argmap.yml`
+
 ## argmap 12.2.0
 
 - `config/environment-argmap.yml`: Deprecate `PATH_URL_OUTPUT_FILE_EXAMPLE` in favour of full path `PATH_FILE_OUTPUT_EXAMPLE` to fix `open-debug()` issue.

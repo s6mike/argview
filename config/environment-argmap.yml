@@ -71,12 +71,6 @@ LUA_PATH: ${WORKSPACE}/src/lua/?.lua;${WORKSPACE}/lua_modules/share/lua/5.3/?.lu
 ## mapjs
 DIR_MJS: mapjs
 PATH_DIR_MJS: ${WORKSPACE}/${DIR_MJS}
-#  TODO: These should be in mapjs env file:
-PATH_DIR_CONFIG_MAPJS: ${PATH_DIR_MJS}/${DIR_CONFIG}
-PATH_FILE_ENV_MAPJS: ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yml
-PATH_FILE_CONFIG_MJS: ${PATH_DIR_CONFIG_MAPJS}/config-mapjs.yml
-PATH_DIR_CONFIG_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS}/${DIR_PROCESSED}
-PATH_FILE_CONFIG_MJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/config-mapjs-processed.yaml
 
 ## layouts
 PATH_DIR_LAYOUTS: ${PATH_DIR_ARGMAP_SRC}/layouts
