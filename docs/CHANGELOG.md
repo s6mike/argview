@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.1
+
+- `mapjs/scripts/mapjs.env`: Fix deprecated `DIR_MJS_JS` to read value from config files so that incorrect env value isn't present.
+
 ## argmap 12.3.0
 
 - `scripts/init_read_config.sh`: Enable `getvar()` to pass '-opts' onto `__getvar_yaml_any()`.
