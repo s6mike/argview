@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.1.4
+
+- `config/environment-argmap.yml`: Fix `PATH_URL_INPUT_FILE_EXAMPLE`'s value.
+
 ## argmap 12.1.3
 
 - `docs/CHANGELOG.md`: Update changelog to reflect 10.18.3 being breaking change so renumbering as 11.0.0.
