@@ -38,10 +38,9 @@ __init_tests
 #     cat "$test/output"
 # done
 
+# TODO: Use test_function()
 if [ "$1" != html ]; then
-    # TODO: Put this into function
-    rockspec_file=$(__find_rockspec)      # Gets absolute path
-    __test luarocks lint "$rockspec_file" #1
+    __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
 
     __test a2m "$INPUT_FILE_YML"       #2
     __test a2m "$INPUT_FILE_YML_NOTES" #3

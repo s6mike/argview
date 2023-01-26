@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.4
+
+- `test/test_scripts/tests.sh`: Simplify test slightly.
+
 ## argmap 12.3.3
 
 - `scripts/init_read_config.sh`:
