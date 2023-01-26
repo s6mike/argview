@@ -40,6 +40,15 @@
         {
             "type": "bashdb",
             "request": "launch",
+            "name": "init_read_config.sh",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/scripts/init_read_config.sh",
+            "showDebugOutput": true,
+            "terminalKind": "integrated",
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
             "name": "argmap_init_script()",
             "cwd": "${workspaceFolder}",
             "program": "/home/s6mike/git_projects/argmap/scripts/argmap_init_script.sh",
