@@ -38,16 +38,21 @@ checkvar_exists() {
 # TODO: improve so that if 2 values concatenated and one doesn't expand, the other still does
 __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_ARGMAP
   # Filters out $variable results at root and list level
-  local query_rest="| explode(.) | ...comments=\"\" | select( . != null and . != \"*\${*}*\" and .[] != \"*\${*}*\")"
+  local yq_flags=(--unwrapScalar --exit-status)
+  local query_main="| explode(.) | ...comments=\"\" | select( . != null)"
+  local query_opts=""
+  local query_extra=('select(document_index == 0)')
 
   OPTIND=1
   while getopts ":el" option; do # Leading ':' removes error message if no recognised options
+    # ISSUE: opt order makes a difference, since only last one is used
     case $option in
-    e) # env mode - interpolates env variables
-      local query_rest="| ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
+    e) # env mode - interpolates env variables. Should only be needed during config initialisation
+      # Have set to exclude results with $ in them (after expansion)
+      query_opts=" | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
-    l) # (de)list mode - returns a list in argument format. Though lists no longer seem to be returned in list form, so might not be necessary.
-      local query_list="| .[] "
+    l) # (de)list mode - returns a list in argument format.
+      query_opts=" | .[]"
       ;;
     *) ;;
     esac
@@ -62,11 +67,16 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FIL
   # For python yq: https://github.com/kislyuk/yq, which is on conda
   #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MJS $PATH_FILE_CONFIG_ARGMAP)}
 
-  # Have set to exclude results with $ in them
-  # result=$(yq -r --exit-status --no-doc ".$variable_name | ...comments=\"\" | select( . != null) | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")" "${yaml_source[@]}")
-  result=$(yq -r --exit-status --no-doc ".$variable_name $query_rest $query_list" "${yaml_source[@]}")
+  set -f
+  # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
+  result=$(yq "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | yq "${query_extra[@]}")
+  # TODO
+  #   Check if result is a list. If so, do delist part.
 
-  __check_exit_status $? "$result" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
+  # Only returns multiple results if in list mode, otherwise just first result (so unprocessed results are ignored)
+  # __check_exit_status $? "${result[0]}" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
+  __check_exit_status $? "$result" "$variable_name not found in ${yaml_source[*]} running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
+  set +f
 }
 
 # Looks up each argument in yaml and exports it as env variable
@@ -170,7 +180,7 @@ __getvar_yaml_any() { # gvy
 #   So results can be unpredictable.
 #   TEST: test_getvar()
 getvar() { # gq PATH_FILE_CONFIG_MJS
-  variable_name=$1
+  variable_name="$1"
   # First checks whether env variable exists
   if checkvar_exists "$variable_name"; then
     result=${!variable_name}

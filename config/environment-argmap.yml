@@ -21,9 +21,7 @@ DIR_PROCESSED: processed
 PATH_DIR_CONFIG_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
 
 # Processed config files are at top, so their results are used ahead of raw config files
-#   But since __getvar_from_yaml filters out results matching ${*}, that shouldn't matter
-# QUESTION: Just check two folders instead?
-# LIST_FILES_CONFIG:
+# QUESTION: Just check two config folders instead?
 
 LIST_FILES_CONFIG_INPUT:
 - ${PATH_FILE_ENV_ARGMAP} # This file

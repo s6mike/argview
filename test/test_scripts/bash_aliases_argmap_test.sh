@@ -85,16 +85,17 @@ test_getvar() {
   test_function "$func" node "class: mapjs-node"                             #4
   test_function "$func" node.class mapjs-node                                #5
   test_function "$func" PATH_MJS_HOME /home/s6mike/git_projects/argmap/mapjs #6
-  test_function "$func" LIST_FILES_CONFIG_INPUT "/home/s6mike/git_projects/argmap/config/environment-argmap.yml
-/home/s6mike/git_projects/argmap/config/config-argmap.yml
-/home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yml
-/home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yml
-/home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yml" #7
+  remember=$LIST_FILES_CONFIG_INPUT
+  unset LIST_FILES_CONFIG_INPUT
+  test_function "$func" LIST_FILES_CONFIG_INPUT \
+    "/home/s6mike/git_projects/argmap/config/environment-argmap.yml /home/s6mike/git_projects/argmap/config/config-argmap.yml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yml" \
+    "-l" #7
+  LIST_FILES_CONFIG_INPUT=$remember
 }
 
 test_function() {
   func="$1"
-  __test check_var_value "$func $2" "$3"
+  __test check_var_value "$func $4 $2" "$3"
 }
 
 test_get_site_path() {

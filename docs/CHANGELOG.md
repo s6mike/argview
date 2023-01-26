@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.3
+
+- `scripts/init_read_config.sh`:
+  - Fix `__getvar_from_yaml()` to only return first result (which will be the processed result since these files are checked first). Done by keeping document separators then selecting the first document only.
+    - `test/test_scripts/bash_aliases_argmap_test.sh`: Fix test to check list returned in list mode, since this form is more likely to be used.
+  - Clean up the way the opts are used. Now, only one can be used at a time (the last when multiple are used). This makes errors less likely.
+  
 ## argmap 12.3.2
 
 - `.vscode/launch.json`: Add new bash test profile for `scripts/init_read_config.sh`.
