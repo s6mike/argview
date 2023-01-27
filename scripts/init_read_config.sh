@@ -20,7 +20,7 @@ log() {
 __check_exit_status() {
   exit_status=$1
   result=$2
-  if [[ $exit_status == 0 ]]; then
+  if [[ $exit_status == 0 ]] && [[ $result != "" ]]; then
     echo "$result"
   else
     log "$3"
@@ -75,7 +75,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FIL
 
   # Only returns multiple results if in list mode, otherwise just first result (so unprocessed results are ignored)
   # __check_exit_status $? "${result[0]}" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
-  __check_exit_status $? "$result" "$variable_name not found in ${yaml_source[*]} running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
+  __check_exit_status $? "$result" "$variable_name not found while running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
   set +f
 }
 
@@ -141,7 +141,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   done
 
   if [[ "$dollar_count" -gt 0 ]]; then
-    log "ERROR: Still $dollar_count unprocessed variables in $output_file."
+    log "ERROR: Still $dollar_count unprocessed variables in $output_file"
   fi
 
   if [[ "$target_config_file" == "$output_file" ]]; then

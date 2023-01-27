@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.5
+
+- `scripts/init_read_config.sh`:
+  - Trigger getvar error messages when empty result, not just when exit 1.
+  - Refine error message slightly.
+
 ## argmap 12.3.4
 
 - `test/test_scripts/tests.sh`: Simplify test slightly.
