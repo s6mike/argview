@@ -165,13 +165,14 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   template=${3:-$(getvar FILE_TEMPLATE_HTML_ARGMAP_MAIN)}
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
-  # pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
-  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  #   Also could potentially generate using pre-processor if desired
+  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
 }
 
 # Creates full page html intelligently based on input type.
 #   Accepts: m, argmap, or json
 #  TODO: Create md2x() which gives choice of output - html, fragment, pdf, native format etc
+#   Though lua solution might be even better than bash one
 2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
   default_template=""
 
@@ -253,7 +254,6 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
-  # open-server "$DIR_HTML_SERVER_OUTPUT/$name.pdf"
 }
 
 # Convert markdown to native pandoc output
@@ -263,7 +263,7 @@ md2np() {
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
   code "$output"
 }
 

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 14.0.1
+
+- Minor comment updates.
+
 ## argmap 14.0.0 BREAKING
 
 - Renamed all `.yml` files to `.yaml` in compliance with yaml standard.
