@@ -81,6 +81,7 @@ INPUT_FILE_MD_META: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly
 INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
 INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
 PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/test/output/html/example1-clearly-false-white-swan-simplified.html 
+
 ## External to project
 DIR_PROJECTS: /home/s6mike/git_projects
 PATH_MISC_DEV: ${DIR_PROJECTS}/misc

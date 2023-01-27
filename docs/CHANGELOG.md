@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 13.0.1
+
+- `scripts/install.sh`:
+  - Add comments re use of config files during installation.
+  - Add uninstall section with some comments.
+
 ## argmap 13.0.0 BREAKING - WARNING - this commit renames and replaces your `environment-argmap.yml` file
 
 - `config/environment-argmap-defaults.yaml`: Update to reflect changes to my env file, including defining $PATH_DIR_ARGMAP_ROOT

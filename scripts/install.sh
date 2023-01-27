@@ -8,7 +8,9 @@
 
 # TODO Should set up relevant bash to run these automatically
 
-# a) Review: intialised values in `scripts/argmap.env` and `scripts/argmap_init_script.sh`
+# a) If config files aren't present, then copy default files in `/config`` and `mapjs/config folders``.
+# b) run `scripts/init_read_config.sh` to process the config folders and expand all variables, writing new files to `config/processed` folders.
+# c) Review: intialised values in `scripts/argmap_init_script.sh`, `scripts/argmap.env` and `mapjs/scripts/mapjs.env`
 
 # SECTION 1:
 # ----------
@@ -247,3 +249,12 @@ ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_DIR_PUBLIC/js/fenga
 # Ensure lua dependencies available to site
 ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_DIR_PUBLIC/lua"
 ln -s "$WORKSPACE/lua_modules" "$PATH_DIR_PUBLIC/lua_modules"
+
+# SECTION Z: Uninstall
+
+# Leave env files in place (but delete samples)
+# What about test output files? vscode settings?
+# delete everything else?
+# run `scripts/luarocks_clean.sh`
+# do npm uninstall process
+# env variables? symbolic links?
