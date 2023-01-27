@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.6
+
+- Remove env files from repo and replace with `defaults` files to be copied and customised after install.
+  - This is because I realised it makes no sense to have env file itself in git repo since any changes will get overwritten.
+  - This also removes the need for a private version for sensitive info, so deleting sample version for this too: `config/PRIVATE-environment-argmap-sample.yml`
+- `.gitignore`: Add `*environment*` and add exception for `*defaults.yaml` and `sample.yaml`
+
 ## argmap 12.3.5
 
 - `scripts/init_read_config.sh`:

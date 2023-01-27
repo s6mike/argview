@@ -1,8 +1,9 @@
 ---
 ########
-# Argmap environment data
+# Argmap environment data - DEFAULTS
+# Copy this to config/environment-argmap.yaml and customise as you wish
 # For use in scripts, layouts and lua code.
-# Copyright 2022 Michael Hayes and the mapjs contributors
+# Copyright 2022 Michael Hayes
 # SPDX - License - Identifier: MIT
 ########
 
@@ -11,34 +12,22 @@
 # Paths
 
 ## project
-WORKSPACE: /home/s6mike/git_projects/argmap
+ROOT_ARGMAP: ${HOME}/local/argmap
+WORKSPACE: ${ROOT_ARGMAP}
 
 ## config
 DIR_CONFIG: config
 PATH_DIR_CONFIG_ARGMAP: ${WORKSPACE}/${DIR_CONFIG}
 DIR_PROCESSED: processed
-# TODO: rename as PATH_DIR_CONFIG_ARGMAP_PROCESSED
 PATH_DIR_CONFIG_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
 
 # Processed config files are at top, so their results are used ahead of raw config files
-# QUESTION: Just check two config folders instead?
-
 LIST_FILES_CONFIG_INPUT:
 - ${PATH_FILE_ENV_ARGMAP} # This file
 - ${PATH_FILE_CONFIG_ARGMAP}
 - ${PATH_FILE_CONFIG_MJS}
 - ${PATH_FILE_ENV_MAPJS}
 - ${PATH_FILE_ENV_ARGMAP_PRIVATE}
-# - ${PATH_FILE_ENV_CONDA}
-
-# Not needed here because bash function generates this list. However, might be needed for other apps?
-# LIST_FILES_CONFIG_PROCESSED:
-# - ${PATH_FILE_ENV_ARGMAP_PROCESSED}
-# - ${PATH_FILE_CONFIG_ARGMAP_PROCESSED}
-# - /home/s6mike/git_projects/argmap/config/processed/PRIVATE-environment-argmap-processed.yaml
-# - /home/s6mike/git_projects/argmap/mapjs/config/processed/config-mapjs-processed.yaml
-# - /home/s6mike/git_projects/argmap/mapjs/config/processed/environment-mapjs-processed.yaml
-# # - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
 
 ## conda
 CONDA_ENV_ARGMAP: argmap
@@ -82,7 +71,6 @@ PATH_INCLUDES_ARGMAP_CONTROLS: ${PATH_DIR_INCLUDES}/mapjs-widget-controls.html
 PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
 
 ## Testing
-# TODO: Add variables for ${WORKSPACE}/test, /input, /examples, mapjs-json, markdown
 INPUT_FILE_YML: ${WORKSPACE}/test/input/example1-clearly-false-white-swan-simplified.yml
 INPUT_FILE_YML_NOTES: ${WORKSPACE}/examples/example-2.yml
 INPUT_FILE_JSON: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
@@ -94,21 +82,9 @@ INPUT_FILE_JSON2: ${WORKSPACE}/test/input/mapjs-json/example2-clearly-false-whit
 INPUT_FILE_JSON_LINKS: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
 PATH_FILE_OUTPUT_EXAMPLE: ${WORKSPACE}/test/output/html/example1-clearly-false-white-swan-simplified.html 
 
-# DEPRECATE?
-PATH_URL_INPUT_FILE_EXAMPLE: input/example1-clearly-false-white-swan-simplified.html
-
 ## External to project
 DIR_PROJECTS: /home/s6mike/git_projects
 PATH_MISC_DEV: ${DIR_PROJECTS}/misc
 PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
 PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
-
-# DEPRECATED
-PATH_URL_OUTPUT_FILE_EXAMPLE: output/html/example1-clearly-false-white-swan-simplified.html 
-PATH_MJS_HOME: ${PATH_DIR_MJS}
-ENV_FILE: ${WORKSPACE}/environment.yml
-PATH_FILE_CONDA_ENV: ${WORKSPACE}/environment-conda-argmap.yml
-PATH_OUTPUT_FILE_HTML: ${PATH_URL_OUTPUT_FILE_EXAMPLE}
-PATH_INPUT_FILE_HTML: ${PATH_URL_INPUT_FILE_EXAMPLE}
-

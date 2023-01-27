@@ -1,4 +1,7 @@
 *PRIVATE*
+*environment*
+!*sample.yaml
+!*defaults.yaml
 !PRIVATE-environment-argmap-sample.yml
 argmap.code-workspace
 .vscode/*

@@ -1,17 +1,18 @@
 ---
 ########
-# Mapjs environment data
+# Mapjs environment data - DEFAULTS
+# Copy this to mapjs/config/environment-mapjs.yaml and customise as you wish
 # For use in scripts and js code
-# Copyright 2022 Michael Hayes and the mapjs contributors
+# Copyright 2022 Michael Hayes
 # SPDX - License - Identifier: MIT
 ########
 
-# Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
+# Use ${variable} for referencing other yaml variables
 
 # Variables
+PATH_DIR_ROOT_MAPJS: ${WORKSPACE}
 
 ## Config files
-
 PATH_DIR_CONFIG_MAPJS: ${PATH_DIR_MJS}/${DIR_CONFIG}
 PATH_FILE_ENV_MAPJS: ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yml
 PATH_FILE_CONFIG_MJS: ${PATH_DIR_CONFIG_MAPJS}/config-mapjs.yml
@@ -19,13 +20,13 @@ PATH_DIR_CONFIG_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS}/${DIR_PROCESSED}
 PATH_FILE_CONFIG_MJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/config-mapjs-processed.yaml
 
 ## dev webserver values
-## Leading slash ensures relative to root (mapjs/public)
 DIR_HTML_SERVER_OUTPUT: output
 
-## This is absolute, for reading/writing to the correct directory
+## These are absolute paths, for reading/writing to the correct directory
+# TODO this file needs to work in both mapjs and argmap. So should probably avoid referring to WORKSPACE since that
 DIR_HTML: ${WORKSPACE}/test
 DIR_PUBLIC_OUTPUT: ${DIR_HTML}/${DIR_HTML_SERVER_OUTPUT} # Test output folder
-DIR_HTML_INPUT: ${DIR_HTML}/input                      # Test input folder
+DIR_HTML_INPUT: ${DIR_HTML}/input                        # Test input folder
 
 ## For html links, use relative paths (to test/output folder) - more portable
 DIR_MJS_JSON: mapjs-json
@@ -45,23 +46,12 @@ PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT: ${WORKSPACE}/test/devtools-recordings/argmap
 PATH_REPLAY_SCRIPT_ADD_SUPPORTING: ${WORKSPACE}/test/devtools-recordings/argmap-add-supporting-group.json
 PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3: ${WORKSPACE}/test/devtools-recordings/argmap-add-supporting-group-e2v3.json
 PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING: ${WORKSPACE}/test/devtools-recordings/argmap-edit-existing-link.json
-
-## Recordings don't work in testcafe
 PATH_REPLAY_SCRIPT_BUTTON_ZOOM: ${WORKSPACE}/test/devtools-recordings/argmap-button-zoom-in-out.json
 PATH_REPLAY_SCRIPT_KEYS_ZOOM: ${WORKSPACE}/test/devtools-recordings/argmap-keys-zoom-in-zoom-reset.json
 PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD: ${WORKSPACE}/test/devtools-recordings/argmap-delete-grandchild.json
-
-## TODO: Update edit link recordings to check that edit was successful. See PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 PATH_REPLAY_SCRIPT_EDIT_LINK_NEW: ${WORKSPACE}/test/devtools-recordings/argmap-edit-new-link.json
 PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES: ${WORKSPACE}/test/devtools-recordings/argmap-edit-existing-link-all-attributes.json
-## TODO: update mapjs recordings?
 PATH_REPLAY_SCRIPT_BUTTON_EDITLINK_ERROR: ${WORKSPACE}/test/devtools-recordings/mapjs-button-editlink-menu-error.json
 PATH_REPLAY_SCRIPT_MOUSE_PAST_EDITLINK: ${WORKSPACE}/test/devtools-recordings/mapjs-mouse-past-linkEditWidget-after-link-click.json
-
-# DEPRECATED
-DIR_MJS_JS: ${PATH_DIR_PUBLIC}/js            # DEPRECATED No longer used
-PATH_MJS_JSON: ${PATH_DIR_PUBLIC_MJS_JSON} # DEPRECATED
-# mapjs.env
-PATH_FILE_MJS_CONFIG: ${PATH_FILE_CONFIG_MJS}
 
 ...
