@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 14.0.2
+
+- `webpack.config.js`:
+  - Add yaml loader (commented out config was correct, just hadn't rebooted webpack server to enable new settings).
+  - Remove obsolete comments now loader config working.
+
 ## argmap 14.0.1
 
 - Minor comment updates.

@@ -24,16 +24,6 @@ module.exports = (env, argv) => {
 			chunkFilename: '[name].[contenthash].bundle.js', // This is used for on-demand-loaded chunk files.
 			clean: true,
 		},
-		// resolve: { modules: [path.resolve(__dirname, 'src'), 'node_modules'] },
-		// resolve: {
-		// 	modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-		// 	alias: { yaml: 'yaml-loader', Src: path.resolve(__dirname, 'src') },
-		// },
-		// resolveLoader: {
-		// 	alias: { yaml: 'yaml-loader', Src: path.resolve(__dirname, 'src') },
-		// 	modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-		// 	extensions: ['.yml', '.yaml'],
-		// },
 		// stats: 'minimal',
 		// See here for how to customise stats output more precisely: https://stackoverflow.com/questions/30756804/webpack-silence-output#answer-37664373
 		stats: 'errors-warnings',
@@ -46,10 +36,6 @@ module.exports = (env, argv) => {
 			},
 			// watchFiles: ['src/**.js'],
 		},
-		// This doesn't seem to have had any effect:
-		// watchOptions: {
-		// 	ignored: '*.yaml',
-		// },
 		plugins: [
 			// new BundleAnalyzerPlugin(),
 			new HtmlWebpackPlugin({
@@ -66,7 +52,7 @@ module.exports = (env, argv) => {
 				// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
 				// PATH_FILE_CONFIG_MJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_RELATIVE_SRC),
 				PATH_FILE_CONFIG_MJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS),
-				PATH_FILE_CONFIG_MJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_PROCESSED),
+				PATH_FILE_CONFIG_MAPJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS_PROCESSED),
 				// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
 				// 	Couldn't get this to work:
 				// 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
@@ -87,14 +73,10 @@ module.exports = (env, argv) => {
 		},
 		module: {
 			rules: [
-				// {
-				// 	test: /\.ya?ml$/,
-				// 	// include: path.resolve('config/config-mapjs.yaml'),
-				// 	// type: 'javascript/auto',
-				// 	// type: 'json',
-				// 	// enforce: 'pre',
-				// 	use: 'yaml-loader',
-				// },	
+				{
+					test: /\.ya?ml$/,
+					use: 'yaml-loader',
+				},	
 				{
 					test: require.resolve('jquery-hammerjs/jquery.hammer-full.js'),
 					loader: 'exports-loader',
