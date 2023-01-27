@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 12.3.7 WARNING - this commit renames and replaces your `environment-mapjs.yml` file
+
+- `mapjs/config/environment-mapjs-defaults.yaml`: Update to reflect changes to my env file.
+  - `mapjs/scripts/mapjs.env`: Remove unncessary variable initialisation.
+
+WARNING Back up your `environment-mapjs.yml` file before applying this commit. This commit renames and replaces your `environment-mapjs.yml` file.
+
 ## argmap 12.3.6
 
 - Remove env files from repo and replace with `defaults` files to be copied and customised after install.
