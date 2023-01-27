@@ -48,7 +48,7 @@ module.exports = (env, argv) => {
 		},
 		// This doesn't seem to have had any effect:
 		// watchOptions: {
-		// 	ignored: '*.yml',
+		// 	ignored: '*.yaml',
 		// },
 		plugins: [
 			// new BundleAnalyzerPlugin(),
@@ -62,14 +62,14 @@ module.exports = (env, argv) => {
 				templateContent: '',
 			}),
 			new webpack.DefinePlugin({
-			// 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
-			// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
+				// 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
+				// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
 				// PATH_FILE_CONFIG_MJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_RELATIVE_SRC),
 				PATH_FILE_CONFIG_MJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS),
 				PATH_FILE_CONFIG_MJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_PROCESSED),
-			// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
-			// 	Couldn't get this to work:
-			// 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
+				// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
+				// 	Couldn't get this to work:
+				// 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
 			}),
 		],
 		performance: {
@@ -89,7 +89,7 @@ module.exports = (env, argv) => {
 			rules: [
 				// {
 				// 	test: /\.ya?ml$/,
-				// 	// include: path.resolve('src/config-mapjs.yml'),
+				// 	// include: path.resolve('config/config-mapjs.yaml'),
 				// 	// type: 'javascript/auto',
 				// 	// type: 'json',
 				// 	// enforce: 'pre',

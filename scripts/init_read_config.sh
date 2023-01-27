@@ -10,7 +10,7 @@ alias gv='getvar'
 alias gvy='__getvar_yaml_any'
 alias pc='preprocess_config'
 
-export PATH_FILE_ENV_ARGMAP=$WORKSPACE/config/environment-argmap.yml
+export PATH_FILE_ENV_ARGMAP=$WORKSPACE/config/environment-argmap.yaml
 
 # Replace echo with this where not piping output
 log() {
@@ -102,7 +102,7 @@ count_characters() {
 
 # TODO: combine all non PRIVATE processed variables into one file
 # QUESTIOn: Possible to build defaults file from template referencing other variables, using this function?
-preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yml
+preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
   target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
   # Strips yaml extension then adds on this one:
 

@@ -12,7 +12,7 @@ argmaps: true
 
 This is a simplified version of the White Swan argument:
 
-```{#argmap1 .argmap .yml name="Example 1: All swans are white."}
+```{#argmap1 .argmap .yaml name="Example 1: All swans are white."}
 "Map 1: All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []
@@ -23,7 +23,7 @@ This is a simplified version of the White Swan argument:
 
 And here it is in mapjs format:
 
-```{#argmap2 .argmap .yml name="Example 1: All swans are white." to="js"}
+```{#argmap2 .argmap .yaml name="Example 1: All swans are white." to="js"}
 "Map 2: All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []

@@ -64,7 +64,7 @@
             "name": "Lua Debugger a2m multiline example",
             "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
-                "${workspaceFolder}/test/issues/WhiteSwan_minus_inline_objections_restoring.yml",
+                "${workspaceFolder}/test/issues/WhiteSwan_minus_inline_objections_restoring.yaml",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -79,7 +79,7 @@
             "name": "Lua Debugger a2m notes example",
             "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
-                "${workspaceFolder}/examples/example-2.yml",
+                "${workspaceFolder}/examples/example-2.yaml",
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -94,7 +94,7 @@
             "name": "Lua Debugger a2m",
             "program": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua",
             "arg": [
-                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yaml",
                 ">",
                 "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.json"
             ],
@@ -138,7 +138,7 @@
                 "command": "cat"
             },
             "args": [
-                "${workspaceFolder}/examples/example.yml",
+                "${workspaceFolder}/examples/example.yaml",
                 "|",
                 "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua"
             ],
@@ -158,7 +158,7 @@
                 "command": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2mup.lua"
             },
             "args": [
-                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yaml",
                 ">",
                 "${workspaceFolder}/test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json"
             ],
@@ -180,7 +180,7 @@
             "args": [
                 "${workspaceFolder}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json",
                 ">",
-                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.yml"
+                "${workspaceFolder}/test/output/example1-clearly-false-white-swan-simplified.yaml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",
@@ -197,7 +197,7 @@
                 "command": "${config:lua.debug.settings.argmap.path.src-lua}/argmap2tikz.lua"
             },
             "args": [
-                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml",
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yaml",
                 ">",
                 "${workspaceFolder}/test/output/example1_clearly-false-white-swan_simplified.tex"
             ],
@@ -291,7 +291,7 @@
             },
             "args": [
                 "-u",
-                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yml"
+                "${workspaceFolder}/test/input/example1-clearly-false-white-swan-simplified.yaml"
             ],
             "env": {
                 "PATH": "${config:lua.debug.settings.env.path}",

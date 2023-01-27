@@ -8,7 +8,7 @@ argmap:
 
 Insert Filename where it says [X]:
 
-```{#argmap1 .argmap .yml name="Example 1: All swans are white."}
+```{#argmap1 .argmap .yaml name="Example 1: All swans are white."}
 "Map 1: All swans are white.":
   r1:
     "Every swan I've ever seen is white.": []

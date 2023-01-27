@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 14.0.0 BREAKING
+
+- Renamed all `.yml` files to `.yaml` in compliance with yaml standard.
+
+BREAKING Output files (e.g. from mup2argmap) will now have .yaml extension, which could affect anything expecting .yml extensions.
+
 ## argmap 13.0.1
 
 - `scripts/install.sh`:

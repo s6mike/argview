@@ -1,8 +1,8 @@
 *PRIVATE*
 *environment*
+!environment-conda-argmap.yaml
 !*sample.yaml
 !*defaults.yaml
-!PRIVATE-environment-argmap-sample.yml
 argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
@@ -24,5 +24,4 @@ testem/compiled
 pub
 lib
 npm-debug.log
-*-processed.yml
 *-processed.yaml

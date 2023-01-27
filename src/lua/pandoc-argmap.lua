@@ -263,7 +263,7 @@ local function CodeBlock(block)
                 local input_filename = trim(input_filename_extra_line)
 
                 -- TODO: can I set filetype based on pandoc target format?
-                -- yml #ID (block id: append to container_ for: container div id;
+                -- yaml #ID (block id: append to container_ for: container div id;
                 --          prepend with input filename for:
                 --              test/output/input_file_yml_id.json
                 -- TODO: add _yml name attribute (with _ substitutions for spaces)?

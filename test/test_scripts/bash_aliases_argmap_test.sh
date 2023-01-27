@@ -11,7 +11,7 @@ echo "Running ${BASH_SOURCE[0]}"
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
 # Though may not be consistently same name anyway, would need to create with fixed name
 alias argmm='rm $INPUT_FILE_JSON; a2m $INPUT_FILE_YML'
-alias argmy='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yml; m2a $INPUT_FILE_JSON'
+alias argmy='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml; m2a $INPUT_FILE_JSON'
 alias argmt='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex; a2t $INPUT_FILE_YML'
 alias argmu='a2mu $INPUT_FILE_YML'
 alias argmup='__chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1rDKFs3QyM1uQyY'
@@ -88,7 +88,7 @@ test_getvar() {
   remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
-    "/home/s6mike/git_projects/argmap/config/environment-argmap.yml /home/s6mike/git_projects/argmap/config/config-argmap.yml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yml" \
+    "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml" \
     "-l" #7
   LIST_FILES_CONFIG_INPUT=$remember
 }

@@ -132,7 +132,7 @@ function main()
         local mup = json.decode(input)
         local argmap = parse_claims(mup["ideas"], nil, nil)
         local name = mup["title"]
-        local yml = lyaml.dump({ argmap })
+        local yaml = lyaml.dump({ argmap })
         if opts["wrap"] then
             local attr = ""
             if name then
@@ -141,9 +141,9 @@ function main()
             if opts["gdrive_id"] then
                 attr = attr .. " gid=\"" .. opts["gdrive_id"] .. "\""
             end
-            return "```{.argmap " .. attr .. "}\n" .. yml .. "```\n"
+            return "```{.argmap " .. attr .. "}\n" .. yaml .. "```\n"
         else
-            return yml
+            return yaml
         end
     end
 end

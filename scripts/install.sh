@@ -15,7 +15,7 @@
 # SECTION 1:
 # ----------
 
-# If installing from environment.yml, skip to SECTION 2.
+# If installing from environment.yaml, skip to SECTION 2.
 
 # TODO: check whether these are already installed
 # conda install lua5.3
@@ -84,7 +84,7 @@ if [ "$1" == 'conda' ]; then
   export XDG_DATA_HOME="$CONDA_PREFIX/share/"
 
   # TODO Just run conda env script?
-  # if in folder with environment.yml
+  # if in folder with config/environment-conda-argmap.yaml
   # conda env create
   # Else:
   # conda env create -f $(getvar PATH_FILE_ENV_CONDA)
@@ -100,7 +100,7 @@ if [ "$1" == 'conda' ]; then
   # SECTION 3: Link conda env
   # ---------------------------------------------------
 
-  # a) Review: intialised values in `environment.yml`
+  # a) Review: intialised values in `config/environment-conda-argmap.yaml`
 
   # ln -s source_file symbolic_link
   rm "$CONDA_PREFIX/bin/argmap2mup"

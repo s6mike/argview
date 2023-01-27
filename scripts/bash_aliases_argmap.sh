@@ -100,7 +100,7 @@ __reset_repo() {
 }
 
 __clean_repo() {
-  rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yml"
+  rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml"
   # rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
   rm "$PATH_DIR_PUBLIC_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
@@ -124,10 +124,10 @@ __save_env() {
 ## argmap functions
 
 # Convert to map.json, writes it to test/output/mapjs-json/
-# lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
+# lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yaml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                    # a2m test/input/example1-clearly-false-white-swan-simplified.yml (output path)
-  name=$(basename --suffix=".yml" "$1") && # && ensures error failure stops remaining commands.
+a2m() {                                     # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
+  name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$PATH_DIR_PUBLIC_MJS_JSON/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$1" >"$output" &&
@@ -135,8 +135,8 @@ a2m() {                                    # a2m test/input/example1-clearly-fal
 }
 
 # Convert to map.js and upload
-a2mu() { # a2mu test/output/example1-simple.yml
-  name=$(basename --suffix=".yml" "$1") &&
+a2mu() { # a2mu test/output/example1-simple.yaml
+  name=$(basename --suffix=".yaml" "$1") &&
     lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" --upload --name "$name.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
     echo "Uploaded: $name.mup to GDrive."
 }
@@ -145,15 +145,15 @@ a2mu() { # a2mu test/output/example1-simple.yml
 # TODO add option for .mup vs .json output
 m2a() { # m2a test/output/example1-simple.mup (output path)
   name=$(basename --suffix=".json" "$1")
-  output=${2:-$DIR_PUBLIC_OUTPUT/$name.yml}
+  output=${2:-$DIR_PUBLIC_OUTPUT/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   lua "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
 }
 
 # Convert to tikz
-a2t() { # a2t test/output/example1-simple.yml (output path)
-  name=$(basename --suffix=".yml" "$1") &&
+a2t() { # a2t test/output/example1-simple.yaml (output path)
+  name=$(basename --suffix=".yaml" "$1") &&
     mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")" && # Ensures output folder exists
     lua "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$name.tex}" &&
     echo "${2:-$DIR_PUBLIC_OUTPUT/$name.tex}"
@@ -163,7 +163,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   input=${1:-""}
   output=${2:-$(getvar DIR_PUBLIC_OUTPUT)/html/pandoc_argmap-test.html}
   template=${3:-$(getvar FILE_TEMPLATE_HTML_ARGMAP_MAIN)}
-  # TODO: Could replace this with pandoc_defaults_argmap.yml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
+  # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   # pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --lua-filter="$(getvar PATH_DIR_ARGMAP_LUA)" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
   pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
@@ -203,7 +203,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # echo "Input: $ext"
   case $ext in
-  yml) # Converts argmap yaml into mindmup json then runs this command again on the output.
+  yml | yaml) # Converts argmap yaml into mindmup json then runs this command again on the output.
     # QUESTION: Is there a way I can pass data straight into json/mup step instead?
     2hf "$(a2m "$input")"
     return 0
@@ -368,7 +368,7 @@ j2hf() { # j2hfa Default output with argmap input activated
 }
 
 # DEPRECATED - use 2hf
-a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yml
+a2hf() { # a2hf test/input/example1-clearly-false-white-swan-simplified.yaml
   a2m "$1" | j2hf
 }
 
