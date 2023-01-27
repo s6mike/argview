@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 13.0.0 BREAKING - WARNING - this commit renames and replaces your `environment-argmap.yml` file
+
+- `config/environment-argmap-defaults.yaml`: Update to reflect changes to my env file, including defining $PATH_DIR_ARGMAP_ROOT
+  - `scripts/argmap.env`, `scripts/init_read_config.sh`: Update variable references. BREAKING Replace $WORKSPACE with $PATH_DIR_ARGMAP_ROOT
+
+WARNING Back up your `environment-argmap.yml` file before applying this commit. This commit renames and replaces your `environment-argmap.yml` file.
+
+BREAKING Replace $WORKSPACE with $PATH_DIR_ARGMAP_ROOT. This value will need to be initialised in config file or env variable in same way as defaults file.
+
 ## argmap 12.3.7 WARNING - this commit renames and replaces your `environment-mapjs.yml` file
 
 - `mapjs/config/environment-mapjs-defaults.yaml`: Update to reflect changes to my env file.

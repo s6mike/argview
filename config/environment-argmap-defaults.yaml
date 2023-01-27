@@ -12,12 +12,12 @@
 # Paths
 
 ## project
-ROOT_ARGMAP: ${HOME}/local/argmap
-WORKSPACE: ${ROOT_ARGMAP}
+PATH_DIR_ARGMAP_ROOT: ${HOME}/local/argmap
+WORKSPACE: ${PATH_DIR_ARGMAP_ROOT}
 
 ## config
 DIR_CONFIG: config
-PATH_DIR_CONFIG_ARGMAP: ${WORKSPACE}/${DIR_CONFIG}
+PATH_DIR_CONFIG_ARGMAP: ${PATH_DIR_ARGMAP_ROOT}/${DIR_CONFIG}
 DIR_PROCESSED: processed
 PATH_DIR_CONFIG_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
 
@@ -41,8 +41,8 @@ PORT_DEBUG: 9221
 PORT_DEV_SERVER: 9001
 
 ## argmap
-PATH_DIR_SCRIPTS: ${WORKSPACE}/scripts
-PATH_DIR_ARGMAP_SRC: ${WORKSPACE}/src
+PATH_DIR_SCRIPTS: ${PATH_DIR_ARGMAP_ROOT}/scripts
+PATH_DIR_ARGMAP_SRC: ${PATH_DIR_ARGMAP_ROOT}/src
 PATH_FILE_CONFIG_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/config-argmap.yml
 PATH_FILE_ENV_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yml # This file
 PATH_FILE_ENV_ARGMAP_PRIVATE: ${PATH_DIR_CONFIG_ARGMAP}/PRIVATE-environment-argmap.yml
@@ -51,13 +51,13 @@ PATH_FILE_ENV_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_PROCESSED}/environment-argmap-
 PATH_FILE_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_PROCESSED}/config-argmap-processed.yaml
 
 ## lua
-PATH_DIR_ARGMAP_LUA: ${WORKSPACE}/src/lua
-LUA_CPATH: ${WORKSPACE}/lua_modules/lib/lua/5.3/?.so;
-LUA_PATH: ${WORKSPACE}/src/lua/?.lua;${WORKSPACE}/lua_modules/share/lua/5.3/?.lua;${WORKSPACE}/lua_modules/share/lua/5.3/?/init.lua;
+PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua
+LUA_CPATH: ${PATH_DIR_ARGMAP_ROOT}/lua_modules/lib/lua/5.3/?.so;
+LUA_PATH: ${PATH_DIR_ARGMAP_ROOT}/src/lua/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?/init.lua;
 
 ## mapjs
 DIR_MJS: mapjs
-PATH_DIR_MJS: ${WORKSPACE}/${DIR_MJS}
+PATH_DIR_MJS: ${PATH_DIR_ARGMAP_ROOT}/${DIR_MJS}
 
 ## layouts
 PATH_DIR_LAYOUTS: ${PATH_DIR_ARGMAP_SRC}/layouts
@@ -71,17 +71,16 @@ PATH_INCLUDES_ARGMAP_CONTROLS: ${PATH_DIR_INCLUDES}/mapjs-widget-controls.html
 PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
 
 ## Testing
-INPUT_FILE_YML: ${WORKSPACE}/test/input/example1-clearly-false-white-swan-simplified.yml
-INPUT_FILE_YML_NOTES: ${WORKSPACE}/examples/example-2.yml
-INPUT_FILE_JSON: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
-INPUT_FILE_MD0: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-0mapjs.md
-INPUT_FILE_MD: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md
-INPUT_FILE_MD2: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-2mapjs.md
-INPUT_FILE_MD_META: ${WORKSPACE}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
-INPUT_FILE_JSON2: ${WORKSPACE}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
-INPUT_FILE_JSON_LINKS: ${WORKSPACE}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
-PATH_FILE_OUTPUT_EXAMPLE: ${WORKSPACE}/test/output/html/example1-clearly-false-white-swan-simplified.html 
-
+INPUT_FILE_YML: ${PATH_DIR_ARGMAP_ROOT}/test/input/example1-clearly-false-white-swan-simplified.yml
+INPUT_FILE_YML_NOTES: ${PATH_DIR_ARGMAP_ROOT}/examples/example-2.yml
+INPUT_FILE_JSON: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
+INPUT_FILE_MD0: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-0mapjs.md
+INPUT_FILE_MD: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md
+INPUT_FILE_MD2: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-2mapjs.md
+INPUT_FILE_MD_META: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
+INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
+INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
+PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/test/output/html/example1-clearly-false-white-swan-simplified.html 
 ## External to project
 DIR_PROJECTS: /home/s6mike/git_projects
 PATH_MISC_DEV: ${DIR_PROJECTS}/misc
