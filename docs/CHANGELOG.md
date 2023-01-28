@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.3.0
+
+- Similar to 16.2.0 below, add `PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT` with value set to new variable `PATH_INCLUDES_MAPJS_CONTAINER_STANDARD` (which replaces deprecated `PATH_INCLUDES_ARGMAP_CONTAINER`), and update lua code to refer to this for generating the container.
+  - This will also simplify overriding, including potentially at code block level.
+  - `scripts/argmap.env`: Export `PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT` env variable, defaulting to `PATH_INCLUDES_ARGMAP_CONTAINER` in case env file not updated.
+
+DEPRECATES: `PATH_INCLUDES_ARGMAP_CONTAINER`
+
+NOTE: Add `PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT` to your env file, consistent with default env file.
+
 ## argmap 16.2.1
 
 - `scripts/init_read_config.sh`: Fix `preprocess_config()` to loop through a few more times after variable count stays the same, since one loop is not enough to process next config file change.

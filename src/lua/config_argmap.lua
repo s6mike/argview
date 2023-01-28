@@ -56,7 +56,7 @@ PATH_INCLUDES_ARGMAP_CONTROLS = os.getenv("PATH_INCLUDES_ARGMAP_CONTROLS") or
     PATH_DIR_INCLUDES .. "/mapjs-widget-controls.html"
 
 -- Reads the container and controls html
-PATH_INCLUDES_ARGMAP_CONTAINER = os.getenv("PATH_INCLUDES_ARGMAP_CONTAINER") or
+PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT = os.getenv("PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT") or
     PATH_DIR_INCLUDES .. "/mapjs-map-container.html"
 
 local logging = require 'logging'

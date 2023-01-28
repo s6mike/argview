@@ -289,14 +289,14 @@ local function CodeBlock(block)
                     -- Earlier solution:
                     -- local writer_options = {
                     --     variables = { title = "hello world"}
-                    --     -- template = PATH_INCLUDES_ARGMAP_CONTAINER,
+                    --     -- template = PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT,
                     -- }
                     -- local converted_variable = "$title$" -- pandoc.write("$title$", 'html', writer_options)
                     -- rawhtml = "<h3>" .. utils.stringify(converted_variable) .. "</h3>" .. rawhtml
 
                 -- TODO: Better solution, lookup metadata etc using config data (config variables, globals or env variables)
                 --  QUESTION: Add 'data-dir="$PANDOC_DATA_DIR"' ?
-                local pandoc_args={'--to=' .. format, '--metadata=MAP_INSTANCE_ID:' .. map_instance_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS_PROCESSED, '--metadata=title:"-"'}
+                local pandoc_args={'--to=' .. format, '--metadata=MAP_INSTANCE_ID:' .. map_instance_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS_PROCESSED, '--metadata=title:"-"'}
                 local rawhtml = pandoc.pipe('pandoc', pandoc_args, '')
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then
