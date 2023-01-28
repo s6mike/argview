@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.4.0
+
+- Similar to 16.2.0 below, but instead:
+  - `config/config-argmap.yaml`: Add `PANDOC_FILTER_LUA_DEFAULT` with value set to new env variable: `PATH_FILE_PANDOC_FILTER_LUA_ARGMAP`.
+  - `scripts/bash_aliases_argmap.sh`: Reference lua filter with `PANDOC_FILTER_LUA_DEFAULT`.
+  - `scripts/install.sh`: Reference lua filter location with `PATH_FILE_PANDOC_FILTER_LUA_ARGMAP`.
+  - `scripts/argmap.env`: Add `PANDOC_FILTER_LUA_DEFAULT` as temporary transition before env file updated.
+
+NOTE: Add `PANDOC_FILTER_LUA_DEFAULT` to your env file, consistent with default env file.
+
 ## argmap 16.3.0
 
 - Similar to 16.2.0 below, add `PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT` with value set to new variable `PATH_INCLUDES_MAPJS_CONTAINER_STANDARD` (which replaces deprecated `PATH_INCLUDES_ARGMAP_CONTAINER`), and update lua code to refer to this for generating the container.
