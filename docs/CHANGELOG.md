@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 15.0.4
+
+- [README.md](../README.md): Add note in dependencies about processing config files.
+
 ## argmap 15.0.3
 
 - `test/test_scripts/tests.sh`: Update test to use `2hf()` instead of deprecated `md2htm()`.

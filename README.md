@@ -73,7 +73,7 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
 This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
-1. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. ~/bin.
+1. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. `~/bin`.
 
     Or you leave them in place and put symbolic links to them into your PATH, as has been done in `scripts/install.sh`. This script also removes the .lua extension from the links to reduce command line typing, however the examples below keep the .lua extension for clarity.
 
@@ -108,7 +108,7 @@ Tested with:
 
 6. To display MindMup JSON files on a web page as an interactive mindmap, without using the [MindMup website](https://www.mindmup.com/), see [Installing mapjs](#installing-mapjs).
 
-7. The various scripts also rely on yaml configuration files and reads them using the yq binary [mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV and properties processor](https://github.com/mikefarah/yq/#install).
+7. The various scripts and the mapjs code also rely on yaml configuration files, some parts of which need to be processed to expand config variables. This processing requires both pandoc and the yq binary [mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV and properties processor](https://github.com/mikefarah/yq/#install), and is carried out by running the `scripts/init_read_config.sh` bash script.
 
 See `config/environment-conda-argmap.yaml` for conda environment export of non-lua dependencies and version numbers.
 
@@ -746,7 +746,7 @@ e.g.
 e.g.
 
 ``` shell
-pandoc input/example-updated.md --template /pandoc-templates/mapjs/mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/public/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua > output.html
+pandoc input/example-updated.md --template src/layouts/templates/pandoc-mapjs-main-html5.html --metadata=mapjs-output-js:/mapjs-example/public/main.js --metadata=css:mapjs-default-styles.css --lua-filter=/src/pandoc-argmap.lua > output.html
 ```
 
 3 ) Open `output.html` in a browser to see the map.
