@@ -4,9 +4,9 @@
 /*global require, document, window, console, idea */
 const Utilities = require('./core/util/mapjs-utilities'),
 	MAPJS = require('./npm-main'),
-	{ default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS),
+	{ default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
 	// TODO: Enable and merge this once mapjs_map.id needed
-	// { default: CONFIG2 } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS_PROCESSED),
+	// { default: CONFIG2 } = require(PATH_FILE_CONFIG_MAPJS_PROCESSED),
 	// Might help:
 	// 	- https://stackoverflow.com/questions/63462577/how-to-load-multiple-yaml-files-at-once-in-javascript
 	// 	- https://github.com/survivejs/webpack-merge
@@ -67,8 +67,8 @@ const jQuery = require('jquery'),
 		// 		let domMapController = false;
 		// Could check for whether mapModel has a layoutCalculator function instead
 		if (map && typeof map.domMapController !== 'undefined') {
-		// ISSUE: This call breaks on second map, I guess since layout calculator wasn't set for new domMapController
-		// So really need to check for layout calculator
+			// ISSUE: This call breaks on second map, I guess since layout calculator wasn't set for new domMapController
+			// So really need to check for layout calculator
 			map.mapModel.setIdea(idea);
 		}
 
@@ -107,9 +107,9 @@ const jQuery = require('jquery'),
 					mapModel.setAttachment(
 						'attachmentEditorWidget',
 						nodeId, {
-							contentType: 'text/html',
-							content: window.prompt('attachment', attachment && attachment.content)
-						});
+						contentType: 'text/html',
+						content: window.prompt('attachment', attachment && attachment.content)
+					});
 				});
 			});
 		};

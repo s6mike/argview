@@ -271,10 +271,10 @@ local function CodeBlock(block)
 
                 -- Create JSON file at absolute path:
                 -- QUESTION: Should I be using a path join function?
-                local argmap_output_file_path = PATH_DIR_PUBLIC_MJS_JSON .. "/" .. output_filename
+                local argmap_output_file_path = PATH_DIR_PUBLIC_MAPJS_JSON .. "/" .. output_filename
 
                 -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
-                local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MJS_JSON .. "/" .. output_filename
+                local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MAPJS_JSON .. "/" .. output_filename
 
                 ensure_directory(argmap_output_file_path)
                 -- TODO: This should be a utility function, since used elsewhere
@@ -296,7 +296,7 @@ local function CodeBlock(block)
 
                 -- TODO: Better solution, lookup metadata etc using config data (config variables, globals or env variables)
                 --  QUESTION: Add 'data-dir="$PANDOC_DATA_DIR"' ?
-                local pandoc_args={'--to=' .. format, '--metadata=MAP_INSTANCE_ID:' .. map_instance_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=' .. PATH_FILE_CONFIG_MJS, '--metadata-file=' .. PATH_FILE_CONFIG_MJS_PROCESSED, '--metadata=title:"-"'}
+                local pandoc_args={'--to=' .. format, '--metadata=MAP_INSTANCE_ID:' .. map_instance_id, '--metadata=path-json-source:' .. mapjs_url, '--template=' .. PATH_INCLUDES_ARGMAP_CONTAINER, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS, '--metadata-file=' .. PATH_FILE_CONFIG_MAPJS_PROCESSED, '--metadata=title:"-"'}
                 local rawhtml = pandoc.pipe('pandoc', pandoc_args, '')
                 return pandoc.RawBlock(format, rawhtml)
             elseif format == "html5" then

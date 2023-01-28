@@ -1,6 +1,6 @@
 /*global module, require */
 const createSVG = require('./create-svg'),
-	{ default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS),
+	{ default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
 	getTextElement = function (parentElement, labelText, elementType, centrePoint) {
 		'use strict';
 		elementType = elementType || 'text';

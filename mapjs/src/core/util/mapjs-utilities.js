@@ -1,11 +1,12 @@
 /*global module*/
 // TODO: switch to lodash and test
 const _ = require('underscore'),
-  { default: CONFIG } = require('yaml-loader!' + PATH_FILE_CONFIG_MJS),
+  // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
+  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
   CONTAINER_CLASS = CONFIG.mapjs_map.class;
 
 // function getvar(varname, config_file) {
-//   const { default: CONFIG } = require('yaml-loader!' + path_file_config),
+//   const { default: CONFIG } = require(path_file_config),
 //     result = CONFIG.varname;
 //   Logger.log("Result: " + result);
 

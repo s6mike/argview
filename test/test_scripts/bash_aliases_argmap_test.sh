@@ -84,7 +84,7 @@ test_getvar() {
   test_function "$func" DEFAULT_LANGUAGE en                                  #3
   test_function "$func" node "class: mapjs-node"                             #4
   test_function "$func" node.class mapjs-node                                #5
-  test_function "$func" PATH_MJS_HOME /home/s6mike/git_projects/argmap/mapjs #6
+  test_function "$func" PATH_MAPJS_HOME /home/s6mike/git_projects/argmap/mapjs #6
   remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \

@@ -50,7 +50,7 @@ export CONDA_ENV_ARGMAP
 
 # Uses config file in the relevant mapjs directory to get correct mapjs paths
 # shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error
-source "$PATH_MJS_HOME/scripts/mapjs.env"
+source "$PATH_MAPJS_HOME/scripts/mapjs.env"
 
 source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
 

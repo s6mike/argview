@@ -42,7 +42,7 @@ module.exports = (env, argv) => {
 				// QUESTION: Would it be better to be using path.resolve and relative path, instead of absolute path?
 				// 	Could use realpath to generate the relative path
 				// filename: path.resolve(__dirname, '../src/layouts/includes/webpack-dist-tags.html'),
-				filename: process.env.PATH_MJS_HTML_DIST_TAGS + '/webpack-dist-tags.html',
+				filename: process.env.PATH_MAPJS_HTML_DIST_TAGS + '/webpack-dist-tags.html',
 				// Outputs script tags only:
 				inject: 'body',
 				templateContent: '',
@@ -50,8 +50,8 @@ module.exports = (env, argv) => {
 			new webpack.DefinePlugin({
 				// 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
 				// 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
-				// PATH_FILE_CONFIG_MJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS_RELATIVE_SRC),
-				PATH_FILE_CONFIG_MJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MJS),
+				// PATH_FILE_CONFIG_MAPJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS_RELATIVE_SRC),
+				PATH_FILE_CONFIG_MAPJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS),
 				PATH_FILE_CONFIG_MAPJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS_PROCESSED),
 				// 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
 				// 	Couldn't get this to work:
@@ -76,7 +76,7 @@ module.exports = (env, argv) => {
 				{
 					test: /\.ya?ml$/,
 					use: 'yaml-loader',
-				},	
+				},
 				{
 					test: require.resolve('jquery-hammerjs/jquery.hammer-full.js'),
 					loader: 'exports-loader',

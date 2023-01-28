@@ -29,7 +29,7 @@ __get_site_path() {
     ;;
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
-  site_path="${full_path/test/$(getvar DIR_MJS)/$(getvar DIR_PUBLIC)}"
+  site_path="${full_path/test/$(getvar DIR_MAPJS)/$(getvar DIR_PUBLIC)}"
   output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$site_path")
   echo "$output_path"
 }
@@ -87,7 +87,7 @@ __check_js_debug() {
   printf "\nChecking js files for uncommented console.debug commands. Expecting 0.\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
-  grep -rnv '^\s*//' "$PATH_DIR_MJS_SRC_JS" | grep -Fie 'console.debug'
+  grep -rnv '^\s*//' "$PATH_DIR_MAPJS_SRC_JS" | grep -Fie 'console.debug'
   echo "-------------"
 }
 
@@ -102,7 +102,7 @@ __reset_repo() {
 __clean_repo() {
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml"
   # rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
-  rm "$PATH_DIR_PUBLIC_MJS_JSON/example1-clearly-false-white-swan-simplified.json"
+  rm "$PATH_DIR_PUBLIC_MAPJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
@@ -128,7 +128,7 @@ __save_env() {
 # TODO add option for .mup vs .json output
 a2m() {                                     # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
   name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
-    output=${2:-$PATH_DIR_PUBLIC_MJS_JSON/$name.json} &&
+    output=${2:-$PATH_DIR_PUBLIC_MAPJS_JSON/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
@@ -166,7 +166,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   #   Also could potentially generate using pre-processor if desired
-  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
 }
 
 # Creates full page html intelligently based on input type.
@@ -263,7 +263,7 @@ md2np() {
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MAPJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
   code "$output"
 }
 
@@ -299,7 +299,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # TODO: Would call pandoc-argument, but it was breaking, and this function is not really very useful anyway, so not bothering.
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_CONFIG_MJS" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_CONFIG_MAPJS" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MAPJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
 }

@@ -36,7 +36,7 @@ checkvar_exists() {
 # This is used to get yaml data, all other config reading functions call it.
 #  REMEMBER: ${VARS} are only expanded in -e mode, and if they are already bash env variables, otherwise they are left blank.
 # TODO: improve so that if 2 values concatenated and one doesn't expand, the other still does
-__getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FILE_ENV_ARGMAP
+__getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_FILE_ENV_ARGMAP
   # Filters out $variable results at root and list level
   local yq_flags=(--unwrapScalar --exit-status)
   local query_main="| explode(.) | ...comments=\"\" | select( . != null)"
@@ -65,7 +65,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FIL
   yaml_source=("${files[@]:-$PATH_FILE_ENV_ARGMAP_PROCESSED}")
 
   # For python yq: https://github.com/kislyuk/yq, which is on conda
-  #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MJS $PATH_FILE_CONFIG_ARGMAP)}
+  #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
 
   set -f
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
@@ -80,7 +80,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MJS $PATH_FIL
 }
 
 # Looks up each argument in yaml and exports it as env variable
-__yaml2env() { # __yaml2env PATH_FILE_CONFIG_MJS
+__yaml2env() { # __yaml2env PATH_FILE_CONFIG_MAPJS
   yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
   shift
   for env_var_name in "$@"; do
@@ -90,8 +90,8 @@ __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MJS
   done
 }
 
-# TODO: Deprecate PATH_MJS_HOME in favour of PATH_DIR_MJS
-# __yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR PATH_FILE_ENV_ARGMAP_PROCESSED DIR_MJS DIR_PUBLIC PATH_DIR_MJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_MJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
+# TODO: Deprecate PATH_MAPJS_HOME in favour of PATH_DIR_MAPJS
+# __yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR PATH_FILE_ENV_ARGMAP_PROCESSED DIR_MAPJS DIR_PUBLIC PATH_DIR_MAPJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_MAPJS_HOME PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MAPJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
 __yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_CONFIG PATH_DIR_ARGMAP_ROOT DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
 count_characters() {
@@ -179,7 +179,7 @@ __getvar_yaml_any() { # gvy
 #   It can pass on -opts to __getvar_yaml_any, but this doesn't happen if value stored in an env variable
 #   So results can be unpredictable.
 #   TEST: test_getvar()
-getvar() { # gq PATH_FILE_CONFIG_MJS
+getvar() { # gq PATH_FILE_CONFIG_MAPJS
   variable_name="$1"
   # First checks whether env variable exists
   if checkvar_exists "$variable_name"; then

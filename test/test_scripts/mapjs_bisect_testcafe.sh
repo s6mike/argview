@@ -78,10 +78,10 @@ if [ "$REBUILD" = true ]; then # Only runs if not in test mode
   node_stop
 
   if [ "$TEST_MODE" = false ]; then # Only runs if not in test mode
-    npm install --prefix "$PATH_MJS_HOME" --legacy-peer-deps
+    npm install --prefix "$PATH_MAPJS_HOME" --legacy-peer-deps
   fi
 
-  npm run --prefix "$PATH_MJS_HOME" start &
+  npm run --prefix "$PATH_MAPJS_HOME" start &
   # PID=$!
 
   # wait $!
