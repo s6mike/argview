@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
 		// Use for development:
 		// 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
 		devtool: 'eval-cheap-module-source-map',
-		// devtool: (argv.mode === 'production') ? 'source-map' : 'eval-cheap-module-source-map',
+		devtool: (argv.mode === 'production') ? 'source-map' : 'eval-cheap-module-source-map',
 		output: {
 			path: path.resolve(__dirname, 'public/js/'),
 			// TODO: use more robust publicPath

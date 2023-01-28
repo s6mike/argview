@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 15.0.1
+
+- `mapjs/webpack.config.js`: Update webpack to provide better sourcemap in production mode.
+
 ## argmap 15.0.0 BREAKING
 
 - BREAKING: Rename all config settings from MJS to MAPJS  for clarity and consistency e.g. `PATH_FILE_CONFIG_MAPJS` and `PATH_FILE_CONFIG_MAPJS_PROCESSED` from `PATH_FILE_CONFIG_MJS` and `PATH_FILE_CONFIG_MJS_PROCESSED`.
