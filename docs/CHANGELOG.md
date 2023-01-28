@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.2.0
+
+- `scripts/bash_aliases_argmap.sh`: Use `FILE_TEMPLATE_HTML_DEFAULT` in pandoc calls so it's easy to change default template by updating app config file, or use`FILE_TEMPLATE_HTML_ARGMAP_MAIN` to refer to the template itself when it's not the default.
+  - `config/config-argmap.yaml`: Add `FILE_TEMPLATE_HTML_DEFAULT` set to `${FILE_TEMPLATE_HTML_ARGMAP_MAIN}`.
+  - `scripts/argmap.env`: Remove obsolete `FILE_TEMPLATE_HTML_ARGMAP_MAIN` definition.
+
 ## argmap 16.1.2
 
 - `scripts/bash_aliases_argmap.sh`: Update `md2np()` so output created in root `output/` folder not `html/` subfolder.

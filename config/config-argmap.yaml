@@ -8,6 +8,7 @@
 
 # Argmap document metadata
 DEFAULT_LANGUAGE: en
+FILE_TEMPLATE_HTML_DEFAULT: ${FILE_TEMPLATE_HTML_ARGMAP_MAIN}
 DEFAULT_MAPJS_CSS: /mapjs-default-styles.css
 
 # All CSS files used by html output.

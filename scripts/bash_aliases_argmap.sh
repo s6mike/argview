@@ -162,7 +162,7 @@ a2t() { # a2t test/output/example1-simple.yaml (output path)
 pandoc_argmap() { # pandoc_argmap input output template extra_variables
   input=${1:-""}
   output=${2:-$(getvar DIR_PUBLIC_OUTPUT)/html/pandoc_argmap-test.html}
-  template=${3:-$(getvar FILE_TEMPLATE_HTML_ARGMAP_MAIN)}
+  template=${3:-$(getvar FILE_TEMPLATE_HTML_DEFAULT)}
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   #   Also could potentially generate using pre-processor if desired
@@ -263,7 +263,7 @@ md2np() {
   output=$DIR_PUBLIC_OUTPUT/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_DEFAULT" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
   code "$output"
 }
 
