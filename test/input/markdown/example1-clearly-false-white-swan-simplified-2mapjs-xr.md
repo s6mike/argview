@@ -1,6 +1,6 @@
 ---
 title: Example 1.4 - All swans are white, using cross references.
-template: pandoc-templates/mapjs/mapjs-main-html5.html
+# template: src/layouts/templates/pandoc-mapjs-main-html5.html
 argmaps: true
 # TODO: These might be better in a defaults file:
 #   https://workflowy.com/#/ee624e71f40c

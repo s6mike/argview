@@ -1,6 +1,6 @@
 ---
 title: General mapjs viewer
-template: pandoc-templates/mapjs/mapjs-main-html5.html
+# template: src/layouts/templates/pandoc-mapjs-main-html5.html
 argmaps: true
 argmap:
   to: js

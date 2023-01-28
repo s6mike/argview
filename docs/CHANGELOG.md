@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.1.1
+
+- `test/input/markdown/`: Comment out `template:` in yaml metadata header in input markdown files since this was not being used and values were out of date.
+
 ## argmap 16.1.0
 
 - `config/config-argmap.yaml`: Deprecate `MAPJS_CSS` in favour of `DEFAULT_MAPJS_CSS`:

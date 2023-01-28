@@ -1,6 +1,6 @@
 ---
 title: Example 1.1 - All swans are white.
-template: pandoc-templates/mapjs/mapjs-main-html5.html
+# template: src/layouts/templates/pandoc-mapjs-main-html5.html
 # TODO: These might be better in a defaults file:
 #   https://workflowy.com/#/ee624e71f40c
 # css: mapjs/site/mapjs-default-styles.css
