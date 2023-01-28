@@ -59,8 +59,8 @@ npx --prefix "$(getvar PATH_DIR_MAPJS)" wait-on --timeout 10000 "$PATH_DIR_INCLU
 2hf -pq "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
 2hf -pq "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
-__test md2htm "$INPUT_FILE_MD" #7
-__test 2hf "$INPUT_FILE_MD0"   #8
+__test 2hf "$INPUT_FILE_MD"  #7
+__test 2hf "$INPUT_FILE_MD0" #8
 
 # Use wait-on --log if diagnostics needed (also verbose option)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)

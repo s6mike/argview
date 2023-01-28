@@ -263,7 +263,7 @@ md2np() {
   output=$DIR_PUBLIC_OUTPUT/html/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$MAPJS_CSS" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
+  pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_ARGMAP_MAIN" --metadata=css:"$(getvar MAPJS_CSS)" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null
   code "$output"
 }
 
@@ -299,7 +299,7 @@ md2htm() { # md2htm test/input/markdown/example-updated.md (output filename) (op
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # TODO: Would call pandoc-argument, but it was breaking, and this function is not really very useful anyway, so not bothering.
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
-  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_CONFIG_MAPJS" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$MAPJS_CSS" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$input" -o "$output" "${@:3}" --metadata-file="$PATH_FILE_CONFIG_MAPJS" --include-after-body="$PATH_DIR_INCLUDES/webpack-dist-tags.html" --metadata=css:"$(getvar MAPJS_CSS)" --lua-filter="$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
 }

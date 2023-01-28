@@ -6,9 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 15.0.3
+
+- `test/test_scripts/tests.sh`: Update test to use `2hf()` instead of deprecated `md2htm()`.
+  - Replace direct reference to `$MAPJS_CSS` with `getvar` call.
+
 ## argmap 15.0.2
 
-- Update from using deprecated variables e.g. PATH_DIR_MAPJS instead of PATH_MAPJS_HOME
+- Update from using deprecated variables e.g. PATH_DIR_MAPJS instead of PATH_MAPJS_HOME.
 - Delete obsolete variables from env.
 - Use getvar where possible instead of env variables.
   - Where necessary env variables from config file instead of hardcoded.
