@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.0.0 BREAKING
+
+- `scripts/bash_aliases_argmap.sh`: BREAKING: Delete deprecated functions:
+  - `md2hf()`, `j2hf()`, `a2hf()` in favour of `2hf()`.
+  - `md2htm()` doesn't serve original purpose.
+  - `__gen_doc_map()` in favour of 1 line solution.
+  - `get-site-path()` `__get-site-path()` in favour of `get_site_path()`.
+
+BREAKING Any external scripts depending on above will need to use replacement functions.
+
 ## argmap 15.0.4
 
 - [README.md](../README.md): Add note in dependencies about processing config files.
