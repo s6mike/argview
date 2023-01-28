@@ -107,6 +107,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
 
   # local mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")
   local filename
+  local repeat_count=0
   filename=$(basename "$target_config_file")
   target_dir="$(dirname "$target_config_file")/$DIR_PROCESSED"
   mkdir --parent "$target_dir"
@@ -124,18 +125,20 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # This line create new file, comment it out and output file will be expanded version of original
   target_config_file="$output_file"
 
-  # Loops until no $vars left or until processing doesn't reduce dollars.
-  #   Though that might be too strict since it's possible expanding a $ may return another $
-  #   and then count will stay the same even though it's making progress.
-  #   In which case need to count a few repeated loops
+  # Loops until no $vars left or until processing doesn't reduce dollars for more than 3 iterations.
   while
     dollar_count=$(count_characters "$target_config_file" '$')
-    [[ "$dollar_count" -gt 0 ]] && [ "$dollar_count" != "$prev_dollar_count" ]
+    [[ "$dollar_count" -gt 0 ]] && [ "$repeat_count" -lt 4 ]
   do
     # QUESTION: simpler option than pandoc?
     pandoc /dev/null --output="$output_file" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" || return 1
-
     target_config_file="$output_file"
+
+    # Checks for possible infinite loop:
+    if [ "$dollar_count" == "$prev_dollar_count" ]; then
+      repeat_count=$((repeat_count + 1))
+    fi
+
     prev_dollar_count="$dollar_count"
   done
 

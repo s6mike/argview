@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.2.1
+
+- `scripts/init_read_config.sh`: Fix `preprocess_config()` to loop through a few more times after variable count stays the same, since one loop is not enough to process next config file change.
+
 ## argmap 16.2.0
 
 - `scripts/bash_aliases_argmap.sh`: Use `FILE_TEMPLATE_HTML_DEFAULT` in pandoc calls so it's easy to change default template by updating app config file, or use`FILE_TEMPLATE_HTML_ARGMAP_MAIN` to refer to the template itself when it's not the default.
