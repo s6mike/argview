@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.1.0
+
+- `config/config-argmap.yaml`: Deprecate `MAPJS_CSS` in favour of `DEFAULT_MAPJS_CSS`:
+  - `scripts/bash_aliases_argmap.sh`: Remove css metadata variable from pandoc call: Since parent list variable `css` is used directly in pandoc template, no need to pass it in call.
+
 ## argmap 16.0.0 BREAKING
 
 - `scripts/bash_aliases_argmap.sh`: BREAKING: Delete deprecated functions:
