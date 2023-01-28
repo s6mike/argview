@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 15.0.2
+
+- Update from using deprecated variables e.g. PATH_DIR_MAPJS instead of PATH_MAPJS_HOME
+- Delete obsolete variables from env.
+- Use getvar where possible instead of env variables.
+  - Where necessary env variables from config file instead of hardcoded.
+
 ## argmap 15.0.1
 
 - `mapjs/webpack.config.js`: Update webpack to provide better sourcemap in production mode.

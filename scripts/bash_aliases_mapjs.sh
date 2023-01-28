@@ -43,7 +43,6 @@ __build_mapjs() { # bmj
   # Deletes webconfig output
   # Convoluted solution, but means I can use relative path from mapjs.env to delete the correct output js directory regardless of mapjs repo used.
   # QUESTION: Better to build delete into package.json script?
-  # rm -R "$PATH_MAPJS_HOME/src/$(dirname "$FILE_MAPJS_JS")" # Don't think this is necessary
   # TODO - adding --inspect should enable debug mode - but can't get to work.
   webpack_install
   webpack_pack
@@ -103,7 +102,7 @@ testcafe_run() { # tcr
   fi
   # __bisect_init
   echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm --prefix "$PATH_MAPJS_HOME" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+  npm --prefix "$(getvar PATH_DIR_MAPJS)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
 }
 
 __test_mapjs_renders() {
@@ -126,14 +125,14 @@ __test_mapjs_renders() {
 # Start webpack after git checkout
 webpack_install() { # wpb
   # Should only install new stuff. Should install in local folder if its set
-  npm install --prefix "$PATH_MAPJS_HOME" # --force
+  npm install --prefix "$(getvar PATH_DIR_MAPJS)" # --force
   # TODO: But can also monitor package.json for changes and install automatically instead: https://workflowy.com/#/f666070d7b23
   # wait &&
   # npm exec webpack # Shouldn't be needed if webpack server does it automatically
 }
 
 webpack_pack() { #pmj
-  npm --prefix "$PATH_MAPJS_HOME" run pack
+  npm --prefix "$(getvar PATH_DIR_MAPJS)" run pack
 }
 
 __is_server_live() {
@@ -151,7 +150,7 @@ webpack_server_halt() { #wsh
     # Else:
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
-    npm --prefix "$PATH_MAPJS_HOME" run stop
+    npm --prefix "$(getvar PATH_DIR_MAPJS)" run stop
     export SERVER_ON=false
     export SERVER_MODE=false
   else
@@ -172,14 +171,14 @@ webpack_server_start() { # wss
     fi
     echo ""
   else
-    npm --prefix "$PATH_MAPJS_HOME" run start:"$mode"
+    npm --prefix "$(getvar PATH_DIR_MAPJS)" run start:"$mode"
     export SERVER_MODE=$mode
   fi
 }
 
 __check_npm_updates() {
   printf "\nChecking for out of date npm modules. Expecting 1 only:\n"
-  npm --prefix "$PATH_MAPJS_HOME" outdated
+  npm --prefix "$(getvar PATH_DIR_MAPJS)" outdated
 }
 
 ## Mark functions for export to use in other scripts:

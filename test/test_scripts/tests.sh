@@ -50,7 +50,7 @@ if [ "$1" != html ]; then
 fi
 
 # map rendering
-npx --prefix "$PATH_MAPJS_HOME" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
+npx --prefix "$(getvar PATH_DIR_MAPJS)" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
     # create html file needed for testcafe and rendering tests
     # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
@@ -65,7 +65,7 @@ __test 2hf "$INPUT_FILE_MD0"   #8
 # Use wait-on --log if diagnostics needed (also verbose option)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
 export PATH_FILE_OUTPUT_EXAMPLE
-npx --prefix "$PATH_MAPJS_HOME" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
+npx --prefix "$(getvar PATH_DIR_MAPJS)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
     # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
     __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
 __test 2hf "$INPUT_FILE_MD"                                 #10
