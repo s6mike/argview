@@ -8,7 +8,9 @@
 
 ## argmap 17.0.1
 
-- `config/config-argmap-paths.yaml`: Minor variable name change for clarity.
+- `config/config-argmap-paths.yaml`: Rename `PATH_DIR_CONFIG_ARGMAP_PROCESSED` from `PATH_DIR_CONFIG_PROCESSED`.
+
+Note that if you are still using this variable in your env file then this could break things.
 
 ## argmap 17.0.0 BREAKING
 
