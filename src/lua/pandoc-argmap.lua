@@ -7,8 +7,9 @@
 -- return statement at end of this file ensures that Meta function is executed first, before CodeBlock.
 
 -- Sets up shared 'environment' variables:
-
 local config_argmap = require 'config_argmap'
+
+-- TODO: Replace all capitalised global variables with config_argmap.varname so I'm using config file for everything.
 
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
 
@@ -182,7 +183,7 @@ local function CodeBlock(block)
         -- TODO: have stopped opt "-p" forcing upload, but might want to remove this flag too/instead.
 
         -- Now using lua as main command, which means relevant lua script is now the first opt:
-        local argmap2mup_opts = { PATH_DIR_ARGMAP_LUA .. "/argmap2mup.lua" }
+        local argmap2mup_opts = { config_argmap.PATH_DIR_ARGMAP_LUA .. "/argmap2mup.lua" }
         argmap2mup_opts[#argmap2mup_opts + 1] = "-p" -- Defaults to publicly accessible map.
         local name = block.attributes["name"]
         if name and name ~= "" then
@@ -283,7 +284,8 @@ local function CodeBlock(block)
                 f:write(output)
                 f:close()
 
-                -- To generate each container instance's html, uses pandoc.pipe with pandoc command itself but no input, using the container include file as the template, so that template variables are populated with meta data from the config files etc.
+                -- To generate each container instance's html, uses pandoc.pipe with pandoc command itself but no input, 
+                -- using the container include file as the template, so that template variables are populated with meta data from the config files etc.
                 -- TODO: Try using pandoc.template.compile instead. Not available until 2.17.0.1 (2022-01-14)
                 --  https://beta.workflowy.com/#/a2357475328a
                     -- Earlier solution:
