@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.4.1
+
+- `src/lua/config_argmap.lua`: Update to read data from argmap config files into config table, using `tinyyaml` lua module.
+  - Add functions for reading file from path, loading yaml from path, loading yaml from a list of paths.
+
 ## argmap 16.4.0
 
 - Similar to 16.2.0 below, but instead:
