@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 17.0.2
+
+- `config/pandoc-defaults-config-preprocessor.yaml`: Update to use relative paths so that it doesn't need customising for new environments.
+
+This has been an issue since 11.0.2
+
 ## argmap 17.0.1
 
 - `config/config-argmap-paths.yaml`: Rename `PATH_DIR_CONFIG_ARGMAP_PROCESSED` from `PATH_DIR_CONFIG_PROCESSED`.
@@ -300,6 +306,8 @@ BREAKING: __getvar_from_yaml() no longer interpolates env variables by default, 
 ## argmap 11.2.0
 
 - Add pandoc defaults file with pre-processing settings: `/config/pandoc-defaults-config-preprocessor.yml`
+
+Note that this uses absolute paths which was a mistake since it will only work in my environment. Fixed in 17.0.2
 
 ## argmap 11.1.0
 
