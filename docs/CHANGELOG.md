@@ -6,6 +6,22 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.5.0
+
+Move a number of variables from env files:
+
+- `config/environment-argmap-defaults.yaml`
+- `mapjs/config/environment-mapjs-defaults.yaml`
+
+to new config path files:
+
+- `config/config-argmap-paths.yaml`
+- `mapjs/config/config-mapjs-paths.yaml`
+
+These are variables which should not need to be customised by users, and are therefore no longer part of the 'public API' for semantic versioning purposes.
+
+i.e  variables in the config path files are deprecated from use so values can be changed at any time without warning. Recommended that they are not customised directly.
+
 ## argmap 16.4.3
 
 - `mapjs/package.json`: Update eslint to latest version.

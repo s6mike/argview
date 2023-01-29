@@ -2,6 +2,7 @@
 ########
 # Argmap environment data - DEFAULTS
 # Copy this to config/environment-argmap.yaml and customise as you wish
+#   So this file IS considered part of the public API for this app and changing variable names etc will be considered BREAKING.
 # For use in scripts, layouts and lua code.
 # Copyright 2022 Michael Hayes
 # SPDX - License - Identifier: MIT
@@ -15,40 +16,11 @@
 PATH_DIR_ARGMAP_ROOT: ${HOME}/local/argmap
 WORKSPACE: ${PATH_DIR_ARGMAP_ROOT}
 
-## config
-DIR_CONFIG: config
-PATH_DIR_CONFIG_ARGMAP: ${PATH_DIR_ARGMAP_ROOT}/${DIR_CONFIG}
-DIR_PROCESSED: processed
-PATH_DIR_CONFIG_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
-
-# Processed config files are at top, so their results are used ahead of raw config files
-LIST_FILES_CONFIG_INPUT:
-- ${PATH_FILE_ENV_ARGMAP} # This file
-- ${PATH_FILE_CONFIG_ARGMAP}
-- ${PATH_FILE_CONFIG_MAPJS}
-- ${PATH_FILE_ENV_MAPJS}
-- ${PATH_FILE_ENV_ARGMAP_PRIVATE}
-
-## conda
-CONDA_ENV_ARGMAP: argmap
-CONDA_PREFIX: /opt/miniconda3/envs/argmap
-PATH_FILE_ENV_CONDA: ${PATH_DIR_CONFIG_ARGMAP}/environment-conda-argmap.yaml
-
 ## web server
 DIR_PUBLIC: public
 PATH_DIR_PUBLIC: ${PATH_DIR_MAPJS}/${DIR_PUBLIC}
 PORT_DEBUG: 9221
 PORT_DEV_SERVER: 9001
-
-## argmap
-PATH_DIR_SCRIPTS: ${PATH_DIR_ARGMAP_ROOT}/scripts
-PATH_DIR_ARGMAP_SRC: ${PATH_DIR_ARGMAP_ROOT}/src
-PATH_FILE_CONFIG_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/config-argmap.yaml
-PATH_FILE_ENV_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yaml # This file
-PATH_FILE_ENV_ARGMAP_PRIVATE: ${PATH_DIR_CONFIG_ARGMAP}/PRIVATE-environment-argmap.yaml
-PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR: ${PATH_DIR_CONFIG_ARGMAP}/pandoc-defaults-config-preprocessor.yaml
-PATH_FILE_ENV_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_PROCESSED}/environment-argmap-processed.yaml
-PATH_FILE_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_PROCESSED}/config-argmap-processed.yaml
 
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua
@@ -59,29 +31,9 @@ LUA_PATH: ${PATH_DIR_ARGMAP_ROOT}/src/lua/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modu
 DIR_MAPJS: mapjs
 PATH_DIR_MAPJS: ${PATH_DIR_ARGMAP_ROOT}/${DIR_MAPJS}
 
-## layouts
-PATH_DIR_LAYOUTS: ${PATH_DIR_ARGMAP_SRC}/layouts
-PATH_DIR_INCLUDES: ${PATH_DIR_LAYOUTS}/includes
-PATH_DIR_TEMPLATES: ${PATH_DIR_ARGMAP_SRC}/layouts/templates
-FILE_TEMPLATE_HTML_ARGMAP_MAIN: ${PATH_DIR_LAYOUTS}/templates/pandoc-mapjs-main-html5.html
-PATH_INCLUDES_MAPJS_CONTAINER_STANDARD: ${PATH_DIR_INCLUDES}/mapjs-map-container.html
-PATH_INCLUDES_ARGMAP_CONTROLS: ${PATH_DIR_INCLUDES}/mapjs-widget-controls.html
-
 ## pandoc
 PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_DIR_ARGMAP_LUA}/pandoc-argmap.lua
 PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
-
-## Testing
-INPUT_FILE_YML: ${PATH_DIR_ARGMAP_ROOT}/test/input/example1-clearly-false-white-swan-simplified.yaml
-INPUT_FILE_YML_NOTES: ${PATH_DIR_ARGMAP_ROOT}/examples/example-2.yaml
-INPUT_FILE_JSON: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
-INPUT_FILE_MD0: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-0mapjs.md
-INPUT_FILE_MD: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md
-INPUT_FILE_MD2: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-2mapjs.md
-INPUT_FILE_MD_META: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
-INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
-INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
-PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/test/output/html/example1-clearly-false-white-swan-simplified.html 
 
 ## External to project
 DIR_PROJECTS: /home/s6mike/git_projects
@@ -89,3 +41,5 @@ PATH_MISC_DEV: ${DIR_PROJECTS}/misc
 PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
 PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
+
+...
