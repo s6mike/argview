@@ -1,4 +1,10 @@
 ---
+########
+# Pandoc defaults file - for pre-processing config files
+# Copyright 2022 Michael Hayes
+# SPDX - License - Identifier: MIT
+########
+
 to: plain
 from: markdown-tex_math_dollars 
 # template: /home/s6mike/git_projects/argmap/config/environment-argmap.yaml
@@ -10,4 +16,5 @@ metadata-files:
   - /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml
   - /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml
   - /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml
+
 ...

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 16.5.1
+
+- `config/`, `mapjs/config`: Add comment to all config files re whether they are part of public API for semantic versioning purposes.
+
 ## argmap 16.5.0
 
 Move a number of variables from env files:
@@ -20,7 +24,7 @@ to new config path files:
 
 These are variables which should not need to be customised by users, and are therefore no longer part of the 'public API' for semantic versioning purposes.
 
-i.e  variables in the config path files are deprecated from use so values can be changed at any time without warning. Recommended that they are not customised directly.
+i.e  variables in the config path files are deprecated from use so values can be changed at any time without warning. Recommended that they are not customised directly (or ideally at all).
 
 ## argmap 16.4.3
 

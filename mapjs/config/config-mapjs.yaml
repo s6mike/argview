@@ -2,7 +2,8 @@
 ########
 # MAPJS config data
 # For use in mapjs code, layouts and pandoc filters.
-# Copyright 2022 Michael Hayes and the mapjs contributors
+# This file is not considered part of a public API and can change at any time without being considered BREAKING.
+# Copyright 2022 Michael Hayes
 # SPDX - License - Identifier: MIT
 ########
 
