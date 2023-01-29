@@ -11,6 +11,7 @@ alias gvy='__getvar_yaml_any'
 alias pc='preprocess_config'
 
 export PATH_FILE_ENV_ARGMAP=$WORKSPACE/config/environment-argmap.yaml
+export PATH_FILE_CONFIG_ARGMAP_PATHS=$WORKSPACE/config/config-argmap-paths.yaml
 
 # Replace echo with this where not piping output
 log() {
@@ -81,7 +82,8 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
 
 # Looks up each argument in yaml and exports it as env variable
 __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MAPJS
-  yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
+  # yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
+  yaml_file=${1:-PATH_FILE_ENV_ARGMAP_PATHS}
   shift
   for env_var_name in "$@"; do
     env_var_value=$(__getvar_from_yaml -e "$env_var_name" "$yaml_file")
@@ -90,8 +92,8 @@ __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MAPJS
   done
 }
 
-# __yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR PATH_FILE_ENV_ARGMAP_PROCESSED DIR_MAPJS DIR_PUBLIC PATH_DIR_MAPJS PATH_FILE_ENV_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE PATH_DIR_MAPJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_CONFIG_MAPJS PATH_FILE_CONFIG_ARGMAP PATH_FILE_ENV_CONDA
-__yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_CONFIG PATH_DIR_ARGMAP_ROOT DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR PORT_DEV_SERVER
+__yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_ARGMAP_ROOT PORT_DEV_SERVER
+__yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" DIR_CONFIG DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
 count_characters() {
   target_config_file=$1
@@ -100,10 +102,10 @@ count_characters() {
 }
 
 # TODO: combine all non PRIVATE processed variables into one file
-# QUESTIOn: Possible to build defaults file from template referencing other variables, using this function?
+# QUESTION: Possible to build defaults file from template referencing other variables, using this function?
+#   When adding new config file, don't forget to update pandoc defaults
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
   target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
-  # Strips yaml extension then adds on this one:
 
   # local mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")
   local filename
@@ -111,6 +113,8 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   filename=$(basename "$target_config_file")
   target_dir="$(dirname "$target_config_file")/$DIR_PROCESSED"
   mkdir --parent "$target_dir"
+
+  # Strips yaml extension then adds on this one:
   output_file="$target_dir/${filename%%.*}-processed.yaml"
 
   # Get key value pairs with $, omitting nested $var values (e.g. LIST_FILES_CONFIG)
@@ -151,11 +155,16 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   fi
 }
 
-PATH_FILE_ENV_ARGMAP_PROCESSED=$(preprocess_config "" "$PATH_FILE_ENV_ARGMAP")
+# This part more complex now I have separated paths into two files.
+#   QUESTION: If I could combine them into one before processing perhaps it would be easier?
+__yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MAPJS DIR_PUBLIC
+PATH_FILE_ENV_ARGMAP_PROCESSED=$(preprocess_config "$PATH_FILE_ENV_ARGMAP")
 export PATH_FILE_ENV_ARGMAP_PROCESSED
+PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED=$(preprocess_config "$PATH_FILE_CONFIG_ARGMAP_PATHS")
+export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED
 
 # Can't use __yaml2env because it's not set to take the -l option
-LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml -l LIST_FILES_CONFIG_INPUT "$PATH_FILE_ENV_ARGMAP_PROCESSED")
+LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml -l LIST_FILES_CONFIG_INPUT "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
 export LIST_FILES_CONFIG_INPUT
 
 process_all_config_inputs() {

@@ -75,27 +75,34 @@ __test() {
   TESTNUM=$((TESTNUM + 1))
 }
 
+test_function() {
+  func="$1"
+  __test check_var_value "$func $4 $2" "$3"
+}
+
 # TODO add function to loop through pairs
 test_getvar() {
   __init_tests
   func=getvar
-  test_function "$func" bla "$([[ $? -eq 1 ]])"                                #1
-  test_function "$func" bla.bla "$([[ $? -eq 1 ]])"                            #2
-  test_function "$func" DEFAULT_LANGUAGE en                                    #3
-  test_function "$func" node "class: mapjs-node"                               #4
-  test_function "$func" node.class mapjs-node                                  #5
-  test_function "$func" PATH_DIR_MAPJS /home/s6mike/git_projects/argmap/mapjs #6
+  test_function "$func" bla "$([[ $? -eq 1 ]])"                                                                                          #1
+  test_function "$func" bla.bla "$([[ $? -eq 1 ]])"                                                                                      #2
+  test_function "$func" DIR_CONFIG config                                                                                                #3
+  test_function "$func" PATH_FILE_CONFIG_ARGMAP_PROCESSED /home/s6mike/git_projects/argmap/config/processed/config-argmap-processed.yaml #4
+  test_function "$func" PORT_DEV_SERVER 9001                                                                                             #5
+  test_function "$func" PATH_DIR_MAPJS /home/s6mike/git_projects/argmap/mapjs                                                            #6
+  test_function "$func" DEFAULT_LANGUAGE en
+  test_function "$func" DIR_HTML_SERVER_OUTPUT output
+  test_function "$func" DIR_PUBLIC_OUTPUT /home/s6mike/git_projects/argmap/test/output
+  test_function "$func" DIR_MAPJS_JSON mapjs-json #7
+  test_function "$func" PATH_DIR_PUBLIC_MAPJS_JSON /home/s6mike/git_projects/argmap/test/output/mapjs-json
+  test_function "$func" node "class: mapjs-node" #8
+  test_function "$func" node.class mapjs-node    #9
   remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
-    "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml" \
-    "-l" #7
+    "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap-paths.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs-paths.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml" \
+    "-l" #10
   LIST_FILES_CONFIG_INPUT=$remember
-}
-
-test_function() {
-  func="$1"
-  __test check_var_value "$func $4 $2" "$3"
 }
 
 test_get_site_path() {

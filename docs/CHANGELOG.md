@@ -6,9 +6,23 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 17.0.1
+
+- `config/config-argmap-paths.yaml`: Minor variable name change for clarity.
+
+## argmap 17.0.0 BREAKING
+
+- `scripts/init_read_config.sh`: Update initialisation process to handle new config files.
+- `config/pandoc-defaults-config-preprocessor.yaml`: Update with new config file paths.
+- `test/test_scripts/bash_aliases_argmap_test.sh`: Add additional tests to `test_getvar()`.
+
+BREAKING - these changes mean that any customisations of the moved variables in your env files may no longer be used. Either use the new
+config-path locations, or add a script to convert their values.
+
 ## argmap 16.5.1
 
 - `config/`, `mapjs/config`: Add comment to all config files re whether they are part of public API for semantic versioning purposes.
+  - Only variables still in default env files are part of public API.
 
 ## argmap 16.5.0
 

@@ -10,11 +10,14 @@ from: markdown-tex_math_dollars
 # template: /home/s6mike/git_projects/argmap/config/environment-argmap.yaml
 # output-file: /home/s6mike/git_projects/argmap/config/environment-argmap-processed.yaml
 metadata-files:
-  - /home/s6mike/git_projects/argmap/config/processed/environment-argmap-processed.yaml
   - /home/s6mike/git_projects/argmap/config/environment-argmap.yaml
+  - /home/s6mike/git_projects/argmap/config/config-argmap-paths.yaml
   - /home/s6mike/git_projects/argmap/config/config-argmap.yaml
   - /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml
+  - /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs-paths.yaml
   - /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml
   - /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml
+  - /home/s6mike/git_projects/argmap/config/processed/environment-argmap-processed.yaml
+  - /home/s6mike/git_projects/argmap/config/processed/config-argmap-paths-processed.yaml
 
 ...
