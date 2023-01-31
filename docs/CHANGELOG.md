@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 17.0.3
+
+- `mapjs/package.json`: Update to latest version of testcafe.
+  - `mapjs/package-lock.json`: Ditto.
+
 ## argmap 17.0.2
 
 - `config/pandoc-defaults-config-preprocessor.yaml`: Update to use relative paths so that it doesn't need customising for new environments.
