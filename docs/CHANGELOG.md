@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.0
+
+- `scripts/init_read_config.sh`: Attempt to copy (no clobber) defaults version of each env file, so that there's always an env file being used.
+  - Update to reflect new config and install changes:
+    - [README.md](../README.md)
+    - `scripts/init_read_config.sh`
+    - `scripts/install.sh`
+
 ## argmap 18.0.0 BREAKING
 
 - `scripts/init_read_config.sh`: Set `PATH_DIR_ARGMAP_ROOT` env variable value (to `$WORKSPACE` value) at start of script, rather than reading from env file. BREAKING

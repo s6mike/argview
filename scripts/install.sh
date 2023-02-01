@@ -8,7 +8,7 @@
 
 # TODO Should set up relevant bash to run these automatically
 
-# a) If config files aren't present, then copy default files in `/config`` and `mapjs/config folders``.
+# a) Set PATH_DIR_ARGMAP_ROOT to current directory/WORKSPACE? Or create a .env file.
 # b) run `scripts/init_read_config.sh` to process the config folders and expand all variables, writing new files to `config/processed` folders.
 # c) Review: intialised values in `scripts/argmap_init_script.sh`, `scripts/argmap.env` and `mapjs/scripts/mapjs.env`
 

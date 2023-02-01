@@ -6,6 +6,9 @@ echo "Running ${BASH_SOURCE[0]}"
 # source "$HOME/scripts/default_vscode_init_script.sh"
 
 # Needed for non-VSCode environments:
+# TODO should set to $HOME/local/argmap by default
+#   Add check whether $HOME/git_projects/argmap exists, then set as above instead
+#   Or use .env file?
 export WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 export PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 
@@ -15,6 +18,7 @@ export PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/init_read_config.sh
 source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 
+# TODO remove stuff covered by `init_read_config.sh`
 # Needed for scripts/argmap.env tmp chrome profile:
 DIR_PROJECTS=$(dirname "$WORKSPACE")
 export DIR_PROJECTS

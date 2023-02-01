@@ -10,9 +10,14 @@ alias gv='getvar'
 alias gvy='__getvar_yaml_any'
 alias pc='preprocess_config'
 
-export PATH_DIR_ARGMAP_ROOT="$WORKSPACE"
+# TODO should set these in an env file
+export PATH_DIR_ARGMAP_ROOT="${PATH_DIR_ARGMAP_ROOT:-$WORKSPACE}"
 export PATH_FILE_ENV_ARGMAP="$WORKSPACE/config/environment-argmap.yaml"
+export PATH_FILE_ENV_ARGMAP_DEFAULTS="$WORKSPACE/config/environment-argmap-defaults.yaml"
 export PATH_FILE_CONFIG_ARGMAP_PATHS="$WORKSPACE/config/config-argmap-paths.yaml"
+
+# In case env file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
+cp --no-clobber "$PATH_FILE_ENV_ARGMAP_DEFAULTS" "$PATH_FILE_ENV_ARGMAP"
 
 # Replace echo with this where not piping output
 log() {
@@ -160,6 +165,11 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
 # This part more complex now I have separated paths into two files.
 #   QUESTION: If I could combine them into one before processing perhaps it would be easier?
 __yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MAPJS DIR_PUBLIC
+# __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED
+# __yaml2env "$PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED" PATH_FILE_ENV_MAPJS_DEFAULTS PATH_FILE_ENV_MAPJS
+# In case env file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
+cp --no-clobber "$WORKSPACE/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs-defaults.yaml" "$WORKSPACE/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
+
 PATH_FILE_ENV_ARGMAP_PROCESSED=$(preprocess_config "$PATH_FILE_ENV_ARGMAP")
 export PATH_FILE_ENV_ARGMAP_PROCESSED
 PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED=$(preprocess_config "$PATH_FILE_CONFIG_ARGMAP_PATHS")

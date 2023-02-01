@@ -73,13 +73,19 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
 This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
-1. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. `~/bin`.
+1. Set env variable `PATH_DIR_ARGMAP_ROOT` to app installation root folder.
+
+2. If you wish, customise the values in the `environment-[X]-default.yaml` files in `config` and `mapjs/config` folder, removing `-default` from the filenames.
+
+3. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. `~/bin`.
 
     Or you leave them in place and put symbolic links to them into your PATH, as has been done in `scripts/install.sh`. This script also removes the .lua extension from the links to reduce command line typing, however the examples below keep the .lua extension for clarity.
 
-2. Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data directory, e.g. `$HOME/.local/share/pandoc/filters/pandoc-argmap.lua`.
+4. Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data directory, e.g. `$HOME/.local/share/pandoc/filters/pandoc-argmap.lua`.
 
-3. For additional functionality, see **Dependencies** section.
+5. For additional functionality, see **Dependencies** section.
+
+Note that `scripts/install.sh` is more a collection of notes and useful commands for my own reference and is not yet in a state where it can be run to install the app. The sequence of instructions has not been tested recently, however I do update it as the app changes, so it should represent the process I need to follow for installation on my own machine.
 
 ### Dependencies
 
@@ -109,6 +115,10 @@ Tested with:
 6. To display MindMup JSON files on a web page as an interactive mindmap, without using the [MindMup website](https://www.mindmup.com/), see [Installing mapjs](#installing-mapjs).
 
 7. The various scripts and the mapjs code also rely on yaml configuration files, some parts of which need to be processed to expand config variables. This processing requires both pandoc and the yq binary [mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV and properties processor](https://github.com/mikefarah/yq/#install), and is carried out by running the `scripts/init_read_config.sh` bash script.
+
+Files with config in the name should be left as is, as these can change without warning in new releases.
+
+However, you should make copies of the various environment-default files and remove -default from the name. You can then customise aspects of the app and these should be reflected in the rest of the app.
 
 See `config/environment-conda-argmap.yaml` for conda environment export of non-lua dependencies and version numbers.
 
