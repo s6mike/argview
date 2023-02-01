@@ -19,9 +19,11 @@ PATH_FILE_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-ar
 PATH_FILE_CONFIG_ARGMAP_PATHS: ${PATH_DIR_CONFIG_ARGMAP}/config-argmap-paths.yaml # This file
 PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-paths-processed.yaml
 PATH_FILE_ENV_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yaml
+PATH_FILE_ENV_ARGMAP_DEFAULTS: ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap-defaults.yaml
 PATH_FILE_ENV_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/environment-argmap-processed.yaml
 PATH_FILE_ENV_ARGMAP_PRIVATE: ${PATH_DIR_CONFIG_ARGMAP}/PRIVATE-environment-argmap.yaml
 PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR: ${PATH_DIR_CONFIG_ARGMAP}/pandoc-defaults-config-preprocessor.yaml
+PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/config-mapjs-paths-processed.yaml
 
 # Processed config files are at top, so their results are used ahead of raw config files
 # QUESTION: Just check two config folders instead?

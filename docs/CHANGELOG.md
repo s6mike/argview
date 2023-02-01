@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 17.0.4
+
+- Add and update config file variables.
+
 ## argmap 17.0.3
 
 - `mapjs/package.json`: Update to latest version of testcafe.
