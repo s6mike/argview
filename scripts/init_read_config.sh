@@ -10,8 +10,9 @@ alias gv='getvar'
 alias gvy='__getvar_yaml_any'
 alias pc='preprocess_config'
 
-export PATH_FILE_ENV_ARGMAP=$WORKSPACE/config/environment-argmap.yaml
-export PATH_FILE_CONFIG_ARGMAP_PATHS=$WORKSPACE/config/config-argmap-paths.yaml
+export PATH_DIR_ARGMAP_ROOT="$WORKSPACE"
+export PATH_FILE_ENV_ARGMAP="$WORKSPACE/config/environment-argmap.yaml"
+export PATH_FILE_CONFIG_ARGMAP_PATHS="$WORKSPACE/config/config-argmap-paths.yaml"
 
 # Replace echo with this where not piping output
 log() {
@@ -92,7 +93,7 @@ __yaml2env() { # __yaml2env PATH_FILE_CONFIG_MAPJS
   done
 }
 
-__yaml2env "$PATH_FILE_ENV_ARGMAP" PATH_DIR_ARGMAP_ROOT PORT_DEV_SERVER
+__yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER
 __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" DIR_CONFIG DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
 count_characters() {
@@ -134,8 +135,9 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     dollar_count=$(count_characters "$target_config_file" '$')
     [[ "$dollar_count" -gt 0 ]] && [ "$repeat_count" -lt 4 ]
   do
-    # QUESTION: simpler option than pandoc?
-    pandoc /dev/null --output="$output_file" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" || return 1
+    # QUESTION: simpler option than pandoc? maybe lua template module or bash search or yq?
+    # NOTE, no error detection because defaults file includes processed files which don't exist on first few runs, and therefore trigger errors during normal operation.
+    pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR"
     target_config_file="$output_file"
 
     # Checks for possible infinite loop:

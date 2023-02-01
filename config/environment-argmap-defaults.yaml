@@ -12,10 +12,6 @@
 
 # Paths
 
-## project
-PATH_DIR_ARGMAP_ROOT: ${HOME}/local/argmap
-WORKSPACE: ${PATH_DIR_ARGMAP_ROOT}
-
 ## web server
 DIR_PUBLIC: public
 PATH_DIR_PUBLIC: ${PATH_DIR_MAPJS}/${DIR_PUBLIC}

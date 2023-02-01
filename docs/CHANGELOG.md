@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.0.0 BREAKING
+
+- `scripts/init_read_config.sh`: Set `PATH_DIR_ARGMAP_ROOT` env variable value (to `$WORKSPACE` value) at start of script, rather than reading from env file. BREAKING
+  - `preprocess_config()`: Pass it to pandoc as a metadata variable now it's now in file.
+  - `config/environment-argmap-defaults.yaml`: Remove from env file.
+
+BREAKING: Custom `PATH_DIR_ARGMAP_ROOT` will be lost from env file, and instead you will need to set this as an environment variable.
+
 ## argmap 17.0.4
 
 - Add and update config file variables.
