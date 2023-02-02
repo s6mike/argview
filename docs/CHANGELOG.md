@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.1
+
+- `mapjs/config/environment-mapjs-defaults.yaml`:
+  - Move `PATH_DIR_MAPJS_ROOT` from mapjs environment to `config/config-argmap-paths.yaml`. This means that the value can be set externally either by argmap, or a script using an env variable if mapjs is run standalone - consistent with argmap.
+  - Remove `WORKSPACE` - no longer needed, should be no impact.
+
+This doesn't have a major impact since the value isn't used anywhere yet.
+
 ## argmap 18.1.0
 
 - `scripts/init_read_config.sh`: Attempt to copy (no clobber) defaults version of each env file, so that there's always an env file being used.

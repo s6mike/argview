@@ -10,10 +10,6 @@
 
 # Use ${variable} for referencing other yaml variables
 
-# Variables
-PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS}
-WORKSPACE: ${PATH_DIR_ARGMAP_ROOT}
-
 ## dev webserver values
 DIR_HTML_SERVER_OUTPUT: output
 
