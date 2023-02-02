@@ -6,7 +6,7 @@
 # SECTION 0:
 # ----------
 
-# TODO Should set up relevant bash to run these automatically
+# TODO Should set up relevant bash to run these automatically:
 
 # a) Set PATH_DIR_ARGMAP_ROOT to current directory/WORKSPACE? Or create a .env file.
 # b) run `scripts/init_read_config.sh` to process the config folders and expand all variables, writing new files to `config/processed` folders.

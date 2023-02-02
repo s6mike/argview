@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.2
+
+- `scripts/config_read_functions.lib.sh`: Move all functions here from `scripts/init_read_config.sh` so it can be re-used by mapjs.
+- `scripts/init_read_config.sh`: Put everything into `main()` because it's good practice.
+
 ## argmap 18.1.1
 
 - `mapjs/config/environment-mapjs-defaults.yaml`:
