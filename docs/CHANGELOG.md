@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.3
+
+- Fix pandoc pre-processing error caused when processed argmap paths config file not present:
+  - `config/pandoc-defaults-config-preprocessor.yaml`: Remove processed file.
+  - `scripts/config_read_functions.lib.sh`: Add file as `metadata-file` variable which is empty when file not present.
+
 ## argmap 18.1.2
 
 - `scripts/config_read_functions.lib.sh`: Move all functions here from `scripts/init_read_config.sh` so it can be re-used by mapjs.

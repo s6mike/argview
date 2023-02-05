@@ -28,7 +28,7 @@ __check_exit_status() {
 
 # Alternative: compgen -v | grep full match?
 checkvar_exists() {
-  [[ -v $1 ]]
+  [[ -v "$1" ]]
 }
 
 # To test: test_getvar
@@ -133,7 +133,14 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   do
     # QUESTION: simpler option than pandoc? maybe lua template module or bash search or yq?
     # NOTE, no error detection because defaults file includes processed files which don't exist on first few runs, and therefore trigger errors during normal operation.
-    pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR"
+    processed_metadata_file=""
+    if [ -f "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" ]; then # If file exists
+      processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
+    fi
+    set -f
+    # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
+    pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file
+    set +f
     target_config_file="$output_file"
 
     # Checks for possible infinite loop:
