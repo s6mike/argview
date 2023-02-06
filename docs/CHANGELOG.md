@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.7
+
+- `mapjs/src/start.js`:
+  - Call Logger via Utilities rather than directly to avoid strict mode error.
+  - Fix lint errors.
+
 ## argmap 18.1.6
 
 - `mapjs/package.json`: Update lint script to write output to `mapjs/lint_errors.txt`
