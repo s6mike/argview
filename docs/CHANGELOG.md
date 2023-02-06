@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.6
+
+- `mapjs/package.json`: Update lint script to write output to `mapjs/lint_errors.txt`
+  - `.gitignore`: Add `mapjs/lint_errors.txt`
+
 ## argmap 18.1.5
 
 - `mapjs/.eslintrc.json`: Fix error in indent linting rules.
