@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.4
+
+- `mapjs/package.json`: Update dev dependency.
+  - `mapjs/package-lock.json`: Ditto.
+
 ## argmap 18.1.3
 
 - Fix pandoc pre-processing error caused when processed argmap paths config file not present:
