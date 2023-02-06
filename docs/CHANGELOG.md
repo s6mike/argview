@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.8
+
+- `mapjs/src/`: Fix lint errors:
+  - Update all files to have 2 space indent.
+  - Add strict mode to Utilities file.
+  - Update constant references etc.
+
 ## argmap 18.1.7
 
 - `mapjs/src/start.js`:

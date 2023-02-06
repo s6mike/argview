@@ -1,9 +1,6 @@
-/*global module*/
+/*eslint strict: ["error", "function"]*/
+/*global module, PATH_FILE_CONFIG_MAPJS, process*/
 // TODO: switch to lodash and test
-const _ = require('underscore'),
-  // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
-  CONTAINER_CLASS = CONFIG.mapjs_map.class;
 
 // function getvar(varname, config_file) {
 //   const { default: CONFIG } = require(path_file_config),
@@ -19,7 +16,7 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
   // Override some console functions based on environment
   if (environment === 'production') {
     // Disables console.log and console.debug in production mode.
-    // 	QUESTION: change so that it logs the data elsewhere?
+    //   QUESTION: change so that it logs the data elsewhere?
     new_logger.debug = () => { };
     new_logger.log = () => { };
   } else {
@@ -33,9 +30,14 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
   return new_logger;
 }
 
-// Setting this up here so it's ready for idea_pp
-//  TODO: If I move idea_pp to MyLogger then I can be more flexible with where I initialise it
-Logger = new MyLogger(console);
+const _ = require('underscore'),
+  // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
+  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  CONTAINER_CLASS = CONFIG.mapjs_map.class,
+
+  // Setting this up here so it's ready for idea_pp
+  //  TODO: If I move idea_pp to MyLogger then I can be more flexible with where I initialise it
+  Logger = new MyLogger(console);
 
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
@@ -45,6 +47,7 @@ module.exports = {
   //  Simplifies environment based catching
   //  Allows use of constants with try-catch
   trycatch: (t, c) => {
+    'use strict';
     // Set default exception here:
     c = (exception) => {
       if (process.env.NODE_ENV === 'production') {
@@ -55,9 +58,9 @@ module.exports = {
     };
 
     try {
-      return t()
+      return t();
     } catch (exception) {
-      return c(exception)
+      return c(exception);
     };
   },
 
@@ -72,6 +75,7 @@ module.exports = {
 
   // Can pass element or event
   getContainerID: (elementOrEvent) => {
+    'use strict';
     const containers = document.getElementsByClassName(CONTAINER_CLASS);
 
     switch (containers.length) {
@@ -97,6 +101,7 @@ module.exports = {
 
   // May not be compatible with all modern browsers
   downloadToFile: (content, filename, contentType) => {
+    'use strict';
     const file = new Blob([content], { type: contentType }),
       download_anchor = document.createElement('a');
 
@@ -157,7 +162,7 @@ module.exports = {
 
   // Two different ways of combining two theme files, see which one works best
   // order matters in both merge types, better results from having idea.theme as second argument.
-  // 	Assume that value of second used where there is a clash.
+  //   Assume that value of second used where there is a clash.
   // const mergeObjects = function (theme1 = themeProvider.default, theme2 = idea.theme, method = "lodash") {
   //   switch (method) {
 
