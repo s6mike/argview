@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.11
+
+- `src/layouts/includes/mapjs-map-container.html`: Add `tabindex="-1"` to element `div.mapjs_instance` to allow it to receive keyboard shortcuts.
+  - Update html files in doc folders with same change. 
+
 ## argmap 18.1.10
 
 - `scripts/bash_aliases_argmap.sh`: `__clean_repo()` no longer deletes obsolete file.

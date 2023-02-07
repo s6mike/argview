@@ -3,7 +3,7 @@ $-- Also used as template by pandoc-argmap.lua filter when it pipes pandoc
 <article class="${argmap_grouping.class}">
   $-- TODO: Should use the argmap block title as h2 instead of this arbitrary one:
   <h2>Example Argument map</h2>
-  <div class="${mapjs_instance.class}">
+  <div class="${mapjs_instance.class}" tabindex="-1">
     $../includes/mapjs-widget-controls.html()$
     <div id="${mapjs_map.id-prefix}${MAP_INSTANCE_ID}" class="${mapjs_map.class}" tabindex="-1">
       <script type="application/json" class="${mapjs_src_data.class}" src="$path-json-source$"></script>
