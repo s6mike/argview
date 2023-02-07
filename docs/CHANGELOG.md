@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.1.9
+
+- `mapjs/webpack.config.js`: Fix lint errors:
+  - Add strict mode to `modules.export()`.
+  - Fix indent.
+
 ## argmap 18.1.8
 
 - `mapjs/src/`: Fix lint errors:
