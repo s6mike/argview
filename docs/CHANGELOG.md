@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.0
+
+- `mapjs/src/browser/dom-map-widget.js`: Enable most keyboard shortcuts (`hotkeyEventHandlers`) to work when used in `div.mapjs_instance` (i.e. around toolbar) as well as in mapjs canvas.
+- `mapjs/src/start.js`: Iterate round `div.mapjs_instance` elements instead of `div.mapjs_map` element, and update code in both files to accommodate this change.
+
 ## argmap 18.2.0
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Update `getElementMJS()` to return collections of elements, including optionally returning single elements in a collection.

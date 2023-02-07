@@ -11,6 +11,7 @@ const Utilities = require('./core/util/mapjs-utilities'),
   //   - https://stackoverflow.com/questions/63462577/how-to-load-multiple-yaml-files-at-once-in-javascript
   //   - https://github.com/survivejs/webpack-merge
   CONTAINER_CLASS = CONFIG.mapjs_map.class,
+  INSTANCE_CLASS = CONFIG.mapjs_instance.class,
   MAPJS_SRC_CLASS = CONFIG.mapjs_src_data.class,
   trycatch = Utilities.trycatch;
 
@@ -76,11 +77,12 @@ const jQuery = require('jquery'),
   },
 
   // Add a (ideally) separate map to each container div on the page.
-  addMap = function (containerElement, mapJson) {
+  addMap = function (instanceElement, mapJson) {
     'use strict';
-    // QUESTION: Do we need a separate mapModel for each map?
-    //   Or are there generic methods I can separate out from object ones?
-    const map = mapInstance[containerElement.id] = {};
+    const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
+      // QUESTION: Do we need a separate mapModel for each map?
+      //   Or are there generic methods I can separate out from object ones?
+      map = mapInstance[containerElement.id] = {};
     map.mapModel = new MAPJS.MapModel([]);
     // So it's easier to look up containerElement from mapModel:
     //  Useful because unfortunately, element ids only unique per container
@@ -91,6 +93,7 @@ const jQuery = require('jquery'),
 
     // eslint-disable-next-line one-var
     const jQcontainer = jQuery(containerElement),
+      JQinstance = jQuery(instanceElement),
       // Do I need one of these for each container?
       imageInsertController = new MAPJS.ImageInsertController('http://localhost:4999?u='),
       idea = content(mapJson),
@@ -125,7 +128,7 @@ const jQuery = require('jquery'),
       });
     };
 
-    jQcontainer.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
+    JQinstance.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
 
     // different stage for each container so need to have one for each container
     // Using container.id as index for relevant controller
@@ -202,22 +205,26 @@ const jQuery = require('jquery'),
     'use strict';
 
     // Looks for class not id, so can capture a number of containerElements each with own id.
-    // TODO: Use getElementMJS()
-    const containerElements = document.getElementsByClassName(CONTAINER_CLASS);
+    // TODO: Use getElementMJS() only returns one element
+    // const containerElements = document.getElementsByClassName(CONTAINER_CLASS);
+    const instanceElements = Utilities.getElementMJS(INSTANCE_CLASS, document, true);
 
-    if (containerElements.length > 0) { // Checks there are mapjs requests
-      for (const containerElement of containerElements) {
+    if (instanceElements.length > 0) { // Checks there are mapjs requests
+      // for (const containerElement of containerElements) {
+      for (const instanceElement of instanceElements) {
+        // const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
         // TODO: check for 0 > script > 1
         //  See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
         // TODO: Use getElementMJS()
-        const script_src = containerElement.getElementsByClassName(MAPJS_SRC_CLASS)[0].getAttribute('src');
+        // const script_src = containerElement.getElementsByClassName(MAPJS_SRC_CLASS)[0].getAttribute('src');
+        const script_src = Utilities.getElementMJS(MAPJS_SRC_CLASS, instanceElement).getAttribute('src');
         // Utilities.Logger.debug('script_src: ', script_src);
 
         // TODO: switch to await/async for simpler code and debugging.
         // QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
         fetch(script_src)
           .then(response => response.json())
-          .then(data => addMap(containerElement, data))
+          .then(data => addMap(instanceElement, data))
           .catch(error => Utilities.Logger.error(error));
       }
 

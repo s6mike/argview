@@ -1,13 +1,17 @@
-/*global require, window */
+/*global require, window, PATH_FILE_CONFIG_MAPJS */
 const $ = require('jquery'),
   _ = require('underscore'),
   createSVG = require('./create-svg');
+const mapjsUtilities = require('../core/util/mapjs-utilities'),
+  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  MAPJS_MAP_CLASS = CONFIG.mapjs_map.class;
 
 // Moved import-loader call to webpack.config.js instead:
 require('jquery.hotkeys');
 
 $.fn.scrollWhenDragging = function (scrollPredicate) {
   'use strict';
+  // TODO: simplify - this.each gets element from jQuery object and then $(this) turns element back into jQuery object
   return this.each(function () {
     const element = $(this);
     let dragOrigin;
@@ -86,7 +90,10 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
   });
 
   return this.each(function () {
-    const element = $(this),
+    // const mapjsInstance = $(this),
+    // TODO: Rename element to mapjs_map
+    const element = $(mapjsUtilities.getElementMJS(MAPJS_MAP_CLASS, this)),
+      // const element = $(this),
       svgContainer = createSVG()
         .css({
           position: 'absolute',
@@ -177,7 +184,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 
     }
     _.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
-      element.keydown(keysPressed, function (event) {
+      self.keydown(keysPressed, function (event) {
         if (actOnKeys) {
           event.stopImmediatePropagation();
           event.preventDefault();
