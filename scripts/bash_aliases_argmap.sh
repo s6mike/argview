@@ -105,7 +105,7 @@ __clean_repo() {
   rm "$PATH_DIR_PUBLIC_MAPJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
-  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
+  # rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
