@@ -10,6 +10,8 @@
 //   return result;
 // }
 
+/* eslint-disable strict */
+
 function MyLogger(console_original, environment = process.env.NODE_ENV) {
   const new_logger = Object.create(console_original);
 
@@ -29,6 +31,7 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
 
   return new_logger;
 }
+/* eslint-enable strict */
 
 const _ = require('underscore'),
   // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
@@ -62,15 +65,6 @@ module.exports = {
     } catch (exception) {
       return c(exception);
     };
-  },
-
-  // Get element from class and optional parent element
-  getElementMJS: (className, parentElement = document) => {
-    const elements = parentElement.getElementsByClassName(className);
-    if (elements.length) {
-      return elements[0];
-    }
-    throw new Error('getElementMJS(): Element of class ' + className + ' not found in ' + parentElement.tagName + '.' + parentElement.classList[0]);
   },
 
   // Can pass element or event
@@ -110,6 +104,25 @@ module.exports = {
     download_anchor.click();
 
     URL.revokeObjectURL(download_anchor.href);
+  },
+
+  /* eslint-disable strict */
+
+  // Get element from class and optional parent element
+  // TODO: Rename as getElementsMJS now it can return multiple results
+  getElementMJS: (className, parentElement = document, asCollection = false) => {
+    const elements = parentElement.getElementsByClassName(className),
+      result_count = elements.length;
+    if (result_count > 1) { // multiple elements
+      return elements;
+    } else if (result_count === 1) { // Only 1 element
+      if (asCollection) {
+        return elements;
+      }
+      return elements[0];
+    } else {
+      throw new Error('getElementMJS(): Element of class ' + className + ' not found in ' + parentElement.tagName + '.' + parentElement.classList[0]);
+    }
   },
 
   // TODO: Only run all this is logging is enabled.
@@ -157,6 +170,8 @@ module.exports = {
     level -= 1;
     return;
   }
+
+  /* eslint-enable strict */
 
   // Commented out since not needed any longer:
 

@@ -6,10 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.2.0
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Update `getElementMJS()` to return collections of elements, including optionally returning single elements in a collection.
+  - Fix eslint errors.
+
 ## argmap 18.1.11
 
 - `src/layouts/includes/mapjs-map-container.html`: Add `tabindex="-1"` to element `div.mapjs_instance` to allow it to receive keyboard shortcuts.
-  - Update html files in doc folders with same change. 
+  - Update html files in doc folders with same change.
 
 ## argmap 18.1.10
 
