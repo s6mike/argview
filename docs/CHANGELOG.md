@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.2
+
+- `src/layouts/includes/mapjs-map-container.html`: Remove `tabindex="-1"` from `mapjs-container` element, since its parent now handles keyboard shortcuts.
+  - Update docs html example files.
+
 ## argmap 18.3.1
 
 - `mapjs/src/browser/dom-map-widget.js`: Enable remaining keyboard shortcuts (`hotkeyEventHandlers` and zoom keys) to work when used in `div.mapjs_instance` (i.e. around toolbar).
