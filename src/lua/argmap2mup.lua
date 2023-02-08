@@ -660,11 +660,12 @@ function main()
     Logger:debug(opts)
 
     if opts["upload"] and opts["gdrive_id"] then
+      local file_id = opts["gdrive_id"] or ""
       pipe_in_out("gdrive update " ..
         "--no-progress " ..
         "--name \"" .. name .. "\" " ..
-        "--mime \"application/vnd.mindmup\" ..\" " ..
-        opts["gdrive_id"] .. "\"",
+        "--mime \"application/vnd.mindmup\" " ..
+        file_id,
         mup)
       return opts["gdrive_id"]
     elseif opts["upload"] then

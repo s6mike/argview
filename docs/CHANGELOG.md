@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.5
+
+- `src/lua/argmap2mup.lua`: Fix bug with how `--gdrive_id X` argument is included in piped gdrive command.
+
 ## argmap 18.3.4
 
 - [README.md](../README.md): Add further config related instructions.
