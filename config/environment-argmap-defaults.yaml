@@ -38,4 +38,8 @@ PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
 PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
+## GDrive
+GDRIVE_FOLDER_ID_MAPJS_DEFAULT: 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x # Default mapjs upload folder
+GDRIVE_FILE_ID_MAPJS_DEFAULT: 138E5WcQos2NNxN4_pCuw83DnZnqKO36Z # Default mapjs upload gdrive id
+
 ...

@@ -135,11 +135,22 @@ a2m() {                                     # a2m test/input/example1-clearly-fa
 }
 
 # Convert to map.js and upload
-a2mu() { # a2mu test/output/example1-simple.yaml
-  name=$(basename --suffix=".yaml" "$1") &&
-    lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" --upload --name "$name.mup" --folder 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x "$1" &&
-    echo "Uploaded: $name.mup to GDrive."
-}
+# Declare function inside () to open it in subshell, to stop file_id being remembered, in case variable removed from config file
+a2mu() (# a2mu test/output/example1-simple.yaml
+  name=$(basename --suffix=".yaml" "$1")
+  local folder_id
+  folder_id=$(getvar GDRIVE_FOLDER_ID_MAPJS_DEFAULT)
+  local file_id=""
+  file_id=$(getvar GDRIVE_FILE_ID_MAPJS_DEFAULT)
+  if [ "$file_id" != "" ]; then # Only includes argument if there is a file id
+    upload_id_arg="--gdrive_id $file_id"
+  fi
+  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
+  # shellcheck disable=SC2086
+  lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
+  set +f
+  log "Uploaded: $name.mup to GDrive. GDrive Folder URL: https://drive.google.com/drive/u/0/folders/$folder_id"
+)
 
 # Convert map.js to argmap yaml format
 # TODO add option for .mup vs .json output

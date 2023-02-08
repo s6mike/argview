@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.4.0
+
+- `scripts/bash_aliases_argmap.sh`: `a2mu()` now updates existing GDrive file id if one is provided in `config/environment-argmap.yaml`. This stops new files being uploaded repeatedly during testing. Folder ID is also set by config file variable.
+  - `config/environment-argmap-defaults.yaml`: Add two new variables for `a2mu()`:
+    - `GDRIVE_FOLDER_ID_MAPJS_DEFAULT`: Default mapjs upload folder.
+    - `GDRIVE_FILE_ID_MAPJS_DEFAULT`: Default mapjs upload gdrive id.
+
 ## argmap 18.3.5
 
 - `src/lua/argmap2mup.lua`: Fix bug with how `--gdrive_id X` argument is included in piped gdrive command.
