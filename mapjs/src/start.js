@@ -204,21 +204,13 @@ const jQuery = require('jquery'),
   init = function () {
     'use strict';
 
-    // Looks for class not id, so can capture a number of containerElements each with own id.
-    // TODO: Use getElementMJS() only returns one element
-    // const containerElements = document.getElementsByClassName(CONTAINER_CLASS);
     const instanceElements = Utilities.getElementMJS(INSTANCE_CLASS, document, true);
 
     if (instanceElements.length > 0) { // Checks there are mapjs requests
-      // for (const containerElement of containerElements) {
       for (const instanceElement of instanceElements) {
-        // const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
         // TODO: check for 0 > script > 1
         //  See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
-        // TODO: Use getElementMJS()
-        // const script_src = containerElement.getElementsByClassName(MAPJS_SRC_CLASS)[0].getAttribute('src');
         const script_src = Utilities.getElementMJS(MAPJS_SRC_CLASS, instanceElement).getAttribute('src');
-        // Utilities.Logger.debug('script_src: ', script_src);
 
         // TODO: switch to await/async for simpler code and debugging.
         // QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
@@ -227,8 +219,6 @@ const jQuery = require('jquery'),
           .then(data => addMap(instanceElement, data))
           .catch(error => Utilities.Logger.error(error));
       }
-
-      // TODO: This stuff only needed once, not per map
       window.onerror = Utilities.Logger.error;
       window.jQuery = jQuery;
       window.mapInstance = mapInstance;

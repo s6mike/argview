@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.3
+
+- `mapjs/src/start.js`: Remove obsolete comments.
+- `src/layouts/includes/argmap-input-widget.html`: Add TODO comment.
+
 ## argmap 18.3.2
 
 - `src/layouts/includes/mapjs-map-container.html`: Remove `tabindex="-1"` from `mapjs-container` element, since its parent now handles keyboard shortcuts.
