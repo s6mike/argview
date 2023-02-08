@@ -78,13 +78,13 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
     },
     // Bad practice: self = this
     //   QUESTION: try removing?
-    //     self not defined when this runs
+    //     self not defined when this runs. Currently means `div.mapjs-app` when called elsewhere in this file.
     self = this;
   let actOnKeys = true;
   mapModel.addEventListener('inputEnabledChanged', function (canInput, holdFocus) {
     actOnKeys = canInput;
     if (canInput && !holdFocus) {
-      // QUESTION: Should focus be canvas instead of self (container)?
+      // QUESTION: Should focus be canvas instead of self (`div.mapjs-app`)?
       self.focus();
     }
   });
@@ -184,7 +184,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
 
     }
     _.each(hotkeyEventHandlers, function (mappedFunction, keysPressed) {
-      self.keydown(keysPressed, function (event) {
+      self.keydown(keysPressed, function (event) { // Self is `div.mapjs-app`
         if (actOnKeys) {
           event.stopImmediatePropagation();
           event.preventDefault();
@@ -210,10 +210,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
       }
 
     });
-    // ISSUE: Listening at document level is unintuitive, should add this at container level like the rest.
-    //   https://github.com/s6mike/mapjs/issues/4
-    mapModel.containerElement.addEventListener('keydown', function (e) {
-      // $(document).on('keydown', function (e) {
+    self[0].addEventListener('keydown', function (e) { // Self is `div.mapjs-app`
       const functions = {
         'U+003D': 'scaleUp',
         'U+002D': 'scaleDown',
@@ -242,7 +239,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
         }
       }
     });
-    $(document).on('wheel mousewheel', function (e) {
+    self.on('wheel mousewheel', function (e) { // Self is `div.mapjs-app`
       const scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
       if (scroll < 0 && element.scrollLeft() === 0) {
         e.preventDefault();
@@ -252,7 +249,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
       }
     });
 
-    element.on('keypress', function (evt) {
+    self.on('keypress', function (evt) { // Self is `div.mapjs-app`
       if (!actOnKeys) {
         return;
       }

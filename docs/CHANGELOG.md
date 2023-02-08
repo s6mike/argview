@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.1
+
+- `mapjs/src/browser/dom-map-widget.js`: Enable remaining keyboard shortcuts (`hotkeyEventHandlers` and zoom keys) to work when used in `div.mapjs_instance` (i.e. around toolbar).
+
 ## argmap 18.3.0
 
 - `mapjs/src/browser/dom-map-widget.js`: Enable most keyboard shortcuts (`hotkeyEventHandlers`) to work when used in `div.mapjs_instance` (i.e. around toolbar) as well as in mapjs canvas.
