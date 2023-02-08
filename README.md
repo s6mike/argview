@@ -697,7 +697,7 @@ To set this up, you will need to:
 
 2. Call `npm run --prefix [path to mapjs folder] pack` to build the app with webpack.
 
-This builds the client side JavaScript file which activates the maps: `mapjs/public/js/main.bundle.js`. This needs to be added to any page displaying the map in .json format.
+This builds the client side JavaScript file which activates the maps: `mapjs/public/js/main.bundle.js`. This needs to be added to any page displaying the map using mapjs `.json` data.
 
 See [mapjs/README.md](mapjs/README.md) for more details about mapjs.
 
@@ -781,7 +781,7 @@ You can adapt the above for your own DIY approach:
 </div>
 ```
 
-The container and script classes must be as above. The container div id can be as you wish.
+The container and script classes must be as above unless you customise `mapjs/config/config-mapjs.yaml`. However, app updates can change this file without warning, so this is not recommended. The container div id can be as you wish.
 
 3 ) Add the mapjs script built from webpack:
   `<script src="/mapjs-example/public/main.js"></script>`

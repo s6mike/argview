@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.3.4
+
+- [README.md](../README.md): Add further config related instructions.
+
 ## argmap 18.3.3
 
 - `mapjs/src/start.js`: Remove obsolete comments.
