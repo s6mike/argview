@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 18.4.1
+
+- `mapjs/package.json`: Update dev dependencies to latest version.
+  - `mapjs/package-lock.json`: Ditto.
+
 ## argmap 18.4.0
 
 - `scripts/bash_aliases_argmap.sh`: `a2mu()` now updates existing GDrive file id if one is provided in `config/environment-argmap.yaml`. This stops new files being uploaded repeatedly during testing. Folder ID is also set by config file variable.
