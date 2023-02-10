@@ -1,4 +1,5 @@
-/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors SPDX - License - Identifier: MIT */
+/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors 
+   SPDX - License - Identifier: MIT */
 /* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
 /*global require, document, window, console, idea, PATH_FILE_CONFIG_MAPJS, process */

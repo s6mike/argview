@@ -6,6 +6,19 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.0.0 BREAKING
+
+- Remove buttons:
+  - Remove `Parent reason` and `Open attachment` buttons and functionality since they don't work very well; Remove `Enable`, `Disable` buttons and `Background` input box because they are not really relevant to new app needs. BREAKING
+    - `src/layouts/includes/mapjs-widget-controls.html`: Remove buttons. BREAKING
+    - `mapjs/src/browser/map-toolbar-widget.js`: Remove functions from clickMethodNames and changeMethodNames arrays. BREAKING
+    - `mapjs/src/core/map-model.js`: Remove functionality unless needed elsewhere (e.g. `setInputEnabled()`, `updateStyle()`).
+    - `mapjs/src/browser/dom-map-widget.js`: Remove keyboard shortcut (Open attachment). BREAKING
+      - `mapjs/README.md`: Update keyboard shortcut table and remove references to `open attachment` functionality.
+    - Update with removed buttons: `mapjs/docs/legacy-mapjs-example-map.html`, `docs/example-updated.html`.
+
+BREAKING Removing UI features.
+
 ## argmap 19.0.1
 
 - `src/lua`: Fix #18 and other lint errors, mainly by making functions local or adding them to an object.
@@ -1195,9 +1208,8 @@ BREAKING: All env variable changes can potentially be breaking. Updating new var
 
 ## argmap 5.0.1
 
-- Rename `mapjs/site` folder as `mapjs/public`.
 - Rename container template partial as `pandoc-templates/mapjs/mapjs-map-container.html`
-- Update everything impacted by these changes.
+- Rename `mapjs/site` folder as `mapjs/public`.
 
 ## argmap 5.0.0
 
@@ -1208,13 +1220,14 @@ BREAKING
   - Update `test/devtools-recordings/argmap-edit-first-child.json` to use new keyboard shortcuts.
 - `pandoc-templates/mapjs/mapjs-testcontrols.html`: Remove buttons from toolbar:
   - `Export to image`, 'Frames' and 'Cycle': Since I can't find their functionality.
-  - Also remove `editIcon()` related functionality and keyboard shortcut: `mapjs/src/core/map-model.js`
+  - `Parent reason`: Since it's not really useful:
+    - `mapjs/src/browser/map-toolbar-widget.js`: Remove from clickMethodNames array.
+    - `mapjs/src/core/map-model.js`: Remove functionality.
+  - Also remove `editIcon()` related functionality and keyboard shortcut.
 - Remove legacy / deprecated functions and scripts:
   - `mapjs/package.json`
   - `scripts/bash_aliases_argmap.sh`
   - `scripts/bash_aliases_mapjs.sh`
-  - `test/test_scripts/bash_aliases_argmap_test.sh`
-  - `test/test_scripts/tests.sh`
 
 ## argmap 4.21.43 Release Version
 

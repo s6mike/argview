@@ -66,7 +66,6 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
 - Clicking on a node twice lets you edit the node's text.
 - Typing in a url will add a clickable link icon to the node allowing you to open that url in another tab. The url's text will not be displayed in the node except when editing it.
 - You can add an image to a node by dragging a file or web page image into it.
-- Click `open attachment` button to open `add attachment` pop-up.
 
 ## Links
 
@@ -92,7 +91,6 @@ As of 23 Nov 22, it runs with the latest versions of all of these, except [Hamme
     - ISSUE: Only supports the same features as paste, so does not currently support links or themes.
 - `alt+click` on a node adds a link from your currently selected node to the clicked node.
 - Clicking on a link icon opens up the url in a new tab.
-- Clicking on an attachment icon opens the `add attachment` pop-up.
 
 ## Keyboard Shortcuts
 
@@ -141,7 +139,6 @@ The map must have keyboard focus for these to work:
 `esc` `0` | Activate root node of current selected tree, centre screen on it and reset zoom
 `alt+o` | Open a JSON file as a new map
 `alt+s` | Download current map as a JSON file
-`a` `click on paperclip icon` | Add / Open attachment
 `click on link icon` | Open url
 
 Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors

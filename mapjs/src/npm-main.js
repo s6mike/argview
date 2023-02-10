@@ -21,5 +21,5 @@ module.exports = {
   version: 4
 };
 
-/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors
+/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors.
    SPDX - License - Identifier: MIT */
