@@ -57,23 +57,24 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       }
       element.text(label).show();
     },
-    applyAttachment = function () {
-      const attachment = nodeContent.attr && nodeContent.attr.attachment;
-      let element = self.find('a.mapjs-attachment');
-      if (!attachment) {
-        element.hide();
-        return;
-      }
-      if (element.length === 0) {
-        element = jQuery('<a href="#" class="mapjs-attachment icon-attachment"></a>').
-          appendTo(decorations()).click(function () {
-            self.trigger('attachment-click');
-            self.trigger('decoration-click', 'attachment');
-          })
-          .trigger(jQuery.Event('attachment-link-created', { nodeId: nodeContent.id }));
-      }
-      element.show();
-    },
+    // Removed since attachment code disabled.
+    // applyAttachment = function () {
+    //   const attachment = nodeContent.attr && nodeContent.attr.attachment;
+    //   let element = self.find('a.mapjs-attachment');
+    //   if (!attachment) {
+    //     element.hide();
+    //     return;
+    //   }
+    //   if (element.length === 0) {
+    //     element = jQuery('<a href="#" class="mapjs-attachment icon-attachment"></a>').
+    //       appendTo(decorations()).click(function () {
+    //         self.trigger('attachment-click');
+    //         self.trigger('decoration-click', 'attachment');
+    //       })
+    //       .trigger(jQuery.Event('attachment-link-created', { nodeId: nodeContent.id }));
+    //   }
+    //   element.show();
+    // },
     applyNote = function () {
       const note = nodeContent.attr && nodeContent.attr.note;
       let element = self.find('a.mapjs-note');
@@ -265,7 +266,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       applyLinkUrl(nodeContent.title);
       applyLabel(nodeContent.label);
       applyNote();
-      applyAttachment();
+      // Removed since attachment code disabled.
+      // applyAttachment();
     };
     this.css({ margin: '', width: '', height: '', opacity: 1 });
     if (decorationEdge === 'left') {

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.0.2
+
+- `mapjs/src/start.js`: Disable attachmentEditorWidget code now UI disabled.
+
 ## argmap 20.0.1
 
 - `mapjs/package.json`: Update dev dependencies to latest version.

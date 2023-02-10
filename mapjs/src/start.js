@@ -1,4 +1,4 @@
-/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors 
+/* Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors
    SPDX - License - Identifier: MIT */
 /* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
@@ -115,19 +115,20 @@ const jQuery = require('jquery'),
       );
     ;
 
+    // Obsolete now // Obsolete now attachmentEditorWidget UI disabled
     // TODO: Might only need one of these for the whole page, rather than for each container:
-    jQuery.fn.attachmentEditorWidget = function (mapModel) {
-      return this.each(function () {
-        mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
-          mapModel.setAttachment(
-            'attachmentEditorWidget',
-            nodeId, {
-              contentType: 'text/html',
-              content: window.prompt('attachment', attachment && attachment.content)
-            });
-        });
-      });
-    };
+    // jQuery.fn.attachmentEditorWidget = function (mapModel) {
+    //   return this.each(function () {
+    //     mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+    //       mapModel.setAttachment(
+    //         'attachmentEditorWidget',
+    //         nodeId, {
+    //           contentType: 'text/html',
+    //           content: window.prompt('attachment', attachment && attachment.content)
+    //         });
+    //     });
+    //   });
+    // };
 
     JQinstance.domMapWidget(console, map.mapModel, touchEnabled, imageInsertController);
 
@@ -144,8 +145,11 @@ const jQuery = require('jquery'),
 
     // QUESTION: Do I need to store mapToolbarWidget and linkEditWidget?
     map.mapToolbarWidget = new MAPJS.MapToolbarWidget(map.mapModel, toolbarElement);
+
+    // Obsolete now attachmentEditorWidget UI disabled
     // TODO: Do this without jQcontainer
-    jQcontainer.attachmentEditorWidget(map.mapModel);
+    // jQcontainer.attachmentEditorWidget(map.mapModel);
+
     map.linkEditWidget = new MAPJS.LinkEditWidget(map.mapModel, linkEditWidgetElement);
 
     // Draw map

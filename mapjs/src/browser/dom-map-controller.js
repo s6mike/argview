@@ -325,9 +325,10 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
         }
         mapModel.editNode('mouse');
       })
-      .on('attachment-click', function () {
-        mapModel.openAttachment('mouse', node.id);
-      })
+      // Removed since attachment code disabled.
+      // .on('attachment-click', function () {
+      //   mapModel.openAttachment('mouse', node.id);
+      // })
       .on('decoration-click', function (evt, decorationType) {
         mapModel.decorationAction('mouse', node.id, decorationType);
       })
