@@ -20,10 +20,4 @@ DEFAULT_MAPJS_CSS: /mapjs-default-styles.css
 css: # Default pandoc template value
   - ${DEFAULT_MAPJS_CSS}
 
-# DEPRECATED
-
-lang: en
-MAPJS_CSS: ${DEFAULT_MAPJS_CSS}
-PATH_INCLUDES_ARGMAP_CONTAINER: ${PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT}
-
 ...

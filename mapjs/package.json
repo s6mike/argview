@@ -33,7 +33,6 @@
   "browser": "src/npm-main.js",
   "scripts": {
     "env": "env",
-    "test:start": "npm run start && npm run testcafe",
     "stop": "killall node",
     "stop:force": "fuser -k $PORT_DEV_SERVER/tcp",
     "start": "npm run start:dev",

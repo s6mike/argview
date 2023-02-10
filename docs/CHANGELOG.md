@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 19.0.0 BREAKING
+
+- `mapjs/package.json`: Remove `test:start` script since its not used anywhere. BREAKING
+- `scripts/argmap.env`: Delete temp transition env variable `PANDOC_FILTER_LUA_DEFAULT`.
+- Delete deprecated variables and functions. BREAKING
+
+BREAKING You should review the change log for notes about what to use instead of any deprecated variables or functions.
+
 ## argmap 18.4.1
 
 - `mapjs/package.json`: Update dev dependencies to latest version.

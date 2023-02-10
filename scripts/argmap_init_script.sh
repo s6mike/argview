@@ -33,10 +33,6 @@ source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
 # TODO: normal install shouldn't use conda, so should set up to give option for either
 
-# TODO: should parameterize bash_aliases script path
-# shellcheck source=/home/s6mike/git_projects/argmap/scripts/conda.env # Stops shellcheck lint error
-# DEPRECATED:
-# source "$WORKSPACE/scripts/conda.env" # Get CONDA_ENV_ARGMAP
 CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 export CONDA_ENV_ARGMAP
 

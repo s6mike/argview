@@ -14,12 +14,6 @@ source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
 
 # mapjs aliases
 
-# TODO: Delete
-## browser aliases - DEPRECATED (never use, don't work).
-alias argdb='open_debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html'
-alias argdb2='open_debug $DIR_HTML_SERVER_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html'
-alias argdbe='open_debug input/html/legacy-mapjs-example-map.html'
-
 ## webpack aliases
 alias dmj='diff_mapjs'
 alias dfs='diff_staged_file' # dfs package.json package.diff
@@ -106,7 +100,7 @@ testcafe_run() { # tcr
 }
 
 __test_mapjs_renders() {
-  webpack_server_start
+  webpack_server_start "${1:-$(getvar PORT_DEV_SERVER)}" "${2:-dev}" # "$@"
   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
   input_file=$(__get_site_path "$1")
   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$input_file" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
@@ -184,16 +178,6 @@ __check_npm_updates() {
 ## Mark functions for export to use in other scripts:
 export -f __build_mapjs __run_mapjs_legacy
 export -f __is_server_live webpack_server_halt webpack_server_start
-export -f webpack_install webpack_pack __check_npm_updates # webpack_pack_open webpack_build_open
+export -f webpack_install webpack_pack __check_npm_updates
 export -f open_debug
 export -f testcafe_run __test_mapjs_renders
-
-# TODO DEPRECATE
-
-__check_server_on() { # runs server if it's off
-  if __is_server_live; then
-    webpack_server_start "$@"
-  fi
-}
-
-export -f __check_server_on

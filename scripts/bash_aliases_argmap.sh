@@ -101,18 +101,15 @@ __reset_repo() {
 
 __clean_repo() {
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml"
-  # rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup"
   rm "$PATH_DIR_PUBLIC_MAPJS_JSON/example1-clearly-false-white-swan-simplified.json"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
   rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
-  # rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
   rm "$DIR_PUBLIC_OUTPUT/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
   rm "$PATH_TEST_LOG"
-  # rm "$INPUT_FILE_JSON"
 }
 
 __save_env() {
