@@ -11,6 +11,8 @@ local lyaml   = require 'lyaml'
 local json    = require 'rxi-json-lua'
 local logging = require 'logging'
 
+local m2a = {}
+
 -- [LuaLogging: A simple API to use logging features in Lua](https://neopallium.github.io/lualogging/manual.html#introduction)
 local logger = logging.new(function(self, level, message)
     io.stderr:write(message)
@@ -24,7 +26,7 @@ end)
 --   https://www.lua.org/manual/5.3/manual.html#6.10
 logger:setLevel(logging.ERROR)
 
-function dig_in(table, fields)
+local function dig_in(table, fields)
     local t = table
     local result = true
     for _, f in pairs(fields) do
@@ -42,7 +44,7 @@ function dig_in(table, fields)
     end
 end
 
-function parse_claims(claims, strength, label)
+local function parse_claims(claims, strength, label)
     local argmap = {}
     if strength then
         argmap["strength"] = strength
@@ -59,7 +61,7 @@ function parse_claims(claims, strength, label)
         local note = dig_in(items, { "attr", "note", "text" })
         local reasons = {}
         if items["ideas"] then
-            reasons = parse_reasons(items["ideas"], note)
+            reasons = m2a.parse_reasons(items["ideas"], note)
         elseif note then
             reasons = reasons["note"]
         end
@@ -68,7 +70,7 @@ function parse_claims(claims, strength, label)
     return argmap
 end
 
-function parse_reasons(reasons, note)
+function m2a.parse_reasons(reasons, note)
     local argmap = {}
     argmap["note"] = note
     for index, items in pairs(reasons) do
@@ -90,14 +92,14 @@ function parse_reasons(reasons, note)
     return argmap
 end
 
-function help()
+local function help()
     return [[mup2argmap <options> <file>
   -e, --embed:      wrap in code block for embedding in pandoc markdown 
   -g, --gdrive_id:  parse mup file with corresponding Google Drive ID
   -h:               show this help]]
 end
 
-function parse_options(a)
+local function parse_options(a)
     local opts = {}
     local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true })
     opts["help"] = flags["h"] or flags["help"]
@@ -112,7 +114,7 @@ function parse_options(a)
     return opts
 end
 
-function main()
+local function main()
     local opts = parse_options(arg)
     if opts["help"] then
         return help()
@@ -150,3 +152,5 @@ end
 
 -- TODO is print best practice for this purpose?
 print(main())
+
+return m2a

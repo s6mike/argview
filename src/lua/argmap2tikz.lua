@@ -17,6 +17,8 @@ local pl    = require 'pl.import_into' ()
 -- uses lyaml to parse yaml
 local lyaml = require "lyaml"
 
+local a2t = {}
+
 -- initialize a global counter for providing unique ids for each node
 local gn = 0
 -- initialize an indent so our output is human readable
@@ -69,8 +71,8 @@ local styles = [=[
     implicit/.style={dashed}
 ]=]
 
-function pipe_in_out(cmd, s)
-    -- a function for piping through unix commands
+-- a function for piping through unix commands
+local function pipe_in_out(cmd, s)
     local tmp = os.tmpname()
     local tmpout = os.tmpname()
     local f = assert(io.open(tmp, 'w'))
@@ -88,13 +90,13 @@ local function trim(s)
     return (s:gsub("\n", ""))
 end
 
-function markdown_to_latex(s)
+local function markdown_to_latex(s)
     return trim(pipe_in_out("pandoc --wrap=none -t latex -f markdown", s))
 end
 
--- TODO: enable parsing of notes
-function parse_special(t, s)
-    -- a function for parsing notes, labels, and strengths
+-- a function for parsing notes, labels, and strengths
+--  TODO: enable parsing of notes
+local function parse_special(t, s)
     for i, v in pairs(t) do
         if string.match(i, "^" .. s .. "$") then
             return v
@@ -103,8 +105,8 @@ function parse_special(t, s)
     return nil
 end
 
-function parse_claims(t)
-    -- a function that parses claims
+-- a function that parses claims
+local function parse_claims(t)
     local o = ""
     indent = indent + 2
     for i, v in pairs(t) do
@@ -131,15 +133,15 @@ function parse_claims(t)
             -- construct the claim in tikz, e.g,: c1/"Eating meat is morally acceptable"[claim, implicit]
             local claimline = string.rep(" ", indent) .. "c" .. gid .. "/\"" .. claim .. "\"[" .. attr .. "]"
             -- parse the reasons for the claim, and add the result to output.
-            o = o .. parse_reasons(v, claimline)
+            o = o .. a2t.parse_reasons(v, claimline)
         end
     end
     indent = indent - 2
     return o
 end
 
-function parse_reasons(t, claimline)
-    -- function that parses reasons for a claim and returns the appropriate tikz
+-- function that parses reasons for a claim and returns the appropriate tikz
+function a2t.parse_reasons(t, claimline)
     -- initialize output string
     local o = ""
     indent = indent + 2
@@ -200,8 +202,8 @@ function parse_reasons(t, claimline)
     return o
 end
 
-function create_graph(t)
-    -- parse the map and generate the tikz \graph
+-- parse the map and generate the tikz \graph
+local function create_graph(t)
     local o = string.rep(" ", indent) .. "\\graph [layered layout, " ..
         "grow down, " ..
         "level distance=5em, " ..
@@ -214,8 +216,8 @@ function create_graph(t)
     return o
 end
 
-function create_tikzpicture(t)
-    -- generate the tikz \graph and wrap in a tikzpicture environment
+-- generate the tikz \graph and wrap in a tikzpicture environment
+local function create_tikzpicture(t)
     -- TODO: is there more appropriate way to specify rounded corners other than calling pdfsetcornerarced?
     indent = indent + 2
     local o = "\\begin{tikzpicture}\n" ..
@@ -228,8 +230,8 @@ function create_tikzpicture(t)
     return o
 end
 
-function create_texdocument(t)
-    -- generate a the tikzpicture and wrap it in a standalone tex document
+-- generate a the tikzpicture and wrap it in a standalone tex document
+local function create_texdocument(t)
     local documentclass = [[\documentclass[tikz]{standalone}]]
     return "\\documentclass[tikz]{standalone}\n" ..
         includes .. "\n" ..
@@ -238,7 +240,7 @@ function create_texdocument(t)
         "\\end{document}"
 end
 
-function help()
+local function help()
     return [[argmap2tikz <options> <file>
    -s, --standalone: generate standalone tex file
    -i, --includes:   dump includes required for tex preamble
@@ -246,7 +248,7 @@ function help()
    -h, --help:       help]]
 end
 
-function parse_options(a)
+local function parse_options(a)
     local opts = {}
     local flags, args = pl.app.parse_args(a)
     opts["standalone"] = flags["s"] or flags["standalone"]
@@ -259,7 +261,7 @@ function parse_options(a)
     return opts
 end
 
-function main()
+local function main()
     local opts = parse_options(arg)
     if opts["help"] then
         return help()
@@ -288,3 +290,5 @@ function main()
 end
 
 print(main())
+
+return a2t

@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 19.0.1
+
+- `src/lua`: Fix #18 and other lint errors, mainly by making functions local or adding them to an object.
+  - For #18, seemed that correct function wasn't being referenced, so presumably it was referencing one from the wrong lua script.
+
 ## argmap 19.0.0 BREAKING
 
 - `mapjs/package.json`: Remove `test:start` script since its not used anywhere. BREAKING

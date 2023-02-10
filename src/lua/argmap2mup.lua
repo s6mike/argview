@@ -457,7 +457,7 @@ local function default_to_nil(var)
   return var
 end
 
-function pipe_in_out(cmd, s)
+local function pipe_in_out(cmd, s)
   -- a function for piping through unix commands
   local tmp = os.tmpname()
   local tmpout = os.tmpname()
@@ -480,14 +480,14 @@ local function trim(s)
   return (s:gsub("\n", ""))
 end
 
-function markdown_to_plain(s)
+local function markdown_to_plain(s)
   if Script_context == 'client' then
     return s
   end
   return trim(pipe_in_out("pandoc --wrap=none -t plain -f markdown", s))
 end
 
-function parse_special(t, s)
+local function parse_special(t, s)
   -- a function for parsing notes, labels, and strengths
   for i, v in pairs(t) do
     if string.match(i, "^" .. s .. "$") then
@@ -541,7 +541,7 @@ function a2m.parse_claims(t)
           ["title"] = claim,
           ["id"] = gid,
           ["attr"] = default_to_nil(attr), -- default_to_nil(attr) stops empty attr breaking json output.
-          ["ideas"] = parse_reasons(v)
+          ["ideas"] = a2m.parse_reasons(v)
         }
       end
     end
@@ -550,7 +550,7 @@ function a2m.parse_claims(t)
   return default_to_nil(o)
 end
 
-function parse_reasons(t)
+function a2m.parse_reasons(t)
   local o = {}
   local n = 0
   for i, v in pairs(t) do
@@ -578,7 +578,7 @@ function parse_reasons(t)
   return default_to_nil(o)
 end
 
-function help()
+local function help()
   return [[argmap2mup <options> <file>
    -u, --upload           :  upload to Google Drive
    -g ID, --gdrive_id ID  :  update file with ID on Google Drive
@@ -588,7 +588,7 @@ function help()
    -h, --help]]
 end
 
-function parse_options(a)
+local function parse_options(a)
   local opts        = {}
   local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true, n = true, name = true, f = true, folder = true })
 
@@ -621,7 +621,7 @@ function parse_options(a)
   return opts
 end
 
-function main()
+local function main()
   -- print(args) -- What is this line for? Debugging?
   Logger:debug("arg: ")
   Logger:debug(arg)
