@@ -2,7 +2,7 @@
 
 # MapJs Argview
 
-This is a simple adapation of the [mapjs](https://github.com/mindmup/mapjs) mind map app for the purpose of viewing argument maps. Currently these can only be loaded and saved locally.
+<https://mapjs-argview.netlify.app/> is a simple adapation of the [mapjs](https://github.com/mindmup/mapjs) mind map app for the purpose of viewing argument maps. Currently these can only be loaded and saved locally.
 
 ## Dependencies
 

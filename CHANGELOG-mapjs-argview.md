@@ -1,5 +1,9 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.2.2
+
+- [README.md](README.md): Add link to netlify deployment.
+
 ## mapjs 0.2.1
 
 - [README.md](README.md): Add netlify deploy status badge.
