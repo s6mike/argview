@@ -1,5 +1,9 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.2.1
+
+- [README.md](README.md): Add netlify deploy status badge.
+
 ## mapjs 0.2.0
 
 - `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
