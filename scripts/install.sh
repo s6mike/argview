@@ -193,8 +193,8 @@ fi
 # SECTION 4: mapjs
 # ---------------------------------------------------
 
-# # Check $(getvar PATH_DIR_MAPJS) is set as desired
-# cd "$(getvar PATH_DIR_MAPJS)" || {
+# # Check $(getvar PATH_DIR_MAPJS_ROOT) is set as desired
+# cd "$(getvar PATH_DIR_MAPJS_ROOT)" || {
 #   echo "Abandoning QA install."
 #   exit 1
 # }
@@ -230,9 +230,9 @@ ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_DIR_PUBLIC/index.html"
 #   }
 
 # QUESTION: Do I need above cd if I'm using prefix?
-npm --prefix "$(getvar PATH_DIR_MAPJS)" install
+npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" install
 # QUESTION: Use force instead?
-npm audit fix --prefix "$(getvar PATH_DIR_MAPJS)" --legacy-peer-deps >npm_audit_output.txt
+npm audit fix --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" --legacy-peer-deps >npm_audit_output.txt
 
 __build_mapjs
 

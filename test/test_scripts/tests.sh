@@ -40,22 +40,22 @@ __init_tests
 
 # TODO: Use test_function()
 if [ "$1" != html ]; then
-    __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
+  __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
 
-    __test a2m "$INPUT_FILE_YML"       #2
-    __test a2m "$INPUT_FILE_YML_NOTES" #3
-    __test m2a "$INPUT_FILE_JSON"      #4
-    __test a2t "$INPUT_FILE_YML"       #5
-    __test a2mu "$INPUT_FILE_YML"      #6
+  __test a2m "$INPUT_FILE_YML"       #2
+  __test a2m "$INPUT_FILE_YML_NOTES" #3
+  __test m2a "$INPUT_FILE_JSON"      #4
+  __test a2t "$INPUT_FILE_YML"       #5
+  __test a2mu "$INPUT_FILE_YML"      #6
 fi
 
 # map rendering
-npx --prefix "$(getvar PATH_DIR_MAPJS)" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
-    # create html file needed for testcafe and rendering tests
-    # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
+npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
+  # create html file needed for testcafe and rendering tests
+  # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
-    # j2hf will still fail if json file missing, but it's part of repo so that shouldn't happen.
-    2hf -pq "$INPUT_FILE_JSON"
+  # j2hf will still fail if json file missing, but it's part of repo so that shouldn't happen.
+  2hf -pq "$INPUT_FILE_JSON"
 2hf -pq "$INPUT_FILE_JSON2"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
 2hf -pq "$INPUT_FILE_JSON_LINKS" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
@@ -65,12 +65,12 @@ __test 2hf "$INPUT_FILE_MD0" #8
 # Use wait-on --log if diagnostics needed (also verbose option)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
 export PATH_FILE_OUTPUT_EXAMPLE
-npx --prefix "$(getvar PATH_DIR_MAPJS)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
-    # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
-    __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
-__test 2hf "$INPUT_FILE_MD"                                 #10
-__test 2hf "$INPUT_FILE_MD2"                                #11
-__test 2hf "$INPUT_FILE_MD_META"                            #12
+npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
+  # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
+  __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
+__test 2hf "$INPUT_FILE_MD"                               #10
+__test 2hf "$INPUT_FILE_MD2"                              #11
+__test 2hf "$INPUT_FILE_MD_META"                          #12
 
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #13 left click
@@ -92,7 +92,7 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES"
 
 if [ "$1" != html ]; then
-    __test md2pdf "$INPUT_FILE_MD0" #19
+  __test md2pdf "$INPUT_FILE_MD0" #19
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
@@ -101,8 +101,8 @@ echo "If all testcafe test failed, check that $INPUT_FILE_JSON exists."
 echo "Test log location: $PATH_TEST_LOG"
 
 if [ "$1" != html ]; then
-    # Check/update config
-    __update_repo
+  # Check/update config
+  __update_repo
 fi
 
 exit "$FAILCOUNT"

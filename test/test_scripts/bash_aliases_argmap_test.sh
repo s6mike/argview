@@ -89,7 +89,7 @@ test_getvar() {
   test_function "$func" DIR_CONFIG config                                                                                                #3
   test_function "$func" PATH_FILE_CONFIG_ARGMAP_PROCESSED /home/s6mike/git_projects/argmap/config/processed/config-argmap-processed.yaml #4
   test_function "$func" PORT_DEV_SERVER 9001                                                                                             #5
-  test_function "$func" PATH_DIR_MAPJS /home/s6mike/git_projects/argmap/mapjs                                                            #6
+  test_function "$func" PATH_DIR_MAPJS_ROOT /home/s6mike/git_projects/argmap/mapjs                                                            #6
   test_function "$func" DEFAULT_LANGUAGE en
   test_function "$func" DIR_HTML_SERVER_OUTPUT output
   test_function "$func" DIR_PUBLIC_OUTPUT /home/s6mike/git_projects/argmap/test/output

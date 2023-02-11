@@ -55,9 +55,6 @@ PATH_FILE_ENV_CONDA: ${PATH_DIR_CONFIG_ARGMAP}/environment-conda-argmap.yaml
 PATH_DIR_SCRIPTS: ${PATH_DIR_ARGMAP_ROOT}/scripts
 PATH_DIR_ARGMAP_SRC: ${PATH_DIR_ARGMAP_ROOT}/src
 
-## mapjs
-PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS}
-
 ## layouts
 PATH_DIR_LAYOUTS: ${PATH_DIR_ARGMAP_SRC}/layouts
 PATH_DIR_INCLUDES: ${PATH_DIR_LAYOUTS}/includes
@@ -78,5 +75,12 @@ INPUT_FILE_MD_META: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly
 INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
 INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
 PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/test/output/html/example1-clearly-false-white-swan-simplified.html 
+
+# Temp env variable transitions
+
+# This ensures config doesn't break users who haven't updated their env variables:
+
+## mapjs
+PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS} # Set this value in config/environment-argmap.yaml so it doesn't break my config!
 
 ...

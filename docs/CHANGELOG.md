@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.1.0
+
+- `config/environment-argmap-defaults.yaml`: DEPRECATE `PATH_DIR_MAPJS` in favour of `PATH_DIR_MAPJS_ROOT`.
+  - Various files: Use `PATH_DIR_MAPJS_ROOT` instead of `PATH_DIR_MAPJS`.
+  - `config/config-argmap-paths.yaml`: Keep `PATH_DIR_MAPJS` for backwards compatibility, will remove as breaking change.
+
+NOTE: `PATH_DIR_MAPJS` is now DEPRECATED, change it to `PATH_DIR_MAPJS_ROOT` in your env file, consistent with default env file.
+
 ## argmap 20.0.3
 
 - `test/devtools-recordings/argmap-add-child.json`: Fix button selector offset which was clicking wrong button now button position changed in v20.0.0
