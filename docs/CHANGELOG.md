@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.1.1
+
+- `mapjs/package-lock.json`: Fix dependency vulnerability.
+
 ## argmap 20.1.0
 
 - `config/environment-argmap-defaults.yaml`: DEPRECATE `PATH_DIR_MAPJS` in favour of `PATH_DIR_MAPJS_ROOT`.
