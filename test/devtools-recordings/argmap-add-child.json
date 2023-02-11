@@ -1,35 +1,35 @@
 {
-  "title": "argmap-add-child",
-  "steps": [
-    {
-      "type": "navigate",
-      "url": "http://localhost:9001/",
-      "assertedEvents": [
+    "title": "argmap-add-child",
+    "steps": [
         {
-          "type": "navigation",
-          "url": "http://localhost:9001/",
-          "title": "example1-clearly-false-white-swan-simplified"
+            "type": "navigate",
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:9001/",
+                    "title": "example1-clearly-false-white-swan-simplified"
+                }
+            ],
+            "url": "http://localhost:9001/"
+        },
+        {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==6"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#menubar-mapjs-1 input.addSubIdea"
+                ]
+            ],
+            "offsetX": 0,
+            "offsetY": 0
+        },
+        {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==7"
         }
-      ]
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==6"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "#menubar-mapjs-1 input.addSubIdea"
-        ]
-      ],
-      "offsetY": 9.745094299316406,
-      "offsetX": 61.12744140625
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==7"
-    }
-  ]
+    ]
 }

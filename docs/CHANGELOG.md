@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.0.3
+
+- `test/devtools-recordings/argmap-add-child.json`: Fix button selector offset which was clicking wrong button now button position changed in v20.0.0
+  - `test/devtools-recordings/argmap-button-undo-redo.json`: Ditto.
+
 ## argmap 20.0.2
 
 - `mapjs/src/start.js`: Disable attachmentEditorWidget code now UI disabled.
