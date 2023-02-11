@@ -76,11 +76,4 @@ INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly
 INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
 PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/test/output/html/example1-clearly-false-white-swan-simplified.html 
 
-# Temp env variable transitions
-
-# This ensures config doesn't break users who haven't updated their env variables:
-
-## mapjs
-PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS} # Set this value in config/environment-argmap.yaml so it doesn't break my config!
-
 ...

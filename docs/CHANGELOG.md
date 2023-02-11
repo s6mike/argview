@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 21.0.0 BREAKING
+
+- `config/config-argmap-paths.yaml`: Remove `PATH_DIR_MAPJS` BREAKING
+
+BREAKING: `PATH_DIR_MAPJS` is no longer supported in env file, change it to `PATH_DIR_MAPJS_ROOT`, consistent with default env file.
+
 ## argmap 20.1.2
 
 - `scripts/bash_aliases_mapjs.sh`: `__check_npm_updates()` runs npm audit too.
