@@ -1,5 +1,9 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.2.0
+
+- `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
+
 ## mapjs 0.1.0
 
 - Generated from [s6mike/argmap](https://github.com/s6mike/argmap):
