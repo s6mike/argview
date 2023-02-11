@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 20.1.2
+
+- `scripts/bash_aliases_mapjs.sh`: `__check_npm_updates()` runs npm audit too.
+
 ## argmap 20.1.1
 
 - `mapjs/package-lock.json`: Fix dependency vulnerability.

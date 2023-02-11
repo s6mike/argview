@@ -173,6 +173,7 @@ webpack_server_start() { # wss
 __check_npm_updates() {
   printf "\nChecking for out of date npm modules. Expecting 1 only:\n"
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" outdated
+  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" audit
 }
 
 ## Mark functions for export to use in other scripts:
