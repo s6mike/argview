@@ -1,8 +1,8 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/mapjs-argview/deploys)
-
 # MapJs Argview
 
-<https://mapjs-argview.netlify.app/> is a simple adapation of the [mapjs](https://github.com/mindmup/mapjs) mind map app for the purpose of viewing argument maps. Currently these can only be loaded and saved locally.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/mapjs-argview/deploys)
+
+<https://mapjs-argview.netlify.app/> is a simple adaptation of the [mapjs](https://github.com/mindmup/mapjs) mind map app for the purpose of viewing argument maps. Currently these can only be loaded and saved locally.
 
 ## Dependencies
 

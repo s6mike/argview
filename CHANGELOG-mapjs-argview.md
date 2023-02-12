@@ -1,5 +1,9 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.3.1
+
+- [README.md](README.md): Move netlify deployment badge.
+
 ## mapjs 0.3.0 BREAKING
 
 - `output/html/`:
@@ -12,7 +16,7 @@ BREAKING index.html shows different map.
 
 ## mapjs 0.2.2
 
-- [README.md](README.md): Add link to netlify deployment.
+- [README.md](README.md): Add link to netlify deployed website.
 
 ## mapjs 0.2.1
 
