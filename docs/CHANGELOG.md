@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 21.0.1
+
+- `.vscode/settings.json`: Add words to dictionary
+  - Plus fix typos: `docs/CHANGELOG.md`
+
 ## argmap 21.0.0 BREAKING
 
 - `config/config-argmap-paths.yaml`: Remove `PATH_DIR_MAPJS` BREAKING
@@ -195,7 +200,7 @@ BREAKING: Custom `PATH_DIR_ARGMAP_ROOT` will be lost from env file, and instead 
 
 ## argmap 17.0.3
 
-- `mapjs/package.json`: Update to latest version of testcafe.
+- `mapjs/package.json`: Update to latest version of TestCafe.
   - `mapjs/package-lock.json`: Ditto.
 
 ## argmap 17.0.2
@@ -368,7 +373,7 @@ BREAKING Replace $WORKSPACE with $PATH_DIR_ARGMAP_ROOT. This value will need to 
 ## argmap 12.3.7 WARNING - this commit renames and replaces your `environment-mapjs.yml` file
 
 - `mapjs/config/environment-mapjs-defaults.yaml`: Update to reflect changes to my env file.
-  - `mapjs/scripts/mapjs.env`: Remove unncessary variable initialisation.
+  - `mapjs/scripts/mapjs.env`: Remove unnecessary variable initialisation.
 
 WARNING Back up your `environment-mapjs.yml` file before applying this commit. This commit renames and replaces your `environment-mapjs.yml` file.
 
@@ -509,7 +514,7 @@ Note that this uses absolute paths which was a mistake since it will only work i
 ## argmap 11.0.0 BREAKING
 
 - Move config files to `/config/` and `/mapjs/config/` to simplify processing. BREAKING
-  - Update them with new comments, refine values, add new ones to suppport processing.
+  - Update them with new comments, refine values, add new ones to support processing.
 - Update various files with new config file locations etc.
 
 BREAKING: Moving env files could break end user's custom env files. Users should move any custom env files to new location (`/config` and `mapjs/config`) to ensure changes aren't lost.
@@ -642,7 +647,7 @@ BREAKING: Moving env files could break end user's custom env files. Users should
 
 ## argmap 10.9.5
 
-- Remove symbolic links to `src` and `lua_modules` from `mapjs/public` since they are for clientside lua functionality which isn't ready for use yet.
+- Remove symbolic links to `src` and `lua_modules` from `mapjs/public` since they are for client side lua functionality which isn't ready for use yet.
 
 ## argmap 10.9.4
 
@@ -899,7 +904,7 @@ BREAKING: Changing classes for UI. Any user html customisations will be broken.
 - Use new functions from prev release to throw error if main toolbar or linkEditWidget are not configured because selectors break.
 
 - `mapjs/src/start.js`:
-  - Use new functions from prev release to ensureto throw error if main toolbar or linkEditWidget are not configured because selectors break.
+  - Use new functions from prev release to ensure to throw error if main toolbar or linkEditWidget are not configured because selectors break.
   - Add `console.debug` message to show current environment type.
 
 ## argmap 9.6.0
@@ -927,7 +932,7 @@ BREAKING: Changing classes for UI. Any user html customisations will be broken.
 
 ## argmap 9.4.5
 
-- `test/devtools-recordings/argmap-edit-existing-link.json`: Fail when link edit unsucessful.
+- `test/devtools-recordings/argmap-edit-existing-link.json`: Fail when link edit unsuccessful.
 
 ## argmap 9.4.4
 
@@ -1111,7 +1116,7 @@ BREAKING: All env variable changes can potentially be breaking. Updating new var
   - `src/pandoc-argmap.lua`: Update gsub statement so new includes reference is replaced.
   - `test/devtools-recordings/`: Update recordings to reference correct widget ID.
   - `test/input/example-updated.html`: Update widget ID.
-  - `.vscode/settings.json`: Remove testcontrols from dictionary.
+  - `.vscode/settings.json`: Remove `testcontrols` from dictionary.
 
 ## argmap 6.0.0 BREAKING
 
@@ -1142,7 +1147,7 @@ BREAKING: All env variable changes can potentially be breaking. Updating new var
 
 ## argmap 5.0.22
 
-- `mapjs/package.json`: Update testcafe and eslint dependencies to latest version.
+- `mapjs/package.json`: Update TestCafe and eslint dependencies to latest version.
   - Add 'overrides' to ensure that json5 version of 2.2.2 is used by TestCafe dependency, to avoid security vulnerability.
   - `mapjs/package-lock.json`: Update to reflect above changes.
 
@@ -1151,7 +1156,7 @@ BREAKING: All env variable changes can potentially be breaking. Updating new var
 - `mapjs/src/core/util/mapjs-utilities.js`: Encapsulate properly as module:
   - Move from `mapjs/src/` to subfolder `core/util/` and rename file.
   - Add to `module.exports` and update internal function references.
-  - `mapjs/src/npm-main.js`: Remove require of `mapjs-utilities.js` for whole module, instead depdendents require as needed.
+  - `mapjs/src/npm-main.js`: Remove require of `mapjs-utilities.js` for whole module, instead dependents require as needed.
   - Dependents: `mapjs/src/browser/hammer-draggable.js`, `mapjs/src/browser/image-insert-controller.js`, `mapjs/src/core/map-model.js`:
     - Require utilities and update references to functions.
 
@@ -1214,7 +1219,7 @@ BREAKING: All env variable changes can potentially be breaking. Updating new var
 ## argmap 5.0.8
 
   -`test/test_scripts/tests.sh`:
-    - 2 test recordings still not working consistnetly in Testcafe, so commenting out.
+    - 2 test recordings still not working consistently in TestCafe, so commenting out.
     - Update to use new env variables.
 
 ## argmap 5.0.7
@@ -1282,9 +1287,9 @@ BREAKING
 - `test/test_scripts/tests.sh`: Add 4 new tests which are now working.
 - `test/devtools-recordings/`:
   - Fix recordings to work with updated templates.
-  - Fix broken recordings to work in Testcafe:
+  - Fix broken recordings to work in TestCafe:
     - By replacing `\"` with `'`.
-    - Due to it being particularly about offsetX/Y values (not sure why they are needed for Testcafe click selectors to work).
+    - Due to it being particularly about offsetX/Y values (not sure why they are needed for TestCafe click selectors to work).
   - Add some variations on edit-link recording.
 - `scripts/argmap.env`: Add new input variables for test dependencies.
 - `mapjs/scripts/mapjs.env`: Fix incorrect path for `PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK` and add new variables.
@@ -1616,7 +1621,7 @@ ISSUE: This means no hashing to avoid caching issues, so will need to fix this b
 
 ## argmap 4.18.12
 
-- `mapjs/webpack.config.js`: Move `publicPath` to be output parameter for tidyness.
+- `mapjs/webpack.config.js`: Move `publicPath` to be output parameter for tidiness.
 
 ## argmap 4.18.11
 
@@ -1697,8 +1702,8 @@ always used.
   - `scripts/argmap.env`:
     - Add env variable for output file.
   - `test/test_scripts/tests.sh`:
-    - Add `j2hf()` command to create test html file needed for Testcafe tests.
-    - Add warning that if Testcafe tests all fail that it might be due to input JSON mup file missing.
+    - Add `j2hf()` command to create test html file needed for TestCafe tests.
+    - Add warning that if TestCafe tests all fail that it might be due to input JSON mup file missing.
   - `scripts/install.sh`: Update symbolic link `mapjs/site/index.html` to point to file in output folder not input.
   - Update `test/input/html/example1-clearly-false-white-swan-simplified.html` to use newer template.
 
@@ -1726,12 +1731,12 @@ always used.
 
 - `mapjs/webpack.config.js`:
   - Put rules at end of file for easier reading.
-  - Set watch mode to true and set dev server to watch `src/**.js` so that any mapjs changes will automatically apply to next brower reload.
+  - Set watch mode to true and set dev server to watch `src/**.js` so that any mapjs changes will automatically apply to next browser reload.
     - `mapjs/package.json`: Add `&` to webpack command so that watch mode doesn't block terminal.
 
 ## argmap 4.17.2
 
-- `mapjs/package.json`: Change `main` field to `browser`, since the package is intended for clientside use only.
+- `mapjs/package.json`: Change `main` field to `browser`, since the package is intended for client side use only.
 
 ## argmap 4.17.1
 
