@@ -1,5 +1,9 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.3.2
+
+- `.vscode/settings.json`: Add words to dictionary.
+
 ## mapjs 0.3.1
 
 - [README.md](README.md): Move netlify deployment badge.
