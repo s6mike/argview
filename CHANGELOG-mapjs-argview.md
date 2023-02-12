@@ -1,5 +1,15 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.3.0 BREAKING
+
+- `output/html/`:
+  - Add simplified white swan argmap: `example1-clearly-false-white-swan-simplified.html`
+    - `output/mapjs-json/example1-clearly-false-white-swan-simplified.json`: Add json data for above simplified argmap.
+  - `index.html`: Replace complex white swan argmap with above simplified version, because it's more mobile friendly than complex argmap. BREAKING
+  - `output/html/example2-clearly-false-white-swan-v3.html`: Add complex white swan as its own file.
+
+BREAKING index.html shows different map.
+
 ## mapjs 0.2.2
 
 - [README.md](README.md): Add link to netlify deployment.
