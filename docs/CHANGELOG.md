@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 21.1.0
+
+- `mapjs/package.json`: Update scripts:
+  - Add `pack:prod`
+  - Rename `pack` as `pack:dev`
+  - Add new `pack` to run `pack:dev`
+
 ## argmap 21.0.1
 
 - `.vscode/settings.json`: Add words to dictionary
