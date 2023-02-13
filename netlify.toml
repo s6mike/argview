@@ -1,5 +1,5 @@
 [[redirects]]
   from = "/"
-  to = "/output/html/index.html"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html"
   status = 200
   force = false

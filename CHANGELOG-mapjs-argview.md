@@ -1,5 +1,10 @@
 # Mapjs Argview Project Change Log
 
+## mapjs 0.3.3
+
+- `netlify.toml`: Update redirect to point directly to desired html page, instead of copy I renamed `output/html/index.html`.
+  - Delete redundant `output/html/index.html` now redirect doesn't use it.
+
 ## mapjs 0.3.2
 
 - `.vscode/settings.json`: Add words to dictionary.
