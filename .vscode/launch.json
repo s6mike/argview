@@ -321,7 +321,7 @@
             "request": "attach",
             "name": "Attach to browser 9221 (argmap debug)",
             "port": 9221,
-            "webRoot": "${workspaceFolder}/${config:env.PATH_DIR_MAPJS}",
+            "webRoot": "${workspaceFolder}/${config:env.PATH_DIR_MAPJS_ROOT}",
             "sourceMaps": true,
         }
     ]

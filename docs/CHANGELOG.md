@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 21.1.1
+
+- `.vscode/`: Update launch.json, settings.json:
+  - Replace `PATH_DIR_MAPJS with PATH_DIR_MAPJS_ROOT`.
+
 ## argmap 21.1.0
 
 - `mapjs/package.json`: Update scripts:

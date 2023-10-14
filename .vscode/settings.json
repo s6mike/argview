@@ -160,7 +160,7 @@
         "PATH_DIR_PUBLIC_MAPJS_JSON",
     ],
     // Used by launch.json
-    "env.PATH_DIR_MAPJS": "/mapjs",
+    "env.PATH_DIR_MAPJS_ROOT": "/mapjs",
     "env.path_public": "${workspaceFolder}/mapjs/public",
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "editor.formatOnSave": true,
