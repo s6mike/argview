@@ -65,6 +65,7 @@ PATH_INCLUDES_ARGMAP_CONTROLS: ${PATH_DIR_INCLUDES}/mapjs-widget-controls.html
 
 ## Testing
 # TODO: Add variables for ${PATH_DIR_ARGMAP_ROOT}/test, /input, /examples, mapjs-json, markdown
+# QUESTION: Rename _YML to _ARGMAP, since YML used for config files?
 INPUT_FILE_YML: ${PATH_DIR_ARGMAP_ROOT}/test/input/example1-clearly-false-white-swan-simplified.yaml
 INPUT_FILE_YML_NOTES: ${PATH_DIR_ARGMAP_ROOT}/examples/example-2.yaml
 INPUT_FILE_JSON: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
