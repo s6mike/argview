@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.2
+
+- `scripts/install.sh`: Remove "$PATH_DIR_PUBLIC/index.html" symbolic link in favour of netlify redirect
+
 ## argmap 22.0.1
 
 - Add netlify config changes:
@@ -16,6 +20,14 @@
 
 - `mapjs/scripts/mapjs.env`: Remove references to old dirs. BREAKING
 - `mapjs/config/environment-mapjs-defaults.yaml`: Change from mapjs/test to mapjs/public BREAKING
+
+## argmap 21.2.0
+
+- `mapjs/public`: Add files for new github repo for `mapjs-argview`, so that it can be published with netlify from this folder.
+
+## argmap 21.1.5
+
+- `scripts/install.sh`: Add chmod for yq install
 
 ## argmap 21.1.4
 
