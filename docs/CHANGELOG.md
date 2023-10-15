@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.5.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic link from `public/input` to `test/input`if not present.
+  - `make clean`: To also remove new symlink.
+  - To replace deprecated variable: `PATH_DIR_PUBLIC`.
+- `scripts/argmap_init_script.sh`: Update variables exported for makefile use, replacing deprecated variable: `PATH_DIR_PUBLIC`.
+
 ## argmap 22.4.1
 
 - Replace deprecated variable: `PATH_DIR_PUBLIC`

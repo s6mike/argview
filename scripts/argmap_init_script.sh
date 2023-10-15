@@ -71,9 +71,11 @@ eval "$(pandoc --bash-completion)"
 source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 
 # Exporting variables for makefile
-PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
-PATH_OUTPUT_LOCAL=$(getvar PATH_OUTPUT_LOCAL)
-export PATH_DIR_PUBLIC PATH_OUTPUT_LOCAL
+#		Alternative is to define variables in make call:
+#			make DIR_PUBLIC_OUTPUT="${PATH_PUBLIC}/output"
+PATH_PUBLIC=$(getvar PATH_PUBLIC)
+PATH_TEST=$(getvar PATH_TEST)
+export PATH_PUBLIC PATH_TEST PATH_OUTPUT_LOCAL
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all
