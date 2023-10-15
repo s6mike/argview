@@ -30,13 +30,13 @@ __get_site_path() {
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
   site_path="${full_path/test/$(getvar DIR_MAPJS)/$(getvar DIR_PUBLIC)}"
-  output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$site_path")
+  output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$site_path")
   echo "$output_path"
 }
 
-# PATH_INPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$(getvar PATH_DIR_PUBLIC)/input/example1-clearly-false-white-swan-simplified.html")
+# PATH_INPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$(getvar PATH_PUBLIC)/input/example1-clearly-false-white-swan-simplified.html")
 # export PATH_INPUT_FILE_HTML
-# PATH_OUTPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_DIR_PUBLIC)" "$(getvar PATH_DIR_PUBLIC)/output/html/example1-clearly-false-white-swan-simplified.html")
+# PATH_OUTPUT_FILE_HTML=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$(getvar PATH_PUBLIC)/output/html/example1-clearly-false-white-swan-simplified.html")
 # export PATH_OUTPUT_FILE_HTML
 
 # For opening html pages with debug port open

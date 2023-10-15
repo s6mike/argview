@@ -34,7 +34,7 @@
             "showDebugOutput": true,
             "terminalKind": "integrated",
             // "args": [
-            //     "PATH_DIR_PUBLIC"
+            //     "PATH_PUBLIC"
             // ]
         },
         {
@@ -55,7 +55,7 @@
             "showDebugOutput": true,
             "terminalKind": "integrated",
             // "args": [
-            //     "PATH_DIR_PUBLIC"
+            //     "PATH_PUBLIC"
             // ]
         },
         {

@@ -210,7 +210,7 @@ mkdir --parent "$WORKSPACE/test/output/html"
 # For dev web server:
 # Link up test/output and test/input with mapjs/public
 
-PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
+PATH_PUBLIC=$(getvar PATH_PUBLIC)
 
 # rm "$PATH_DIR_PUBLIC/$(basename "$PATH_OUTPUT_LOCAL")"
 # ln -s "$(getvar PATH_OUTPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
@@ -250,11 +250,11 @@ chmod u+x "$HOME/.local/bin/yq"
 # TODO: These links probably need re-creating (add rm commands)
 
 # Ensures fengari script and source map available to site
-ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_DIR_PUBLIC/js/fengari-web.js"
-ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_DIR_PUBLIC/js/fengari-web.js.map"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_PUBLIC/js/fengari-web.js"
+ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_PUBLIC/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
-ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_DIR_PUBLIC/lua"
-ln -s "$WORKSPACE/lua_modules" "$PATH_DIR_PUBLIC/lua_modules"
+ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
+ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
 
 # SECTION Z: Uninstall
 
