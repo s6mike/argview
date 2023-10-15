@@ -172,14 +172,18 @@ webpack_server_start() { # wss
 
 __check_npm_updates() {
   # npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" npm@latest
-  printf "\nChecking for out of date npm modules. Expecting 1 only:\n"
+  printf "\nChecking for out of date npm modules. Expecting 2 only (npm and jquery-hammerjs):\n"
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" outdated
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" audit
+}
+
+__npm_update() {
+  npx npm-check-updates -u --packageFile "$(getvar PATH_DIR_MAPJS_ROOT)/package.json"
 }
 
 ## Mark functions for export to use in other scripts:
 export -f __build_mapjs __run_mapjs_legacy
 export -f __is_server_live webpack_server_halt webpack_server_start
-export -f webpack_install webpack_pack __check_npm_updates
+export -f webpack_install webpack_pack __check_npm_updates __npm_update
 export -f open_debug
 export -f testcafe_run __test_mapjs_renders
