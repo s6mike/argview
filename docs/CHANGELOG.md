@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.1.3
+
+- `scripts/bash_aliases_argmap.sh`: `__clean_repo()`: Fix variable reference error using getvar.
+
 ## argmap 22.1.2
 
 - `package.json`:
