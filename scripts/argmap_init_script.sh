@@ -69,3 +69,8 @@ eval "$(pandoc --bash-completion)"
 # export NODE_OPTIONS="--experimental-modules --experimental-json-modules"
 
 source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
+
+# Exporting variables for makefile
+PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
+PATH_OUTPUT_LOCAL=$(getvar PATH_OUTPUT_LOCAL)
+export PATH_DIR_PUBLIC PATH_OUTPUT_LOCAL
