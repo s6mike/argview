@@ -11,11 +11,18 @@
 # Use ${variable} for referencing other yaml variables
 
 ## dev webserver values
-DIR_HTML_SERVER_OUTPUT: output
+DIR_OUTPUT: output
 
 ## These are absolute paths, for reading/writing to the correct directory
-DIR_HTML: ${PATH_DIR_MAPJS_ROOT}/public
-DIR_PUBLIC_OUTPUT: ${DIR_HTML}/${DIR_HTML_SERVER_OUTPUT} # Test output folder
-DIR_HTML_INPUT: ${DIR_HTML}/input                      # Test input folder
+PATH_TEST: ${PATH_DIR_ARGMAP_ROOT}/test
+PATH_OUTPUT_LOCAL: ${PATH_TEST}/${DIR_OUTPUT} # Test output folder
+PATH_INPUT_LOCAL: ${PATH_TEST}/input          # Test input folder
 
+# DEPRECATED
+DIR_HTML_SERVER_OUTPUT: DIR_OUTPUT
+
+## These are absolute paths, for reading/writing to the correct directory
+DIR_HTML: PATH_TEST
+DIR_PUBLIC_OUTPUT: PATH_OUTPUT_LOCAL
+DIR_HTML_INPUT: PATH_INPUT_LOCAL
 ...

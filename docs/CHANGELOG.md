@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.2.0
+
+- DEPRECATE config variables for clearer naming and to consistently write to local output folder. `mapjs/config/environment-mapjs-defaults.yaml`:
+  - DIR_HTML_SERVER_OUTPUT: Instead use DIR_OUTPUT
+  - DIR_HTML: Instead use PATH_TEST
+  - DIR_PUBLIC_OUTPUT: Instead use PATH_OUTPUT_LOCAL
+  - DIR_HTML_INPUT: Instead use PATH_INPUT_LOCAL
+
 ## argmap 22.1.3
 
 - `scripts/bash_aliases_argmap.sh`: `__clean_repo()`: Fix variable reference error using getvar.
