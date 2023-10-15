@@ -64,7 +64,6 @@ __update_repo() { # Running at end of test script
   # __clean_repo # Decided not to delete script output in case there are clues
   __check_lua_debug
   __check_js_debug
-  # TODO: npm install npm@latest
   __check_npm_updates
 }
 

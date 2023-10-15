@@ -171,6 +171,7 @@ webpack_server_start() { # wss
 }
 
 __check_npm_updates() {
+  npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" npm@latest
   printf "\nChecking for out of date npm modules. Expecting 1 only:\n"
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" outdated
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" audit

@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.4
+
+- `scripts/bash_aliases_mapjs.sh`: Move npm update command into `__check_npm_updates` from `scripts/bash_aliases_argmap.sh`.
+
+## argmap 22.0.3
+
+- Disable mapjs render test now newer chrome version's headless mode doesn't have repl:
+  - `test/test_scripts/tests.sh`: Comment out render test and associated setup, renumber test comments.
+  - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Update headless switch to fix error.
+  
 ## argmap 22.0.2
 
 - `scripts/install.sh`: Remove "$PATH_DIR_PUBLIC/index.html" symbolic link in favour of netlify redirect
