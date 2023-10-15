@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.6
+
+- `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Delete now obsolete.
+
 ## argmap 22.0.5
 
 - `scripts/install.sh`: Add comment.
