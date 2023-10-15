@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.7
+
+- `scripts/bash_aliases_argmap.sh`: Fix `md2pdf` by using getvar for output path.
+
 ## argmap 22.0.6
 
 - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Delete now obsolete.

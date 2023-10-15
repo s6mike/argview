@@ -255,7 +255,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
   name=$(basename --suffix=".md" "$1")
-  output=$DIR_PUBLIC_OUTPUT/${2:-$name}.pdf
+  output=$(getvar DIR_PUBLIC_OUTPUT)/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
