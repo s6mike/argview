@@ -99,22 +99,22 @@ testcafe_run() { # tcr
   npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
 }
 
-__test_mapjs_renders() {
-  webpack_server_start "${1:-$(getvar PORT_DEV_SERVER)}" "${2:-dev}" # "$@"
-  # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
-  input_file=$(__get_site_path "$1")
-  result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$input_file" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
-  # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
-  # e.g. trailing \r:
-  # echo aa$("$HOME/scripts/argmap_test_scripts/headless_chrome_repl_mapjs_is_rendered.exp")b
-  # abrue
-  if [[ "$result" == "true"* ]]; then
-    return 0 # success
-  else       # if headless chrome fails to render any map nodes
-    echo "Render Failed"
-    return 1 #fail
-  fi
-}
+# __test_mapjs_renders() {
+#   webpack_server_start "${1:-$(getvar PORT_DEV_SERVER)}" "${2:-dev}" # "$@"
+#   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
+#   input_file=$(__get_site_path "$1")
+#   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$input_file" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
+#   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
+#   # e.g. trailing \r:
+#   # echo aa$("$HOME/scripts/argmap_test_scripts/headless_chrome_repl_mapjs_is_rendered.exp")b
+#   # abrue
+#   if [[ "$result" == "true"* ]]; then
+#     return 0 # success
+#   else       # if headless chrome fails to render any map nodes
+#     echo "Render Failed"
+#     return 1 #fail
+#   fi
+# }
 
 # Start webpack after git checkout
 webpack_install() { # wpb
@@ -155,6 +155,7 @@ webpack_server_halt() { #wsh
 
 # Starts server
 #  QUESTION: If mode wrong, restart in desired mode?
+# shellcheck disable=SC2120
 webpack_server_start() { # wss
   port=${1:-$(getvar PORT_DEV_SERVER)}
   mode=${2:-dev}
@@ -186,4 +187,4 @@ export -f __build_mapjs __run_mapjs_legacy
 export -f __is_server_live webpack_server_halt webpack_server_start
 export -f webpack_install webpack_pack __check_npm_updates __npm_update
 export -f open_debug
-export -f testcafe_run __test_mapjs_renders
+export -f testcafe_run # __test_mapjs_renders

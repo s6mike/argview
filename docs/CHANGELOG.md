@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.1.1
+
+- `scripts/bash_aliases_mapjs.sh`: Remove `__test_mapjs_renders()` now obsolete.
+
 ## argmap 22.1.0
 
 - `scripts/bash_aliases_mapjs.sh`: Add `__npm_update()` to update `package.json` to reference latest pacakge versions.
