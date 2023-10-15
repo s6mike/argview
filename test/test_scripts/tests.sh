@@ -2,6 +2,9 @@
 
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 
+# Ensure everything built
+make all
+
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
 webpack_pack
@@ -104,5 +107,7 @@ if [ "$1" != html ]; then
   # Check/update config
   __update_repo
 fi
+
+# make clean
 
 exit "$FAILCOUNT"

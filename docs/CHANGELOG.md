@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.3.1
+
+- `scripts/argmap_init_script.sh`: Call `make all` at end of init sequence.
+- `test/test_scripts/tests.sh`: Call `make all` before running tests.
+
 ## argmap 22.3.0
 
 - `makefile`: Add:
