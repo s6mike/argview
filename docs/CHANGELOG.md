@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.8
+
+- `scripts/bash_aliases_mapjs.sh`: Comment out install of npm@latest, since want to match netlify version.
+
 ## argmap 22.0.7
 
 - `scripts/bash_aliases_argmap.sh`: Fix `md2pdf` by using getvar for output path.
