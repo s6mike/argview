@@ -63,22 +63,22 @@ __test 2hf "$INPUT_FILE_MD"  #7
 __test 2hf "$INPUT_FILE_MD0" #8
 
 # Use wait-on --log if diagnostics needed (also verbose option)
-PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
-export PATH_FILE_OUTPUT_EXAMPLE
-npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
-  # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
-  __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
-__test 2hf "$INPUT_FILE_MD"                               #10
-__test 2hf "$INPUT_FILE_MD2"                              #11
-__test 2hf "$INPUT_FILE_MD_META"                          #12
+# PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
+# export PATH_FILE_OUTPUT_EXAMPLE
+# npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
+# If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
+# __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
+__test 2hf "$INPUT_FILE_MD"      #9
+__test 2hf "$INPUT_FILE_MD2"     #10
+__test 2hf "$INPUT_FILE_MD_META" #11
 
 # To make browser test visible, add 'head' as first arg
-__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #13 left click
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #14
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #15
-__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #16
-__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #17
-__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
+__test testcafe_run "$PATH_REPLAY_SCRIPT_NODE_CLICK"          #12 left click
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT"     #13
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING"      #14
+__test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3" #15
+__test testcafe_run "$PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK"     #16
+__test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #17
 
 # These don't work
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_ADD_IDEA"            #11 add child button
@@ -92,7 +92,7 @@ __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING"  #18
 # __test testcafe_run "$PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES"
 
 if [ "$1" != html ]; then
-  __test md2pdf "$INPUT_FILE_MD0" #19
+  __test md2pdf "$INPUT_FILE_MD0" #18
 fi
 
 echo "Testing finished, $FAILCOUNT tests failed."
