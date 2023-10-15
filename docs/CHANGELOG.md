@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.5.2
+
+- `mapjs/public/`: Delete `makefile` symlinks from repo
+- `.gitignore`: Add `makefile` symlinks.
+
 ## argmap 22.5.1
 
 - `scripts/install.sh`: Remove symlink code now in `makefile`.
