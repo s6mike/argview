@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.4.0
+
+- DEPRECATE config variable for clearer naming. `config/environment-argmap-defaults.yaml`:
+  - PATH_PUBLIC: Instead of PATH_DIR_PUBLIC
+
 ## argmap 22.3.2
 
 - `scripts/install.sh`: Remove symlink code migrated to makefile.
