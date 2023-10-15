@@ -212,8 +212,8 @@ mkdir --parent "$WORKSPACE/test/output/html"
 
 PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
 
-rm "$PATH_DIR_PUBLIC/$(basename "$PATH_OUTPUT_LOCAL")"
-ln -s "$(getvar PATH_OUTPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
+# rm "$PATH_DIR_PUBLIC/$(basename "$PATH_OUTPUT_LOCAL")"
+# ln -s "$(getvar PATH_OUTPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
 
 rm "$PATH_DIR_PUBLIC/$(basename "$PATH_INPUT_LOCAL")"
 ln -s "$(getvar PATH_INPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
