@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.1.2
+
+- `package.json`:
+  - Upgrade `node.js` and downgrade `npm` to match netlify online app.
+  - Upgrade all other packages to latest except `jquery-hammerjs`. Now only 4 moderate vulnerabilities.
+- `package-lock.json`: Ditto
+
 ## argmap 22.1.1
 
 - `scripts/bash_aliases_mapjs.sh`: Remove `__test_mapjs_renders()` now obsolete.
