@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.0.5
+
+- `scripts/install.sh`: Add comment.
+
 ## argmap 22.0.4
 
 - `scripts/bash_aliases_mapjs.sh`: Move npm update command into `__check_npm_updates` from `scripts/bash_aliases_argmap.sh`.

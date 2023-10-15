@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Add getvar for all variables
+
 # To install with conda, provide first argument conda:
 # ./install.sh conda
 
@@ -211,10 +213,10 @@ mkdir --parent "$WORKSPACE/test/output/html"
 PATH_DIR_PUBLIC=$(getvar PATH_DIR_PUBLIC)
 
 rm "$PATH_DIR_PUBLIC/$(basename "$DIR_PUBLIC_OUTPUT")"
-ln -s "$DIR_PUBLIC_OUTPUT" "$PATH_DIR_PUBLIC/."
+ln -s "$(getvar DIR_PUBLIC_OUTPUT)" "$(getvar PATH_DIR_PUBLIC)/."
 
 rm "$PATH_DIR_PUBLIC/$(basename "$DIR_HTML_INPUT")"
-ln -s "$DIR_HTML_INPUT" "$PATH_DIR_PUBLIC/."
+ln -s "$(getvar DIR_HTML_INPUT)" "$(getvar PATH_DIR_PUBLIC)/."
 
 # Use netlify redirect instead
 #   Add index.html
