@@ -212,16 +212,17 @@ mkdir --parent "$WORKSPACE/test/output/html"
 
 PATH_PUBLIC=$(getvar PATH_PUBLIC)
 
-# rm "$PATH_DIR_PUBLIC/$(basename "$PATH_OUTPUT_LOCAL")"
-# ln -s "$(getvar PATH_OUTPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
+# Migrated to makefile:
 
-rm "$PATH_DIR_PUBLIC/$(basename "$PATH_INPUT_LOCAL")"
-ln -s "$(getvar PATH_INPUT_LOCAL)" "$(getvar PATH_DIR_PUBLIC)/."
+# rm "$PATH_PUBLIC/$(basename "$PATH_OUTPUT_LOCAL")"
+# ln -s "$(getvar PATH_OUTPUT_LOCAL)" "$(getvar PATH_PUBLIC)/."
+# rm "$PATH_PUBLIC/$(basename "$PATH_INPUT_LOCAL")"
+# ln -s "$(getvar PATH_INPUT_LOCAL)" "$(getvar PATH_PUBLIC)/."
 
 # Use netlify redirect instead
 #   Add index.html
-#   rm "$PATH_DIR_PUBLIC/index.html"
-#   ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_DIR_PUBLIC/index.html"
+#   rm "$PATH_PUBLIC/index.html"
+#   ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_PUBLIC/index.html"
 
 #nodejs installed with conda
 
