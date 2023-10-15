@@ -11,21 +11,21 @@ echo "Running ${BASH_SOURCE[0]}"
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
 # Though may not be consistently same name anyway, would need to create with fixed name
 alias argmm='rm $INPUT_FILE_JSON; a2m $INPUT_FILE_YML'
-alias argmy='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml; m2a $INPUT_FILE_JSON'
-alias argmt='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex; a2t $INPUT_FILE_YML'
+alias argmy='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.yaml; m2a $INPUT_FILE_JSON'
+alias argmt='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.tex; a2t $INPUT_FILE_YML'
 alias argmu='a2mu $INPUT_FILE_YML'
 alias argmup='__chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1rDKFs3QyM1uQyY'
 
 #TODO: need to delete previous file, best way? Separate output folder or just delete all .json in test/output folder?
-alias argmo='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.mup; a2mo $INPUT_FILE_YML'
-alias argmh0='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html; rm $DIR_PUBLIC_OUTPUT/png/12ff0311ebc308e94fe0359b761fa405b605f126.png; 2hf $INPUT_FILE_MD0'
-alias argmh='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html; rm $DIR_PUBLIC_OUTPUT/png/920713d1a74abe16c16b3fb103f893e64c5fb3ca.png; 2hf $INPUT_FILE_MD'
-alias argmh2='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html; 2hf $INPUT_FILE_MD2'
-alias argmhmeta='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html; 2hf $INPUT_FILE_MD_META'
-alias argmp='rm $DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.pdf; md2pdf $INPUT_FILE_MD'
+alias argmo='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.mup; a2mo $INPUT_FILE_YML'
+alias argmh0='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-0mapjs.html; rm $PATH_OUTPUT_LOCAL/png/12ff0311ebc308e94fe0359b761fa405b605f126.png; 2hf $INPUT_FILE_MD0'
+alias argmh='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs.html; rm $PATH_OUTPUT_LOCAL/png/920713d1a74abe16c16b3fb103f893e64c5fb3ca.png; 2hf $INPUT_FILE_MD'
+alias argmh2='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-2mapjs.html; 2hf $INPUT_FILE_MD2'
+alias argmhmeta='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html; 2hf $INPUT_FILE_MD_META'
+alias argmp='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.pdf; md2pdf $INPUT_FILE_MD'
 # TODO: simplify argmph call
-alias argmph='rm $DIR_PUBLIC_OUTPUT/example.pdf; rm $DIR_PUBLIC_OUTPUT/header.tex; $PATH_DIR_ARGMAP_LUA/argmap2tikz.lua -i > $DIR_PUBLIC_OUTPUT/header.tex; pandoc $INPUT_FILE_MD -o $DIR_PUBLIC_OUTPUT/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $DIR_PUBLIC_OUTPUT/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $DIR_PUBLIC_OUTPUT/example.pdf"'
-alias argmf='rm $DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm $WORKSPACE/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
+alias argmph='rm $PATH_OUTPUT_LOCAL/example.pdf; rm $PATH_OUTPUT_LOCAL/header.tex; $PATH_DIR_ARGMAP_LUA/argmap2tikz.lua -i > $PATH_OUTPUT_LOCAL/header.tex; pandoc $INPUT_FILE_MD -o $PATH_OUTPUT_LOCAL/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $PATH_OUTPUT_LOCAL/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $PATH_OUTPUT_LOCAL/example.pdf"'
+alias argmf='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm $WORKSPACE/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
 alias argt='$WORKSPACE/test/test_scripts/tests.sh'
 alias argth='$WORKSPACE/test/test_scripts/tests.sh html'
 
@@ -89,10 +89,10 @@ test_getvar() {
   test_function "$func" DIR_CONFIG config                                                                                                #3
   test_function "$func" PATH_FILE_CONFIG_ARGMAP_PROCESSED /home/s6mike/git_projects/argmap/config/processed/config-argmap-processed.yaml #4
   test_function "$func" PORT_DEV_SERVER 9001                                                                                             #5
-  test_function "$func" PATH_DIR_MAPJS_ROOT /home/s6mike/git_projects/argmap/mapjs                                                            #6
+  test_function "$func" PATH_DIR_MAPJS_ROOT /home/s6mike/git_projects/argmap/mapjs                                                       #6
   test_function "$func" DEFAULT_LANGUAGE en
-  test_function "$func" DIR_HTML_SERVER_OUTPUT output
-  test_function "$func" DIR_PUBLIC_OUTPUT /home/s6mike/git_projects/argmap/test/output
+  test_function "$func" DIR_OUTPUT output
+  test_function "$func" PATH_OUTPUT_LOCAL /home/s6mike/git_projects/argmap/test/output
   test_function "$func" DIR_MAPJS_JSON mapjs-json #7
   test_function "$func" PATH_DIR_PUBLIC_MAPJS_JSON /home/s6mike/git_projects/argmap/test/output/mapjs-json
   test_function "$func" node "class: mapjs-node" #8
@@ -101,7 +101,7 @@ test_getvar() {
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
     "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap-paths.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs-paths.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml" \
-    "-l" #10
+    "-l" #10-14
   LIST_FILES_CONFIG_INPUT=$remember
 }
 

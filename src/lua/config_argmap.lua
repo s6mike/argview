@@ -119,9 +119,9 @@ DIR_MAPJS_JSON = os.getenv("DIR_MAPJS_JSON") or "mapjs-json"
 -- QUESTION: Should I be using a path join function?
 PATH_FILE_CONFIG_MAPJS = os.getenv("PATH_FILE_CONFIG_MAPJS")
 PATH_FILE_CONFIG_MAPJS_PROCESSED = os.getenv("PATH_FILE_CONFIG_MAPJS_PROCESSED")
-DIR_PUBLIC_OUTPUT = os.getenv("DIR_PUBLIC_OUTPUT") or (config.project_folder .. "/test/output")
-PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (DIR_PUBLIC_OUTPUT .. "/" .. DIR_MAPJS_JSON)
-DIR_HTML_SERVER_OUTPUT = os.getenv("DIR_HTML_SERVER_OUTPUT") or "output"
+PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")
+PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (PATH_OUTPUT_LOCAL .. "/" .. DIR_MAPJS_JSON)
+DIR_OUTPUT = os.getenv("DIR_OUTPUT") or "output"
 
 PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html
 PATH_DIR_TEMPLATES = os.getenv("PATH_DIR_TEMPLATES") or PATH_DIR_LAYOUTS .. "/templates" -- Reads the container and controls html

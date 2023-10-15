@@ -96,19 +96,19 @@ __reset_repo() {
   echo 'Restoring output folder to match remote.'
   git checkout -- "$WORKSPACE/examples/"
   git checkout -- "$WORKSPACE/test/output/"
-  git checkout -- "$DIR_PUBLIC_OUTPUT"
+  git checkout -- "$PATH_OUTPUT_LOCAL"
 }
 
 __clean_repo() {
-  rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.yaml"
+  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.yaml"
   rm "$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/example1-clearly-false-white-swan-simplified.json"
-  rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified.tex"
-  rm "$DIR_PUBLIC_OUTPUT/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
-  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
-  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
-  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
-  rm "$DIR_PUBLIC_OUTPUT/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
-  rm "$DIR_PUBLIC_OUTPUT/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
+  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.tex"
+  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
+  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
+  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
+  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
+  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
+  rm "$PATH_OUTPUT_LOCAL/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
   rm "$PATH_TEST_LOG"
 }
 
@@ -153,7 +153,7 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
 # TODO add option for .mup vs .json output
 m2a() { # m2a test/output/example1-simple.mup (output path)
   name=$(basename --suffix=".json" "$1")
-  output=${2:-$DIR_PUBLIC_OUTPUT/$name.yaml}
+  output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   lua "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
@@ -162,14 +162,14 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 # Convert to tikz
 a2t() { # a2t test/output/example1-simple.yaml (output path)
   name=$(basename --suffix=".yaml" "$1") &&
-    mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")" && # Ensures output folder exists
-    lua "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$1" >"${2:-$DIR_PUBLIC_OUTPUT/$name.tex}" &&
-    echo "${2:-$DIR_PUBLIC_OUTPUT/$name.tex}"
+    mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")" && # Ensures output folder exists
+    lua "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
+    echo "${2:-$PATH_OUTPUT_LOCAL/$name.tex}"
 }
 
 pandoc_argmap() { # pandoc_argmap input output template extra_variables
   input=${1:-""}
-  output=${2:-$(getvar DIR_PUBLIC_OUTPUT)/html/pandoc_argmap-test.html}
+  output=${2:-$(getvar PATH_OUTPUT_LOCAL)/html/pandoc_argmap-test.html}
   template=${3:-$(getvar FILE_TEMPLATE_HTML_DEFAULT)}
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
@@ -236,7 +236,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
   #   TODO ideally would be more flexible with output location e.g. default to standard location but pick either filename or whole directory
-  output=$(getvar DIR_PUBLIC_OUTPUT)/html/${2:-$name}.html
+  output=$(getvar PATH_OUTPUT_LOCAL)/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
   set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
@@ -255,7 +255,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
   name=$(basename --suffix=".md" "$1")
-  output=$(getvar DIR_PUBLIC_OUTPUT)/${2:-$name}.pdf
+  output=$(getvar PATH_OUTPUT_LOCAL)/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
@@ -268,7 +268,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
 md2np() {
   input="${1:-$INPUT_FILE_MD2}"
   name=$(basename --suffix=".md" "$input")
-  output=$DIR_PUBLIC_OUTPUT/${2:-$name}.ast
+  output=$PATH_OUTPUT_LOCAL/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
   pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_DEFAULT" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --data-dir="$PANDOC_DATA_DIR" >/dev/null

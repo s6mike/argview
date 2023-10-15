@@ -104,7 +104,7 @@ count_characters() {
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
   target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
 
-  # local mkdir --parent "$(dirname "$DIR_PUBLIC_OUTPUT")
+  # local mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")
   local filename
   local repeat_count=0
   filename=$(basename "$target_config_file")

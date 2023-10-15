@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.2.1
+
+- Replace deprecated variables: Various
+- Remove deprecated variables: `mapjs/scripts/mapjs.env`
+
 ## argmap 22.2.0
 
 - DEPRECATE config variables for clearer naming and to consistently write to local output folder. `mapjs/config/environment-mapjs-defaults.yaml`:

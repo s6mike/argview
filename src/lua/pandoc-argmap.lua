@@ -274,8 +274,8 @@ local function CodeBlock(block)
                 -- QUESTION: Should I be using a path join function?
                 local argmap_output_file_path = PATH_DIR_PUBLIC_MAPJS_JSON .. "/" .. output_filename
 
-                -- The URL reference needs to be relative to DIR_HTML_SERVER_OUTPUT which is relative to html page location: /test/output
-                local mapjs_url = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" .. DIR_MAPJS_JSON .. "/" .. output_filename
+                -- The URL reference needs to be relative to DIR_OUTPUT which is relative to html page location: /test/output
+                local mapjs_url = "/" .. DIR_OUTPUT .. "/" .. DIR_MAPJS_JSON .. "/" .. output_filename
 
                 ensure_directory(argmap_output_file_path)
                 -- TODO: This should be a utility function, since used elsewhere
@@ -310,7 +310,7 @@ local function CodeBlock(block)
                 -- Check to see if the images need to be regenerated (borrowed from pandoc lua filter docs: each image name is a hash of the yaml map.)
                 -- Writes to server output folder, subfolder determined by filetype.
                 -- QUESTION: Delete old images that are no longer needed?
-                local path_local_image_html = "/" .. DIR_HTML_SERVER_OUTPUT .. "/" ..
+                local path_local_image_html = "/" .. DIR_OUTPUT .. "/" ..
                     filetype .. "/" .. pandoc.sha1(original) .. "." .. filetype
                 local image_abs_path_output = config_argmap.project_folder .. '/test' .. path_local_image_html
                 if not file_exists(image_abs_path_output) then
