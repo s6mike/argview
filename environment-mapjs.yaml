@@ -1,0 +1,21 @@
+---
+########
+# Mapjs environment data - DEFAULTS
+# Copy this to mapjs/config/environment-mapjs.yaml and customise as you wish
+#   So this file IS considered part of the public API for this app and changing variable names etc will be considered BREAKING.
+# For use in scripts and js code
+# Copyright 2022 Michael Hayes
+# SPDX - License - Identifier: MIT
+########
+
+# Use ${variable} for referencing other yaml variables
+
+## dev webserver values
+DIR_OUTPUT: output # TODO Change to DIR_OUTPUT
+
+## These are absolute paths, for reading/writing to the correct directory
+PATH_TEST: ${PATH_DIR_ARGMAP_ROOT}/test
+PATH_OUTPUT_LOCAL: ${PATH_TEST}/${DIR_OUTPUT} # Test output folder
+PATH_INPUT_LOCAL: ${PATH_TEST}/input          # Test input folder
+
+...
