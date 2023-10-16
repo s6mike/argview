@@ -14,6 +14,7 @@ mapjs/node_modules
 mapjs/public/output
 mapjs/public/input
 mapjs/public/js/*bundle.js
+mapjs/public/index.html
 examples/*
 scripts/experiments.sh
 test/output*/*
