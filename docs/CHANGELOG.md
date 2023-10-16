@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.8.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic link from local argmap pandoc latex template to `$CONDA_PREFIX` pandoc template folder, if not present.
+  - `make clean`: To also remove new symlink.
+  - Remove unnecesary vars now init_script names them.
+
 ## argmap 22.7.2
 
 - `scripts/argmap_init_script.sh`: Update variables exported for makefile use, rename created variables to align with (preferred) makefile naming scheme.
@@ -2183,7 +2190,7 @@ NEW ISSUE: Sometimes getting mapjs error `Uncaught TypeError: Cannot read proper
 
 ## argmap 4.13.18
 
-- `src/config_argmap.lua`: Fix package.cpath reference, which was to invalid argumend conda env path.
+- `src/config_argmap.lua`: Fix package.cpath reference, which was to invalid argmap conda env path.
   - Think this fixes lyaml install issue introduced around v4.13.15.
     - Presumably rockspec external_dependencies parameter (used to find YAML library) uses CPATH.
     - Though didn't test this, so could have been any commit between v4.13.18 and v4.13.21 which fixed it.

@@ -15,10 +15,10 @@
 
 # := simple, assigned once
 # 	Need to export required variables at end of argmap_init_script.sh:
-PATH_TEST := ${PATH_TEST}
+
 # TODO Move to env file
 PATH_PROFILE_LOCAL := /home/s6mike/.local
-PATH_LUA_ARGMAP := ${PATH_DIR_ARGMAP_LUA}
+# PATH_LUA_ARGMAP := ${PATH_DIR_ARGMAP_LUA}
 #	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
 LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
 
@@ -34,6 +34,7 @@ LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
 #		Currently no link:
 #			LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/config_argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/lua/5.3/config_argmap.lua
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 
 # ###########
 
@@ -72,6 +73,14 @@ ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	ln -s ${CONDA_PREFIX}/$* $@
+
+# latex templates e.g. examples/example-template.latex need to be in conda folder:
+${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/% $(@D)
+# Makes the required directories in the path
+#		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
+#		in that directory will trigger the rule that depends on the directory-creation target again!
+	mkdir -p "$(@D)"
+	ln -s ${WORKSPACE}/$* $@
 
 # For vscode pandoc extensions (1,2,3):
 
