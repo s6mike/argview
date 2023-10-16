@@ -53,8 +53,8 @@ prints:
 #		Have to use -not instead of -prune because -delete is not compatible with -prune
 # TODO Add __clean_repo()
 clean:
-	rm ${LINK_TARGETS_PUBLIC}	
-	rm ${LINK_TARGETS_CONDA}	
+	rm -f ${LINK_TARGETS_PUBLIC}	
+	rm -f ${LINK_TARGETS_CONDA}	
 
 # ############
 
