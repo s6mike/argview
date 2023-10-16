@@ -104,13 +104,13 @@ if [ "$1" == 'conda' ]; then
 
   # a) Review: intialised values in `config/environment-conda-argmap.yaml`
 
-  # ln -s source_file symbolic_link
-  rm "$CONDA_PREFIX/bin/argmap2mup"
-  ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
-  rm "$CONDA_PREFIX/bin/argmap2tikz"
-  ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
-  rm "$CONDA_PREFIX/bin/mup2argmap"
-  ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
+  # # ln -s source_file symbolic_link
+  # rm "$CONDA_PREFIX/bin/argmap2mup"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
+  # rm "$CONDA_PREFIX/bin/argmap2tikz"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
+  # rm "$CONDA_PREFIX/bin/mup2argmap"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
 
   # pandoc data-folder:
   # local: ~/.local/share/pandoc/

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.9.1
+
+- `scripts/install.sh`: Remove symlink code now in `makefile`.
+
 ## argmap 22.9.0
 
 - `makefile`: Update
