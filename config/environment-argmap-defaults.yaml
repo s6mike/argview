@@ -19,7 +19,7 @@ PORT_DEBUG: 9221
 PORT_DEV_SERVER: 9001
 
 ## lua
-PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua
+PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_ARGMAP
 LUA_CPATH: ${PATH_DIR_ARGMAP_ROOT}/lua_modules/lib/lua/5.3/?.so;
 LUA_PATH: ${PATH_DIR_ARGMAP_ROOT}/src/lua/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?/init.lua;
 

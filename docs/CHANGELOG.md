@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.9.2
+
+- `config/environment-argmap-defaults.yaml`: Add renaming todo comment.
+
 ## argmap 22.9.1
 
 - `scripts/install.sh`: Remove symlink code now in `makefile`.
