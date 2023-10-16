@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.9.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic links from local lua files to `$CONDA_PREFIX/bin`folder, if not present.
+  - `make clean`: To also remove new symlinks.
+
 ## argmap 22.8.1
 
 - `scripts/install.sh`: Remove symlink code now in `makefile`.

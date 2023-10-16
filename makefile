@@ -35,6 +35,10 @@ LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
 #			LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/config_argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/lua/5.3/config_argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
+# For calling from shell
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2mup
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2tikz
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/mup2argmap
 
 # ###########
 
@@ -73,6 +77,10 @@ ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	ln -s ${CONDA_PREFIX}/$* $@
+
+# For calling lua functions from shell (within conda env)
+${CONDA_PREFIX}/bin/%: | ${PATH_LUA_ARGMAP}/%.lua
+	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
 ${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/% $(@D)
