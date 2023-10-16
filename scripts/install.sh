@@ -173,7 +173,7 @@ if [ "$1" == 'conda' ]; then
   # TODO: add this to conda activation, and delete this link when env deactivated?
   # NOTE: can use defaults file to set defalt data directory, should simplify.
   # Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
-  ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
+  # ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
 
   # Makes conda exes available in local for VSCode extensions which don't have path option:
   # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
@@ -183,10 +183,10 @@ if [ "$1" == 'conda' ]; then
   # Wondering if adding this link (from section 2), would help:
   #   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
 
-  ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
+  # ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
   # Only needed for pre-commit hook:
-  ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+  # ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
 
   # Install testcafe
   npm install -g testcafe
