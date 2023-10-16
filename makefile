@@ -5,7 +5,8 @@
 #		Add make help e.g. https://stackoverflow.com/questions/8811526/using-conditional-rules-in-a-makefile
 
 # Avoids collisions with filenames
-.PHONY: all public conda prints clean # dev
+#		-- is convention for private targets
+.PHONY: all --public --conda prints clean # dev
 
 # Stops intermediate files being deleted (e.g. content/X.html)
 # .SECONDARY:
@@ -20,13 +21,9 @@ LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
 
 # ###########
 
-all:
-	make public
+all: --public --conda
 
-public:
-	make ${LINK_TARGETS_PUBLIC}
-
-# conda:
+--public: ${LINK_TARGETS_PUBLIC}
 
 # dev:
 # 	make all
@@ -47,5 +44,7 @@ clean:
 
 # ############
 
+# Rule for public links
+#  after | is order only pre-requisite, doesn't update based on timestamps
 ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	ln -s ${PATH_TEST}/$* $@

@@ -151,8 +151,9 @@ if [ "$1" == 'conda' ]; then
   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/pandoc/"
 
   #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
-  rm /js
-  ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
+  # rm /js
+  # Currently mapjs/public/js is just a directory, so have commented out:
+  # ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
 
   # 3. Install rockspec in global scope
 
