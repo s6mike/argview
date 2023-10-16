@@ -16,14 +16,25 @@
 # := simple, assigned once
 # 	Need to export required variables at end of argmap_init_script.sh:
 PATH_TEST := ${PATH_TEST}
+# TODO Move to env file
+PATH_PROFILE_LOCAL := /home/s6mike/.local
 #	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
 LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
+
+LINK_TARGETS_CONDA := ${PATH_PROFILE_LOCAL}/bin/lua
+LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/bin/convert # Only needed for pre-commit hook
+# Connects legacy data-folder to conda env:
+# 	TODO: add this to conda activation, and delete this link when env deactivated?
+# 	NOTE: can use defaults file to set defalt data directory, should simplify.
+# 	Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
+LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
 
 # ###########
 
 all: --public --conda
 
 --public: ${LINK_TARGETS_PUBLIC}
+--conda: ${LINK_TARGETS_CONDA}
 
 # dev:
 # 	make all
@@ -34,6 +45,8 @@ prints:
 	$(info ${PATH_PUBLIC})
 	$(info PATH_TEST:)
 	$(info ${PATH_TEST})
+	$(info LINK_TARGETS_CONDA:)
+	$(info ${LINK_TARGETS_CONDA})	
 
 # Define a clean target
 # 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
@@ -41,6 +54,7 @@ prints:
 # TODO Add __clean_repo()
 clean:
 	rm ${LINK_TARGETS_PUBLIC}	
+	rm ${LINK_TARGETS_CONDA}	
 
 # ############
 
@@ -48,3 +62,7 @@ clean:
 #  after | is order only pre-requisite, doesn't update based on timestamps
 ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	ln -s ${PATH_TEST}/$* $@
+
+# Rule for conda links to .local folder
+${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
+	ln -s ${CONDA_PREFIX}/$* $@

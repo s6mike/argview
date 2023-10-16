@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.6.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic links from `$CONDA_PREFIX` to `$HOME/.local/`if not present.
+  - `make clean`: To also remove new symlinks.
+- `scripts/argmap_init_script.sh`: Update variables exported for makefile use.
+
 ## argmap 22.5.3
 
 - `makefile`: Minor rule and formatting refinements.
