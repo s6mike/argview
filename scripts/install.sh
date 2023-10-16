@@ -166,8 +166,8 @@ if [ "$1" == 'conda' ]; then
   # -----
 
   # latex templates e.g. examples/example-template.latex need to go here:
-  mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
-  ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
+  # mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
+  # ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
 
   # Connects legacy data-folder to conda env:
   # TODO: add this to conda activation, and delete this link when env deactivated?
