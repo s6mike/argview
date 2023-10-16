@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.11.3
+
+- [README.md](../README.md): Mention `makefile` in install section.
+
 ## argmap 22.11.2
 
 - `mapjs/public/index.html`: Delete `makefile` symlink from repo

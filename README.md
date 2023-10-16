@@ -79,13 +79,13 @@ This has been tested on Debian only. I believe the Lua code should be portable, 
 
 3. You can place `argmap2mup.lua`, `argmap2tikz.lua`, and `mup2argmap.lua` somewhere in your PATH e.g. `~/bin`.
 
-    Or you leave them in place and put symbolic links to them into your PATH, as has been done in `scripts/install.sh`. This script also removes the .lua extension from the links to reduce command line typing, however the examples below keep the .lua extension for clarity.
+    Or you leave them in place and put symbolic links to them into your PATH, as has been done in `makefile`. This script also removes the .lua extension from the links to reduce command line typing, however the examples below keep the .lua extension for clarity.
 
-4. Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data directory, e.g. `$HOME/.local/share/pandoc/filters/pandoc-argmap.lua`.
+4. Place `pandoc-argmap.lua` in the `filters` folder inside your pandoc data directory, e.g. `$HOME/.local/share/pandoc/filters/pandoc-argmap.lua` (The `makefile` also sets up this symlink).
 
 5. For additional functionality, see **Dependencies** section.
 
-Note that `scripts/install.sh` is more a collection of notes and useful commands for my own reference and is not yet in a state where it can be run to install the app. The sequence of instructions has not been tested recently, however I do update it as the app changes, so it should represent the process I need to follow for installation on my own machine.
+Note that `scripts/install.sh` is more a collection of notes and useful commands for my own reference and is not yet in a state where it can be run to install the app. The sequence of instructions has not been tested recently, however I do update it as the app changes, so it should represent the process I need to follow for installation on my own machine. The symlink generation and cleanup has been moved to the `makefile` which can be run with `make all`.
 
 ### Dependencies
 
