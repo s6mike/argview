@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.11.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic link from public/index.html to example map, if not present.
+  - `make clean`: To also remove new symlink.
+
 ## argmap 22.10.2
 
 `mapjs/package-lock.json`: Fix vulnerability.

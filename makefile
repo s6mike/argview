@@ -22,6 +22,12 @@ PATH_PROFILE_LOCAL := /home/s6mike/.local
 #	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
 LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
 
+# Add index.html
+# 	TODO: Use netlify redirect instead
+LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/index.html
+# Ensure lua dependencies available to site for client_argmap2mapjs
+# LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/lua ${PATH_PUBLIC}/lua_modules
+
 LINK_TARGETS_CONDA := ${PATH_PROFILE_LOCAL}/bin/lua
 LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/bin/convert # Only needed for pre-commit hook
 # Connects legacy data-folder to conda env:
@@ -76,6 +82,12 @@ clean:
 ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	ln -s ${PATH_TEST}/$* $@
 
+# Add index.html
+#	 TODO: Use netlify redirect instead
+#   ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_PUBLIC/index.html"
+${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
+	ln -s ${PATH_FILE_OUTPUT_EXAMPLE} $@
+
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	ln -s ${CONDA_PREFIX}/$* $@
@@ -85,6 +97,7 @@ ${CONDA_PREFIX}/bin/%: | ${PATH_LUA_ARGMAP}/%.lua
 	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
 
 # Adds .lua files to pandoc data-folder:
+
 ${CONDA_PREFIX}/share/pandoc/filters/%: | ${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
@@ -96,6 +109,16 @@ ${CONDA_PREFIX}/share/pandoc/filters/%: | ${PATH_LUA_ARGMAP}/%
 ${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/%
 	mkdir -p "$(@D)"
 	ln -s ${WORKSPACE}/$* $@
+
+# Ensure lua dependencies available to site for client_argmap2mapjs
+# ${PATH_PUBLIC}/%: | ${PATH_LUA_ARGMAP}
+# 	ln -s ${PATH_LUA_ARGMAP} $@
+
+# ${PATH_PUBLIC}/%: | ${WORKSPACE}/%
+# 	ln -s ${WORKSPACE}/% $@
+
+# ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
+# ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
 
 # For vscode pandoc extensions (1,2,3):
 
