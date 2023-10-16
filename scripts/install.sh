@@ -126,9 +126,9 @@ if [ "$1" == 'conda' ]; then
 
   # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
 
-  mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
-  rm "$CONDA_PREFIX/share/pandoc/filters/pandoc-argmap.lua"
-  ln -s "$(getvar PATH_FILE_PANDOC_FILTER_LUA_ARGMAP)" "$CONDA_PREFIX/share/pandoc/filters/"
+  # mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
+  # rm "$CONDA_PREFIX/share/pandoc/filters/pandoc-argmap.lua"
+  # ln -s "$(getvar PATH_FILE_PANDOC_FILTER_LUA_ARGMAP)" "$CONDA_PREFIX/share/pandoc/filters/"
 
   # TODO is this necessary? Forget why
   # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
