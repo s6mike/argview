@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.10.2
+
+`mapjs/package-lock.json`: Fix vulnerability.
+
 ## argmap 22.10.1
 
 - `scripts/install.sh`: Remove symlink code now in `makefile`.
