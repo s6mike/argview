@@ -143,12 +143,12 @@ if [ "$1" == 'conda' ]; then
   # -----
   # For vscode pandoc extensions:
 
-  # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
-  #   QUESTION: Do I need first of these?
-  rm "$CONDA_PREFIX/share/lua/5.3/config_argmap.lua"
-  ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
-  rm "$CONDA_PREFIX/share/pandoc/config_argmap.lua"
-  ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/pandoc/"
+  # # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
+  # #   QUESTION: Do I need first of these?
+  # rm "$CONDA_PREFIX/share/lua/5.3/config_argmap.lua"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
+  # rm "$CONDA_PREFIX/share/pandoc/config_argmap.lua"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/pandoc/"
 
   #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
   # rm /js
