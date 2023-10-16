@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.11.1
+
+- `scripts/install.sh`: Remove symlink code now in `makefile`:
+  - `index.html` symlink already commented out from install, so no need to remove it.
+  - However, symlink for client-argmap.lua removed (though also commented out in `makefile`)
+
 ## argmap 22.11.0
 
 - `makefile`: Update

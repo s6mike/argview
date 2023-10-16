@@ -255,8 +255,8 @@ chmod u+x "$HOME/.local/bin/yq"
 ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_PUBLIC/js/fengari-web.js"
 ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_PUBLIC/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
-ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
-ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
+# ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
+# ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
 
 # SECTION Z: Uninstall
 
