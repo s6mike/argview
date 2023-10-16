@@ -18,6 +18,7 @@
 PATH_TEST := ${PATH_TEST}
 # TODO Move to env file
 PATH_PROFILE_LOCAL := /home/s6mike/.local
+PATH_LUA_ARGMAP := ${PATH_DIR_ARGMAP_LUA}
 #	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
 LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
 
@@ -28,6 +29,11 @@ LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/bin/convert # Only needed for pre-co
 # 	NOTE: can use defaults file to set defalt data directory, should simplify.
 # 	Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
 LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
+
+# For vscode pandoc extensions:
+#		Currently no link:
+#			LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/config_argmap.lua
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/lua/5.3/config_argmap.lua
 
 # ###########
 
@@ -66,3 +72,31 @@ ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	ln -s ${CONDA_PREFIX}/$* $@
+
+# For vscode pandoc extensions (1,2,3):
+
+# 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
+
+# Rule for argmap lua links to conda lua folder
+#   QUESTION: Do I need this one?
+${CONDA_PREFIX}/share/lua/5.3/%: | ${PATH_LUA_ARGMAP}/%
+	ln -s ${PATH_LUA_ARGMAP}/$* $@
+
+# Currently no link
+# Rule for argmap lua links to conda pandoc folder
+# ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
+# 	ln -s ${PATH_LUA_ARGMAP}/$* $@
+
+#  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
+# rm /js
+# Currently mapjs/public/js is just a directory, so have commented out:
+# ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
+
+# 3. Install rockspec in global scope
+
+# rockspec_file=$(_find_rockspec) # Gets absolute path
+# # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
+# #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
+
+# luarocks remove
+# luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"

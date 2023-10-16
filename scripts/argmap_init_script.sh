@@ -76,7 +76,11 @@ source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 PATH_PUBLIC=$(getvar PATH_PUBLIC)
 PATH_TEST=$(getvar PATH_TEST)
 CONDA_PREFIX=$(getvar CONDA_PREFIX)
-export PATH_PUBLIC PATH_TEST PATH_OUTPUT_LOCAL CONDA_PREFIX
+
+# TODO: rename to PATH_LUA_ARGMAP
+PATH_DIR_ARGMAP_LUA=$(getvar PATH_DIR_ARGMAP_LUA)
+
+export PATH_PUBLIC PATH_TEST PATH_OUTPUT_LOCAL CONDA_PREFIX PATH_DIR_ARGMAP_LUA
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all
