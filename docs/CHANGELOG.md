@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.10.0
+
+- `makefile`: Update
+  - `make all`: To also create symbolic links from local lua files to `$CONDA_PREFIX/pandoc/filters` folder, if not present.
+  - `make clean`: To also remove new symlinks.
+  - Remove superfluous directory dependency from pandoc templates rule.
+
 ## argmap 22.9.2
 
 - `config/environment-argmap-defaults.yaml`: Add renaming todo comment.

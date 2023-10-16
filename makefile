@@ -34,11 +34,13 @@ LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
 #		Currently no link:
 #			LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/config_argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/lua/5.3/config_argmap.lua
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 # For calling from shell
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2mup
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2tikz
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/mup2argmap
+# Adds lua and template files to pandoc data-folder:
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/filters/pandoc-argmap.lua
+LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 
 # ###########
 
@@ -82,11 +84,16 @@ ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 ${CONDA_PREFIX}/bin/%: | ${PATH_LUA_ARGMAP}/%.lua
 	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
 
-# latex templates e.g. examples/example-template.latex need to be in conda folder:
-${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/% $(@D)
+# Adds .lua files to pandoc data-folder:
+${CONDA_PREFIX}/share/pandoc/filters/%: | ${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
+	mkdir -p "$(@D)"
+	ln -s ${PATH_LUA_ARGMAP}/$* $@
+
+# latex templates e.g. examples/example-template.latex need to be in conda folder:
+${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/%
 	mkdir -p "$(@D)"
 	ln -s ${WORKSPACE}/$* $@
 
