@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.11.4
+
+- `config/config-argmap-paths.yaml`: Add `PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED` config variable.
+
 ## argmap 22.11.3
 
 - [README.md](../README.md): Mention `makefile` in install section.
