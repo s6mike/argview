@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.13.0
+
+- `makefile`: Update:
+  - `make all`, `make config`: Process mapjs config and env files.
+  - `make clean`: To also remove new files.
+- `scripts/argmap_init_script.sh`: Add to variables exported for makefile use.
+- `mapjs/config/config-mapjs-paths.yaml`: Add `PATH_FILE_ENV_MAPJS_PROCESSED` var for use by makefile.
+
 ## argmap 22.12.0
 
 - `makefile`: Update:

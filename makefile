@@ -23,6 +23,7 @@ SHELL := /bin/bash
 PATH_PROFILE_LOCAL := /home/s6mike/.local
 # PATH_LUA_ARGMAP := ${PATH_DIR_ARGMAP_LUA}
 #	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
+#		QUESTION: Could I run getvar from within makefile instead?
 LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
 
 # Add index.html
@@ -52,7 +53,7 @@ LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 
 CONFIG_PROCESSED := ${PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED} ${PATH_FILE_CONFIG_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED}
-# PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED
+CONFIG_PROCESSED += ${PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED} ${PATH_FILE_CONFIG_MAPJS_PROCESSED} ${PATH_FILE_ENV_MAPJS_PROCESSED}
 
 # ###########
 
@@ -90,6 +91,10 @@ clean:
 
 # Process config and environment files
 ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}/%-processed.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
+	mkdir -p "$(@D)"
+	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
+
+${PATH_DIR_CONFIG_MAPJS_PROCESSED}/%-processed.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
 	mkdir -p "$(@D)"
 	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
 
