@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.12.0
+
+- `makefile`: Update:
+  - Add `SHELL` var to allow subsitutions to work properly with bash function call.
+  - `make all`, `make config`: Process argmap config and env files.
+  - `make clean`: To also remove new files.
+- `scripts/argmap_init_script.sh`: Add to variables exported for makefile use.
+
 ## argmap 22.11.4
 
 - `config/config-argmap-paths.yaml`: Add `PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED` config variable.
@@ -27,7 +35,7 @@
 
 ## argmap 22.11.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic link from public/index.html to example map, if not present.
   - `make clean`: To also remove new symlink.
 
@@ -41,7 +49,7 @@
 
 ## argmap 22.10.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic links from local lua files to `$CONDA_PREFIX/pandoc/filters` folder, if not present.
   - `make clean`: To also remove new symlinks.
   - Remove superfluous directory dependency from pandoc templates rule.
@@ -56,7 +64,7 @@
 
 ## argmap 22.9.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic links from local lua files to `$CONDA_PREFIX/bin`folder, if not present.
   - `make clean`: To also remove new symlinks.
 
@@ -66,7 +74,7 @@
 
 ## argmap 22.8.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic link from local argmap pandoc latex template to `$CONDA_PREFIX` pandoc template folder, if not present.
   - `make clean`: To also remove new symlink.
   - Remove unnecesary vars now init_script names them.
@@ -81,7 +89,7 @@
 
 ## argmap 22.7.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic link from `$CONDA_PREFIX` to local lua folder, if not present.
   - `make clean`: To also remove new symlink.
 - `scripts/argmap_init_script.sh`: Update variables exported for makefile use.
@@ -96,7 +104,7 @@
 
 ## argmap 22.6.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic links from `$HOME/.local/` to `$CONDA_PREFIX` if not present.
   - `make clean`: To also remove new symlinks.
 - `scripts/argmap_init_script.sh`: Update variables exported for makefile use.
@@ -117,7 +125,7 @@
 
 ## argmap 22.5.0
 
-- `makefile`: Update
+- `makefile`: Update:
   - `make all`: To also create symbolic link from `public/input` to `test/input`if not present.
   - `make clean`: To also remove new symlink.
   - To replace deprecated variable: `PATH_DIR_PUBLIC`.
@@ -217,7 +225,7 @@
   - `.vscode/`: Add netlify integrations to `launch.json`, `settings.json`
   - `scripts/`: Add netlify integrations to `scripts/argmap_init_script.sh`
 
-## argmap 22.0.0
+## argmap 22.0.0 BREAKING
 
 - `mapjs/scripts/mapjs.env`: Remove references to old dirs. BREAKING
 - `mapjs/config/environment-mapjs-defaults.yaml`: Change from mapjs/test to mapjs/public BREAKING

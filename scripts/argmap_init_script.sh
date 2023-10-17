@@ -70,9 +70,13 @@ eval "$(pandoc --bash-completion)"
 
 source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 
-# Exporting variables for makefile
+# Exporting variables for makefile.
+#   Once used for building config files may be needed earlier in process.
+
 #		Alternative is to define variables in make call:
 #			make DIR_PUBLIC_OUTPUT="${PATH_PUBLIC}/output"
+PATH_FILE_CONFIG_ARGMAP_PROCESSED=$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)
+PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED=$(getvar PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED)
 PATH_PUBLIC=$(getvar PATH_PUBLIC)
 PATH_TEST=$(getvar PATH_TEST)
 CONDA_PREFIX=$(getvar CONDA_PREFIX)
@@ -80,7 +84,10 @@ CONDA_PREFIX=$(getvar CONDA_PREFIX)
 # TODO: rename orig var to PATH_LUA_ARGMAP
 PATH_LUA_ARGMAP=$(getvar PATH_DIR_ARGMAP_LUA)
 
-export PATH_PUBLIC PATH_TEST PATH_OUTPUT_LOCAL CONDA_PREFIX PATH_LUA_ARGMAP WORKSPACE PATH_FILE_OUTPUT_EXAMPLE
+export WORKSPACE PATH_DIR_CONFIG_ARGMAP DIR_PROCESSED
+export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED PATH_FILE_CONFIG_ARGMAP_PROCESSED PATH_FILE_ENV_ARGMAP_PROCESSED PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED
+export PATH_PUBLIC PATH_TEST PATH_OUTPUT_LOCAL CONDA_PREFIX PATH_LUA_ARGMAP
+export PATH_FILE_OUTPUT_EXAMPLE
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all

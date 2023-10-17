@@ -1,12 +1,15 @@
 # Makefile for Argumend - currently just creates symlinks
 
+# Needed for substitutions to work when calling bash function
+SHELL := /bin/bash
+
 # TODO 
 #		Add make test
 #		Add make help e.g. https://stackoverflow.com/questions/8811526/using-conditional-rules-in-a-makefile
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all --public --conda prints clean # dev
+.PHONY: all --public --conda config prints clean # dev
 
 # Stops intermediate files being deleted (e.g. content/X.html)
 # .SECONDARY:
@@ -48,34 +51,47 @@ LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/mup2argmap
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 
+CONFIG_PROCESSED := ${PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED} ${PATH_FILE_CONFIG_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED}
+# PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED
+
 # ###########
 
-all: --public --conda
+all: --public --conda config
 
 --public: ${LINK_TARGETS_PUBLIC}
 --conda: ${LINK_TARGETS_CONDA}
+# TODO: make into --config (and update .PHONY)
+config: ${CONFIG_PROCESSED}
 
 # dev:
 # 	make all
 # 	netlify dev
 
 prints:
-	$(info PATH_PUBLIC:)
-	$(info ${PATH_PUBLIC})
-	$(info PATH_TEST:)
-	$(info ${PATH_TEST})
-	$(info LINK_TARGETS_CONDA:)
-	$(info ${LINK_TARGETS_CONDA})	
+# $(info PATH_PUBLIC:)
+# $(info ${PATH_PUBLIC})
+# $(info PATH_TEST:)
+# $(info ${PATH_TEST})
+# $(info LINK_TARGETS_CONDA:)
+# $(info ${LINK_TARGETS_CONDA})	
+	$(info CONFIG_PROCESSED:)
+	$(info ${CONFIG_PROCESSED})	
 
 # Define a clean target
 # 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
 #		Have to use -not instead of -prune because -delete is not compatible with -prune
-# TODO Add __clean_repo()
+# 	TODO Add __clean_repo()
 clean:
 	rm -f ${LINK_TARGETS_PUBLIC}	
 	rm -f ${LINK_TARGETS_CONDA}	
+	rm -f ${CONFIG_PROCESSED}
 
 # ############
+
+# Process config and environment files
+${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}/%-processed.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
+	mkdir -p "$(@D)"
+	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
 
 # Rule for public links
 #  after | is order only pre-requisite, doesn't update based on timestamps
