@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.14.0
+
+- Use `make config` to process majority of config files.
+  - `config/config-argmap-paths.yaml`:
+    - Move some variables here from `mapjs/config/config-mapjs-paths.yaml` so that required paths are processed in one go.
+    - Enable `LIST_FILES_CONFIG_PROCESSED` for makefile.
+  - `scripts/init_read_config.sh`: Define variables needed by `make config`, then call it.
+  `scripts/argmap_init_script.sh`: Remove variables not needed by remaining `make all` operations.
+
 ## argmap 22.13.1
 
 - `mapjs/package.json`: Update `netlify-cli`.

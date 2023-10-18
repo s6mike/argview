@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
 main() {
+  # Bootstraps the config file processing (var expansion).
+  # Process is to define initial variables which are needed to locate the first 2 env files
+  #  Then look up key values in relevant files in yaml2env
+  #   Can then preprocess initial files, and then makefile can take over.
+  #   Want to migrate more of this logic to makefile, since it's more efficient at only updating the processed files when necessary,  instead of every shell start
+
   echo "Running ${BASH_SOURCE[0]}"
 
+  # QUESTION: Can I put min startup into separate environment file?
+  #  Could then reference directly from makefile
   export PATH_DIR_ARGMAP_ROOT="${PATH_DIR_ARGMAP_ROOT:-$WORKSPACE}"
 
   source "$PATH_DIR_ARGMAP_ROOT/scripts/config_read_functions.lib.sh"
@@ -32,15 +40,16 @@ main() {
   PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED=$(preprocess_config "$PATH_FILE_CONFIG_ARGMAP_PATHS")
   export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED
 
+  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_DIR_CONFIG_MAPJS PATH_DIR_CONFIG_MAPJS_PROCESSED
+
   # Can't use __yaml2env because it's not set to take the -l option
   LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml -l LIST_FILES_CONFIG_INPUT "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
   export LIST_FILES_CONFIG_INPUT
 
-  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
-  # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
-  LIST_FILES_CONFIG_PROCESSED=$(process_all_config_inputs ${LIST_FILES_CONFIG_INPUT[@]})
+  LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -l LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
   export LIST_FILES_CONFIG_PROCESSED
-  set +f
-}
 
+  #   QUESTION: Better to define above variables as part of make call instead of exporting them?
+  make config # --warn-undefined-variables or -d for debugging
+}
 main "$@"

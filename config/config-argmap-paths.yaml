@@ -11,8 +11,10 @@
 ## config
 DIR_CONFIG: config
 PATH_DIR_CONFIG_ARGMAP: ${PATH_DIR_ARGMAP_ROOT}/${DIR_CONFIG}
+PATH_DIR_CONFIG_MAPJS: ${PATH_DIR_MAPJS_ROOT}/${DIR_CONFIG}
 DIR_PROCESSED: processed
 PATH_DIR_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}
+PATH_DIR_CONFIG_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS}/${DIR_PROCESSED}
 
 PATH_FILE_CONFIG_ARGMAP: ${PATH_DIR_CONFIG_ARGMAP}/config-argmap.yaml
 PATH_FILE_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-processed.yaml
@@ -32,20 +34,26 @@ LIST_FILES_CONFIG_INPUT:
 - ${PATH_FILE_ENV_ARGMAP}
 - ${PATH_FILE_CONFIG_ARGMAP_PATHS} # This file
 - ${PATH_FILE_CONFIG_ARGMAP}
+- ${PATH_FILE_ENV_ARGMAP_PRIVATE}
 - ${PATH_FILE_ENV_MAPJS}
 - ${PATH_FILE_CONFIG_MAPJS_PATHS}
 - ${PATH_FILE_CONFIG_MAPJS}
-- ${PATH_FILE_ENV_ARGMAP_PRIVATE}
 # - ${PATH_FILE_ENV_CONDA}
 
 # Not needed here because bash function generates this list. However, might be needed for other apps?
-# LIST_FILES_CONFIG_PROCESSED:
-# - ${PATH_FILE_ENV_ARGMAP_PROCESSED}
-# - ${PATH_FILE_CONFIG_ARGMAP_PROCESSED}
-# - /home/s6mike/git_projects/argmap/config/processed/PRIVATE-environment-argmap-processed.yaml
-# - ${PATH_FILE_CONFIG_MAPJS_PROCESSED}
-# - /home/s6mike/git_projects/argmap/mapjs/config/processed/environment-mapjs-processed.yaml
-# # - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
+# Now needed by makefile
+#   TODO replace hardcoded strings with variables
+LIST_FILES_CONFIG_PROCESSED:
+- ${PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED}
+- ${PATH_FILE_ENV_ARGMAP_PROCESSED}
+- ${PATH_FILE_CONFIG_ARGMAP_PROCESSED}
+- /home/s6mike/git_projects/argmap/config/processed/PRIVATE-environment-argmap-processed.yaml
+- ${PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED}
+- /home/s6mike/git_projects/argmap/mapjs/config/processed/environment-mapjs-processed.yaml
+- ${PATH_FILE_CONFIG_MAPJS_PROCESSED}
+
+# TODO: This looks like a mistake
+# - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
 
 ## conda
 CONDA_ENV_ARGMAP: argmap

@@ -1,4 +1,13 @@
-# Makefile for Argumend - currently just creates symlinks
+# Makefile for argmap
+
+# REVIEW: It is not wise for makefiles to depend for their functioning on environment variables set up outside their control, since this would cause different users to get different results from the same makefile. This is against the whole purpose of most makefiles. #issue #warning #review
+#		From https://www.gnu.org/software/make/manual/html_node/Environment.html
+#		Currently using many variables like this.
+#			QUESTION: What's best practice?
+
+# Turns off implicit rules etc
+MAKEFLAGS += -rR
+.SUFFIXES :
 
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
@@ -52,8 +61,9 @@ LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/mup2argmap
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
 
-CONFIG_PROCESSED := ${PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED} ${PATH_FILE_CONFIG_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PROCESSED} ${PATH_FILE_ENV_ARGMAP_PRIVATE_PROCESSED}
-CONFIG_PROCESSED += ${PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED} ${PATH_FILE_CONFIG_MAPJS_PROCESSED} ${PATH_FILE_ENV_MAPJS_PROCESSED}
+# If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
+# Sets variable if not already defined
+PATH_PUBLIC ?= NULL
 
 # ###########
 
@@ -61,22 +71,26 @@ all: --public --conda config
 
 --public: ${LINK_TARGETS_PUBLIC}
 --conda: ${LINK_TARGETS_CONDA}
-# TODO: make into --config (and update .PHONY)
-config: ${CONFIG_PROCESSED}
+config: ${LIST_FILES_CONFIG_PROCESSED}
+# echo mf LIST_FILES_CONFIG_PROCESSED: $${LIST_FILES_CONFIG_PROCESSED}
 
 # dev:
 # 	make all
 # 	netlify dev
 
 prints:
-# $(info PATH_PUBLIC:)
-# $(info ${PATH_PUBLIC})
-# $(info PATH_TEST:)
-# $(info ${PATH_TEST})
-# $(info LINK_TARGETS_CONDA:)
-# $(info ${LINK_TARGETS_CONDA})	
-	$(info CONFIG_PROCESSED:)
-	$(info ${CONFIG_PROCESSED})	
+	$(info PATH_PUBLIC:)
+	$(info ${PATH_PUBLIC})
+	$(info PATH_TEST:)
+	$(info ${PATH_TEST})
+# 	$(info LINK_TARGETS_CONDA:)
+# 	$(info ${LINK_TARGETS_CONDA})	
+# 	$(info LIST_FILES_CONFIG_PROCESSED:)
+# 	$(info ${LIST_FILES_CONFIG_PROCESSED})
+# 	$(info PATH_DIR_CONFIG_MAPJS:)
+# 	$(info ${PATH_DIR_CONFIG_MAPJS})
+# 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
+# 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
 # Define a clean target
 # 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
@@ -85,12 +99,13 @@ prints:
 clean:
 	rm -f ${LINK_TARGETS_PUBLIC}	
 	rm -f ${LINK_TARGETS_CONDA}	
-	rm -f ${CONFIG_PROCESSED}
+	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
 # ############
 
 # Process config and environment files
-${PATH_DIR_CONFIG_ARGMAP}/${DIR_PROCESSED}/%-processed.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
+# 	QUESTION: Use more variables?
+${PATH_DIR_CONFIG_ARGMAP}/processed/%-processed.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
 	mkdir -p "$(@D)"
 	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
 
