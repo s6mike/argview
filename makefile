@@ -20,8 +20,8 @@ SHELL := /bin/bash
 #		-- is convention for private targets
 .PHONY: all --public --conda config prints clean # dev
 
-# Stops intermediate files being deleted (e.g. content/X.html)
-# .SECONDARY:
+# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
+.SECONDARY:
 
 # Define variables
 

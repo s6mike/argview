@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.14.1
+
+- Fix `makefile`: Add `.SECONDARY` to stop intermediate file deletion.
+
 ## argmap 22.14.0
 
 - Use `make config` to process majority of config files.
