@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.14.3
+
+- `scripts/bash_aliases_argmap.sh`: `__update_repo()`: Remove `__check_npm_updates()` call to speed up test process.
+
 ## argmap 22.14.2
 
 - `makefile`: Add rule to copy missing env file from default, replacing this functionality in `scripts/init_read_config.sh`.
