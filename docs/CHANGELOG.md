@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.14.2
+
+- `makefile`: Add rule to copy missing env file from default, replacing this functionality in `scripts/init_read_config.sh`.
+
 ## argmap 22.14.1
 
 - Fix `makefile`: Add `.SECONDARY` to stop intermediate file deletion.

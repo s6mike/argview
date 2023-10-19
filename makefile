@@ -67,11 +67,12 @@ PATH_PUBLIC ?= NULL
 
 # ###########
 
-all: --public --conda config
+all: config --public --conda
 
+config: ${LIST_FILES_CONFIG_PROCESSED}
 --public: ${LINK_TARGETS_PUBLIC}
 --conda: ${LINK_TARGETS_CONDA}
-config: ${LIST_FILES_CONFIG_PROCESSED}
+
 # echo mf LIST_FILES_CONFIG_PROCESSED: $${LIST_FILES_CONFIG_PROCESSED}
 
 # dev:
@@ -102,6 +103,10 @@ clean:
 	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
 # ############
+
+# Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
+%.yaml: | %-defaults.yaml
+	cp --no-clobber $*-defaults.yaml $@
 
 # Process config and environment files
 # 	QUESTION: Use more variables?
