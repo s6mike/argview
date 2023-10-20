@@ -1,35 +1,51 @@
 {
-    "title": "argmap-add-child",
-    "steps": [
+  "title": "argmap-add-child",
+  "steps": [
+    {
+      "type": "navigate",
+      "assertedEvents": [
         {
-            "type": "navigate",
-            "assertedEvents": [
-                {
-                    "type": "navigation",
-                    "url": "http://localhost:9001/",
-                    "title": "example1-clearly-false-white-swan-simplified"
-                }
-            ],
-            "url": "http://localhost:9001/"
-        },
-        {
-            "type": "waitForExpression",
-            "expression": "document.getElementsByClassName('mapjs-node').length==6"
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "#menubar-mapjs-1 input.addSubIdea"
-                ]
-            ],
-            "offsetX": 0,
-            "offsetY": 0
-        },
-        {
-            "type": "waitForExpression",
-            "expression": "document.getElementsByClassName('mapjs-node').length==7"
+          "type": "navigation",
+          "url": "http://localhost:9001/",
+          "title": "example1-clearly-false-white-swan-simplified"
         }
-    ]
+      ],
+      "url": "http://localhost:9001/"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==6"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "#menubar-mapjs-1 input.addSubIdea"
+        ]
+      ],
+      "offsetX": 61.12744140625,
+      "offsetY": 9.745094299316406
+    },
+    {
+      "type": "keyDown",
+      "key": "f"
+    },
+    {
+      "type": "keyUp",
+      "key": "f"
+    },
+    {
+      "type": "keyDown",
+      "key": "Enter"
+    },
+    {
+      "type": "keyUp",
+      "key": "Enter"
+    },
+    {
+      "type": "waitForExpression",
+      "expression": "document.getElementsByClassName('mapjs-node').length==8"
+    }
+  ]
 }

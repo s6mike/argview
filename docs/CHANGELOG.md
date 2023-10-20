@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.5
+
+- `test/devtools-recordings/`: Fix scripts to work by entering character into new node:
+  - `argmap-button-undo-redo.json`
+  - `test/devtools-recordings/argmap-add-child.json`
+
 ## argmap 22.15.4
 
 - `mapjs/config/config-mapjs-paths.yaml`: Move `PATH_DIR_CONFIG_MAPJS_PROCESSED` definition here from `config/config-argmap-paths.yaml`.

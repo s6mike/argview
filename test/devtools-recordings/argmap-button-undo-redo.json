@@ -2,60 +2,102 @@
     "title": "argmap-button-undo-redo",
     "steps": [
         {
-            "type": "navigate",
-            "assertedEvents": [
-                {
-                    "type": "navigation",
-                    "url": "http://localhost:9001/",
-                    "title": "Example 1.1 - All swans are white."
-                }
-            ],
-            "url": "http://localhost:9001/"
+          "type": "navigate",
+          "assertedEvents": [
+            {
+              "type": "navigation",
+              "url": "http://localhost:9001/",
+              "title": "example1-clearly-false-white-swan-simplified"
+            }
+          ],
+          "url": "http://localhost:9001/"
         },
         {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "#menubar-mapjs-1 input.addSubIdea"
-                ]
-            ],
-            "offsetX": 0,
-            "offsetY": 0
+          "type": "waitForExpression",
+          "expression": "document.getElementsByClassName('mapjs-node').length==6"
         },
         {
-            "type": "waitForExpression",
-            "expression": "document.getElementsByClassName('mapjs-node').length==7"
+          "type": "click",
+          "target": "main",
+          "selectors": [
+            [
+              "#menubar-mapjs-1 input.addSubIdea"
+            ]
+          ],
+          "offsetX": 61.12744140625,
+          "offsetY": 9.745094299316406
         },
         {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "#menubar-mapjs-1 input.undo"
-                ]
-            ],
-            "offsetX": 20,
-            "offsetY": 6.328125
+          "type": "keyDown",
+          "key": "f"
+        },
+        {
+          "type": "keyUp",
+          "key": "f"
+        },
+        {
+          "type": "keyDown",
+          "key": "Enter"
+        },
+        {
+          "type": "keyUp",
+          "key": "Enter"
+        },
+        {
+          "type": "waitForExpression",
+          "expression": "document.getElementsByClassName('mapjs-node').length==8"
+        },
+        {
+          "type": "click",
+          "target": "main",
+          "selectors": [
+            [
+              "#menubar-mapjs-1 input.undo"
+            ]
+          ],
+          "offsetX": 20,
+          "offsetY": 6.328125
+        },
+        {
+          "type": "click",
+          "target": "main",
+          "selectors": [
+            [
+              "#menubar-mapjs-1 input.undo"
+            ]
+          ],
+          "offsetX": 20,
+          "offsetY": 6.328125
         },
         {
             "type": "waitForExpression",
             "expression": "document.getElementsByClassName('mapjs-node').length==6"
         },
         {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "#menubar-mapjs-1 input.redo"
-                ]
-            ],
-            "offsetX": 22,
-            "offsetY": 12.328125
+          "type": "click",
+          "target": "main",
+          "selectors": [
+            [
+              "#menubar-mapjs-1 input.redo"
+            ]
+          ],
+          "offsetX": 22,
+          "offsetY": 12.328125
+        },
+        {
+          "type": "click",
+          "target": "main",
+          "selectors": [
+            [
+              "#menubar-mapjs-1 input.redo"
+            ]
+          ],
+          "offsetX": 22,
+          "offsetY": 12.328125
         },
         {
             "type": "waitForExpression",
-            "expression": "document.getElementsByClassName('mapjs-node').length==7"
+            "expression": "document.getElementsByClassName('mapjs-node').length==8"
         }
     ]
 }
