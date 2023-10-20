@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.2
+
+- `makefile`:
+  - Use more variables instead of hard coded strings.
+  - Remove variables defined in env files.
+- `scripts/init_read_config.sh`:
+  - Export variables for makefile.
+  - Replace `DIR_PROCESSED` with `KEYWORD_PROCESSED`, ditto:
+    - `scripts/config_read_functions.lib.sh`
+    - `config/config-argmap-paths.yaml`
+- `scripts/install.sh`: Update comment.
+
 ## argmap 22.15.1
 
 - `scripts/argmap_init_script.sh`: Export variables for `makefile`.

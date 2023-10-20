@@ -1,5 +1,9 @@
 # Makefile for argmap
 
+# TODO 
+#		Add make test
+#		Add make help e.g. https://stackoverflow.com/questions/8811526/using-conditional-rules-in-a-makefile
+
 # REVIEW: It is not wise for makefiles to depend for their functioning on environment variables set up outside their control, since this would cause different users to get different results from the same makefile. This is against the whole purpose of most makefiles. #issue #warning #review
 #		From https://www.gnu.org/software/make/manual/html_node/Environment.html
 #		Currently using many variables like this.
@@ -12,10 +16,6 @@ MAKEFLAGS += -rR
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
 
-# TODO 
-#		Add make test
-#		Add make help e.g. https://stackoverflow.com/questions/8811526/using-conditional-rules-in-a-makefile
-
 # Avoids collisions with filenames
 #		-- is convention for private targets
 .PHONY: all --public --conda config prints clean # dev
@@ -24,42 +24,38 @@ SHELL := /bin/bash
 .SECONDARY:
 
 # Define variables
-
 # := simple, assigned once
+
 # 	Need to export required variables at end of argmap_init_script.sh:
 
-# TODO Move to env file
-PATH_PROFILE_LOCAL := /home/s6mike/.local
-# PATH_LUA_ARGMAP := ${PATH_DIR_ARGMAP_LUA}
-#	TODO: /output: Add variable, or replace /output with basename "$(getvar DIR_PUBLIC_OUTPUT)"
 #		QUESTION: Could I run getvar from within makefile instead?
-LINK_TARGETS_PUBLIC := ${PATH_PUBLIC}/output ${PATH_PUBLIC}/input
+LINK_TARGETS_PUBLIC := ${PATH_OUTPUT_PUBLIC} ${PATH_INPUT_PUBLIC}
 
 # Add index.html
 # 	TODO: Use netlify redirect instead
 LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/index.html
-# Ensure lua dependencies available to site for client_argmap2mapjs
+# Ensure lua dependencies available to site for client_argmap2mapjs:
 # LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/lua ${PATH_PUBLIC}/lua_modules
 
-LINK_TARGETS_CONDA := ${PATH_PROFILE_LOCAL}/bin/lua
-LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/bin/convert # Only needed for pre-commit hook
+LINK_TARGETS_CONDA := ${PATH_LUA_LOCAL}
+LINK_TARGETS_CONDA += ${PATH_CONVERT_LOCAL} # Only needed for pre-commit hook (this is to create png files?)
 # Connects legacy data-folder to conda env:
 # 	TODO: add this to conda activation, and delete this link when env deactivated?
 # 	NOTE: can use defaults file to set defalt data directory, should simplify.
-# 	Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
-LINK_TARGETS_CONDA += ${PATH_PROFILE_LOCAL}/share/pandoc
+# 	Alternative is always to use --data-directory "$PATH_PANDOC_GLOBAL/" when calling pandoc
+LINK_TARGETS_CONDA += ${PATH_PANDOC_LOCAL}
 
 # For vscode pandoc extensions:
 #		Currently no link:
-#			LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/config_argmap.lua
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/lua/5.3/config_argmap.lua
+#			LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/config_argmap.lua
+LINK_TARGETS_CONDA += ${PATH_LUA_GLOBAL}/config_argmap.lua
 # For calling from shell
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2mup
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/argmap2tikz
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/bin/mup2argmap
+LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/argmap2mup
+LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/argmap2tikz
+LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 # Adds lua and template files to pandoc data-folder:
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/filters/pandoc-argmap.lua
-LINK_TARGETS_CONDA += ${CONDA_PREFIX}/share/pandoc/templates/examples/example-template.latex
+LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
+LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
 
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
@@ -72,7 +68,6 @@ all: config --public --conda
 config: ${LIST_FILES_CONFIG_PROCESSED}
 --public: ${LINK_TARGETS_PUBLIC}
 --conda: ${LINK_TARGETS_CONDA}
-
 # echo mf LIST_FILES_CONFIG_PROCESSED: $${LIST_FILES_CONFIG_PROCESSED}
 
 # dev:
@@ -110,11 +105,11 @@ clean:
 
 # Process config and environment files
 # 	QUESTION: Use more variables?
-${PATH_DIR_CONFIG_ARGMAP}/processed/%-processed.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
+${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
 	mkdir -p "$(@D)"
 	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
 
-${PATH_DIR_CONFIG_MAPJS_PROCESSED}/%-processed.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
+${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
 	mkdir -p "$(@D)"
 	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
 
@@ -125,7 +120,6 @@ ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 
 # Add index.html
 #	 TODO: Use netlify redirect instead
-#   ln -s "$PATH_FILE_OUTPUT_EXAMPLE" "$PATH_PUBLIC/index.html"
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 	ln -s ${PATH_FILE_OUTPUT_EXAMPLE} $@
 
@@ -134,12 +128,12 @@ ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	ln -s ${CONDA_PREFIX}/$* $@
 
 # For calling lua functions from shell (within conda env)
-${CONDA_PREFIX}/bin/%: | ${PATH_LUA_ARGMAP}/%.lua
+${PATH_BIN_GLOBAL}/%: | ${PATH_LUA_ARGMAP}/%.lua
 	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
 
 # Adds .lua files to pandoc data-folder:
 
-${CONDA_PREFIX}/share/pandoc/filters/%: | ${PATH_LUA_ARGMAP}/%
+${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
@@ -147,7 +141,7 @@ ${CONDA_PREFIX}/share/pandoc/filters/%: | ${PATH_LUA_ARGMAP}/%
 	ln -s ${PATH_LUA_ARGMAP}/$* $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
-${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/%
+${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
 	mkdir -p "$(@D)"
 	ln -s ${WORKSPACE}/$* $@
 
@@ -167,8 +161,8 @@ ${CONDA_PREFIX}/share/pandoc/templates/%: | ${WORKSPACE}/%
 
 # Rule for argmap lua links to conda lua folder
 #   QUESTION: Do I need this one?
-${CONDA_PREFIX}/share/lua/5.3/%: | ${PATH_LUA_ARGMAP}/%
-	ln -s ${PATH_LUA_ARGMAP}/$* $@
+${PATH_LUA_GLOBAL}/%.lua: | ${PATH_LUA_ARGMAP}/%.lua
+	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder

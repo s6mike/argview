@@ -108,7 +108,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   local filename
   local repeat_count=0
   filename=$(basename "$target_config_file")
-  target_dir="$(dirname "$target_config_file")/$DIR_PROCESSED"
+  target_dir="$(dirname "$target_config_file")/$KEYWORD_PROCESSED"
   mkdir --parent "$target_dir"
 
   # Strips yaml extension then adds on this one:
@@ -119,6 +119,8 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # Get nested key value pairs:
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
+  #   REMEMBER: This only expands variables in config files, not env variables
+  #     Might be useful to fix this, could then use env file for boot process
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
   yq -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
   # TODO if no values found then quit

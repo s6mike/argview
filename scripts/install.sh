@@ -185,7 +185,7 @@ if [ "$1" == 'conda' ]; then
 
   # ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
 
-  # Only needed for pre-commit hook:
+  # # Only needed for pre-commit hook (this is to create png files?)
   # ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
 
   # Install testcafe

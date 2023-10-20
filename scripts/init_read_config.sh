@@ -23,8 +23,8 @@ main() {
   # In case env.yaml file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_FILE_ENV_ARGMAP"
 
-  __yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER
-  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" DIR_CONFIG DIR_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
+  __yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER PATH_PROFILE_LOCAL
+  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" DIR_CONFIG KEYWORD_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
   # This part more complex now I have separated paths into two files.
   #   QUESTION: If I could combine them into one before processing perhaps it would be easier?
@@ -34,12 +34,14 @@ main() {
   make "$PATH_DIR_ARGMAP_ROOT/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
 
   # Processes initial files needed for rest
-  export PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$DIR_PROCESSED/environment-argmap-processed.yaml"
+  export PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
   make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
 
-  export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$DIR_PROCESSED/config-argmap-paths-processed.yaml"
+  export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
   make "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
 
+  # TODO: Test without PATH_DIR_CONFIG_MAPJS_PROCESSED
+  #   Remove upstream?
   __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_DIR_CONFIG_MAPJS PATH_DIR_CONFIG_MAPJS_PROCESSED
 
   # Can't use __yaml2env because it's not set to take the -l option
