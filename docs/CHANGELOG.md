@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.6
+
+- `test/test_scripts/tests.sh`: Add fixed tests.
+
 ## argmap 22.15.5
 
 - `test/devtools-recordings/`: Fix scripts to work by entering character into new node:
