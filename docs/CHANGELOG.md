@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.4
+
+- `mapjs/config/config-mapjs-paths.yaml`: Move `PATH_DIR_CONFIG_MAPJS_PROCESSED` definition here from `config/config-argmap-paths.yaml`.
+
 ## argmap 22.15.3
 
 - `scripts/init_read_config.sh`: Remove obsolete `PATH_DIR_CONFIG_MAPJS_PROCESSED` export.
