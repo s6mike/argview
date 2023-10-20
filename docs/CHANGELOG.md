@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.0
+
+- `config/`:
+  - `environment-argmap-defaults.yaml`: Add `HOME`, variables for LOCAL user install paths and GLOBAL user install paths.
+- `mapjs/config/`:
+  - `environment-mapjs-defaults.yaml`: Add `DIR_INPUT`.
+  - `config-mapjs-paths.yaml`: Update commented out variable.
+
 ## argmap 22.14.3
 
 - `scripts/bash_aliases_argmap.sh`: `__update_repo()`: Remove `__check_npm_updates()` call to speed up test process.
