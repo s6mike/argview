@@ -72,7 +72,47 @@ config: ${LIST_FILES_CONFIG_PROCESSED}
 # export CONDA_ENV_ARGMAP="argmap"
 # export XDG_DATA_HOME="${CONDA_PREFIX}/share/"
 
-# echo mf LIST_FILES_CONFIG_PROCESSED: $${LIST_FILES_CONFIG_PROCESSED}
+dev:
+	npm install -g testcafe
+
+# ISSUE: Running this made browser open
+#		TODO: run __clean_repo?
+site: ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+# mkdir -p "${PATH_DIR_MAPJS_ROOT}"
+	npm run pack:prod --prefix "${PATH_DIR_MAPJS_ROOT}"
+# Using the mapjs file `public/output/mapjs-json/example2-clearly-false-white-swan-v3.json`, plus associated html file renamed as index.html
+# - `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
+
+# TODO: for building sites, these should write to public folder directly, not via a symbolic link
+#		i.e. make site should write to public, make test should write to test output		
+# 	Can I do that with a flag or something?
+
+# Generate html from json
+# 	TODO combine this with first v3.html rule
+${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json
+	mkdir -p "$(@D)"
+	2hf -p "$<"
+
+# Generate .json from .yaml
+${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.yaml
+	mkdir -p "$(@D)"
+	a2m "$<"
+
+# Copy .json from input to output, before generating html
+${PATH_DIR_ARGMAP_ROOT}/test/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
+	mkdir -p "$(@D)"
+	cp "$<" "$@"
+
+# Copy .mup from input to output, before generating html
+${PATH_DIR_ARGMAP_ROOT}/test/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
+	mkdir -p "$(@D)"
+	cp "$<" "$@"
+
+${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md
+# Might be able to run pandoc_argmap instead
+	mkdir -p "$(@D)"
+	2hf "$<"
+
 # install: npm lua yq
 # 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
 # 	mkdir --parent "${WORKSPACE/test/output/png}"
@@ -127,9 +167,17 @@ prints:
 #		Have to use -not instead of -prune because -delete is not compatible with -prune
 # 	TODO Add __clean_repo()
 clean:
-	rm -f ${LINK_TARGETS_PUBLIC}	
+	rm -f ${LINK_TARGETS_PUBLIC}
 	rm -f ${LINK_TARGETS_CONDA}	
-	rm -f ${LIST_FILES_CONFIG_PROCESSED}
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
+	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+# argmap cleans
+	__clean_repo
+# delete public/js, lua_modules, node_modules, 
+# luarocks remove
+# Delete these last since it will stop config var lookups working
+# rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
 # ############
 

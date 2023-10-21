@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.16.0
+
+- `makefile`:
+  - Add `make site` to build `mapjs-argview` html files and run npm build process.
+    - Add rules for creating html files from `mapjs-json` data, for creating `mapjs-json` from argmap `yaml` files, and for making html files from `markdown`.
+  - Add `make dev` to install `testcafe`.
+  - Update `make clean` to delete generated site files, and run `__clean_repo`.
+
 ## argmap 22.15.10
 
 - `makefile`:
