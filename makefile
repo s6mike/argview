@@ -67,8 +67,42 @@ all: config --public --conda
 
 config: ${LIST_FILES_CONFIG_PROCESSED}
 --public: ${LINK_TARGETS_PUBLIC}
+
 --conda: ${LINK_TARGETS_CONDA}
+# export CONDA_ENV_ARGMAP="argmap"
+# export XDG_DATA_HOME="${CONDA_PREFIX}/share/"
+
 # echo mf LIST_FILES_CONFIG_PROCESSED: $${LIST_FILES_CONFIG_PROCESSED}
+# install: npm lua yq
+# 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
+# 	mkdir --parent "${WORKSPACE/test/output/png}"
+# 	mkdir --parent "${WORKSPACE/test/output/html}"
+
+# npm:
+# 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"
+# 	npm audit fix --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" --legacy-peer-deps >npm_audit_output.txt
+# # Running qa_rockspec will also install dependencies
+
+# lua:
+# 	scripts/qa_rockspec.sh
+# # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
+# # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
+# # https://tex.stackexchange.com/questions/630111/install-lualatex-for-use-on-the-command-line
+# 	apt-get install texlive-latex-extra
+# 	apt-get install texlive-luatex
+# # TODO: for other users would need to install argmap in current directory
+# 	chmod u+x "${PATH_DIR_ARGMAP_LUA}/"*
+# 	chmod u+x "${PATH_FOLDER_ARGMAP_SRC}/js/"*
+# 	rockspec_file=$(_find_rockspec) # Gets absolute path
+# __test luarocks lint "$(__find_rockspec)"
+# # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
+# #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
+#   luarocks remove
+#   luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
+
+# yq:
+# 	sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+# 	chmod u+x "$HOME/.local/bin/yq"
 
 # dev:
 # 	make all
@@ -107,29 +141,36 @@ clean:
 # 	QUESTION: Use more variables?
 ${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
 	mkdir -p "$(@D)"
-	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
+	preprocess_config "$<"
 
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
 	mkdir -p "$(@D)"
-	. scripts/config_read_functions.lib.sh && preprocess_config "$<"
+	preprocess_config "$<"
 
 # Rule for public links
 #  after | is order only pre-requisite, doesn't update based on timestamps
 ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
-	ln -s ${PATH_TEST}/$* $@
+	ln -s $| $@
+
+# Makes required folder if not present
+# 	Hope this isn't hostage to fortune! since make public/anything will create this folder in test and then symlink to it from public
+#		TODO: Replace % with $(DIRECTORIES), matching the relevant directories: input, output, mapjs-json, html, mapjs-json
+#			Chatgpt suggestion, not sure it works that way: https://chat.openai.com/c/7b2b5fd5-6431-4c16-bd49-ddba40a6df45
+# ${PATH_TEST}/%:
+# 	mkdir -p "$(@D)"
 
 # Add index.html
 #	 TODO: Use netlify redirect instead
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
-	ln -s ${PATH_FILE_OUTPUT_EXAMPLE} $@
+	ln -s $| $@
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
-	ln -s ${CONDA_PREFIX}/$* $@
+	ln -s $| $@
 
 # For calling lua functions from shell (within conda env)
 ${PATH_BIN_GLOBAL}/%: | ${PATH_LUA_ARGMAP}/%.lua
-	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
+	ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
 
@@ -138,22 +179,22 @@ ${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_LUA_ARGMAP}/%
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
 	mkdir -p "$(@D)"
-	ln -s ${PATH_LUA_ARGMAP}/$* $@
+	ln -s $| $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
 ${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
 	mkdir -p "$(@D)"
-	ln -s ${WORKSPACE}/$* $@
+	ln -s $| $@
 
 # Ensure lua dependencies available to site for client_argmap2mapjs
 # ${PATH_PUBLIC}/%: | ${PATH_LUA_ARGMAP}
-# 	ln -s ${PATH_LUA_ARGMAP} $@
+# 	ln -s $| $@
 
 # ${PATH_PUBLIC}/%: | ${WORKSPACE}/%
-# 	ln -s ${WORKSPACE}/% $@
+# 	ln -s $| $@
 
 # ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
-# ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
+# ln -s $| "$PATH_PUBLIC/lua_modules"
 
 # For vscode pandoc extensions (1,2,3):
 
@@ -162,12 +203,12 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
 # Rule for argmap lua links to conda lua folder
 #   QUESTION: Do I need this one?
 ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_LUA_ARGMAP}/%.lua
-	ln -s ${PATH_LUA_ARGMAP}/$*.lua $@
+	ln -s $| $@
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder
 # ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
-# 	ln -s ${PATH_LUA_ARGMAP}/$* $@
+# 	ln -s $| $@
 
 #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
 # rm /js
@@ -177,8 +218,8 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_LUA_ARGMAP}/%.lua
 # 3. Install rockspec in global scope
 
 # rockspec_file=$(_find_rockspec) # Gets absolute path
-# # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
-# #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
+# Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
+#   Might be able to uninstall argamp if I've installed it all rather than just dependencies
 
 # luarocks remove
 # luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"

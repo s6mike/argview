@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.10
+
+- `makefile`:
+  - Add commented out commands from `install.sh`
+  - Simplify existing calls to `preprocess_config()`.
+  - Use `$|` to refer to order only depedencies.
+
 ## argmap 22.15.9
 
 - `scripts/`:
