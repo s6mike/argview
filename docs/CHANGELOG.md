@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.7
+
+- `config/config-argmap-paths.yaml`: Add `PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX` to be used as `make site` dependency.
+
 ## argmap 22.15.6
 
 - `test/test_scripts/tests.sh`: Add fixed tests.
