@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.16.1
+
+`scripts/argmap_init_script.sh`: Export `PATH_MAPJS_HTML_DIST_TAGS` so webpack html plugin generates `webpack-dist-tags.html` in the correct directory.
+
 ## argmap 22.16.0
 
 - `makefile`:
