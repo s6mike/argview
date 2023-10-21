@@ -100,16 +100,16 @@ __reset_repo() {
 }
 
 __clean_repo() {
-  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.yaml"
-  rm "$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/example1-clearly-false-white-swan-simplified.json"
-  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.tex"
-  rm "$PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
-  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
-  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
-  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
-  rm "$PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
-  rm "$PATH_OUTPUT_LOCAL/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
-  rm "$PATH_TEST_LOG"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified.yaml"
+  rm -f "$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/example1-clearly-false-white-swan-simplified.json"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified.tex"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/html/example1-clearly-false-white-swan-simplified-1mapjs.html"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/html/example1-clearly-false-white-swan-simplified-2mapjs.html"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html"
+  rm -f "$(getvar PATH_OUTPUT_LOCAL)/png/f54eea6ed0c060c9d27e1fe3507bfdd75e3e60d4.png"
+  rm -f "$(getvar PATH_TEST_LOG)"
 }
 
 __save_env() {
