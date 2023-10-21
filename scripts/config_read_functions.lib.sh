@@ -193,4 +193,4 @@ getvar() { # gq PATH_FILE_CONFIG_MAPJS
 }
 
 export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar process_all_config_inputs
-export -f log
+export -f log preprocess_config count_characters

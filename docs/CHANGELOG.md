@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.15.9
+
+- `scripts/`:
+  - `argmap_init_script.sh`: Export variables needed by `make site`.
+  - `config_read_functions.lib.sh`: Export functions needed by `make site`.
+
 ## argmap 22.15.8
 
 - `scripts/bash_aliases_argmap.sh`: Use `getvar()` to call `__clean_repo()` variables so that it will work when called from makefile.
