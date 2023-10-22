@@ -95,7 +95,7 @@ clean:
 	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
 	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
 	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
-	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} 
+# rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} # Takes too long to build and breaks things to best not to delete
 	rm -r ${PATH_OUTPUT_JS}
 # argmap cleans
 	__clean_repo

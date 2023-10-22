@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.17.4
+
+- `makefile`: Stop `make clean` deleting js template tag since takes too long to build so breaks tests etc too easily.
+
 ## argmap 22.17.3
 
 - `makefile`: Move `make clean` higher in file for clarity.
