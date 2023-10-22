@@ -93,11 +93,13 @@ export PATH_LUA_LOCAL PATH_CONVERT_LOCAL PATH_PANDOC_LOCAL PATH_BIN_GLOBAL PATH_
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
 PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX=$(getvar PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX)
+PATH_OUTPUT_JS=$(getvar PATH_OUTPUT_JS)
 export PATH_DIR_MAPJS_ROOT PATH_FILE_OUTPUT_EXAMPLE PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX
+export PATH_OUTPUT_JS
 
-# For webpack `webpack-dist-tags.html` generation.
-PATH_MAPJS_HTML_DIST_TAGS=$(getvar PATH_MAPJS_HTML_DIST_TAGS)
-export PATH_MAPJS_HTML_DIST_TAGS
+# For `webpack-dist-tags.html` generation.
+PATH_FILE_MAPJS_HTML_DIST_TAGS=$(getvar PATH_FILE_MAPJS_HTML_DIST_TAGS)
+export PATH_FILE_MAPJS_HTML_DIST_TAGS
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all # --warn-undefined-variables, -d for debugging

@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.17.0
+
+- `mapjs/config/environment-mapjs-defaults.yaml`: Add `PATH_OUTPUT_JS`.
+- `mapjs/config/config-mapjs-paths.yaml`: Replace `PATH_MAPJS_HTML_DIST_TAGS` with `PATH_FILE_MAPJS_HTML_DIST_TAGS`.
+  - Update `mapjs/webpack.config.js` to use `PATH_MAPJS_HTML_DIST_TAGS`
+- `scripts/argmap_init_script.sh`: Export new vars for use in `make site` rules.
+
 ## argmap 22.16.1
 
 `scripts/argmap_init_script.sh`: Export `PATH_MAPJS_HTML_DIST_TAGS` so webpack html plugin generates `webpack-dist-tags.html` in the correct directory.
