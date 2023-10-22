@@ -75,22 +75,25 @@ config: ${LIST_FILES_CONFIG_PROCESSED}
 dev:
 	npm install -g testcafe
 
-# ISSUE: Running this made browser open
-#		TODO: run __clean_repo?
-site: ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
-# mkdir -p "${PATH_DIR_MAPJS_ROOT}"
-	npm run pack:prod --prefix "${PATH_DIR_MAPJS_ROOT}"
+#	QUESTION: run __clean_repo before building site?
+site: ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX} ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Using the mapjs file `public/output/mapjs-json/example2-clearly-false-white-swan-v3.json`, plus associated html file renamed as index.html
 # - `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
 
 # TODO: for building sites, these should write to public folder directly, not via a symbolic link
 #		i.e. make site should write to public, make test should write to test output		
+#			plus webpack-dist-tags should also be written there directly not by redirect
 # 	Can I do that with a flag or something?
+
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
+	mkdir -p "${@D}"
+	npm run pack:prod --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # Generate html from json
 # 	TODO combine this with first v3.html rule
-${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json
+${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	mkdir -p "$(@D)"
+# TODO: need to wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running this
 	2hf -p "$<"
 
 # Generate .json from .yaml
@@ -108,10 +111,11 @@ ${PATH_DIR_ARGMAP_ROOT}/test/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%
 	mkdir -p "$(@D)"
 	cp "$<" "$@"
 
-${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md
+${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Might be able to run pandoc_argmap instead
 	mkdir -p "$(@D)"
-	2hf "$<"
+# TODO: need to wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running this
+	2hf -p "$<"
 
 # install: npm lua yq
 # 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
@@ -172,6 +176,8 @@ clean:
 	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
 	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
 	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} 
+	rm -r ${PATH_OUTPUT_JS}
 # argmap cleans
 	__clean_repo
 # delete public/js, lua_modules, node_modules, 

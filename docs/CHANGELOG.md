@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.17.1
+
+- `makefile`:
+  - Add logic for 2 html dependencies - `main.js` and js template tag:
+    - Add rule for only running npm pack to build these files, rather than every time `make site` is run.
+    - Add these two files as dependencies for creating html files.
+    - Update `make clean` to delete above two files.
+- Fix md to html rule to not open created html file.
+
 ## argmap 22.17.0
 
 - `mapjs/config/environment-mapjs-defaults.yaml`: Add `PATH_OUTPUT_JS`.
