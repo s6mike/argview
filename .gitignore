@@ -13,9 +13,10 @@ lua_modules/
 mapjs/node_modules
 mapjs/public/output
 mapjs/public/input
-mapjs/public/js/*bundle.js
+mapjs/public/js
 mapjs/public/index.html
 examples/*
+src/layouts/includes/webpack-dist-tags.html
 scripts/experiments.sh
 test/output*/*
 tmp/
