@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.17.5
+
+- `mapjs/config/environment-mapjs-defaults.yaml`: Add 2 vars for `public/output` directories, for cleaning them up ready for `make site`.
+
 ## argmap 22.17.4
 
 - `makefile`: Stop `make clean` deleting js template tag since takes too long to build so breaks tests etc too easily.
