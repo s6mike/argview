@@ -85,6 +85,27 @@ site: ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX} ${PATH_FI
 #			plus webpack-dist-tags should also be written there directly not by redirect
 # 	Can I do that with a flag or something?
 
+# Define a clean target
+# 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
+#		Have to use -not instead of -prune because -delete is not compatible with -prune
+# 	TODO Add __clean_repo()
+clean:
+	rm -f ${LINK_TARGETS_PUBLIC}
+	rm -f ${LINK_TARGETS_CONDA}	
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
+	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} 
+	rm -r ${PATH_OUTPUT_JS}
+# argmap cleans
+	__clean_repo
+# delete public/js, lua_modules, node_modules, 
+# luarocks remove
+# Delete these last since it will stop config var lookups working
+# rm -f ${LIST_FILES_CONFIG_PROCESSED}
+
+# ###########
+
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 	mkdir -p "${@D}"
 	npm run pack:prod --prefix "${PATH_DIR_MAPJS_ROOT}"
@@ -165,25 +186,6 @@ prints:
 # 	$(info ${PATH_DIR_CONFIG_MAPJS})
 # 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
-
-# Define a clean target
-# 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
-#		Have to use -not instead of -prune because -delete is not compatible with -prune
-# 	TODO Add __clean_repo()
-clean:
-	rm -f ${LINK_TARGETS_PUBLIC}
-	rm -f ${LINK_TARGETS_CONDA}	
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
-	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
-	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} 
-	rm -r ${PATH_OUTPUT_JS}
-# argmap cleans
-	__clean_repo
-# delete public/js, lua_modules, node_modules, 
-# luarocks remove
-# Delete these last since it will stop config var lookups working
-# rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
 # ############
 
