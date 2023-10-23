@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.23.3
+
+- `config/environment-argmap-defaults.yaml`: Use better variable in `LUA_PATH`.
+
 ## argmap 22.23.2
 
 - `scripts/`: Use `set -o allexport` instead of export when many variables to export:
