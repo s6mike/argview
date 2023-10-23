@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.22.1
+
+- `test/test_scripts/tests.sh`:
+  - Call `make site_clean` and `make public` before calling `make all` to ensure `make site` changes are removed (i.e. test symlinks are restored).
+  - Set `MODE:=dev` for `make all` call.
+
 ## argmap 22.22.0
 
 - `makefile`:
