@@ -65,7 +65,7 @@ __test() {
   echo -en "$PRE "
 
   # Could return pass/fail instead: return $returnValue (or alternatively would returnVariable work?)
-  if "$@" >>"$PATH_TEST_LOG"; then
+  if "$@" >>"$(getvar PATH_TEST_LOG)"; then
     echo -e "${COL_PASS}Pass${COL_RESET}"
   else
     echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
@@ -100,7 +100,7 @@ test_getvar() {
   remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
-    "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap-paths.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs-paths.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml" \
+    "/home/s6mike/git_projects/argmap/config/environment-argmap.yaml /home/s6mike/git_projects/argmap/config/config-argmap-paths.yaml /home/s6mike/git_projects/argmap/config/config-argmap.yaml /home/s6mike/git_projects/argmap/config/PRIVATE-environment-argmap.yaml /home/s6mike/git_projects/argmap/mapjs/config/environment-mapjs.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs-paths.yaml /home/s6mike/git_projects/argmap/mapjs/config/config-mapjs.yaml" \
     "-l" #10-14
   LIST_FILES_CONFIG_INPUT=$remember
 }

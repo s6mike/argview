@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.23.4
+
+- `test/test_scripts/`: Use `getvar()` with all vars so no need to export from `argmap.env`:
+  - `bash_aliases_argmap_test.sh`
+  - `tests.sh`
+
 ## argmap 22.23.3
 
 - `config/environment-argmap-defaults.yaml`: Use better variable in `LUA_PATH`.
