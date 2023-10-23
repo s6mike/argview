@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
+# Turns off unused variable warning, since exports are implicit due to set -o allexport
 
 echo "Running ${BASH_SOURCE[0]}"
 
@@ -12,8 +14,10 @@ source "$HOME/.bashrc"
 # TODO should set to $HOME/local/argmap by default
 #   Add check whether $HOME/git_projects/argmap exists, then set as above instead
 #   Or use .env file?
-export WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
-export PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
+set -o allexport
+WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap} # export
+PATH_DIR_SCRIPTS="$WORKSPACE/scripts"             # export
+set +o allexport
 
 # For trying stuff:
 #   source "$WORKSPACE/scripts/experiment.sh"
@@ -23,9 +27,11 @@ source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 
 # TODO remove stuff covered by `init_read_config.sh`
 # Needed for scripts/argmap.env tmp chrome profile:
+set -o allexport
 DIR_PROJECTS=$(dirname "$WORKSPACE")
-export DIR_PROJECTS
-export PATH_MISC_DEV=$DIR_PROJECTS/misc
+# export DIR_PROJECTS
+PATH_MISC_DEV=$DIR_PROJECTS/misc # export
+set +o allexport
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
 source "$PATH_DIR_SCRIPTS/argmap.env"
@@ -34,10 +40,12 @@ source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
 # source "$HOME/scripts/config.env"
 
-# TODO: normal install shouldn't use conda, so should set up to give option for either
-
+# QUESTION move to end of file?
+#   TODO: normal install shouldn't use conda, so should set up to give option for either
+set -o allexport
 CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
-export CONDA_ENV_ARGMAP
+set +o allexport
+# export CONDA_ENV_ARGMAP
 
 # Covered by default init script
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
@@ -73,6 +81,8 @@ eval "$(pandoc --bash-completion)"
 
 source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 
+set -o allexport
+
 PATH_PUBLIC=$(getvar PATH_PUBLIC)
 PATH_TEST=$(getvar PATH_TEST)
 CONDA_PREFIX=$(getvar CONDA_PREFIX)
@@ -88,27 +98,29 @@ PATH_LUA_GLOBAL=$(getvar PATH_LUA_GLOBAL)
 # TODO: rename orig var to PATH_LUA_ARGMAP
 PATH_LUA_ARGMAP=$(getvar PATH_DIR_ARGMAP_LUA)
 
-export WORKSPACE PATH_PUBLIC PATH_TEST PATH_INPUT_PUBLIC PATH_OUTPUT_PUBLIC CONDA_PREFIX PATH_LUA_ARGMAP
-export PATH_FILE_OUTPUT_EXAMPLE
-export PATH_LUA_LOCAL PATH_CONVERT_LOCAL PATH_PANDOC_LOCAL PATH_BIN_GLOBAL PATH_PANDOC_GLOBAL PATH_LUA_GLOBAL
+# export WORKSPACE PATH_PUBLIC PATH_TEST PATH_INPUT_PUBLIC PATH_OUTPUT_PUBLIC CONDA_PREFIX PATH_LUA_ARGMAP
+# export PATH_FILE_OUTPUT_EXAMPLE
+# export PATH_LUA_LOCAL PATH_CONVERT_LOCAL PATH_PANDOC_LOCAL PATH_BIN_GLOBAL PATH_PANDOC_GLOBAL PATH_LUA_GLOBAL
 
 # make site dependencies:
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
 PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX=$(getvar PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX)
 PATH_OUTPUT_JS=$(getvar PATH_OUTPUT_JS)
-export PATH_DIR_MAPJS_ROOT PATH_FILE_OUTPUT_EXAMPLE PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX
-export PATH_OUTPUT_JS
+# export PATH_DIR_MAPJS_ROOT PATH_FILE_OUTPUT_EXAMPLE PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX
+# export PATH_OUTPUT_JS
 
 # For `webpack-dist-tags.html` generation.
 PATH_FILE_MAPJS_HTML_DIST_TAGS=$(getvar PATH_FILE_MAPJS_HTML_DIST_TAGS)
-export PATH_FILE_MAPJS_HTML_DIST_TAGS
+# export PATH_FILE_MAPJS_HTML_DIST_TAGS
 
 # For cleaning html output
 PATH_OUTPUT_HTML_PUBLIC=$(getvar PATH_OUTPUT_HTML_PUBLIC)
-export PATH_OUTPUT_HTML_PUBLIC
+# export PATH_OUTPUT_HTML_PUBLIC
 PATH_OUTPUT_MAPJS_PUBLIC=$(getvar PATH_OUTPUT_MAPJS_PUBLIC)
-export PATH_OUTPUT_MAPJS_PUBLIC
+# export PATH_OUTPUT_MAPJS_PUBLIC
+
+set +o allexport
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all # --warn-undefined-variables, -d for debugging

@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.23.2
+
+- `scripts/`: Use `set -o allexport` instead of export when many variables to export:
+  - `argmap_init_script.sh`
+  - `scripts/init_read_config.sh`
+
 ## argmap 22.23.1
 
 - `netlify.toml`: Update `[build] command` to be `./scripts/argmap_init_script.sh && make site`.

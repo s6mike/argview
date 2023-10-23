@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
+# Turns off unused variable warning, since exports are implicit due to set -o allexport
 
 main() {
   # Bootstraps the config file processing (var expansion).
@@ -16,9 +18,11 @@ main() {
   source "$PATH_DIR_ARGMAP_ROOT/scripts/config_read_functions.lib.sh"
 
   # TODO could move all env variablaes in this script to argmap.env file, after tidying that up
-  export PATH_FILE_ENV_ARGMAP="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap.yaml"
-  export PATH_FILE_ENV_ARGMAP_DEFAULTS="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap-defaults.yaml"
-  export PATH_FILE_CONFIG_ARGMAP_PATHS="$PATH_DIR_ARGMAP_ROOT/config/config-argmap-paths.yaml"
+  set -o allexport
+  PATH_FILE_ENV_ARGMAP="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap.yaml"
+  PATH_FILE_ENV_ARGMAP_DEFAULTS="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap-defaults.yaml"
+  PATH_FILE_CONFIG_ARGMAP_PATHS="$PATH_DIR_ARGMAP_ROOT/config/config-argmap-paths.yaml"
+  set +o allexport
 
   # In case env.yaml file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_FILE_ENV_ARGMAP"
@@ -34,10 +38,12 @@ main() {
   make "$PATH_DIR_ARGMAP_ROOT/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
 
   # Processes initial files needed for rest
-  export PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
-  make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
+  set -o allexport
+  PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
+  PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
+  set +o allexport
 
-  export PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
+  make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
   make "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
 
   __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_DIR_CONFIG_MAPJS
