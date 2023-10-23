@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.23.5
+
+- `scripts/`:
+  - `argmap_init_script.sh`: Export var definitions removed from `argmap.env`
+    - Move `argmap.env` call to start of file so can be used to prep initial config read process.
+  - `argmap.env`: Comment out all exports and definitions.
+
 ## argmap 22.23.4
 
 - `test/test_scripts/`: Use `getvar()` with all vars so no need to export from `argmap.env`:

@@ -15,8 +15,12 @@ source "$HOME/.bashrc"
 #   Add check whether $HOME/git_projects/argmap exists, then set as above instead
 #   Or use .env file?
 set -o allexport
-WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap} # export
-PATH_DIR_SCRIPTS="$WORKSPACE/scripts"             # export
+# QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
+WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
+PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
+
+shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
+source "$PATH_DIR_SCRIPTS/argmap.env"
 set +o allexport
 
 # For trying stuff:
@@ -29,12 +33,9 @@ source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 # Needed for scripts/argmap.env tmp chrome profile:
 set -o allexport
 DIR_PROJECTS=$(dirname "$WORKSPACE")
-# export DIR_PROJECTS
-PATH_MISC_DEV=$DIR_PROJECTS/misc # export
+PATH_MISC_DEV=$DIR_PROJECTS/misc
 set +o allexport
 
-# shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
-source "$PATH_DIR_SCRIPTS/argmap.env"
 # shellcheck disable=SC1091
 source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
@@ -44,8 +45,19 @@ source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 #   TODO: normal install shouldn't use conda, so should set up to give option for either
 set -o allexport
 CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
+
+# Adds lua folder to start of PATH so lua files called from there instead of /opt/miniconda3/envs/argmap/bin/argmap2mup
+#  QUESTION: Combine these?
+PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
+PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
+PATH="$PATH_DIR_ARGMAP_LUA:$PATH"
+# PANDOC - needed for pandoc-argamp.lua until lua reads config directly
+PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
+LUA_PATH=$(getvar LUA_PATH)
+# Not sure if this is needed:
+LUA_CPATH=$(getvar LUA_CPATH)
+PATH_TEST_LOG=$(getvar PATH_TEST_LOG)
 set +o allexport
-# export CONDA_ENV_ARGMAP
 
 # Covered by default init script
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
@@ -98,28 +110,18 @@ PATH_LUA_GLOBAL=$(getvar PATH_LUA_GLOBAL)
 # TODO: rename orig var to PATH_LUA_ARGMAP
 PATH_LUA_ARGMAP=$(getvar PATH_DIR_ARGMAP_LUA)
 
-# export WORKSPACE PATH_PUBLIC PATH_TEST PATH_INPUT_PUBLIC PATH_OUTPUT_PUBLIC CONDA_PREFIX PATH_LUA_ARGMAP
-# export PATH_FILE_OUTPUT_EXAMPLE
-# export PATH_LUA_LOCAL PATH_CONVERT_LOCAL PATH_PANDOC_LOCAL PATH_BIN_GLOBAL PATH_PANDOC_GLOBAL PATH_LUA_GLOBAL
-
 # make site dependencies:
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
 PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
 PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX=$(getvar PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX)
 PATH_OUTPUT_JS=$(getvar PATH_OUTPUT_JS)
-# export PATH_DIR_MAPJS_ROOT PATH_FILE_OUTPUT_EXAMPLE PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX
-# export PATH_OUTPUT_JS
 
 # For `webpack-dist-tags.html` generation.
 PATH_FILE_MAPJS_HTML_DIST_TAGS=$(getvar PATH_FILE_MAPJS_HTML_DIST_TAGS)
-# export PATH_FILE_MAPJS_HTML_DIST_TAGS
 
 # For cleaning html output
 PATH_OUTPUT_HTML_PUBLIC=$(getvar PATH_OUTPUT_HTML_PUBLIC)
-# export PATH_OUTPUT_HTML_PUBLIC
 PATH_OUTPUT_MAPJS_PUBLIC=$(getvar PATH_OUTPUT_MAPJS_PUBLIC)
-# export PATH_OUTPUT_MAPJS_PUBLIC
-
 set +o allexport
 
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
