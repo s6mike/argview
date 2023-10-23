@@ -65,6 +65,7 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
+# YQ := ${HOME}/.local/bin/yq
 
 # ###########
 
@@ -112,18 +113,36 @@ clean: site_clean
 # Delete these last since it will stop config var lookups working
 	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
-install:
-	npm install -g testcafe
-
-# install: npm lua yq
+install: yq # npm lua
 # 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
 # 	mkdir --parent "${WORKSPACE/test/output/png}"
 # 	mkdir --parent "${WORKSPACE/test/output/html}"
+
+yq: binrc
+# Test for ENV
+# netlify: binrc
+	binrc install mikefarah/yq 4.30.8
+# vscode: make YQ
+# YQ:
+# sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+# chmod u+x "$HOME/.local/bin/yq"
+
+
+binrc:
+	binrc install netlify/binrc 0.2.0
 
 # npm:
 # 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"
 # 	npm audit fix --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" --legacy-peer-deps >npm_audit_output.txt
 # # Running qa_rockspec will also install dependencies
+# Should be able to distinguish between dev and prod install with npm and thuse choose whether 
+# testcafe etc are installed.
+# So shouldn't need this:
+# # Dev tools
+# testcafe:
+# 	ifeq ($(MODE), dev)
+#     npm install -g testcafe
+#   endif
 
 # lua:
 # 	scripts/qa_rockspec.sh
@@ -141,10 +160,6 @@ install:
 # #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
 #   luarocks remove
 #   luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
-
-# yq:
-# 	sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-# 	chmod u+x "$HOME/.local/bin/yq"
 
 # dev:
 # 	make all
@@ -164,7 +179,7 @@ prints:
 # 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
-site: MODE := prod 
+site: MODE := prod
 site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
 
 start: site

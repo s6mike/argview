@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.0
+
+- `makefile`: `make install` now installs `yq` for netlify.
+
 ## argmap 22.23.7
 
 - `scripts/`:
