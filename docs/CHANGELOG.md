@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.23.7
+
+- `scripts/`:
+  - `argmap.env`: Add blank placeholders for initial variables needed to be overriden by netlify env.
+  - `argmap-netlify.env`: Copy argmap.env with relative path overrides set for some variables.
+  
 ## argmap 22.23.6
 
 - `scripts/argmap_init_script.sh`: Update for compatibility with netlify:
