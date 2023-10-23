@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.3.0
+
+- `makefile`: Add `make start` for .netlify to run `/scripts/argmap_init_script.sh` before `make site`.
+
 ## argmap 22.22.2
 
 - `test/test_scripts/tests.sh`: Remove obsolete calls covered by `makefile`.
