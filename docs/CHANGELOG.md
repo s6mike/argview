@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.21.0
+
+- `netlify.toml`:
+  - Move to repo root from `mapjs/public/`.
+  - Update `[build]` `publish` and `command` commands for buiding `mapjs-argview`.
+
 ## argmap 22.20.0
 
 - `makefile`:
