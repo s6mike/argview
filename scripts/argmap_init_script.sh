@@ -101,5 +101,11 @@ export PATH_OUTPUT_JS
 PATH_FILE_MAPJS_HTML_DIST_TAGS=$(getvar PATH_FILE_MAPJS_HTML_DIST_TAGS)
 export PATH_FILE_MAPJS_HTML_DIST_TAGS
 
+# For cleaning html output
+PATH_OUTPUT_HTML_PUBLIC=$(getvar PATH_OUTPUT_HTML_PUBLIC)
+export PATH_OUTPUT_HTML_PUBLIC
+PATH_OUTPUT_MAPJS_PUBLIC=$(getvar PATH_OUTPUT_MAPJS_PUBLIC)
+export PATH_OUTPUT_MAPJS_PUBLIC
+
 # QUESTION: Better to define above variables as part of make call instead of exporting them?
 make all # --warn-undefined-variables, -d for debugging

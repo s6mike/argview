@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.17.6
+
+- `scripts/argmap_init_script.sh`: Export 2 new `public/output` directory vars for `makefile` use.
+
 ## argmap 22.17.5
 
 - `mapjs/config/environment-mapjs-defaults.yaml`: Add 2 vars for `public/output` directories, for cleaning them up ready for `make site`.
