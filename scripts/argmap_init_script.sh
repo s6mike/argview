@@ -19,7 +19,7 @@ set -o allexport
 WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 
-shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
+# shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
 source "$PATH_DIR_SCRIPTS/argmap.env"
 set +o allexport
 
@@ -32,7 +32,7 @@ source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 # TODO remove stuff covered by `init_read_config.sh`
 # Needed for scripts/argmap.env tmp chrome profile:
 set -o allexport
-DIR_PROJECTS=$(dirname "$WORKSPACE")
+DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
 PATH_MISC_DEV=$DIR_PROJECTS/misc
 set +o allexport
 
