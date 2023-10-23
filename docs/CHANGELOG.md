@@ -6,6 +6,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.2
+
+- Replace
+
+## argmap 22.24.1
+
+- `scripts/`:
+  - `argmap_init_script.sh`: Add conditional logic based on NETLIFY var.  NETLIFY true runs `make install`.
+  - `scripts/argmap.env`: Add NETLIFY=false.
+- `makefile`: Add NETLIFY comment.
+
 ## argmap 22.24.0
 
 - `makefile`: `make install` now installs `yq` for netlify.

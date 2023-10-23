@@ -119,7 +119,7 @@ install: yq # npm lua
 # 	mkdir --parent "${WORKSPACE/test/output/html}"
 
 yq: binrc
-# Test for ENV
+# Test for NETLIFY true
 # netlify: binrc
 	binrc install mikefarah/yq 4.30.8
 # vscode: make YQ

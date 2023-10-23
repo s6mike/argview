@@ -4,11 +4,21 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
-# shellcheck source=/home/s6mike/.bashrc
-source "$HOME/.bashrc"
+export NETLIFY=${NETLIFY:-false}
+export MODE=${MODE:-dev}
 
-# shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
-# source "$HOME/scripts/default_vscode_init_script.sh"
+# shellcheck source=/home/s6mike/.bashrc
+case $NETLIFY in
+
+true)
+  make install
+  ;;
+*)
+  source "$HOME/.bashrc"
+  # source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
+  # source "$HOME/scripts/default_vscode_init_script.sh"
+  ;;
+esac
 
 # Needed for non-VSCode environments:
 # TODO should set to $HOME/local/argmap by default
