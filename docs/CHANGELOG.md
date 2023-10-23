@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.19.0
+
+- `scripts/bash_aliases_argmap.sh`: Add `-s` flag to `2hf()` for site mode, which creates html output files in `mapjs/public/output/html` rather than `test/output/html`, for using `make site` to generate website in `public` folder.
+
 ## argmap 22.18.0
 
 - `config/environment-argmap-defaults.yaml`: Move `make site` example html files to here from `config/config-argmap-paths.yaml`.

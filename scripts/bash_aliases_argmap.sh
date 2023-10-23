@@ -183,18 +183,22 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 #   Though lua solution might be even better than bash one
 2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
   default_template=""
+  path_output=PATH_OUTPUT_LOCAL
 
   #TODO set quite and pipe to false so test can be == false
 
   # doesn't open browser if -p used for Pipe mode
   OPTIND=1
-  while getopts ":qp" option; do # Leading ':' in ":p" removes error message if no recognised options
+  while getopts ":qps" option; do # Leading ':' in ":p" removes error message if no recognised options
     case $option in
     q) # quiet mode - doesn't print output path at end
       local quiet=true
       ;;
     p) # pipe mode - doesn't open browser, so only side effect is outputting filename, so can be piped to next command.
       local pipe=true
+      ;;
+    s) # site mode - always sends output to public folder
+      local path_output=PATH_OUTPUT_PUBLIC
       ;;
     *) ;;
     esac
@@ -236,7 +240,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
   #   TODO ideally would be more flexible with output location e.g. default to standard location but pick either filename or whole directory
-  output=$(getvar PATH_OUTPUT_LOCAL)/html/${2:-$name}.html
+  output=$(getvar "$path_output")/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
   set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
