@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.22.0
+
+- `makefile`:
+  - Rename target `--public` to `public` so `make public` can be called externally.
+  - Add target specific `MODE := prod value` for `make site` so it always builds in production mode.
+  - Add `wait-on` js dist tag to ensure the js file is available before all calls to `2hf()` to generate html output.
+  - Add js source map file building rule with `site_clean` dependency to ensure that when prod build is being run that the previous dev mode symbolic links etc are cleared away first.
+  - Add `$(info )` messages for various clean rules.
+  - Re-arrange top level rules again into slightly more logical order.
+
 ## argmap 22.21.2
 
 - `scripts/argmap_init_script.sh`: Call `/.bashrc` so terminal colouring etc used in vscode.
