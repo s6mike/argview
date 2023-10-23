@@ -2,6 +2,9 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
+# shellcheck source=/home/s6mike/.bashrc
+source "$HOME/.bashrc"
+
 # shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
 # source "$HOME/scripts/default_vscode_init_script.sh"
 

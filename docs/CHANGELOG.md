@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.21.2
+
+- `scripts/argmap_init_script.sh`: Call `/.bashrc` so terminal colouring etc used in vscode.
+
 ## argmap 22.21.1
 
 - `netlify.toml`: Add `sitemap` and `lighthouse` plugins.
