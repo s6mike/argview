@@ -6,7 +6,7 @@
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder
-  command = "make site" # Command to start your dev server
+  command = "./scripts/argmap_init_script.sh && make site" # Command to start your dev server
 
 # sample dev block in the toml
 # note: each of these fields are OPTIONAL and should only be used if you need an override
