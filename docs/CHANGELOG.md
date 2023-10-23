@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.18.0
+
+- `config/environment-argmap-defaults.yaml`: Move `make site` example html files to here from `config/config-argmap-paths.yaml`.
+
 ## argmap 22.17.6
 
 - `scripts/argmap_init_script.sh`: Export 2 new `public/output` directory vars for `makefile` use.

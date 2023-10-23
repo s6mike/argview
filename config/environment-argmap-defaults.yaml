@@ -49,6 +49,10 @@ PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
 PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
+# TODO Use variables: 
+PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/example1-clearly-false-white-swan-simplified.html 
+PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html 
+
 ## GDrive
 GDRIVE_FOLDER_ID_MAPJS_DEFAULT: 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x # Default mapjs upload folder
 GDRIVE_FILE_ID_MAPJS_DEFAULT: 138E5WcQos2NNxN4_pCuw83DnZnqKO36Z # Default mapjs upload gdrive id
