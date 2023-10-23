@@ -6,6 +6,20 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.20.0
+
+- `makefile`:
+  - Add:
+    - MODE variable set to either dev or prod, so webpack build process can be prod for `make site` and dev otherwise.
+    - `make output_clean`: Delete argmap files only.
+    - `make site_clean`: Deletes above plus key files ready for 'make site'.
+    - `make install`: Replaces make dev.
+  - Update:
+    - webpack build rule to use MODE variable for dev vs prod builds.
+    - `public/%` > `test/%` symlink rule to only be used on input/output folders and not output html files etc.
+    - All symlink and webpack building rules to create any folders required by target.
+    - Re-arrange contents into more logical order.
+
 ## argmap 22.19.0
 
 - `scripts/bash_aliases_argmap.sh`: Add `-s` flag to `2hf()` for site mode, which creates html output files in `mapjs/public/output/html` rather than `test/output/html`, for using `make site` to generate website in `public` folder.

@@ -1,5 +1,7 @@
 # Makefile for argmap
 
+# make site MODE=prod # To make site in prod mode
+
 # TODO 
 #		Add make test
 #		Add make help e.g. https://stackoverflow.com/questions/8811526/using-conditional-rules-in-a-makefile
@@ -11,10 +13,12 @@
 
 # Turns off implicit rules etc
 MAKEFLAGS += -rR
-.SUFFIXES :
+.SUFFIXES:
 
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
+
+MODE ?= dev # default. Use make MODE=prod or make site for prod mode
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
@@ -29,10 +33,11 @@ SHELL := /bin/bash
 # 	Need to export required variables at end of argmap_init_script.sh:
 
 #		QUESTION: Could I run getvar from within makefile instead?
-LINK_TARGETS_PUBLIC := ${PATH_OUTPUT_PUBLIC} ${PATH_INPUT_PUBLIC}
+LINK_TARGETS_PUBLIC_FOLDERS := ${PATH_OUTPUT_PUBLIC} ${PATH_INPUT_PUBLIC}
 
 # Add index.html
 # 	TODO: Use netlify redirect instead
+LINK_TARGETS_PUBLIC := ${LINK_TARGETS_PUBLIC_FOLDERS}
 LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/index.html
 # Ensure lua dependencies available to site for client_argmap2mapjs:
 # LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/lua ${PATH_PUBLIC}/lua_modules
@@ -66,77 +71,65 @@ PATH_PUBLIC ?= NULL
 all: config --public --conda
 
 config: ${LIST_FILES_CONFIG_PROCESSED}
---public: ${LINK_TARGETS_PUBLIC}
+--public: $(LINK_TARGETS_PUBLIC)
 
---conda: ${LINK_TARGETS_CONDA}
+--conda: $(LINK_TARGETS_CONDA)
 # export CONDA_ENV_ARGMAP="argmap"
 # export XDG_DATA_HOME="${CONDA_PREFIX}/share/"
 
-dev:
+# Delete argmap output files only
+output_clean:
+# QUESTION Create bash function for this?
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
+	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+	rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
+	rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
+#		TODO: Replace with vars:
+	rm -f ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
+# rm -rf ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/png
+# argmap cleans
+	__clean_repo
+
+# Deletes key files for 
+site_clean: output_clean
+# Ignores error if public/output is a dir rather than a link
+	-rm -f $(LINK_TARGETS_PUBLIC)
+	rm -rf ${PATH_OUTPUT_JS}
+	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} 
+
+clean: site_clean
+	rm -f $(LINK_TARGETS_CONDA)
+# Takes too long to build and breaks things to best not to delete
+# delete public/js, lua_modules, node_modules, 
+# luarocks remove
+# Delete these last since it will stop config var lookups working
+	rm -f ${LIST_FILES_CONFIG_PROCESSED}
+
+install:
 	npm install -g testcafe
 
-#	QUESTION: run __clean_repo before building site?
-site: ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX} ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+#	QUESTION: add site_clean?
+site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
 # Using the mapjs file `public/output/mapjs-json/example2-clearly-false-white-swan-v3.json`, plus associated html file renamed as index.html
 # - `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
 
 # TODO: for building sites, these should write to public folder directly, not via a symbolic link
 #		i.e. make site should write to public, make test should write to test output		
-#			plus webpack-dist-tags should also be written there directly not by redirect
 # 	Can I do that with a flag or something?
 
-# Define a clean target
-# 	Updated to just clean built html files, ignoring wp-json which are json files with (for some reason) html extension
-#		Have to use -not instead of -prune because -delete is not compatible with -prune
-# 	TODO Add __clean_repo()
-clean:
-	rm -f ${LINK_TARGETS_PUBLIC}
-	rm -f ${LINK_TARGETS_CONDA}	
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}	
-	rm -f ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
-# rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS} # Takes too long to build and breaks things to best not to delete
-	rm -r ${PATH_OUTPUT_JS}
-# argmap cleans
-	__clean_repo
-# delete public/js, lua_modules, node_modules, 
-# luarocks remove
-# Delete these last since it will stop config var lookups working
-# rm -f ${LIST_FILES_CONFIG_PROCESSED}
-
-# ###########
-
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
-	mkdir -p "${@D}"
-	npm run pack:prod --prefix "${PATH_DIR_MAPJS_ROOT}"
-
-# Generate html from json
-# 	TODO combine this with first v3.html rule
-${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-	mkdir -p "$(@D)"
-# TODO: need to wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running this
-	2hf -p "$<"
-
-# Generate .json from .yaml
-${PATH_DIR_ARGMAP_ROOT}/test/output/mapjs-json/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.yaml
-	mkdir -p "$(@D)"
-	a2m "$<"
-
-# Copy .json from input to output, before generating html
-${PATH_DIR_ARGMAP_ROOT}/test/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
-	mkdir -p "$(@D)"
-	cp "$<" "$@"
-
-# Copy .mup from input to output, before generating html
-${PATH_DIR_ARGMAP_ROOT}/test/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
-	mkdir -p "$(@D)"
-	cp "$<" "$@"
-
-${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-# Might be able to run pandoc_argmap instead
-	mkdir -p "$(@D)"
-# TODO: need to wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running this
-	2hf -p "$<"
+prints:
+	$(info PATH_PUBLIC:)
+	$(info ${PATH_PUBLIC})
+	$(info PATH_TEST:)
+	$(info ${PATH_TEST})
+# 	$(info LINK_TARGETS_CONDA:)
+# 	$(info ${LINK_TARGETS_CONDA})	
+# 	$(info LIST_FILES_CONFIG_PROCESSED:)
+# 	$(info ${LIST_FILES_CONFIG_PROCESSED})
+# 	$(info PATH_DIR_CONFIG_MAPJS:)
+# 	$(info ${PATH_DIR_CONFIG_MAPJS})
+# 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
+# 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
 # install: npm lua yq
 # 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
@@ -173,19 +166,46 @@ ${PATH_DIR_ARGMAP_ROOT}/test/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/in
 # 	make all
 # 	netlify dev
 
-prints:
-	$(info PATH_PUBLIC:)
-	$(info ${PATH_PUBLIC})
-	$(info PATH_TEST:)
-	$(info ${PATH_TEST})
-# 	$(info LINK_TARGETS_CONDA:)
-# 	$(info ${LINK_TARGETS_CONDA})	
-# 	$(info LIST_FILES_CONFIG_PROCESSED:)
-# 	$(info ${LIST_FILES_CONFIG_PROCESSED})
-# 	$(info PATH_DIR_CONFIG_MAPJS:)
-# 	$(info ${PATH_DIR_CONFIG_MAPJS})
-# 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
-# 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
+# ###########
+
+# Generate html from json
+#		TODO: Replace mapjs/public/output X with vars
+# 	QUESTION Can I combine this with first v3.html rule?
+# QUESTION Only set 2hf -s flag in production mode?
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+	mkdir -p "$(@D)"
+# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
+	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+
+# Generate .json from .yaml
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.yaml
+	mkdir -p "$(@D)"
+	a2m "$<" "$@"
+
+# Copy .json from input to output, before generating html
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.json
+	mkdir -p "$(@D)"
+	cp "$<" "$@"
+
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/output/%.json
+	mkdir -p "$(@D)"
+	cp "$<" "$@"
+
+# Copy .mup from input to output, before generating html
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
+	mkdir -p "$(@D)"
+	cp "$<" "$@"
+
+${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+# Might be able to run pandoc_argmap instead
+	mkdir -p "$(@D)"
+# TODO: need to wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running this
+	2hf -ps "$<"
+
+# Create js dependencies for html files:
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
+	mkdir -p "${@D}"
+	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # ############
 
@@ -205,7 +225,9 @@ ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PAT
 
 # Rule for public links
 #  after | is order only pre-requisite, doesn't update based on timestamps
-${PATH_PUBLIC}/%: | ${PATH_TEST}/%
+# This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
+$(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
+	mkdir -p "$(@D)"
 	ln -s $| $@
 
 # Makes required folder if not present
@@ -218,14 +240,17 @@ ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # Add index.html
 #	 TODO: Use netlify redirect instead
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
+	mkdir -p "$(@D)"
 	ln -s $| $@
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
+	mkdir -p "$(@D)"
 	ln -s $| $@
 
 # For calling lua functions from shell (within conda env)
 ${PATH_BIN_GLOBAL}/%: | ${PATH_LUA_ARGMAP}/%.lua
+	mkdir -p "$(@D)"
 	ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
@@ -259,11 +284,13 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
 # Rule for argmap lua links to conda lua folder
 #   QUESTION: Do I need this one?
 ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_LUA_ARGMAP}/%.lua
+	mkdir -p "$(@D)"
 	ln -s $| $@
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder
 # ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
+# 	mkdir -p "$(@D)"
 # 	ln -s $| $@
 
 #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
