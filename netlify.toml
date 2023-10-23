@@ -23,3 +23,13 @@
   # publish = "mapjs/public/" # The path to your static content folder
   # command = "make site" # Command to start your dev server
   # envFiles = [".env.development.local", ".env.local", ".env.development", ".env"] # The env files to use, ordered by priority (left - highest, right - lowest)
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  # optional, deploy the lighthouse report to a path under your site
+  # [plugins.inputs.audits]
+  #   output_path = "reports/lighthouse.html"

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.21.1
+
+- `netlify.toml`: Add `sitemap` and `lighthouse` plugins.
+
 ## argmap 22.21.0
 
 - `netlify.toml`:
