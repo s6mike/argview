@@ -9,7 +9,7 @@ make all MODE:=dev
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
-webpack_pack
+# webpack_pack # Covered by `make all`
 webpack_server_start
 
 # Have switched rendering to be second test.
@@ -19,12 +19,12 @@ webpack_server_start
 # sleep 1.5
 # Or would this work?
 
-echo 'Attempting to delete old test outputs.'
+# echo 'Attempting to delete old test outputs.'
 
 # todo Delete old gdrive file
 # 1uU7_yfAwMPV3a0lxpiXoVR-m0hbX2Pzs
 # Though may not be consistently same name anyway, would need to create with fix name
-__clean_repo
+# __clean_repo # Covered by `make site_clean`
 __init_tests
 
 # todo turn these into an array

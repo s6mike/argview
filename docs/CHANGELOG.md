@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.22.2
+
+- `test/test_scripts/tests.sh`: Remove obsolete calls covered by `makefile`.
+
 ## argmap 22.22.1
 
 - `test/test_scripts/tests.sh`:
