@@ -129,7 +129,7 @@ yq: binrc
 
 
 binrc:
-	binrc install netlify/binrc 0.2.0
+	binrc install netlify/binrc 0.2.10
 
 # npm:
 # 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"

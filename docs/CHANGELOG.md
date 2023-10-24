@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.3
+
+- `makefile`: Update `binrc`` install to latest version.
+
 ## argmap 22.24.2
 
 - `netlify.toml`: Add env vars here instead of deleted `scripts/argmap-netlify.env`.
