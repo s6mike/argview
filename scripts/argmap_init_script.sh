@@ -28,7 +28,7 @@ set -o allexport
 # QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
 WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
-PATH_FILE_YQ=${PATH_FILE_YQ:-''}
+PATH_FILE_YQ=${PATH_FILE_YQ:-yq}
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
 source "$PATH_DIR_SCRIPTS/argmap.env"

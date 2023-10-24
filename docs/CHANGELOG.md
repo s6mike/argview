@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.7
+
+- Update PATH_FILE_YQ value to include file executable name too, so it works locally too (since `/yq` wasn't valid):
+  - `scripts/argmap_init_script.sh`
+  - `netlify.toml`
+  - `scripts/argmap.env`
+- And update references to match:
+  - `makefile`
+  - `scripts/config_read_functions.lib.sh`
+
 ## argmap 22.24.6
 
 - `makefile`:

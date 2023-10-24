@@ -7,11 +7,11 @@
 [context.production]
   DIR_PROJECTS = "./other_projects"
   GO_VERSION = "1.20"
-# INSTALL_PATH = "/bin/bash"
+  # INSTALL_PATH = "/bin/bash"
   MODE = "prod"
   NETLIFY_BUILD_DEBUG = "false"
   PATH_DIR_SCRIPTS = "scripts"
-  PATH_FILE_YQ = "."
+  PATH_FILE_YQ = "./yq"
   WORKSPACE = "."
 
 [build]

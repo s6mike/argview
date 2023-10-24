@@ -136,14 +136,14 @@ yq:
 # Test for NETLIFY true
 # go install github.com/mikefarah/yq/v4@latest
 # mdkir -p ${INSTALL_PATH}
-	-wget -qO "${PATH_FILE_YQ}/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x ${PATH_FILE_YQ}/yq
+	-wget -qO "${PATH_FILE_YQ}" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+	-chmod +x ${PATH_FILE_YQ}
 
 # NETLIFY false
 #	 sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
 # 	chmod u+x "$HOME/.local/bin/yq"
 	
-	-${PATH_FILE_YQ}/yq --version
+	-${PATH_FILE_YQ} --version
 
 # npm:
 # 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"
