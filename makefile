@@ -123,7 +123,7 @@ yq: # binrc
 # netlify: binrc
 # Using 4.30.8
 	go install github.com/mikefarah/yq/v4@latest
-	-which yq
+# -which yq
 # -yq --version
 # chmod u+x "${INSTALL_PATH}/yq"
 # go install github.com/mikefarah/yq/v4@4.30.8
@@ -131,15 +131,14 @@ yq: # binrc
 # vscode: make YQ
 # YQ:
 # mdkir -p ${INSTALL_PATH}
-	-wget -qO "./yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x ./yq
-	-mv yq ${INSTALL_PATH}/yq
-	-chmod +x "${INSTALL_PATH}/yq"
-	-which ./yq
+	-wget -qO "${PATH_FILE_YQ}/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+	-chmod +x ${PATH_FILE_YQ}/yq
+# -mv yq ${INSTALL_PATH}/yq
+# -chmod +x "${INSTALL_PATH}/yq"
+# -which ./yq
 # sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
 # chmod u+x "$HOME/.local/bin/yq"
-	-./yq --version
-
+	-${PATH_FILE_YQ}/yq --version
 # binrc:
 # 0.2.10
 # go install github.com/netlify/binrc@latest

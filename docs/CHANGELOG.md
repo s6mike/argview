@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.5
+
+- Prepend all yq calls with new var `PATH_FILE_YQ` so usable with netlify:
+  - `scripts/config_read_functions.lib.sh`: All calls.
+  - `makefile`: Install steps.
+  - `scripts/argmap_init_script.sh`: Set default value.
+  - `scripts/argmap.env`: Set local value.
+  - `netlify.toml`: Add and re-arrange vars for readability.
+
 ## argmap 22.24.4
 
 - `makefile`: Update to install `yq` directly through `wget` into `/bin/bash`.

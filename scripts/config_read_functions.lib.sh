@@ -65,12 +65,11 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   yaml_source=("${files[@]:-$PATH_FILE_ENV_ARGMAP_PROCESSED}")
 
   # For python yq: https://github.com/kislyuk/yq, which is on conda
-  #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
+  #   result=${!variable_name:-$("$PATH_FILE_YQ"/yq-r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
 
-  yq --version
   set -f
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
-  result=$(yq "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | yq "${query_extra[@]}")
+  result=$("$PATH_FILE_YQ"/yq "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ"/yq "${query_extra[@]}")
   # TODO
   #   Check if result is a list. If so, do delist part.
 
@@ -123,7 +122,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   #   REMEMBER: This only expands variables in config files, not env variables
   #     Might be useful to fix this, could then use env file for boot process
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  yq -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
+  "$PATH_FILE_YQ"/yq -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
   # TODO if no values found then quit
 
   # This line create new file, comment it out and output file will be expanded version of original

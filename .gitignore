@@ -4,7 +4,7 @@
 !*sample.yaml
 !*defaults.yaml
 argmap.code-workspace
-.netlify/*
+.netlify*
 .vscode/*
 !.vscode/launch.json
 !.vscode/settings.json

@@ -5,11 +5,14 @@
   force = false
 
 [context.production]
-  MODE = "prod"
-  WORKSPACE = "."
-  PATH_DIR_SCRIPTS = "scripts"
   DIR_PROJECTS = "./other_projects"
-  INSTALL_PATH = "/bin/bash"
+  GO_VERSION = "1.20"
+# INSTALL_PATH = "/bin/bash"
+  MODE = "prod"
+  NETLIFY_BUILD_DEBUG = "false"
+  PATH_DIR_SCRIPTS = "scripts"
+  PATH_FILE_YQ = "."
+  WORKSPACE = "."
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder
