@@ -9,6 +9,7 @@
   WORKSPACE = "."
   PATH_DIR_SCRIPTS = "scripts"
   DIR_PROJECTS = "./other_projects"
+  INSTALL_PATH = "/bin/bash"
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder

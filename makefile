@@ -118,18 +118,31 @@ install: yq # npm lua
 # 	mkdir --parent "${WORKSPACE/test/output/png}"
 # 	mkdir --parent "${WORKSPACE/test/output/html}"
 
-yq: binrc
+yq: # binrc
 # Test for NETLIFY true
 # netlify: binrc
-	binrc install mikefarah/yq 4.30.8
+# Using 4.30.8
+	go install github.com/mikefarah/yq/v4@latest
+	-which yq
+# -yq --version
+# chmod u+x "${INSTALL_PATH}/yq"
+# go install github.com/mikefarah/yq/v4@4.30.8
+# binrc install mikefarah/yq latest
 # vscode: make YQ
 # YQ:
+# mdkir -p ${INSTALL_PATH}
+	-wget -qO "./yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+	-chmod +x ./yq
+	-mv yq ${INSTALL_PATH}/yq
+	-chmod +x "${INSTALL_PATH}/yq"
+	-which ./yq
 # sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
 # chmod u+x "$HOME/.local/bin/yq"
+	-./yq --version
 
-
-binrc:
-	binrc install netlify/binrc 0.2.10
+# binrc:
+# 0.2.10
+# go install github.com/netlify/binrc@latest
 
 # npm:
 # 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"

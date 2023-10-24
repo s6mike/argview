@@ -67,6 +67,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   # For python yq: https://github.com/kislyuk/yq, which is on conda
   #   result=${!variable_name:-$(yq -r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
 
+  yq --version
   set -f
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   result=$(yq "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | yq "${query_extra[@]}")
