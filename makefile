@@ -274,6 +274,9 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 %.yaml: | %-defaults.yaml
 	cp --no-clobber $*-defaults.yaml $@
 
+${PATH_FILE_ENV_ARGMAP_PRIVATE}:
+	touch $@
+
 # Process config and environment files
 # 	QUESTION: Use more variables?
 ${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml

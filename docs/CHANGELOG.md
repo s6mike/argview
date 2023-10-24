@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.8
+
+- `makefile`: Add rule to generate PATH_FILE_ENV_ARGMAP_PRIVATE file if missing.
+- `scripts/init_read_config.sh`: make PATH_FILE_ENV_ARGMAP_PRIVATE.
+
 ## argmap 22.24.7
 
 - Update PATH_FILE_YQ value to include file executable name too, so it works locally too (since `/yq` wasn't valid):
