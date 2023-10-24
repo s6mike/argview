@@ -113,35 +113,37 @@ clean: site_clean
 # Delete these last since it will stop config var lookups working
 	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 
-install: yq # npm lua
+install: yq pandoc # npm lua
 # 	mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
 # 	mkdir --parent "${WORKSPACE/test/output/png}"
 # 	mkdir --parent "${WORKSPACE/test/output/html}"
 
-yq: # binrc
+ # netlify version 2.1.3
+ #	 User data directory: /opt/buildhome/.local/share/pandoc
+pandoc: 
+	-pandoc --version
+# if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
+# mkdir --parent ~/.local/share/pandoc/filters
+# Though I think I may want to install it in relevant conda env folder instead
+
+# - pandoc=2.9.2.1 
+# conda install pandoc https://github.com/jgm/pandoc/blob/main/INSTALL.md
+
+# -chmod +x ${PATH_FILE_YQ}/pandoc
+# If not using conda would need conda dependencies installed.
+
+yq:
 # Test for NETLIFY true
-# netlify: binrc
-# Using 4.30.8
-	go install github.com/mikefarah/yq/v4@latest
-# -which yq
-# -yq --version
-# chmod u+x "${INSTALL_PATH}/yq"
-# go install github.com/mikefarah/yq/v4@4.30.8
-# binrc install mikefarah/yq latest
-# vscode: make YQ
-# YQ:
+# go install github.com/mikefarah/yq/v4@latest
 # mdkir -p ${INSTALL_PATH}
 	-wget -qO "${PATH_FILE_YQ}/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
 	-chmod +x ${PATH_FILE_YQ}/yq
-# -mv yq ${INSTALL_PATH}/yq
-# -chmod +x "${INSTALL_PATH}/yq"
-# -which ./yq
-# sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-# chmod u+x "$HOME/.local/bin/yq"
+
+# NETLIFY false
+#	 sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+# 	chmod u+x "$HOME/.local/bin/yq"
+	
 	-${PATH_FILE_YQ}/yq --version
-# binrc:
-# 0.2.10
-# go install github.com/netlify/binrc@latest
 
 # npm:
 # 	npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)"

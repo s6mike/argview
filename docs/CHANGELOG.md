@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.6
+
+- `makefile`:
+  - Add `pandoc` rule which just checks version.
+  - Tidy file, remove `binrc`
+
 ## argmap 22.24.5
 
 - Prepend all yq calls with new var `PATH_FILE_YQ` so usable with netlify:
