@@ -8,7 +8,7 @@
 
 ## argmap 22.24.3
 
-- `makefile`: Update `binrc`` install to latest version.
+- `.gitignore`: Add `.netlify/`
 
 ## argmap 22.24.2
 
