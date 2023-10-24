@@ -4,6 +4,12 @@
   status = 200
   force = false
 
+[context.production]
+  MODE = "prod"
+  WORKSPACE = "."
+  PATH_DIR_SCRIPTS = "scripts"
+  DIR_PROJECTS = "./other_projects"
+
 [build]
   publish = "mapjs/public/" # The path to your static content folder
   command = "./scripts/argmap_init_script.sh && make site" # Command to start your dev server

@@ -8,7 +8,8 @@
 
 ## argmap 22.24.2
 
-- Replace
+- `netlify.toml`: Add env vars here instead of deleted `scripts/argmap-netlify.env`.
+- `scripts/argmap-netlify.env`: Delete.
 
 ## argmap 22.24.1
 
