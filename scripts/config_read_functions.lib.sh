@@ -175,6 +175,22 @@ __getvar_yaml_any() { # gvy
   set +f
 }
 
+__normalise_if_path() {
+  result="$1"
+  if [[ $1 == *"/"* ]]; then
+    base_path=${PATH_DIR_ARGMAP_ROOT}
+
+    set -f # Disable globbing, since can't use quotes
+    # Options set: canonicalize non-existent paths, want mapjs ones relative to mapjs, don't want to follow symlinks
+    #   Removes /./ etc from paths
+    # shellcheck disable=SC2086
+    result=$(realpath --no-symlinks --canonicalize-missing --relative-base="$base_path" $1)
+    set +f
+  fi
+
+  echo "$result"
+}
+
 # This looks up variables.
 #   It can pass on -opts to __getvar_yaml_any, but this doesn't happen if value stored in an env variable
 #   So results can be unpredictable.
@@ -193,4 +209,4 @@ getvar() { # gq PATH_FILE_CONFIG_MAPJS
 }
 
 export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar process_all_config_inputs
-export -f log preprocess_config count_characters
+export -f log preprocess_config count_characters __normalise_if_path

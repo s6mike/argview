@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.42
+
+- `scripts/config_read_functions.lib.sh`: Add `__normalise_if_path()` to support planned use of relative paths.
+
 ## argmap 22.24.41
 
 - `test/test_scripts/tests.sh`: Replace text path with variable `PATH_FILE_MAPJS_HTML_DIST_TAGS`.
