@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.36
+
+- `mapjs/.eslintrc.json`: Add to "globals".
+
 ## argmap 22.24.35
 
 - `makefile`: Refer to `yq` file path directly instead of through 'yq' target.
