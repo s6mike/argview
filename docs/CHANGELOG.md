@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.43
+
+- `scripts/bash_aliases_argmap.sh`: Export `__find_rockspec()`.
+  - `scripts/qa_rockspec.sh`: Update `__find_rockspec()` call to match.
+
 ## argmap 22.24.42
 
 - `scripts/config_read_functions.lib.sh`: Add `__normalise_if_path()` to support planned use of relative paths.

@@ -280,6 +280,6 @@ md2np() {
 }
 
 # Mark functions for export to use in other scripts:
-export -f open_debug
+export -f open_debug __find_rockspec
 export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec
 export -f __get_site_path a2m m2a a2t a2mu pandoc_argmap 2hf md2pdf md2np
