@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.3
+
+- `config/environment-conda-argmap.yaml`: Update pandoc to 2.12 (from 2.9.2.1).
+
 ## argmap 22.25.2
 
 - `makefile`: Add code for creating conda / global install directories.
