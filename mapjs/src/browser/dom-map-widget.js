@@ -1,9 +1,9 @@
-/*global require, window, PATH_FILE_CONFIG_MAPJS */
+/*global PATH_FILE_CONFIG_MAPJS */
 const $ = require('jquery'),
   _ = require('underscore'),
   createSVG = require('./create-svg');
 const mapjsUtilities = require('../core/util/mapjs-utilities'),
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
   MAPJS_MAP_CLASS = CONFIG.mapjs_map.class;
 
 // Moved import-loader call to webpack.config.js instead:

@@ -1,6 +1,6 @@
-/*global module, require, PATH_FILE_CONFIG_MAPJS */
+/*global PATH_FILE_CONFIG_MAPJS */
 const createSVG = require('./create-svg'),
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
   getTextElement = function (parentElement, labelText, elementType, centrePoint) {
     'use strict';
     elementType = elementType || 'text';

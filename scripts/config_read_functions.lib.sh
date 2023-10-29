@@ -52,6 +52,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
       query_opts=" | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
     l) # (de)list mode - returns a list in argument format.
+      # Though I've added  | sed 's/^- //' to main query to remove leading hyphens instead
       query_opts=" | .[]"
       ;;
     *) ;;
@@ -69,7 +70,15 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
 
   set -f
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
-  result=$("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}")
+  result=$("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}" | sed 's/^- //')
+  # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
+  # echo >&2 "query: $("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}")"
+
+  # echo >&2 "result1: $result"
+  # Not quoted so that all list elements are normalised. set -f stops globbing
+  # shellcheck disable=SC2086
+  result=$(__normalise_if_path "$result")
+
   # TODO
   #   Check if result is a list. If so, do delist part.
 
@@ -205,6 +214,7 @@ getvar() { # gq PATH_FILE_CONFIG_MAPJS
     # TODO cache with env variable?
     #   export "$variable_name"="$result"
   fi
+  result=$(__normalise_if_path "$result")
   __check_exit_status $? "$result" "$variable_name not found"
 }
 

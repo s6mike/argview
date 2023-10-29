@@ -2,10 +2,10 @@
    SPDX - License - Identifier: MIT */
 /* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
-/*global require, document, window, console, idea, PATH_FILE_CONFIG_MAPJS, process */
+/*global idea, PATH_FILE_CONFIG_MAPJS */
 const Utilities = require('./core/util/mapjs-utilities'),
   MAPJS = require('./npm-main'),
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
   // TODO: Enable and merge this once mapjs_map.id needed
   // { default: CONFIG2 } = require(PATH_FILE_CONFIG_MAPJS_PROCESSED),
   // Might help:

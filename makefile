@@ -260,35 +260,35 @@ lua_modules/:
 #		TODO: Replace mapjs/public/output X with vars
 # 	QUESTION Can I combine this with first v3.html rule?
 # QUESTION Only set 2hf -s flag in production mode?
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+mapjs/public/output/html/%.html: mapjs/public/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir -p "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # Generate .json from .yaml
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.yaml
+mapjs/public/output/mapjs-json/%.json: test/input/%.yaml
 	-mkdir -p "$(@D)"
 	a2m "$<" "$@"
 
 # Copy .json from input to output, before generating html
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.json
+mapjs/public/output/%.json: test/input/%.json
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/output/%.json
+mapjs/public/output/%.json: test/output/%.json
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
 # Copy .mup from input to output, before generating html
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/%.json: ${PATH_DIR_ARGMAP_ROOT}/test/input/%.mup
+mapjs/public/output/%.json: test/input/%.mup
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
-${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+mapjs/public/output/html/%.html: test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Might be able to run pandoc_argmap instead
 	-mkdir -p "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # If building in production 
 ${PATH_OUTPUT_JS}/main.js.map: site_clean
@@ -324,7 +324,8 @@ ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PAT
 # This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
 $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	-mkdir -p "$(@D)"
-	-ln -s $| $@
+# realpath generates path relative to path_public
+	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 # Makes required folder if not present
 # 	Hope this isn't hostage to fortune! since make public/anything will create this folder in test and then symlink to it from public
@@ -337,7 +338,7 @@ $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 #	 TODO: Use netlify redirect instead
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 	-mkdir -p "$(@D)"
-	-ln -s $| $@
+	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%

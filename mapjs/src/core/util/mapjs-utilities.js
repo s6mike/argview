@@ -1,5 +1,5 @@
 /*eslint strict: ["error", "function"]*/
-/*global module, PATH_FILE_CONFIG_MAPJS, process*/
+/*global PATH_FILE_CONFIG_MAPJS*/
 // TODO: switch to lodash and test
 
 // function getvar(varname, config_file) {
@@ -35,7 +35,7 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
 
 const _ = require('underscore'),
   // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
   CONTAINER_CLASS = CONFIG.mapjs_map.class,
 
   // Setting this up here so it's ready for idea_pp

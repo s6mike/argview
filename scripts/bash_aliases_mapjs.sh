@@ -94,11 +94,11 @@ testcafe_run() { # tcr
   if [ "$1" == head ]; then
     # TODO: Add option to use --speed 0.1
     BROWSER_TESTCAFE='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
-    PATH_REPLAY_SCRIPT=${2:-$DEFAULT_SCRIPT}
+    PATH_REPLAY_SCRIPT=$(realpath --relative-to="$PATH_DIR_MAPJS_ROOT" "${2:-$DEFAULT_SCRIPT}")
   else
     # Try timing speed and then compare with using: --experimental-proxyless
     BROWSER_TESTCAFE='chrome:headless --no-default-browser-check --disable-extensions'
-    PATH_REPLAY_SCRIPT=${1:-$DEFAULT_SCRIPT}
+    PATH_REPLAY_SCRIPT=$(realpath --relative-to="$PATH_DIR_MAPJS_ROOT" "${1:-$DEFAULT_SCRIPT}")
   fi
   # __bisect_init
   echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"

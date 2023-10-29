@@ -174,7 +174,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   #   Also could potentially generate using pre-processor if desired
-  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
+  pandoc "$input" -o "$output" --template="$template" "${@:4}" --from=markdown --metadata-file="$(getvar PATH_DIR_MAPJS_ROOT)/$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_DIR_MAPJS_ROOT)/$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null
 }
 
 # Creates full page html intelligently based on input type.

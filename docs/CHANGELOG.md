@@ -6,6 +6,31 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.1
+
+- Change from absolute path references to relative so that mapjs references will work on netlify:
+  - `mapjs/config/config-mapjs-paths.yaml`:
+    - Update `PATH_MAPJS_ROOT` to be relative to `mapjs/`, instead of absolute.
+      - Rewrite variable values to be relative to this folder.
+    - Deprecate `PATH_DIR_CONFIG_MAPJS_PROCESSED`.
+    - Rename some variable names to be shorter.
+  - `config/config-argmap-paths.yaml`: Prepend paths to mapjs folders with `$PATH_MAPJS` so they work relative to root argmap folder.
+  - `mapjs/webpack.config.js`: Update `HtmlWebpackPlugin` config to work with new `PATH_FILE_MAPJS_HTML_DIST_TAGS` path.
+  - `mapjs/src/`:
+    - Update all `CONFIG` definitions to use `Mapjs/` alias with new relative `PATH_FILE_CONFIG_MAPJS` version.
+    - Remove variables from globals comment which have been added to `.eslintrc.json`
+  - `scripts/`:
+    - Update references to mapjs config files to use `PATH_DIR_MAPJS_ROOT` so mapjs relative paths work.
+    - Update calls from within mapjs to use relative paths to mapjs.
+    - `config_read_functions.lib.sh`:
+      - Strip leading hyphens from list variable results.
+      - Normalise paths of results to make them relative to argmap root.
+  - `src/lua/pandoc-argmap.lua`: Update references to mapjs config files to use `PATH_DIR_MAPJS_ROOT` so mapjs relative paths work.
+  - `makefile`:
+    - Remove `${PATH_DIR_ARGMAP_ROOT}` from paths to make them relative.
+    - Add `${PATH_DIR_MAPJS_ROOT}` to mapjs paths to make them relative to argmap root.
+    - Use realpath to make path variable values work correctly with symlinks.
+
 ## argmap 22.25.0
 
 - `makefile`: `make install`: Add lua install code and include `imagemagick convert` install code.

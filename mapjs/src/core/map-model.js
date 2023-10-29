@@ -1,10 +1,10 @@
-/*global require, module, PATH_FILE_CONFIG_MAPJS */
+/*global PATH_FILE_CONFIG_MAPJS */
 const _ = require('underscore'),
   MemoryClipboard = require('./clipboard'),
   LayoutModel = require('./layout/layout-model'),
   observable = require('./util/observable'),
   Utilities = require('./util/mapjs-utilities'),
-  { default: CONFIG } = require(PATH_FILE_CONFIG_MAPJS);
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS);
 
 module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultReorderMargin, optional) {
   'use strict';
