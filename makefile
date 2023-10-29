@@ -22,7 +22,7 @@ MODE ?= dev # default. Use make MODE=prod or make site for prod mode
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean install pandoc yq prints site # dev
+.PHONY: all config public --conda output_clean site_clean clean install lua npm npm_audit pandoc yq prints site # dev
 
 # Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
 .SECONDARY:
@@ -127,10 +127,7 @@ install: ${PATH_FILE_YQ} pandoc npm /opt/miniconda3/envs/argmap/bin/convert lua 
 # 	-mkdir --parent "${WORKSPACE/test/output/png}"
 # 	-mkdir --parent "${WORKSPACE/test/output/html}"
 
-# TODO how to check installed?
-npm: ${PATH_DIR_MAPJS_ROOT}
-# Test for ENV netlify
-	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+npm: ${PATH_DIR_MAPJS_ROOT}/node_modules
 
 npm_audit: npm npm_audit_output.txt
 	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
@@ -149,19 +146,6 @@ pandoc:
 
 # -chmod +x ${PATH_FILE_YQ}/pandoc
 # If not using conda would need conda dependencies installed.
-
-# QUESTION: Why doesn't $@ work for wget - uses yq instead of ./yq ?
-${PATH_FILE_YQ}:
-# Test for ENV netlify
-# go install github.com/mikefarah/yq/v4@latest
-# mdkir -p ${INSTALL_PATH}
-	-wget -qO "${PATH_FILE_YQ}" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x "${PATH_FILE_YQ}"
-
-# Test for ENV not netlify
-#	 sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-# 	chmod u+x "$HOME/.local/bin/yq"
-	-"${PATH_FILE_YQ}" --version
 
 # TODO: check whether these are already installed
 lua: lua_modules/
@@ -248,6 +232,23 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 # Update repo?
 
 # ###########
+
+${PATH_DIR_MAPJS_ROOT}/node_modules:
+	# Test for ENV netlify
+	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+
+# QUESTION: Why doesn't $@ work for wget - uses yq instead of ./yq ?
+${PATH_FILE_YQ}:
+# Test for ENV netlify
+# go install github.com/mikefarah/yq/v4@latest
+# mdkir -p ${INSTALL_PATH}
+	-wget -qO "${PATH_FILE_YQ}" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+	-chmod +x "${PATH_FILE_YQ}"
+
+# Test for ENV not netlify
+#	 sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+# 	chmod u+x "$HOME/.local/bin/yq"
+	-"${PATH_FILE_YQ}" --version
 
 # Install lua dependencies
 #		Ensure I'm in correct directory e.g. ~/git_projects/argmap/

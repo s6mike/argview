@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.5
+
+- `makefile`: Update `.PHONY` links.
+
 ## argmap 22.25.4
 
 - `makefile`: Fix symlink targets by making dependency paths absolute rather than local.
