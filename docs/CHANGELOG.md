@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.38
+
+- `mapjs/webpack.config.js`:
+  - Add resolve alias to allow relative references to config folder.
+  - Add `__dirname: false` to stop webpack replacing current dir with `/`.
+
 ## argmap 22.24.37
 
 - `mapjs/package.json`: Update to fix security vulnerability.

@@ -7,6 +7,16 @@ const path = require('path'),
 module.exports = (env, argv) => {
   'use strict';
   return {
+    resolve: {
+      alias: {
+        Mapjs: path.resolve(__dirname, '.'),
+      }
+    },
+    node: {
+      // webpack replaces __dirname with /. It’s a weird default and might cause some hard-to-find bugs.
+      //  https://codeburst.io/use-webpack-with-dirname-correctly-4cad3b265a92
+      __dirname: false,
+    },
     target: 'web', // should be default but just in case
     entry: [path.resolve(__dirname, 'src/start.js')],
     // Use for development:
