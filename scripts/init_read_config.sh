@@ -51,7 +51,7 @@ main() {
   make "$PATH_FILE_ENV_ARGMAP_PRIVATE"
 
   # Can't use __yaml2env because it's not set to take the -l option
-  LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -l LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
+  LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -l LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED" | tr '\n' ' ')
   export LIST_FILES_CONFIG_PROCESSED
 
   # Process remaining config files
