@@ -20,4 +20,9 @@ DEFAULT_MAPJS_CSS: /mapjs-default-styles.css
 css: # Default pandoc template value
   - ${DEFAULT_MAPJS_CSS}
 
+
+# DEPRECATED:
+PATH_CONVERT_LOCAL: ${PATH_PROFILE_LOCAL}/bin/convert
+PATH_DIR_PUBLIC: ${PATH_DIR_MAPJS_ROOT}/${DIR_PUBLIC}
+
 ...

@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.0
+
+- Deprecate `PATH_CONVERT_LOCAL` in favour of `PATH_FILE_CONVERT_LOCAL`:
+  - `config/environment-argmap-defaults.yaml`.
+  - `scripts/argmap_init_script.sh`
+  - `makefile`
+- `config/config-argmap.yaml`: Keep `PATH_CONVERT_LOCAL` here, deprecated, so update doesn't break before users update their env names.
+- Add `PATH_FILE_CONVERT_GLOBAL` referring to imagemagick `convert` for `makefile` :
+  - `config/environment-argmap-defaults.yaml`
+  - `scripts/argmap_init_script.sh`
+  - `makefile`: Replace `convert` file path with `PATH_FILE_CONVERT_GLOBAL`.
+
 ## argmap 22.25.5
 
 - `makefile`: Update `.PHONY` links.

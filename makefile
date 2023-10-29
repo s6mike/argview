@@ -43,7 +43,7 @@ LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/index.html
 # LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/lua ${PATH_PUBLIC}/lua_modules
 
 LINK_TARGETS_CONDA := ${PATH_LUA_LOCAL}
-LINK_TARGETS_CONDA += ${PATH_CONVERT_LOCAL} # Only needed for pre-commit hook (this is to create png files?)
+LINK_TARGETS_CONDA += ${PATH_FILE_CONVERT_LOCAL} # Only needed for pre-commit hook (this is to create png files?)
 # Connects legacy data-folder to conda env:
 # 	TODO: add this to conda activation, and delete this link when env deactivated?
 # 	NOTE: can use defaults file to set defalt data directory, should simplify.
@@ -122,7 +122,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm /opt/miniconda3/envs/argmap/bin/convert lua # TODO: replace npm with npm_audit based on ENV
+install: ${PATH_FILE_YQ} pandoc npm ${PATH_FILE_CONVERT_GLOBAL} lua # TODO: replace npm with npm_audit based on ENV
 # 	-mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
 # 	-mkdir --parent "${WORKSPACE/test/output/png}"
 # 	-mkdir --parent "${WORKSPACE/test/output/html}"
@@ -409,7 +409,7 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 # luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
 # TODO use vars:
-/opt/miniconda3/envs/argmap/bin/convert: /opt/miniconda3/envs/argmap/bin/magick
+${PATH_FILE_CONVERT_GLOBAL}: ${PATH_BIN_GLOBAL}/magick
 # This should be local+conda only:
 	conda install imagemagick
 
