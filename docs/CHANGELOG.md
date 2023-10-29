@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.4
+
+- `makefile`: Fix symlink targets by making dependency paths absolute rather than local.
+
 ## argmap 22.25.3
 
 - `config/environment-conda-argmap.yaml`: Update pandoc to 2.12 (from 2.9.2.1).

@@ -349,13 +349,13 @@ ${CONDA_PREFIX}/%:
 	-mkdir -p "$(@D)"
 
 # For calling lua functions from shell (within conda env)
-${PATH_BIN_GLOBAL}/%: | ${PATH_LUA_ARGMAP}/%.lua
+${PATH_BIN_GLOBAL}/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 	-mkdir -p "$(@D)"
 	-ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
 
-${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_LUA_ARGMAP}/%
+${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
@@ -363,7 +363,7 @@ ${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_LUA_ARGMAP}/%
 	-ln -s $| $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
-${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
+${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
 	-mkdir -p "$(@D)"
 	-ln -s $| $@
 
@@ -382,8 +382,8 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${WORKSPACE}/%
 # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
 
 # Rule for argmap lua links to conda lua folder
-#   QUESTION: Do I need this one?
-${PATH_LUA_GLOBAL}/%.lua: | ${PATH_LUA_ARGMAP}/%.lua
+#   Needed for config_argmap, but need to use absolute link
+${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 	-mkdir -p "$(@D)"
 	-ln -s $| $@
 
