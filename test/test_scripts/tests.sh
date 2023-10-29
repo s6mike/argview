@@ -56,7 +56,7 @@ fi
 
 # map rendering
 #   TODO add var for webpack-dist-tags: PATH_FILE_MAPJS_HTML_DIST_TAGS
-npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "$PATH_DIR_INCLUDES/webpack-dist-tags.html" && # Waits for file to finish being generated before running tests
+npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
   # create html file needed for testcafe and rendering tests
   # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 

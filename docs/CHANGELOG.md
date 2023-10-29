@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.41
+
+- `test/test_scripts/tests.sh`: Replace text path with variable `PATH_FILE_MAPJS_HTML_DIST_TAGS`.
+
 ## argmap 22.24.40
 
 - `makefile`: Add `imagemagick convert` install code.
