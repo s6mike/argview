@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.2
+
+- `makefile`: Add code for creating conda / global install directories.
+
 ## argmap 22.25.1
 
 - Change from absolute path references to relative so that mapjs references will work on netlify:

@@ -345,6 +345,9 @@ ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
 	-mkdir -p "$(@D)"
 	-ln -s $| $@
 
+${CONDA_PREFIX}/%:
+	-mkdir -p "$(@D)"
+
 # For calling lua functions from shell (within conda env)
 ${PATH_BIN_GLOBAL}/%: | ${PATH_LUA_ARGMAP}/%.lua
 	-mkdir -p "$(@D)"
