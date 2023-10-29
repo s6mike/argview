@@ -117,6 +117,7 @@ config:load_yaml_list(remaining_files)
 DIR_MAPJS_JSON = os.getenv("DIR_MAPJS_JSON") or "mapjs-json"
 
 -- QUESTION: Should I be using a path join function?
+PATH_DIR_MAPJS_ROOT = os.getenv("PATH_DIR_MAPJS_ROOT")
 PATH_FILE_CONFIG_MAPJS = os.getenv("PATH_FILE_CONFIG_MAPJS")
 PATH_FILE_CONFIG_MAPJS_PROCESSED = os.getenv("PATH_FILE_CONFIG_MAPJS_PROCESSED")
 PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")

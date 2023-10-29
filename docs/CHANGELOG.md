@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.24.39
+
+- `src/lua/config_argmap.lua`: Add `PATH_DIR_MAPJS_ROOT` so relative paths can be used for mapjs config vars.
+
 ## argmap 22.24.38
 
 - `mapjs/webpack.config.js`:
