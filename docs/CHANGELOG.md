@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.25.0
+
+- `makefile`: `make install`: Add lua install code and include `imagemagick convert` install code.
+
 ## argmap 22.24.44
 
 - `scripts/init_read_config.sh`: Replace newlines in `LIST_FILES_CONFIG_PROCESSED` with spaces so it can be managed as a list of strings upstream.

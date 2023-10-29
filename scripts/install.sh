@@ -244,8 +244,8 @@ npm audit fix --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" --legacy-peer-deps >npm_a
 __build_mapjs
 
 # SECTION 5: yq
-sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-chmod u+x "$HOME/.local/bin/yq"
+# sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+# chmod u+x "$HOME/.local/bin/yq"
 
 # SECTION X: Clientside Lua
 # ---------------------------------------------------

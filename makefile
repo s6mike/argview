@@ -122,7 +122,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm # lua # replace npm with npm_audit based on ENV
+install: ${PATH_FILE_YQ} pandoc npm /opt/miniconda3/envs/argmap/bin/convert lua # TODO: replace npm with npm_audit based on ENV
 # 	-mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
 # 	-mkdir --parent "${WORKSPACE/test/output/png}"
 # 	-mkdir --parent "${WORKSPACE/test/output/html}"
@@ -163,8 +163,23 @@ ${PATH_FILE_YQ}:
 # 	chmod u+x "$HOME/.local/bin/yq"
 	-"${PATH_FILE_YQ}" --version
 
-# lua:
-# 	scripts/qa_rockspec.sh
+# TODO: check whether these are already installed
+lua: lua_modules/
+# If installing from environment.yaml, skip to SECTION 2.
+# conda install -c anaconda lua==5.3.4=h7b6447c_0
+# sudo apt install lua5.3
+
+# TODO: make local/conda only
+	conda install -c anaconda-platform luarocks==3.7.0=lua53h06a4308_0
+
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
+# QUESTION: Something like this?
+# echo "external_deps_dirs = {
+#    "$CONDA_PREFIX"
+# }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
+
+# Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
+
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
 # # https://tex.stackexchange.com/questions/630111/install-lualatex-for-use-on-the-command-line
@@ -189,7 +204,6 @@ ${PATH_FILE_YQ}:
 # 	ifeq ($(MODE), dev)
 #     npm install -g testcafe
 #   endif
-
 
 prints:
 	$(info PATH_PUBLIC:)
@@ -235,6 +249,13 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 # ###########
 
+# Install lua dependencies
+#		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
+#		Running qa_rockspec will also install dependencies
+lua_modules/:
+#		TODO: split up this script into separate make actions:
+	scripts/qa_rockspec.sh
+
 # Generate html from json
 #		TODO: Replace mapjs/public/output X with vars
 # 	QUESTION Can I combine this with first v3.html rule?
@@ -273,7 +294,6 @@ ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/%.html: ${PATH_DIR_ARGMAP_ROOT}
 ${PATH_OUTPUT_JS}/main.js.map: site_clean
 	-mkdir -p "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-
 
 # Create js dependencies for html files:
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
