@@ -75,13 +75,6 @@ PATH_TEST_LOG=$(getvar PATH_TEST_LOG)
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
 set +o allexport
 
-case $ENV in
-netlify)
-  make install
-  ;;
-*) ;;
-esac
-
 # Covered by default init script
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
 # source "$HOME/scripts/bash_aliases.sh"
@@ -117,7 +110,9 @@ eval "$(pandoc --bash-completion)"
 # shellcheck source=/home/s6mike/git_projects/argmap/test/test_scripts/bash_aliases_argmap_test.sh
 case $ENV in
 
-netlify) ;;
+netlify)
+  make install
+  ;;
 *)
   source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
   ;;
