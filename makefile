@@ -235,7 +235,7 @@ ${PATH_FILE_YQ}:
 # 	go install github.com/mikefarah/yq/v4@latest
 	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
 	-chmod +x $@
-	-$@ --version
+	-${PATH_FILE_YQ} --version
 
 # Install lua dependencies
 #		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
