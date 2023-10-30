@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.7
+
+- `netlify.toml`: Move env variable assigment to build in attempt to use them in all contexts.
+
 ## argmap 22.26.6
 
 - `netlify.toml`: Change port number for dev to 9002 to avoid overlap with npm dev server.
