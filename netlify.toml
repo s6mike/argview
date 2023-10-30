@@ -26,7 +26,7 @@
   #   If you would like to set environment variables for use locally with the Netlify CLI, use context.dev instead.
   #   https://docs.netlify.com/configure-builds/file-based-configuration/#use-a-local-build-plugin
   #   https://docs.netlify.com/configure-builds/file-based-configuration/#use-the-build-command-to-substitute-environment-variable-values
-  port = 9001 # The port that the netlify dev will be accessible on
+  port = 9002 # The port that the netlify dev will be accessible on
   # TODO how do I open in odb browser by default?
   #   Maybe this?: https://cli.netlify.com/vscode/#add-vscode-launch-configurations
   autoLaunch = false # a Boolean value that determines if Netlify Dev launches the local server address in your browser

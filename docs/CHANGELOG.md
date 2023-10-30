@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.6
+
+- `netlify.toml`: Change port number for dev to 9002 to avoid overlap with npm dev server.
+
 ## argmap 22.26.5
 
 - `makefile`: Remove `site: MODE := prod` so site can be built locally in dev mode.
