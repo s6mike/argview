@@ -71,7 +71,7 @@ PATH_PUBLIC ?= NULL
 all: config
 # Optional dependencies not used by netlify.
 ifneq (${ENV}, netlify)
-    all: public --conda
+  all: public --conda
 endif
 
 config: ${LIST_FILES_CONFIG_PROCESSED}
@@ -122,14 +122,16 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm ${PATH_FILE_CONVERT_GLOBAL} lua # TODO: replace npm with npm_audit based on ENV
-# 	-mkdir --parent "${WORKSPACE/test/output/mapjs-json}"
-# 	-mkdir --parent "${WORKSPACE/test/output/png}"
-# 	-mkdir --parent "${WORKSPACE/test/output/html}"
+install: ${PATH_FILE_YQ} pandoc npm lua # TODO: replace npm with npm_audit based on ENV
+ifneq (${ENV}, netlify)
+  install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit
+endif
 
 npm: ${PATH_DIR_MAPJS_ROOT}/node_modules
 
-npm_audit: npm npm_audit_output.txt
+npm_audit: | npm npm_audit_output.txt
+
+npm_audit_output.txt:
 	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
 
 # netlify version 2.1.3
@@ -141,53 +143,19 @@ pandoc:
 # -mkdir --parent ~/.local/share/pandoc/filters
 # Though I think I may want to install it in relevant conda env folder instead
 
-# - pandoc=2.9.2.1 
+# - pandoc==2.12=h06a4308_3
 # conda install pandoc https://github.com/jgm/pandoc/blob/main/INSTALL.md
 
 # -chmod +x ${PATH_FILE_YQ}/pandoc
 # If not using conda would need conda dependencies installed.
 
-# TODO: check whether these are already installed
-lua: lua_modules/
-# If installing from environment.yaml, skip to SECTION 2.
-# conda install -c anaconda lua==5.3.4=h7b6447c_0
-# sudo apt install lua5.3
-
-# TODO: make local/conda only
-	conda install -c anaconda-platform luarocks==3.7.0=lua53h06a4308_0
-
-# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
-# QUESTION: Something like this?
-# echo "external_deps_dirs = {
-#    "$CONDA_PREFIX"
-# }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
-
-# Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
+lua: | lua_modules/ ${PATH_BIN_GLOBAL}/luarocks
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
 # # https://tex.stackexchange.com/questions/630111/install-lualatex-for-use-on-the-command-line
 # 	apt-get install texlive-latex-extra
 # 	apt-get install texlive-luatex
-# # TODO: for other users would need to install argmap in current directory
-# 	chmod u+x "${PATH_DIR_ARGMAP_LUA}/"*
-# 	chmod u+x "${PATH_FOLDER_ARGMAP_SRC}/js/"*
-# 	rockspec_file=$(_find_rockspec) # Gets absolute path
-# __test luarocks lint "$(__find_rockspec)"
-# # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
-# #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
-#   luarocks remove
-#   luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
-
-# # Running qa_rockspec will also install dependencies
-# Should be able to distinguish between dev and prod install with npm and thuse choose whether 
-# testcafe etc are installed.
-# So shouldn't need this:
-# # Dev tools
-# testcafe:
-# 	ifeq ($(MODE), dev)
-#     npm install -g testcafe
-#   endif
 
 prints:
 	$(info PATH_PUBLIC:)
@@ -233,29 +201,63 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 # ###########
 
+${PATH_BIN_GLOBAL}/luarocks:
+ifeq (${ENV}, netlify)
+# sudo apt install lua5.3
+else
+# If installing from environment.yaml, skip to SECTION 2.
+# conda install -c anaconda lua==5.3.4=h7b6447c_0
+	conda install -c anaconda-platform luarocks==3.7.0=lua53h06a4308_0
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
+# QUESTION: Something like this?
+# echo "external_deps_dirs = {
+#    "$CONDA_PREFIX"
+# }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
+
+# Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
+
+# # TODO: for other users would need to install argmap in current directory
+# 	chmod u+x "${PATH_DIR_ARGMAP_LUA}/"*
+# 	chmod u+x "${PATH_FOLDER_ARGMAP_SRC}/js/"*
+
+# # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
+# #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
+#   luarocks remove
+endif
+
 ${PATH_DIR_MAPJS_ROOT}/node_modules:
-	# Test for ENV netlify
+# TODO: Test for ENV netlify
 	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
 
-# QUESTION: Why doesn't $@ work for wget - uses yq instead of ./yq ?
 ${PATH_FILE_YQ}:
-# Test for ENV netlify
-# go install github.com/mikefarah/yq/v4@latest
-# mdkir -p ${INSTALL_PATH}
-	-wget -qO "${PATH_FILE_YQ}" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x "${PATH_FILE_YQ}"
-
-# Test for ENV not netlify
-#	 sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-# 	chmod u+x "$HOME/.local/bin/yq"
-	-"${PATH_FILE_YQ}" --version
+	-mkdir -p $$(dirname $@)
+# QUESTION: how to execute once go installed? Update PATH?
+# 	go install github.com/mikefarah/yq/v4@latest
+	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+	-chmod +x $@
+	-$@ --version
 
 # Install lua dependencies
 #		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
 #		Running qa_rockspec will also install dependencies
 lua_modules/:
-#		TODO: split up this script into separate make actions:
+#	TODO: split up this script into separate make actions:
 	scripts/qa_rockspec.sh
+
+# 	rockspec_file=$(_find_rockspec) # Gets absolute path
+# __test luarocks lint "$(__find_rockspec)"
+
+#   luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
+
+# # Running qa_rockspec will also install dependencies
+# Should be able to distinguish between dev and prod install with npm and thuse choose whether 
+# testcafe etc are installed.
+# So shouldn't need this:
+# # Dev tools
+# testcafe:
+# ifeq ($(MODE), dev)
+# 	npm install -g testcafe
+# endif
 
 # Generate html from json
 #		TODO: Replace mapjs/public/output X with vars
@@ -408,10 +410,10 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 # luarocks remove
 # luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
-# TODO use vars:
 ${PATH_FILE_CONVERT_GLOBAL}: ${PATH_BIN_GLOBAL}/magick
-# This should be local+conda only:
+ifneq (${ENV}, netlify)
 	conda install imagemagick
+endif
 
 # TODO: Add README install instructions:
 

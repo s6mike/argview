@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.4
+
+- `makefile`:
+  - `make install`:
+    - Add check ENV logic.
+    - Only install `luarocks` and `node_modules` when missing.
+    - Refine `yq` install slightly.
+  - `npm_audit`: Only run when no audit report output.
+
 ## argmap 22.26.3
 
 - `scripts/argmap_init_script.sh`: Update `PATH_FILE_YQ` default to work locally.
