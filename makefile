@@ -90,7 +90,7 @@ output_clean:
 	rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
 	rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
 #		TODO: Replace with vars:
-	rm -f ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.mup
+	rm -f ${PATH_DIR_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
 # rm -rf ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/png
 # argmap cleans
 	__clean_repo
@@ -261,31 +261,31 @@ lua_modules/:
 #		TODO: Replace mapjs/public/output X with vars
 # 	QUESTION Can I combine this with first v3.html rule?
 # QUESTION Only set 2hf -s flag in production mode?
-mapjs/public/output/html/%.html: mapjs/public/output/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir -p "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # Generate .json from .yaml
-mapjs/public/output/mapjs-json/%.json: test/input/%.yaml
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
 	-mkdir -p "$(@D)"
 	a2m "$<" "$@"
 
 # Copy .json from input to output, before generating html
-mapjs/public/output/%.json: test/input/%.json
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
-mapjs/public/output/%.json: test/output/%.json
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
 # Copy .mup from input to output, before generating html
-mapjs/public/output/%.json: test/input/%.mup
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	-mkdir -p "$(@D)"
 	cp "$<" "$@"
 
-mapjs/public/output/html/%.html: test/input/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Might be able to run pandoc_argmap instead
 	-mkdir -p "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
