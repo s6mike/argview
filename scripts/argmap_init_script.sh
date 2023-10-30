@@ -11,10 +11,15 @@ echo "Running ${BASH_SOURCE[0]}"
 set -o allexport
 ENV=${ENV:-vscode}
 MODE=${MODE:-dev}
+
+echo "ENV|MODE: $ENV|$MODE"
+
 # QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
 WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
+
+echo "PATH_FILE_YQ: $PATH_FILE_YQ"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
 source "$PATH_DIR_SCRIPTS/argmap.env"

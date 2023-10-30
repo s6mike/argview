@@ -229,6 +229,7 @@ ${PATH_DIR_MAPJS_ROOT}/node_modules:
 	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 ${PATH_FILE_YQ}:
+	$(info "make PATH_FILE_YQ: ${PATH_FILE_YQ}")
 	-mkdir -p $$(dirname $@)
 # QUESTION: how to execute once go installed? Update PATH?
 # 	go install github.com/mikefarah/yq/v4@latest
@@ -294,11 +295,13 @@ ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE
 
 # If building in production 
 ${PATH_OUTPUT_JS}/main.js.map: site_clean
+	$(info make site MODE: ${MODE})
 	-mkdir -p "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # Create js dependencies for html files:
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
+	$(info make site MODE: ${MODE})
 	-mkdir -p "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
