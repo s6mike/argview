@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.1
+
+- `scripts/argmap_init_script.sh`: Export `PATH_INPUT_LOCAL` and `PATH_OUTPUT_LOCAL` for `makefile`.
+
 ## argmap 22.26.0
 
 - Deprecate `PATH_CONVERT_LOCAL` in favour of `PATH_FILE_CONVERT_LOCAL`:
