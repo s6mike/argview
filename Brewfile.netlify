@@ -1,0 +1,2 @@
+brew install lua@5.3
+brew install luarocks
