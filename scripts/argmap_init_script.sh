@@ -51,6 +51,7 @@ source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 set -o allexport
 DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
 PATH_MISC_DEV=$DIR_PROJECTS/misc
+PATH_BIN_GLOBAL=${PATH_BIN_GLOBAL:-$(getvar PATH_BIN_GLOBAL)}
 set +o allexport
 
 # shellcheck disable=SC1091
