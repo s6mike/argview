@@ -150,7 +150,8 @@ pandoc:
 # -chmod +x ${PATH_FILE_YQ}/pandoc
 # If not using conda would need conda dependencies installed.
 
-lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
+# lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
+lua: ${PATH_BIN_GLOBAL}/lua5.3
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
@@ -204,10 +205,11 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 # https://github.com/luarocks/luarocks/wiki/Installation-instructions-for-Unix
 
 ${PATH_BIN_GLOBAL}/lua5.3: ${PATH_BIN_GLOBAL}/lua-5.3.5
-	cd $<
-# make -f $</Makefile linux test
-	-make linux test
-	-make install
+# $(MAKE) is for recursive make; -C calls make in subfolder	
+# cd $< && $(MAKE) linux test
+# cd $< && make install
+	$(MAKE) -C $< linux test
+	$(MAKE) -C $< install
 
 ${PATH_BIN_GLOBAL}/lua-5.3.5: ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz
 	tar -zxf $<
@@ -221,8 +223,8 @@ ifeq (${ENV}, netlify)
 # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
 	-./configure --with-lua-include=/usr/local/include
-	-make
-	-make install
+	$(MAKE)
+	$(MAKE) install
 else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
