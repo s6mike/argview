@@ -241,7 +241,7 @@ ${PATH_FILE_YQ}:
 # Install lua dependencies
 #		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
 #		Running qa_rockspec will also install dependencies
-lua_modules/:
+lua_modules/: ${PATH_BIN_GLOBAL}/luarocks
 #	TODO: split up this script into separate make actions:
 	scripts/qa_rockspec.sh
 
