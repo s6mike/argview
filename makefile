@@ -18,7 +18,8 @@ MAKEFLAGS += -rR
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
 
-MODE ?= dev # default. Use make MODE=prod or make site for prod mode
+# Testing removing this to fix netlify live, but doesn't seem to matter:
+# MODE ?= dev # default. Use make MODE=prod or make site for prod mode
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
