@@ -205,6 +205,7 @@ ${PATH_BIN_GLOBAL}/luarocks:
 ifeq (${ENV}, netlify)
 	apt install lua5.3
 	apt install luarocks
+# https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
 else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
@@ -232,11 +233,13 @@ ${PATH_DIR_MAPJS_ROOT}/node_modules:
 
 ${PATH_FILE_YQ}:
 	$(info "make PATH_FILE_YQ: ${PATH_FILE_YQ}")
-	-mkdir -p $$(dirname $@)
+
+	-app_install $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+# -mkdir -p $$(dirname $@)
 # QUESTION: how to execute once go installed? Update PATH?
 # 	go install github.com/mikefarah/yq/v4@latest
-	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x $@
+# -wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+# -chmod +x $@
 	-${PATH_FILE_YQ} --version
 
 # Install lua dependencies
