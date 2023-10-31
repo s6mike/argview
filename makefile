@@ -123,7 +123,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm lua # TODO: replace npm with npm_audit based on ENV
+install: ${PATH_FILE_YQ} pandoc npm # lua # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
   install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit
 endif
@@ -204,27 +204,27 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 # https://github.com/luarocks/luarocks/wiki/Installation-instructions-for-Unix
 
-${PATH_BIN_GLOBAL}/lua5.3: ${PATH_BIN_GLOBAL}/lua-5.3.5
-# $(MAKE) is for recursive make; -C calls make in subfolder	
-# cd $< && $(MAKE) linux test
-# cd $< && make install
-	$(MAKE) -C $< linux test
-	$(MAKE) -C $< install
+# ${PATH_BIN_GLOBAL}/lua5.3: ${PATH_BIN_GLOBAL}/lua-5.3.5
+# # $(MAKE) is for recursive make; -C calls make in subfolder	
+# # cd $< && $(MAKE) linux test
+# # cd $< && make install
+# 	$(MAKE) -C $< linux test
+# 	$(MAKE) -C $< install
 
-${PATH_BIN_GLOBAL}/lua-5.3.5: ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz
-	tar -zxf $<
-# app_path="${app_path%.*}"
+# ${PATH_BIN_GLOBAL}/lua-5.3.5: ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz
+# 	tar -zxf $<
+# # app_path="${app_path%.*}"
 
-${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
-	app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
+# ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
+# 	app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 
 ${PATH_BIN_GLOBAL}/luarocks: ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
-# app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
-	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
-	-./configure --with-lua-include=/usr/local/include
-	$(MAKE)
-	$(MAKE) install
+# # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
+# 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
+# 	-./configure --with-lua-include=/usr/local/include
+# 	$(MAKE)
+# 	$(MAKE) install
 else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
