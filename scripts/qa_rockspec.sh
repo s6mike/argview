@@ -11,7 +11,9 @@ rockspec_file=$(__find_rockspec) # Gets absolute path
 
 echo "*** Checking: $rockspec_file ***"
 
-install_dir="$DIR_PROJECTS/argmap"
+install_dir="$PATH_DIR_ARGMAP_ROOT"
+
+# TODO: Use env var for this
 dir_lua="lua_modules"
 
 luarocks lint "$rockspec_file"
