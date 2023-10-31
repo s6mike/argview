@@ -203,7 +203,8 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 ${PATH_BIN_GLOBAL}/luarocks:
 ifeq (${ENV}, netlify)
-# sudo apt install lua5.3
+	apt install lua5.3
+	apt install luarocks
 else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
