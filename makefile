@@ -206,8 +206,8 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 ${PATH_BIN_GLOBAL}/lua5.3: ${PATH_BIN_GLOBAL}/lua-5.3.5
 	cd $<
 # make -f $</Makefile linux test
-	make linux test
-	make install
+	-make linux test
+	-make install
 
 ${PATH_BIN_GLOBAL}/lua-5.3.5: ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz
 	tar -zxf $<
@@ -220,9 +220,9 @@ ${PATH_BIN_GLOBAL}/luarocks: ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
 # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
-	./configure --with-lua-include=/usr/local/include
-	make
-	make install
+	-./configure --with-lua-include=/usr/local/include
+	-make
+	-make install
 else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
