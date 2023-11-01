@@ -20,10 +20,14 @@ PORT_DEV_SERVER: 9001
 
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_ARGMAP
-PATH_LUA_MODULES: ${PATH_DIR_ARGMAP_ROOT}/lua_modules
-# TODO: use PATH_LUA_MODULES
-LUA_CPATH: ${PATH_DIR_ARGMAP_ROOT}/lua_modules/lib/lua/5.3/?.so;
-LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?.lua;${PATH_DIR_ARGMAP_ROOT}/lua_modules/share/lua/5.3/?/init.lua;
+
+# repo:
+# PATH_LUA_MODULES: ${PATH_DIR_ARGMAP_ROOT}/lua_modules
+#netlify:
+PATH_LUA_MODULES: /opt/build/repo/lua_modules
+
+LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so; 
+LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
 
 ## mapjs
 DIR_MAPJS: mapjs
