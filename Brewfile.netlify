@@ -1,2 +1,2 @@
-brew install lua@5.3
-brew install luarocks
+brew "lua@5.3"
+brew "luarocks"
