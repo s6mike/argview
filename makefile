@@ -123,7 +123,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm # lua # TODO: replace npm with npm_audit based on ENV
+install: ${PATH_FILE_YQ} pandoc npm lua # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
   install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit
 endif
@@ -151,7 +151,8 @@ pandoc:
 # If not using conda would need conda dependencies installed.
 
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
-lua: ${PATH_BIN_GLOBAL}/lua5.3
+lua: # ${PATH_BIN_GLOBAL}/lua5.3
+	scripts/qa_rockspec.sh
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
