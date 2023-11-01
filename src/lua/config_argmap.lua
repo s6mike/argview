@@ -2,7 +2,7 @@
 -- SPDX-License-Identifier: MIT
 
 -- Might fix attempts to find luarocks installed depedendencies (e.g. LuaFileSystem)
-require 'luarocks.loader'
+-- require 'luarocks.loader'
 
 -- config is used to store all config data and returned at end of this script.
 --   TODO: turn this into an object so not returing at end?
