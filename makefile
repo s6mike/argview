@@ -153,6 +153,8 @@ pandoc:
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
 lua: # ${PATH_BIN_GLOBAL}/lua5.3
 	scripts/qa_rockspec.sh
+# Check lua version:
+	lua -v
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
