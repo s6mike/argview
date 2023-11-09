@@ -34,15 +34,16 @@ luarocks lint "$rockspec_file"
 # luarocks --tree lua_modules make --only-deps argmap-4.13.22-9.rockspec # YAML_LIBDIR="$CONDA_PREFIX/lib/"
 # luarocks --lua-version=5.3 --lua-dir=$HOMEBREW_PREFIX/opt/lua@5.3 --tree "$install_dir/$dir_lua" make --only-deps "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
-
+echo luarocks standard:
 luarocks list
-luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
-
-# find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
-echo luarocks path:
 luarocks path
-echo luarocks path customised:
+luarocks show luafilesystem
+
+echo luarocks customised:
+luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
+luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
+# find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
 # Alternative to using YAML_LIBDIR:
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
