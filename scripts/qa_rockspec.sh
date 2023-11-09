@@ -55,6 +55,7 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
 echo luarocks customised:
+update-alternatives --config lua-interpreter
 lua53 -v
 which lua53
 lua54 -v
