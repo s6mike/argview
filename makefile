@@ -252,7 +252,7 @@ ${PATH_DIR_MAPJS_ROOT}/node_modules:
 	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 ${PATH_FILE_YQ}:
-	$(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
+# $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
 # -path=$(app_install ${PATH_BIN_GLOBAL} https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64)
 # $(info make path: ${path})
 # -mkdir -p $$(dirname $@)
