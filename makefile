@@ -157,7 +157,7 @@ lua: # ${PATH_BIN_GLOBAL}/lua5.3
 	which lua
 	lua -v
 	scripts/qa_rockspec.sh
-	update-alternatives --config lua-interpreter
+# update-alternatives --config lua-interpreter
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
