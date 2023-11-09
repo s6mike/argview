@@ -38,6 +38,8 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make "$rocks
 luarocks list
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
 
+find ./lua_modules -type d -name 'luafilesystem'
+
 # Alternative to using YAML_LIBDIR:
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
 # QUESTION: Something like this?
