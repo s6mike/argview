@@ -45,10 +45,10 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luaf
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
-lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
-cd /opt/buildhome/.luarocks/lib/lua/5.3/ || exit
-cd - || exit
-lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
+# lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
+# cd /opt/buildhome/.luarocks/lib/lua/5.3/ || exit
+# cd - || exit
+# lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
 # Alternative to using YAML_LIBDIR:
