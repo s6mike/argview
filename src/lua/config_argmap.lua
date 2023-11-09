@@ -11,7 +11,7 @@ local config = {}
 local LUA_LOGGING_LEVEL = 'ERROR'
 
 -- Set to DEBUG to activate logging:
--- LUA_LOGGING_LEVEL = 'DEBUG'
+LUA_LOGGING_LEVEL = 'DEBUG'
 
 -- Configures global variables for lua files.
 
@@ -38,9 +38,6 @@ package.cpath = os.getenv("LUA_CPATH") or
     "/lua_modules/lib/lua/5.3/?.so;" .. "/opt/miniconda3/envs/argmap/lib/lua/5.3/?.so;"
     .. package.cpath
 
--- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
--- Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))
-
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
 --  Calling this early in file so it's easier to debug rest.
 local logging = require 'logging'
@@ -51,6 +48,10 @@ Logger = logging.new(function(self, level, message)
 end)
 
 Logger:setLevel(logging[LUA_LOGGING_LEVEL])
+
+-- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
+Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))
+Logger:debug("LUA_CPATH: " .. (os.getenv("LUA_CPATH") or ""))
 
 -- Then use Logger:[level] to print
 --  Tables can't be concatenated so use separate debug message.
