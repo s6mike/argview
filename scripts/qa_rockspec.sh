@@ -56,6 +56,7 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 
 echo luarocks customised:
 update-alternatives --config lua-interpreter
+find . -type f -name "*lua*"
 lua53 -v
 which lua53
 lua54 -v
