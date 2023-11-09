@@ -9,7 +9,12 @@ argmap.code-workspace
 !.vscode/settings.json
 archived
 includes/webpack-dist-tags.html
+
 lua_modules/
+/luarocks
+/lua
+/.luarocks
+
 mapjs/node_modules
 mapjs/public/output
 mapjs/public/input
