@@ -43,7 +43,7 @@ lua -v # Check lua version
 # luarocks show luafilesystem
 
 echo luarocks customised:
-lua@5.3 -v # Check lua version
+# lua@5.3 -v # Check lua version
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luafilesystem
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
@@ -53,8 +53,6 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 # cd - || exit
 # lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
-
-echo luarocks customised:
 
 ln -sf /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 ./lua
 lua -v
