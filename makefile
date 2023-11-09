@@ -23,7 +23,7 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean install lua npm npm_audit pandoc yq prints site # dev
+.PHONY: all config public --conda output_clean site_clean clean install lua luaver npm npm_audit pandoc yq prints site # dev
 
 # Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
 .SECONDARY:
@@ -151,13 +151,19 @@ pandoc:
 # If not using conda would need conda dependencies installed.
 
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
-lua: # ${PATH_BIN_GLOBAL}/lua5.3
+# install.sh is for luaver
+lua: luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
 # Check lua version:
 # TODO: redirect lua@5.3 to lua
-	which lua
-	lua -v
 	scripts/qa_rockspec.sh
 # update-alternatives --config lua-interpreter
+
+luaver:
+# curl https://raw.githubusercontent.com/DhavalKapil/luaver/master/install.sh -o install.sh && . ./install.sh
+# . ~/.bashrc'
+	luaver set-default 5.3.4
+	which lua
+	lua -v
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
