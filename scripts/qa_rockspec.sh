@@ -56,16 +56,16 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 
 echo luarocks customised:
 
-ln -sf /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 /usr/bin/lua
+ln -sf /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 ./lua
 lua -v
 which lua
 
 # update-alternatives --config lua-interpreter
-find . -type f -name "*lua*"
-lua53 -v
-which lua53
-lua54 -v
-which lua54
+# find . -type f -name "*lua*"
+# lua53 -v
+# which lua53
+# lua54 -v
+# which lua54
 
 # Alternative to using YAML_LIBDIR:
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
