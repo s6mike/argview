@@ -19,7 +19,7 @@ WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
 PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
 
-echo "PATH_FILE_YQ: $PATH_FILE_YQ"
+# echo "PATH_FILE_YQ: $PATH_FILE_YQ"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/netlify_install.lib.sh
 source "$PATH_DIR_SCRIPTS/netlify_install.lib.sh"
