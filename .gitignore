@@ -10,7 +10,7 @@ argmap.code-workspace
 archived
 includes/webpack-dist-tags.html
 
-lua_modules/
+/lua_modules
 /luarocks
 /lua
 /.luarocks
