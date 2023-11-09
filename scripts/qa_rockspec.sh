@@ -37,10 +37,10 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 init
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
 lua -v # Check lua version
-echo luarocks standard:
-luarocks list
-luarocks path
-luarocks show luafilesystem
+# echo luarocks standard:
+# luarocks list
+# luarocks path
+# luarocks show luafilesystem
 
 echo luarocks customised:
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luafilesystem
