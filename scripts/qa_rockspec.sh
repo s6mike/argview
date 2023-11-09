@@ -54,6 +54,12 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 # lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
+echo luarocks customised:
+lua53 -v
+which lua53
+lua54 -v
+which lua54
+
 # Alternative to using YAML_LIBDIR:
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
 # QUESTION: Something like this?
