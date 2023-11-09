@@ -18,6 +18,32 @@ PATH_PUBLIC: ${PATH_DIR_MAPJS_ROOT}/${DIR_PUBLIC}
 PORT_DEBUG: 9221
 PORT_DEV_SERVER: 9001
 
+# TODO update env argmap custom:
+#   Don't forget new PATH_LIB_GLOBAL
+## External to project
+HOME: /home/s6mike
+PATH_PROFILE_LOCAL: ${HOME}/.local
+PATH_LUA_LOCAL: ${PATH_PROFILE_LOCAL}/bin/lua
+PATH_PANDOC_LOCAL: ${PATH_PROFILE_LOCAL}/share/pandoc
+PATH_FILE_CONVERT_LOCAL: ${PATH_PROFILE_LOCAL}/bin/convert
+
+PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
+
+# TODO:
+#   HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+#   echo "(brew --prefix): $(brew --prefix)"
+PATH_SHARE_GLOBAL: /home/linuxbrew/.linuxbrew
+PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
+PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
+PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
+PATH_FILE_CONVERT_GLOBAL: ${PATH_BIN_GLOBAL}/convert
+
+DIR_PROJECTS: ${HOME}/git_projects
+PATH_MISC_DEV: ${DIR_PROJECTS}/misc
+PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
+PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
+DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
+
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_ARGMAP
 
@@ -27,7 +53,12 @@ PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_A
 # PATH_LUA_MODULES: /opt/build/repo/lua_modules
 PATH_LUA_MODULES: /opt/buildhome/.luarocks
 
-LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.so
+# /opt/buildhome/.luarocks/lib/luarocks/rocks-5.3
+# Luarocks path output:
+#   export LUA_CPATH="/opt/buildhome/.luarocks/lib/lua/5.3/?.so;/opt/buildhome/.luarocks/lib/luarocks/rocks-5.3/?.so;/home/linuxbrew/.linuxbrew/lib/lua/5.3/?.so"
+
+# TODO update env argmap custom:
+LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so"
 LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;
 
 ## mapjs
@@ -37,25 +68,6 @@ PATH_DIR_MAPJS_ROOT: ${PATH_DIR_ARGMAP_ROOT}/${DIR_MAPJS}
 ## pandoc
 PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_DIR_ARGMAP_LUA}/pandoc-argmap.lua
 PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
-
-## External to project
-HOME: /home/s6mike
-PATH_PROFILE_LOCAL: ${HOME}/.local
-PATH_LUA_LOCAL: ${PATH_PROFILE_LOCAL}/bin/lua
-PATH_PANDOC_LOCAL: ${PATH_PROFILE_LOCAL}/share/pandoc
-PATH_FILE_CONVERT_LOCAL: ${PATH_PROFILE_LOCAL}/bin/convert
-
-PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
-PATH_SHARE_GLOBAL: ${CONDA_PREFIX}/share
-PATH_LUA_GLOBAL: ${PATH_SHARE_GLOBAL}/lua/5.3
-PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
-PATH_FILE_CONVERT_GLOBAL: ${PATH_BIN_GLOBAL}/convert
-
-DIR_PROJECTS: ${HOME}/git_projects
-PATH_MISC_DEV: ${DIR_PROJECTS}/misc
-PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
-PATH_TEST_LOG: "${PATH_MISC_DEV}/tests_output.txt"
-DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
 # TODO Use variables: 
 PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/example1-clearly-false-white-swan-simplified.html 
