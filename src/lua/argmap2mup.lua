@@ -589,6 +589,7 @@ local function help()
 end
 
 local function parse_options(a)
+  Logger:debug("LUA_CPATH: " .. (os.getenv("LUA_CPATH") or ""))
   local opts        = {}
   local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true, n = true, name = true, f = true, folder = true })
 
