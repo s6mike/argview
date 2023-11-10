@@ -58,6 +58,7 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 luaver current
 lua -v
 which lua
+echo "PATH: $PATH"
 
 # update-alternatives --config lua-interpreter
 # find . -type f -name "*lua*"
