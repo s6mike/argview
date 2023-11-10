@@ -162,9 +162,11 @@ luaver:
 # curl https://raw.githubusercontent.com/DhavalKapil/luaver/master/install.sh -o install.sh && . ./install.sh
 # TODO: only override if there is no value
 	luaver list
-	luaver set-default 5.3.6
+	luaver current
+# luaver set-default 5.3.6
 # luaver use 5.3.6
 	. ~/.bashrc
+	luaver current
 # TODO use variables in linuxbrew path
 	export PATH=/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:${PATH}
 	which lua
