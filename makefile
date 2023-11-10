@@ -162,7 +162,7 @@ luaver:
 # curl https://raw.githubusercontent.com/DhavalKapil/luaver/master/install.sh -o install.sh && . ./install.sh
 # . ~/.bashrc'
 # TODO: only override if there is no value
-	export TERM=dumb
+# export TERM=dumb
 	luaver set-default 5.3.4
 	which lua
 	lua -v
