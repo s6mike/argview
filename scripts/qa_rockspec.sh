@@ -3,9 +3,9 @@
 # rockspec QA: lints and makes rockspec to ensure it is valid.
 # Run in project directory itself, not test project.
 
-lua -v
-which lua
-echo "PATH: $PATH"
+# lua -v
+# which lua
+# echo "PATH: $PATH"
 
 # TODO: Put this into function so I can run it from tests file.
 #   Will need option to not reinstall dependencies.
@@ -40,28 +40,31 @@ luarocks lint "$rockspec_file"
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 init
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
-lua -v # Check lua version
+# lua -v # Check lua version
 # echo luarocks standard:
 # luarocks list
 # luarocks path
 # luarocks show luafilesystem
 
-echo "****luarocks customised****":
+# echo "****luarocks customised****":
 # lua@5.3 -v # Check lua version
 # luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luafilesystem
-luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
-luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
-luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
+# luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
+
+# QUESTION: should some of these PATHS be used?
+# luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
+
+# luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
 # lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
 # cd /opt/buildhome/.luarocks/lib/lua/5.3/ || exit
 # cd - || exit
 # lua -e 'print(_VERSION); package.cpath="./?.so"; require "lfs"'
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
-# ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua
-lua -v
-which lua
-echo "PATH: $PATH"
+# # ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua
+# lua -v
+# which lua
+# echo "PATH: $PATH"
 
 # update-alternatives --config lua-interpreter
 # find . -type f -name "*lua*"
