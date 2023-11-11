@@ -22,7 +22,6 @@ dependencies = {
    "rxi-json-lua ~> e1dbe93-0",
    "api7-lua-tinyyaml ~> 0.4.3-0",
    "lyaml ~> 6.2.7-1",
-	 "luafilesystem  ~> 1.8.0-1",
 }
 external_dependencies = {
    YAML = {library="libyaml.so"}
