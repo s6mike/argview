@@ -67,8 +67,6 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
 
-export PATH := /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$(PATH)
-
 # ###########
 
 all: config
