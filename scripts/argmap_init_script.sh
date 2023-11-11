@@ -3,11 +3,9 @@
 # Turns off unused variable warning, since exports are implicit due to set -o allexport
 
 echo "Running ${BASH_SOURCE[0]}"
-
-/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua -v
-ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua ./lua
-lua -v
+export PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH"
 echo "PATH: $PATH"
+lua -v
 
 # Needed for non-VSCode environments:
 # TODO should set to $HOME/local/argmap by default
