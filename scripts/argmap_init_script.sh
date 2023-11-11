@@ -4,9 +4,9 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
-ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua ./lua
-
 /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua -v
+ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua ./lua
+lua -v
 
 # Needed for non-VSCode environments:
 # TODO should set to $HOME/local/argmap by default
