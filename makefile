@@ -152,13 +152,13 @@ pandoc:
 
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
 # install.sh is for luaver
-lua: # luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
-# luaver install 5.3.4
-	luaver list
-	luaver set-default 5.3.4
-	luaver use 5.3.4
-	luaver current
-	lua -v
+lua: luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
+# # luaver install 5.3.4
+# 	# luaver list
+# # luaver set-default 5.3.4
+# # luaver use 5.3.4
+# 	luaver current
+# 	lua -v
 # Check lua version:
 # TODO: redirect lua@5.3 to lua
 	scripts/qa_rockspec.sh
@@ -171,8 +171,8 @@ luaver:
 	luaver current
 # luaver set-default 5.3.6
 # luaver use 5.3.6
-	. ~/.bashrc
-	luaver current
+# . ~/.bashrc¬
+# luaver current
 # TODO use variables in linuxbrew path
 	export PATH=/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:${PATH}
 	which lua
