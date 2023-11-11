@@ -3,9 +3,6 @@
 # Turns off unused variable warning, since exports are implicit due to set -o allexport
 
 echo "Running ${BASH_SOURCE[0]}"
-export PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH"
-echo "PATH: $PATH"
-lua -v
 
 # Needed for non-VSCode environments:
 # TODO should set to $HOME/local/argmap by default
@@ -71,7 +68,10 @@ CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 #  QUESTION: Combine these?
 PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
 PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
-PATH="$PATH_DIR_ARGMAP_LUA:$PATH"
+PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH_DIR_ARGMAP_LUA:$PATH"
+echo "PATH: $PATH"
+which lua
+
 # PANDOC - needed for pandoc-argamp.lua until lua reads config directly
 PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
 LUA_PATH=$(getvar LUA_PATH)
