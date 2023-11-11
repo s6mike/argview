@@ -3,6 +3,10 @@
 # rockspec QA: lints and makes rockspec to ensure it is valid.
 # Run in project directory itself, not test project.
 
+lua -v
+which lua
+echo "PATH: $PATH"
+
 # TODO: Put this into function so I can run it from tests file.
 #   Will need option to not reinstall dependencies.
 
@@ -55,7 +59,6 @@ luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafile
 # find "$(getvar PATH_LUA_MODULES)" -type f -name 'lfs.so'
 
 # ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua5.3 /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua
-luaver current
 lua -v
 which lua
 echo "PATH: $PATH"
