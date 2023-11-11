@@ -46,9 +46,9 @@ lua -v # Check lua version
 # luarocks path
 # luarocks show luafilesystem
 
-echo luarocks customised:
+echo "****luarocks customised****":
 # lua@5.3 -v # Check lua version
-luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luafilesystem
+# luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 install luafilesystem
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
 luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
