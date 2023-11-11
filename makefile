@@ -152,7 +152,7 @@ pandoc:
 
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
 # install.sh is for luaver
-lua: luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
+lua: # luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
 # # luaver install 5.3.4
 # 	# luaver list
 # # luaver set-default 5.3.4
@@ -161,6 +161,9 @@ lua: luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
 # 	lua -v
 # Check lua version:
 # TODO: redirect lua@5.3 to lua
+	export PATH=/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:${PATH}
+	which lua
+	lua -v
 	scripts/qa_rockspec.sh
 # update-alternatives --config lua-interpreter
 
@@ -174,9 +177,6 @@ luaver:
 # . ~/.bashrc¬
 # luaver current
 # TODO use variables in linuxbrew path
-	export PATH=/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:${PATH}
-	which lua
-	lua -v
 
 # # lualatex is a LaTeX based format, so in order to use it you have to install LaTeX, not just TeX. So you need at least the Ubuntu texlive-latex-base package.
 # # But if you aren't an expert, it's usually better to just install texlive-full to avoid issues later on with missing packages.
