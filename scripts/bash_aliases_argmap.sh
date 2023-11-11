@@ -128,7 +128,7 @@ a2m() { # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (outp
   name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
-    /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" "$1" >"$output" &&
+    lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
 }
 
