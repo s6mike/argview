@@ -4,6 +4,8 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
+ln -s /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua ./lua
+
 /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin/lua -v
 
 # Needed for non-VSCode environments:
