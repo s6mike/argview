@@ -68,7 +68,8 @@ CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 #  QUESTION: Combine these?
 PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
 PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
-PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH_DIR_ARGMAP_LUA:$PATH"
+# PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH_DIR_ARGMAP_LUA:$PATH"
+PATH="$PATH_DIR_ARGMAP_LUA:$PATH"
 echo "PATH: $PATH"
 which lua
 
