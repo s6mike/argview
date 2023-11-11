@@ -153,7 +153,7 @@ pandoc:
 # lua: ${PATH_BIN_GLOBAL}/luarocks ${PATH_BIN_GLOBAL}/lua5.3 | lua_modules/
 # install.sh is for luaver
 lua: # luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
-	luaver install 5.3.4
+# luaver install 5.3.4
 	luaver list
 	luaver set-default 5.3.4
 	luaver use 5.3.4
