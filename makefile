@@ -67,6 +67,8 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
 
+export PATH := /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$(PATH)
+
 # ###########
 
 all: config
@@ -161,7 +163,6 @@ lua: # luaver # install.sh # ${PATH_BIN_GLOBAL}/lua5.3
 # 	lua -v
 # Check lua version:
 # TODO: redirect lua@5.3 to lua
-export PATH := /home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$(PATH)
 	echo "PATH: ${PATH}"
 	scripts/qa_rockspec.sh
 # update-alternatives --config lua-interpreter
