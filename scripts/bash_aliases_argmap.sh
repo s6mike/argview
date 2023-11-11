@@ -123,7 +123,8 @@ __save_env() {
 # Convert to map.json, writes it to test/output/mapjs-json/
 # lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yaml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                     # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
+a2m() { # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
+  echo "PATH: $PATH"
   name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
