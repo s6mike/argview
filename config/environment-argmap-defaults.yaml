@@ -61,9 +61,9 @@ PATH_LUAROCKS_MODULES: /opt/build/repo/lua_modules
 # Luarocks path output:
 #   export LUA_CPATH="/opt/buildhome/.luarocks/lib/lua/5.3/?.so;/opt/buildhome/.luarocks/lib/luarocks/rocks-5.3/?.so;/home/linuxbrew/.linuxbrew/lib/lua/5.3/?.so"
 
+LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUAROCKS_MODULES}/share/lua/5.3/?.lua;${PATH_LUAROCKS_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUAROCKS_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUAROCKS_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;
 # TODO update env argmap custom:
 LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUAROCKS_MODULES}/lib/luarocks/rocks-5.3/?.so;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so
-LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUAROCKS_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUAROCKS_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;
 
 ## mapjs
 DIR_MAPJS: mapjs
