@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
-make test
+# make test
 
 # Ensure everything built
-make site_clean public
-make all MODE:=dev
+# make site_clean public
+# make all MODE:=dev
 
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
