@@ -296,13 +296,21 @@ endif
 # endif
 
 # Generate html from json
-#		TODO: Replace mapjs/public/output X with vars
 # 	QUESTION Can I combine this with first v3.html rule?
-# QUESTION Only set 2hf -s flag in production mode?
+# Call make HTML_OPEN=true to open output file
+#	 QUESTION Only set 2hf -s flag in production mode?
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
+
+# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # Generate .json from .yaml
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
@@ -326,8 +334,15 @@ ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Might be able to run pandoc_argmap instead
 	-mkdir --parent "$(@D)"
-# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
 
 # If building in production 
 ${PATH_OUTPUT_JS}/main.js.map: site_clean
