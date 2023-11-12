@@ -72,7 +72,7 @@ PATH_PUBLIC ?= NULL
 all: config
 # Optional dependencies not used by netlify.
 ifneq (${ENV}, netlify)
-  all: public --conda
+  all: public --conda lua_modules/
 endif
 
 config: ${LIST_FILES_CONFIG_PROCESSED}
@@ -123,7 +123,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
-install: ${PATH_FILE_YQ} pandoc npm lua # TODO: replace npm with npm_audit based on ENV
+install: ${PATH_FILE_YQ} pandoc npm lua_modules/ # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
   install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit
 endif
@@ -281,7 +281,7 @@ lua_modules/: ${PATH_BIN_GLOBAL}/luarocks
 ifeq (${ENV}, netlify)
 	luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make --only-deps "${rockspec_file}"
 else
-  luarocks --tree lua_modules make --only-deps "${rockspec_file}" YAML_LIBDIR="${CONDA_PREFIX}/lib/"
+  luarocks --tree lua_modules --lua-version=5.3 make --only-deps "${rockspec_file}" YAML_LIBDIR="${CONDA_PREFIX}/lib/"
 endif
 # Should be able to distinguish between dev and prod install with npm and thuse choose whether 
 # testcafe etc are installed.
