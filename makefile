@@ -67,6 +67,8 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
 
+rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
+
 # ###########
 
 all: config
@@ -79,6 +81,7 @@ config: ${LIST_FILES_CONFIG_PROCESSED}
 public: $(LINK_TARGETS_PUBLIC)
 
 --conda: $(LINK_TARGETS_CONDA)
+# -conda activate ${CONDA_ENV_ARGMAP}
 # export CONDA_ENV_ARGMAP="argmap"
 # export XDG_DATA_HOME="${CONDA_PREFIX}/share/"
 
@@ -273,16 +276,15 @@ ${PATH_FILE_YQ}:
 lua_modules/: ${PATH_BIN_GLOBAL}/luarocks
 #	TODO: split up this script into separate make actions:
 # scripts/qa_rockspec.sh
-
-# Gets absolute path:
-	rockspec_file=$(__find_rockspec)
-	echo "*** Checking: ${rockspec_file} ***"
+# ifneq ($(*rockspec_file}, '')
+	echo "*** Checking: $(rockspec_file) ***"
 	luarocks lint "${rockspec_file}"
 ifeq (${ENV}, netlify)
 	luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make --only-deps "${rockspec_file}"
 else
-  luarocks --tree lua_modules --lua-version=5.3 make --only-deps "${rockspec_file}" YAML_LIBDIR="${CONDA_PREFIX}/lib/"
+	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${CONDA_PREFIX}/lib/
 endif
+# endif
 # Should be able to distinguish between dev and prod install with npm and thuse choose whether 
 # testcafe etc are installed.
 # So shouldn't need this:
