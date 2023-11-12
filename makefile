@@ -340,6 +340,7 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 # ############
 
