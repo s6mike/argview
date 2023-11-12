@@ -186,11 +186,10 @@ set +o allexport
 case $ENV in
 netlify)
   make site
+  make test
   ;;
 *)
   # QUESTION: Better to define above variables as part of make call instead of exporting them?
   make all # --warn-undefined-variables, -d for debugging
   ;;
 esac
-
-make test
