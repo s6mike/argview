@@ -13,7 +13,7 @@
 
 case $ENV in
 netlify)
-  echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
+  # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
 *)
   webpack_server_start
