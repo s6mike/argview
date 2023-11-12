@@ -12,7 +12,9 @@
 # webpack_pack # Covered by `make all`
 
 case $ENV in
-netlify) ;;
+netlify)
+  echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
+  ;;
 *)
   webpack_server_start
   ;;
@@ -51,7 +53,12 @@ __init_tests
 
 # TODO: Use test_function()
 if [ "$1" != html ]; then
-  __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
+  case $ENV in
+  netlify) ;;
+  *)
+    __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
+    ;;
+  esac
 
   __test a2m "$(getvar INPUT_FILE_YML)"       #2
   __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #3
