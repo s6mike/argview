@@ -198,9 +198,9 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
-# test: site_clean public # all
+test: site_clean public # all
 # TODO remove output dir and add symlink instead
-# ./test/test_scripts/tests.sh
+	./test/test_scripts/tests.sh
 # Instead of calling webpack_X in tests.sh:
 # ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 # webpack_server_start
