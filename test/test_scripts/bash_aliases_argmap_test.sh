@@ -56,7 +56,7 @@ __init_tests() {
     COL_RESET='\033[0m'   # No Color
   fi
 
-  mkdir -p "$(dirname "$(getvar PATH_TEST_LOG)")"
+  mkdir --parent "$(dirname "$(getvar PATH_TEST_LOG)")"
 }
 
 check_var_value() {

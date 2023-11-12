@@ -264,7 +264,7 @@ ${PATH_FILE_YQ}:
 # $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
 # -path=$(app_install ${PATH_BIN_GLOBAL} https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64)
 # $(info make path: ${path})
-# -mkdir -p $$(dirname $@)
+# -mkdir --parent $$(dirname $@)
 # QUESTION: how to execute once go installed? Update PATH?
 # 	go install github.com/mikefarah/yq/v4@latest
 	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
@@ -300,45 +300,45 @@ endif
 # 	QUESTION Can I combine this with first v3.html rule?
 # QUESTION Only set 2hf -s flag in production mode?
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # Generate .json from .yaml
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	a2m "$<" "$@"
 
 # Copy .json from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 # Copy .mup from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 # Might be able to run pandoc_argmap instead
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 
 # If building in production 
 ${PATH_OUTPUT_JS}/main.js.map: site_clean
 	$(info make site MODE: ${MODE})
-	-mkdir -p "${@D}"
+	-mkdir --parent "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # Create js dependencies for html files:
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 	$(info make site MODE: ${MODE})
-	-mkdir -p "${@D}"
+	-mkdir --parent "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # ############
@@ -353,18 +353,18 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 # Process config and environment files
 # 	QUESTION: Use more variables?
 ${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
 # Rule for public links
 #  after | is order only pre-requisite, doesn't update based on timestamps
 # This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
 $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 # realpath generates path relative to path_public
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
@@ -373,25 +373,25 @@ $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 #		TODO: Replace % with $(DIRECTORIES), matching the relevant directories: input, output, mapjs-json, html, mapjs-json
 #			Chatgpt suggestion, not sure it works that way: https://chat.openai.com/c/7b2b5fd5-6431-4c16-bd49-ddba40a6df45
 # ${PATH_TEST}/%:
-# 	-mkdir -p "$(@D)"
+# 	-mkdir --parent "$(@D)"
 
 # Add index.html
 #	 TODO: Use netlify redirect instead
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 ${CONDA_PREFIX}/%:
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 
 # For calling lua functions from shell (within conda env)
 ${PATH_BIN_GLOBAL}/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
@@ -400,12 +400,12 @@ ${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
 ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Ensure lua dependencies available to site for client_argmap2mapjs
@@ -425,13 +425,13 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
 # Rule for argmap lua links to conda lua folder
 #   Needed for config_argmap, but need to use absolute link
 ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
-	-mkdir -p "$(@D)"
+	-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder
 # ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
-# 	-mkdir -p "$(@D)"
+# 	-mkdir --parent "$(@D)"
 # 	ln -s $| $@
 
 #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
