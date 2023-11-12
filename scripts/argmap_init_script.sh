@@ -119,6 +119,8 @@ eval "$(pandoc --bash-completion)"
 case $ENV in
 
 netlify)
+  PATH_SHARE_GLOBAL=$(getvar PATH_SHARE_GLOBAL)
+  export PATH_SHARE_GLOBAL
   make install
   ;;
 *)
@@ -133,7 +135,6 @@ PATH_INPUT_PUBLIC=$(getvar PATH_INPUT_PUBLIC)
 PATH_OUTPUT_PUBLIC=$(getvar PATH_OUTPUT_PUBLIC)
 PATH_LUA_LOCAL=$(getvar PATH_LUA_LOCAL)
 PATH_PANDOC_LOCAL=$(getvar PATH_PANDOC_LOCAL)
-PATH_LUA_GLOBAL=$(getvar PATH_LUA_GLOBAL)
 
 case $ENV in
 
@@ -149,6 +150,7 @@ netlify) ;;
   CONDA_PREFIX=$(getvar CONDA_PREFIX)
   PATH_BIN_GLOBAL=$(getvar PATH_BIN_GLOBAL)
   PATH_PANDOC_GLOBAL=$(getvar PATH_PANDOC_GLOBAL)
+  PATH_LUA_GLOBAL=$(getvar PATH_LUA_GLOBAL)
   ;;
 esac
 
