@@ -49,15 +49,14 @@ __init_tests
 # do
 #     cat "$test/output"
 # done
-
-echo "ENV: $(getvar ENV)"
-echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
-echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
-
 # TODO: Use test_function()
 if [ "$1" != html ]; then
   case $(getvar ENV) in
-  netlify) ;;
+  netlify)
+    echo "ENV: $(getvar ENV)"
+    echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
+    echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
+    ;;
   *)
     __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
     __test m2a "$(getvar INPUT_FILE_JSON)"    #2
