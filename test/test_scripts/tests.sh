@@ -11,7 +11,7 @@
 # QUESTION: Any need to ensure its always running in dev mode?
 # webpack_pack # Covered by `make all`
 
-case $ENV in
+case $(getvar ENV) in
 netlify)
   # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
@@ -122,10 +122,17 @@ echo "If first html test failed, check whether webserver was running."
 echo "If all testcafe test failed, check that $(getvar INPUT_FILE_JSON) exists."
 echo "Test log location: $(getvar PATH_TEST_LOG)"
 
-if [ "$1" != html ]; then
-  # Check/update config
-  __update_repo
-fi
+case $(getvar ENV) in
+netlify)
+  # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
+  ;;
+*)
+  if [ "$1" != html ]; then
+    # Check/update config
+    __update_repo
+  fi
+  ;;
+esac
 
 # make clean
 
