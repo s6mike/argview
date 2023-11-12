@@ -12,10 +12,21 @@ set -o allexport
 ENV=${ENV:-vscode}
 MODE=${MODE:-dev}
 
+case $ENV in
+
+netlify) ;;
+*)
+  # TODO: normal install shouldn't use conda, so should set up to give option for either
+  #   ISSUE: conda needed for pandoc, so this should be set up before reading yaml
+  #     Not sure if this is fixing pandoc's conda dependency
+  CONDA_ENV_ARGMAP="${CONDA_ENV_ARGMAP:-argmap}"
+  ;;
+esac
+
 echo "ENV|MODE: $ENV|$MODE"
 
 # QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
-WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
+WORKSPACE=${WORKSPACE:-$HOME/git_projects/${CONDA_ENV_ARGMAP}}
 PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
 PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
 
@@ -60,9 +71,7 @@ source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 # source "$HOME/scripts/config.env"
 
 # QUESTION move to end of file?
-#   TODO: normal install shouldn't use conda, so should set up to give option for either
 set -o allexport
-CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 
 # Adds lua folder to start of PATH so lua files called from there instead of /opt/miniconda3/envs/argmap/bin/argmap2mup
 #  QUESTION: Combine these?
