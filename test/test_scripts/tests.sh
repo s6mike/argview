@@ -57,14 +57,14 @@ if [ "$1" != html ]; then
   netlify) ;;
   *)
     __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
+    __test m2a "$(getvar INPUT_FILE_JSON)"    #4
+    __test a2t "$(getvar INPUT_FILE_YML)"     #5
+    __test a2mu "$(getvar INPUT_FILE_YML)"    #6
     ;;
   esac
 
   __test a2m "$(getvar INPUT_FILE_YML)"       #2
   __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #3
-  __test m2a "$(getvar INPUT_FILE_JSON)"      #4
-  __test a2t "$(getvar INPUT_FILE_YML)"       #5
-  __test a2mu "$(getvar INPUT_FILE_YML)"      #6
 fi
 
 # map rendering
