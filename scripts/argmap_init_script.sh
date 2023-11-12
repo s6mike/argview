@@ -183,3 +183,5 @@ netlify)
   make all # --warn-undefined-variables, -d for debugging
   ;;
 esac
+
+make test
