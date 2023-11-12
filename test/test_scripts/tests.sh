@@ -3,10 +3,6 @@
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 # make test
 
-# Ensure everything built
-# make site_clean public
-# make all MODE:=dev
-
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
 # webpack_pack # Covered by `make all`
@@ -16,6 +12,9 @@ netlify)
   # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
 *)
+  # Ensure everything built
+  make site_clean public
+  # make all MODE:=dev
   webpack_server_start
   ;;
 esac
