@@ -18,8 +18,6 @@ PATH_PUBLIC: ${PATH_DIR_MAPJS_ROOT}/${DIR_PUBLIC}
 PORT_DEBUG: 9221
 PORT_DEV_SERVER: 9001
 
-# TODO update env argmap custom:
-#   Don't forget new PATH_LIB_GLOBAL
 ## External to project
 HOME: /home/s6mike
 PATH_PROFILE_LOCAL: ${HOME}/.local
@@ -46,19 +44,11 @@ DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_la
 
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_ARGMAP
-
-# repo:
-# PATH_LUA_MODULES: ${PATH_DIR_ARGMAP_ROOT}/lua_modules
-#netlify:
-# PATH_LUA_MODULES: /opt/build/repo/lua_modules
+# netlify:
 PATH_LUA_MODULES: /opt/build/repo/lua_modules
 
-# TODO rationalise vs PATH_LUA_MODULES
-# PATH_LUAROCKS_MODULES: /opt/build/repo/lua_modules
-
-LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua
-# TODO update env argmap custom:
-LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so
+LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
+LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so;
 
 ## mapjs
 DIR_MAPJS: mapjs
