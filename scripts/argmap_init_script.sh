@@ -22,7 +22,7 @@ PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
 # echo "PATH_FILE_YQ: $PATH_FILE_YQ"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/netlify_install.lib.sh
-source "$PATH_DIR_SCRIPTS/netlify_install.lib.sh"
+# source "$PATH_DIR_SCRIPTS/netlify_install.lib.sh"
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
 source "$PATH_DIR_SCRIPTS/argmap.env"
 set +o allexport
@@ -66,13 +66,13 @@ CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 
 # Adds lua folder to start of PATH so lua files called from there instead of /opt/miniconda3/envs/argmap/bin/argmap2mup
 #  QUESTION: Combine these?
-PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
-PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
+# PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
+# PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
+
+# echo "Updating PATH"
 # QUESTION: add this to env file or netlify env instead?
-export PATH="/home/linuxbrew/.linuxbrew/opt/lua@5.3/bin:$PATH_DIR_ARGMAP_LUA:$PATH"
-# PATH="$PATH_DIR_ARGMAP_LUA:$PATH"
-# echo "PATH: $PATH"
-# which lua
+PATH="$(getvar PATH_ADD_PATH):$PATH"
+# export PATH
 
 # PANDOC - needed for pandoc-argamp.lua until lua reads config directly
 PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
