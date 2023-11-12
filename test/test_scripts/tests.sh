@@ -64,7 +64,8 @@ if [ "$1" != html ]; then
     __test a2t "$(getvar INPUT_FILE_YML)"     #3
     __test a2mu "$(getvar INPUT_FILE_YML)"    #4
 
-    npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
+    make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" &&
+      # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
       # create html file needed for testcafe and rendering tests
       # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
