@@ -43,9 +43,12 @@ PATH_TEST_LOG: ${PATH_MISC_DEV}/tests_output.txt
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
 ## lua
-PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_ROOT}/src/lua # TODO rename to PATH_LUA_ARGMAP
+PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_SRC}/lua # TODO rename to PATH_LUA_ARGMAP
 # netlify:
 PATH_LUA_MODULES: /opt/build/repo/lua_modules
+
+# QUESTION: add this to netlify env instead?
+PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_DIR_ARGMAP_LUA}
 
 LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
 LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so;
