@@ -69,6 +69,7 @@ if [ "$1" != html ]; then
       # create html file needed for testcafe and rendering tests
       # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
+      #  TODO make these instead of 2hf:
       # j2hf will still fail if json file missing, but it's part of repo so that shouldn't happen.
       2hf -pq "$(getvar INPUT_FILE_JSON)"
     2hf -pq "$(getvar INPUT_FILE_JSON2)"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
@@ -90,9 +91,9 @@ fi
 # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
 # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
 # __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
-__test 2hf "$(getvar INPUT_FILE_MD)"      #8/3
-__test 2hf "$(getvar INPUT_FILE_MD2)"     #10
-__test 2hf "$(getvar INPUT_FILE_MD_META)" #11
+__test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html"     #8/3
+__test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #9/4
+__test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/5
 
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_NODE_CLICK)"          #12 left click
