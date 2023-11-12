@@ -35,9 +35,9 @@ luarocks lint "$rockspec_file"
 # HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 # echo "(brew --prefix): $(brew --prefix)"
 
-# luarocks --tree lua_modules make --only-deps argmap-4.13.22-9.rockspec # YAML_LIBDIR="$CONDA_PREFIX/lib/"
 # luarocks --lua-version=5.3 --lua-dir=$HOMEBREW_PREFIX/opt/lua@5.3 --tree "$install_dir/$dir_lua" make --only-deps "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 # luarocks --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 init
+# luarocks --tree lua_modules make --only-deps argmap-4.13.22-9.rockspec # YAML_LIBDIR="$CONDA_PREFIX/lib/"
 luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 make --only-deps "$rockspec_file" # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 
 # lua -v # Check lua version
