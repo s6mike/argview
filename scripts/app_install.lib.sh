@@ -12,17 +12,27 @@ app_install() { # ai ./yq https://github.com/mikefarah/yq/releases/download/v4.3
   filename=${app_url##*/}
   app_path="$download_dir/$filename"
 
-  # case "$filename" in
-  # *.tar.gz)
-  #   tar -zxf "$app_path"
-  #   app_path="${app_path%.*}"
-  #   ;;
-  # *)
-  #   chmod +x "$app_path"
-  #   ;;
-  # esac
+  case "$filename" in
+  *.tar.gz)
+    # app_unzip "$app_path" "${app_path%.*.*}"
+    # tar -zxf "$app_path"
+    # app_path="${app_path%.*}"
+    ;;
+  *)
+    chmod +x "$app_path"
+    ;;
+  esac
 
   echo "$app_path"
 }
 
-export -f app_install
+app_unzip() {
+  file_path="$1"
+  app_path="$2"
+  target_dir=$(dirname "$file_path")
+
+  tar -zxf "$file_path" --directory "$target_dir"
+  chmod +x "$app_path"
+}
+
+export -f app_install app_unzip
