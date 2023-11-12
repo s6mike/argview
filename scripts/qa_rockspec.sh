@@ -43,7 +43,8 @@ luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-versi
 # echo "****luarocks customised****":
 luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 list # This is for local/conda install only: YAML_LIBDIR="$CONDA_PREFIX/lib/"
 luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show luafilesystem
-luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
+luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 show rxi-json-lua
+# luarocks --tree lua_modules --lua-dir="$(brew --prefix)/opt/lua@5.3" --lua-version=5.3 path
 
 # Alternative to using YAML_LIBDIR:
 # TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
