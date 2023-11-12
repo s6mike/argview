@@ -10,7 +10,13 @@
 # Ensure Dev server running for tests. Start early since it takes a little while to get going.
 # QUESTION: Any need to ensure its always running in dev mode?
 # webpack_pack # Covered by `make all`
-webpack_server_start
+
+case $ENV in
+netlify) ;;
+*)
+  webpack_server_start
+  ;;
+esac
 
 # Have switched rendering to be second test.
 # Before moving to first, need to fix race condition with web server
@@ -101,10 +107,10 @@ if [ "$1" != html ]; then
   __test md2pdf "$(getvar INPUT_FILE_MD0)" # 20
 fi
 
-echo "Testing finished, $FAILCOUNT tests failed."
+echo "Testing finished, $(getvar FAILCOUNT) tests failed."
 echo "If first html test failed, check whether webserver was running."
-echo "If all testcafe test failed, check that $INPUT_FILE_JSON exists."
-echo "Test log location: $PATH_TEST_LOG"
+echo "If all testcafe test failed, check that $(getvar INPUT_FILE_JSON) exists."
+echo "Test log location: $(getvar PATH_TEST_LOG)"
 
 if [ "$1" != html ]; then
   # Check/update config
