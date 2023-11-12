@@ -51,9 +51,13 @@ __init_tests
 #     cat "$test/output"
 # done
 
+echo "ENV: $(getvar ENV)"
+echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
+echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
+
 # TODO: Use test_function()
 if [ "$1" != html ]; then
-  case $ENV in
+  case $(getvar ENV) in
   netlify) ;;
   *)
     __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
@@ -63,8 +67,8 @@ if [ "$1" != html ]; then
     ;;
   esac
 
-  __test a2m "$(getvar INPUT_FILE_YML)"       #2
-  __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #3
+  __test a2m "$(getvar INPUT_FILE_YML)"       #1
+  __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #2
 fi
 
 # map rendering
@@ -78,8 +82,8 @@ npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FIL
 2hf -pq "$(getvar INPUT_FILE_JSON2)"      # Dependency for recording PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3
 2hf -pq "$(getvar INPUT_FILE_JSON_LINKS)" # Dependency for recording PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING
 
-__test 2hf "$(getvar INPUT_FILE_MD)"  #7
-__test 2hf "$(getvar INPUT_FILE_MD0)" #8
+__test 2hf "$(getvar INPUT_FILE_MD)"  #6
+__test 2hf "$(getvar INPUT_FILE_MD0)" #7
 
 # Use wait-on --log if diagnostics needed (also verbose option)
 # PATH_FILE_OUTPUT_EXAMPLE=$(getvar PATH_FILE_OUTPUT_EXAMPLE)
