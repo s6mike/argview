@@ -56,9 +56,9 @@ PATH_LUA_MODULES: /opt/build/repo/lua_modules
 # TODO rationalise vs PATH_LUA_MODULES
 # PATH_LUAROCKS_MODULES: /opt/build/repo/lua_modules
 
-LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;
+LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.lua;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?/init.lua;
 # TODO update env argmap custom:
-LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so
+LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so
 
 ## mapjs
 DIR_MAPJS: mapjs
