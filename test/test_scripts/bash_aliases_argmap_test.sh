@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Rename file as bash_test_functions.lib.sh
+
 # For running casual tests and checks.
 # These aliases are not considered part of a public API, and therefore updates may change them without warning.
 

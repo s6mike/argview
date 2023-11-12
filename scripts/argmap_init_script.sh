@@ -132,9 +132,7 @@ netlify)
   export PATH_SHARE_GLOBAL
   make install
   ;;
-*)
-  source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
-  ;;
+*) ;;
 esac
 
 set -o allexport
@@ -181,6 +179,9 @@ PATH_OUTPUT_MAPJS_PUBLIC=$(getvar PATH_OUTPUT_MAPJS_PUBLIC)
 PATH_INPUT_LOCAL=$(getvar PATH_INPUT_LOCAL)
 PATH_OUTPUT_LOCAL=$(getvar PATH_OUTPUT_LOCAL)
 set +o allexport
+
+# TODO: would rather only call this when make test called, but not sure how
+source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 
 # Calling make site from here because environment vars seem to get lost otherwise
 case $ENV in
