@@ -281,7 +281,7 @@ lua_modules/: ${PATH_BIN_GLOBAL}/luarocks
 	echo "*** Checking: $(rockspec_file) ***"
 	luarocks lint "${rockspec_file}"
 ifeq (${ENV}, netlify)
-	luarocks --tree lua_modules --lua-dir=${PATH_SHARE_GLOBAL}/opt/lua@5.3 --lua-version=5.3 make --only-deps ${rockspec_file}
+	luarocks --tree lua_modules --lua-dir=${PATH_SHARE_GLOBAL}/opt/lua@5.3 --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${PATH_LIB_GLOBAL}
 else
 	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${CONDA_PREFIX}/lib/
 endif
