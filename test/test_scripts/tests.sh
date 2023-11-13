@@ -52,17 +52,17 @@ __init_tests
 #     cat "$test/output"
 # done
 # TODO: Use test_function()
-  case $(getvar ENV) in
-  netlify)
-    echo "ENV: $(getvar ENV)"
-    echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
-    echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
-    # TEMP run this test only
-    # make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-    # __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7/3
-    # exit
-    ;;
-  *)
+case $(getvar ENV) in
+netlify)
+  echo "ENV: $(getvar ENV)"
+  echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
+  echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
+  # TEMP run this test only
+  # make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+  # __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7/3
+  # exit
+  ;;
+*)
   if [ "$1" != html ]; then
     __test luarocks lint "$(__find_rockspec)"   #1 # Gets absolute path
     __test m2a "$(getvar INPUT_FILE_JSON)"      #2
@@ -71,17 +71,17 @@ __init_tests
     __test a2m "$(getvar INPUT_FILE_YML)"       #5
     __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #6
   fi
-    ;;
-  esac
+  ;;
+esac
 
-  make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-  # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
-  # create html file needed for testcafe and rendering tests
-  # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
+make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+# npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
+# create html file needed for testcafe and rendering tests
+# Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
 
-  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified.html"
-  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html"
-  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-with-links.html"
+make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified.html"
+make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html"
+make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-with-links.html"
 
 # map rendering
 #   TODO add var for webpack-dist-tags: PATH_FILE_MAPJS_HTML_DIST_TAGS
@@ -104,28 +104,28 @@ esac
 __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #9/1
 __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/2
 
-# To make browser test visible, add 'head' as first arg
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_NODE_CLICK)"          #12 left click
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT)"     #13
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING)"      #14
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3)" #15
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK)"     #16
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING)"  #17
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_IDEA)"            #18 add child button
-__test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO)"    #19 undo/redo button
-
-# These don't work
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD)"    # edit first child node
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ZOOM)"
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_ZOOM)"
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD)"
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_NEW)"
-# __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
-
 case $(getvar ENV) in
 netlify) ;;
 *)
+  # To make browser test visible, add 'head' as first arg
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_NODE_CLICK)"          #12 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT)"     #13
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING)"      #14
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3)" #15
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK)"     #16
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING)"  #17
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_IDEA)"            #18 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO)"    #19 undo/redo button
+
+  # These don't work
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD)"    # edit first child node
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ZOOM)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_ZOOM)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_NEW)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
+
   if [ "$1" != html ]; then
     __test md2pdf "$(getvar INPUT_FILE_MD0)" # 20
   fi
