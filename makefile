@@ -193,7 +193,7 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
-test: site_clean public # all
+test: # public site_clean all
 # TODO remove output dir and add symlink instead
 ifeq (${ENV}, netlify)
 	./test/test_scripts/tests.sh html
