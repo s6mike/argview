@@ -131,8 +131,8 @@ netlify)
   PATH_SHARE_GLOBAL=$(getvar PATH_SHARE_GLOBAL)
   export PATH_SHARE_GLOBAL
   make install
-  find . -type f -name yaml.so
-  find . -name libyaml.so
+  # find . -type f -name yaml.so
+  # find . -name libyaml.so
   ;;
 *) ;;
 esac
