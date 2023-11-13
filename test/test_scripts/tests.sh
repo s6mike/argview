@@ -9,9 +9,11 @@
 
 case $(getvar ENV) in
 netlify)
+  test_open_html=false
   # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
 *)
+  test_open_html=true
   # Ensure everything built
   make site_clean public
   # make all MODE:=dev
@@ -62,12 +64,12 @@ if [ "$1" != html ]; then
     # exit
     ;;
   *)
-    __test luarocks lint "$(__find_rockspec)"                                                                               #1 # Gets absolute path
-    __test m2a "$(getvar INPUT_FILE_JSON)"                                                                                  #2
-    __test a2t "$(getvar INPUT_FILE_YML)"                                                                                   #3
-    __test a2mu "$(getvar INPUT_FILE_YML)"                                                                                  #4
-    __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #5
-    __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #6
+    __test luarocks lint "$(__find_rockspec)"                                                                                            #1 # Gets absolute path
+    __test m2a "$(getvar INPUT_FILE_JSON)"                                                                                               #2
+    __test a2t "$(getvar INPUT_FILE_YML)"                                                                                                #3
+    __test a2mu "$(getvar INPUT_FILE_YML)"                                                                                               #4
+    __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #5
+    __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #6
     ;;
   esac
 
@@ -93,8 +95,8 @@ fi
 # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
 # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
 # __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
-__test make HTML_OPEN=false "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"    #9/3
-__test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/4
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #9/3
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/4
 
 # To make browser test visible, add 'head' as first arg
 __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_NODE_CLICK)"          #12 left click
