@@ -346,7 +346,8 @@ ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE
 	2hf $$flags_2hf "$<"	
 
 # If building in production 
-${PATH_OUTPUT_JS}/main.js.map: site_clean
+# QUESTION: removed site_clean because of netlify, but how do I run for local only?
+${PATH_OUTPUT_JS}/main.js.map: # site_clean
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
