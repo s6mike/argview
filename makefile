@@ -66,6 +66,7 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
+CONDA_PREFIX ?= NULL
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
