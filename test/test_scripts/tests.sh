@@ -93,7 +93,7 @@ fi
 # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 3000 "$PATH_FILE_OUTPUT_EXAMPLE" &&
 # If `__test_mapjs_renders()` fails, check log: `code $PATH_LOG_FILE_EXPECT`
 # __test __test_mapjs_renders "$PATH_FILE_OUTPUT_EXAMPLE" #9
-__test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #9/3
+__test make HTML_OPEN=false "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"    #9/3
 __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/4
 
 # To make browser test visible, add 'head' as first arg
