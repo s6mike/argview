@@ -11,7 +11,7 @@ local config = {}
 local LUA_LOGGING_LEVEL = 'ERROR'
 
 -- Set to DEBUG to activate logging:
--- LUA_LOGGING_LEVEL = 'DEBUG'
+LUA_LOGGING_LEVEL = 'DEBUG'
 
 -- Configures global variables for lua files.
 
