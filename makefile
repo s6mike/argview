@@ -195,7 +195,12 @@ site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_
 # test: MODE := dev
 test: site_clean public # all
 # TODO remove output dir and add symlink instead
+ifeq (${ENV}, netlify)
+	./test/test_scripts/tests.sh html
+else
 	./test/test_scripts/tests.sh
+endif
+	
 # Instead of calling webpack_X in tests.sh:
 # ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
 # webpack_server_start
