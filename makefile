@@ -137,9 +137,6 @@ npm: ${PATH_DIR_MAPJS_ROOT}/node_modules
 
 npm_audit: | npm npm_audit_output.txt
 
-npm_audit_output.txt:
-	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
-
 # netlify version 2.1.3
 #	 User data directory: /opt/buildhome/.local/share/pandoc
 # QUESTION: Check for existence?
@@ -295,6 +292,9 @@ endif
 # ifeq ($(MODE), dev)
 # 	npm install -g testcafe
 # endif
+
+npm_audit_output.txt:
+	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
 
 # Generate html from json
 # 	QUESTION Can I combine this with first v3.html rule?
