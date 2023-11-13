@@ -59,7 +59,7 @@ if [ "$1" != html ]; then
     # TEMP run this test only
     make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
     __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7/3
-    return
+    exit
     ;;
   *)
     __test luarocks lint "$(__find_rockspec)" #1 # Gets absolute path
