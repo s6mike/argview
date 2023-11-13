@@ -1,3 +1,4 @@
 brew "lua@5.3"
 brew "luarocks"
 brew "libyaml"
+brew "texlive"
