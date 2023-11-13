@@ -66,18 +66,17 @@ if [ "$1" != html ]; then
     __test m2a "$(getvar INPUT_FILE_JSON)"    #2
     __test a2t "$(getvar INPUT_FILE_YML)"     #3
     __test a2mu "$(getvar INPUT_FILE_YML)"    #4
-
-    make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-    # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
-    # create html file needed for testcafe and rendering tests
-    # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
-
-    make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified.html"
-    make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html"
-    make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-with-links.html"
-
     ;;
   esac
+
+  make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+  # npx --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && # Waits for file to finish being generated before running tests
+  # create html file needed for testcafe and rendering tests
+  # Following will fail if run before webpack has generated html partial from src/mapjs, but wait-on should ensure that never happens
+
+  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified.html"
+  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html"
+  make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-with-links.html"
 
   __test a2m "$(getvar INPUT_FILE_YML)"       #5/1
   __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #6/2
