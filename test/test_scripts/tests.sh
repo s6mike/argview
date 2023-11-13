@@ -116,9 +116,14 @@ __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO)"    #19 undo/
 # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_NEW)"
 # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
 
-if [ "$1" != html ]; then
-  __test md2pdf "$(getvar INPUT_FILE_MD0)" # 20
-fi
+case $(getvar ENV) in
+netlify) ;;
+*)
+  if [ "$1" != html ]; then
+    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 20
+  fi
+  ;;
+esac
 
 echo "Testing finished, $(getvar FAILCOUNT) tests failed."
 echo "If first html test failed, check whether webserver was running."
