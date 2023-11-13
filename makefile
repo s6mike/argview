@@ -23,7 +23,7 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean install lua npm npm_audit pandoc yq prints site # dev
+.PHONY: all config public --conda output_clean site_clean clean install npm npm_audit pandoc prints site test # dev
 
 # Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
 .SECONDARY:
