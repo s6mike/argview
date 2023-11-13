@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Running ${BASH_SOURCE[0]}"
+
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 # make test
 
