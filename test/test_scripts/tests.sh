@@ -9,6 +9,8 @@ echo "Running ${BASH_SOURCE[0]}"
 # QUESTION: Any need to ensure its always running in dev mode?
 # webpack_pack # Covered by `make all`
 
+make public
+
 case $(getvar ENV) in
 netlify)
   test_open_html=false
@@ -17,7 +19,7 @@ netlify)
 *)
   test_open_html=true
   # Ensure everything built
-  make site_clean public
+  make site_clean
   # make all MODE:=dev
   webpack_server_start
   ;;
