@@ -188,8 +188,8 @@ source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 # Calling make site from here because environment vars seem to get lost otherwise
 case $ENV in
 netlify)
-  make site
   make test
+  make site
   ;;
 *)
   # QUESTION: Better to define above variables as part of make call instead of exporting them?
