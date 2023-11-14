@@ -11,6 +11,9 @@
 #		Currently using many variables like this.
 #			QUESTION: What's best practice?
 
+# ###########
+# Variables
+
 # Turns off implicit rules etc
 MAKEFLAGS += -rR
 .SUFFIXES:
@@ -71,6 +74,7 @@ CONDA_PREFIX ?= NULL
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
 # ###########
+# Top Level recipes
 
 all: config
 # Optional dependencies not used by netlify.
@@ -208,6 +212,128 @@ endif
 # Update repo?
 
 # ###########
+# Lower level recipes
+
+## Core functionality
+
+npm_audit_output.txt:
+	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
+
+# Generate html from json
+# 	QUESTION Can I combine this with first v3.html rule?
+# Call make HTML_OPEN=true to open output file
+#	 QUESTION Only set 2hf -s flag in production mode?
+
+# mapjs_json:=$(${PATH_OUTPUT_HTML_PUBLIC}/%.html=${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json)
+# mapjs_json:=$(${PATH_OUTPUT_HTML_PUBLIC}/%.html=${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json)
+
+# ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+	-mkdir --parent "$(@D)"
+# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
+
+# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ;
+
+# Generate .json from .yaml
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
+	-mkdir --parent "$(@D)"
+	a2m "$<" "$@"
+
+# Copy .json from input to output, before generating html
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
+	-mkdir --parent "$(@D)"
+	cp "$<" "$@"
+
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
+	-mkdir --parent "$(@D)"
+	cp "$<" "$@"
+
+# Copy .mup from input to output, before generating html
+${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
+	-mkdir --parent "$(@D)"
+	cp "$<" "$@"
+
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+# Might be able to run pandoc_argmap instead
+	-mkdir --parent "$(@D)"
+# && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
+
+# If building in production 
+# QUESTION: removed site_clean because of netlify, but how do I run for local only?
+${PATH_OUTPUT_JS}/main.js.map: # site_clean
+	$(info make site MODE: ${MODE})
+	-mkdir --parent "${@D}"
+	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+
+# Create js dependencies for html files:
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
+	$(info make site MODE: ${MODE})
+	-mkdir --parent "${@D}"
+	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+
+## Installation:
+
+### Config:
+
+# Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
+%.yaml: | %-defaults.yaml
+	cp --no-clobber $*-defaults.yaml $@
+
+${PATH_FILE_ENV_ARGMAP_PRIVATE}:
+	touch $@
+
+# Process config and environment files
+# 	QUESTION: Use more variables?
+${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
+	-mkdir --parent "$(@D)"
+	preprocess_config "$<"
+
+${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
+	-mkdir --parent "$(@D)"
+	preprocess_config "$<"
+
+
+### Site output vs test output
+
+# Rule for public links
+#  after | is order only pre-requisite, doesn't update based on timestamps
+# This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
+$(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
+	-mkdir --parent "$(@D)"
+# realpath generates path relative to path_public
+	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
+
+# Makes required folder if not present
+# 	Hope this isn't hostage to fortune! since make public/anything will create this folder in test and then symlink to it from public
+#		TODO: Replace % with $(DIRECTORIES), matching the relevant directories: input, output, mapjs-json, html, mapjs-json
+#			Chatgpt suggestion, not sure it works that way: https://chat.openai.com/c/7b2b5fd5-6431-4c16-bd49-ddba40a6df45
+# ${PATH_TEST}/%:
+# 	-mkdir --parent "$(@D)"
+
+# Add index.html
+#	 TODO: Use netlify redirect instead
+${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
+	-mkdir --parent "$(@D)"
+	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
+
+### Other install:
 
 # https://github.com/luarocks/luarocks/wiki/Installation-instructions-for-Unix
 
@@ -293,124 +419,6 @@ endif
 # 	npm install -g testcafe
 # endif
 
-npm_audit_output.txt:
-	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
-
-# Generate html from json
-# 	QUESTION Can I combine this with first v3.html rule?
-# Call make HTML_OPEN=true to open output file
-#	 QUESTION Only set 2hf -s flag in production mode?
-
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-	-mkdir --parent "$(@D)"
-# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
-	@if [ "$$HTML_OPEN" = "true" ]; then \
-		flags_2hf="-s"; \
-	else \
-		flags_2hf="-ps"; \
-	fi; \
-	2hf $$flags_2hf "$<"	
-
-
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-	-mkdir --parent "$(@D)"
-# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
-	@if [ "$$HTML_OPEN" = "true" ]; then \
-		flags_2hf="-s"; \
-	else \
-		flags_2hf="-ps"; \
-	fi; \
-	2hf $$flags_2hf "$<"	
-
-# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
-
-# Generate .json from .yaml
-${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
-	-mkdir --parent "$(@D)"
-	a2m "$<" "$@"
-
-# Copy .json from input to output, before generating html
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
-	-mkdir --parent "$(@D)"
-	cp "$<" "$@"
-
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
-	-mkdir --parent "$(@D)"
-	cp "$<" "$@"
-
-# Copy .mup from input to output, before generating html
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
-	-mkdir --parent "$(@D)"
-	cp "$<" "$@"
-
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-# Might be able to run pandoc_argmap instead
-	-mkdir --parent "$(@D)"
-# && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
-# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
-	@if [ "$$HTML_OPEN" = "true" ]; then \
-		flags_2hf="-s"; \
-	else \
-		flags_2hf="-ps"; \
-	fi; \
-	2hf $$flags_2hf "$<"	
-
-# If building in production 
-# QUESTION: removed site_clean because of netlify, but how do I run for local only?
-${PATH_OUTPUT_JS}/main.js.map: # site_clean
-	$(info make site MODE: ${MODE})
-	-mkdir --parent "${@D}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-
-# Create js dependencies for html files:
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
-	$(info make site MODE: ${MODE})
-	-mkdir --parent "${@D}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-
-# ############
-
-# Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
-%.yaml: | %-defaults.yaml
-	cp --no-clobber $*-defaults.yaml $@
-
-${PATH_FILE_ENV_ARGMAP_PRIVATE}:
-	touch $@
-
-# Process config and environment files
-# 	QUESTION: Use more variables?
-${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
-	-mkdir --parent "$(@D)"
-	preprocess_config "$<"
-
-${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
-	-mkdir --parent "$(@D)"
-	preprocess_config "$<"
-
-# Rule for public links
-#  after | is order only pre-requisite, doesn't update based on timestamps
-# This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
-$(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
-	-mkdir --parent "$(@D)"
-# realpath generates path relative to path_public
-	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
-
-# Makes required folder if not present
-# 	Hope this isn't hostage to fortune! since make public/anything will create this folder in test and then symlink to it from public
-#		TODO: Replace % with $(DIRECTORIES), matching the relevant directories: input, output, mapjs-json, html, mapjs-json
-#			Chatgpt suggestion, not sure it works that way: https://chat.openai.com/c/7b2b5fd5-6431-4c16-bd49-ddba40a6df45
-# ${PATH_TEST}/%:
-# 	-mkdir --parent "$(@D)"
-
-# Add index.html
-#	 TODO: Use netlify redirect instead
-${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
-	-mkdir --parent "$(@D)"
-	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
@@ -492,7 +500,6 @@ ${PATH_FILE_GDRIVE_LOCAL}: ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz
 ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz:
 	app_install ${PATH_BIN_LOCAL} https://github.com/prasmussen/gdrive/releases/download/2.1.1/gdrive_2.1.1_linux_386.tar.gz
 
-# TODO: Add README install instructions:
 
 # Though may be covered by conda dependencies:
   # - anaconda/linux-64::luarocks==3.7.0=lua53h06a4308_0
