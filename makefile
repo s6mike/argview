@@ -238,7 +238,7 @@ npm_audit_output.txt:
 # Call make HTML_OPEN=true to open output file
 #	 QUESTION Only set 2hf -s flag in production mode?
 
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 # make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
