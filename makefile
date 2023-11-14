@@ -18,6 +18,11 @@
 MAKEFLAGS += -rR
 .SUFFIXES:
 
+# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
+# 	Not using .SECONDARY because that stops intermediate files being created (e.g. mapjs-json)
+.NOTINTERMEDIATE:
+# .SECONDARY:
+
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
 
@@ -27,11 +32,6 @@ SHELL := /bin/bash
 # Avoids collisions with filenames
 #		-- is convention for private targets
 .PHONY: all config public --conda output_clean site_clean clean install npm npm_audit pandoc prints site test # dev
-
-# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
-# 	Not using .SECONDARY because that stops intermediate files being created (e.g. mapjs-json)
-.NOTINTERMEDIATE:
-# .SECONDARY:
 
 # Define variables
 # := simple, assigned once
