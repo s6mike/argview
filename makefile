@@ -180,10 +180,14 @@ pandoc:
 # TODO use variables in linuxbrew path
 
 prints:
-	$(info PATH_PUBLIC:)
-	$(info ${PATH_PUBLIC})
-	$(info PATH_TEST:)
-	$(info ${PATH_TEST})
+# $(info FILES_MD: $(FILES_MD))
+# $(info FILES_MAPJS_JSON: ${FILES_MAPJS_JSON})
+	$(info FILES_HTML_FROM_JSON: ${FILES_HTML_FROM_JSON})
+	$(info FILES_HTML_FROM_MD: ${FILES_HTML_FROM_MD})
+# $(info PATH_PUBLIC:)
+# $(info ${PATH_PUBLIC})
+# $(info PATH_TEST:)
+# $(info ${PATH_TEST})
 # 	$(info LINK_TARGETS_CONDA:)
 # 	$(info ${LINK_TARGETS_CONDA})	
 # 	$(info LIST_FILES_CONFIG_PROCESSED:)
@@ -278,9 +282,7 @@ ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json
 # Generate html from markdown (may have multiple .json dependencies)
 # mapjs/public/output/html/example1-clearly-false-white-swan-simplified-2mapjs.html
 #		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
-${FILES_HTML_FROM_MD}: ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json
-# $(info FILES_MD: $(FILES_MD))
-# $(info FILES_HTML_FROM_MD: $(FILES_HTML_FROM_MD))
+$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json
 # Might be able to run pandoc_argmap instead
 	-mkdir --parent "$(@D)"
 # && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
