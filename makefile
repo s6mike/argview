@@ -68,11 +68,17 @@ LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
 
-# TODO: Use var for mapjs/public/input/markdown
-# MDs := $(shell [ -d mapjs/public/input/markdown ] && find mapjs/public/input/markdown -iname "*.md" -type f)
-FILES_MD := $(shell find mapjs/public/input/markdown -iname "*.md" -type f)
+# TODO: Use var for mapjs/public/input/markdown etc
+FILES_MD := $(shell find mapjs/public/input/markdown -type f -iname "*.md")
+FILES_MAPJS_JSON := $(shell find mapjs/public/input/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
+
 # FILES_HTML_FROM_MD := $(foreach file,$(FILES_MD),$(patsubst mapjs/public/input/markdown/%.md,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(file)))
 FILES_HTML_FROM_MD := ${FILES_MD:mapjs/public/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
+
+# Can't use above pattern because it includes files which don't match the pattern
+FILES_HTML_FROM_JSON := $(patsubst mapjs/public/input/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
+FILES_HTML_FROM_JSON += $(patsubst mapjs/public/input/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_JSON}))
+FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JSON})
 
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
