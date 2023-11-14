@@ -300,6 +300,19 @@ npm_audit_output.txt:
 # 	QUESTION Can I combine this with first v3.html rule?
 # Call make HTML_OPEN=true to open output file
 #	 QUESTION Only set 2hf -s flag in production mode?
+
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+	-mkdir --parent "$(@D)"
+# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
+
+
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
