@@ -68,6 +68,12 @@ LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
 
+# TODO: Use var for mapjs/public/input/markdown
+# MDs := $(shell [ -d mapjs/public/input/markdown ] && find mapjs/public/input/markdown -iname "*.md" -type f)
+FILES_MD := $(shell find mapjs/public/input/markdown -iname "*.md" -type f)
+# FILES_HTML_FROM_MD := $(foreach file,$(FILES_MD),$(patsubst mapjs/public/input/markdown/%.md,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(file)))
+FILES_HTML_FROM_MD := ${FILES_MD:mapjs/public/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
+
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
