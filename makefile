@@ -232,10 +232,6 @@ npm_audit_output.txt:
 # Call make HTML_OPEN=true to open output file
 #	 QUESTION Only set 2hf -s flag in production mode?
 
-# mapjs_json:=$(${PATH_OUTPUT_HTML_PUBLIC}/%.html=${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json)
-# mapjs_json:=$(${PATH_OUTPUT_HTML_PUBLIC}/%.html=${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json)
-
-# ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
 	-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
@@ -269,7 +265,16 @@ ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md
+	-mkdir --parent "$(@D)"
+	2hf -ps "$<"
+
+# Generate html from markdown (may have multiple .json dependencies)
+# mapjs/public/output/html/example1-clearly-false-white-swan-simplified-2mapjs.html
+#		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
+${FILES_HTML_FROM_MD}: ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json
+# $(info FILES_MD: $(FILES_MD))
+# $(info FILES_HTML_FROM_MD: $(FILES_HTML_FROM_MD))
 # Might be able to run pandoc_argmap instead
 	-mkdir --parent "$(@D)"
 # && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
@@ -280,7 +285,7 @@ ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_FILE
 	else \
 		flags_2hf="-ps"; \
 	fi; \
-	2hf $$flags_2hf "$<"	
+	2hf $$flags_2hf "$<"
 
 # If building in production 
 # QUESTION: removed site_clean because of netlify, but how do I run for local only?
