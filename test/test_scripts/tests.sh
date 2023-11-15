@@ -9,10 +9,14 @@ echo "Running ${BASH_SOURCE[0]}"
 # QUESTION: Any need to ensure its always running in dev mode?
 # webpack_pack # Covered by `make all`
 
-make public
-
 case $(getvar ENV) in
 netlify)
+  # TEMP fix: Removes symlink so that real output folder created instead
+  #   TODO: Change so that only desired symlinks are created in first place
+  #     QUESTION: e.g. just make output link?
+  #   Should fix netlify output folder but might mean tests fail
+  make public
+  rm "$(getvar PATH_OUTPUT_PUBLIC)"
   test_open_html=false
   # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
@@ -20,6 +24,7 @@ netlify)
   test_open_html=true
   # Ensure everything built
   make site_clean
+  make public
   # make all MODE:=dev
   webpack_server_start
   ;;
