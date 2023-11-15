@@ -18,11 +18,6 @@
 MAKEFLAGS += -rR
 .SUFFIXES:
 
-# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
-# 	Not using .SECONDARY because that stops intermediate files being created (e.g. mapjs-json)
-.NOTINTERMEDIATE:
-# .SECONDARY:
-
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
 
@@ -68,17 +63,27 @@ LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
 
+# DIRS_KEY := test/output mapjs/public/input/mapjs-json mapjs/public/input/markdown # html
 # TODO: Use var for mapjs/public/input/markdown etc
-FILES_MD := $(shell find mapjs/public/input/markdown -type f -iname "*.md")
-FILES_MAPJS_JSON := $(shell find mapjs/public/input/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
+FILES_MD = $(shell find test/input/markdown -type f -iname "*.md")
+FILES_MAPJS_JSON = $(shell find test/input/mapjs-json -type f -iname "*.json" )
+FILES_MAPJS_MUP = $(shell find test/input/mapjs-json -type f -iname "*.mup" )
+# FILES_MAPJS_ALL = $(shell find test/input/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
 
 # FILES_HTML_FROM_MD := $(foreach file,$(FILES_MD),$(patsubst mapjs/public/input/markdown/%.md,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(file)))
-FILES_HTML_FROM_MD := ${FILES_MD:mapjs/public/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
+FILES_HTML_FROM_MD := ${FILES_MD:test/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
 
 # Can't use above pattern because it includes files which don't match the pattern
-FILES_HTML_FROM_JSON := $(patsubst mapjs/public/input/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
-FILES_HTML_FROM_JSON += $(patsubst mapjs/public/input/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_JSON}))
+FILES_HTML_FROM_JSON := $(patsubst test/input/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
+FILES_HTML_FROM_JSON += $(patsubst test/input/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
 FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JSON})
+
+# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
+# Using .SECONDARY: without arguments breaks things though
+# .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
+
+# .NOTINTERMEDIATE only supported in make 4.4
+.NOTINTERMEDIATE:
 
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
@@ -180,8 +185,9 @@ pandoc:
 # TODO use variables in linuxbrew path
 
 prints:
-# $(info FILES_MD: $(FILES_MD))
-# $(info FILES_MAPJS_JSON: ${FILES_MAPJS_JSON})
+	$(info FILES_MD: $(FILES_MD))
+	$(info FILES_MAPJS_JSON: ${FILES_MAPJS_JSON})
+	$(info FILES_MAPJS_MUP: ${FILES_MAPJS_MUP})
 	$(info FILES_HTML_FROM_JSON: ${FILES_HTML_FROM_JSON})
 	$(info FILES_HTML_FROM_MD: ${FILES_HTML_FROM_MD})
 # $(info PATH_PUBLIC:)
@@ -341,11 +347,8 @@ $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # realpath generates path relative to path_public
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
-# Makes required folder if not present
-# 	Hope this isn't hostage to fortune! since make public/anything will create this folder in test and then symlink to it from public
-#		TODO: Replace % with $(DIRECTORIES), matching the relevant directories: input, output, mapjs-json, html, mapjs-json
-#			Chatgpt suggestion, not sure it works that way: https://chat.openai.com/c/7b2b5fd5-6431-4c16-bd49-ddba40a6df45
-# ${PATH_TEST}/%:
+# Makes required folders
+# $(DIRS_KEY):
 # 	-mkdir --parent "$(@D)"
 
 # Add index.html
