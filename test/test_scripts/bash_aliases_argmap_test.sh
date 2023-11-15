@@ -98,7 +98,7 @@ test_getvar() {
   test_function "$func" DIR_OUTPUT output
   test_function "$func" PATH_OUTPUT_LOCAL /home/s6mike/git_projects/argmap/test/output
   test_function "$func" DIR_MAPJS_JSON mapjs-json #7
-  test_function "$func" PATH_DIR_PUBLIC_MAPJS_JSON /home/s6mike/git_projects/argmap/test/output/mapjs-json
+  test_function "$func" PATH_MAPJS_JSON_LOCAL /home/s6mike/git_projects/argmap/test/output/mapjs-json
   test_function "$func" node "class: mapjs-node" #8
   test_function "$func" node.class mapjs-node    #9
   remember=$LIST_FILES_CONFIG_INPUT

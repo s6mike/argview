@@ -101,7 +101,7 @@ __reset_repo() {
 
 __clean_repo() {
   rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified.yaml"
-  rm -f "$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/example1-clearly-false-white-swan-simplified.json"
+  rm -f "$(getvar PATH_MAPJS_JSON_LOCAL)/example1-clearly-false-white-swan-simplified.json"
   rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified.tex"
   rm -f "$(getvar PATH_OUTPUT_LOCAL)/example1-clearly-false-white-swan-simplified-0mapjs.pdf"
   rm -f "$(getvar PATH_OUTPUT_LOCAL)/html/example1-clearly-false-white-swan-simplified-0mapjs.html"
