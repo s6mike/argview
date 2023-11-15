@@ -62,15 +62,7 @@ __init_tests
 # done
 # TODO: Use test_function()
 case $(getvar ENV) in
-netlify)
-  echo "ENV: $(getvar ENV)"
-  echo "INPUT_FILE_YML: $(getvar INPUT_FILE_YML)"
-  echo "INPUT_FILE_JSON: $(getvar INPUT_FILE_JSON)"
-  # TEMP run this test only
-  # make "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-  # __test make HTML_OPEN=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7/3
-  # exit
-  ;;
+netlify) ;;
 *)
   if [ "$1" != html ]; then
     __test luarocks lint "$(__find_rockspec)"   #1 # Gets absolute path
