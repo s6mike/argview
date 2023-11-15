@@ -124,8 +124,9 @@ DIR_MAPJS_JSON = os.getenv("DIR_MAPJS_JSON") or "mapjs-json"
 PATH_DIR_MAPJS_ROOT = os.getenv("PATH_DIR_MAPJS_ROOT")
 PATH_FILE_CONFIG_MAPJS = os.getenv("PATH_FILE_CONFIG_MAPJS")
 PATH_FILE_CONFIG_MAPJS_PROCESSED = os.getenv("PATH_FILE_CONFIG_MAPJS_PROCESSED")
-PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")
-PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (PATH_OUTPUT_LOCAL .. "/" .. DIR_MAPJS_JSON)
+-- PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")
+PATH_PUBLIC = os.getenv("PATH_PUBLIC") or (config.project_folder .. "mapjs/public")
+PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (PATH_PUBLIC .. "/output/" .. DIR_MAPJS_JSON)
 DIR_OUTPUT = os.getenv("DIR_OUTPUT") or "output"
 
 PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html
