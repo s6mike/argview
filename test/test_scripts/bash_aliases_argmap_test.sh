@@ -117,5 +117,15 @@ test_get_site_path() {
   test_function "$func" test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html output/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html
 }
 
+test_make_mapjs_dependencies() {
+  file_html="$1"
+  file_json="$2"
+  html_open="$3"
+  make HTML_OPEN="false" "$file_html"
+  rm "$file_json"
+  make HTML_OPEN="$html_open" "$file_html"
+  ls "$file_json"
+}
+
 export -f __init_tests check_var_value __test
-export -f test_function test_getvar test_get_site_path
+export -f test_function test_getvar test_get_site_path test_make_mapjs_dependencies
