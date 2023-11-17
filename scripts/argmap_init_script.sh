@@ -188,7 +188,9 @@ source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
 # Calling make site from here because environment vars seem to get lost otherwise
 case $ENV in
 netlify)
-  make test
+  if [ "$(getvar TEST_SITE_DEPLOY)" = "true" ]; then
+    make test
+  fi
   make site
   ;;
 *)
