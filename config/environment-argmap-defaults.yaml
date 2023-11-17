@@ -10,6 +10,8 @@
 
 # Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
 
+TEST_SITE_DEPLOY: false
+
 # Paths
 
 ## web server
