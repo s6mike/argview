@@ -78,6 +78,11 @@ FILES_HTML_FROM_JSON := $(patsubst test/input/mapjs-json/%.json,${PATH_OUTPUT_HT
 FILES_HTML_FROM_JSON += $(patsubst test/input/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
 FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JSON})
 
+FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
+FILES_SITE = ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+FILES_TEMPLATE_HTML := src/layouts/templates/pandoc-mapjs-main-html5.html ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/layouts/includes/argmap-head-element.html src/layouts/includes/argmap-input-widget.html src/layouts/includes/mapjs-map-container.html src/layouts/includes/mapjs-widget-controls.html
+FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
+
 # Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
 # Using .SECONDARY: without arguments breaks things though
 # .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
