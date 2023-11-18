@@ -311,13 +311,13 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 
 # If building in production 
 # QUESTION: removed site_clean because of netlify, but how do I run for local only?
-${PATH_OUTPUT_JS}/main.js.map: # site_clean
-	$(info make site MODE: ${MODE})
-	-mkdir --parent "${@D}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+# ${PATH_OUTPUT_JS}/main.js.map: # site_clean
+# 	$(info make site MODE: ${MODE})
+# 	@-mkdir --parent "${@D}"
+# 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
 
 # Create js dependencies for html files:
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map:
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
