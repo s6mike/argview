@@ -9,8 +9,7 @@ echo "Running ${BASH_SOURCE[0]}"
 #   Add check whether $HOME/git_projects/argmap exists, then set as above instead
 #   Or use .env file?
 set -o allexport
-ENV=${ENV:-vscode}
-MODE=${MODE:-dev}
+source scripts/argmap.env
 
 case $ENV in
 
@@ -25,12 +24,6 @@ esac
 
 echo "ENV|MODE: $ENV|$MODE"
 
-# QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
-WORKSPACE=${WORKSPACE:-$HOME/git_projects/${CONDA_ENV_ARGMAP}}
-PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
-PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
-
-# echo "PATH_FILE_YQ: $PATH_FILE_YQ"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/app_install.lib.sh
 source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
@@ -58,6 +51,7 @@ esac
 source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 
 # TODO remove stuff covered by `init_read_config.sh`
+#   QUESTION: Why not using getvar() ?
 # Needed for scripts/argmap.env tmp chrome profile:
 set -o allexport
 DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
