@@ -177,7 +177,7 @@ pandoc:
 # - pandoc==2.12=h06a4308_3
 # conda install pandoc https://github.com/jgm/pandoc/blob/main/INSTALL.md
 
-# -chmod +x ${PATH_FILE_YQ}/pandoc
+# -chmod 744 ${PATH_FILE_YQ}/pandoc
 # If not using conda would need conda dependencies installed.
 
 # ${PATH_BIN_GLOBAL}/luarocks: lua
@@ -401,8 +401,8 @@ else
 # Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
 
 # # TODO: for other users would need to install argmap in current directory
-# 	chmod u+x "${PATH_DIR_ARGMAP_LUA}/"*
-# 	chmod u+x "${PATH_FOLDER_ARGMAP_SRC}/js/"*
+# 	chmod 744 "${PATH_DIR_ARGMAP_LUA}/"*
+# 	chmod 744 "${PATH_FOLDER_ARGMAP_SRC}/js/"*
 
 # # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
 # #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
@@ -421,7 +421,7 @@ ${PATH_FILE_YQ}:
 # QUESTION: how to execute once go installed? Update PATH?
 # 	go install github.com/mikefarah/yq/v4@latest
 	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x ${PATH_FILE_YQ}
+	-chmod 744 ${PATH_FILE_YQ}
 	-${PATH_FILE_YQ} --version
 
 # Install lua dependencies

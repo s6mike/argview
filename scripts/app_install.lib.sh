@@ -19,7 +19,7 @@ app_install() { # ai ./yq https://github.com/mikefarah/yq/releases/download/v4.3
     # app_path="${app_path%.*}"
     ;;
   *)
-    chmod +x "$app_path"
+    chmod 744 "$app_path"
     ;;
   esac
 
@@ -32,7 +32,7 @@ app_unzip() {
   target_dir=$(dirname "$file_path")
 
   tar -zxf "$file_path" --directory "$target_dir"
-  chmod +x "$app_path"
+  chmod 744 "$app_path"
 }
 
 export -f app_install app_unzip
