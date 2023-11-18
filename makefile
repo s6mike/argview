@@ -36,10 +36,10 @@ SHELL := /bin/bash
 #		QUESTION: Could I run getvar from within makefile instead?
 LINK_TARGETS_PUBLIC_FOLDERS := ${PATH_OUTPUT_PUBLIC} ${PATH_INPUT_PUBLIC}
 
-# Add index.html
-# 	TODO: Use netlify redirect instead
 LINK_TARGETS_PUBLIC := ${LINK_TARGETS_PUBLIC_FOLDERS}
+# Add index.html (should be called locally only
 LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/index.html
+
 # Ensure lua dependencies available to site for client_argmap2mapjs:
 # LINK_TARGETS_PUBLIC += ${PATH_PUBLIC}/lua ${PATH_PUBLIC}/lua_modules
 
@@ -208,6 +208,12 @@ prints:
 # 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
+# Ensures site_clean only run locally in prod mode (to clean up any dev files)
+ifeq (${MODE}, prod)
+ifneq (${ENV}, netlify)
+site: site_clean $(FILES_SITE)
+endif
+endif
 site: $(FILES_SITE)
 
 # start: site
@@ -309,13 +315,6 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 	fi; \
 	2hf $$flags_2hf "$<"
 
-# If building in production 
-# QUESTION: removed site_clean because of netlify, but how do I run for local only?
-# ${PATH_OUTPUT_JS}/main.js.map: # site_clean
-# 	$(info make site MODE: ${MODE})
-# 	@-mkdir --parent "${@D}"
-# 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-
 # Create js dependencies for html files:
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map:
 	$(info make site MODE: ${MODE})
@@ -359,8 +358,7 @@ $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 # $(DIRS_KEY):
 # 	@-mkdir --parent "$(@D)"
 
-# Add index.html
-#	 TODO: Use netlify redirect instead
+# Add index.html (should be called locally only)
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 	@-mkdir --parent "$(@D)"
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
