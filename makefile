@@ -171,7 +171,7 @@ npm_audit: | npm npm_audit_output.txt
 pandoc: 
 	-pandoc --version
 # if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
-# -mkdir --parent ~/.local/share/pandoc/filters
+# @-mkdir --parent ~/.local/share/pandoc/filters
 # Though I think I may want to install it in relevant conda env folder instead
 
 # - pandoc==2.12=h06a4308_3
@@ -271,25 +271,25 @@ $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC
 
 # Generate .json from .yaml
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	a2m "$<" "$@"
 
 # Copy .json from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 # Copy .mup from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	cp "$<" "$@"
 
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	2hf -ps "$<"
 
 # Generate html from markdown (may have multiple .json dependencies)
@@ -298,7 +298,7 @@ ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json
 $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML}
 # $(info Building $@ from MD)
 # Might be able to run pandoc_argmap instead
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 # && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 # make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
 # npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
@@ -337,11 +337,11 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 # Process config and environment files
 # 	QUESTION: Use more variables?
 ${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
 
@@ -351,18 +351,18 @@ ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PAT
 #  after | is order only pre-requisite, doesn't update based on timestamps
 # This is static pattern rule, which restricts rule to match LINK_TARGETS_PUBLIC:
 $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 # realpath generates path relative to path_public
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 # Makes required folders
 # $(DIRS_KEY):
-# 	-mkdir --parent "$(@D)"
+# 	@-mkdir --parent "$(@D)"
 
 # Add index.html
 #	 TODO: Use netlify redirect instead
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 
 ### Other install:
@@ -419,7 +419,7 @@ ${PATH_FILE_YQ}:
 # $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
 # -path=$(app_install ${PATH_BIN_GLOBAL} https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64)
 # $(info make path: ${path})
-# -mkdir --parent $$(dirname $@)
+# @-mkdir --parent $$(dirname $@)
 # QUESTION: how to execute once go installed? Update PATH?
 # 	go install github.com/mikefarah/yq/v4@latest
 	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
@@ -454,15 +454,15 @@ endif
 
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 ${CONDA_PREFIX}/%:
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 
 # For calling lua functions from shell (within conda env)
 ${PATH_BIN_GLOBAL}/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
@@ -471,12 +471,12 @@ ${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
 ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Ensure lua dependencies available to site for client_argmap2mapjs
@@ -496,13 +496,13 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
 # Rule for argmap lua links to conda lua folder
 #   Needed for config_argmap, but need to use absolute link
 ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
-	-mkdir --parent "$(@D)"
+	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder
 # ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
-# 	-mkdir --parent "$(@D)"
+# 	@-mkdir --parent "$(@D)"
 # 	ln -s $| $@
 
 #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
