@@ -10,6 +10,8 @@
 
 # Use ${variable} for referencing other yaml variables
 
+NODE_PATH: . node start.js
+
 ## dev webserver values
 DIR_OUTPUT: output
 DIR_INPUT: input
