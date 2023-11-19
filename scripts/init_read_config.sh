@@ -37,10 +37,12 @@ main() {
   # In case env file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_DIR_ARGMAP_ROOT/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
 
+  PATH_DIR_CONFIG_ARGMAP_PROCESSED=${PATH_DIR_CONFIG_ARGMAP_PROCESSED:-$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED}
+
   # Processes initial files needed for rest
   set -o allexport
-  PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
-  PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
+  PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
+  PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
   set +o allexport
 
   make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
