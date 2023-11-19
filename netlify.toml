@@ -51,6 +51,9 @@
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
+[[plugins]]
+  package = "netlify-plugin-debug-cache"
+
   # optional, deploy the lighthouse report to a path under your site
   # [plugins.inputs.audits]
   #   output_path = "reports/lighthouse.html"
