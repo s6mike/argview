@@ -16,6 +16,8 @@
   PATH_BIN_GLOBAL = "."
   PATH_FILE_YQ = "/opt/build/cache/yq"
   WORKSPACE = "."
+  NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
+  PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
 
 [context.production.environment]
   MODE = "prod"
