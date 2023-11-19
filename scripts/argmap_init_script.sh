@@ -24,7 +24,6 @@ esac
 
 echo "ENV|MODE: $ENV|$MODE"
 
-
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/app_install.lib.sh
 source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
