@@ -32,7 +32,7 @@ PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
 # TODO:
 #   HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 #   echo "(brew --prefix): $(brew --prefix)"
-PATH_SHARE_GLOBAL: /home/linuxbrew/.linuxbrew
+PATH_SHARE_GLOBAL: /opt/build/cache
 PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
 PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
 PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
@@ -47,7 +47,7 @@ DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_la
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_SRC}/lua # TODO rename to PATH_LUA_ARGMAP
 # netlify:
-PATH_LUA_MODULES: /opt/build/repo/lua_modules
+PATH_LUA_MODULES: ${PATH_SHARE_GLOBAL}/lua_modules
 
 # QUESTION: add this to netlify env instead?
 PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_DIR_ARGMAP_LUA}
