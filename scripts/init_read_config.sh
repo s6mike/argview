@@ -13,16 +13,16 @@ main() {
 
   # QUESTION: Can I put min startup into separate environment file?
   #  Could then reference directly from makefile
-  export PATH_DIR_ARGMAP_ROOT="${PATH_DIR_ARGMAP_ROOT:-$WORKSPACE}"
+  # export PATH_DIR_ARGMAP_ROOT="${PATH_DIR_ARGMAP_ROOT:-$WORKSPACE}"
 
   source "$PATH_DIR_ARGMAP_ROOT/scripts/config_read_functions.lib.sh"
 
   # TODO could move all env variablaes in this script to argmap.env file, after tidying that up
-  set -o allexport
-  PATH_FILE_ENV_ARGMAP="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap.yaml"
-  PATH_FILE_ENV_ARGMAP_DEFAULTS="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap-defaults.yaml"
-  PATH_FILE_CONFIG_ARGMAP_PATHS="$PATH_DIR_ARGMAP_ROOT/config/config-argmap-paths.yaml"
-  set +o allexport
+  # set -o allexport
+  # PATH_FILE_ENV_ARGMAP="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap.yaml"
+  # PATH_FILE_ENV_ARGMAP_DEFAULTS="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap-defaults.yaml"
+  # PATH_FILE_CONFIG_ARGMAP_PATHS="$PATH_DIR_ARGMAP_ROOT/config/config-argmap-paths.yaml"
+  # set +o allexport
 
   # In case env.yaml file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_FILE_ENV_ARGMAP"
