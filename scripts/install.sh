@@ -58,8 +58,8 @@ apt-get install texlive-luatex
 
 # TODO: for other users would need to install argmap in current directory
 
-chmod u+x "$PATH_DIR_ARGMAP_LUA/"*
-chmod u+x "$PATH_FOLDER_ARGMAP_SRC/js/"*
+chmod 744 "$PATH_DIR_ARGMAP_LUA/"*
+chmod 744 "$PATH_FOLDER_ARGMAP_SRC/js/"*
 
 # Link up pre-commit hook
 ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
@@ -245,7 +245,7 @@ __build_mapjs
 
 # SECTION 5: yq
 # sudo wget -qO "$HOME/.local/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-# chmod u+x "$HOME/.local/bin/yq"
+# chmod 744 "$HOME/.local/bin/yq"
 
 # SECTION X: Clientside Lua
 # ---------------------------------------------------
