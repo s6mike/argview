@@ -83,6 +83,7 @@ LUA_PATH=$(getvar LUA_PATH)
 LUA_CPATH=$(getvar LUA_CPATH)
 PATH_TEST_LOG=$(getvar PATH_TEST_LOG)
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
+PATH_LUA_MODULES=$(getvar PATH_LUA_MODULES)
 set +o allexport
 
 # Covered by default init script
