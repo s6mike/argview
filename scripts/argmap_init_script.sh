@@ -9,6 +9,10 @@ echo "Running ${BASH_SOURCE[0]}"
 #   Add check whether $HOME/git_projects/argmap exists, then set as above instead
 #   Or use .env file?
 set -o allexport
+# Needed to access envsubst from config_read_functions.lib.sh
+#   TODO: Add envsubst install to makefile
+#   QUESTION: install envsubst somewhere more convenient?
+PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
 source scripts/argmap.env
 
 case $ENV in
