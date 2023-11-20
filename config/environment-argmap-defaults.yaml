@@ -32,6 +32,9 @@ PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
 # TODO:
 #   HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 #   echo "(brew --prefix): $(brew --prefix)"
+
+# TODO: shouldn't be using CONDA_PREFIX
+PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
 PATH_SHARE_GLOBAL: /opt/build/cache
 PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
 PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
@@ -50,7 +53,8 @@ PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_SRC}/lua # TODO rename to PATH_LUA_ARGMAP
 PATH_LUA_MODULES: ${PATH_SHARE_GLOBAL}/lua_modules
 
 # QUESTION: add this to netlify env instead?
-PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_DIR_ARGMAP_LUA}
+#   Would need to move from custom env-argmap.yaml file to .env too
+PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_DIR_ARGMAP_LUA}:${PATH_BIN_GLOBAL}
 
 LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
 LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so;
