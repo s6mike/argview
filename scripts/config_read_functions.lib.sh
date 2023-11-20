@@ -52,7 +52,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
       query_opts=" | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
     l) # (de)list mode - returns a list in argument format.
-      # Though I've added  | sed 's/^- //' to main query to remove leading hyphens instead
+      # Though since I've added  | sed 's/^- //' to main query to remove leading hyphens, this option no longer makes any difference.
       query_opts=" | .[]"
       ;;
     *) ;;
@@ -109,11 +109,9 @@ count_characters() {
 # TODO: combine all non PRIVATE processed variables into one file
 # QUESTION: Possible to build defaults file from template referencing other variables, using this function?
 #   When adding new config file, don't forget to update pandoc defaults
-# TODO: could use envsubst to substitute env variables before doing further processing
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
   target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
 
-  # local mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")
   local filename
   local repeat_count=0
   filename=$(basename "$target_config_file")
@@ -128,10 +126,13 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # Get nested key value pairs:
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
-  #   REMEMBER: This only expands variables in config files, not env variables
-  #     Might be useful to fix this, could then use env file for boot process
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
+  # shellcheck disable=SC2016 # This vars needs to be single quoted
+  dotenv_vars='$HOME $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
+  source scripts/argmap.env # Might not be necessary but just to ensure it's always used
+  # Substitutes only specific env variables, found in scripts/argmap.env, to ensure no empty variables are substituted
+  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$target_config_file" | envsubst "$dotenv_vars" >"$output_file"
+
   # TODO if no values found then quit
 
   # This line create new file, comment it out and output file will be expanded version of original
@@ -149,8 +150,9 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
       processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
     fi
     set -f
+    tmpfile=$(mktemp)
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
-    pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file
+    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file | envsubst "$dotenv_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +f
     target_config_file="$output_file"
 
