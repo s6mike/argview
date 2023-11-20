@@ -340,10 +340,10 @@ ${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PA
 	@-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
+# QUESTION add mapjs.env as dependency? 
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
 	@-mkdir --parent "$(@D)"
 	preprocess_config "$<"
-
 
 ### Site output vs test output
 

@@ -4,10 +4,6 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
-# Needed for non-VSCode environments:
-# TODO should set to $HOME/local/argmap by default
-#   Add check whether $HOME/git_projects/argmap exists, then set as above instead
-#   Or use .env file?
 set -o allexport
 # Needed to access envsubst from config_read_functions.lib.sh
 #   TODO: Add envsubst install to makefile
@@ -31,7 +27,6 @@ echo "ENV|MODE: $ENV|$MODE"
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/app_install.lib.sh
 source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
-source "$PATH_DIR_SCRIPTS/argmap.env"
 set +o allexport
 
 # shellcheck source=/home/s6mike/.bashrc
@@ -76,9 +71,8 @@ set -o allexport
 # PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
 
 # echo "Updating PATH"
-# QUESTION: add this to env file or netlify env instead?
+# QUESTION: add this to .env / netlify env instead?
 PATH="$(getvar PATH_ADD_PATH):$PATH"
-# export PATH
 
 # PANDOC - needed for pandoc-argamp.lua until lua reads config directly
 PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
