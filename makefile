@@ -382,7 +382,7 @@ ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 # ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
 # 	app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 
-${PATH_BIN_GLOBAL}/luarocks: # ${PATH_BIN_GLOBAL}/lua5.3
+${PATH_LUA_MODULES}/lib/luarocks: # ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
 # # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 # 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
@@ -428,7 +428,7 @@ ${PATH_FILE_YQ}:
 # Install lua dependencies
 #		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
 #		Running qa_rockspec will also install dependencies
-lua_modules/: ${PATH_BIN_GLOBAL}/luarocks
+lua_modules/: ${PATH_LUA_MODULES}/lib/luarocks
 #	TODO: split up this script into separate make actions:
 # scripts/qa_rockspec.sh
 # ifneq ($(*rockspec_file}, '')
