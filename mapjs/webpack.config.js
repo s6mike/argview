@@ -10,7 +10,8 @@ module.exports = (env, argv) => {
     resolve: {
       alias: {
         Mapjs: path.resolve(__dirname, '.'),
-      }
+      },
+      modules: [path.resolve(__dirname, process.env.MAPJS_NODE_MODULES_PREFIX + '/node_modules'), 'node_modules']
     },
     node: {
       // webpack replaces __dirname with /. It’s a weird default and might cause some hard-to-find bugs.
