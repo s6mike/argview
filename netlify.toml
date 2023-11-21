@@ -11,13 +11,17 @@
 [build.environment]
   ENV = "netlify"
   DIR_PROJECTS = "./mapjs/public"
-  GO_VERSION = "1.20"
   PATH_DIR_SCRIPTS = "scripts"
   PATH_BIN_GLOBAL = "."
   PATH_FILE_YQ = "/opt/build/cache/yq"
   WORKSPACE = "."
-  NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
+  NODE_ENV = "production"
+  NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
+  NODE_VERSION = "18.0.0"
+  NPM_VERSION = "8.6.0"
+  GO_VERSION = "1.20"
+  
 
 [context.production.environment]
   MODE = "prod"
