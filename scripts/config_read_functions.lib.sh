@@ -110,16 +110,22 @@ count_characters() {
 # QUESTION: Possible to build defaults file from template referencing other variables, using this function?
 #   When adding new config file, don't forget to update pandoc defaults
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
-  target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
+  input_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
 
   local filename
   local repeat_count=0
-  filename=$(basename "$target_config_file")
-  target_dir="$(dirname "$target_config_file")/$KEYWORD_PROCESSED"
-  mkdir --parent "$target_dir"
+  filename=$(basename "$input_config_file")
+
+  # processed_dir="$(dirname "$input_config_file")/$KEYWORD_PROCESSED"
+  # TODO This won't distinguish between mapjs and argmap
+  # processed_dir="${PATH_DIR_CONFIG_ARGMAP_PROCESSED}"
 
   # Strips yaml extension then adds on this one:
-  output_file="$target_dir/${filename%%.*}-processed.yaml"
+  # output_file="$processed_dir/${filename%%.*}-processed.yaml"
+  output_file="${2:-"$(dirname "$input_config_file")/$KEYWORD_PROCESSED/${filename%%.*}-processed.yaml"}"
+
+  echo "output_file: $output_file"
+  mkdir --parent "$(dirname "$output_file")"
 
   # Get key value pairs with $, omitting nested $var values (e.g. LIST_FILES_CONFIG)
   #   with_entries(select(.value == "*$*"))'
@@ -131,7 +137,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   dotenv_vars='$HOME $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
   source scripts/argmap.env # Might not be necessary but just to ensure it's always used
   # Substitutes only specific env variables, found in scripts/argmap.env, to ensure no empty variables are substituted
-  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$target_config_file" | envsubst "$dotenv_vars" >"$output_file"
+  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$dotenv_vars" >"$output_file"
 
   # TODO if no values found then quit
 
@@ -150,7 +156,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
       processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
     fi
     set -f
-    tmpfile=$(mktemp)
+    tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
     pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file | envsubst "$dotenv_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +f
