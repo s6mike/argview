@@ -17,7 +17,7 @@
   WORKSPACE = "."
   PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
   NODE_ENV = "production"
-  NODE_PATH = "/opt/build/cache/node_modules"
+  NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
   NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   NODE_VERSION = "18.0.0"
   NPM_VERSION = "8.6.0"
