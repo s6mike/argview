@@ -133,11 +133,12 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
+  echo "PATH_DIR_CONFIG_ARGMAP_PROCESSED: $PATH_DIR_CONFIG_ARGMAP_PROCESSED"
   # shellcheck disable=SC2016 # This vars needs to be single quoted
-  dotenv_vars='$HOME $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
+  use_env_vars='$HOME $PATH_DIR_CONFIG_ARGMAP_PROCESSED $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
   source scripts/argmap.env # Might not be necessary but just to ensure it's always used
   # Substitutes only specific env variables, found in scripts/argmap.env, to ensure no empty variables are substituted
-  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$dotenv_vars" >"$output_file"
+  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$use_env_vars" >"$output_file"
 
   # TODO if no values found then quit
 
@@ -158,7 +159,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     set -f
     tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
-    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$dotenv_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
+    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$use_env_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +f
     target_config_file="$output_file"
 
