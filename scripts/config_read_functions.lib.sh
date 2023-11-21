@@ -137,8 +137,8 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # shellcheck disable=SC2016 # This vars needs to be single quoted
   use_env_vars='$HOME $PATH_DIR_CONFIG_ARGMAP_PROCESSED $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
 
-  if [ ! -n "$PATH_FILE_CONFIG_ARGMAP_PATHS" ]; then # only sources if necessary
-    source scripts/argmap.env                        # Might not be necessary but just to ensure it's always used
+  if [ -z "$PATH_FILE_CONFIG_ARGMAP_PATHS" ]; then # only sources if necessary
+    source scripts/argmap.env                      # Might not be necessary but just to ensure it's always used
   fi
   # Substitutes only specific env variables, found in scripts/argmap.env, to ensure no empty variables are substituted
   "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$use_env_vars" >"$output_file"
