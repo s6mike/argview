@@ -436,7 +436,7 @@ lua_modules/: ${PATH_LUA_MODULES}/lib/luarocks
 	luarocks lint "${rockspec_file}"
 ifeq (${ENV}, netlify)
 # YAML_LIBDIR=${PATH_LIB_GLOBAL}
-	luarocks --tree lua_modules --lua-dir=${PATH_SHARE_GLOBAL}/opt/lua@5.3 --lua-version=5.3 make --only-deps ${rockspec_file}
+	luarocks --tree ${PATH_LUA_MODULES} --lua-dir=${PATH_SHARE_GLOBAL}/opt/lua@5.3 --lua-version=5.3 make --only-deps ${rockspec_file}
 else
 	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${CONDA_PREFIX}/lib/
 endif
