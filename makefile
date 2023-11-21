@@ -412,8 +412,11 @@ else
 endif
 
 ${MAPJS_NODE_MODULES_PREFIX}/node_modules:
-# TODO: Test for ENV netlify
+ifeq (${ENV}, netlify)
+	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
+else
 	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+endif
 
 ${PATH_FILE_YQ}:
 # $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
