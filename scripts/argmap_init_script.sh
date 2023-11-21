@@ -155,6 +155,7 @@ export_vars() {
   *)
     # Not needed by netlify:
     #   QUESTION: Any more?
+    NODE_PATH=${NODE_PATH:-$(getvar NODE_PATH)}
     PATH_FILE_CONVERT_LOCAL=$(getvar PATH_FILE_CONVERT_LOCAL)
     PATH_FILE_CONVERT_GLOBAL=$(getvar PATH_FILE_CONVERT_GLOBAL)
     PATH_FILE_GDRIVE_LOCAL=$(getvar PATH_FILE_GDRIVE_LOCAL)
