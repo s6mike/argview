@@ -124,7 +124,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # output_file="$processed_dir/${filename%%.*}-processed.yaml"
   output_file="${2:-"$(dirname "$input_config_file")/$KEYWORD_PROCESSED/${filename%%.*}-processed.yaml"}"
 
-  echo "output_file: $output_file"
+  # echo "output_file: $output_file"
   mkdir --parent "$(dirname "$output_file")"
 
   # Get key value pairs with $, omitting nested $var values (e.g. LIST_FILES_CONFIG)
@@ -133,7 +133,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  echo "PATH_DIR_CONFIG_ARGMAP_PROCESSED: $PATH_DIR_CONFIG_ARGMAP_PROCESSED"
+  # echo "PATH_DIR_CONFIG_ARGMAP_PROCESSED: $PATH_DIR_CONFIG_ARGMAP_PROCESSED"
   # shellcheck disable=SC2016 # This vars needs to be single quoted
   use_env_vars='$HOME $PATH_DIR_CONFIG_ARGMAP_PROCESSED $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
   source scripts/argmap.env # Might not be necessary but just to ensure it's always used

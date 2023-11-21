@@ -338,12 +338,12 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 # 	TODO: De-duplicate with mapjs call
 ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml scripts/argmap.env
 	@-mkdir --parent "$(@D)"
-	preprocess_config "$<" "$@"
+	@preprocess_config "$<" "$@"
 
 # QUESTION add mapjs.env as dependency? 
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
 	@-mkdir --parent "$(@D)"
-	preprocess_config "$<" "$@"
+	@preprocess_config "$<" "$@"
 
 ### Site output vs test output
 
