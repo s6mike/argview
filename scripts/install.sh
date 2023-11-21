@@ -235,11 +235,11 @@ PATH_PUBLIC=$(getvar PATH_PUBLIC)
 #   }
 
 # QUESTION: Do I need above cd if I'm using prefix?
-npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" install
+npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" install
 
 # ISSUE: npm audit on netlify vulnerabilities doesn't work - better to just build using package-lock?
 #   QUESTION: Use force instead?
-npm audit fix --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" --legacy-peer-deps >npm_audit_output.txt
+npm audit fix --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" --legacy-peer-deps >npm_audit_output.txt
 
 __build_mapjs
 

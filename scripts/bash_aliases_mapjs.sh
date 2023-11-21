@@ -102,7 +102,7 @@ testcafe_run() { # tcr
   fi
   # __bisect_init
   echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
 }
 
 # __test_mapjs_renders() {
@@ -125,14 +125,14 @@ testcafe_run() { # tcr
 # Start webpack after git checkout
 webpack_install() { # wpb
   # Should only install new stuff. Should install in local folder if its set
-  npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" # --force
+  npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" # --force
   # TODO: But can also monitor package.json for changes and install automatically instead: https://workflowy.com/#/f666070d7b23
   # wait &&
   # npm exec webpack # Shouldn't be needed if webpack server does it automatically
 }
 
 webpack_pack() { #pmj
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run pack
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run pack
 }
 
 __is_server_live() {
@@ -150,7 +150,7 @@ webpack_server_halt() { #wsh
     # Else:
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
-    npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run stop
+    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run stop
     export SERVER_ON=false
     export SERVER_MODE=false
   else
@@ -172,16 +172,16 @@ webpack_server_start() { # wss
     fi
     echo ""
   else
-    npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run start:"$mode"
+    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run start:"$mode"
     export SERVER_MODE=$mode
   fi
 }
 
 __check_npm_updates() {
-  # npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" npm@latest
+  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
   printf "\nChecking for out of date npm modules. Expecting 2 only (npm and jquery-hammerjs):\n"
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" outdated
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" audit
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" outdated
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" audit
 }
 
 __npm_update() {

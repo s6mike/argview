@@ -161,7 +161,7 @@ ifneq (${ENV}, netlify)
   install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
 endif
 
-npm: ${PATH_DIR_MAPJS_ROOT}/node_modules
+npm: ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 
 npm_audit: | npm npm_audit_output.txt
 
@@ -252,7 +252,7 @@ endif
 ## Core functionality
 
 npm_audit_output.txt:
-	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
+	-npm audit fix --prefix "${MAPJS_NODE_MODULES_PREFIX}" --legacy-peer-deps >npm_audit_output.txt
 
 # Generate html from json
 # 	QUESTION Can I combine this with first v3.html rule?
@@ -272,7 +272,7 @@ $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC
 	fi; \
 	2hf $$flags_2hf "$<"	
 
-# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 # ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ;
 
 # Generate .json from .yaml
@@ -307,7 +307,7 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 	@-mkdir --parent "$(@D)"
 # && ensures wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 # make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
-# npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_DIR_MAPJS_ROOT}/${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
 	@if [ "$$HTML_OPEN" = "true" ]; then \
 		flags_2hf="-s"; \
 	else \
@@ -320,8 +320,8 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	echo "NODE_PATH: ${NODE_PATH}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+	npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
 
@@ -411,9 +411,9 @@ else
 #   luarocks remove
 endif
 
-${PATH_DIR_MAPJS_ROOT}/node_modules:
+${MAPJS_NODE_MODULES_PREFIX}/node_modules:
 # TODO: Test for ENV netlify
-	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
 
 ${PATH_FILE_YQ}:
 # $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
@@ -537,7 +537,6 @@ ${PATH_FILE_GDRIVE_LOCAL}: ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz
 
 ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz:
 	app_install ${PATH_BIN_LOCAL} https://github.com/prasmussen/gdrive/releases/download/2.1.1/gdrive_2.1.1_linux_386.tar.gz
-
 
 # Though may be covered by conda dependencies:
   # - anaconda/linux-64::luarocks==3.7.0=lua53h06a4308_0
