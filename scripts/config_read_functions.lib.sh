@@ -158,7 +158,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     set -f
     tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
-    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file | envsubst "$dotenv_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
+    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$dotenv_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +f
     target_config_file="$output_file"
 
