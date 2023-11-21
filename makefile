@@ -320,8 +320,8 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	echo "NODE_PATH: ${NODE_PATH}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+	npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
 
@@ -412,6 +412,7 @@ else
 endif
 
 ${MAPJS_NODE_MODULES_PREFIX}/node_modules:
+	$(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 ifeq (${ENV}, netlify)
 	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
 else
