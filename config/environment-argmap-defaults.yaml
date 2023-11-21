@@ -34,8 +34,9 @@ PATH_FILE_GDRIVE_LOCAL: ${PATH_BIN_LOCAL}/gdrive
 
 # TODO: shouldn't be using CONDA_PREFIX
 PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
-PATH_SHARE_GLOBAL: /opt/build/cache
-PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
+PATH_CACHE: /opt/build/cache
+PATH_SHARE_GLOBAL: /home/linuxbrew/.linuxbrew
+PATH_LIB_GLOBAL: ${PATH_CACHE}/lib
 PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
 PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
 PATH_FILE_CONVERT_GLOBAL: ${PATH_BIN_GLOBAL}/convert
@@ -49,7 +50,7 @@ DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_la
 ## lua
 PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_SRC}/lua # TODO rename to PATH_LUA_ARGMAP
 # netlify:
-PATH_LUA_MODULES: ${PATH_SHARE_GLOBAL}/lua_modules
+PATH_LUA_MODULES: ${PATH_CACHE}/lua_modules
 
 # QUESTION: add this to netlify env instead?
 #   Would need to move from custom env-argmap.yaml file to .env too
