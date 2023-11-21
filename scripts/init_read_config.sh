@@ -47,6 +47,8 @@ main() {
   PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED="$PATH_DIR_CONFIG_ARGMAP_PROCESSED/config-argmap-paths-$KEYWORD_PROCESSED.yaml"
   set +o allexport
 
+  make prints
+
   make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
   make "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
 
@@ -57,6 +59,8 @@ main() {
   # Can't use __yaml2env because it's not set to take the -l option
   LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -l LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED" | tr '\n' ' ')
   export LIST_FILES_CONFIG_PROCESSED
+
+  make prints
 
   # Process remaining config files
   #   QUESTION: Better to define above variables as part of make call instead of exporting them?
