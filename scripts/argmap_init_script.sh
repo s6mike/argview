@@ -23,13 +23,9 @@ init_config() {
     CONDA_ENV_ARGMAP="${CONDA_ENV_ARGMAP:-argmap}"
     ;;
   esac
+  set +o allexport
 
   echo "ENV|MODE: $ENV|$MODE"
-
-  # shellcheck source=/home/s6mike/git_projects/argmap/scripts/app_install.lib.sh
-  source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
-  # shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
-  set +o allexport
 
   # shellcheck source=/home/s6mike/.bashrc
   case $ENV in
@@ -38,6 +34,7 @@ init_config() {
     make "${PATH_FILE_YQ}" pandoc
     ;;
   *)
+    source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
     source "$HOME/.bashrc"
     # source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
     # source "$HOME/scripts/default_vscode_init_script.sh"
@@ -188,19 +185,19 @@ export_vars() {
 } # end export_vars
 
 make_rest() {
-
-  # TODO: would rather only call this when make test called, but not sure how
-  source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
-
   # Calling make site from here because environment vars seem to get lost otherwise
   case $ENV in
   netlify)
     if [ "$(getvar TEST_SITE_DEPLOY)" = "true" ]; then
+      # TODO: would rather only call this when make test called, but not sure how
+      source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
       make test
     fi
     make site
     ;;
   *)
+    # TODO: would rather only call this when make test called, but not sure how
+    source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
     # QUESTION: Better to define above variables as part of make call instead of exporting them?
     make all # --warn-undefined-variables, -d for debugging
     ;;
