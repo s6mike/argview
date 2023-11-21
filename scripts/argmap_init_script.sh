@@ -120,8 +120,10 @@ eval "$(pandoc --bash-completion)"
 case $ENV in
 
 netlify)
+  set -o allexport
   PATH_SHARE_GLOBAL=$(getvar PATH_SHARE_GLOBAL)
-  export PATH_SHARE_GLOBAL
+  PATH_CACHE=$(getvar PATH_CACHE)
+  set +o allexport
   make install
   # find . -type f -name yaml.so
   # find . -name libyaml.so
