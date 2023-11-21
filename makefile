@@ -336,7 +336,7 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 # Process config and environment files
 # 	QUESTION: Use more variables?
 # 	TODO: De-duplicate with mapjs call
-${PATH_DIR_CONFIG_ARGMAP}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml scripts/argmap.env
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml scripts/argmap.env
 	@-mkdir --parent "$(@D)"
 	preprocess_config "$<"
 
