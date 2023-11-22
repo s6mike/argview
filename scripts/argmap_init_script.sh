@@ -15,9 +15,16 @@ init_config() {
 
   case $ENV in
 
-  netlify) ;;
+  netlify)
+    MAPJS_NODE_MODULES_PREFIX=./mapjs
+    PATH_OUTPUT_JS=${MAPJS_NODE_MODULES_PREFIX}/public/js
+    PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
+
+    make ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+    make ${PATH_OUTPUT_JS}/main.js
+    ;;
   *)
-    # TODO: normal install shouldn't use conda, so should set up to give option for either
+    # TODO: normal install shouldn't use conda, so should set up to give option for eitherPATH_OUTPUT_JS
     #   ISSUE: conda needed for pandoc, so this should be set up before reading yaml
     #     Not sure if this is fixing pandoc's conda dependency
     CONDA_ENV_ARGMAP="${CONDA_ENV_ARGMAP:-argmap}"
