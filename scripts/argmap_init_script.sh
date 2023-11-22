@@ -16,9 +16,10 @@ init_config() {
   case $ENV in
 
   netlify)
+    PATH_CACHE=/opt/build/cache
+    MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}
     PATH_DIR_MAPJS_ROOT=./mapjs
-    MAPJS_NODE_MODULES_PREFIX=./mapjs
-    PATH_OUTPUT_JS=${MAPJS_NODE_MODULES_PREFIX}/public/js
+    PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
     PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
 
     make ${MAPJS_NODE_MODULES_PREFIX}/node_modules
