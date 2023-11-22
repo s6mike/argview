@@ -319,9 +319,9 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map:
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
-	echo "NODE_PATH: ${NODE_PATH}"
+	-echo "NODE_PATH: ${NODE_PATH}"
 	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
-	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
 
