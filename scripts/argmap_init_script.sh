@@ -23,6 +23,8 @@ init_config() {
 
     make ${MAPJS_NODE_MODULES_PREFIX}/node_modules
     make ${PATH_OUTPUT_JS}/main.js
+
+    exit
     ;;
   *)
     # TODO: normal install shouldn't use conda, so should set up to give option for eitherPATH_OUTPUT_JS
