@@ -47,8 +47,8 @@
     "report": "webpack --mode=production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json"
   },
   "engines": {
-    "node": "~18.0.0",
-    "npm": "~8.6.0"
+    "node": "~18.14.0",
+    "npm": "~8.1.2"
   },
   "overrides": {
     "find-babel-config@1.2.0": {
