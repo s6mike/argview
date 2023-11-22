@@ -94,6 +94,7 @@ FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL
 CONDA_PREFIX ?= NULL
+PATH_DIR_MAPJS_ROOT ?= NULL
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
@@ -253,6 +254,10 @@ endif
 
 npm_audit_output.txt:
 	-npm audit fix --prefix "${MAPJS_NODE_MODULES_PREFIX}" --legacy-peer-deps >npm_audit_output.txt
+
+${PATH_DIR_MAPJS_ROOT}/package.json:
+${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
+
 
 # Generate html from json
 # 	QUESTION Can I combine this with first v3.html rule?
