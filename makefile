@@ -316,7 +316,7 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 	2hf $$flags_2hf "$<"
 
 # Create js dependencies for html files:
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map:
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	-echo "NODE_PATH: ${NODE_PATH}"
@@ -411,7 +411,7 @@ else
 #   luarocks remove
 endif
 
-${MAPJS_NODE_MODULES_PREFIX}/node_modules:
+${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json
 	$(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 ifeq (${ENV}, netlify)
 # -npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
