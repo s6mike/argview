@@ -20,6 +20,7 @@ init_config() {
     mkdir --parent "$PATH_CACHE"
     ls "$PATH_CACHE"
     ls "$PATH_CACHE/node_modules"
+    ls "${PATH_DIR_MAPJS_ROOT}/node_modules"
     MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}
     PATH_DIR_MAPJS_ROOT=./mapjs
     PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
