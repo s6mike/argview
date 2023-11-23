@@ -17,9 +17,9 @@ init_config() {
 
   netlify)
     PATH_CACHE=/opt/build/cache/argmap
+    PATH_DIR_MAPJS_ROOT=mapjs
     MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}/argmap/${PATH_DIR_MAPJS_ROOT}
     mkdir --parent "$MAPJS_NODE_MODULES_PREFIX"
-    PATH_DIR_MAPJS_ROOT=mapjs
     PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
     PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
     # May want to symlink
