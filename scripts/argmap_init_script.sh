@@ -149,7 +149,7 @@ init_apps() {
   netlify)
     set -o allexport
     PATH_SHARE_GLOBAL=$(getvar PATH_SHARE_GLOBAL)
-    PATH_CACHE=$(getvar PATH_CACHE)
+    # PATH_CACHE=$(getvar PATH_CACHE)
     set +o allexport
     make install
     # find . -type f -name yaml.so
