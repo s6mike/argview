@@ -52,18 +52,18 @@
   # envFiles = [".env.development.local", ".env.local", ".env.development", ".env"] # The env files to use, ordered by priority (left - highest, right - lowest)
 
 [[plugins]]
-  package = "@netlify/plugin-sitemap"
+package = "@netlify/plugin-sitemap"
 
 [[plugins]]
-  package = "@netlify/plugin-lighthouse"
+package = "@netlify/plugin-lighthouse"
 # optional, deploy the lighthouse report to a path under your site
   # [plugins.inputs.audits]
   #   output_path = "reports/lighthouse.html"
 [[plugins]]
-  package = "netlify-plugin-debug-cache"
+package = "netlify-plugin-debug-cache"
 
 [[plugins]]
-  package = "netlify-plugin-cache"
+package = "netlify-plugin-cache"
   [plugins.inputs]
   # Optional (but highly recommended). Defaults to [".cache"].
   paths = ["mapjs/node_modules", "config/processed", "lua_modules"]
