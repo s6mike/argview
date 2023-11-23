@@ -15,6 +15,8 @@ includes/webpack-dist-tags.html
 /lua
 /.luarocks
 
+node_modules*
+
 mapjs/node_modules
 mapjs/public/output
 mapjs/public/input
@@ -44,9 +46,3 @@ mapjs/lint_errors.txt
 mapjs/public/sitemap.xml
 # Used by netlify-cli build
 yq
-node_modules/.package-lock.json
-node_modules/netlify-plugin-cache/index.js
-node_modules/netlify-plugin-cache/LICENSE
-node_modules/netlify-plugin-cache/manifest.yml
-node_modules/netlify-plugin-cache/package.json
-node_modules/netlify-plugin-cache/README.md
