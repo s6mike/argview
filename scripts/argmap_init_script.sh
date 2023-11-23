@@ -16,7 +16,7 @@ init_config() {
   case $ENV in
 
   netlify)
-    PATH_CACHE=/opt/build/cache
+    PATH_CACHE=/opt/build/cache/argmap
     ls "$PATH_CACHE"
     ls "$PATH_CACHE/node_modules"
     MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}
