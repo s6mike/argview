@@ -56,10 +56,14 @@
 
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-
+# optional, deploy the lighthouse report to a path under your site
+  # [plugins.inputs.audits]
+  #   output_path = "reports/lighthouse.html"
 [[plugins]]
   package = "netlify-plugin-debug-cache"
 
-  # optional, deploy the lighthouse report to a path under your site
-  # [plugins.inputs.audits]
-  #   output_path = "reports/lighthouse.html"
+[[plugins]]
+  package = "netlify-plugin-cache"
+  [plugins.inputs]
+  # Optional (but highly recommended). Defaults to [".cache"].
+  paths = ["mapjs/node_modules", "config/processed", "lua_modules"]
