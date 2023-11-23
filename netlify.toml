@@ -26,19 +26,12 @@
   GO_VERSION = "1.20"
 
 [context.production.environment]
-  MODE = "prod"
-  # NETLIFY_BUILD_DEBUG = "false"
-  # DIR_PROJECTS = "./other_projects"
-  # GO_VERSION = "1.20"
-  # ENV = "netlify"
-  # PATH_DIR_SCRIPTS = "scripts"
-  # WORKSPACE = "."
+  # MODE = "prod"
 
 [context.dev.environment]
   ENV = "netlify"
   MODE = "dev"
   # NETLIFY_BUILD_DEBUG = "true"
-  # PATH_FILE_YQ = "/opt/build/cache/yq"
 
 # sample dev block in the toml
 # note: each of these fields are OPTIONAL and should only be used if you need an override
