@@ -426,7 +426,7 @@ endif
 # # -ln -s "${MAPJS_NODE_MODULES_PREFIX}/node_modules" "${PATH_DIR_MAPJS_ROOT}/node_modules"
 # 	-ln -s $@ "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
-${PATH_DIR_MAPJS_ROOT}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+${PATH_DIR_MAPJS_ROOT}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json # ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 	$(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 # ls "${PATH_CACHE}"
 ifeq (${ENV}, netlify)
