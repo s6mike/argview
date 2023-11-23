@@ -292,16 +292,16 @@ ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
 # Copy .json from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
 	@-mkdir --parent "$(@D)"
-	cp "$<" "$@"
+	cp -- "$<" "$@"
 
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
 	@-mkdir --parent "$(@D)"
-	cp "$<" "$@"
+	cp -- "$<" "$@"
 
 # Copy .mup from input to output, before generating html
 ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	@-mkdir --parent "$(@D)"
-	cp "$<" "$@"
+	cp -- "$<" "$@"
 
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md
 	@-mkdir --parent "$(@D)"
@@ -338,7 +338,7 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 
 # Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
 %.yaml: | %-defaults.yaml
-	cp --no-clobber $*-defaults.yaml $@
+	cp --no-clobber -- $*-defaults.yaml $@
 
 ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 	touch $@
