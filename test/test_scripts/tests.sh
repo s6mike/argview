@@ -22,6 +22,7 @@ netlify)
   ;;
 *)
   test_open_html=true
+  __check_config_read_echoes
   # Ensure everything built
   make site_clean
   make public
