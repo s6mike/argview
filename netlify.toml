@@ -13,9 +13,9 @@
   DIR_PROJECTS = "./mapjs/public"
   PATH_DIR_SCRIPTS = "scripts"
   PATH_BIN_GLOBAL = "."
-  PATH_FILE_YQ = "/opt/build/cache/yq"
+# PATH_FILE_YQ = "/opt/build/cache/yq"
   WORKSPACE = "."
-  PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
+# PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
 # NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
   # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   # NODE_ENV = "production"
@@ -36,7 +36,7 @@
   ENV = "netlify"
   MODE = "dev"
   # NETLIFY_BUILD_DEBUG = "true"
-  PATH_FILE_YQ = "/opt/build/cache/yq"
+  # PATH_FILE_YQ = "/opt/build/cache/yq"
 
 # sample dev block in the toml
 # note: each of these fields are OPTIONAL and should only be used if you need an override
@@ -65,4 +65,4 @@ package = "netlify-plugin-debug-cache"
 [[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
-  paths = [".cache", "mapjs/node_modules", "config/processed", "lua_modules"]
+  paths = [".cache", "yq", "config/processed", "lua_modules", "mapjs/node_modules"]
