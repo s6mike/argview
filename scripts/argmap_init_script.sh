@@ -24,9 +24,10 @@ init_config() {
     PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
     echo "PATH_DIR_MAPJS_ROOT: $PATH_DIR_MAPJS_ROOT"
     # May want to symlink
-    cp "$PATH_DIR_MAPJS_ROOT/package.json" "$MAPJS_NODE_MODULES_PREFIX/node_modules"
+    cp "$PATH_DIR_MAPJS_ROOT/package.json" "$MAPJS_NODE_MODULES_PREFIX/package.json"
 
     ls "$PATH_CACHE"
+    ls "$MAPJS_NODE_MODULES_PREFIX"
     ls "$MAPJS_NODE_MODULES_PREFIX/node_modules"
     # ls "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
