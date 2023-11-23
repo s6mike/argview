@@ -4,6 +4,14 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
+shopt -s nullglob globstar                           # Stops * matching null
+set -o nounset                                       # Warning if var unset. This shouldn't be used below bash 4.4 because empty arrays count as unset
+set -o errexit                                       # Stops on error
+set -o pipefail                                      # with pipefail enabled, the pipeline's status is set to the exit status of the last command to exit with a non-zero status, rather than the last overall command.
+if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi # call `TRACE=1 ./script.sh` to activate debug mode
+
+# cd "$(dirname "$0/..")" # Sets current directory to match script - this breaks everything!
+
 init_config() {
 
   set -o allexport
@@ -225,3 +233,12 @@ init_config
 init_apps
 export_vars
 make_rest
+
+# QUESTION: Do this?
+# main() {
+#     Put whole script in here
+# }
+
+# main "$@"
+
+# exit 0
