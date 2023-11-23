@@ -62,5 +62,5 @@ package = "netlify-plugin-debug-cache"
 [[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
-  # "/home/linuxbrew/.linuxbrew/lib", "mapjs/node_modules"
-  paths = [".cache", "yq", "config/processed", "/home/linuxbrew/.linuxbrew/lua_modules"]
+  # "/home/linuxbrew/.linuxbrew/lib/", "mapjs/node_modules/"
+  paths = [".cache", "yq", "config/processed/", "/home/linuxbrew/.linuxbrew/lua_modules/"]
