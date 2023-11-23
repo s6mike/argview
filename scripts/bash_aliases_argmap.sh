@@ -57,6 +57,7 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 __update_repo() { # Running at end of test script
   echo "Updating repo..."
   # Update doc examples
+  # TODO use make instead? Did I already create make for this?
   mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/markdown/example-updated.md)" "$(getvar WORKSPACE)/docs/example-updated.html"
   mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar WORKSPACE)/mapjs/docs/legacy-mapjs-example-map.html"
   __save_env
@@ -69,6 +70,11 @@ __update_repo() { # Running at end of test script
 
 __find_rockspec() {
   find "$WORKSPACE" -type f -name "argmap-*.rockspec"
+}
+
+__check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
+  printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting 9 only:\n"
+  grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l
 }
 
 # Checks `src/lua` for lua files with leftover debug code.
@@ -281,5 +287,5 @@ md2np() {
 
 # Mark functions for export to use in other scripts:
 export -f open_debug __find_rockspec
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec __check_config_read_echoes
 export -f __get_site_path a2m m2a a2t a2mu pandoc_argmap 2hf md2pdf md2np
