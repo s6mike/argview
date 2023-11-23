@@ -256,6 +256,7 @@ npm_audit_output.txt:
 	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
 
 ${PATH_DIR_MAPJS_ROOT}/package.json:
+${MAPJS_NODE_MODULES_PREFIX}/package.json:
 ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 
 
