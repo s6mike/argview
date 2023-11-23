@@ -198,7 +198,7 @@ fi
 
 # # Check $(getvar PATH_DIR_MAPJS_ROOT) is set as desired
 # cd "$(getvar PATH_DIR_MAPJS_ROOT)" || {
-#   echo "Abandoning QA install."
+#   echo "Abandoning QA install." >&2
 #   exit 1
 # }
 

@@ -117,7 +117,7 @@ testcafe_run() { # tcr
 #   if [[ "$result" == "true"* ]]; then
 #     return 0 # success
 #   else       # if headless chrome fails to render any map nodes
-#     echo "Render Failed"
+#     echo "Render Failed" >&2
 #     return 1 #fail
 #   fi
 # }
@@ -154,7 +154,7 @@ webpack_server_halt() { #wsh
     export SERVER_ON=false
     export SERVER_MODE=false
   else
-    # echo "Server already off"
+    # echo "Server already off" >&2
     return 1
   fi
 }

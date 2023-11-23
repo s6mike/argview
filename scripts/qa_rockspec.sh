@@ -22,7 +22,7 @@ echo "*** Checking: $rockspec_file ***"
 luarocks lint "$rockspec_file"
 
 # cd "$install_dir" || {
-#   echo "Abandoning QA install."
+#   echo "Abandoning QA install." >&2
 #   exit 1
 # }
 

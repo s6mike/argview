@@ -72,7 +72,7 @@ __test() {
   if "$@" >>"$(getvar PATH_TEST_LOG)"; then
     echo -e "${COL_PASS}Pass${COL_RESET}"
   else
-    echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}"
+    echo -e "$PRE ${COL_FAIL}Fail${COL_RESET}" >&2
     FAILCOUNT=$((FAILCOUNT + 1))
   fi
 
