@@ -16,7 +16,7 @@ init_config() {
   case $ENV in
 
   netlify)
-    brew --cache -s "lua@5.3"
+    # brew --cache -s "lua@5.3"
     # # PATH_CACHE=/opt/build/cache/argmap
     # # mkdir --parent "$PATH_CACHE"
     # # ls "$PATH_CACHE"
