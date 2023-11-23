@@ -21,8 +21,10 @@
   # NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
   # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   # NODE_ENV = "production"
-  NODE_VERSION = "18.14.0"
-  NPM_VERSION = "9.3.1"
+  # NODE_VERSION = "18.14.0"
+  # NPM_VERSION = "9.3.1"
+  NODE_VERSION = "18.18.2"
+  NPM_VERSION = "9.8.1"
   GO_VERSION = "1.20"
 
 [context.production.environment]
