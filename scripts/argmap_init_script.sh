@@ -17,14 +17,17 @@ init_config() {
 
   netlify)
     PATH_CACHE=/opt/build/cache/argmap
-    mkdir --parent "$PATH_CACHE"
-    ls "$PATH_CACHE"
-    ls "$PATH_CACHE/node_modules"
-    ls "${PATH_DIR_MAPJS_ROOT}/node_modules"
-    MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}
-    PATH_DIR_MAPJS_ROOT=./mapjs
+    MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}/argmap/${PATH_DIR_MAPJS_ROOT}
+    mkdir --parent "$MAPJS_NODE_MODULES_PREFIX"
+    PATH_DIR_MAPJS_ROOT=mapjs
     PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
     PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
+    # May want to symlink
+    cp "$PATH_DIR_MAPJS_ROOT/package.json" "$MAPJS_NODE_MODULES_PREFIX/node_modules"
+
+    ls "$PATH_CACHE"
+    ls "$MAPJS_NODE_MODULES_PREFIX/node_modules"
+    # ls "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
     make ${PATH_DIR_MAPJS_ROOT}/node_modules
     make ${PATH_OUTPUT_JS}/main.js
