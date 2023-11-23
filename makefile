@@ -92,13 +92,13 @@ FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
 
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
-PATH_PUBLIC ?= NULL
-CONDA_PREFIX ?= NULL
-PATH_DIR_MAPJS_ROOT ?= NULL
-PATH_PROFILE_LOCAL ?= NULL
-PATH_BIN_GLOBAL ?= NULL
-PATH_FILE_CONVERT_GLOBAL ?= NULL
-PATH_FILE_GDRIVE_LOCAL ?= NULL
+PATH_PUBLIC ?= NULL1
+CONDA_PREFIX ?= NULL2
+PATH_DIR_MAPJS_ROOT ?= NULL3
+PATH_PROFILE_LOCAL ?= NULL4
+PATH_BIN_GLOBAL ?= NULL5
+PATH_FILE_CONVERT_GLOBAL ?= NULL6
+PATH_FILE_GDRIVE_LOCAL ?= NULL7
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
