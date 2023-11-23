@@ -17,6 +17,7 @@ init_config() {
 
   netlify)
     PATH_CACHE=/opt/build/cache/argmap
+    mkdir --parent "$PATH_CACHE"
     ls "$PATH_CACHE"
     ls "$PATH_CACHE/node_modules"
     MAPJS_NODE_MODULES_PREFIX=${PATH_CACHE}
