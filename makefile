@@ -325,8 +325,8 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	-echo "NODE_PATH: ${NODE_PATH}"
-	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
-	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+	-npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
 
@@ -416,13 +416,19 @@ else
 #   luarocks remove
 endif
 
-${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json
+${MAPJS_NODE_MODULES_PREFIX}/node_modules:
+	-mkdir --parent "$(@D)"
+# -ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
+# -ln -s "${MAPJS_NODE_MODULES_PREFIX}/node_modules" "${PATH_DIR_MAPJS_ROOT}/node_modules"
+	-ln -s $@ "${PATH_DIR_MAPJS_ROOT}/node_modules"
+
+${PATH_DIR_MAPJS_ROOT}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 	$(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 ifeq (${ENV}, netlify)
 # -npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
-	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
 else
-	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
 endif
 
 ${PATH_FILE_YQ}:
