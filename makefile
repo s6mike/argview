@@ -95,6 +95,10 @@ FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
 PATH_PUBLIC ?= NULL
 CONDA_PREFIX ?= NULL
 PATH_DIR_MAPJS_ROOT ?= NULL
+PATH_PROFILE_LOCAL ?= NULL
+PATH_BIN_GLOBAL ?= NULL
+PATH_FILE_CONVERT_GLOBAL ?= NULL
+PATH_FILE_GDRIVE_LOCAL ?= NULL
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
