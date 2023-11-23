@@ -22,7 +22,7 @@
   # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   # NODE_ENV = "production"
   NODE_VERSION = "18.14.0"
-  NPM_VERSION = "8.6.0"
+  NPM_VERSION = "9.3.1"
   GO_VERSION = "1.20"
 
 [context.production.environment]
