@@ -74,7 +74,12 @@ __find_rockspec() {
 
 __check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
   printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting 9 only:\n"
-  grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l
+  ECHO_COUNT=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
+  echo "Actual count: $ECHO_COUNT"
+  if (($ECHO_COUNT > 9)); then
+    echo "Aborting" >&2
+    exit "$ECHO_COUNT"
+  fi
 }
 
 # Checks `src/lua` for lua files with leftover debug code.
