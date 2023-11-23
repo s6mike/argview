@@ -29,7 +29,7 @@ init_config() {
     ls "$MAPJS_NODE_MODULES_PREFIX/node_modules"
     # ls "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
-    make ${PATH_DIR_MAPJS_ROOT}/node_modules
+    make ${MAPJS_NODE_MODULES_PREFIX}/node_modules
     make ${PATH_OUTPUT_JS}/main.js
 
     exit
