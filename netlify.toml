@@ -28,7 +28,7 @@
   GO_VERSION = "1.20"
 
 [context.production.environment]
-  # MODE = "prod"
+  MODE = "prod"
 
 [context.dev.environment]
   ENV = "netlify"
