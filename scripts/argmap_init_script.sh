@@ -24,7 +24,7 @@ init_config() {
     PATH_DIR_MAPJS_ROOT=mapjs
     MAPJS_NODE_MODULES_PREFIX=${PATH_DIR_MAPJS_ROOT}
     PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
-    PATH_FILE_MAPJS_HTML_DIST_TAGS=./src/layouts/includes/webpack-dist-tags.html
+    PATH_FILE_MAPJS_HTML_DIST_TAGS=src/layouts/includes/webpack-dist-tags.html
 
     make ${PATH_DIR_MAPJS_ROOT}/node_modules
     make ${PATH_OUTPUT_JS}/main.js
