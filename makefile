@@ -333,9 +333,9 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 # -$(info PATH_FILE_MAPJS_HTML_DIST_TAGS: ${PATH_FILE_MAPJS_HTML_DIST_TAGS})
 # -ls "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
-	# -ls "$(dirname "$PATH_FILE_MAPJS_HTML_DIST_TAGS")"
-	# -ls mapjs/node_modules/.bin/wait-on
-	# -ls mapjs/node_modules/wait-on
+	-ls "$(dirname "${PATH_FILE_MAPJS_HTML_DIST_TAGS}")"
+	-ls mapjs/node_modules/.bin/wait-on
+	-ls mapjs/node_modules/wait-on
 	-npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
