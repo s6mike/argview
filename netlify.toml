@@ -17,7 +17,7 @@
   PATH_FILE_YQ = "./yq"
   WORKSPACE = "."
   # PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
-  PATH_DIR_CONFIG_ARGMAP_PROCESSED = "/config/processed"
+  PATH_DIR_CONFIG_ARGMAP_PROCESSED = "config/processed"
   # NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
   # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
   # NODE_ENV = "production"
