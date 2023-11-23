@@ -66,4 +66,4 @@ package = "netlify-plugin-debug-cache"
 package = "netlify-plugin-cache"
   [plugins.inputs]
   # Optional (but highly recommended). Defaults to [".cache"].
-  paths = ["mapjs/node_modules", "config/processed", "lua_modules"]
+  paths = ["/home/linuxbrew/.linuxbrew/opt/lua@5.3", "mapjs/node_modules", "config/processed", "lua_modules"]
