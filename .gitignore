@@ -3,6 +3,7 @@
 !environment-conda-argmap.yaml
 !*sample.yaml
 !*defaults.yaml
+config/argmap.env
 argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
