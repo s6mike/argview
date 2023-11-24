@@ -133,9 +133,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  # echo "PATH_DIR_CONFIG_ARGMAP_PROCESSED: $PATH_DIR_CONFIG_ARGMAP_PROCESSED"
-  # shellcheck disable=SC2016 # This vars needs to be single quoted
-  use_env_vars='$HOME $PATH_DIR_CONFIG_ARGMAP_PROCESSED $ENV $MODE $CONDA_ENV_ARGMAP $WORKSPACE $PATH_DIR_SCRIPTS $PATH_DIR_ARGMAP_ROOT $PATH_FILE_YQ $PATH_FILE_ENV_ARGMAP $PATH_FILE_ENV_ARGMAP_DEFAULTS $PATH_FILE_CONFIG_ARGMAP_PATHS'
+  use_env_vars="$(cat "$PATH_FILE_ARGMAP_DOT_ENV" | sed 's/#.*//' | fgrep = | sed 's/=.*//' | sed 's/^/\$/' | tr '\n' ' ')"
 
   if [ -z "$PATH_FILE_CONFIG_ARGMAP_PATHS" ]; then # only sources if necessary
     source "$PATH_FILE_ARGMAP_DOT_ENV"             # Might not be necessary but just to ensure it's always used
