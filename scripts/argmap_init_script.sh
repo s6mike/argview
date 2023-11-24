@@ -19,7 +19,9 @@ init_config() {
   #   TODO: Add envsubst install to makefile
   #   QUESTION: install envsubst somewhere more convenient?
   PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
-  PATH_FILE_ARGMAP_DOT_ENV="config/argmap.env"
+  PATH_FILE_ARGMAP_DOT_ENV=config/argmap.env
+  PATH_FILE_ARGMAP_DOT_ENV_DEFAULT=config/argmap-defaults.env
+  make "$PATH_FILE_ARGMAP_DOT_ENV"
   source "$PATH_FILE_ARGMAP_DOT_ENV"
 
   case $ENV in
