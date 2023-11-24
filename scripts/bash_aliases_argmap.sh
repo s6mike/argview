@@ -78,7 +78,7 @@ __check_config_read_echoes() { # Because it these functions return values, addin
   echo "Actual count: $ECHO_COUNT"
   if (($ECHO_COUNT > 9)); then
     echo "Aborting" >&2
-    exit "$ECHO_COUNT"
+    exit # "$ECHO_COUNT"
   fi
 }
 
