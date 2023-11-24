@@ -10,6 +10,17 @@ set -o errexit                                       # Stops on error
 set -o pipefail                                      # with pipefail enabled, the pipeline's status is set to the exit status of the last command to exit with a non-zero status, rather than the last overall command.
 if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi # call `TRACE=1 ./script.sh` to activate debug mode
 
+# From https://medium.com/@dirk.avery/the-bash-trap-trap-ce6083f36700
+#   Didn't work with __get_site_path() exit
+# trap 'catch $? $LINENO' EXIT
+# catch() {
+#   echo "catching!"
+#   if [ "$1" != "0" ]; then
+#     # error handling goes here
+#     echo "Error $1 occurred on $2"
+#   fi
+# }
+
 # cd "$(dirname "$0/..")" # Sets current directory to match script - this breaks everything!
 
 init_config() {
