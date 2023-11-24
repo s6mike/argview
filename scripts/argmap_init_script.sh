@@ -19,7 +19,8 @@ init_config() {
   #   TODO: Add envsubst install to makefile
   #   QUESTION: install envsubst somewhere more convenient?
   PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
-  source scripts/argmap.env
+  PATH_FILE_ARGMAP_DOT_ENV="config/argmap.env"
+  source "$PATH_FILE_ARGMAP_DOT_ENV"
 
   case $ENV in
 
@@ -76,7 +77,7 @@ init_config() {
 init_apps() {
   # TODO remove stuff covered by `init_read_config.sh`
   #   QUESTION: Why not using getvar() ?
-  # Needed for scripts/argmap.env tmp chrome profile:
+  # Needed for argmap.env tmp chrome profile:
   set -o allexport
   DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
   PATH_MISC_DEV=$DIR_PROJECTS/misc
@@ -85,8 +86,6 @@ init_apps() {
 
   # shellcheck disable=SC1091
   source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
-
-  # source "$HOME/scripts/config.env"
 
   # QUESTION move to end of file?
   set -o allexport

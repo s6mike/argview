@@ -17,7 +17,7 @@ main() {
 
   source "$PATH_DIR_ARGMAP_ROOT/scripts/config_read_functions.lib.sh"
 
-  # TODO could move all env variablaes in this script to argmap.env file, after tidying that up
+  # TODO could move all env variables in this script to argmap.env file, after tidying that up
   # set -o allexport
   # PATH_FILE_ENV_ARGMAP="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap.yaml"
   # PATH_FILE_ENV_ARGMAP_DEFAULTS="$PATH_DIR_ARGMAP_ROOT/config/environment-argmap-defaults.yaml"
