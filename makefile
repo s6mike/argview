@@ -342,6 +342,9 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 
 ### Config:
 
+${PATH_FILE_ARGMAP_DOT_ENV}: | ${PATH_FILE_ARGMAP_DOT_ENV_DEFAULT}
+	cp --no-clobber -- $| $@
+
 # Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
 %.yaml: | %-defaults.yaml
 	cp --no-clobber -- $| $@
