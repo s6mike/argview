@@ -137,6 +137,10 @@ div.stage {
   opacity: 0.3;
 }
 
+div.stage:focus {
+  outline: 0;
+}
+
 .mapjs-node:focus {
   outline: none;
 }
