@@ -68,14 +68,14 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   # For python yq: https://github.com/kislyuk/yq, which is on conda
   #   result=${!variable_name:-$("$PATH_FILE_YQ"-r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
 
-  set -f
+  set -o noglob
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   result=$("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}" | sed 's/^- //')
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   # echo >&2 "query: $("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}")"
 
   # echo >&2 "result1: $result"
-  # Not quoted so that all list elements are normalised. set -f stops globbing
+  # Not quoted so that all list elements are normalised. set -o noglob stops globbing
   # shellcheck disable=SC2086
   result=$(__normalise_if_path "$result")
 
@@ -85,7 +85,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   # Only returns multiple results if in list mode, otherwise just first result (so unprocessed results are ignored)
   # __check_exit_status $? "${result[0]}" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
   __check_exit_status $? "$result" "$variable_name not found while running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
-  set +f
+  set +o noglob
 }
 
 # Looks up each argument in yaml and exports it as env variable
@@ -159,11 +159,11 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     if [ -f "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" ]; then # If file exists
       processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
     fi
-    set -f
+    set -o noglob
     tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
     pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$use_env_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
-    set +f
+    set +o noglob
     target_config_file="$output_file"
 
     # Checks for possible infinite loop:
@@ -190,10 +190,10 @@ process_all_config_inputs() {
 }
 
 __getvar_yaml_any() { # gvy
-  set -f              # I don't want globbing, but I don't want to quote it because I do want word splitting
+  set -o noglob       # I don't want globbing, but I don't want to quote it because I do want word splitting
   # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
   __getvar_from_yaml "$@" ${LIST_FILES_CONFIG_PROCESSED[@]} ${LIST_FILES_CONFIG_INPUT[@]} # $list_files_config_processed
-  set +f
+  set +o noglob
 }
 
 __normalise_if_path() {
@@ -201,12 +201,12 @@ __normalise_if_path() {
   if [[ $1 == *"/"* ]]; then
     base_path=${PATH_DIR_ARGMAP_ROOT}
 
-    set -f # Disable globbing, since can't use quotes
+    set -o noglob # Disable globbing, since can't use quotes
     # Options set: canonicalize non-existent paths, want mapjs ones relative to mapjs, don't want to follow symlinks
     #   Removes /./ etc from paths
     # shellcheck disable=SC2086
     result=$(realpath --no-symlinks --canonicalize-missing --relative-base="$base_path" $1)
-    set +f
+    set +o noglob
   fi
 
   echo "$result"

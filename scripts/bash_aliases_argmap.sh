@@ -153,10 +153,10 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
   if [ "$file_id" != "" ]; then # Only includes argument if there is a file id
     upload_id_arg="--gdrive_id $file_id"
   fi
-  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
+  set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
   # shellcheck disable=SC2086
   lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
-  set +f
+  set +o noglob
   log "Uploaded: $name.mup to GDrive. GDrive Folder URL: https://drive.google.com/drive/u/0/folders/$folder_id"
 )
 
@@ -254,10 +254,10 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   output=$(getvar "$path_output")/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
-  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
+  set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting
   # shellcheck disable=SC2086
   pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
-  set +f
+  set +o noglob
 
   if [ "$pipe" != true ]; then
     open_debug "$output"
