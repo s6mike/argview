@@ -435,12 +435,12 @@ endif
 ${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json # ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 # $(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 # ls "${PATH_CACHE}"
-ifeq (${ENV}, netlify)
-# -npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
+# ifeq (${ENV}, netlify)
+# # -npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
+# 	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+# else
 	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
-else
-	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
-endif
+# endif
 
 ${PATH_FILE_YQ}:
 # $(info make PATH_FILE_YQ: ${PATH_FILE_YQ})
