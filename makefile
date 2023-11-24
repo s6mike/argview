@@ -257,7 +257,7 @@ endif
 ## Core functionality
 
 npm_audit_output.txt:
-	-npm audit fix --prefix "${PATH_DIR_MAPJS_ROOT}" --legacy-peer-deps >npm_audit_output.txt
+	-npm audit fix --prefix "${MAPJS_NODE_MODULES_PREFIX}" --legacy-peer-deps >npm_audit_output.txt
 
 ${PATH_DIR_MAPJS_ROOT}/package.json:
 ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
@@ -332,11 +332,11 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 # -$(info PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS_ROOT})
 # -$(info PATH_FILE_MAPJS_HTML_DIST_TAGS: ${PATH_FILE_MAPJS_HTML_DIST_TAGS})
 # -ls "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-	npm run pack:$(MODE) --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
 # -ls "$(dirname "${PATH_FILE_MAPJS_HTML_DIST_TAGS}")"
 # -ls mapjs/node_modules/.bin/wait-on
 # -ls mapjs/node_modules/wait-on
-	-npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 
 ## Installation:
 
@@ -432,14 +432,14 @@ endif
 # # -ln -s "${MAPJS_NODE_MODULES_PREFIX}/node_modules" "${PATH_DIR_MAPJS_ROOT}/node_modules"
 # 	-ln -s $@ "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
-${PATH_DIR_MAPJS_ROOT}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json # ${MAPJS_NODE_MODULES_PREFIX}/node_modules
-	$(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
+${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json # ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+# $(info MAPJS_NODE_MODULES_PREFIX: ${MAPJS_NODE_MODULES_PREFIX})
 # ls "${PATH_CACHE}"
 ifeq (${ENV}, netlify)
 # -npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" -g
-	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
 else
-	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"
 endif
 
 ${PATH_FILE_YQ}:
