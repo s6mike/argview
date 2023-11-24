@@ -111,7 +111,7 @@ ifneq (${ENV}, netlify)
   all: public --conda lua_modules/
 endif
 
-config: ${LIST_FILES_CONFIG_PROCESSED}
+config: ${LIST_FILES_CONFIG_PROCESSED} config/argmap.env
 public: $(LINK_TARGETS_PUBLIC)
 
 --conda: $(LINK_TARGETS_CONDA)
