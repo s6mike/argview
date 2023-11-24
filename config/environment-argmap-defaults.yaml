@@ -1,8 +1,8 @@
 ---
 ########
 # Argmap environment data - DEFAULTS
-# Copy this to config/environment-argmap.yaml and customise as you wish
-#   So this file IS considered part of the public API for this app and changing variable names etc will be considered BREAKING.
+# Copy this to config/environment-argmap.yaml and customise the values
+#   This file IS considered part of the public API for this app and changing variable names etc will be considered BREAKING.
 # For use in scripts, layouts and lua code.
 # Copyright 2022 Michael Hayes
 # SPDX - License - Identifier: MIT
