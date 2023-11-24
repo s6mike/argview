@@ -325,7 +325,9 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 	2hf $$flags_2hf "$<"
 
 # Create js dependencies for html files:
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js
+#		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
+# 		QUESTION: Use $(shell find ${PATH_DIR_MAPJS_ROOT}/src) instead?
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(wildcard ${PATH_DIR_MAPJS_ROOT}/src/**/*) 
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 # -echo "NODE_PATH: ${NODE_PATH}"
