@@ -24,7 +24,6 @@ if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi # call `TRACE=1 ./script.sh
 # cd "$(dirname "$0/..")" # Sets current directory to match script - this breaks everything!
 
 init_config() {
-
   set -o allexport
   # Needed to access envsubst from config_read_functions.lib.sh
   #   TODO: Add envsubst install to makefile
@@ -84,7 +83,6 @@ init_config() {
 
   # shellcheck source=/home/s6mike/git_projects/argmap/scripts/init_read_config.sh
   source "$PATH_DIR_SCRIPTS/init_read_config.sh"
-
 } # End init_config
 
 init_apps() {
@@ -169,11 +167,9 @@ init_apps() {
     ;;
   *) ;;
   esac
-
 }
 
 export_vars() {
-
   set -o allexport
 
   PATH_PUBLIC=$(getvar PATH_PUBLIC)
