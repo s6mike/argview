@@ -69,7 +69,7 @@ body {
   outline: none;
 }
 
-div[data-mapjs-role=stage] {
+div.stage {
   /* Have changed update-stage.js to get y value of 30% instead of overriding here*/
   /* transform: translate(100%, calc(30% - 30px)) !important; */
   /* transform: translate3d(100%, 30%) !important; */
