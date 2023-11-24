@@ -344,7 +344,7 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 
 # Copy env defaults file, but without overwriting existing one. No order pre-requisite to stop repeated copying attempts.
 %.yaml: | %-defaults.yaml
-	cp --no-clobber -- $*-defaults.yaml $@
+	cp --no-clobber -- $| $@
 
 ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 	touch $@
