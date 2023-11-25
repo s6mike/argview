@@ -67,7 +67,7 @@ LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./
 
 ## mapjs
 DIR_MAPJS: mapjs
-PATH_DIR_MAPJS_ROOT: ${PATH_DIR_ARGMAP_ROOT}/${DIR_MAPJS}
+PATH_DIR_MAPJS_ROOT: ${PATH_ARGMAP_ROOT}/${DIR_MAPJS}
 # Couldn't get node cache to work
 # MAPJS_NODE_MODULES_PREFIX: ${PATH_CACHE}
 MAPJS_NODE_MODULES_PREFIX: ${PATH_DIR_MAPJS_ROOT}
@@ -77,8 +77,8 @@ PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_DIR_ARGMAP_LUA}/pandoc-argmap.lua
 PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
 
 # TODO Use variables: 
-PATH_FILE_OUTPUT_EXAMPLE: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/example1-clearly-false-white-swan-simplified.html 
-PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX: ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html 
+PATH_FILE_OUTPUT_EXAMPLE: ${PATH_ARGMAP_ROOT}/mapjs/public/output/html/example1-clearly-false-white-swan-simplified.html 
+PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX: ${PATH_ARGMAP_ROOT}/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html 
 
 ## GDrive
 GDRIVE_FOLDER_ID_MAPJS_DEFAULT: 1cSnE4jv5f1InNVgYg354xRwVPY6CvD0x # Default mapjs upload folder

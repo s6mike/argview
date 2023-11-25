@@ -160,7 +160,7 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     set -o noglob
     tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
-    pandoc /dev/null --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$use_env_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
+    pandoc /dev/null --metadata=PATH_ARGMAP_ROOT:"$PATH_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$use_env_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +o noglob
     target_config_file="$output_file"
 
@@ -197,7 +197,7 @@ __getvar_yaml_any() { # gvy
 __normalise_if_path() {
   result="$1"
   if [[ $1 == *"/"* ]]; then
-    base_path=${PATH_DIR_ARGMAP_ROOT}
+    base_path=${PATH_ARGMAP_ROOT}
 
     set -o noglob # Disable globbing, since can't use quotes
     # Options set: canonicalize non-existent paths, want mapjs ones relative to mapjs, don't want to follow symlinks

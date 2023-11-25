@@ -77,7 +77,7 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
 This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
-1. Set env variable `PATH_DIR_ARGMAP_ROOT` to app installation root folder.
+1. Set env variable `PATH_ARGMAP_ROOT` to app installation root folder.
 
 2. If you wish, customise the values in the `environment-[X]-default.yaml` files in `config` and `mapjs/config` folder, removing `-default` from the filenames.
 

@@ -128,8 +128,8 @@ output_clean:
 	rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
 	rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
 #		TODO: Replace with vars:
-	rm -f ${PATH_DIR_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
-# rm -rf ${PATH_DIR_ARGMAP_ROOT}/mapjs/public/output/png
+	rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
+# rm -rf ${PATH_ARGMAP_ROOT}/mapjs/public/output/png
 # argmap cleans
 	__clean_repo
 
@@ -499,13 +499,13 @@ ${CONDA_PREFIX}/%:
 	@-mkdir --parent "$(@D)"
 
 # For calling lua functions from shell (within conda env)
-${PATH_BIN_GLOBAL}/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
+${PATH_BIN_GLOBAL}/%: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
 # Adds .lua files to pandoc data-folder:
 
-${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
+${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
 # Makes the required directories in the path
 #		Haven't noticed this happening: If you don't use order-only-prerequisites each modification (e.g. copying or creating a file) 
 #		in that directory will trigger the rule that depends on the directory-creation target again!
@@ -513,7 +513,7 @@ ${PATH_PANDOC_GLOBAL}/filters/%: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%
 	-ln -s $| $@
 
 # latex templates e.g. examples/example-template.latex need to be in conda folder:
-${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
+${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_ARGMAP_ROOT}/%
 	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
@@ -533,7 +533,7 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_DIR_ARGMAP_ROOT}/%
 
 # Rule for argmap lua links to conda lua folder
 #   Needed for config_argmap, but need to use absolute link
-${PATH_LUA_GLOBAL}/%.lua: | ${PATH_DIR_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
+${PATH_LUA_GLOBAL}/%.lua: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 

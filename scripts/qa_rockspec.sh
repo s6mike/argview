@@ -15,7 +15,7 @@ rockspec_file=$(__find_rockspec) # Gets absolute path
 
 echo "*** Checking: $rockspec_file ***"
 
-# install_dir="$(getvar PATH_DIR_ARGMAP_ROOT)"
+# install_dir="$(getvar PATH_ARGMAP_ROOT)"
 
 # dir_lua="$(getvar PATH_LUA_MODULES)"
 
