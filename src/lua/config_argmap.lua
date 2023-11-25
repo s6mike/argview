@@ -17,7 +17,7 @@ local LUA_LOGGING_LEVEL = 'ERROR'
 
 -- If this file showing up as not found, then in calling file add:
 -- package.path = "/home/s6mike/git_projects/argmap/src/lua/?.lua;" .. package.path
-config.project_folder = os.getenv("WORKSPACE") or "/home/s6mike/git_projects/argmap"
+config.project_folder = os.getenv("PATH_ARGMAP_ROOT") or "/home/s6mike/git_projects/argmap"
 
 -- QUESTION: Use PANDOC_SCRIPT_FILE instead?
 

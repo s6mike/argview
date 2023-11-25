@@ -521,7 +521,7 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_ARGMAP_ROOT}/%
 # ${PATH_PUBLIC}/%: | ${PATH_LUA_ARGMAP}
 # 	-ln -s $| $@
 
-# ${PATH_PUBLIC}/%: | ${WORKSPACE}/%
+# ${PATH_PUBLIC}/%: | ${PATH_ARGMAP_ROOT}/%
 # 	-ln -s $| $@
 
 # -ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"

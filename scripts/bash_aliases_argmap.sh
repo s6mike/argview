@@ -25,7 +25,7 @@ __get_site_path() {
     full_path=$input_path
     ;;
   *)
-    full_path=$(getvar WORKSPACE)/$input_path
+    full_path=$(getvar PATH_ARGMAP_ROOT)/$input_path
     ;;
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
@@ -58,8 +58,8 @@ __update_repo() { # Running at end of test script
   echo "Updating repo..."
   # Update doc examples
   # TODO use make instead? Did I already create make for this?
-  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/markdown/example-updated.md)" "$(getvar WORKSPACE)/docs/example-updated.html"
-  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar WORKSPACE)/mapjs/docs/legacy-mapjs-example-map.html"
+  mv "$(2hf -p "$(getvar PATH_ARGMAP_ROOT)"/test/input/markdown/example-updated.md)" "$(getvar PATH_ARGMAP_ROOT)/docs/example-updated.html"
+  mv "$(2hf -p "$(getvar PATH_ARGMAP_ROOT)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar PATH_ARGMAP_ROOT)/mapjs/docs/legacy-mapjs-example-map.html"
   __save_env
   # __reset_repo  # Decided not to delete script output in case there are clues
   # __clean_repo # Decided not to delete script output in case there are clues
@@ -69,7 +69,7 @@ __update_repo() { # Running at end of test script
 }
 
 __find_rockspec() {
-  find "$WORKSPACE" -type f -name "argmap-*.rockspec"
+  find "$PATH_ARGMAP_ROOT" -type f -name "argmap-*.rockspec"
 }
 
 __check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
@@ -106,8 +106,8 @@ __check_js_debug() {
 # Used by pre-commit hook
 __reset_repo() {
   echo 'Restoring output folder to match remote.'
-  git checkout -- "$WORKSPACE/examples/"
-  git checkout -- "$WORKSPACE/test/output/"
+  git checkout -- "$PATH_ARGMAP_ROOT/examples/"
+  git checkout -- "$PATH_ARGMAP_ROOT/test/output/"
   git checkout -- "$PATH_OUTPUT_LOCAL"
 }
 
@@ -275,7 +275,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$PATH_ARGMAP_ROOT/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
 }

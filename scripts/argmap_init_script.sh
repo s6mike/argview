@@ -80,7 +80,7 @@ init_config() {
   esac
 
   # For trying stuff:
-  #   source "$WORKSPACE/scripts/experiment.sh"
+  #   source "$PATH_ARGMAP_ROOT/scripts/experiment.sh"
 
   # shellcheck source=/home/s6mike/git_projects/argmap/scripts/init_read_config.sh
   source "$PATH_DIR_SCRIPTS/init_read_config.sh"
@@ -91,7 +91,7 @@ init_apps() {
   #   QUESTION: Why not using getvar() ?
   # Needed for argmap.env tmp chrome profile:
   set -o allexport
-  DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
+  DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$PATH_ARGMAP_ROOT")}
   PATH_MISC_DEV=$DIR_PROJECTS/misc
   PATH_BIN_GLOBAL=${PATH_BIN_GLOBAL:-$(getvar PATH_BIN_GLOBAL)}
   set +o allexport
@@ -137,8 +137,7 @@ init_apps() {
   # Uses config file in the relevant mapjs directory to get correct mapjs paths
   # shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error
   source "$(getvar PATH_DIR_MAPJS_ROOT)/scripts/mapjs.env"
-
-  source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
+  source "$PATH_ARGMAP_ROOT/scripts/bash_aliases_argmap.sh"
 
   # Add pandoc bash completions
   eval "$(pandoc --bash-completion)"
@@ -224,14 +223,14 @@ make_rest() {
   netlify)
     if [ "$(getvar TEST_SITE_DEPLOY)" = "true" ]; then
       # TODO: would rather only call this when make test called, but not sure how
-      source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
+      source "$PATH_ARGMAP_ROOT/test/test_scripts/bash_aliases_argmap_test.sh"
       make test
     fi
     make site
     ;;
   *)
     # TODO: would rather only call this when make test called, but not sure how
-    source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
+    source "$PATH_ARGMAP_ROOT/test/test_scripts/bash_aliases_argmap_test.sh"
     # QUESTION: Better to define above variables as part of make call instead of exporting them?
     make all # --warn-undefined-variables, -d for debugging
     ;;

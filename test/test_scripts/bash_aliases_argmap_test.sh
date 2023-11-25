@@ -27,9 +27,9 @@ alias argmhmeta='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-si
 alias argmp='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.pdf; md2pdf $INPUT_FILE_MD'
 # TODO: simplify argmph call
 alias argmph='rm $PATH_OUTPUT_LOCAL/example.pdf; rm $PATH_OUTPUT_LOCAL/header.tex; $PATH_DIR_ARGMAP_LUA/argmap2tikz.lua -i > $PATH_OUTPUT_LOCAL/header.tex; pandoc $INPUT_FILE_MD -o $PATH_OUTPUT_LOCAL/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $PATH_OUTPUT_LOCAL/header.tex --data-dir=$CONDA_PREFIX/share/pandoc; echo "Generated: $PATH_OUTPUT_LOCAL/example.pdf"'
-alias argmf='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm $WORKSPACE/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
-alias argt='$WORKSPACE/test/test_scripts/tests.sh'
-alias argth='$WORKSPACE/test/test_scripts/tests.sh html'
+alias argmf='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html; md2htm $PATH_ARGMAP_ROOT/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md'
+alias argt='$PATH_ARGMAP_ROOT/test/test_scripts/tests.sh'
+alias argth='$PATH_ARGMAP_ROOT/test/test_scripts/tests.sh html'
 
 __init_tests() {
   COLOUR='true'

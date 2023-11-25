@@ -13,7 +13,7 @@ main() {
 
   # QUESTION: Can I put min startup into separate environment file?
   #  Could then reference directly from makefile
-  # export PATH_ARGMAP_ROOT="${PATH_ARGMAP_ROOT:-$WORKSPACE}"
+  # export PATH_ARGMAP_ROOT="${PATH_ARGMAP_ROOT:-$PATH_ARGMAP_ROOT}"
 
   source "$PATH_ARGMAP_ROOT/scripts/config_read_functions.lib.sh"
 

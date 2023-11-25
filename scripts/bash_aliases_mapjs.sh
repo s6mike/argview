@@ -107,7 +107,7 @@ testcafe_run() { # tcr
 
 # __test_mapjs_renders() {
 #   webpack_server_start "${1:-$(getvar PORT_DEV_SERVER)}" "${2:-dev}" # "$@"
-#   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
+#   # Doesn't use $PATH_ARGMAP_ROOT because it needs to work for legacy mapjs repo too.
 #   input_file=$(__get_site_path "$1")
 #   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$input_file" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
 #   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.

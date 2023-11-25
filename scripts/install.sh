@@ -10,7 +10,7 @@
 
 # TODO Should set up relevant bash to run these automatically:
 
-# a) Set PATH_ARGMAP_ROOT to current directory/WORKSPACE? Or create a .env file.
+# a) Set PATH_ARGMAP_ROOT to current directory/PATH_ARGMAP_ROOT? Or create a .env file.
 # b) run `scripts/init_read_config.sh` to process the config folders and expand all variables, writing new files to `config/processed` folders.
 # c) Review: intialised values in `scripts/argmap_init_script.sh`, `argmap.env` and `mapjs/scripts/mapjs.env`
 
@@ -62,7 +62,7 @@ chmod 744 "$PATH_DIR_ARGMAP_LUA/"*
 chmod 744 "$PATH_FOLDER_ARGMAP_SRC/js/"*
 
 # Link up pre-commit hook
-ln -s "$WORKSPACE/scripts/git_hooks/pre-commit" "$WORKSPACE/.git/hooks/"
+ln -s "$PATH_ARGMAP_ROOT/scripts/git_hooks/pre-commit" "$PATH_ARGMAP_ROOT/.git/hooks/"
 chmod +x git_hooks/*
 
 # Link up tests.sh to deprecated location?
@@ -167,7 +167,7 @@ if [ "$1" == 'conda' ]; then
 
   # latex templates e.g. examples/example-template.latex need to go here:
   # mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
-  # ln -s "$WORKSPACE/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
+  # ln -s "$PATH_ARGMAP_ROOT/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
 
   # Connects legacy data-folder to conda env:
   # TODO: add this to conda activation, and delete this link when env deactivated?
@@ -204,9 +204,9 @@ fi
 
 # TODO Use env variables instead of hardcoded folders
 # Create json and png output folders otherwise pandoc-argmap.lua won't work
-mkdir --parent "$WORKSPACE/test/output/mapjs-json"
-mkdir --parent "$WORKSPACE/test/output/png"
-mkdir --parent "$WORKSPACE/test/output/html"
+mkdir --parent "$PATH_ARGMAP_ROOT/test/output/mapjs-json"
+mkdir --parent "$PATH_ARGMAP_ROOT/test/output/png"
+mkdir --parent "$PATH_ARGMAP_ROOT/test/output/html"
 
 # For dev web server:
 # Link up test/output and test/input with mapjs/public
@@ -256,7 +256,7 @@ ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_PUBLIC/js/fengari-web.j
 ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_PUBLIC/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
 # ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
-# ln -s "$WORKSPACE/lua_modules" "$PATH_PUBLIC/lua_modules"
+# ln -s "$PATH_ARGMAP_ROOT/lua_modules" "$PATH_PUBLIC/lua_modules"
 
 # SECTION Z: Uninstall
 
