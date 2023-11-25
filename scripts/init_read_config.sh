@@ -28,7 +28,7 @@ main() {
   make "$PATH_FILE_ENV_ARGMAP"
 
   __yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER PATH_PROFILE_LOCAL
-  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" DIR_CONFIG KEYWORD_PROCESSED PATH_DIR_CONFIG_ARGMAP PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
+  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
   # This part more complex now I have separated paths into two files.
   #   QUESTION: If I could combine them into one before processing perhaps it would be easier?
@@ -38,9 +38,6 @@ main() {
   make "$PATH_ARGMAP_ROOT/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
 
   set -o allexport
-  PATH_DIR_CONFIG_ARGMAP_PROCESSED=${PATH_DIR_CONFIG_ARGMAP_PROCESSED:-$PATH_DIR_CONFIG_ARGMAP/$KEYWORD_PROCESSED}
-
-  # echo "PATH_DIR_CONFIG_ARGMAP_PROCESSED: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}"
 
   # Processes initial files needed for rest
   PATH_FILE_ENV_ARGMAP_PROCESSED="$PATH_DIR_CONFIG_ARGMAP_PROCESSED/environment-argmap-$KEYWORD_PROCESSED.yaml"
@@ -57,7 +54,8 @@ main() {
   make "$PATH_FILE_ENV_ARGMAP_PRIVATE"
 
   # Can't use __yaml2env because it's not set to take the -l option
-  LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -l LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED" | tr '\n' ' ')
+  # TODO though that might not matter now if I put this at the end:  | sed 's/^- //
+  LIST_FILES_CONFIG_PROCESSED=$(__getvar_from_yaml -e LIST_FILES_CONFIG_PROCESSED "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED" | tr '\n' ' ')
   export LIST_FILES_CONFIG_PROCESSED
 
   # make prints
@@ -67,7 +65,7 @@ main() {
   make config # --warn-undefined-variables or -d for debugging
 
   # TODO cover this with make config
-  LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml -l LIST_FILES_CONFIG_INPUT "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
+  LIST_FILES_CONFIG_INPUT=$(__getvar_from_yaml LIST_FILES_CONFIG_INPUT "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" "$PATH_FILE_ENV_ARGMAP_PROCESSED")
   export LIST_FILES_CONFIG_INPUT
 }
 main "$@"

@@ -49,6 +49,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
     e) # env mode - interpolates env variables. Should only be needed during config initialisation
       # Could also use envsubst as a shell function
       # Have set to exclude results with $ in them (after expansion)
+      # Dangerous if any vars aren't instantiated since they will disappear!
       query_opts=" | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
     l) # (de)list mode - returns a list in argument format.
