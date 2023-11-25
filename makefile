@@ -162,6 +162,7 @@ clean: site_clean
 # 	make all
 # 	netlify dev
 
+# QUESTION: Can I move these dependencies to all the tasks they are there for?
 install: ${PATH_FILE_YQ} pandoc npm lua_modules/ # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
   install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
@@ -175,15 +176,19 @@ npm_audit: | npm npm_audit_output.txt
 #	 User data directory: /opt/buildhome/.local/share/pandoc
 # QUESTION: Check for existence?
 pandoc: 
+ifeq (${ENV}, netlify)
 	-pandoc --version
+else
 # if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
 # @-mkdir --parent ~/.local/share/pandoc/filters
 # Though I think I may want to install it in relevant conda env folder instead
 
 # - pandoc==2.12=h06a4308_3
 # conda install pandoc https://github.com/jgm/pandoc/blob/main/INSTALL.md
+# -chmod 744 pandoc
+endif
 
-# -chmod 744 ${PATH_FILE_YQ}/pandoc
+# -chmod 744 ${PATH_FILE_YQ}
 # If not using conda would need conda dependencies installed.
 
 # ${PATH_BIN_GLOBAL}/luarocks: lua
