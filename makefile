@@ -62,6 +62,7 @@ LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 # Adds lua and template files to pandoc data-folder:
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
+LUAROCKS := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
 
 # DIRS_KEY := test/output mapjs/public/input/mapjs-json mapjs/public/input/markdown # html
 # TODO: Use var for mapjs/public/input/markdown etc
@@ -285,7 +286,7 @@ $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC
 # ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ;
 
 # Generate .json from .yaml
-${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml lua_modules/ pandoc
 	@-mkdir --parent "$(@D)"
 	a2m "$<" "$@"
 
@@ -303,14 +304,14 @@ ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
-${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md lua_modules/ pandoc
 	@-mkdir --parent "$(@D)"
 	2hf -ps "$<"
 
 # Generate html from markdown (may have multiple .json dependencies)
 # mapjs/public/output/html/example1-clearly-false-white-swan-simplified-2mapjs.html
 #		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
-$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML}
+$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML} lua_modules/ pandoc
 # $(info Building $@ from MD)
 # Might be able to run pandoc_argmap instead
 	@-mkdir --parent "$(@D)"
@@ -401,8 +402,7 @@ ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 
 # ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
 # 	app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
-
-${PATH_LUA_MODULES}/lib/luarocks: # ${PATH_BIN_GLOBAL}/lua5.3
+$(LUAROCKS): # ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
 # # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
 # 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
@@ -458,12 +458,9 @@ ${PATH_FILE_YQ}:
 	-${PATH_FILE_YQ} --version
 
 # Install lua dependencies
-#		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
-#		Running qa_rockspec will also install dependencies
-lua_modules/: ${PATH_LUA_MODULES}/lib/luarocks
+#		TODO: Ensure I'm in correct directory e.g. ~/git_projects/argmap/
+lua_modules/: $(LUAROCKS)
 #	TODO: split up this script into separate make actions:
-# scripts/qa_rockspec.sh
-# ifneq ($(*rockspec_file}, '')
 	echo "*** Checking: $(rockspec_file) ***"
 	luarocks lint "${rockspec_file}"
 ifeq (${ENV}, netlify)
