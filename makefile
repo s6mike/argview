@@ -362,12 +362,12 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 
 # Process config and environment files
 # 	TODO: De-duplicate with mapjs call
-${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV}
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV} ${PATH_FILE_YQ} pandoc
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"
 
 # QUESTION add mapjs.env as dependency? 
-${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml
+${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml ${PATH_FILE_YQ} pandoc
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"
 
