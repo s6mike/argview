@@ -27,7 +27,7 @@ main() {
   # In case env.yaml file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_FILE_ENV_ARGMAP"
 
-  __yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER PATH_PROFILE_LOCAL
+  __yaml2env "$PATH_FILE_ENV_ARGMAP" PORT_DEV_SERVER
   __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS" PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR
 
   # This part more complex now I have separated paths into two files.
