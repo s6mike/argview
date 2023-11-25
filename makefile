@@ -93,7 +93,7 @@ FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL1
-CONDA_PREFIX ?= NULL2
+PATH_ENVIRONMENT_GLOBAL ?= NULL2
 PATH_DIR_MAPJS_ROOT ?= NULL3
 PATH_PROFILE_LOCAL ?= NULL4
 PATH_BIN_GLOBAL ?= NULL5
@@ -117,7 +117,7 @@ public: $(LINK_TARGETS_PUBLIC)
 --conda: $(LINK_TARGETS_CONDA)
 # -conda activate ${CONDA_ENV_ARGMAP}
 # export CONDA_ENV_ARGMAP="argmap"
-# export XDG_DATA_HOME="${CONDA_PREFIX}/share/"
+# export XDG_DATA_HOME="${PATH_ENVIRONMENT_GLOBAL}/share/"
 
 # Delete argmap output files only
 output_clean:
@@ -413,11 +413,11 @@ else
 # If installing from environment.yaml, skip to SECTION 2.
 # conda install -c anaconda lua==5.3.4=h7b6447c_0
 	conda install -c anaconda-platform luarocks==3.7.0=lua53h06a4308_0
-# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $PATH_ENVIRONMENT_GLOBAL/share/lua/luarocks/config-5.3.lua
 # QUESTION: Something like this?
 # echo "external_deps_dirs = {
-#    "$CONDA_PREFIX"
-# }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
+#    "$PATH_ENVIRONMENT_GLOBAL"
+# }" >> "$PATH_ENVIRONMENT_GLOBAL/share/lua/luarocks/config-5.3.lua"
 
 # Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
 
@@ -476,7 +476,7 @@ ifeq (${ENV}, netlify)
 	$(info ************)
 # -ls ${PATH_LUA_MODULES}/*
 else
-	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${CONDA_PREFIX}/lib/
+	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${PATH_ENVIRONMENT_GLOBAL}/lib/
 endif
 # endif
 # Should be able to distinguish between dev and prod install with npm and thuse choose whether 
@@ -490,11 +490,11 @@ endif
 
 
 # Rule for conda links to .local folder
-${PATH_PROFILE_LOCAL}/%: | ${CONDA_PREFIX}/%
+${PATH_PROFILE_LOCAL}/%: | ${PATH_ENVIRONMENT_GLOBAL}/%
 	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
-${CONDA_PREFIX}/%:
+${PATH_ENVIRONMENT_GLOBAL}/%:
 	@-mkdir --parent "$(@D)"
 
 # For calling lua functions from shell (within conda env)
@@ -538,7 +538,7 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 
 # Currently no link
 # Rule for argmap lua links to conda pandoc folder
-# ${CONDA_PREFIX}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
+# ${PATH_ENVIRONMENT_GLOBAL}/share/pandoc/%: | ${PATH_LUA_ARGMAP}/%
 # 	@-mkdir --parent "$(@D)"
 # 	ln -s $| $@
 
@@ -554,7 +554,7 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
 
 # luarocks remove
-# luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
+# luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$PATH_ENVIRONMENT_GLOBAL/lib/"
 
 ${PATH_FILE_CONVERT_GLOBAL}: ${PATH_BIN_GLOBAL}/magick
 ifneq (${ENV}, netlify)

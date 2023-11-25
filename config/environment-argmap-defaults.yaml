@@ -34,12 +34,9 @@ PATH_FILE_GDRIVE_LOCAL: ${PATH_BIN_LOCAL}/gdrive
 #   HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 #   echo "(brew --prefix): $(brew --prefix)"
 
-# TODO: shouldn't be using CONDA_PREFIX
-PATH_BIN_GLOBAL: ${CONDA_PREFIX}/bin
-# PATH_CACHE: /opt/build/cache
+PATH_BIN_GLOBAL: ${PATH_ENVIRONMENT_GLOBAL}/bin
 PATH_SHARE_GLOBAL: /home/linuxbrew/.linuxbrew
 PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
-# PATH_LIB_GLOBAL: ${PATH_CACHE}/lib
 PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
 PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
 PATH_FILE_CONVERT_GLOBAL: ${PATH_BIN_GLOBAL}/convert
@@ -73,7 +70,7 @@ MAPJS_NODE_MODULES_PREFIX: ${PATH_DIR_MAPJS_ROOT}
 
 ## pandoc
 PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_DIR_ARGMAP_LUA}/pandoc-argmap.lua
-PANDOC_DATA_DIR: ${CONDA_PREFIX}/share/pandoc
+PANDOC_DATA_DIR: ${PATH_ENVIRONMENT_GLOBAL}/share/pandoc
 
 # TODO Use variables: 
 PATH_FILE_OUTPUT_EXAMPLE: ${PATH_ARGMAP_ROOT}/mapjs/public/output/html/example1-clearly-false-white-swan-simplified.html 

@@ -23,11 +23,11 @@
 # conda install lua5.3
 # conda install -c anaconda-platform luarocks
 
-# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $CONDA_PREFIX/share/lua/luarocks/config-5.3.lua
+# TODO for conda, run command to add conda env as dependencies directory (for lib yaml etc) to end of config file: $PATH_ENVIRONMENT_GLOBAL/share/lua/luarocks/config-5.3.lua
 # QUESTION: Something like this?
 # echo "external_deps_dirs = {
-#    "$CONDA_PREFIX"
-# }" >> "$CONDA_PREFIX/share/lua/luarocks/config-5.3.lua"
+#    "$PATH_ENVIRONMENT_GLOBAL"
+# }" >> "$PATH_ENVIRONMENT_GLOBAL/share/lua/luarocks/config-5.3.lua"
 
 # Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
 
@@ -78,12 +78,12 @@ if [ "$1" == 'conda' ]; then
   # ----------
 
   # TODO: normal install shouldn't use conda, so should set up to give option for either
-  # ie  INSTALL_ROOT=$CONDA_PREFIX||X or similar.
+  # ie  INSTALL_ROOT=$PATH_ENVIRONMENT_GLOBAL||X or similar.
 
   # Download/install git folder?
 
   export CONDA_ENV_ARGMAP="argmap"
-  export XDG_DATA_HOME="$CONDA_PREFIX/share/"
+  export XDG_DATA_HOME="$PATH_ENVIRONMENT_GLOBAL/share/"
 
   # TODO Just run conda env script?
   # if in folder with config/environment-conda-argmap.yaml
@@ -105,33 +105,33 @@ if [ "$1" == 'conda' ]; then
   # a) Review: intialised values in `config/environment-conda-argmap.yaml`
 
   # # ln -s source_file symbolic_link
-  # rm "$CONDA_PREFIX/bin/argmap2mup"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/bin/argmap2mup"
-  # rm "$CONDA_PREFIX/bin/argmap2tikz"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$CONDA_PREFIX/bin/argmap2tikz"
-  # rm "$CONDA_PREFIX/bin/mup2argmap"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$CONDA_PREFIX/bin/mup2argmap"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2mup"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2mup"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2tikz"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2tikz"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/bin/mup2argmap"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/mup2argmap"
 
   # pandoc data-folder:
   # local: ~/.local/share/pandoc/
   #   e.g. ~/.local/share/pandoc/filters
   # legacy: ~/.pandoc/
-  # conda: "$CONDA_PREFIX/share/pandoc/filters"
+  # conda: "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters"
 
   # This might be useful on more recent version of pandoc, which might actually check all these folders
   # Though more likely it will use XDG_DATA_HOME which I can then overwrite
-  # XDG_DATA_DIRS="$CONDA_PREFIX/share":$XDG_DATA_DIRS
+  # XDG_DATA_DIRS="$PATH_ENVIRONMENT_GLOBAL/share":$XDG_DATA_DIRS
 
   # Adds .lua files to pandoc data-folder:
 
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
 
-  # mkdir --parent "$CONDA_PREFIX/share/pandoc/filters/"
-  # rm "$CONDA_PREFIX/share/pandoc/filters/pandoc-argmap.lua"
-  # ln -s "$(getvar PATH_FILE_PANDOC_FILTER_LUA_ARGMAP)" "$CONDA_PREFIX/share/pandoc/filters/"
+  # mkdir --parent "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/pandoc-argmap.lua"
+  # ln -s "$(getvar PATH_FILE_PANDOC_FILTER_LUA_ARGMAP)" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/"
 
   # TODO is this necessary? Forget why
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$CONDA_PREFIX/share/pandoc/"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
 
   # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
   # Need to use sudo for both:
@@ -145,10 +145,10 @@ if [ "$1" == 'conda' ]; then
 
   # # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
   # #   QUESTION: Do I need first of these?
-  # rm "$CONDA_PREFIX/share/lua/5.3/config_argmap.lua"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/lua/5.3"
-  # rm "$CONDA_PREFIX/share/pandoc/config_argmap.lua"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX/share/pandoc/"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/share/lua/5.3/config_argmap.lua"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/lua/5.3"
+  # rm "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/config_argmap.lua"
+  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
 
   #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
   # rm /js
@@ -162,31 +162,31 @@ if [ "$1" == 'conda' ]; then
   #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
 
   luarocks remove
-  luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
+  luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$PATH_ENVIRONMENT_GLOBAL/lib/"
   # -----
 
   # latex templates e.g. examples/example-template.latex need to go here:
-  # mkdir --parent "$CONDA_PREFIX/share/pandoc/templates/examples/"
-  # ln -s "$PATH_ARGMAP_ROOT/examples/example-template.latex" "$CONDA_PREFIX/share/pandoc/templates/examples/example-template.latex"
+  # mkdir --parent "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/templates/examples/"
+  # ln -s "$PATH_ARGMAP_ROOT/examples/example-template.latex" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/templates/examples/example-template.latex"
 
   # Connects legacy data-folder to conda env:
   # TODO: add this to conda activation, and delete this link when env deactivated?
   # NOTE: can use defaults file to set defalt data directory, should simplify.
-  # Alternative is always to use --data-directory "$CONDA_PREFIX/share/pandoc/" when calling pandoc
-  # ln -s "$CONDA_PREFIX/share/pandoc" "$HOME/.local/share/pandoc"
+  # Alternative is always to use --data-directory "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/" when calling pandoc
+  # ln -s "$PATH_ENVIRONMENT_GLOBAL/share/pandoc" "$HOME/.local/share/pandoc"
 
   # Makes conda exes available in local for VSCode extensions which don't have path option:
   # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
-  # ln -s "$CONDA_PREFIX/bin/pandoc" "$HOME/.local/bin/"
+  # ln -s "$PATH_ENVIRONMENT_GLOBAL/bin/pandoc" "$HOME/.local/bin/"
 
   # Added since after uninstalling global lua, vscode-pandoc extension fails.
   # Wondering if adding this link (from section 2), would help:
-  #   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$CONDA_PREFIX"/share/pandoc/
+  #   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
 
-  # ln -s "$CONDA_PREFIX/bin/lua" "$HOME/.local/bin/"
+  # ln -s "$PATH_ENVIRONMENT_GLOBAL/bin/lua" "$HOME/.local/bin/"
 
   # # Only needed for pre-commit hook (this is to create png files?)
-  # ln -s "$CONDA_PREFIX/bin/convert" "$HOME/.local/bin/"
+  # ln -s "$PATH_ENVIRONMENT_GLOBAL/bin/convert" "$HOME/.local/bin/"
 
   # Install testcafe
   npm install -g testcafe
