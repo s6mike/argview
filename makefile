@@ -466,8 +466,6 @@ ${PATH_FILE_YQ}:
 #		TODO: Ensure I'm in correct directory e.g. ~/git_projects/argmap/
 lua_modules/: $(LUAROCKS)
 #	TODO: split up this script into separate make actions:
-	echo "*** Checking: $(rockspec_file) ***"
-	luarocks lint "${rockspec_file}"
 ifeq (${ENV}, netlify)
 # -ls /opt/build/cache/lua_modules/*
 	$(info ************)
@@ -480,7 +478,11 @@ ifeq (${ENV}, netlify)
 else
 	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${PATH_ENVIRONMENT_GLOBAL}/lib/
 endif
-# endif
+
+$(rockspec_file):
+	$(info *** Checking: $(rockspec_file) ***)
+	luarocks lint "$(rockspec_file)"
+
 # Should be able to distinguish between dev and prod install with npm and thuse choose whether 
 # testcafe etc are installed.
 # So shouldn't need this:
