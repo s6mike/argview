@@ -467,7 +467,7 @@ ${PATH_FILE_YQ}:
 
 # Install lua dependencies
 #		TODO: Ensure I'm in correct directory e.g. ~/git_projects/argmap/
-lua_modules/: $(LUAROCKS)
+$(LUA_MODULES_LOCAL): $(rockspec_file) | $(LUAROCKS) config/processed/environment-argmap-processed.yaml
 #	TODO: split up this script into separate make actions:
 ifeq (${ENV}, netlify)
 # -ls /opt/build/cache/lua_modules/*
