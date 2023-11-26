@@ -567,7 +567,7 @@ endif
 
 # 3. `argmap2mup.lua` and `mup2argmap.lua` also depend on the command line utility [`gdrive`](https://github.com/prasmussen/gdrive) for Google Drive integration. Follow the link for installation instructions. (Note that on linux the 386 version is more likely to work: see <https://github.com/prasmussen/gdrive/issues/597>).
 # 	TODO make var for gdrive_2.1.1_linux_386.tar.gz (ideally generate from URL)
-${PATH_FILE_GDRIVE_LOCAL}: ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz
+${PATH_FILE_GDRIVE_LOCAL}: | ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz
 	app_unzip ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz ${PATH_FILE_GDRIVE_LOCAL}
 
 ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz:
