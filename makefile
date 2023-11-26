@@ -31,6 +31,23 @@ SHELL := /bin/bash
 # Define variables
 # := simple, assigned once
 
+# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
+# Using .SECONDARY: without arguments breaks things though
+# .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
+
+# .NOTINTERMEDIATE only supported in make 4.4
+.NOTINTERMEDIATE:
+
+# If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
+# Sets variable if not already defined
+PATH_PUBLIC ?= NULL1
+PATH_ENVIRONMENT_GLOBAL ?= NULL2
+PATH_DIR_MAPJS_ROOT ?= NULL3
+PATH_PROFILE_LOCAL ?= NULL4
+PATH_BIN_GLOBAL ?= NULL5
+PATH_FILE_CONVERT_GLOBAL ?= NULL6
+PATH_FILE_GDRIVE_LOCAL ?= NULL7
+
 # 	Need to export required variables at end of argmap_init_script.sh:
 
 #		QUESTION: Could I run getvar from within makefile instead?
@@ -83,23 +100,6 @@ FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
 FILES_SITE = ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
 FILES_TEMPLATE_HTML := src/layouts/templates/pandoc-mapjs-main-html5.html ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/layouts/includes/argmap-head-element.html src/layouts/includes/argmap-input-widget.html src/layouts/includes/mapjs-map-container.html src/layouts/includes/mapjs-widget-controls.html
 FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
-
-# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
-# Using .SECONDARY: without arguments breaks things though
-# .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
-
-# .NOTINTERMEDIATE only supported in make 4.4
-.NOTINTERMEDIATE:
-
-# If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
-# Sets variable if not already defined
-PATH_PUBLIC ?= NULL1
-PATH_ENVIRONMENT_GLOBAL ?= NULL2
-PATH_DIR_MAPJS_ROOT ?= NULL3
-PATH_PROFILE_LOCAL ?= NULL4
-PATH_BIN_GLOBAL ?= NULL5
-PATH_FILE_CONVERT_GLOBAL ?= NULL6
-PATH_FILE_GDRIVE_LOCAL ?= NULL7
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
