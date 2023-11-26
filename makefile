@@ -79,6 +79,8 @@ LINK_TARGETS_CONDA += ${PATH_BIN_GLOBAL}/mup2argmap
 # Adds lua and template files to pandoc data-folder:
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
+LUAROCKS_GLOBAL := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
+LUA_MODULES_LOCAL := ${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/manifest
 PANDOC := ${PATH_BIN_GLOBAL}/pandoc
 
 # DIRS_KEY := test/output mapjs/public/input/mapjs-json mapjs/public/input/markdown # html
