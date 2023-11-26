@@ -111,13 +111,13 @@ rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 all: config
 # Optional dependencies not used by netlify.
 ifneq (${ENV}, netlify)
-  all: public --conda lua_modules/
+all: | public --conda $(LUA_MODULES_LOCAL)
 endif
 
-config: ${LIST_FILES_CONFIG_PROCESSED} config/argmap.env
-public: $(LINK_TARGETS_PUBLIC)
+config: ${LIST_FILES_CONFIG_PROCESSED}
+--conda: | $(LINK_TARGETS_CONDA)
+public: | $(LINK_TARGETS_PUBLIC)
 
---conda: $(LINK_TARGETS_CONDA)
 # -conda activate ${CONDA_ENV_ARGMAP}
 # export CONDA_ENV_ARGMAP="argmap"
 # export XDG_DATA_HOME="${PATH_ENVIRONMENT_GLOBAL}/share/"
@@ -214,7 +214,7 @@ site: $(FILES_SITE)
 
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
-test: # public site_clean all
+test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
 ifeq (${ENV}, netlify)
 	-./test/test_scripts/tests.sh html
@@ -249,7 +249,7 @@ ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 #	 QUESTION Only set 2hf -s flag in production mode?
 
 # QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d
-$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${FILES_TEMPLATE_HTML}
+$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml
 # $(info Building $@ from JSON)
 	@-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
@@ -265,7 +265,7 @@ $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC
 # ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ;
 
 # Generate .json from .yaml
-${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml lua_modules/ pandoc
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL)
 	@-mkdir --parent "$(@D)"
 	a2m "$<" "$@"
 
@@ -283,14 +283,14 @@ ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
-${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md lua_modules/ pandoc
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(LUA_MODULES_LOCAL) $(PANDOC)
 	@-mkdir --parent "$(@D)"
 	2hf -ps "$<"
 
 # Generate html from markdown (may have multiple .json dependencies)
 # mapjs/public/output/html/example1-clearly-false-white-swan-simplified-2mapjs.html
 #		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
-$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML} lua_modules/ pandoc
+$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL) 
 # $(info Building $@ from MD)
 # Might be able to run pandoc_argmap instead
 	@-mkdir --parent "$(@D)"
@@ -307,7 +307,7 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 # Create js dependencies for html files:
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # 		QUESTION: Use $(shell find ${PATH_DIR_MAPJS_ROOT}/src) instead?
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(wildcard ${PATH_DIR_MAPJS_ROOT}/src/**/*) ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(wildcard ${PATH_DIR_MAPJS_ROOT}/src/**/*) ${MAPJS_NODE_MODULES_PREFIX}/node_modules mapjs/config/processed/config-mapjs-processed.yaml
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 # -echo "NODE_PATH: ${NODE_PATH}"
@@ -336,12 +336,13 @@ ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
 
 # Process config and environment files
 # 	TODO: De-duplicate with mapjs call
-${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV} ${PATH_FILE_YQ} pandoc
+
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV} | ${PATH_FILE_YQ} # $(PANDOC)
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"
 
 # QUESTION add mapjs.env as dependency? 
-${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml ${PATH_FILE_YQ} pandoc
+${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml config/processed/environment-argmap-processed.yaml | ${PATH_FILE_YQ} $(PANDOC)
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"
 
