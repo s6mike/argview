@@ -88,6 +88,7 @@ test_function() {
 test_getvar() {
   __init_tests
   func=getvar
+  set +o nounset
   test_function "$func" bla "$([[ $? -eq 1 ]])"                                                         #1
   test_function "$func" bla.bla "$([[ $? -eq 1 ]])"                                                     #2
   test_function "$func" DIR_CONFIG config                                                               #3
@@ -104,16 +105,19 @@ test_getvar() {
   remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
-    $'config/environment-argmap.yaml\nconfig/config-argmap-paths.yaml\nconfig/config-argmap.yaml\nconfig/PRIVATE-environment-argmap.yaml\nmapjs/config/environment-mapjs.yaml\nmapjs/config/config-mapjs-paths.yaml\nmapjs/config/config-mapjs.yaml' #10-14 -l is (de)list mode for __getvar_from_yaml(), but it doesn't seem to work now
+    $'config/environment-argmap.yaml\nconfig/config-argmap-paths.yaml\nconfig/config-argmap.yaml\nmapjs/config/environment-mapjs.yaml\nmapjs/config/config-mapjs-paths.yaml\nmapjs/config/config-mapjs.yaml' #10-14 -l is (de)list mode for __getvar_from_yaml(), but it doesn't seem to work now
   LIST_FILES_CONFIG_INPUT=$remember
+  set -o nounset
 }
 
 test_get_site_path() {
   __init_tests
   func=__get_site_path
+  set +o nounset
   test_function "$func" test/input/markdown/2-maps-swan-donkey.md input/markdown/2-maps-swan-donkey.md
   test_function "$func" /home/s6mike/git_projects/argmap/test/input/markdown/2-maps-swan-donkey.md input/markdown/2-maps-swan-donkey.md
   test_function "$func" test/output/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html output/html/example1-clearly-false-white-swan-simplified-1mapjs-fragment.html
+  set -o nounset
 }
 
 test_make_mapjs_dependencies() {
