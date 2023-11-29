@@ -10,6 +10,7 @@
 
 # Use ${variable} for referencing other yaml variables, since this is compatible with both bash and pandoc templates.
 
+ENV: default
 TEST_SITE_DEPLOY: false
 
 # Paths
@@ -32,7 +33,10 @@ PATH_FILE_GDRIVE_LOCAL: ${PATH_BIN_LOCAL}/gdrive
 #   HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 #   echo "(brew --prefix): $(brew --prefix)"
 
+# These two are overriden by netlify.toml:
+PATH_ENVIRONMENT_GLOBAL: .
 PATH_BIN_GLOBAL: ${PATH_ENVIRONMENT_GLOBAL}/bin
+
 PATH_SHARE_GLOBAL: /home/linuxbrew/.linuxbrew
 PATH_LIB_GLOBAL: ${PATH_SHARE_GLOBAL}/lib
 PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
