@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.0
+
+- Add new files:
+  - `config/argmap-defaults.env`: To replace argmap.env, which will be customised based on local environment and will simplify initial configuration.
+  - `scripts/app_install.lib.sh`: `app_install()` and `app_unzip()` to help install apps on netlify, using wget and unzip.
+  - `Brewfile.netlify`: Installs `lua 5.3`, `luarocks` and `libyaml` on netlify.
+  - `package.json`, `package-lock.json`: Installs netlify-cache plugin on netlify, to speed up builds.
+
 ## argmap 23.0.1
 
 - Fix `test/devtools-recordings/argmap-button-add-link.json`
