@@ -24,7 +24,7 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean install npm npm_audit pandoc prints site test # dev
+.PHONY: all config public --conda output_clean site_clean clean install luarocks_clean npm npm_audit pandoc prints site test # dev
 
 # Define variables
 # := simple, assigned once
@@ -157,6 +157,24 @@ clean: site_clean
 # Delete these last since it will stop config var lookups working
 	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 # rm ${PATH_FILE_GDRIVE_LOCAL}
+
+# Clean up Lua Rocks from global library
+luarocks_clean:
+# This might only be necessary if rockspec installed globally:
+# 	luarocks remove --global "$(rockspec_file)"
+# luarocks --tree ${PATH_LUA_MODULES} remove argmap
+	-luarocks --tree ${PATH_LUA_MODULES} remove lualogging
+	-luarocks --tree ${PATH_LUA_MODULES} remove lyaml
+	-luarocks --tree ${PATH_LUA_MODULES} remove api7-lua-tinyyaml
+	-luarocks --tree ${PATH_LUA_MODULES} remove penlight
+	-luarocks --tree ${PATH_LUA_MODULES} remove rxi-json-lua
+	-luarocks --tree ${PATH_LUA_MODULES} remove luasocket
+	-luarocks --tree ${PATH_LUA_MODULES} remove luafilesystem
+	-rm $(LUA_MODULES_LOCAL)
+
+	@echo ""
+	@echo "Remaining luarocks:"
+	@luarocks --tree ${PATH_LUA_MODULES} list
 
 # dev:
 #		QUESTION: Check correct netlify site?
