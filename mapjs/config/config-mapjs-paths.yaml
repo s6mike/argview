@@ -15,6 +15,8 @@
 ## Config files
 # Moved to config-argmap-paths to simplify initialisation:
 #   PATH_CONFIG: ${PATH_DIR_MAPJS_ROOT}/${DIR_CONFIG}
+# PATH_FILE_ENV_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED_MAPJS}.yaml
+
 PATH_MAPJS_ROOT: .
 KEYWORD_PROCESSED_MAPJS: processed
 PATH_CONFIG_MAPJS: ${PATH_MAPJS_ROOT}/config
@@ -26,8 +28,7 @@ PATH_FILE_CONFIG_MAPJS: ${PATH_CONFIG_MAPJS}/config-mapjs.yaml
 PATH_FILE_CONFIG_MAPJS_PATHS: ${PATH_CONFIG_MAPJS}/config-mapjs-paths.yaml # This file
 PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED: ${PATH_CONFIG_MAPJS_PROCESSED}/config-mapjs-paths-${KEYWORD_PROCESSED_MAPJS}.yaml
 PATH_FILE_CONFIG_MAPJS_PROCESSED: ${PATH_CONFIG_MAPJS_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED_MAPJS}.yaml
-# Moved to config-argmap-paths to simplify initialisation:
-# PATH_FILE_ENV_MAPJS_PROCESSED: ${PATH_DIR_CONFIG_MAPJS_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED_MAPJS}.yaml
+
 ## For html links, use relative paths (to test/output folder) - more portable
 DIR_MAPJS_JSON: mapjs-json
 PATH_DIR_MAPJS_SRC_JS: ${PATH_MAPJS_ROOT}/src
