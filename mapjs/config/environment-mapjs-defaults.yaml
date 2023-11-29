@@ -10,12 +10,14 @@
 
 # Use ${variable} for referencing other yaml variables
 
+# NODE_PATH: . node start.js
+
 ## dev webserver values
 DIR_OUTPUT: output
 DIR_INPUT: input
 
 ## These are absolute paths, for reading/writing to the correct directory
-PATH_TEST: ${PATH_DIR_ARGMAP_ROOT}/test
+PATH_TEST: ${PATH_ARGMAP_ROOT}/test
 PATH_INPUT_LOCAL: ${PATH_TEST}/${DIR_INPUT}   # Test input folder
 PATH_OUTPUT_LOCAL: ${PATH_TEST}/${DIR_OUTPUT} # Test output folder
 PATH_INPUT_PUBLIC: ${PATH_PUBLIC}/${DIR_INPUT}  

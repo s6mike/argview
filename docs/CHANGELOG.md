@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.2.1
+
+- `mapjs/config/environment-mapjs-defaults.yaml`: Update to use PATH_ARGMAP_ROOT from new argmap-defaults.
+
 ## argmap 23.2.0
 
 - `config/environment-argmap-defaults.yaml`: Add netlify variables, re-arrange, redefine `DIR_PROJECTS` for netlify.
