@@ -66,7 +66,7 @@ LINK_TARGETS_CONDA += ${PATH_FILE_CONVERT_LOCAL} # Only needed for pre-commit ho
 # 	TODO: add this to conda activation, and delete this link when env deactivated?
 # 	NOTE: can use defaults file to set defalt data directory, should simplify.
 # 	Alternative is always to use --data-directory "$PATH_PANDOC_GLOBAL/" when calling pandoc
-LINK_TARGETS_CONDA += ${PATH_PANDOC_LOCAL}
+LINK_TARGETS_CONDA += ${PATH_PANDOC_SHARE_LOCAL}
 
 # For vscode pandoc extensions:
 #		Currently no link:
