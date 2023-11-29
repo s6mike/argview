@@ -21,7 +21,12 @@
   PATH_BIN_GLOBAL = "."
 
   # Shouldn't be used but better to have an explicit value in case it's needed
+  #   QUESTION: Or override config/environment-argmap-defaults.yaml?
+  #     PATH_PROFILE_LOCAL = "/opt/buildhome/.local"
+  #     And then add this to config/environment-argmap-defaults.yaml:
+  #       PATH_ENVIRONMENT_GLOBAL: ${PATH_PROFILE_LOCAL}
   PATH_ENVIRONMENT_GLOBAL = "global"
+  
   # PATH_FILE_YQ = "/opt/build/cache/yq"
   # QUESTION: If PATH_BIN_LOCAL = "." then remove this?
   PATH_FILE_YQ = "./yq"
