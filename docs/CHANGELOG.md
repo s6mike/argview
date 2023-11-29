@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.0.0 BREAKING
+
+- Delete legacy argview repo docs from `mapjs/public`. BREAKING
+- Delete `scripts/` which will be covered by makefile:
+  - `install.sh`
+  - `luarocks_clean.sh`
+  - `qa_rockspec.sh`
+
+BREAKING change though unlikely to break anything.
+
 ## argmap 22.26.8
 
 - Fix rockspec: Update version number, fix url etc
