@@ -43,6 +43,10 @@ PATH_LUA_GLOBAL: ${PATH_LIB_GLOBAL}/lua/5.3
 PATH_PANDOC_GLOBAL: ${PATH_SHARE_GLOBAL}/pandoc
 PATH_FILE_CONVERT_GLOBAL: ${PATH_BIN_GLOBAL}/convert
 
+# QUESTION: add this to netlify env instead?
+#   Would need to move from custom env-argmap.yaml file to .env too
+PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_LUA_ARGMAP}:${PATH_BIN_GLOBAL}
+
 DIR_PROJECTS: ${PATH_PUBLIC}
 PATH_MISC_DEV: ${DIR_PROJECTS}/misc
 PATH_CHROME_PROFILE_DEBUG: ${PATH_MISC_DEV}/chrome-debug-argmap
@@ -52,12 +56,6 @@ DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_la
 ## lua
 PATH_LUA_ARGMAP: ${PATH_DIR_ARGMAP_SRC}/lua
 PATH_LUA_MODULES: ${PATH_SHARE_GLOBAL}/lua_modules
-
-
-# QUESTION: add this to netlify env instead?
-#   Would need to move from custom env-argmap.yaml file to .env too
-PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_LUA_ARGMAP}:${PATH_BIN_GLOBAL}
-
 LUA_PATH: ${PATH_LUA_ARGMAP}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
 LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so;
 
