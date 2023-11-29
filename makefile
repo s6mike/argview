@@ -331,8 +331,8 @@ ${PATH_FILE_ARGMAP_DOT_ENV}: | ${PATH_FILE_ARGMAP_DOT_ENV_DEFAULT}
 %.yaml: | %-defaults.yaml
 	cp --no-clobber -- $| $@
 
-${PATH_FILE_ENV_ARGMAP_PRIVATE}:
-	touch $@
+# ${PATH_FILE_ENV_ARGMAP_PRIVATE}:
+# 	touch $@
 
 # Process config and environment files
 # 	TODO: De-duplicate with mapjs call

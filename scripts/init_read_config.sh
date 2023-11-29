@@ -49,9 +49,9 @@ main() {
   make "$PATH_FILE_ENV_ARGMAP_PROCESSED"
   make "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
 
-  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_DIR_CONFIG_MAPJS PATH_FILE_ENV_ARGMAP_PRIVATE
+  __yaml2env "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" PATH_DIR_CONFIG_MAPJS # PATH_FILE_ENV_ARGMAP_PRIVATE
 
-  make "$PATH_FILE_ENV_ARGMAP_PRIVATE"
+  # make "$PATH_FILE_ENV_ARGMAP_PRIVATE"
 
   # Can't use __yaml2env because it's not set to take the -l option
   # TODO though that might not matter now if I put this at the end:  | sed 's/^- //
