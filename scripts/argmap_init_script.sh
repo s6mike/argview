@@ -104,7 +104,7 @@ init_apps() {
   # Adds lua folder to start of PATH so lua files called from there instead of /opt/miniconda3/envs/argmap/bin/argmap2mup
   #  QUESTION: Combine these?
   # PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
-  # PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
+  # PATH_LUA_ARGMAP="$PATH_DIR_ARGMAP_SRC/lua"
 
   # echo "Updating PATH"
   # QUESTION: add this to .env / netlify env instead?
@@ -197,7 +197,7 @@ export_vars() {
   esac
 
   # TODO: rename orig var to PATH_LUA_ARGMAP
-  PATH_LUA_ARGMAP=$(getvar PATH_DIR_ARGMAP_LUA)
+  PATH_LUA_ARGMAP=$(getvar PATH_LUA_ARGMAP)
 
   # make site dependencies:
   PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)

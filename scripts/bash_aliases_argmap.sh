@@ -89,7 +89,7 @@ __check_lua_debug() {
   printf "\nChecking lua files for uncommented DEBUG mode directives. Expecting 1 only:\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
-  grep -rnv '^\s*--' "$(getvar PATH_DIR_ARGMAP_LUA)" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+  grep -rnv '^\s*--' "$(getvar PATH_LUA_ARGMAP)" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
   echo "-------------"
 }
 
@@ -139,7 +139,7 @@ a2m() {                                     # a2m test/input/example1-clearly-fa
   name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
-    lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" "$1" >"$output" &&
+    lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
 }
 
@@ -156,7 +156,7 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
   fi
   set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
   # shellcheck disable=SC2086
-  lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
+  lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
   set +o noglob
   log "Uploaded: $name.mup to GDrive. GDrive Folder URL: https://drive.google.com/drive/u/0/folders/$folder_id"
 )
@@ -167,7 +167,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
   name=$(basename --suffix=".json" "$1")
   output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  lua "$(getvar PATH_DIR_ARGMAP_LUA)/mup2argmap.lua" "$1" >"$output" &&
+  lua "$(getvar PATH_LUA_ARGMAP)/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
 }
 
@@ -175,7 +175,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 a2t() { # a2t test/output/example1-simple.yaml (output path)
   name=$(basename --suffix=".yaml" "$1") &&
     mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")" && # Ensures output folder exists
-    lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
+    lua "$(getvar PATH_LUA_ARGMAP)/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
     echo "${2:-$PATH_OUTPUT_LOCAL/$name.tex}"
 }
 

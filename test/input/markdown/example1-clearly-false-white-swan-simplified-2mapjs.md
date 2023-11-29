@@ -6,7 +6,7 @@ argmaps: true
 #   https://workflowy.com/#/ee624e71f40c
 # css: test/mapjs-default-styles.css
 # mapjs-output-js: test/bundle.js
-# lua-filter: "$PATH_DIR_ARGMAP_LUA/pandoc-argmap.lua"
+# lua-filter: "$PATH_LUA_ARGMAPdoc-argmap.lua"
 # data-dir: "$PANDOC_DATA_DIR"
 ---
 

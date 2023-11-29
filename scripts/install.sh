@@ -58,7 +58,7 @@ apt-get install texlive-luatex
 
 # TODO: for other users would need to install argmap in current directory
 
-chmod 744 "$PATH_DIR_ARGMAP_LUA/"*
+chmod 744 "$PATH_LUA_ARGMAP/"*
 chmod 744 "$PATH_FOLDER_ARGMAP_SRC/js/"*
 
 # Link up pre-commit hook
@@ -106,11 +106,11 @@ if [ "$1" == 'conda' ]; then
 
   # # ln -s source_file symbolic_link
   # rm "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2mup"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2mup"
+  # ln -s "$PATH_LUA_ARGMAP/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2mup"
   # rm "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2tikz"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2tikz"
+  # ln -s "$PATH_LUA_ARGMAP/argmap2tikz.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/argmap2tikz"
   # rm "$PATH_ENVIRONMENT_GLOBAL/bin/mup2argmap"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/mup2argmap"
+  # ln -s "$PATH_LUA_ARGMAP/mup2argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/bin/mup2argmap"
 
   # pandoc data-folder:
   # local: ~/.local/share/pandoc/
@@ -124,21 +124,21 @@ if [ "$1" == 'conda' ]; then
 
   # Adds .lua files to pandoc data-folder:
 
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
+  # ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
 
   # mkdir --parent "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/"
   # rm "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/pandoc-argmap.lua"
   # ln -s "$(getvar PATH_FILE_PANDOC_FILTER_LUA_ARGMAP)" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/filters/"
 
   # TODO is this necessary? Forget why
-  # ln -s "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
+  # ln -s "$PATH_LUA_ARGMAP/argmap2mup.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
 
   # Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts
   # Need to use sudo for both:
   # Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
   # So these shouldn't be needed any longer:
   # mkdir --parents /usr/local/share/lua/5.3/
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" /usr/local/share/lua/5.3/
+  # ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" /usr/local/share/lua/5.3/
 
   # -----
   # For vscode pandoc extensions:
@@ -146,9 +146,9 @@ if [ "$1" == 'conda' ]; then
   # # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
   # #   QUESTION: Do I need first of these?
   # rm "$PATH_ENVIRONMENT_GLOBAL/share/lua/5.3/config_argmap.lua"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/lua/5.3"
+  # ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/lua/5.3"
   # rm "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/config_argmap.lua"
-  # ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
+  # ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL/share/pandoc/"
 
   #  2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
   # rm /js
@@ -181,7 +181,7 @@ if [ "$1" == 'conda' ]; then
 
   # Added since after uninstalling global lua, vscode-pandoc extension fails.
   # Wondering if adding this link (from section 2), would help:
-  #   ln -s "$PATH_DIR_ARGMAP_LUA/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
+  #   ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
 
   # ln -s "$PATH_ENVIRONMENT_GLOBAL/bin/lua" "$HOME/.local/bin/"
 
@@ -255,7 +255,7 @@ __build_mapjs
 ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_PUBLIC/js/fengari-web.js"
 ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_PUBLIC/js/fengari-web.js.map"
 # Ensure lua dependencies available to site
-# ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
+# ln -s "$PATH_LUA_ARGMAP" "$PATH_PUBLIC/lua"
 # ln -s "$PATH_ARGMAP_ROOT/lua_modules" "$PATH_PUBLIC/lua_modules"
 
 # SECTION Z: Uninstall

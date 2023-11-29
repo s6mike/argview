@@ -431,7 +431,7 @@ else
 # Though LD_LIBRARY_PATH might also work: https://workflowy.com/#/dad8323b9953
 
 # # TODO: for other users would need to install argmap in current directory
-# 	chmod 744 "${PATH_DIR_ARGMAP_LUA}/"*
+# 	chmod 744 "${PATH_LUA_ARGMAP}/"*
 # 	chmod 744 "${PATH_FOLDER_ARGMAP_SRC}/js/"*
 
 # # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
@@ -531,7 +531,7 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_ARGMAP_ROOT}/%
 # ${PATH_PUBLIC}/%: | ${PATH_ARGMAP_ROOT}/%
 # 	-ln -s $| $@
 
-# -ln -s "$PATH_DIR_ARGMAP_LUA" "$PATH_PUBLIC/lua"
+# -ln -s "$PATH_LUA_ARGMAP" "$PATH_PUBLIC/lua"
 # -ln -s $| "$PATH_PUBLIC/lua_modules"
 
 # For vscode pandoc extensions (1,2,3):

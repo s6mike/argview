@@ -46,15 +46,15 @@ PATH_TEST_LOG: ${PATH_MISC_DEV}/tests_output.txt
 DEFAULT_DIFF_FILENAME: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest_modified.diff
 
 ## lua
-PATH_DIR_ARGMAP_LUA: ${PATH_DIR_ARGMAP_SRC}/lua # TODO rename to PATH_LUA_ARGMAP
+PATH_LUA_ARGMAP: ${PATH_DIR_ARGMAP_SRC}/lua
 PATH_LUA_MODULES: ${PATH_SHARE_GLOBAL}/lua_modules
 
 
 # QUESTION: add this to netlify env instead?
 #   Would need to move from custom env-argmap.yaml file to .env too
-PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_DIR_ARGMAP_LUA}:${PATH_BIN_GLOBAL}
+PATH_ADD_PATH: ${PATH_SHARE_GLOBAL}/opt/lua@5.3/bin:${PATH_LUA_ARGMAP}:${PATH_BIN_GLOBAL}
 
-LUA_PATH: ${PATH_DIR_ARGMAP_LUA}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
+LUA_PATH: ${PATH_LUA_ARGMAP}/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?.lua;${PATH_LUA_MODULES}/share/lua/5.3/?/init.lua;
 LUA_CPATH: ${PATH_LUA_MODULES}/lib/lua/5.3/?.so;${PATH_LUA_GLOBAL}/loadall.so;./?.so;${PATH_LUA_GLOBAL}/?.so;
 
 ## mapjs
@@ -63,7 +63,7 @@ PATH_DIR_MAPJS_ROOT: ${PATH_ARGMAP_ROOT}/${DIR_MAPJS}
 MAPJS_NODE_MODULES_PREFIX: ${PATH_DIR_MAPJS_ROOT}
 
 ## pandoc
-PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_DIR_ARGMAP_LUA}/pandoc-argmap.lua
+PATH_FILE_PANDOC_FILTER_LUA_ARGMAP: ${PATH_LUA_ARGMAP}/pandoc-argmap.lua
 PANDOC_DATA_DIR: ${PATH_ENVIRONMENT_GLOBAL}/share/pandoc
 
 # TODO Use variables: 

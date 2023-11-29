@@ -22,11 +22,11 @@ config.project_folder = os.getenv("PATH_ARGMAP_ROOT") or "/home/s6mike/git_proje
 -- QUESTION: Use PANDOC_SCRIPT_FILE instead?
 
 -- QUESTION: Should I changes this from a global variable to part of config?
-PATH_DIR_ARGMAP_LUA = os.getenv("PATH_DIR_ARGMAP_LUA") or config.project_folder .. "/src/lua"
+PATH_LUA_ARGMAP = os.getenv("PATH_LUA_ARGMAP") or config.project_folder .. "/src/lua"
 
 -- Didn't work from extension:
 package.path = os.getenv("LUA_PATH") or
-    PATH_DIR_ARGMAP_LUA .. "?.lua;" ..
+    PATH_LUA_ARGMAP .. "?.lua;" ..
     config.project_folder ..
     "/lua_modules/share/lua/5.3/?/init.lua;" ..
     config.project_folder ..
