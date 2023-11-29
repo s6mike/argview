@@ -14,7 +14,7 @@ netlify) ;;
   source "$HOME/scripts/default_vscode_init_script.sh"
 
   # shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
-  source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
+  # source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
   ;;
 esac
 
