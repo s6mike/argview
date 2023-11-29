@@ -107,7 +107,6 @@ count_characters() {
   tr -cd "$char" <"$target_config_file" | wc -c
 }
 
-# TODO: combine all non PRIVATE processed variables into one file
 # QUESTION: Possible to build defaults file from template referencing other variables, using this function?
 #   When adding new config file, don't forget to update pandoc defaults
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
