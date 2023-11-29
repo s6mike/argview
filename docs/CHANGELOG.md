@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.2
+
+- [README.md](../README.md): Add netlify status and add some info about argview site.
+
 ## argmap 23.1.1
 
 - `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add footer links to README, sitemap and license.

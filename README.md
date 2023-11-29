@@ -1,7 +1,11 @@
 # Argument Maps in YAML
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/mapjs-argview/deploys)
+
 |[![Argument Map Example 1 in MindMup format](examples/2cc90b7c54f340b9e4589f2c1b5a26589a5f2653.png)](https://atlas.mindmup.com/2022/07/aae05340f9f311eca4149f3188cae501/example_mup/index.html "Argument Map Example 1")|
 |----------------------------|
+
+<https://argview.org/> is a simple adaptation of the mapjs mind map app for the purpose of viewing argument maps. Currently these can only be loaded and saved locally.
 
 <details open>
 <summary>
@@ -73,7 +77,7 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
 This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
-1. Set env variable `PATH_DIR_ARGMAP_ROOT` to app installation root folder.
+1. Set env variable `PATH_ARGMAP_ROOT` to app installation root folder.
 
 2. If you wish, customise the values in the `environment-[X]-default.yaml` files in `config` and `mapjs/config` folder, removing `-default` from the filenames.
 
