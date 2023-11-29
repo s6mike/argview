@@ -107,12 +107,13 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
           'aria-label': 'Argument Map showing supporting and opposing relationships between text nodes.',
           // 'tabindex': 0,
         }),
-      stage = $('<div>')
+      stage = $('<' + CONFIG.mapjs_stage.tag + '>') // Sets stage attributes
+        .attr('class', CONFIG.mapjs_stage.class)
         .css(
           {
             position: 'relative'
           })
-        .attr('data-mapjs-role', 'stage')
+        .attr('data-mapjs-role', CONFIG.mapjs_stage.data_mapjs_role)
         .appendTo(element)
         .data({
           // As long as style top (offset y) and viewBox 2nd co-ordinate are the same, connections and nodes will align vertically.

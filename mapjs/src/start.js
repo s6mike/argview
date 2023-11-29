@@ -136,7 +136,7 @@ const jQuery = require('jquery'),
     // Using container.id as index for relevant controller
     map.domMapController = new MAPJS.DomMapController(
       map.mapModel,
-      jQcontainer.find('[data-mapjs-role=stage]'),
+      jQcontainer.find('.stage'),
       touchEnabled,
       imageInsertController,
       undefined, // resourceTranslator

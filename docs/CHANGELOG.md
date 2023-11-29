@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.9
+
+- `mapjs`: Add class to mapjs stage element and use it in css selectors instead of `data-mapjs-role`.
+
 ## argmap 23.1.8
 
 - `config-mapjs.yaml`: Add mapjs_stage variables: class, tag etc

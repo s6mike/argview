@@ -7,7 +7,7 @@ const jQuery = require('jquery'),
 
 jQuery.fn.createConnector = function (connector, optional) {
   'use strict';
-  const stage = this.parent('[data-mapjs-role=stage]'),
+  const stage = this.parent('.stage'),
     element = createSVG('g').data({ 'nodeFrom': stage.nodeWithId(connector.from), 'nodeTo': stage.nodeWithId(connector.to), attr: connector.attr }).attr({ 'id': connectorKey(connector), 'data-mapjs-role': 'connector' }),
     connection = buildConnection(element, optional);
   return element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }))

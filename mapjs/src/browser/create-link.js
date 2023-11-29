@@ -8,7 +8,7 @@ const jQuery = require('jquery'),
 require('./get-data-box');
 jQuery.fn.createLink = function (l, optional) {
   'use strict';
-  const stage = this.parent('[data-mapjs-role=stage]'),
+  const stage = this.parent('.stage'),
     theme = (optional && optional.theme),
     linkBuilder = (optional && optional.linkBuilder) || themeLink,
     elementData = {
