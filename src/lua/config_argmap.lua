@@ -4,8 +4,10 @@
 -- Might fix attempts to find luarocks installed depedendencies (e.g. LuaFileSystem)
 -- require 'luarocks.loader'
 
+-- QUESTION: Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts?
+
 -- config is used to store all config data and returned at end of this script.
---   TODO: turn this into an object so not returing at end?
+-- QUESTION: turn this into an object so not returning at end?
 local config = {}
 
 local LUA_LOGGING_LEVEL = 'ERROR'

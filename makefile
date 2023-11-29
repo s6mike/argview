@@ -36,6 +36,7 @@ SHELL := /bin/bash
 # .NOTINTERMEDIATE only supported in make 4.4
 .NOTINTERMEDIATE:
 
+
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL1
@@ -118,8 +119,19 @@ config: ${LIST_FILES_CONFIG_PROCESSED}
 --conda: | $(LINK_TARGETS_CONDA)
 public: | $(LINK_TARGETS_PUBLIC)
 
+# TODO Just run conda env script?
+# if in folder with config/environment-conda-argmap.yaml
+# conda env create
+# Else:
+# conda env create -f $(getvar PATH_FILE_ENV_CONDA)
+# Or:
+# conda env update --file $(getvar PATH_FILE_ENV_CONDA) --prune --name $CONDA_ENV_ARGMAP
+
+# If conda activate errors:
+# conda init bash
+# source /opt/miniconda3/bin/activate
+
 # -conda activate ${CONDA_ENV_ARGMAP}
-# export CONDA_ENV_ARGMAP="argmap"
 # export XDG_DATA_HOME="${PATH_ENVIRONMENT_GLOBAL}/share/"
 
 # Delete argmap output files only
@@ -392,6 +404,10 @@ else
 	-chmod 744 $(PANDOC)
 endif
 
+# This might be useful on more recent version of pandoc, which might actually check all these folders
+# Though more likely it will use XDG_DATA_HOME which I can then overwrite
+# XDG_DATA_DIRS="$PATH_ENVIRONMENT_GLOBAL/share":$XDG_DATA_DIRS
+
 # -chmod 744 ${PATH_FILE_YQ}
 # If not using conda would need conda dependencies installed.
 
@@ -440,6 +456,10 @@ else
 # # TODO: for other users would need to install argmap in current directory
 # 	chmod 744 "${PATH_LUA_ARGMAP}/"*
 # 	chmod 744 "${PATH_FOLDER_ARGMAP_SRC}/js/"*
+
+# Link up pre-commit hook
+# ln -s "$PATH_ARGMAP_ROOT/scripts/git_hooks/pre-commit" "$PATH_ARGMAP_ROOT/.git/hooks/"
+# chmod +x git_hooks/*
 
 # # Can instead remove each package in turn with lua remove name --tree "$install_dir/$dir_lua" (name needs to match rockspec name e.g. penlight not pl)
 # #   Might be able to uninstall argamp if I've installed it all rather than just dependencies
@@ -507,16 +527,6 @@ ${PATH_PANDOC_GLOBAL}/templates/%: | ${PATH_ARGMAP_ROOT}/%
 	@-mkdir --parent "$(@D)"
 	-ln -s $| $@
 
-# Ensure lua dependencies available to site for client_argmap2mapjs
-# ${PATH_PUBLIC}/%: | ${PATH_LUA_ARGMAP}
-# 	-ln -s $| $@
-
-# ${PATH_PUBLIC}/%: | ${PATH_ARGMAP_ROOT}/%
-# 	-ln -s $| $@
-
-# -ln -s "$PATH_LUA_ARGMAP" "$PATH_PUBLIC/lua"
-# -ln -s $| "$PATH_PUBLIC/lua_modules"
-
 # For vscode pandoc extensions (1,2,3):
 
 # 1. Fixed issue with vscode-pandoc not finding config_argmap with these links:
@@ -533,10 +543,20 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 # 	@-mkdir --parent "$(@D)"
 # 	ln -s $| $@
 
+# Uninstalling the main (apt-get) lua might have removed /usr/local.. from LUA_PATH, since vscode-pandoc was suddenly throwing errors.
+
 # 2. Pandoc folder location can be printed (see src/lua/pandoc-hello.lua in branch X?) is location of markdown file, so might be able to do relative links from extensions
 # rm /js
 # Currently mapjs/public/js is just a directory, so have commented out:
 # -ln -s /home/s6mike/git_projects/argmap/mapjs/public/js /js
+
+# Makes conda exes available in local for VSCode extensions which don't have path option:
+  # Unnecessary for extensions which have custom pandoc path setting, though vscode-pandoc still throws an error message:
+  # ln -s "$PATH_ENVIRONMENT_GLOBAL/bin/pandoc" "$HOME/.local/bin/"
+
+  # Added since after uninstalling global lua, vscode-pandoc extension fails.
+  # Wondering if adding this link (from section 2), would help:
+  #   ln -s "$PATH_LUA_ARGMAP/config_argmap.lua" "$PATH_ENVIRONMENT_GLOBAL"/share/pandoc/
 
 # 3. Install rockspec in global scope
 
@@ -579,3 +599,27 @@ ${PATH_BIN_LOCAL}/gdrive_2.1.1_linux_386.tar.gz:
 # # https://tex.stackexchange.com/questions/630111/install-lualatex-for-use-on-the-command-line
 # 	apt-get install texlive-latex-extra
 # 	apt-get install texlive-luatex
+
+# SECTION X: Clientside Lua
+# ---------------------------------------------------
+# TODO: These links probably need re-creating (add rm commands)
+
+# Ensures fengari script and source map available to site:
+# 	ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js" "$PATH_PUBLIC/js/fengari-web.js"
+# 	ln -s "$PATH_FOLDER_ARGMAP_SRC/js/fengari-web.js.map" "$PATH_PUBLIC/js/fengari-web.js.map"
+# Ensure lua dependencies available to site for client_argmap2mapjs
+
+# ${PATH_PUBLIC}/%: | ${PATH_ARGMAP_ROOT}/%
+# 	-ln -s $| $@
+
+# -ln -s "$PATH_LUA_ARGMAP" "$PATH_PUBLIC/lua"
+# -ln -s $| "$PATH_PUBLIC/lua_modules"
+
+# SECTION Z: Uninstall
+
+# Leave env files in place (but delete samples)
+# What about test output files? vscode settings?
+# delete everything else?
+# run `scripts/luarocks_clean.sh`
+# do npm uninstall process
+# env variables? symbolic links?
