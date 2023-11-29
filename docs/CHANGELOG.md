@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.5
+
+- `.gitignore`: Remove lua init files and `config/argmap.env`.
+
 ## argmap 23.1.4
 
 - `src/lua`: Update comments and debug log messages.
