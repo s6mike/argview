@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.1
+
+- `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add footer links to README, sitemap and license.
+  - Apply same changes to example html pages:
+    - `docs/example-updated.html`
+    - `mapjs/docs/legacy-mapjs-example-map.html`
+
 ## argmap 23.1.0
 
 - Add new files:
