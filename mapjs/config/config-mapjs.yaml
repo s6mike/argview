@@ -35,6 +35,11 @@ mapjs_src_data:
   class: argmap-json
   src: ${path-json-source}
   parent: mapjs_map
+mapjs_stage:
+  tag: div
+  class: stage
+  parent: mapjs_map
+  data_mapjs_role: stage
 
 mapjs_control:
   id: ${mapjs_control.id-prefix}${MAP_INSTANCE_ID}
