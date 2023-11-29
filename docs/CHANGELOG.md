@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 22.26.8
+
+- Fix rockspec: Update version number, fix url etc
+
 ## argmap 22.26.7
 
 - `netlify.toml`: Move env variable assigment to build in attempt to use them in all contexts.
