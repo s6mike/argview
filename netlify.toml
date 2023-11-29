@@ -9,27 +9,48 @@
   command = "./scripts/argmap_init_script.sh" # Command to start your dev server
 
 [build.environment]
-  DIR_PROJECTS = "./other_projects"
-  GO_VERSION = "1.20"
   ENV = "netlify"
+  # QUESTION: add?
+  #   PATH_BIN_LOCAL = "."
+  # QUESTION: remove? Since env-arg-defaults has DIR_PROJECTS: ${PATH_PUBLIC}
+  DIR_PROJECTS = "./mapjs/public"
+  # QUESTION: remove? Since arg-defaults.env has:
+  #   PATH_ARGMAP_ROOT=${PATH_ARGMAP_ROOT:-"."}
+  #   PATH_DIR_SCRIPTS="$PATH_ARGMAP_ROOT/scripts"
   PATH_DIR_SCRIPTS = "scripts"
+  PATH_BIN_GLOBAL = "."
+
+  # Shouldn't be used but better to have an explicit value in case it's needed
+  #   QUESTION: Or override config/environment-argmap-defaults.yaml?
+  #     PATH_PROFILE_LOCAL = "/opt/buildhome/.local"
+  #     And then add this to config/environment-argmap-defaults.yaml:
+  #       PATH_ENVIRONMENT_GLOBAL: ${PATH_PROFILE_LOCAL}
+  PATH_ENVIRONMENT_GLOBAL = "global"
+  
+  # PATH_FILE_YQ = "/opt/build/cache/yq"
+  # QUESTION: If PATH_BIN_LOCAL = "." then remove this?
   PATH_FILE_YQ = "./yq"
-  WORKSPACE = "."
+  # QUESTION: Remove this now argmap-defaults.env set?
+  PATH_ARGMAP_ROOT = "."
+  # PATH_DIR_CONFIG_ARGMAP_PROCESSED="/opt/build/cache/config/processed"
+  # QUESTION: Remove this now covered in argmap-defaults.env?
+  PATH_DIR_CONFIG_ARGMAP_PROCESSED = "config/processed"
+  # NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
+  # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
+  # NODE_ENV = "production"
+  # NODE_VERSION = "18.14.0"
+  # NPM_VERSION = "9.3.1"
+  NODE_VERSION = "18.18.2"
+  NPM_VERSION = "9.8.1"
+  GO_VERSION = "1.20"
 
 [context.production.environment]
   MODE = "prod"
-  NETLIFY_BUILD_DEBUG = "false"
-  # DIR_PROJECTS = "./other_projects"
-  # GO_VERSION = "1.20"
-  # ENV = "netlify"
-  # PATH_DIR_SCRIPTS = "scripts"
-  # WORKSPACE = "."
 
 [context.dev.environment]
+  ENV = "netlify"
   MODE = "dev"
   # NETLIFY_BUILD_DEBUG = "true"
-  ENV = "netlify"
-  PATH_FILE_YQ = "./yq"
 
 # sample dev block in the toml
 # note: each of these fields are OPTIONAL and should only be used if you need an override
@@ -45,11 +66,18 @@
   # envFiles = [".env.development.local", ".env.local", ".env.development", ".env"] # The env files to use, ordered by priority (left - highest, right - lowest)
 
 [[plugins]]
-  package = "@netlify/plugin-sitemap"
+package = "@netlify/plugin-sitemap"
 
 [[plugins]]
-  package = "@netlify/plugin-lighthouse"
-
-  # optional, deploy the lighthouse report to a path under your site
+package = "@netlify/plugin-lighthouse"
+# optional, deploy the lighthouse report to a path under your site
   # [plugins.inputs.audits]
   #   output_path = "reports/lighthouse.html"
+[[plugins]]
+package = "netlify-plugin-debug-cache"
+
+[[plugins]]
+package = "netlify-plugin-cache"
+  [plugins.inputs]
+  # "/home/linuxbrew/.linuxbrew/lib/", "mapjs/node_modules/"
+  paths = ["/opt/buildhome/.cache", "/opt/build/repo/yq", "/opt/build/repo/config/processed/", "/home/linuxbrew/.linuxbrew/lua_modules/"]

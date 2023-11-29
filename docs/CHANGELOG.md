@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.3
+
+- `netlify.toml`:
+  - Add 2 cache plugins.
+  - Update env variables.
+
 ## argmap 23.1.2
 
 - [README.md](../README.md): Add netlify status and add some info about argview site.
