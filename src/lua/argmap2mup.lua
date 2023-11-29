@@ -589,6 +589,7 @@ local function help()
 end
 
 local function parse_options(a)
+  Logger:debug("LUA_CPATH: " .. (os.getenv("LUA_CPATH") or ""))
   local opts        = {}
   local flags, args = pl.app.parse_args(a, { g = true, gdrive_id = true, n = true, name = true, f = true, folder = true })
 
@@ -634,7 +635,7 @@ local function main()
   else
     local input = ""
     if opts["file"] then
-      Logger:debug("opts[\"file\"]: ")
+      Logger:debug("1.opts[\"file\"]: ")
       Logger:debug(opts)
       local f = assert(io.open(opts["file"], 'r'))
       input = f:read("*all")
@@ -656,7 +657,7 @@ local function main()
     local folderopt = ""
 
     --  TODO: remove Temp code:
-    Logger:debug("opts: ")
+    Logger:debug("2. opts: ")
     Logger:debug(opts)
 
     if opts["upload"] and opts["gdrive_id"] then

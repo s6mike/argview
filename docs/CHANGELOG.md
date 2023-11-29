@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.1.4
+
+- `src/lua`: Update comments and debug log messages.
+
 ## argmap 23.1.3
 
 - `netlify.toml`:

@@ -1,8 +1,13 @@
 -- Copyright 2022 Michael Hayes and the argmap contributors
 -- SPDX-License-Identifier: MIT
 
+-- Might fix attempts to find luarocks installed depedendencies (e.g. LuaFileSystem)
+-- require 'luarocks.loader'
+
+-- QUESTION: Add config_argmap file to standard LUA_PATH so easy to update LUA_PATH etc for lua scripts?
+
 -- config is used to store all config data and returned at end of this script.
---   TODO: turn this into an object so not returing at end?
+-- QUESTION: turn this into an object so not returning at end?
 local config = {}
 
 local LUA_LOGGING_LEVEL = 'ERROR'
@@ -35,9 +40,6 @@ package.cpath = os.getenv("LUA_CPATH") or
     "/lua_modules/lib/lua/5.3/?.so;" .. "/opt/miniconda3/envs/argmap/lib/lua/5.3/?.so;"
     .. package.cpath
 
--- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
--- Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))
-
 -- LuaLogging: A simple API to use logging features in Lua: https://neopallium.github.io/lualogging/manual.html#introduction
 --  Calling this early in file so it's easier to debug rest.
 local logging = require 'logging'
@@ -48,6 +50,10 @@ Logger = logging.new(function(self, level, message)
 end)
 
 Logger:setLevel(logging[LUA_LOGGING_LEVEL])
+
+-- os.getenv("LUA_PATH") returns nil when run with Markdown Preview Enhanced VSCode extension
+Logger:debug("LUA_PATH: " .. (os.getenv("LUA_PATH") or ""))
+Logger:debug("LUA_CPATH: " .. (os.getenv("LUA_CPATH") or ""))
 
 -- Then use Logger:[level] to print
 --  Tables can't be concatenated so use separate debug message.
