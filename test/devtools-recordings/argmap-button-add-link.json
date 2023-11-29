@@ -42,8 +42,8 @@
           "#node_5 > span"
         ]
       ],
-      "offsetY": 0,
-      "offsetX": 0
+      "offsetY": 19.870574951171875,
+      "offsetX": 76.74505615234375
     },
     {
       "type": "waitForExpression",

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.0.1
+
+- Fix `test/devtools-recordings/argmap-button-add-link.json`
+
 ## argmap 23.0.0 BREAKING
 
 - Delete legacy argview repo docs from `mapjs/public`. BREAKING
