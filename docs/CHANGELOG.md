@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.2.3
+
+- Use `MAPJS_NODE_MODULES_PREFIX`: `test/test_scripts/mapjs_bisect_testcafe.sh`
+
 ## argmap 23.2.2
 
 - Update to use PATH_ARGMAP_ROOT, PATH_LUA_ARGMAP and minor refinements:

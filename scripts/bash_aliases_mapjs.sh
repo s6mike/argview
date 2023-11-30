@@ -14,7 +14,7 @@ netlify) ;;
   source "$HOME/scripts/default_vscode_init_script.sh"
 
   # shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
-  source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
+  # source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
   ;;
 esac
 
@@ -102,12 +102,12 @@ testcafe_run() { # tcr
   fi
   # __bisect_init
   echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
 }
 
 # __test_mapjs_renders() {
 #   webpack_server_start "${1:-$(getvar PORT_DEV_SERVER)}" "${2:-dev}" # "$@"
-#   # Doesn't use $WORKSPACE because it needs to work for legacy mapjs repo too.
+#   # Doesn't use $PATH_ARGMAP_ROOT because it needs to work for legacy mapjs repo too.
 #   input_file=$(__get_site_path "$1")
 #   result=$("$HOME/git_projects/argmap/test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp" "$input_file" "${2:-$PATH_LOG_FILE_EXPECT}" "${3:-$PORT_DEV_SERVER}")
 #   # Using trailing wildcard match in case any trailing line termination characters accidentally captured, like I did before, so they don't break match.
@@ -117,7 +117,7 @@ testcafe_run() { # tcr
 #   if [[ "$result" == "true"* ]]; then
 #     return 0 # success
 #   else       # if headless chrome fails to render any map nodes
-#     echo "Render Failed"
+#     echo "Render Failed" >&2
 #     return 1 #fail
 #   fi
 # }
@@ -125,14 +125,14 @@ testcafe_run() { # tcr
 # Start webpack after git checkout
 webpack_install() { # wpb
   # Should only install new stuff. Should install in local folder if its set
-  npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" # --force
+  npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" # --force
   # TODO: But can also monitor package.json for changes and install automatically instead: https://workflowy.com/#/f666070d7b23
   # wait &&
   # npm exec webpack # Shouldn't be needed if webpack server does it automatically
 }
 
 webpack_pack() { #pmj
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run pack
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run pack
 }
 
 __is_server_live() {
@@ -150,11 +150,11 @@ webpack_server_halt() { #wsh
     # Else:
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
-    npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run stop
+    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run stop
     export SERVER_ON=false
     export SERVER_MODE=false
   else
-    # echo "Server already off"
+    # echo "Server already off" >&2
     return 1
   fi
 }
@@ -172,16 +172,16 @@ webpack_server_start() { # wss
     fi
     echo ""
   else
-    npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" run start:"$mode"
+    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run start:"$mode"
     export SERVER_MODE=$mode
   fi
 }
 
 __check_npm_updates() {
-  # npm install --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" npm@latest
+  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
   printf "\nChecking for out of date npm modules. Expecting 2 only (npm and jquery-hammerjs):\n"
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" outdated
-  npm --prefix "$(getvar PATH_DIR_MAPJS_ROOT)" audit
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" outdated
+  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" audit
 }
 
 __npm_update() {
