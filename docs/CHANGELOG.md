@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.2.2
+
+- Update to use PATH_ARGMAP_ROOT, PATH_LUA_ARGMAP and minor refinements:
+  - `mapjs/config/config-mapjs-paths.yaml`
+  - `scripts/init_read_config.sh`
+  - `scripts/config_read_functions.lib.sh`
+  - `mapjs/scripts/mapjs.env`
+  - `src/lua/config_argmap.lua`
+  - `src/lua/pandoc-argmap.lua`
+  - `test/test_scripts/bash_aliases_argmap_test.sh`: Also prepare tests for future changes.
+  - `test/test_scripts/tests.sh`
+
 ## argmap 23.2.1
 
 - `mapjs/config/environment-mapjs-defaults.yaml`: Update to use PATH_ARGMAP_ROOT from new argmap-defaults.

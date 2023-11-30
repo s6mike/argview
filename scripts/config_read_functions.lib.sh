@@ -49,10 +49,11 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
     e) # env mode - interpolates env variables. Should only be needed during config initialisation
       # Could also use envsubst as a shell function
       # Have set to exclude results with $ in them (after expansion)
+      # Dangerous if any vars aren't instantiated since they will disappear!
       query_opts=" | to_yaml | envsubst(nu,ne) | select( . != \"*\${*}*\")"
       ;;
     l) # (de)list mode - returns a list in argument format.
-      # Though I've added  | sed 's/^- //' to main query to remove leading hyphens instead
+      # Though since I've added  | sed 's/^- //' to main query to remove leading hyphens, this option no longer makes any difference.
       query_opts=" | .[]"
       ;;
     *) ;;
@@ -68,14 +69,14 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   # For python yq: https://github.com/kislyuk/yq, which is on conda
   #   result=${!variable_name:-$("$PATH_FILE_YQ"-r --exit-status --yml-out-ver=1.2 ".$variable_name | select( . != null)" $PATH_FILE_ENV_ARGMAP $PATH_FILE_CONFIG_MAPJS $PATH_FILE_CONFIG_ARGMAP)}
 
-  set -f
+  set -o noglob
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   result=$("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}" | sed 's/^- //')
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   # echo >&2 "query: $("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}")"
 
   # echo >&2 "result1: $result"
-  # Not quoted so that all list elements are normalised. set -f stops globbing
+  # Not quoted so that all list elements are normalised. set -o noglob stops globbing
   # shellcheck disable=SC2086
   result=$(__normalise_if_path "$result")
 
@@ -85,7 +86,7 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   # Only returns multiple results if in list mode, otherwise just first result (so unprocessed results are ignored)
   # __check_exit_status $? "${result[0]}" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
   __check_exit_status $? "$result" "$variable_name not found while running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
-  set +f
+  set +o noglob
 }
 
 # Looks up each argument in yaml and exports it as env variable
@@ -106,22 +107,25 @@ count_characters() {
   tr -cd "$char" <"$target_config_file" | wc -c
 }
 
-# TODO: combine all non PRIVATE processed variables into one file
 # QUESTION: Possible to build defaults file from template referencing other variables, using this function?
 #   When adding new config file, don't forget to update pandoc defaults
-# TODO: could use envsubst to substitute env variables before doing further processing
 preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap.yaml
-  target_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
+  input_config_file=${1:-$PATH_FILE_ENV_ARGMAP}
 
-  # local mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")
   local filename
   local repeat_count=0
-  filename=$(basename "$target_config_file")
-  target_dir="$(dirname "$target_config_file")/$KEYWORD_PROCESSED"
-  mkdir --parent "$target_dir"
+  filename=$(basename "$input_config_file")
+
+  # processed_dir="$(dirname "$input_config_file")/$KEYWORD_PROCESSED"
+  # TODO This won't distinguish between mapjs and argmap
+  # processed_dir="${PATH_DIR_CONFIG_ARGMAP_PROCESSED}"
 
   # Strips yaml extension then adds on this one:
-  output_file="$target_dir/${filename%%.*}-processed.yaml"
+  # output_file="$processed_dir/${filename%%.*}-processed.yaml"
+  output_file="${2:-"$(dirname "$input_config_file")/$KEYWORD_PROCESSED/${filename%%.*}-processed.yaml"}"
+
+  # echo "output_file: $output_file"
+  mkdir --parent "$(dirname "$output_file")"
 
   # Get key value pairs with $, omitting nested $var values (e.g. LIST_FILES_CONFIG)
   #   with_entries(select(.value == "*$*"))'
@@ -148,10 +152,11 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
     if [ -f "$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED" ]; then # If file exists
       processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
     fi
+    set -o noglob
     set -f
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
     pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file
-    set +f
+    set +o noglob
     target_config_file="$output_file"
 
     # Checks for possible infinite loop:
@@ -178,23 +183,23 @@ process_all_config_inputs() {
 }
 
 __getvar_yaml_any() { # gvy
-  set -f              # I don't want globbing, but I don't want to quote it because I do want word splitting
+  set -o noglob       # I don't want globbing, but I don't want to quote it because I do want word splitting
   # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
   __getvar_from_yaml "$@" ${LIST_FILES_CONFIG_PROCESSED[@]} ${LIST_FILES_CONFIG_INPUT[@]} # $list_files_config_processed
-  set +f
+  set +o noglob
 }
 
 __normalise_if_path() {
   result="$1"
   if [[ $1 == *"/"* ]]; then
-    base_path=${PATH_DIR_ARGMAP_ROOT}
+    base_path=${PATH_ARGMAP_ROOT}
 
-    set -f # Disable globbing, since can't use quotes
+    set -o noglob # Disable globbing, since can't use quotes
     # Options set: canonicalize non-existent paths, want mapjs ones relative to mapjs, don't want to follow symlinks
     #   Removes /./ etc from paths
     # shellcheck disable=SC2086
     result=$(realpath --no-symlinks --canonicalize-missing --relative-base="$base_path" $1)
-    set +f
+    set +o noglob
   fi
 
   echo "$result"

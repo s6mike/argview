@@ -25,7 +25,7 @@ __get_site_path() {
     full_path=$input_path
     ;;
   *)
-    full_path=$(getvar WORKSPACE)/$input_path
+    full_path=$(getvar PATH_ARGMAP_ROOT)/$input_path
     ;;
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
@@ -57,8 +57,9 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 __update_repo() { # Running at end of test script
   echo "Updating repo..."
   # Update doc examples
-  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/markdown/example-updated.md)" "$(getvar WORKSPACE)/docs/example-updated.html"
-  mv "$(2hf -p "$(getvar WORKSPACE)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar WORKSPACE)/mapjs/docs/legacy-mapjs-example-map.html"
+  # TODO use make instead? Did I already create make for this?
+  mv "$(2hf -p "$(getvar PATH_ARGMAP_ROOT)"/test/input/markdown/example-updated.md)" "$(getvar PATH_ARGMAP_ROOT)/docs/example-updated.html"
+  mv "$(2hf -p "$(getvar PATH_ARGMAP_ROOT)"/test/input/mapjs-json/legacy-mapjs-example-map.json)" "$(getvar PATH_ARGMAP_ROOT)/mapjs/docs/legacy-mapjs-example-map.html"
   __save_env
   # __reset_repo  # Decided not to delete script output in case there are clues
   # __clean_repo # Decided not to delete script output in case there are clues
@@ -68,7 +69,8 @@ __update_repo() { # Running at end of test script
 }
 
 __find_rockspec() {
-  find "$WORKSPACE" -type f -name "argmap-*.rockspec"
+  find "$PATH_ARGMAP_ROOT" -type f -name "argmap-*.rockspec"
+}
 }
 
 # Checks `src/lua` for lua files with leftover debug code.
@@ -77,7 +79,7 @@ __check_lua_debug() {
   printf "\nChecking lua files for uncommented DEBUG mode directives. Expecting 1 only:\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
-  grep -rnv '^\s*--' "$PATH_DIR_ARGMAP_LUA" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
+  grep -rnv '^\s*--' "$(getvar PATH_LUA_ARGMAP)" | grep -Fie 'logger:setLevel(logging.DEBUG)' -e 'require("lldebugger").start()'
   echo "-------------"
 }
 
@@ -94,8 +96,8 @@ __check_js_debug() {
 # Used by pre-commit hook
 __reset_repo() {
   echo 'Restoring output folder to match remote.'
-  git checkout -- "$WORKSPACE/examples/"
-  git checkout -- "$WORKSPACE/test/output/"
+  git checkout -- "$PATH_ARGMAP_ROOT/examples/"
+  git checkout -- "$PATH_ARGMAP_ROOT/test/output/"
   git checkout -- "$PATH_OUTPUT_LOCAL"
 }
 
@@ -127,7 +129,7 @@ a2m() {                                     # a2m test/input/example1-clearly-fa
   name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
-    lua "$(getvar PATH_DIR_ARGMAP_LUA)/argmap2mup.lua" "$1" >"$output" &&
+    lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
 }
 
@@ -142,10 +144,10 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
   if [ "$file_id" != "" ]; then # Only includes argument if there is a file id
     upload_id_arg="--gdrive_id $file_id"
   fi
-  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
+  set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting with $upload_id_arg
   # shellcheck disable=SC2086
-  lua "$PATH_DIR_ARGMAP_LUA/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
-  set +f
+  lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" --upload $upload_id_arg --name "$name.mup" --folder "$folder_id" "$1"
+  set +o noglob
   log "Uploaded: $name.mup to GDrive. GDrive Folder URL: https://drive.google.com/drive/u/0/folders/$folder_id"
 )
 
@@ -155,7 +157,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
   name=$(basename --suffix=".json" "$1")
   output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
-  lua "$PATH_DIR_ARGMAP_LUA/mup2argmap.lua" "$1" >"$output" &&
+  lua "$(getvar PATH_LUA_ARGMAP)/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
 }
 
@@ -163,7 +165,7 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 a2t() { # a2t test/output/example1-simple.yaml (output path)
   name=$(basename --suffix=".yaml" "$1") &&
     mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")" && # Ensures output folder exists
-    lua "$PATH_DIR_ARGMAP_LUA/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
+    lua "$(getvar PATH_LUA_ARGMAP)/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
     echo "${2:-$PATH_OUTPUT_LOCAL/$name.tex}"
 }
 
@@ -243,10 +245,10 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   output=$(getvar "$path_output")/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
-  set -f # I don't want globbing, but I don't want to quote $args because I do want word splitting
+  set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting
   # shellcheck disable=SC2086
   pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
-  set +f
+  set +o noglob
 
   if [ "$pipe" != true ]; then
     open_debug "$output"
@@ -263,7 +265,7 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$WORKSPACE/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$PATH_ARGMAP_ROOT/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
     echo "$output"
   open_debug "$output"
 }

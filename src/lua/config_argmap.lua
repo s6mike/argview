@@ -19,16 +19,16 @@ local LUA_LOGGING_LEVEL = 'ERROR'
 
 -- If this file showing up as not found, then in calling file add:
 -- package.path = "/home/s6mike/git_projects/argmap/src/lua/?.lua;" .. package.path
-config.project_folder = os.getenv("WORKSPACE") or "/home/s6mike/git_projects/argmap"
+config.project_folder = os.getenv("PATH_ARGMAP_ROOT") or "/home/s6mike/git_projects/argmap"
 
 -- QUESTION: Use PANDOC_SCRIPT_FILE instead?
 
 -- QUESTION: Should I changes this from a global variable to part of config?
-PATH_DIR_ARGMAP_LUA = os.getenv("PATH_DIR_ARGMAP_LUA") or config.project_folder .. "/src/lua"
+PATH_LUA_ARGMAP = os.getenv("PATH_LUA_ARGMAP") or config.project_folder .. "/src/lua"
 
 -- Didn't work from extension:
 package.path = os.getenv("LUA_PATH") or
-    PATH_DIR_ARGMAP_LUA .. "?.lua;" ..
+    PATH_LUA_ARGMAP .. "?.lua;" ..
     config.project_folder ..
     "/lua_modules/share/lua/5.3/?/init.lua;" ..
     config.project_folder ..
@@ -126,8 +126,9 @@ DIR_MAPJS_JSON = os.getenv("DIR_MAPJS_JSON") or "mapjs-json"
 PATH_DIR_MAPJS_ROOT = os.getenv("PATH_DIR_MAPJS_ROOT")
 PATH_FILE_CONFIG_MAPJS = os.getenv("PATH_FILE_CONFIG_MAPJS")
 PATH_FILE_CONFIG_MAPJS_PROCESSED = os.getenv("PATH_FILE_CONFIG_MAPJS_PROCESSED")
-PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")
-PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (PATH_OUTPUT_LOCAL .. "/" .. DIR_MAPJS_JSON)
+-- PATH_OUTPUT_LOCAL = os.getenv("PATH_OUTPUT_LOCAL") or (config.project_folder .. "/test/output")
+PATH_PUBLIC = os.getenv("PATH_PUBLIC") or (config.project_folder .. "mapjs/public")
+PATH_DIR_PUBLIC_MAPJS_JSON = os.getenv("PATH_DIR_PUBLIC_MAPJS_JSON") or (PATH_PUBLIC .. "/output/" .. DIR_MAPJS_JSON)
 DIR_OUTPUT = os.getenv("DIR_OUTPUT") or "output"
 
 PATH_DIR_LAYOUTS = os.getenv("PATH_DIR_LAYOUTS") or config.project_folder .. "/src/layouts" -- Reads the container and controls html
