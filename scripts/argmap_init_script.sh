@@ -4,21 +4,60 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
-# Needed for non-VSCode environments:
-# TODO should set to $HOME/local/argmap by default
-#   Add check whether $HOME/git_projects/argmap exists, then set as above instead
-#   Or use .env file?
-set -o allexport
-ENV=${ENV:-vscode}
-MODE=${MODE:-dev}
-# QUESTION: Change to PATH_DIR_ARGMAP_ROOT?
-WORKSPACE=${WORKSPACE:-$HOME/git_projects/argmap}
-PATH_DIR_SCRIPTS="$WORKSPACE/scripts"
-PATH_FILE_YQ=${PATH_FILE_YQ:-$HOME/.local/bin/yq}
+# set -o errexit                                       # Stops on error
+shopt -s nullglob globstar                           # Stops * matching null
+set -o nounset                                       # Warning if var unset. This shouldn't be used below bash 4.4 because empty arrays count as unset
+set -o pipefail                                      # with pipefail enabled, the pipeline's status is set to the exit status of the last command to exit with a non-zero status, rather than the last overall command.
+if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi # call `TRACE=1 ./script.sh` to activate debug mode
 
-# shellcheck source=/home/s6mike/git_projects/argmap/scripts/argmap.env
-source "$PATH_DIR_SCRIPTS/argmap.env"
+# From https://medium.com/@dirk.avery/the-bash-trap-trap-ce6083f36700
+#   Didn't work with __get_site_path() exit
+# trap 'catch $? $LINENO' EXIT
+# catch() {
+#   echo "catching!"
+#   if [ "$1" != "0" ]; then
+#     # error handling goes here
+#     echo "Error $1 occurred on $2"
+#   fi
+# }
+
+# cd "$(dirname "$0/..")" # Sets current directory to match script - this breaks everything!
+set -o allexport
+  # Needed to access envsubst from config_read_functions.lib.sh
+  #   TODO: Add envsubst install to makefile
+  #   QUESTION: install envsubst somewhere more convenient?
+  PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
+  PATH_FILE_ARGMAP_DOT_ENV=config/argmap.env
+  PATH_FILE_ARGMAP_DOT_ENV_DEFAULT=config/argmap-defaults.env
+  case $ENV in
+
+  netlify)
+    # brew --cache -s "lua@5.3"
+    # # PATH_CACHE=/opt/build/cache/argmap
+    # # mkdir --parent "$PATH_CACHE"
+    # # ls "$PATH_CACHE"
+    # # ls "$PATH_CACHE/node_modules"
+    # # ls "${MAPJS_NODE_MODULES_PREFIX}/node_modules"
+    # PATH_DIR_MAPJS_ROOT=mapjs
+    # MAPJS_NODE_MODULES_PREFIX=${PATH_DIR_MAPJS_ROOT}
+    # PATH_OUTPUT_JS=${PATH_DIR_MAPJS_ROOT}/public/js
+    # PATH_FILE_MAPJS_HTML_DIST_TAGS=src/layouts/includes/webpack-dist-tags.html
+
+    # make ${PATH_DIR_MAPJS_ROOT}/node_modules
+    # make ${PATH_OUTPUT_JS}/main.js
+
+    # exit
+    ;;
+  *)
+    # TODO: normal install shouldn't use conda, so should set up to give option for eitherPATH_OUTPUT_JS
+    #   ISSUE: conda needed for pandoc, so this should be set up before reading yaml
+    #     Not sure if this is fixing pandoc's conda dependency
+    CONDA_ENV_ARGMAP="${CONDA_ENV_ARGMAP:-argmap}"
+    ;;
+  esac
 set +o allexport
+
+  echo "ENV|MODE: $ENV|$MODE"
 
 # shellcheck source=/home/s6mike/.bashrc
 case $ENV in
@@ -27,6 +66,7 @@ netlify)
   make "${PATH_FILE_YQ}" pandoc
   ;;
 *)
+    source "$PATH_DIR_SCRIPTS/app_install.lib.sh"
   source "$HOME/.bashrc"
   # source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
   # source "$HOME/scripts/default_vscode_init_script.sh"
@@ -34,16 +74,18 @@ netlify)
 esac
 
 # For trying stuff:
-#   source "$WORKSPACE/scripts/experiment.sh"
+  #   source "$PATH_ARGMAP_ROOT/scripts/experiment.sh"
 
 # shellcheck source=/home/s6mike/git_projects/argmap/scripts/init_read_config.sh
 source "$PATH_DIR_SCRIPTS/init_read_config.sh"
 
 # TODO remove stuff covered by `init_read_config.sh`
-# Needed for scripts/argmap.env tmp chrome profile:
+  #   QUESTION: Why not using getvar() ?
+  # Needed for argmap.env tmp chrome profile:
 set -o allexport
-DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$WORKSPACE")}
+  DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$PATH_ARGMAP_ROOT")}
 PATH_MISC_DEV=$DIR_PROJECTS/misc
+  PATH_BIN_GLOBAL=${PATH_BIN_GLOBAL:-$(getvar PATH_BIN_GLOBAL)}
 set +o allexport
 
 # shellcheck disable=SC1091
@@ -58,9 +100,10 @@ CONDA_ENV_ARGMAP="$(getvar CONDA_ENV_ARGMAP)"
 
 # Adds lua folder to start of PATH so lua files called from there instead of /opt/miniconda3/envs/argmap/bin/argmap2mup
 #  QUESTION: Combine these?
-PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
-PATH_DIR_ARGMAP_LUA="$PATH_DIR_ARGMAP_SRC/lua"
-PATH="$PATH_DIR_ARGMAP_LUA:$PATH"
+  # echo "Updating PATH"
+  # QUESTION: add this to .env / netlify env instead?
+  PATH="$(getvar PATH_ADD_PATH):$PATH"
+
 # PANDOC - needed for pandoc-argamp.lua until lua reads config directly
 PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
 LUA_PATH=$(getvar LUA_PATH)
@@ -68,6 +111,8 @@ LUA_PATH=$(getvar LUA_PATH)
 LUA_CPATH=$(getvar LUA_CPATH)
 PATH_TEST_LOG=$(getvar PATH_TEST_LOG)
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
+  MAPJS_NODE_MODULES_PREFIX=$(getvar MAPJS_NODE_MODULES_PREFIX)
+  PATH_LUA_MODULES=$(getvar PATH_LUA_MODULES)
 set +o allexport
 
 case $ENV in
@@ -92,8 +137,7 @@ esac
 # Uses config file in the relevant mapjs directory to get correct mapjs paths
 # shellcheck source=/mapjs/scripts/mapjs.env # Stops shellcheck lint error
 source "$(getvar PATH_DIR_MAPJS_ROOT)/scripts/mapjs.env"
-
-source "$WORKSPACE/scripts/bash_aliases_argmap.sh"
+  source "$PATH_ARGMAP_ROOT/scripts/bash_aliases_argmap.sh"
 
 # Add pandoc bash completions
 eval "$(pandoc --bash-completion)"
@@ -136,7 +180,7 @@ PATH_PANDOC_GLOBAL=$(getvar PATH_PANDOC_GLOBAL)
 PATH_LUA_GLOBAL=$(getvar PATH_LUA_GLOBAL)
 
 # TODO: rename orig var to PATH_LUA_ARGMAP
-PATH_LUA_ARGMAP=$(getvar PATH_DIR_ARGMAP_LUA)
+  PATH_LUA_ARGMAP=$(getvar PATH_LUA_ARGMAP)
 
 # make site dependencies:
 PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
@@ -157,9 +201,16 @@ set +o allexport
 # Calling make site from here because environment vars seem to get lost otherwise
 case $ENV in
 netlify)
+    if [ "$(getvar TEST_SITE_DEPLOY)" = "true" ]; then
+      # TODO: would rather only call this when make test called, but not sure how
+      source "$PATH_ARGMAP_ROOT/test/test_scripts/bash_aliases_argmap_test.sh"
+      make test
+    fi
   make site
   ;;
 *)
+    # TODO: would rather only call this when make test called, but not sure how
+    source "$PATH_ARGMAP_ROOT/test/test_scripts/bash_aliases_argmap_test.sh"
   # QUESTION: Better to define above variables as part of make call instead of exporting them?
   make all # --warn-undefined-variables, -d for debugging
   ;;

@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.2.6
+
+- `scripts/argmap_init_script.sh`:
+  - Use new vars
+  - Define new vars
+  - Fix netlify specific logic.
+  - Add shopt and set no unset and pipefail and TRACE option for error checking.
+
 ## argmap 23.2.5
 
 - `scripts/git_hooks/pre-commit`: Use `PATH_ENVIRONMENT_GLOBAL`
