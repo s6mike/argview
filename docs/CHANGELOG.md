@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.3.1
+
+- `scripts/argmap_init_script.sh`: make PATH_FILE_ARGMAP_DOT_ENV and make install netlify.
+
 ## argmap 23.3.0
 
 - `makefile`:

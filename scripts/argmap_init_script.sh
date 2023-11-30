@@ -29,6 +29,9 @@ set -o allexport
   PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
   PATH_FILE_ARGMAP_DOT_ENV=config/argmap.env
   PATH_FILE_ARGMAP_DOT_ENV_DEFAULT=config/argmap-defaults.env
+  make "$PATH_FILE_ARGMAP_DOT_ENV"
+  source "$PATH_FILE_ARGMAP_DOT_ENV"
+
   case $ENV in
 
   netlify)
@@ -115,13 +118,6 @@ PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
   PATH_LUA_MODULES=$(getvar PATH_LUA_MODULES)
 set +o allexport
 
-case $ENV in
-netlify)
-  make install
-  ;;
-*) ;;
-esac
-
 # Covered by default init script
 # shellcheck source=/home/s6mike/scripts/bash_aliases.sh # Stops shellcheck lint error
 # source "$HOME/scripts/bash_aliases.sh"
@@ -156,12 +152,17 @@ eval "$(pandoc --bash-completion)"
 # shellcheck source=/home/s6mike/git_projects/argmap/test/test_scripts/bash_aliases_argmap_test.sh
 case $ENV in
 
-netlify) ;;
-*)
-  source "$WORKSPACE/test/test_scripts/bash_aliases_argmap_test.sh"
-  ;;
-esac
-
+  netlify)
+    set -o allexport
+    PATH_SHARE_GLOBAL=$(getvar PATH_SHARE_GLOBAL)
+    # PATH_CACHE=$(getvar PATH_CACHE)
+    set +o allexport
+    make install
+    # find . -type f -name yaml.so
+    # find . -name libyaml.so
+    ;;
+  *) ;;
+  esac
 set -o allexport
 
 PATH_PUBLIC=$(getvar PATH_PUBLIC)
