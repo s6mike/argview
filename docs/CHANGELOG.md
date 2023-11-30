@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.3.0
+
+- `makefile`:
+  - Add vars and recipes
+  - Use new vars, `MAPJS_NODE_MODULES_PREFIX`, `PATH_LUA_MODULES`, `PATH_ARGMAP_ROOT`, `PATH_SHARE_GLOBAL`, `PATH_BIN_LOCAL`
+  - Tidy code and comments.
+
 ## argmap 23.2.6
 
 - `scripts/argmap_init_script.sh`:
