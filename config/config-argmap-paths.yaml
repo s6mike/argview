@@ -31,7 +31,7 @@ PATH_FILE_CONFIG_MAPJS_PATHS_PROCESSED: ${PATH_MAPJS}/${PATH_CONFIG_MAPJS_PROCES
 PATH_FILE_ENV_MAPJS_PROCESSED: ${PATH_MAPJS}/${PATH_CONFIG_MAPJS_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED_MAPJS}.yaml
 
 # Processed config files are at top, so their results are used ahead of raw config files
-# QUESTION: Just check two config folders instead?
+# QUESTION: Just check two config folders instead? No, because other yaml files also there
 LIST_FILES_CONFIG_INPUT:
 - ${PATH_FILE_ENV_ARGMAP}
 - ${PATH_FILE_CONFIG_ARGMAP_PATHS} # This file
@@ -53,17 +53,12 @@ LIST_FILES_CONFIG_PROCESSED:
 - ${PATH_FILE_ENV_MAPJS_PROCESSED}
 - ${PATH_MAPJS}/${PATH_FILE_CONFIG_MAPJS_PROCESSED}
 
-# TODO: This looks like a mistake
-# - ${PATH_FILE_CONFIG_PROCESSED_VARIABLES}
-
 ## conda
-CONDA_ENV_ARGMAP: argmap
-CONDA_PREFIX: /opt/miniconda3/envs/argmap
-PATH_FILE_ENV_CONDA: ${PATH_DIR_CONFIG_ARGMAP}/environment-conda-argmap.yaml
+PATH_FILE_ENV_CONDA: ${PATH_DIR_CONFIG_ARGMAP}/environment-conda-${CONDA_ENV_ARGMAP}.yaml
 
 ## argmap
-PATH_DIR_SCRIPTS: ${PATH_DIR_ARGMAP_ROOT}/scripts
-PATH_DIR_ARGMAP_SRC: ${PATH_DIR_ARGMAP_ROOT}/src
+PATH_DIR_SCRIPTS: ${PATH_ARGMAP_ROOT}/scripts
+PATH_DIR_ARGMAP_SRC: ${PATH_ARGMAP_ROOT}/src
 
 ## layouts
 PATH_DIR_LAYOUTS: ${PATH_DIR_ARGMAP_SRC}/layouts
@@ -74,16 +69,16 @@ PATH_INCLUDES_MAPJS_CONTAINER_STANDARD: ${PATH_DIR_INCLUDES}/mapjs-map-container
 PATH_INCLUDES_ARGMAP_CONTROLS: ${PATH_DIR_INCLUDES}/mapjs-widget-controls.html
 
 ## Testing
-# TODO: Add variables for ${PATH_DIR_ARGMAP_ROOT}/test, /input, /examples, mapjs-json, markdown
+# TODO: Add variables for ${PATH_ARGMAP_ROOT}/test, /input, /examples, mapjs-json, markdown
 # QUESTION: Rename _YML to _ARGMAP, since YML used for config files?
-INPUT_FILE_YML: ${PATH_DIR_ARGMAP_ROOT}/test/input/example1-clearly-false-white-swan-simplified.yaml
-INPUT_FILE_YML_NOTES: ${PATH_DIR_ARGMAP_ROOT}/examples/example-2.yaml
-INPUT_FILE_JSON: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
-INPUT_FILE_MD0: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-0mapjs.md
-INPUT_FILE_MD: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md
-INPUT_FILE_MD2: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-2mapjs.md
-INPUT_FILE_MD_META: ${PATH_DIR_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
-INPUT_FILE_JSON2: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
-INPUT_FILE_JSON_LINKS: ${PATH_DIR_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
+INPUT_FILE_YML: ${PATH_ARGMAP_ROOT}/test/input/example1-clearly-false-white-swan-simplified.yaml
+INPUT_FILE_YML_NOTES: ${PATH_ARGMAP_ROOT}/examples/example-2.yaml
+INPUT_FILE_JSON: ${PATH_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json
+INPUT_FILE_MD0: ${PATH_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-0mapjs.md
+INPUT_FILE_MD: ${PATH_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-1mapjs.md
+INPUT_FILE_MD2: ${PATH_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-2mapjs.md
+INPUT_FILE_MD_META: ${PATH_ARGMAP_ROOT}/test/input/markdown/example1-clearly-false-white-swan-simplified-meta-mapjs.md
+INPUT_FILE_JSON2: ${PATH_ARGMAP_ROOT}/test/input/mapjs-json/example2-clearly-false-white-swan-v3.mup
+INPUT_FILE_JSON_LINKS: ${PATH_ARGMAP_ROOT}/test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json
 
 ...
