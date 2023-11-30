@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.2.5
+
+- `scripts/git_hooks/pre-commit`: Use `PATH_ENVIRONMENT_GLOBAL`
+
 ## argmap 23.2.4
 
 - `scripts/bash_aliases_argmap.sh`: Add `__check_config_read_echoes()` to check for echoes breaking output in `scripts/config_read_functions.lib.sh`.

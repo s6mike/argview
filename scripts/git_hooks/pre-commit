@@ -29,8 +29,8 @@ fi
 # using init_script to set up variables.
 source scripts/argmap_init_script.sh
 
-# Once conda env activated, $CONDA_PREFIX/bin will be sufficient.
-export PATH=$CONDA_PREFIX/envs/$CONDA_ENV_ARGMAP/bin:$PATH
+# Once conda env activated, $PATH_ENVIRONMENT_GLOBAL/bin will be sufficient.
+export PATH=$PATH_ENVIRONMENT_GLOBAL/envs/$CONDA_ENV_ARGMAP/bin:$PATH
 
 # Export conda environment argmap to yaml file
 #  QUESTION: Surely these two lines do the same thing?
