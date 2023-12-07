@@ -6,6 +6,21 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.0 BREAKING
+
+- `config/`:
+  - `argmap-defaults.env`: Replaces `scripts/argmap.env`, copy and customise defaults. BREAKING
+  - `environment-argmap-defaults.yaml`:
+    - Use new var names:
+      - PATH_ENVIRONMENT_GLOBAL
+      - PATH_PUBLIC
+      - PATH_PANDOC_SHARE_LOCAL
+      - PATH_FILE_CONVERT_LOCAL
+    - Remove deprecated var names in `environment-argmap-defaults.yaml` and mappings in `config/config-argmap.yaml`. BREAKING
+  - `config/config-argmap-paths.yaml`:
+    - Remove `PATH_FILE_ENV_ARGMAP_PRIVATE` BREAKING
+    - Move key vars to `config/argmap-defaults.env`.
+
 ## argmap 23.5.3
 
 - `makefile`:
