@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.5.3
+
+- `makefile`:
+  - Update rules for creating html from json
+  - Remove redundant make code
+
 ## argmap 23.5.2
 
 - `makefile`: site:
