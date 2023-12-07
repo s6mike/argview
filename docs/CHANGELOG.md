@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.4.1
+
+- `scripts/argmap_init_script.sh`:
+  - Use new var names
+  - Restructure script into 4 functions ready for future optimisation.
+
 ## argmap 23.4.0
 
 - Deprecate vars:
