@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.5
+
+- `src/layouts/templates/pandoc-mapjs-main-html5.html`: Update footer links to point to main branch plus new [mapjs/docs/README-argview.md](../mapjs/docs/README-argview.md).
+
 ## argmap 24.0.4
 
 - [README.md](../README.md): Minor updates to reflect move to new argview repo.
