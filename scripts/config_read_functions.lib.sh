@@ -132,10 +132,15 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   # Get nested key value pairs:
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
-  #   REMEMBER: This only expands variables in config files, not env variables
-  #     Might be useful to fix this, could then use env file for boot process
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$target_config_file" >"$output_file"
+  use_env_vars="$(cat "$PATH_FILE_ARGMAP_DOT_ENV" | sed 's/#.*//' | fgrep = | sed 's/=.*//' | sed 's/^/\$/' | tr '\n' ' ')"
+
+  if [ -z "$PATH_FILE_CONFIG_ARGMAP_PATHS" ]; then # only sources if necessary
+    source "$PATH_FILE_ARGMAP_DOT_ENV"             # Might not be necessary but just to ensure it's always used
+  fi
+  # Substitutes only specific env variables, found in argmap.env, to ensure no empty variables are substituted
+  "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$use_env_vars" >"$output_file"
+
   # TODO if no values found then quit
 
   # This line create new file, comment it out and output file will be expanded version of original
@@ -153,9 +158,9 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
       processed_metadata_file="--metadata-file=$PATH_FILE_CONFIG_ARGMAP_PATHS_PROCESSED"
     fi
     set -o noglob
-    set -f
+    tmpfile=$(mktemp) # Temp file because piping original file makes it empty for some reason
     # shellcheck disable=SC2086 # Quoting $processed_metadata_file makes it appear as an argument even when an empty string
-    pandoc /dev/null --output="$output_file" --metadata=PATH_DIR_ARGMAP_ROOT:"$PATH_DIR_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" $processed_metadata_file
+    pandoc /dev/null --metadata=PATH_ARGMAP_ROOT:"$PATH_ARGMAP_ROOT" --template="$target_config_file" --defaults="$PATH_FILE_PANDOC_DEFAULT_CONFIG_PREPROCESSOR" --metadata-file="$PATH_FILE_ENV_ARGMAP_PROCESSED" $processed_metadata_file | envsubst "$use_env_vars" >"$tmpfile" && mv "$tmpfile" "$output_file"
     set +o noglob
     target_config_file="$output_file"
 
