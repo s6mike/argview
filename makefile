@@ -239,7 +239,7 @@ site: $(FILES_SITE)
 # - `netlify.toml`: Add redirect from `index.html` to `output/html/index.html`.
 
 # REVIEW: Think I have this working now: for building sites, these should write to public folder directly, not via a symbolic link
-#		i.e. make site should write to public, make test should write to test output		
+#		i.e. make site should write to public, make test should write to test output	
 # 	Can I do that with a flag or something?
 
 # Instead of: make all,  __clean_repo, and also to remove symlnks
@@ -268,48 +268,27 @@ endif
 npm_audit_output.txt:
 	-npm audit fix --prefix "${MAPJS_NODE_MODULES_PREFIX}" --legacy-peer-deps >npm_audit_output.txt
 
-${PATH_DIR_MAPJS_ROOT}/node_modules:
-# TODO: Test for ENV netlify
-	npm install --prefix "${PATH_DIR_MAPJS_ROOT}"
+${PATH_DIR_MAPJS_ROOT}/package.json:
+${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 
-${PATH_FILE_YQ}:
-	-mkdir -p $$(dirname $@)
-# QUESTION: how to execute once go installed? Update PATH?
-# 	go install github.com/mikefarah/yq/v4@latest
-	-wget -qO $@ https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-	-chmod +x $@
-	-$@ --version
-
-# Install lua dependencies
-#		Ensure I'm in correct directory e.g. ~/git_projects/argmap/
-#		Running qa_rockspec will also install dependencies
-lua_modules/:
-#	TODO: split up this script into separate make actions:
-	scripts/qa_rockspec.sh
-
-# 	rockspec_file=$(_find_rockspec) # Gets absolute path
-# __test luarocks lint "$(__find_rockspec)"
-
-#   luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$CONDA_PREFIX/lib/"
-
-# # Running qa_rockspec will also install dependencies
-# Should be able to distinguish between dev and prod install with npm and thuse choose whether 
-# testcafe etc are installed.
-# So shouldn't need this:
-# # Dev tools
-# testcafe:
-# ifeq ($(MODE), dev)
-# 	npm install -g testcafe
-# endif
 
 # Generate html from json
-#		TODO: Replace mapjs/public/output X with vars
 # 	QUESTION Can I combine this with first v3.html rule?
-# QUESTION Only set 2hf -s flag in production mode?
-${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js
-	-mkdir -p "$(@D)"
+# Call make HTML_OPEN=true to open output file
+#	 QUESTION Only set 2hf -s flag in production mode?
+
+# QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d
+$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml
+# $(info Building $@ from JSON)
+	@-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-	npx --prefix "${PATH_DIR_MAPJS_ROOT}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}" && 2hf -ps "$<"
+# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
+	@if [ "$$HTML_OPEN" = "true" ]; then \
+		flags_2hf="-s"; \
+	else \
+		flags_2hf="-ps"; \
+	fi; \
+	2hf $$flags_2hf "$<"	
 
 # Generate .json from .yaml
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL)
