@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.5.0
+
+- `scripts/config_read_functions.lib.sh`:
+  - Specific env variables can now be substituted into .yaml env files, allowing variables in .env file to be referenced. Previously, all referenced vars had to be in yaml file.
+  - `config/pandoc-defaults-config-preprocessor.yaml`: Remove reference to `config/processed/environment-argmap-processed.yaml` as metadata file, since this needs to be used selectively due to file not being available during initial config boot.
+
 ## argmap 23.4.1
 
 - `scripts/argmap_init_script.sh`:
