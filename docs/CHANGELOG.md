@@ -6,6 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.3
+
+- Add [mapjs/docs/README-argview.md](../mapjs/docs/README-argview.md) as argview site documentation.
+
+## argmap 24.0.2
+
+- dependabot fix
+
+## argmap 24.0.1
+
+- dependabot fix
+
 ## argmap 24.0.0 BREAKING
 
 - `config/`:
