@@ -223,7 +223,13 @@ prints:
 # 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
-site: ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+# Ensures site_clean only run locally in prod mode (to clean up any dev files)
+ifeq (${MODE}, prod)
+ifneq (${ENV}, netlify)
+site: site_clean $(FILES_SITE)
+endif
+endif
+site: $(FILES_SITE)
 
 # start: site
 # start:
