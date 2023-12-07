@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.5.1
+
+- `makefile`: Use new var names
+
 ## argmap 23.5.0
 
 - `scripts/config_read_functions.lib.sh`:
