@@ -4,18 +4,6 @@
 
 <https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. Currently these can only be loaded and saved locally. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
-## Dependencies
-
-This library depends on the following projects:
-
-- [JQuery](http://jquery.com/)
-- [Underscore.Js](http://underscorejs.org/)
-- [JQuery HotKeys](http://jquery.com/)
-- [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
-- [Color JS](https://github.com/harthur/color)
-
-As of 11 Feb 23, it runs with the latest versions of all of these, except [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js) v2.0.0, which requires an insecure version of jQuery, so instead uses v1.1.3.
-
 ## Node Selection
 
 - You can only select one node at a time, selected nodes have a drop shadow.
