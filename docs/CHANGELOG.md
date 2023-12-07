@@ -6,6 +6,20 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.4.0
+
+- Deprecate vars:
+  - `config/environment-argmap-defaults.yaml`:
+    - CONDA_PREFIX in favour of PATH_ENVIRONMENT_GLOBAL
+    - PATH_DIR_PUBLIC in favour of PATH_PUBLIC
+    - PATH_PANDOC_LOCAL in favour of PATH_PANDOC_SHARE_LOCAL
+    - PATH_CONVERT_LOCAL in favour of PATH_FILE_CONVERT_LOCAL
+    - `config/config-argmap.yaml`: Add new > old mappings:
+      - CONDA_PREFIX: ${PATH_ENVIRONMENT_GLOBAL}
+      - PATH_DIR_PUBLIC: ${PATH_PUBLIC}
+      - PATH_PANDOC_SHARE_LOCAL: ${PATH_PANDOC_LOCAL}
+      - PATH_FILE_CONVERT_LOCAL: ${PATH_CONVERT_LOCAL}
+
 ## argmap 23.3.2
 
 - `config/config-argmap-paths.yaml`: Use new vars and tidy.
