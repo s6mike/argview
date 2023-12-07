@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 23.5.2
+
+- `makefile`: site:
+  - cleans when prod but not netlify.
+  - Uses make variable $(FILES_SITE)
+
 ## argmap 23.5.1
 
 - `makefile`: Use new var names
