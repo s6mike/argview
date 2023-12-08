@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.7
+
+- Tidy comments:
+  - `makefile`
+  - `netlify.toml`
+
 ## argmap 24.0.6
 
 - [mapjs/docs/README-argview.md](../mapjs/docs/README-argview.md): Remove 'Dependencies' section.
