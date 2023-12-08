@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.10
+
+- `config/argmap-defaults.env`: Fix `PATH_ARGMAP_ROOT` default to be `$(pwd)` not `.`.
+
 ## argmap 24.0.9
 
 - Update example files to use new html template:
