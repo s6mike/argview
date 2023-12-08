@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.0.9
+
+- Update example files to use new html template:
+  - `docs/example-updated.html`
+  - `mapjs/docs/legacy-mapjs-example-map.html`
+
 ## argmap 24.0.8
 
 - `mapjs/`: Fix vulnerability:
