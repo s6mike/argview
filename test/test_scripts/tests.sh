@@ -103,11 +103,11 @@ esac
 
 # Checks make dependency logic
 #   TODO: Use vars
-__test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html" mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.json "$test_open_html"                                       #9/1
-__test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html" mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-2mapjs_argmap1.json "$test_open_html" #10/2
+__test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html" mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.json "$test_open_html" #9/1
+# __test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html" mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-2mapjs_argmap1.json "$test_open_html" #10/2
 
-__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #11/3
-# __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"   #12/4
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/2
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #11/3
 
 case $(getvar ENV) in
 netlify) ;;
