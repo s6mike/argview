@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.1
+
+- Update with new buttons:
+  - `docs/example-updated.html`
+  - `mapjs/docs/legacy-mapjs-example-map.html`
+
 ## argmap 24.4.0
 
 - `src/layouts/includes/mapjs-widget-controls.html`:
@@ -14,6 +20,7 @@
     - `mapjs/src/core/map-model.js`: Map `saveMap()` to new `saveFile()` utility function.
   - Rename old `Save` button (for saving locally) to `Download`.
   - Rename `Load` button to `Upload`.
+- [README-argview.md](../mapjs/docs/README-argview.md): Add details about saving online maps.
 - `src/lua/client_argmap2mapjs.lua`: Call `loadJson()` instead of `loadMap()`.
 
 ## argmap 24.3.1
