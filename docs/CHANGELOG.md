@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.2
+
+- `test/input/mapjs-json/`:
+  - Add mapjs json schema reference to all json files.
+  - Remove trailing dots from node texts for better presentation.
+    - Update with same fix: `test/input/markdown/`
+
 ## argmap 24.4.1
 
 - Update with new buttons:
