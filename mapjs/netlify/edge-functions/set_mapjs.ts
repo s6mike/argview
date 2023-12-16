@@ -45,13 +45,13 @@ export default async (_req: Request, _context: Context) => {
 
   map_id = map_data.map_id;
   if (!map_id) {
-    console.log('Calculating hash');
+    // console.log('Calculating hash');
     original_root_node_title = map_data && map_data.original_root_node_title;
 
     if (original_root_node_title) {
       map_title = original_root_node_title;
     } else {
-      console.log('Looking for root_node_title.'); // Is this ever needed? Shouldn't original_title always be written in?
+      // console.log('Looking for root_node_title.'); // Is this ever needed? Shouldn't original_title always be written in?
       map_title = (map_data && map_data.ideas[1] && map_data.ideas[1].title) || 'default title';
       map_data.original_root_node_title = map_title; // Adds original_root_node_title to map
     }
