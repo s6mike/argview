@@ -791,6 +791,11 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 
     return true;
   };
+  this.saveMap = function (source) {
+    analytic('saveMap', source);
+    const mapJson = this.getIdea();
+    Utilities.saveFile(mapJson);
+  };
   this.downloadMap = function (source) {
     analytic('downloadMap', source);
     const mapJson = this.getIdea(),
