@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.2.1
+
+- `scripts/json_check_theme.sh`: Add utility function to extract theme data from a file for comparison.
+
 ## argmap 24.2.0
 
 - `mapjs/public/schemas/`: Add mapjs json schemas:
