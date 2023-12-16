@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.3
+
+- `makefile`: `output_clean:` Add extra test output file.
+
 ## argmap 24.4.2
 
 - `test/input/mapjs-json/`:
