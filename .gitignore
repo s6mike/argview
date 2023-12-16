@@ -26,6 +26,8 @@ mapjs/public/index.html
 examples/*
 src/layouts/includes/webpack-dist-tags.html
 scripts/experiments.sh
+test/schemas
+test/schemas/*
 test/output*/*
 tmp/
 9bee0f80d302c53bc6ca6edbf3789ef438394fb8.png
