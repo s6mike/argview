@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.9
+
+- `mapjs/netlify/edge-functions/set_mapjs.ts`: Remove 2 excessive console logs.
+
 ## argmap 24.4.8
 
 - `.gitignore`: Ignore `.VSCode` counter folder.
