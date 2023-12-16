@@ -7,6 +7,19 @@
 [build]
   publish = "mapjs/public/" # The path to your static content folder
   command = "./scripts/argmap_init_script.sh" # Command to start your dev server
+  edge_functions = "mapjs/netlify/edge-functions"
+
+[[edge_functions]]
+  path = "/sm"
+  function = "set_mapjs"
+
+[[edge_functions]]
+  path = "/gm"
+  function = "get_mapjs"
+
+[[edge_functions]]
+  path = "/gmh"
+  function = "shared_functions"
 
 [build.environment]
   ENV = "netlify"
