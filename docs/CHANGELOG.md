@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.14
+
+- `mapjs/src/core/map-model.js`: Update `Download` map filename to use root node title rather than now obsolete document title.
+
 ## argmap 24.4.13
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Fix `Upload` button typo.
