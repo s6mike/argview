@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.1.1
+
+- `test/test_scripts/tests.sh`: Replace test for deleted json dependency now I've decided to remove make rules which generate the json files.
+
 ## argmap 24.1.0
 
 - `makefile`: Add `make docs` to build doc example htmls.
