@@ -799,8 +799,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   this.downloadMap = function (source) {
     analytic('downloadMap', source);
     const mapJson = this.getIdea(),
-      mapOutput = JSON.stringify(mapJson);
-    Utilities.downloadToFile(mapOutput, mapJson.title + '.json', 'application/json');
+      mapOutput = JSON.stringify(mapJson),
+      title = mapJson.ideas[1] && mapJson.ideas[1].title || mapJson.original_root_node_title || 'default title';
+    Utilities.downloadToFile(mapOutput, title + '.json', 'application/json');
   };
 
   // Not currently very useful, so removed button:
