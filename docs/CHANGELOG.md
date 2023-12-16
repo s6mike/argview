@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.8
+
+- `.gitignore`: Ignore `.VSCode` counter folder.
+
 ## argmap 24.4.7
 
 - `mapjs/public/schemas/mapjs-json-theme.json`: Fix typo in `$id` field.
