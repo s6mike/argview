@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.5
+
+- `makefile`: `test_netlify:` Attempt to use netlify dev for testing, not working yet.
+
 ## argmap 24.4.4
 
 - `makefile`: `dev:` Initialise netlify dev.
