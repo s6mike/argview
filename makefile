@@ -21,7 +21,8 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean install luarocks_clean npm npm_audit pandoc prints site test # dev
+.PHONY: all config public --conda output_clean site_clean clean docs install luarocks_clean npm npm_audit pandoc prints site test # dev
+# .LOW_RESOLUTION_TIME: $(FILES_HTML_DOCS) ${PATH_OUTPUT_PUBLIC}/%.json %.yaml
 
 # Define variables
 # := simple, assigned once
@@ -99,6 +100,7 @@ FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
 FILES_SITE = ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
 FILES_TEMPLATE_HTML := src/layouts/templates/pandoc-mapjs-main-html5.html ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/layouts/includes/argmap-head-element.html src/layouts/includes/argmap-input-widget.html src/layouts/includes/mapjs-map-container.html src/layouts/includes/mapjs-widget-controls.html
 FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
+FILES_HTML_DOCS = docs/example-updated.html ${PATH_DIR_MAPJS_ROOT}/docs/legacy-mapjs-example-map.html
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
@@ -108,12 +110,14 @@ rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 all: config
 # Optional dependencies not used by netlify.
 ifneq (${ENV}, netlify)
-all: | public --conda $(LUA_MODULES_LOCAL)
+all: | docs public --conda $(LUA_MODULES_LOCAL)
 endif
 
 config: ${LIST_FILES_CONFIG_PROCESSED}
 --conda: | $(LINK_TARGETS_CONDA)
 public: | $(LINK_TARGETS_PUBLIC)
+
+docs: $(FILES_HTML_DOCS)
 
 # TODO Just run conda env script?
 # if in folder with config/environment-conda-argmap.yaml
@@ -271,6 +275,12 @@ ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 # 	QUESTION Can I combine this with first v3.html rule?
 # Call make HTML_OPEN=true to open output file
 #	 QUESTION Only set 2hf -s flag in production mode?
+
+${PATH_DIR_MAPJS_ROOT}/docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
+	cp -- "$<" "$@"
+
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/example-updated.html
+	cp -- "$<" "$@"
 
 # QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d
 $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json $(FILES_TEMPLATE_HTML) config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml
