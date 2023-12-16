@@ -8,6 +8,7 @@ argmap.code-workspace
 .vscode/*
 !.vscode/launch.json
 !.vscode/settings.json
+.VSCodeCounter
 archived
 includes/webpack-dist-tags.html
 
