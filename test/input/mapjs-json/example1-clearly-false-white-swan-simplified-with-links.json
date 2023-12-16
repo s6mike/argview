@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/mapjs-json.json",
   "title": "All swans are white.",
   "id": "root",
   "attr": {

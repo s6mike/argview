@@ -1,13 +1,14 @@
 {
+  "$schema": "../../schemas/mapjs-json.json",
   "ideas": {
     "1": {
-      "title": "Map 2: All swans are white.",
+      "title": "Map 2: All swans are white",
       "ideas": {
         "1": {
           "title": "group",
           "ideas": {
             "1": {
-              "title": "Not all swans are white.",
+              "title": "Not all swans are white",
               "id": "3"
             }
           },
@@ -21,11 +22,11 @@
           "title": "group",
           "ideas": {
             "1": {
-              "title": "Every swan I’ve ever seen is white.",
+              "title": "Every swan I’ve ever seen is white",
               "id": "5"
             },
             "2": {
-              "title": "These swans are representative of all swans.",
+              "title": "These swans are representative of all swans",
               "id": "6"
             }
           },
