@@ -71,7 +71,7 @@ local function convert_yaml()
   local container = window.mapInstance.container_argmap1
   -- QUESTION: Could instead write to the JSON script item?
   -- First argument in call: container being passed as this. Not sure why
-  window.loadMap(container, mapjs)
+  window.loadJson(container, mapjs)
 end
 
 -- TODO: This is now implemented in map-model.js as readFile, so call that instead
