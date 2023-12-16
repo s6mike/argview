@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/mapjs-json.json",
   "id": "root",
   "formatVersion": 3,
   "ideas": {
@@ -127,8 +128,8 @@
   "title": "text options",
   "links": [
     {
-      "ideaIdFrom": 22,
-      "ideaIdTo": 5,
+      "ideaIdFrom": "22",
+      "ideaIdTo": "5",
       "attr": {
         "style": {
           "color": "red",

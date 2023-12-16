@@ -8,9 +8,9 @@ This is an example of an argument about a donkey!
 ``` {.argmap name="An argument about a donkey" to="js"}
 "Brunellus is irrational":
   r1:
-    "Brunellus is a donkey.":
-    "All donkeys are irrational.":
+    "Brunellus is a donkey":
+    "All donkeys are irrational":
   o1:
-    "Brunellus studied in Paris.":
-    "-Most who study in Paris are rational.":
+    "Brunellus studied in Paris":
+    "-Most who study in Paris are rational":
 ```
