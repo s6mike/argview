@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.21
+
+- `package.json`: Update `netlify-cli` package for `netlify dev`.
+
 ## argmap 24.4.20
 
 - `mapjs/netlify/edge-functions/get_mapjs.ts`: Block `map_id` requests which don't begin with `mapjson_`.
