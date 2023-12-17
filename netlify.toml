@@ -26,7 +26,6 @@
   # QUESTION: add?
   #   PATH_BIN_LOCAL = "."
   # QUESTION: remove? Since env-arg-defaults has DIR_PROJECTS: ${PATH_PUBLIC}
-  DIR_PROJECTS = "./mapjs/public"
   PATH_DIR_SCRIPTS = "scripts"
   PATH_BIN_GLOBAL = "."
 
@@ -49,10 +48,12 @@
 
 [context.production.environment]
   MODE = "prod"
+  DIR_PROJECTS = "." # So debug logs not visible
 
 [context.dev.environment]
   ENV = "netlify"
   MODE = "dev"
+  DIR_PROJECTS = "./mapjs/public" # So debug logs visible
   # NETLIFY_BUILD_DEBUG = "true"
 
 # sample dev block in the toml
