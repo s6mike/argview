@@ -43,6 +43,7 @@ PATH_PROFILE_LOCAL ?= NULL4
 PATH_BIN_GLOBAL ?= NULL5
 PATH_FILE_CONVERT_GLOBAL ?= NULL6
 PATH_FILE_GDRIVE_LOCAL ?= NULL7
+PATH_INPUT_LOCAL ?= NULL8
 
 # 	Need to export required variables at end of argmap_init_script.sh:
 
@@ -79,21 +80,22 @@ LUAROCKS_GLOBAL := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
 LUA_MODULES_LOCAL := ${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/manifest
 PANDOC := ${PATH_BIN_GLOBAL}/pandoc
 
-# See rule below:
-# 	DIRS_KEY := test/output mapjs/public/input/mapjs-json mapjs/public/input/markdown # html
+# TODO: Use var for ${PATH_INPUT_LOCAL}/markdown etc
+ifneq (${PATH_INPUT_LOCAL}, NULL8) # Ensures searches only made once PATH_INPUT_LOCAL instantiated.
+FILES_MD = $(shell find ${PATH_INPUT_LOCAL}/markdown -type f -iname "*.md")
+FILES_MAPJS_MUP = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.mup" )
+FILES_MAPJS_JSON = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.json" )
+# FILES_MAPJS_ALL = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
+endif
 
-# TODO: Use var for mapjs/public/input/markdown etc
-FILES_MD = $(shell find test/input/markdown -type f -iname "*.md")
-FILES_MAPJS_JSON = $(shell find test/input/mapjs-json -type f -iname "*.json" )
-FILES_MAPJS_MUP = $(shell find test/input/mapjs-json -type f -iname "*.mup" )
-# FILES_MAPJS_ALL = $(shell find test/input/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
+FILES_MAPJS_FROM_MUP = $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.mup,${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json,${FILES_MAPJS_MUP})
 
 # FILES_HTML_FROM_MD := $(foreach file,$(FILES_MD),$(patsubst mapjs/public/input/markdown/%.md,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(file)))
 FILES_HTML_FROM_MD := ${FILES_MD:test/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
 
 # Can't use above pattern because it includes files which don't match the pattern
-FILES_HTML_FROM_JSON := $(patsubst test/input/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
-FILES_HTML_FROM_JSON += $(patsubst test/input/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
+FILES_HTML_FROM_JSON := $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
+FILES_HTML_FROM_JSON += $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
 FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JSON})
 
 FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
@@ -214,8 +216,9 @@ npm_audit: | npm npm_audit_output.txt
 
 prints:
 	$(info FILES_MD: $(FILES_MD))
-	$(info FILES_MAPJS_JSON: ${FILES_MAPJS_JSON})
 	$(info FILES_MAPJS_MUP: ${FILES_MAPJS_MUP})
+	$(info FILES_MAPJS_FROM_MUP: $(FILES_MAPJS_FROM_MUP))
+	$(info FILES_MAPJS_JSON: ${FILES_MAPJS_JSON})
 	$(info FILES_HTML_FROM_JSON: ${FILES_HTML_FROM_JSON})
 	$(info FILES_HTML_FROM_MD: ${FILES_HTML_FROM_MD})
 # $(info PATH_PUBLIC:)
@@ -309,7 +312,7 @@ $(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC
 	else \
 		flags_2hf="-ps"; \
 	fi; \
-	2hf $$flags_2hf "$<"	
+	2hf $$flags_2hf "$<"
 
 # Generate .json from .yaml
 ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL)
@@ -317,16 +320,16 @@ ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/%.yaml config/proce
 	a2m "$<" "$@"
 
 # Copy .json from input to output, before generating html
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.json
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/mapjs-json/%.json
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_OUTPUT_LOCAL}/%.json
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_OUTPUT_LOCAL}/mapjs-json/%.json
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
 # Copy .mup from input to output, before generating html
-${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
+$(FILES_MAPJS_FROM_MUP): ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_LOCAL}/mapjs-json/%.mup
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
@@ -399,10 +402,6 @@ $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	@-mkdir --parent "$(@D)"
 # realpath generates path relative to path_public
 	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
-
-# Makes required folders
-# $(DIRS_KEY):
-# 	@-mkdir --parent "$(@D)"
 
 # Add index.html (should be called locally only)
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
