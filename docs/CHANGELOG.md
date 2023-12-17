@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.4.19
+
+- `mapjs/public/schemas/`: Update meta-schema reference to draft version supported by vscode checker.
+  - `mapjs-json.json`: Also add more detailed description.
+  - `mapjs-json-theme.json`
+
 ## argmap 24.4.18
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Reword latest map loaded message and add `map_id`.
