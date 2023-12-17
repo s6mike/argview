@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/mapjs-json.json",
+  "$schema": "https://argview.org/schemas/mapjs-json.json",
   "ideas": {
     "1": {
       "title": "Map 2: All swans are white",
