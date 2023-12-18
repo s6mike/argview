@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
-  "$id": "https://argview.org/schemas/mapjs-json-theme.json",
+  "$id": "https:/argview.org/schemas/mapjs-json-theme.json",
   "type": "object",
   "additionalProperties": false,
   "default": {},
