@@ -295,7 +295,7 @@ ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 ${PATH_DIR_MAPJS_ROOT}/docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
 	cp -- "$<" "$@"
 
-docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
+${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/example-updated.html
 	cp -- "$<" "$@"
 
 # QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d

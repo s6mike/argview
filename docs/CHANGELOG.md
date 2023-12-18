@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.12
-
-- `makefile`: Fix make docs rule.
-
 ## argmap 24.4.11
 
 - `mapjs/docs/README-argview.md`: Add reference to schema.
