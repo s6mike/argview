@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.0.12
-
-- `.vscode/launch.json`: Update netlify dev debug launch profile for edge functions.
-
 ## argmap 24.0.11
 
 - `mapjs/.vscode/settings.json`: Update to activate vscode netlify edge functions support.
