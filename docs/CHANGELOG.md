@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.16
-
-- Add: `mapjs/tsconfig.json` for edge functions files.
-
 ## argmap 24.4.15
 
 - `mapjs/package.json`: Add typescript as dev dependency.
