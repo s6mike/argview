@@ -13,8 +13,6 @@ Online maps can be loaded using these url parameters:
 - `ornt=[original_root_node_title]`. This is the original name of the topmost root in the argument map. It's saved as a property in the mapjs json file.
 - `map_id=[map_hash]`: `[map_hash]` being the first 10 characters of a SHA256 hash of `[original_root_node_title]`. This is saved as a property in the mapjs json file.
 
-See [mapjs-json.json](../public/schemas/mapjs-json.json) for the `mapjs-json` data format schema.
-
 ## Node Selection
 
 - You can only select one node at a time, selected nodes have a drop shadow.
