@@ -5,8 +5,8 @@
       "icon": "terminal-bash",
       "args": [
         "--init-file",
-        "/home/s6mike/git_projects/argmap/scripts/bash_aliases_mapjs.sh"
-      ]
+        "/home/s6mike/git_projects/argmap/scripts/bash_aliases_mapjs.sh",
+      ],
     },
     "zsh": {
       "path": "zsh"
@@ -22,12 +22,5 @@
       "path": "pwsh",
       "icon": "terminal-powershell"
     }
-  },
-  "deno.enable": true,
-  "deno.enablePaths": [
-    "netlify/edge-functions"
-  ],
-  "deno.unstable": true,
-  "deno.importMap": ".netlify/edge-functions-import-map.json",
-  "deno.path": "/home/s6mike/.config/netlify/deno-cli/deno"
+  }
 }
