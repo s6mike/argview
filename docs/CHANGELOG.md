@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.1.0
-
-- `makefile`: Add `make docs` to build doc example htmls.
-
 ## argmap 24.0.13
 
 - `makefile`: Fix some bugs forcing repeated builds.
