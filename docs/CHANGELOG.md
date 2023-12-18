@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.11
-
-- `mapjs/docs/README-argview.md`: Add reference to schema.
-
 ## argmap 24.4.10
 
 - `mapjs/public/schemas/mapjs-json.json`: Add new online saved fields to schema:
