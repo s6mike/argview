@@ -1,5 +1,4 @@
 {
-  "$schema": "../../schemas/mapjs-json.json",
   "theme": {
     "layout": {
       "orientation": "top-down",
