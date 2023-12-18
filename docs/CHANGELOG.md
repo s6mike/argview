@@ -6,13 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.23
-
-- `makefile`:
-  - Fix paths in json target rules.
-  - Fix issue with copying json files from mup files.
-  - Use `${PATH_INPUT_LOCAL}` more instead of `test/input`.
-
 ## argmap 24.4.22
 
 - `netlify.toml`: Configure `DIR_PROJECTS` to be public on dev env only, not production, so test log output not visible in production.
