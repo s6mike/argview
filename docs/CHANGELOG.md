@@ -6,13 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.2.0
-
-- `mapjs/public/schemas/`: Add mapjs json schemas:
-  - `mapjs-json.json`: For all properties apart from `theme`.
-  - `mapjs/public/schemas/mapjs-json-theme.json`: For `theme` property.
-- `.gitignore`: Ignore symlink used to maintain relative theme paths for symlinked mapjs json files.
-
 ## argmap 24.1.1
 
 - `test/test_scripts/tests.sh`: Replace test for deleted json dependency now I've decided to remove make rules which generate the json files.
