@@ -6,7 +6,7 @@ module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
   'use strict';
   const clickMethodNames =
     // Removed: 'insertIntermediateGroup', 'openAttachment', 'setInputEnabled', // Because irrelevant or dysfunctional
-    ['saveMap', 'downloadMap', 'resetView', 'scaleUp', 'scaleDown', 'addSubIdea', 'addGroupSubidea', 'editNode', 'removeSubIdea', 'insertIntermediate', 'toggleCollapse',
+    ['downloadMap', 'resetView', 'scaleUp', 'scaleDown', 'addSubIdea', 'addGroupSubidea', 'editNode', 'removeSubIdea', 'insertIntermediate', 'toggleCollapse',
       'undo', 'redo', 'cut', 'copy', 'paste', 'toggleAddLinkMode', 'insertRoot', 'makeSelectedNodeRoot'],
     // No buttons for these:
     // 'addSiblingIdea', 'activateChildren', 'activateNodeAndChildren', 'activateSiblingNodes', 'editIcon'],

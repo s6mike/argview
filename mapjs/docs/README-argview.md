@@ -4,14 +4,12 @@
 
 <https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
-As well as being uploaded and downloaded locally, maps can be saved online for ease of access and collaboration by clicking the save button.
-
-When a map is loaded from a json file generated from `argmap.yaml` data, argview will check whether a more recent version of the same file (identified using the `original_root_node_title`) has been saved online, in which case this version will automatically be downloaded.
-
-Online maps can be loaded using these url parameters:
+As well as being loaded and saved locally, maps which have previously been saved online can be loaded using these url parameters:
 
 - `ornt=[original_root_node_title]`. This is the original name of the topmost root in the argument map. It's saved as a property in the mapjs json file.
 - `map_id=[map_hash]`: `[map_hash]` being the first 10 characters of a SHA256 hash of `[original_root_node_title]`. This is saved as a property in the mapjs json file.
+
+When a map is loaded from a json file generated from `argmap.yaml` data, argview will check whether a more recent version of the same file (identified using the `original_root_node_title`) has been saved online, in which case this version will automatically be downloaded. This allows online collaboration.
 
 ## Node Selection
 
