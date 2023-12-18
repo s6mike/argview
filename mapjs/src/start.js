@@ -20,7 +20,7 @@ Utilities.Logger.log(process.env.NODE_ENV + ' mode');
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 //   new MAPJS.Theme[x] ?
 // To change, call e.g. changeTheme(map, MAPJS.v1)
-MAPJS.arg = require('../src/themes/argmap-theme.json');
+MAPJS.arg = require('../src/themes/argmap-theme-v1.json');
 MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
 MAPJS.topdown = require('../src/themes/top-down-simple.json');
 MAPJS.compact = require('../src/themes/compact.json');
