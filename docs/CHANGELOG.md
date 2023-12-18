@@ -6,16 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.2.2
-
-- `mapjs/netlify/edge-functions`: Add edge function files for saving and loading maps online as blobs.
-  - Add dependencies (some duplication between argmap and mapjs):
-    - `package.json`
-    - `package-lock.json`
-    - `mapjs/package.json`
-    - `mapjs/package-lock.json`
-  - `netlify.toml`: Add edge function config.
-
 ## argmap 24.2.1
 
 - `scripts/json_check_theme.sh`: Add utility function to extract theme data from a file for comparison.
