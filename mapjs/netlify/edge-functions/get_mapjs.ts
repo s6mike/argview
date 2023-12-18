@@ -15,25 +15,19 @@ export default async (_req: Request, _context: Context) => {
   let blob;
 
   if (map_id) {
-    // TODO: Use env var for mapjson_
-    if (map_id.startsWith('mapjson_')) {
-      try {
-        blob = await store_mapjs.getWithMetadata(map_id, { type: 'json' });
-      } catch (error) {
-        console.error('Failed to retrieve map ' + map_id + ' with error: ' + error)
-        return Response.error();
-      }
-      const map_data = blob && blob.data;
-      if (map_data) {
-        map_data.map_id = map_id;
-        console.log('Retrieved map: ' + map_id);
-        return Response.json(map_data);
-      } else {
-        console.error('Failed to retrieve map: ' + map_id);
-        return undefined;
-      }
+    try {
+      blob = await store_mapjs.getWithMetadata(map_id, { type: 'json' });
+    } catch (error) {
+      console.error('Failed to retrieve map ' + map_id + ' with error: ' + error)
+      return Response.error();
+    }
+    const map_data = blob && blob.data;
+    if (map_data) {
+      map_data.map_id = map_id;
+      console.log('Retrieved map: ' + map_id);
+      return Response.json(map_data);
     } else {
-      console.error("Blocked request for map_id '" + map_id + "'");
+      console.error('Failed to retrieve map: ' + map_id);
       return undefined;
     }
   } else {

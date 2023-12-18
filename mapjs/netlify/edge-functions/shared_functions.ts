@@ -10,7 +10,6 @@ export function generateShortHash(inputData: string): string {
 
 // Function to generate a map hash based on map_title
 export function generateMapHash(map_title: string): string {
-  // TODO: Use env var for mapjson_
   return 'mapjson_' + generateShortHash(map_title).substring(0, 10);
 }
 
