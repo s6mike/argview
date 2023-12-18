@@ -386,10 +386,10 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "default": "https://argview.org/schemas/mapjs-json.json",
+      "default": "../../schemas/mapjs-json.json",
       "title": "The $schema Schema",
       "examples": [
-        "https://argview.org/schemas/mapjs-json.json"
+        "../../schemas/mapjs-json.json"
       ]
     },
     "title": {

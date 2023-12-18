@@ -6,11 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.17
-
-- `mapjs/public/schemas/mapjs-json.json`: Update `$schema` default and example values to `https://argview.org/schemas/mapjs-json.json`.
-- `test/input/mapjs-json/`: Update all `$schema` fields to refer to `https://argview.org/schemas/mapjs-json.json`.
-
 ## argmap 24.4.16
 
 - Add: `mapjs/tsconfig.json` for edge functions files.
