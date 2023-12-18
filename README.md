@@ -7,8 +7,6 @@
 
 <https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. Currently these can only be loaded and saved locally. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
-See [README-argview.md](mapjs/docs/README-argview.md) for how to use the website itself.
-
 <details open>
 <summary>
 <em>Collapsible Section: <strong>Table of Contents</strong></em>
@@ -77,7 +75,7 @@ One of the tools is a filter for [Pandoc](https://pandoc.org/), a universal docu
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for change notes.
 
-This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. `makefile` and contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
+This has been tested on Debian only. I believe the Lua code should be portable, but I'm not familiar enough with Lua to know for sure. Some of the supporting code e.g. contents of `/scripts` may work on other Linux distros or even MacOS, but will not work on Windows.
 
 1. Set env variable `PATH_ARGMAP_ROOT` to app installation root folder.
 
@@ -91,7 +89,7 @@ This has been tested on Debian only. I believe the Lua code should be portable, 
 
 5. For additional functionality, see **Dependencies** section.
 
-Note that `makefile` does not yet do a full install of argview, some of the install is in the form of notes and useful commands. However, it does do enough to install it to netlify (when combined with `netlify.toml`) to provide maps online. The symlink generation and cleanup has been moved to the `makefile` which can be run with `make all`.
+Note that `scripts/install.sh` is more a collection of notes and useful commands for my own reference and is not yet in a state where it can be run to install the app. The sequence of instructions has not been tested recently, however I do update it as the app changes, so it should represent the process I need to follow for installation on my own machine. The symlink generation and cleanup has been moved to the `makefile` which can be run with `make all`.
 
 ### Dependencies
 
