@@ -1,5 +1,8 @@
 {
-  "deprecated": "true",
+  "$schema": "https://argview.org/schemas/mapjs-json-theme.json",
+  "id": "mapjs/src/themes/argmap-theme-v1.json",
+  "title": "argmap theme",
+  "description": "argmap theme for displaying Argument Maps, adapted from theme used in original argmap github repo.",
   "node": [
     {
       "border": {
