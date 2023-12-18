@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.6.2
+
+- `netlify.toml`:
+  - Update plugins:
+    - debug-cache only runs on branch-deploy.
+    - lighthouse only runs on prod.
+  - Use branch-deploy env instead of dev.
+
 ## argmap 24.6.1
 
 - `mapjs/src/start.js`: Update to use new `argmap-theme-v1.json` filename.

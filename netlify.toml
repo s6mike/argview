@@ -50,8 +50,8 @@
   MODE = "prod"
   DIR_PROJECTS = "." # So debug logs not visible
 
-[context.dev.environment]
-  ENV = "netlify"
+[context.branch-deploy.environment]
+  ENV = "netlify" # TEST: Remove, since in build.environment
   MODE = "dev"
   DIR_PROJECTS = "./mapjs/public" # So debug logs visible
   # NETLIFY_BUILD_DEBUG = "true"
@@ -73,15 +73,16 @@
 package = "@netlify/plugin-sitemap"
 
 [[plugins]]
-package = "@netlify/plugin-lighthouse"
-# optional, deploy the lighthouse report to a path under your site
-  # [plugins.inputs.audits]
-  #   output_path = "reports/lighthouse.html"
-[[plugins]]
-package = "netlify-plugin-debug-cache"
-
-[[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
   # "/home/linuxbrew/.linuxbrew/lib/", "mapjs/node_modules/"
   paths = ["/opt/buildhome/.cache", "/opt/build/repo/yq", "/opt/build/repo/config/processed/", "/home/linuxbrew/.linuxbrew/lua_modules/"]
+
+[[context.branch-deploy.plugins]]
+package = "netlify-plugin-debug-cache"
+
+[[context.production.plugins]]
+package = "@netlify/plugin-lighthouse"
+# optional, deploy the lighthouse report to a path under your site
+  # [plugins.inputs.audits]
+  #   output_path = "reports/lighthouse.html"
