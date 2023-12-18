@@ -6,12 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.6.0
-
-- `mapjs/src/themes/argmap-theme-v1.json`: Add version number to theme filename, plus add new fields: `schema`, `id`, `title`, `description`
-
-DEPRECATE: old argmap-theme file.
-
 ## argmap 24.5.0
 
 - `mapjs/public/schemas/`:
