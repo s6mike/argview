@@ -1,5 +1,4 @@
 {
-  "$schema": "../../schemas/mapjs-json.json",
   "theme": {
     "layout": {
       "orientation": "top-down",
@@ -886,6 +885,6 @@
       }
     }
   },
-  "title": "Example 2: Clearly False - White Swan",
+  "title": "Example 2: Clearly False -WhiteSwan",
   "links": []
 }
