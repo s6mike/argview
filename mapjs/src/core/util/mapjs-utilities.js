@@ -136,7 +136,7 @@ module.exports = {
           const newMapJson = await this.getMap(index, instanceElement, undefined, originalMapTitle, undefined, 'final'); // Final stops infinite checks for newer version if this call fails
           // Not necessarily different. TODO: Check?
           //   Can I check metadata timestamp? or content hash? #QUESTION
-          Logger.info('Have loaded latest version of ' + request_url + '(map_id ' + map_id + ') as map ' + index);
+          Logger.info('Have loaded latest version of map' + index + ' from: ' + request_url);
           mapJson = newMapJson; // Use the updated map data
         } catch (error) {
           Logger.error('Failed to update map ' + index + ': ' + originalMapTitle + '. Keeping original data.');
