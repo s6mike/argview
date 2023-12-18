@@ -143,7 +143,6 @@ output_clean:
 	rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
 	rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
 #		TODO: Replace with vars:
-	rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/html/example1-clearly-false-white-swan-simplified-2mapjs.html
 	rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
 # rm -rf ${PATH_ARGMAP_ROOT}/mapjs/public/output/png
 # argmap cleans
