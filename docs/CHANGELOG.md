@@ -6,13 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.4.13
-
-- `src/layouts/includes/mapjs-widget-controls.html`: Fix `Upload` button typo.
-  - Update with new template:
-    - `docs/example-updated.html`
-    - `mapjs/docs/legacy-mapjs-example-map.html`
-
 ## argmap 24.4.12
 
 - `makefile`: Fix make docs rule.
