@@ -95,6 +95,8 @@ init_apps() {
   PATH_BIN_GLOBAL=${PATH_BIN_GLOBAL:-$(getvar PATH_BIN_GLOBAL)}
   set +o allexport
 
+  printf "DIR_PROJECTS: %s\n" $DIR_PROJECTS
+
   # shellcheck disable=SC1091
   source "$PATH_DIR_SCRIPTS/bash_aliases_mapjs.sh"
 
