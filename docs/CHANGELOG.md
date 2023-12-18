@@ -6,10 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.2.3
-
-- `mapjs/src/core/util/mapjs-utilities.js`: Add functions related to saving and loading maps by calling edge functions and reading url parameters.
-
 ## argmap 24.2.2
 
 - `mapjs/netlify/edge-functions`: Add edge function files for saving and loading maps online as blobs.

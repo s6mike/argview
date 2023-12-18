@@ -1,7 +1,3 @@
-/* Copyright 2022 Michael Hayes
-   SPDX - License - Identifier: MIT */
-/* mapjs utility functions */
-
 /*eslint strict: ["error", "function"]*/
 /*global PATH_FILE_CONFIG_MAPJS*/
 // TODO: switch to lodash and test
@@ -49,19 +45,6 @@ const _ = require('underscore'),
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
   Logger,
-  getParameterByName: (name, url) => {
-    'use strict';
-    const name_clean = name.replace(/[\[\]]/g, '\\$&'),
-      regex = new RegExp('[?&]' + name_clean + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) {
-      return null;
-    };
-    if (!results[2]) {
-      return '';
-    }
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  },
 
   // Parameterized try catch function
   //  Simplifies environment based catching
@@ -76,90 +59,14 @@ module.exports = {
         throw exception;
       }
     };
+
     try {
       return t();
     } catch (exception) {
       return c(exception);
     };
   },
-  loadJson: async function (script_src) {
-    'use strict';
 
-    try { // QUESTION: Use trycatch here?
-      const response = await fetch(script_src);
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      Logger.error(error);
-      throw error;
-    };
-  },
-  getMapTitle: function (mapJson) {
-    'use strict';
-    return mapJson.ideas[1].title;
-  },
-  setOriginalMapTitle: function (mapJson) {
-    'use strict';
-    if (mapJson.original_root_node_title === undefined) {
-      mapJson.original_root_node_title = this.getMapTitle(mapJson);
-    }
-    return mapJson.original_root_node_title;
-  },
-  //  ISSUE: instanceElement is whole container section, just need to ensure right part of doc
-  //    Simpler solution?
-  getMap: async function (index, instanceElement, map_id, original_root_node_title, script_src, final) {
-    'use strict';
-    // Logger.info(original_root_node_title, map_id, script_src, instanceElement);
-    let request_url, originalMap, mapJson;
-    if (map_id) {
-      request_url = '/gm?map_id=' + map_id;
-    } else if (original_root_node_title) {
-      request_url = '/gm?ornt=' + original_root_node_title;
-    } else if (script_src) {
-      request_url = script_src;
-    } else {
-      const MAPJS_SRC_CLASS = CONFIG.mapjs_src_data.class;
-      request_url = this.getElementMJS(MAPJS_SRC_CLASS, instanceElement).getAttribute('src');
-      originalMap = true; // Store original_root_node_title and then check for more recent version
-    }
-
-    // QUESTION: Can I simplify all try/catches here?
-    Logger.info('Attempting to retrieve map ' + index + ' from ' + request_url);
-    try {
-      mapJson = await this.loadJson(request_url);
-      if (originalMap) {
-        const originalMapTitle = this.setOriginalMapTitle(mapJson);
-        Logger.info('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
-        try {
-          const newMapJson = await this.getMap(index, instanceElement, undefined, originalMapTitle, undefined, 'final'); // Final stops infinite checks for newer version if this call fails
-          // Not necessarily different. TODO: Check?
-          //   Can I check metadata timestamp? or content hash? #QUESTION
-          Logger.info('Have loaded latest version of map' + index + ' from: ' + request_url);
-          mapJson = newMapJson; // Use the updated map data
-        } catch (error) {
-          Logger.error('Failed to update map ' + index + ': ' + originalMapTitle + '. Keeping original data.');
-        }
-      }
-      return mapJson;
-      // this.addMap(instanceElement, mapJson);
-    } catch (error) {
-      Logger.error('Attempt to load remote map ' + index + ' failed, using url: ' + request_url);
-      if (!originalMap && !final) { // Final check stops infinite loop
-        Logger.info('Attempting to retrieve original map ' + index + ' instead.');
-        // QUESTION: Better to go id > title > element?
-        try {
-          mapJson = await this.getMap(index, instanceElement);
-          Logger.info('Retrieved original map ' + index);
-          return mapJson;
-        } catch (error) {
-          throw error;
-        }
-      }
-      throw error;
-    }
-  },
   // Can pass element or event
   getContainerID: (elementOrEvent) => {
     'use strict';
@@ -185,28 +92,6 @@ module.exports = {
     }
     return false; // Should never be called
   },
-  saveFile: (map_data) => {
-    'use strict';
-
-    const body = JSON.stringify(map_data),
-      target_url = '/sm';
-    Logger.info('body: ' + body);
-
-    // Logger.info('target_url: ' + target_url);
-    fetch(target_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: body
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch((error) => {
-        console.error('E rror: ' + error + ' with content: ' + JSON.stringify(map_data));
-      });
-    // TODO: Store the map_id so it's used for future updates, regardless of title updates.
-  },
 
   // May not be compatible with all modern browsers
   downloadToFile: (content, filename, contentType) => {
@@ -224,7 +109,7 @@ module.exports = {
   /* eslint-disable strict */
 
   // Get element from class and optional parent element
-  //  TODO: Rename as getElementsMJS now it can return multiple results
+  // TODO: Rename as getElementsMJS now it can return multiple results
   getElementMJS: (className, parentElement = document, asCollection = false) => {
     const elements = parentElement.getElementsByClassName(className),
       result_count = elements.length;
@@ -236,11 +121,11 @@ module.exports = {
       }
       return elements[0];
     } else {
-      Logger.warn('getElementMJS(): Element of class ' + className + ' not found on page.');
+      throw new Error('getElementMJS(): Element of class ' + className + ' not found in ' + parentElement.tagName + '.' + parentElement.classList[0]);
     }
   },
 
-  // TODO: Only run all this if logging is enabled.
+  // TODO: Only run all this is logging is enabled.
   //  QUESTION: What's best way to check?
   // IDEA: Could add this and ideas_pp() to MyLogger instead. Or possibly override existing console pretty print
   idea_pp: (idea, level = -1, key = []) => {
