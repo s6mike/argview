@@ -31,7 +31,8 @@ SHELL := /bin/bash
 # .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
 
 # .NOTINTERMEDIATE only supported in make 4.4
-.NOTINTERMEDIATE: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
+.NOTINTERMEDIATE:
+
 
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
@@ -267,13 +268,14 @@ npm_audit_output.txt:
 ${PATH_DIR_MAPJS_ROOT}/package.json:
 ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
 
+
 # Generate html from json
 # 	QUESTION Can I combine this with first v3.html rule?
 # Call make HTML_OPEN=true to open output file
 #	 QUESTION Only set 2hf -s flag in production mode?
 
 # QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d
-$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json $(FILES_TEMPLATE_HTML) config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml
+$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml
 # $(info Building $@ from JSON)
 	@-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
@@ -304,14 +306,14 @@ ${PATH_OUTPUT_PUBLIC}/%.json: ${PATH_INPUT_LOCAL}/%.mup
 	@-mkdir --parent "$(@D)"
 	cp -- "$<" "$@"
 
-# ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(LUA_MODULES_LOCAL) $(PANDOC)
-# 	@-mkdir --parent "$(@D)"
-# 	2hf -ps "$<"
+${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json: ${PATH_INPUT_LOCAL}/markdown/%.md config/processed/config-argmap-processed.yaml config/processed/environment-argmap-processed.yaml | $(LUA_MODULES_LOCAL) $(PANDOC)
+	@-mkdir --parent "$(@D)"
+	2hf -ps "$<"
 
 # Generate html from markdown (may have multiple .json dependencies)
 # mapjs/public/output/html/example1-clearly-false-white-swan-simplified-2mapjs.html
 #		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
-$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL) 
+$(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap1.json ${PATH_OUTPUT_PUBLIC}/mapjs-json/%_argmap2.json ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL) 
 # $(info Building $@ from MD)
 # Might be able to run pandoc_argmap instead
 	@-mkdir --parent "$(@D)"
@@ -325,8 +327,6 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 # Create js dependencies for html files:
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # 		QUESTION: Use $(shell find ${PATH_DIR_MAPJS_ROOT}/src) instead?
-
-# QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(wildcard ${PATH_DIR_MAPJS_ROOT}/src/**/*) ${MAPJS_NODE_MODULES_PREFIX}/node_modules mapjs/config/processed/config-mapjs-processed.yaml
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
@@ -339,7 +339,6 @@ ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/ma
 # -ls mapjs/node_modules/.bin/wait-on
 # -ls mapjs/node_modules/wait-on
 	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
 
 ## Installation:
 
@@ -493,7 +492,6 @@ ifeq (${ENV}, netlify)
 else
 	luarocks --tree lua_modules --lua-version=5.3 make --only-deps ${rockspec_file} YAML_LIBDIR=${PATH_ENVIRONMENT_GLOBAL}/lib/
 endif
-	touch "$@"
 
 $(rockspec_file):
 	$(info *** Checking: $(rockspec_file) ***)
@@ -502,7 +500,7 @@ $(rockspec_file):
 # Rule for conda links to .local folder
 ${PATH_PROFILE_LOCAL}/%: | ${PATH_ENVIRONMENT_GLOBAL}/%
 	@-mkdir --parent "$(@D)"
-	-ln -s "$|" "$@"
+	-ln -s $| $@
 
 ${PATH_ENVIRONMENT_GLOBAL}/%:
 	@-mkdir --parent "$(@D)"
