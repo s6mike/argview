@@ -6,25 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.5.0
-
-- `mapjs/public/schemas/`:
-  - `v1-1/`:
-    - Add json schema files using version number folder:
-      - `mapjs-json.json`: Also add descriptions everywhere `$ref` is used.
-      - `mapjs-theme.json`: Also:
-        - Rename to put file later in alphabetical order.
-        - Add fields: `$schema`, `id`, `title`, `description`, `deprecated` so they can be added to theme files.
-        - Update weight field to allow integers.
-  - Add `deprecated` field and notes to old files:
-    - `/mapjs-json.json`
-    - `/mapjs-json-theme.json`
-
-  DEPRECATE:
-
-  - Old file version in old location
-  - `formatVersion` in favour of version number in $id (though formatVersion still required for backwards compatibility of v3.X definition).
-
 ## argmap 24.4.23
 
 - `makefile`:
