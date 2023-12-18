@@ -294,7 +294,7 @@
                           "default": "",
                           "title": "The weight Schema",
                           "examples": [
-                            300,
+                            300
                           ]
                         }
                       },
