@@ -1,0 +1,513 @@
+{
+  "$schema": "https://argview.org/schemas/mapjs-json-theme.json",
+  "id": "mapjs/src/themes/argmap-theme-v1.json",
+  "title": "argmap theme",
+  "description": "argmap theme for displaying Argument Maps, adapted from theme used in original argmap github repo.",
+  "node": [
+    {
+      "border": {
+        "line": {
+          "width": 1,
+          "color": "#707070"
+        },
+        "type": "surround"
+      },
+      "connections": {
+        "from": {
+          "horizontal": {
+            "v": "base",
+            "h": "center-separated"
+          }
+        },
+        "default": {
+          "v": "base",
+          "h": "center-separated"
+        },
+        "to": {
+          "v": "top",
+          "h": "center"
+        }
+      },
+      "backgroundColor": "transparent",
+      "shadow": [
+        {
+          "radius": 2,
+          "opacity": 0.3,
+          "offset": {
+            "height": 2,
+            "width": 2
+          },
+          "color": "#070707"
+        }
+      ],
+      "text": {
+        "lightColor": "#EEEEEE",
+        "darkColor": "#000000",
+        "margin": 5,
+        "font": {
+          "lineSpacing": 2,
+          "lineSpacingPx": 2.6,
+          "sizePx": 13.3,
+          "weight": 300,
+          "size": 14
+        },
+        "alignment": "start",
+        "maxWidth": 146,
+        "color": "#4F4F4F"
+      },
+      "cornerRadius": 5,
+      "decorations": {
+        "edge": "top",
+        "height": 16,
+        "position": "end",
+        "overlap": true
+      },
+      "name": "default"
+    },
+    {
+      "name": "attr_implicit_claim",
+      "border": {
+        "line": {
+          "style": "dashed",
+          "width": 1,
+          "color": "#707070"
+        },
+        "type": "surround"
+      }
+    },
+    {
+      "name": "activated",
+      "border": {
+        "line": {
+          "style": "dotted",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      }
+    },
+    {
+      "name": "activated.attr_implicit_claim",
+      "border": {
+        "line": {
+          "style": "dashed",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      }
+    },
+    {
+      "name": "selected",
+      "shadow": [
+        {
+          "radius": 2,
+          "opacity": 0.9,
+          "offset": {
+            "height": 2,
+            "width": 2
+          },
+          "color": "#000000"
+        }
+      ]
+    },
+    {
+      "name": "collapsed",
+      "shadow": [
+        {
+          "radius": 0,
+          "offset": {
+            "height": 1,
+            "width": 0
+          },
+          "color": "#888888"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 3,
+            "width": 0
+          },
+          "color": "#FFFFFF"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 4,
+            "width": 0
+          },
+          "color": "#888888"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 6,
+            "width": 0
+          },
+          "color": "#FFFFFF"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 7,
+            "width": 0
+          },
+          "color": "#888888"
+        }
+      ]
+    },
+    {
+      "name": "collapsed.selected",
+      "shadow": [
+        {
+          "radius": 0,
+          "offset": {
+            "height": 1,
+            "width": 0
+          },
+          "color": "#FFFFFF"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 3,
+            "width": 0
+          },
+          "color": "#888888"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 6,
+            "width": 0
+          },
+          "color": "#FFFFFF"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 7,
+            "width": 0
+          },
+          "color": "#555555"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 10,
+            "width": 0
+          },
+          "color": "#FFFFFF"
+        },
+        {
+          "radius": 0,
+          "offset": {
+            "height": 11,
+            "width": 0
+          },
+          "color": "#333333"
+        }
+      ]
+    },
+    {
+      "connections": {
+        "from": {
+          "below": {
+            "v": "base",
+            "h": "center"
+          }
+        },
+        "childstyle": "no-connector",
+        "to": {
+          "v": "top",
+          "h": "center"
+        },
+        "style": "supporting-group",
+        "default": {
+          "v": "base",
+          "h": "center"
+        }
+      },
+      "backgroundColor": "transparent",
+      "shadow": [
+        {
+          "color": "transparent"
+        }
+      ],
+      "text": {
+        "lightColor": "#EEEEEE",
+        "darkColor": "#000000",
+        "margin": 0,
+        "alignment": "center",
+        "font": {
+          "lineSpacing": 2.5,
+          "sizePx": 14,
+          "lineSpacingPx": 3.25,
+          "weight": "bold",
+          "size": 9
+        },
+        "color": "#4F4F4F"
+      },
+      "cornerRadius": 10,
+      "border": {
+        "type": "overline"
+      },
+      "name": "attr_group"
+    },
+    {
+      "name": "attr_group_supporting",
+      "connections": {
+        "from": {
+          "below": {
+            "v": "base",
+            "h": "center"
+          }
+        },
+        "childstyle": "no-connector",
+        "to": {
+          "v": "top",
+          "h": "center"
+        },
+        "style": "supporting-group",
+        "default": {
+          "v": "base",
+          "h": "center"
+        }
+      }
+    },
+    {
+      "border": {
+        "line": {
+          "style": "solid",
+          "width": 2,
+          "color": "transparent"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(0, 255, 0, 0.2)",
+      "name": "attr_group_supporting.level_1"
+    },
+    {
+      "border": {
+        "line": {
+          "style": "dotted",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(0, 255, 0, 0.2)",
+      "name": "attr_group_supporting.activated"
+    },
+    {
+      "name": "attr_group_opposing",
+      "connections": {
+        "from": {
+          "below": {
+            "v": "base",
+            "h": "center"
+          }
+        },
+        "childstyle": "no-connector",
+        "to": {
+          "v": "top",
+          "h": "center"
+        },
+        "style": "opposing-group",
+        "default": {
+          "v": "base",
+          "h": "center"
+        }
+      }
+    },
+    {
+      "border": {
+        "line": {
+          "style": "solid",
+          "width": 2,
+          "color": "transparent"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(255, 0, 0, 0.2)",
+      "name": "attr_group_opposing.level_1"
+    },
+    {
+      "border": {
+        "line": {
+          "style": "dotted",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(255, 0, 0, 0.2)",
+      "name": "attr_group_opposing.activated"
+    },
+    {
+      "border": {
+        "line": {
+          "style": "dashed",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(0, 255, 0, 0.6)",
+      "name": "attr_group_supporting.droppable"
+    },
+    {
+      "border": {
+        "line": {
+          "style": "dashed",
+          "width": 3,
+          "color": "#22AAE0"
+        },
+        "type": "surround"
+      },
+      "backgroundColor": "rgba(255, 0, 0, 0.6)",
+      "name": "attr_group_opposing.droppable"
+    }
+  ],
+  "name": "MindMup Top Down Argument Mapping",
+  "connectorEditingContext": {
+    "defaults": {
+      "width": 3
+    },
+    "name": "argument-mapping",
+    "allowed": [
+      "width",
+      "label"
+    ]
+  },
+  "layout": {
+    "orientation": "top-down",
+    "spacing": {
+      "v": 60,
+      "h": 20
+    }
+  },
+  "blockThemeOverrides": true,
+  "connector": {
+    "default": {
+      "type": "vertical-quadratic-s-curve",
+      "line": {
+        "width": 1,
+        "color": "#707070"
+      },
+      "label": {
+        "position": {
+          "ratio": 0.45,
+          "aboveEnd": 10
+        },
+        "borderColor": "white",
+        "backgroundColor": "white",
+        "text": {
+          "font": {
+            "weight": "normal",
+            "size": 9,
+            "sizePx": 14
+          },
+          "color": "#4F4F4F"
+        }
+      }
+    },
+    "no-connector.opposing-group": {
+      "type": "no-connector",
+      "line": {
+        "width": 4,
+        "color": "#FFAFAF"
+      },
+      "label": {
+        "position": {
+          "ratio": 0.45
+        },
+        "borderColor": "transparent",
+        "backgroundColor": "transparent",
+        "text": {
+          "font": {
+            "weight": "normal",
+            "size": 6,
+            "sizePx": "9gg"
+          },
+          "color": "#4F4F4F"
+        }
+      }
+    },
+    "opposing-group": {
+      "type": "vertical-quadratic-s-curve",
+      "line": {
+        "width": 3,
+        "color": "#FFAFAF"
+      },
+      "label": {
+        "position": {
+          "ratio": 0.45,
+          "aboveEnd": 10
+        },
+        "borderColor": "white",
+        "backgroundColor": "white",
+        "text": {
+          "font": {
+            "weight": "normal",
+            "size": 9,
+            "sizePx": 14
+          },
+          "color": "#FFAFAF"
+        }
+      }
+    },
+    "no-connector.supporting-group": {
+      "type": "no-connector",
+      "line": {
+        "width": 4,
+        "color": "#095F11"
+      },
+      "label": {
+        "position": {
+          "ratio": 0.45
+        },
+        "borderColor": "transparent",
+        "backgroundColor": "transparent",
+        "text": {
+          "font": {
+            "weight": "normal",
+            "size": 6,
+            "sizePx": 9
+          },
+          "color": "#095F11"
+        }
+      }
+    },
+    "supporting-group": {
+      "type": "vertical-quadratic-s-curve",
+      "line": {
+        "width": 3,
+        "color": "#095F11"
+      },
+      "label": {
+        "position": {
+          "ratio": 0.45,
+          "aboveEnd": 10
+        },
+        "borderColor": "white",
+        "backgroundColor": "white",
+        "text": {
+          "font": {
+            "weight": "normal",
+            "size": 9,
+            "sizePx": 14
+          },
+          "color": "#095F11"
+        }
+      }
+    },
+    "no-connector": {
+      "line": {
+        "width": 0,
+        "color": "#707070"
+      },
+      "type": "no-connector"
+    }
+  }
+}
