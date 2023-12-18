@@ -169,10 +169,9 @@
   "Lua.completion.displayContext": 1,
   "deno.enable": true,
   "deno.enablePaths": [
-    "netlify/edge-functions",
-    "mapjs/netlify/edge-functions"
+    "netlify/edge-functions"
   ],
-  "deno.unstable": true,
+  "deno.unstable": false,
   "deno.importMap": ".netlify/edge-functions-import-map.json",
   "deno.path": "/home/s6mike/.config/netlify/deno-cli/deno",
   "git.ignoreLimitWarning": true,
