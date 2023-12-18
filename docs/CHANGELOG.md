@@ -6,14 +6,6 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
-## argmap 24.3.0
-
-- `mapjs/src/start.js`:
-  - Check URL parameters `ornt` and `map_id` for map overrides.
-  - Call new `getMap()` instead of fetching json data directly.
-  - Use mapjs json file's included theme by default, and only use argmap theme if no theme in file.
-- `mapjs/docs/README-argview.md`: Add details of how url parameters are used.
-
 ## argmap 24.2.3
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Add functions related to saving and loading maps by calling edge functions and reading url parameters.
