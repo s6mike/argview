@@ -397,8 +397,7 @@
       "default": "",
       "title": "The title Schema",
       "examples": [
-        "All swans are white.",
-        ""
+        "All swans are white."
       ]
     },
     "id": {
@@ -623,38 +622,6 @@
             }
           }
         ]
-      ]
-    },
-    "original_root_node_title": {
-      "type": "string",
-      "default": "",
-      "title": "The original_root_node_title Schema",
-      "description": "Added when the file is first loaded locally, to link online changes to original file. This is the original name of the topmost root in the argument map. Used to create `map_id`.",
-      "examples": [
-        "All swans are white."
-      ]
-    },
-    "map_id": {
-      "type": "string",
-      "minLength": 18,
-      "maxLength": 18,
-      "default": "",
-      "title": "The map_id Schema",
-      "description": "Added when the file is first saved online to link online changes to original file. Created from the first 10 characters of a SHA256 hash of `original_root_node_title`.",
-      "examples": [
-        "mapjson_45f3c10ad7"
-      ]
-    },
-    "original_upload_time": {
-      "type": "string",
-      "format": "date-time",
-      "minLength": 24,
-      "maxLength": 24,
-      "default": "",
-      "title": "The original_upload_time Schema",
-      "description": "Added when the file is first saved online, to help with de-duplicating hash collisions.",
-      "examples": [
-        "2023-12-16T16:22:40.221Z"
       ]
     }
   },
