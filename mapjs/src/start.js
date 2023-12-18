@@ -13,6 +13,7 @@ const Utilities = require('./core/util/mapjs-utilities'),
   //   - https://github.com/survivejs/webpack-merge
   CONTAINER_CLASS = CONFIG.mapjs_map.class,
   INSTANCE_CLASS = CONFIG.mapjs_instance.class,
+  MAPJS_SRC_CLASS = CONFIG.mapjs_src_data.class,
   trycatch = Utilities.trycatch;
 
 Utilities.Logger.log(process.env.NODE_ENV + ' mode');
@@ -75,10 +76,10 @@ const jQuery = require('jquery'),
 
     return getTheme;
   },
+
   // Add a (ideally) separate map to each container div on the page.
   addMap = function (instanceElement, mapJson) {
     'use strict';
-    // Utilities.Logger.info('Add map mapJson: ' + JSON.stringify(mapJson));
     const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
       // QUESTION: Do we need a separate mapModel for each map?
       //   Or are there generic methods I can separate out from object ones?
@@ -91,8 +92,6 @@ const jQuery = require('jquery'),
     // Hacky solution so that I can call content from map-model.js: loadMap
     map.mapModel.content = content;
 
-    // Utilities.Logger.info('mapJson.original_root_node_title: ' + mapJson.original_root_node_title);
-
     // eslint-disable-next-line one-var
     const jQcontainer = jQuery(containerElement),
       JQinstance = jQuery(instanceElement),
@@ -101,8 +100,8 @@ const jQuery = require('jquery'),
       idea = content(mapJson),
       touchEnabled = false,
 
-      // Now I'm removing theme data from files saved on online store, I am defaulting to the built in theme
-      themeJson = idea.theme || MAPJS.arg || themeProvider.default || MAPJS.defaultTheme,
+      // Easier to maintain theme file so making that default:
+      themeJson = MAPJS.arg || idea.theme || themeProvider.default || MAPJS.defaultTheme,
       getTheme = changeTheme(map, themeJson),
 
       // Set up Widgets
@@ -115,8 +114,6 @@ const jQuery = require('jquery'),
         () => Utilities.getElementMJS(CONFIG.toolbar_edit_links.class, containerInstance),
       );
     ;
-
-    // Utilities.Logger.info('idea should include title_original: ' + JSON.stringify(idea));
 
     // Obsolete now // Obsolete now attachmentEditorWidget UI disabled
     // TODO: Might only need one of these for the whole page, rather than for each container:
@@ -208,40 +205,24 @@ const jQuery = require('jquery'),
       }
     });
   },
+
   init = function () {
     'use strict';
 
-    const instanceElements = Utilities.getElementMJS(INSTANCE_CLASS, document, true),
-      params = new URL(document.location).searchParams,
-      map_id_all = params.getAll('map_id'),
-      original_root_node_title_all = params.getAll('ornt');
-    let index = 1;
-    if (instanceElements && instanceElements.length > 0) { // Checks there are mapjs requests
+    const instanceElements = Utilities.getElementMJS(INSTANCE_CLASS, document, true);
+
+    if (instanceElements.length > 0) { // Checks there are mapjs requests
       for (const instanceElement of instanceElements) {
         // TODO: check for 0 > script > 1
         //  See https://stackoverflow.com/questions/1474089/how-to-select-a-single-child-element-using-jquery#answer-1474103
+        const script_src = Utilities.getElementMJS(MAPJS_SRC_CLASS, instanceElement).getAttribute('src');
 
-        // Get the value of the 'map_id' parameter from the URL
-        // TODO: Set env var for map_id param
-        const map_id = map_id_all.shift(),
-          original_root_node_title = original_root_node_title_all.shift();
-
-        //  QUESTION: Can I use trycatch here? Possibly not in async function.
-        Utilities.getMap(index, instanceElement, map_id, original_root_node_title)
-          .then(mapJson => {
-            if (mapJson) {
-              // Utilities.Logger.info('start.js mapJson: ' + mapJson);
-              addMap(instanceElement, mapJson);
-            } else {
-              Utilities.Logger.error('Error updating map ' + index + ' with more recent data.');
-            };
-          })
-          .catch(error => Utilities.Logger.error(error)); //then(newMapJson => {;
-
-        // QUESTION: How does drag and drop solution (window.FileReader()) compare to this one?
-        //  Or do I have to use fetch here because source is not necessarily local?
-        // TODO: Call function loadMap(script_src) instead (see checkMap())
-        index = index + 1;
+        // TODO: switch to await/async for simpler code and debugging.
+        // QUESTION: How does drag and drop solution (window.FileReader()) compare to this one? Or do I have to use fetch here because source is not necessarily local?
+        fetch(script_src)
+          .then(response => response.json())
+          .then(data => addMap(instanceElement, data))
+          .catch(error => Utilities.Logger.error(error));
       }
       window.onerror = Utilities.Logger.error;
       window.jQuery = jQuery;
@@ -261,3 +242,4 @@ document.addEventListener('DOMContentLoaded', init);
 //     b.click();
 //   }
 // }, 400 /* but after 400 ms */);
+
