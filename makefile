@@ -189,18 +189,11 @@ luarocks_clean:
 	@echo "Remaining luarocks:"
 	@luarocks --tree ${PATH_LUA_MODULES} list
 
-dev: netlify-cli
-#	QUESTION: How to connect to correct netlify site?
-#  QUESTION: How to check this has been done?
-	netlify link
-# netlify build
-#  QUESTION: What to add as dependencies?
-# make all
-	netlify dev
-
-#  QUESTION: How to check this has been done?
-netlify-cli:
-	npm install -g netlify-cli
+# dev:
+#		QUESTION: Check correct netlify site?
+# 	netlify build
+# 	make all
+# 	netlify dev
 
 # TODO: Continue moving these dependencies to the targets they are needed for
 install: | ${PATH_FILE_YQ} $(PANDOC) npm $(LUA_MODULES_LOCAL) # TODO: replace npm with npm_audit based on ENV
