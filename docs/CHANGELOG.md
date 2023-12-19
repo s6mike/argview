@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.2
+
+- `test/test_scripts/tests.sh`: Remove old debug message.
+
 ## argmap 26.0.1
 
 - `mapjs/public/schemas/v3-1/`: Fix description field typo in each schema file .
