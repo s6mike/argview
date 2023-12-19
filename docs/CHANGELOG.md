@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.3
+
+- `makefile`: Add `$(FILES_HTML_DOCS)` to `FILES_SITE` so `make site` rebuilds docs too.
+
 ## argmap 26.0.2
 
 - `test/test_scripts/tests.sh`: Remove old debug message.
