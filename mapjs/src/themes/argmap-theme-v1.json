@@ -1,7 +1,7 @@
 {
-  "$schema": "https://argview.org/schemas/mapjs-json-theme.json",
+  "$schema": "https://argview.org/schemas/v3-1/mapjs-theme.json",
   "id": "mapjs/src/themes/argmap-theme-v1.json",
-  "title": "argmap theme",
+  "name": "Default argview theme: Original argmap theme for MindMup Top Down Argument Mapping",
   "description": "argmap theme for displaying Argument Maps, adapted from theme used in original argmap github repo.",
   "node": [
     {
@@ -369,7 +369,6 @@
       "name": "attr_group_opposing.droppable"
     }
   ],
-  "name": "MindMup Top Down Argument Mapping",
   "connectorEditingContext": {
     "defaults": {
       "width": 3
