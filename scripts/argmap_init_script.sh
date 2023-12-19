@@ -90,7 +90,8 @@ init_apps() {
   #   QUESTION: Why not using getvar() ?
   # Needed for argmap.env tmp chrome profile:
   set -o allexport
-  DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$PATH_ARGMAP_ROOT")}
+  # Now covered by argmap.env and netlify.toml:
+  #   DIR_PROJECTS=${DIR_PROJECTS:-$(dirname "$PATH_ARGMAP_ROOT")}
   PATH_MISC_DEV=$DIR_PROJECTS/misc
   PATH_BIN_GLOBAL=${PATH_BIN_GLOBAL:-$(getvar PATH_BIN_GLOBAL)}
   set +o allexport

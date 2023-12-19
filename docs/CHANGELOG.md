@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 25.0.0 BREAKING
+
+- `config/environment-argmap-defaults.yaml`: Remove `DIR_PROJECTS: ${PATH_PUBLIC}` to fix bug, since it should only be defined in `netlify.toml` with this value. BREAKING
+  - `config/argmap-defaults.env` Move `DIR_PROJECTS` definition here from `scripts/argmap_init_script.sh` to match with `netlify.toml`. BREAKING
+
 ## argmap 24.6.10
 
 - Update `http://` to `https://` in URLs referenced in various files.
