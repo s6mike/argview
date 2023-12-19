@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.0 BREAKING
+
+- `mapjs/public/schemas/`: Remove old, unversioned schema files: BREAKING
+  - `mapjs-json.json`
+  - `mapjs-theme.json`
+- `mapjs/src/themes/argmap-theme.json`: Remove old, unversioned argmap-theme file BREAKING
+
 ## argmap 25.0.0 BREAKING
 
 - `config/environment-argmap-defaults.yaml`: Remove `DIR_PROJECTS: ${PATH_PUBLIC}` to fix bug, since it should only be defined in `netlify.toml` with this value. BREAKING
