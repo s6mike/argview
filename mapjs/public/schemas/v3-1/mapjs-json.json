@@ -466,14 +466,13 @@
     },
     "theme": {
       "description": "Default theme data for argument map. Schema definition defined in separate file",
-      "$ref": "https://argview.org/schemas/v3-1/mapjs-theme.json"
+      "$ref": "./mapjs-theme.json"
     },
     "formatVersion": {
       "type": "integer",
-      "deprecated": "true",
       "default": 3,
       "title": "DEPRECATED: The formatVersion Schema",
-      "description": "DEPRECATED: In favour of `/vX.Y/` folder in mapjs-json file's `$schema` field. Still required, since needed for any other compatible clients which check formatVersion.",
+      "description": "DEPRECATED: In favour of `/vX.Y/` folder in mapjs-json file's `$schema` field. Still required, since needed for clients, which check formatVersion.",
       "examples": [
         3
       ]
