@@ -456,10 +456,10 @@ endif
 # # app_path="${app_path%.*}"
 
 # ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
-# 	app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
+# 	app_install ${PATH_BIN_GLOBAL} https://www.lua.org/ftp/lua-5.3.5.tar.gz
 $(LUAROCKS): # ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
-# # app_install ${PATH_BIN_GLOBAL} http://www.lua.org/ftp/lua-5.3.5.tar.gz
+# # app_install ${PATH_BIN_GLOBAL} https://www.lua.org/ftp/lua-5.3.5.tar.gz
 # 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
 # 	-./configure --with-lua-include=/usr/local/include
 # 	$(MAKE)
@@ -589,7 +589,7 @@ ${PATH_LUA_GLOBAL}/%.lua: | ${PATH_ARGMAP_ROOT}/${PATH_LUA_ARGMAP}/%.lua
 # 		luarocks remove
 # 	luarocks make --only-deps "$rockspec_file" YAML_LIBDIR="$PATH_ENVIRONMENT_GLOBAL/lib/"
 
-# 5. `pandoc-argmap.lua` depends on [Pandoc](https://pandoc.org/installing.html)(tested with v2.9.2.1 and v2.6), and on `argmap2lua` and `argmap2tikz.lua`. It also depends on [`pdf2svg`](http://www.cityinthesky.co.uk/opensource/pdf2svg/) for conversion to svg, and [ImageMagick](https://www.imagemagick.org/)'s `convert` for conversion to png.
+# 5. `pandoc-argmap.lua` depends on [Pandoc](https://pandoc.org/installing.html)(tested with v2.9.2.1 and v2.6), and on `argmap2lua` and `argmap2tikz.lua`. It also depends on [`pdf2svg`](https://www.cityinthesky.co.uk/opensource/pdf2svg/) for conversion to svg, and [ImageMagick](https://www.imagemagick.org/)'s `convert` for conversion to png.
 ${PATH_FILE_CONVERT_GLOBAL}: ${PATH_BIN_GLOBAL}/magick
 ifneq (${ENV}, netlify)
 	conda install imagemagick
