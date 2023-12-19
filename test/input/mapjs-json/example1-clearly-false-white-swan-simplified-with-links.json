@@ -1,5 +1,5 @@
 {
-  "$schema": "https://argview.org/schemas/mapjs-json.json",
+  "$schema": "https://argview.org/schemas/v3-1/mapjs-json.json",
   "title": "All swans are white.",
   "id": "root",
   "attr": {
