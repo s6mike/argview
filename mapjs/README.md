@@ -5,7 +5,7 @@ MindMup is a zero-friction mind map canvas. Our aim is to create the most produc
 |[![Example Map](docs/mapjs-example-screenshot.png)](docs/legacy-mapjs-example-map.html "Example Map")|
 |----------------------------|
 
-This project is the JavaScript visualisation portion of MindMup. It provides a canvas for users to create and edit mind maps in a browser. You can see an example of this live at [mindmup.com](http://www.mindmup.com), or play with the library directly in the browser using `test/index.html` from this project.
+This project is the JavaScript visualisation portion of MindMup. It provides a canvas for users to create and edit mind maps in a browser. You can see an example of this live at [mindmup.com](https://www.mindmup.com), or play with the library directly in the browser using `test/index.html` from this project.
 
 This project is relatively stand alone and you can use it to create a nice mind map visualisation separate from the [MindMup Server](https://www.mindmup.com).
 
@@ -45,13 +45,13 @@ To debug and try things out visually, grab the dependencies using:
 
 This library depends on the following projects:
 
-- [JQuery](http://jquery.com/)
-- [Underscore.Js](http://underscorejs.org/)
-- [JQuery HotKeys](http://jquery.com/)
-- [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js)
+- [JQuery](https://jquery.com/)
+- [Underscore.Js](https://underscorejs.org/)
+- [JQuery HotKeys](https://jquery.com/)
+- [Hammer.JS JQuery Plugin](https://eightmedia.github.com/hammer.js)
 - [Color JS](https://github.com/harthur/color)
 
-As of 23 Nov 22, it runs with the latest versions of all of these, except [Hammer.JS JQuery Plugin](http://eightmedia.github.com/hammer.js) v2.0.0, which requires an insecure version of jQuery, so instead uses v1.1.3.
+As of 23 Nov 22, it runs with the latest versions of all of these, except [Hammer.JS JQuery Plugin](https://eightmedia.github.com/hammer.js) v2.0.0, which requires an insecure version of jQuery, so instead uses v1.1.3.
 
 ## Node Selection
 

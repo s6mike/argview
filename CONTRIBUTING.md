@@ -88,7 +88,7 @@ Here are a few general guidelines for proposing changes:
   - For Markdown formatting, I've been using [markdownlint - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
 - Do not commit changes to files that are irrelevant to your feature or bug fix.
 - If you are changing any user-facing functionality, please be sure to update the documentation.
-- Write [a good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+- Write [a good commit message](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 ## Running Tests
 

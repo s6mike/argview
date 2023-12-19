@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.6.10
+
+- Update `http://` to `https://` in URLs referenced in various files.
+
 ## argmap 24.6.9
 
 - `mapjs/src/themes/`: Add `$schema`, referencing latests theme schema online, to all theme files.
