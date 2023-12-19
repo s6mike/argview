@@ -315,7 +315,8 @@
       ]
     },
     "status": {
-      "title": "The status Schema",
+      "title": "The status Schema, which applies to a number of status types",
+      "description": "The status Schema applies to statuses: 'not-started', 'passing', 'in-progress' and 'failure'",
       "required": [
         "description",
         "icon"
@@ -435,15 +436,19 @@
           "description": "Properties are one of 4 possible statuses.",
           "properties": {
             "not-started": {
+              "description": "not-started is a type of status",
               "$ref": "#/$defs/status"
             },
             "passing": {
+              "description": "passing is a type of status",
               "$ref": "#/$defs/status"
             },
             "in-progress": {
+              "description": "in-progress is a type of status",
               "$ref": "#/$defs/status"
             },
             "failure": {
+              "description": "failure is a type of status",
               "$ref": "#/$defs/status"
             }
           }
