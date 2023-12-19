@@ -1,5 +1,9 @@
 {
-  "deprecated": "true",
+  "$schema": "https://argview.org/schemas/v3-1/mapjs-theme.json",
+  "deprecated": true,
+  "id": "mapjs/src/themes/argmap-theme.json",
+  "name": "DEPRECATED theme file: original argmap theme for MindMup Top Down Argument Mapping",
+  "description": "DEPRECATED argmap theme for displaying Argument Maps, adapted from theme used in original argmap github repo, switching to file with version number in the name.",
   "node": [
     {
       "border": {
@@ -366,7 +370,6 @@
       "name": "attr_group_opposing.droppable"
     }
   ],
-  "name": "MindMup Top Down Argument Mapping",
   "connectorEditingContext": {
     "defaults": {
       "width": 3
