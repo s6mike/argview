@@ -1,5 +1,5 @@
 {
-  "$schema": "https://argview.org/schemas/mapjs-json.json",
+  "$schema": "https://argview.org/schemas/v3-1/mapjs-json.json",
   "id": "root",
   "formatVersion": 3,
   "ideas": {
