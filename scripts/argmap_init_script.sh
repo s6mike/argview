@@ -116,6 +116,7 @@ init_apps() {
   LUA_PATH=$(getvar LUA_PATH)
   # Not sure if this is needed:
   LUA_CPATH=$(getvar LUA_CPATH)
+  # PATH_TEST_LOG=${PATH_TEST_LOG:-$(getvar PATH_TEST_LOG)}
   PATH_TEST_LOG=$(getvar PATH_TEST_LOG)
   PATH_DIR_MAPJS_ROOT=$(getvar PATH_DIR_MAPJS_ROOT)
   MAPJS_NODE_MODULES_PREFIX=$(getvar MAPJS_NODE_MODULES_PREFIX)
