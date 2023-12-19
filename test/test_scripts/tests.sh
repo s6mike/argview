@@ -18,7 +18,6 @@ netlify)
   make public
   rm "$(getvar PATH_OUTPUT_PUBLIC)"
   test_open_html=false
-  # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
   ;;
 *)
   test_open_html=true
