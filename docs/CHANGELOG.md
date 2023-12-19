@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.6.8
+
+- `mapjs/public/schemas/v3-1/mapjs-theme.json`:
+  - Drop `title` in favour of `name`.
+  - Add `$defs` for `width`, `color` and `font` to reduce duplication.
+  - Add `"additionalProperties": false` to all objects.
+  - Update to reflect theme file errors:
+    - Remove some `required` values.
+    - Add some extra `type` options and change some `integer` to `number`.
+
 ## argmap 24.6.7
 
 - `test/input/mapjs-json/`: Update `$schema` for all json files to `https://argview.org/schemas/v3-1/mapjs-json.json`.
