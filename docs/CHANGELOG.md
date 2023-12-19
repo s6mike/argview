@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 24.6.6
+
+- `mapjs/public/schemas/v3-1/mapjs-json.json`: Remove `deprecated: true` from `formatVersion` so no warnings shown, since this field is currently needed for client compatibility.
+
 ## argmap 24.6.5
 
 - `mapjs/public/schemas/v3-1/mapjs-theme.json`:
