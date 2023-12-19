@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.4
+
+- `mapjs/docs/README-argview.md`: Fix link to main schema file.
+
 ## argmap 26.0.3
 
 - `makefile`: Add `$(FILES_HTML_DOCS)` to `FILES_SITE` so `make site` rebuilds docs too.
