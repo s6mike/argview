@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.3
+
+- `mapjs/package.json`: Update to latest packages.
+  - `mapjs/package-lock.json`: Update to match.
+
 ## argmap 26.0.2
 
 - `test/test_scripts/tests.sh`: Remove old debug message.
