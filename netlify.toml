@@ -33,7 +33,7 @@
   #   PATH_BIN_LOCAL = "."
   # QUESTION: remove? Since env-arg-defaults has DIR_PROJECTS: ${PATH_PUBLIC}
   PATH_DIR_SCRIPTS = "scripts"
-  PATH_BIN_GLOBAL = "."
+  PATH_BIN_GLOBAL = "/usr/bin"
 
   # Shouldn't be used but better to have an explicit value in case it's needed
   #   QUESTION: Or override config/environment-argmap-defaults.yaml?
