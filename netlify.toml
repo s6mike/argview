@@ -1,7 +1,13 @@
 [[redirects]]
   from = "/"
   to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
-  status = 200
+  status = 302
+  force = false
+
+[[redirects]]
+  from = "/index.html"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  status = 302
   force = false
 
 [build]

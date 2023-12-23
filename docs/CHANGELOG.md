@@ -6,9 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.3
+
+- `netlify.toml`: Add `/index.html` redirect (not rewrite), using `map_id` parameter so only one map request needed.
+
 ## argmap 27.0.2
 
-- `netlify.toml`: Update home page redirect to use map_id parameter so only one map request needed.
+- `netlify.toml`: Update home page redirect (not rewrite) to use `map_id` parameter so only one map request needed.
 
 ## argmap 27.0.1
 
