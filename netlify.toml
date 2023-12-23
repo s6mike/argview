@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
   status = 200
   force = false
 
