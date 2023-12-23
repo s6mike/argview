@@ -80,6 +80,10 @@ LUAROCKS_GLOBAL := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
 LUA_MODULES_LOCAL := ${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/manifest
 PANDOC := ${PATH_BIN_GLOBAL}/pandoc
 
+ifneq (${PATH_DIR_MAPJS_ROOT}, NULL3) # Ensures searches only made once PATH_DIR_MAPJS_ROOT instantiated.
+FILES_JS_SRC := $(shell find "${PATH_DIR_MAPJS_ROOT}/src" -type f)
+endif
+
 # TODO: Use var for ${PATH_INPUT_LOCAL}/markdown etc
 ifneq (${PATH_INPUT_LOCAL}, NULL8) # Ensures searches only made once PATH_INPUT_LOCAL instantiated.
 FILES_MD = $(shell find ${PATH_INPUT_LOCAL}/markdown -type f -iname "*.md")
@@ -352,11 +356,10 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 	2hf $$flags_2hf "$<"
 
 # Create js dependencies for html files:
-#		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
-# 		QUESTION: Use $(shell find ${PATH_DIR_MAPJS_ROOT}/src) instead?
 
+# QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC?
 # QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/package.json ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(wildcard ${PATH_DIR_MAPJS_ROOT}/src/**/*) ${MAPJS_NODE_MODULES_PREFIX}/node_modules mapjs/config/processed/config-mapjs-processed.yaml
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${MAPJS_NODE_MODULES_PREFIX}/node_modules mapjs/config/processed/config-mapjs-processed.yaml
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 # -echo "NODE_PATH: ${NODE_PATH}"
