@@ -32,7 +32,7 @@ main() {
 
   # This part more complex now I have separated paths into two files.
   #   QUESTION: If I could combine them into one before processing perhaps it would be easier?
-  __yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MAPJS DIR_PUBLIC PATH_ENVIRONMENT_GLOBAL PATH_BIN_GLOBAL
+  __yaml2env "$PATH_FILE_ENV_ARGMAP" DIR_MAPJS DIR_PUBLIC PATH_ENVIRONMENT_GLOBAL
 
   # In case env file doesn't exist, attempt to make a copy from default file, but without overwriting existing one.
   make "$PATH_ARGMAP_ROOT/$DIR_MAPJS/$DIR_CONFIG/environment-mapjs.yaml"
