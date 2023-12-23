@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.0 BREAKING
+
+- `mapjs/src/browser/dom-map-widget.js`:
+  - Change save locally keyboard shortcut to `ctrl+shift+s` BREAKING
+  - Make `alt+s` save online BREAKING
+  - Update keyboard shortcuts in docs:
+    - [mapjs/README.md](../mapjs/README.md)
+    - [mapjs/docs/README-argview.md](../mapjs/docs/README-argview.md)
+
 ## argmap 26.0.5
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Fix latest version loaded message format, including fixing undefined `map_id`.
