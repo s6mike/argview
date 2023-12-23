@@ -78,7 +78,7 @@ const jQuery = require('jquery'),
   // Add a (ideally) separate map to each container div on the page.
   addMap = function (instanceElement, mapJson) {
     'use strict';
-    // Utilities.Logger.info('Add map mapJson: ' + JSON.stringify(mapJson));
+    // Utilities.Logger.log('Add map mapJson: ' + JSON.stringify(mapJson));
     const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
       // QUESTION: Do we need a separate mapModel for each map?
       //   Or are there generic methods I can separate out from object ones?
@@ -91,7 +91,7 @@ const jQuery = require('jquery'),
     // Hacky solution so that I can call content from map-model.js: loadMap
     map.mapModel.content = content;
 
-    // Utilities.Logger.info('mapJson.original_root_node_title: ' + mapJson.original_root_node_title);
+    // Utilities.Logger.log('mapJson.original_root_node_title: ' + mapJson.original_root_node_title);
 
     // eslint-disable-next-line one-var
     const jQcontainer = jQuery(containerElement),
@@ -116,7 +116,7 @@ const jQuery = require('jquery'),
       );
     ;
 
-    // Utilities.Logger.info('idea should include title_original: ' + JSON.stringify(idea));
+    // Utilities.Logger.log('idea should include title_original: ' + JSON.stringify(idea));
 
     // Obsolete now // Obsolete now attachmentEditorWidget UI disabled
     // TODO: Might only need one of these for the whole page, rather than for each container:
@@ -230,7 +230,7 @@ const jQuery = require('jquery'),
         Utilities.getMap(index, instanceElement, map_id, original_root_node_title)
           .then(mapJson => {
             if (mapJson) {
-              // Utilities.Logger.info('start.js mapJson: ' + mapJson);
+              // Utilities.Logger.log('start.js mapJson: ' + mapJson);
               addMap(instanceElement, mapJson);
             } else {
               Utilities.Logger.error('Error updating map ' + index + ' with more recent data.');

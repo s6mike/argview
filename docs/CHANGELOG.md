@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.6
+
+- Change many `Logger.info()` messages to `Logger.log()` so they don't show up on prod:
+  - `mapjs/src/core/util/mapjs-utilities.js`
+  - `mapjs/src/start.js`
+
 ## argmap 27.0.5
 
 - `makefile`: Comment out `netlify_test:` since it's not working yet.

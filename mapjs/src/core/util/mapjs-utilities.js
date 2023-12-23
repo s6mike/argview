@@ -111,7 +111,7 @@ module.exports = {
   //    Simpler solution?
   getMap: async function (index, instanceElement, map_id, original_root_node_title, script_src, final) {
     'use strict';
-    // Logger.info(original_root_node_title, map_id, script_src, instanceElement);
+    // Logger.log(original_root_node_title, map_id, script_src, instanceElement);
     let request_url, originalMap, mapJson;
     if (map_id) {
       request_url = '/gm?map_id=' + map_id;
@@ -126,12 +126,12 @@ module.exports = {
     }
 
     // QUESTION: Can I simplify all try/catches here?
-    Logger.info('Attempting to retrieve map ' + index + ' from ' + request_url);
+    Logger.log('Attempting to retrieve map ' + index + ' from ' + request_url);
     try {
       mapJson = await this.loadJson(request_url);
       if (originalMap) {
         const originalMapTitle = this.setOriginalMapTitle(mapJson);
-        Logger.info('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
+        Logger.log('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
         try {
           const newMapJson = await this.getMap(index, instanceElement, undefined, originalMapTitle, undefined, 'final'); // Final stops infinite checks for newer version if this call fails
           // Not necessarily different. TODO: Check?
@@ -148,7 +148,7 @@ module.exports = {
     } catch (error) {
       Logger.error('Attempt to load remote map ' + index + ' failed, using url: ' + request_url);
       if (!originalMap && !final) { // Final check stops infinite loop
-        Logger.info('Attempting to retrieve original map ' + index + ' instead.');
+        Logger.log('Attempting to retrieve original map ' + index + ' instead.');
         // QUESTION: Better to go id > title > element?
         try {
           mapJson = await this.getMap(index, instanceElement);
@@ -191,9 +191,9 @@ module.exports = {
 
     const body = JSON.stringify(map_data),
       target_url = '/sm';
-    Logger.info('body: ' + body);
+    Logger.log('body: ' + body);
 
-    // Logger.info('target_url: ' + target_url);
+    // Logger.log('target_url: ' + target_url);
     fetch(target_url, {
       method: 'POST',
       headers: {
