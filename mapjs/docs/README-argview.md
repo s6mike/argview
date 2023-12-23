@@ -100,7 +100,8 @@ The map must have keyboard focus for these to work:
 `meta+minus` `ctrl+minus` `shift+z` | Zoom out
 `esc` `0` | Activate root node of current selected tree, centre screen on it and reset zoom
 `alt+o` | Open a JSON file as a new map
-`alt+s` | Download current map as a JSON file
+`alt+s` | Saves current map online, where it will be auto-reloaded from same url
+`meta+shift+s` `ctrl+shift+s` | Download current map locally as a JSON file
 `click on link icon` | Open url
 
 Copyright 2013 Damjan Vujnovic, David de Florinier, Gojko Adzic; 2022 Michael Hayes; and the mapjs contributors

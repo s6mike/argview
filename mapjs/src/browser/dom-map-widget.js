@@ -64,7 +64,8 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
       'meta+minus ctrl+minus shift+z': 'scaleDown',
       'Esc 0 meta+0 ctrl+0': 'resetView',
       'alt+o': 'handleKey_loadMap',
-      'alt+s': 'downloadMap',
+      'alt+s': 'saveMap',
+      'meta+shift+s ctrl+shift+s': 'downloadMap',
     // 'Esc': 'cancelCurrentAction', // Can't find any functionality
     },
     charEventHandlers = {
