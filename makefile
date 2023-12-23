@@ -260,16 +260,16 @@ site: $(FILES_SITE)
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
 
-test_netlify: init_test_netlify test
+# test_netlify: init_test_netlify test
 
-init_test_netlify:
-	ENV=netlify
-	webpack_server_halt
-	netlify dev &
+# init_test_netlify:
+# 	ENV=netlify
+# 	webpack_server_halt
+# 	netlify dev &
 
-test_netlify test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
+test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
-ifeq (${ENV}, netlify)
+ifeq (${ENV}, netlify) 
 	-./test/test_scripts/tests.sh html
 else
 	./test/test_scripts/tests.sh

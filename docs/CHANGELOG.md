@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.5
+
+- `makefile`: Comment out `netlify_test:` since it's not working yet.
+
 ## argmap 27.0.4
 
 - `makefile`: On netlify touch pandoc file to stop repeated version messages.
