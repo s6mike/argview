@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.5
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Fix latest version loaded message format, including fixing undefined `map_id`.
+
 ## argmap 26.0.4
 
 - `makefile`:
