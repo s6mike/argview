@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.7
+
+- `test/output/example1-clearly-false-white-swan-simplified.yaml`: Remove full stops.
+
 ## argmap 27.0.6
 
 - Change many `Logger.info()` messages to `Logger.log()` so they don't show up on prod:
