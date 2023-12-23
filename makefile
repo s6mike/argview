@@ -420,6 +420,7 @@ ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 $(PANDOC):
 	$(info PANDOC: $(PANDOC))
 ifeq (${ENV}, netlify)
+	touch $(PANDOC)
 	-pandoc --version
 else
 # if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
