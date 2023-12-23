@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.10
+
+- `netlify.toml`: Set `PATH_BIN_GLOBAL = "/usr/bin"`.
+- `makefile`:
+  - Remove `touch pandoc`.
+  - Only set `PANDOC` var when PATH_BIN_GLOBAL not `NULL`.
+  - make `install:` rule dependencies order only `|`.
+
 ## argmap 27.0.9
 
 - Fix `PATH_BIN_GLOBAL` logic:

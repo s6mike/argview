@@ -78,7 +78,10 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/filters/pandoc-argmap.lua
 LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.latex
 LUAROCKS_GLOBAL := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
 LUA_MODULES_LOCAL := ${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/manifest
+
+ifneq (${PATH_BIN_GLOBAL}, NULL5) # Ensures pandoc install only attempted once PATH_DIR_MAPJS_ROOT instantiated.
 PANDOC := ${PATH_BIN_GLOBAL}/pandoc
+endif
 
 ifneq (${PATH_DIR_MAPJS_ROOT}, NULL3) # Ensures searches only made once PATH_DIR_MAPJS_ROOT instantiated.
 FILES_JS_SRC := $(shell find "${PATH_DIR_MAPJS_ROOT}/src" -type f)
@@ -211,7 +214,7 @@ netlify-cli:
 # TODO: Continue moving these dependencies to the targets they are needed for
 install: | ${PATH_FILE_YQ} $(PANDOC) npm $(LUA_MODULES_LOCAL) # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
-  install: ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
+  install: | ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
 endif
 
 npm: ${MAPJS_NODE_MODULES_PREFIX}/node_modules
@@ -420,7 +423,6 @@ ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 $(PANDOC):
 	$(info PANDOC: $(PANDOC))
 ifeq (${ENV}, netlify)
-	touch $(PANDOC)
 	-pandoc --version
 else
 # if this doesn't exist, create before installing pandoc, so that user data directory should be set automatically:
