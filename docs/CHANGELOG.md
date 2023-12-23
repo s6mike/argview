@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.8
+
+- `netlify.toml`: `NPM_VERSION = "10.2.5"`
+
 ## argmap 27.0.7
 
 - `test/output/example1-clearly-false-white-swan-simplified.yaml`: Remove full stops.
