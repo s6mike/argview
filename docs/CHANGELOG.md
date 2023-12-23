@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.9
+
+- Fix `PATH_BIN_GLOBAL` logic:
+  - `scripts/argmap_init_script.sh`: Remove `PATH_BIN_GLOBAL` redefinition.
+  - `scripts/init_read_config.sh`: Remove `yaml2env PATH_BIN_GLOBAL`.
+
 ## argmap 27.0.8
 
 - `netlify.toml`: `NPM_VERSION = "10.2.5"`
