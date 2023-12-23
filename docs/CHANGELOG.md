@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 26.0.4
+
+- `makefile`:
+  - Fix make js rule to use all `mapjs/src` files as dependencies, by using find instead of wildcard.
+  - Remove `package.json` dependency from make js rule, think should be `node_modules` dependency only.
+
 ## argmap 26.0.3
 
 - `mapjs/package.json`: Update to latest packages.
