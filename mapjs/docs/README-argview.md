@@ -4,6 +4,9 @@
 
 <https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
+|[![Example Map](argview-example-screenshot.png)](https://argview.org/ "Example Map")|
+|----------------------------|
+
 As well as being uploaded and downloaded locally, maps can be saved online for ease of access and collaboration by clicking the save button.
 
 When a map is loaded from a json file generated from `argmap.yaml` data, argview will check whether a more recent version of the same file (identified using the `original_root_node_title`) has been saved online, in which case this version will automatically be downloaded.
