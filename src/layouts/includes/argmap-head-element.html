@@ -2,6 +2,11 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+  $for(css)$
+  <link rel="preload" href="$css$" as="style" />
+  $endfor$
+  <link rel="preload" href="/js/main.js" as="script" />
+  <link rel="preload" href="$path-json-source$" as="fetch" crossorigin="anonymous" fetchpriority="high" />
   $for(author-meta)$
   <meta name="author" content="$author-meta$" />
   $endfor$
@@ -15,9 +20,6 @@
   <meta name="description" content="$description-meta$" />
   $endif$
   <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
-  $for(css)$
-  <link rel="stylesheet" href="$css$" />
-  $endfor$
   $for(header-includes)$
   $header-includes$
   $endfor$
