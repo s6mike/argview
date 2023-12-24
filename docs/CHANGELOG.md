@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.12
+
+- `src/layouts/`:
+  - `includes/argmap-head-element.html`:
+    - Add preload links for css, main.js, json file.
+    - `templates/pandoc-mapjs-main-html5.html`: Move original css links to body.
+- Update doc examples.
+
 ## argmap 27.0.11
 
 - Fix non-passive scroll listeners:

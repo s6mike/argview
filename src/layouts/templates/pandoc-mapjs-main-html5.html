@@ -48,9 +48,12 @@ $../includes/argmap-head-element.html()$
       ${endif}
     </$argmap_collection.tag$>
   </main>
+  $../includes/webpack-dist-tags.html()$
+  $for(css)$
+  <link rel="stylesheet" href="$css$" />
+  $endfor$
   <style id="themecss">
   </style>
-  $../includes/webpack-dist-tags.html()$
   ${if(argmap-input)}
   <script src="/js/fengari-web.js" type="text/javascript" async></script>
   <script src="/lua/client_argmap2mapjs.lua" type="application/lua" async></script>
