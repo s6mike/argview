@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.13
+
+- `mapjs/tsconfig.json`: Update to support `.ts` import extensions to remove error message.
+
 ## argmap 27.0.12
 
 - `src/layouts/`:
