@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.11
+
+- Fix non-passive scroll listeners:
+  - `mapjs/src/browser/dom-map-widget.js`: Remove (mouse)wheel listeners since they use `preventDefault()`.
+  - `mapjs/src/browser/hammer-draggable.js`: Add code to make `touchstart` listener passive.
+
 ## argmap 27.0.10
 
 - `netlify.toml`: Set `PATH_BIN_GLOBAL = "/usr/bin"`.
