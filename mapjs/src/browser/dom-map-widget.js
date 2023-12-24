@@ -1,5 +1,5 @@
 /*global PATH_FILE_CONFIG_MAPJS */
-const $ = require('jquery'),
+const jQuery = require('jquery'),
   _ = require('underscore'),
   createSVG = require('./create-svg');
 const mapjsUtilities = require('../core/util/mapjs-utilities'),
@@ -9,11 +9,11 @@ const mapjsUtilities = require('../core/util/mapjs-utilities'),
 // Moved import-loader call to webpack.config.js instead:
 require('jquery.hotkeys');
 
-$.fn.scrollWhenDragging = function (scrollPredicate) {
+jQuery.fn.scrollWhenDragging = function (scrollPredicate) {
   'use strict';
-  // TODO: simplify - this.each gets element from jQuery object and then $(this) turns element back into jQuery object
+  // TODO: simplify - this.each gets element from jQuery object and then jQuery(this) turns element back into jQuery object
   return this.each(function () {
-    const element = $(this);
+    const element = jQuery(this);
     let dragOrigin;
     element.on('dragstart', function () {
       if (scrollPredicate()) {
@@ -32,7 +32,7 @@ $.fn.scrollWhenDragging = function (scrollPredicate) {
     });
   });
 };
-$.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange) {
+jQuery.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertController, dragContainer, centerSelectedNodeOnOrientationChange) {
   'use strict';
   const hotkeyEventHandlers = {
       'return': 'insertDown',
@@ -91,10 +91,10 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
   });
 
   return this.each(function () {
-    // const mapjsInstance = $(this),
+    // const mapjsInstance = jQuery(this),
     // TODO: Rename element to mapjs_map
-    const element = $(mapjsUtilities.getElementMJS(MAPJS_MAP_CLASS, this)),
-      // const element = $(this),
+    const element = jQuery(mapjsUtilities.getElementMJS(MAPJS_MAP_CLASS, this)),
+      // const element = jQuery(this),
       svgContainer = createSVG()
         .css({
           position: 'absolute',
@@ -108,7 +108,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
           'aria-label': 'Argument Map showing supporting and opposing relationships between text nodes.',
           // 'tabindex': 0,
         }),
-      stage = $('<' + CONFIG.mapjs_stage.tag + '>') // Sets stage attributes
+      stage = jQuery('<' + CONFIG.mapjs_stage.tag + '>') // Sets stage attributes
         .attr('class', CONFIG.mapjs_stage.class)
         .css(
           {
@@ -146,7 +146,7 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
       //     element.css('overflow', 'hidden');
       //   }
       // });
-      // $(document).on('mouseup', function () {
+      // jQuery(document).on('mouseup', function () {
       //   if (element.css('overflow') !== 'auto') {
       //     element.css('overflow', 'auto');
       //   }
@@ -198,12 +198,12 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
     });
     if (!touchEnabled) {
       // No real reason to reset the maps when window is resized (which includes zooming)
-      // $(window).on('resize', function () {
+      // jQuery(window).on('resize', function () {
       //   mapModel.resetView();
       // });
     }
 
-    $(window).on('orientationchange', function () {
+    jQuery(window).on('orientationchange', function () {
       if (centerSelectedNodeOnOrientationChange) {
         mapModel.centerOnNode(mapModel.getSelectedNodeId());
       } else {
@@ -239,15 +239,6 @@ $.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageInsertCo
             mapModel[mappedFunction]('keyboard');
           }
         }
-      }
-    });
-    self.on('wheel mousewheel', function (e) { // Self is `div.mapjs-app`
-      const scroll = e.originalEvent.deltaX || (-1 * e.originalEvent.wheelDeltaX);
-      if (scroll < 0 && element.scrollLeft() === 0) {
-        e.preventDefault();
-      }
-      if (scroll > 0 && (element[0].scrollWidth - element.width() - element.scrollLeft() === 0)) {
-        e.preventDefault();
       }
     });
 

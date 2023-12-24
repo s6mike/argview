@@ -39,6 +39,12 @@ const $ = require('jquery'),
     }
   };
 
+$.event.special.touchstart = {
+  setup: function (_, ns, handle) {
+    'use strict';
+    this.addEventListener('touchstart', handle, { passive: !ns.includes('noPreventDefault') });
+  }
+};
 
 $.fn.simpleDraggableContainer = function () {
   'use strict';
