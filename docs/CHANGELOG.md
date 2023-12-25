@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.0
+
+- `mapjs/schemas/`: Move schemas here from `public/`, they will be published separately so no longer need to be in this folder.
+  - `v3-2/`: Create for new version of schema with `original_upload_time` deprecated in favour of `original_save_time`:
+    - `mapjs-json.json`: In addition to deprecation:
+      - Add `timestamp $def` for all timestamp fields:
+        - Add `original_save_time`, `last_save_time`.
+
 ## argmap 27.0.15
 
 - `netlify.toml`: Add redirect from `schemas/` to `mapjs-schemas.netlify.app/*` so separate netlify project is used for schema publishing.
