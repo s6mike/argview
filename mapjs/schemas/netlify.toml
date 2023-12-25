@@ -1,0 +1,26 @@
+# This is netlify.toml for mapjs-schemas project
+#   Which allows me to publish this repo's schemas independently of the rest of the project
+[[redirects]]
+  from = "/schemas/latest"
+  # TODO: Update to always be latest
+  to = "/schemas/v3-2/mapjs-json.json"
+  status = 302
+  force = false
+
+[[redirects]] # May change this to stable if I add that instead
+  from = "/schemas/"
+  to = "/schemas/latest"
+  status = 302
+  force = false
+
+[[redirects]] # Only used when visiting root project domain
+  from = "/"
+  to = "/schemas/"
+  status = 302
+  force = false
+
+[[redirects]] # This ensures that all files appear to be in `/schemas/` folder on argview.org domain
+  from = "/schemas/*"
+  to = "/:splat"
+  status = 200
+  force = true

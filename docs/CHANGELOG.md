@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.1
+
+- `mapjs/schemas/netlify.toml`: Add redirects from:
+  - `/schemes/*` > `/:splat` so all files appear to be in `/schemes/` folder.
+  - `/schemes/latest` > `v3-2/mapjs-json.json`
+  - `/schemes/` > `/schemes/latest`
+  - project domain root `/` > `/schemes/`
+
 ## argmap 27.1.0
 
 - `mapjs/schemas/`: Move schemas here from `public/`, they will be published separately so no longer need to be in this folder.
