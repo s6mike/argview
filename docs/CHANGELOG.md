@@ -6,6 +6,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.14
+
+- `mapjs/src/core/util/mapjs-utilities.js`:
+  - Add `updateDataPreSave()` to update mapjs json data before saving it online:
+    - Add `$schema` based on `config-mapjs.yaml` value.
+      - `mapjs/config/config-mapjs.yaml`: Add `mapjs_schema_uri_current` variable.
+    - Move some `mapjs/netlify/edge-functions/set_mapjs.ts` functionality here:
+      - Reset theme and overall map title.
+      - Update `original_upload_time` - but instead call it `original_save_time`, and also save `last_save_time`.
+    - Save `original_root_node_title`.
+
 ## argmap 27.0.13
 
 - `mapjs/tsconfig.json`: Update to support `.ts` import extensions to remove error message.
@@ -913,7 +924,7 @@ BREAKING change though unlikely to break anything.
 - `scripts/`:
   - `argmap.env`: Add blank placeholders for initial variables needed to be overriden by netlify env.
   - `argmap-netlify.env`: Copy argmap.env with relative path overrides set for some variables.
-  
+
 ## argmap 22.23.6
 
 - `scripts/argmap_init_script.sh`: Update for compatibility with netlify:
@@ -1362,7 +1373,7 @@ BREAKING change though unlikely to break anything.
 - Disable mapjs render test now newer chrome version's headless mode doesn't have repl:
   - `test/test_scripts/tests.sh`: Comment out render test and associated setup, renumber test comments.
   - `test/test_scripts/headless_chrome_repl_mapjs_is_rendered.exp`: Update headless switch to fix error.
-  
+
 ## argmap 22.0.2
 
 - `scripts/install.sh`: Remove "$PATH_DIR_PUBLIC/index.html" symbolic link in favour of netlify redirect
@@ -1804,7 +1815,7 @@ WARNING Back up your `environment-mapjs.yml` file before applying this commit. T
   - Fix `__getvar_from_yaml()` to only return first result (which will be the processed result since these files are checked first). Done by keeping document separators then selecting the first document only.
     - `test/test_scripts/bash_aliases_argmap_test.sh`: Fix test to check list returned in list mode, since this form is more likely to be used.
   - Clean up the way the opts are used. Now, only one can be used at a time (the last when multiple are used). This makes errors less likely.
-  
+
 ## argmap 12.3.2
 
 - `.vscode/launch.json`: Add new bash test profile for `scripts/init_read_config.sh`.
@@ -1949,7 +1960,7 @@ BREAKING: Moving env files could break end user's custom env files. Users should
     - Deprecate `__check_server_on()`.
   - Update `webpack_server_start()` to accept server port and mode arguments.
     - `mapjs/package.json`: Add `start:dev` so `webpack_server_start()` can call mode more easily.
-  
+
 ## argmap 10.16.1
 
 - `test/test_scripts/tests.sh`: Add -q option to dependency generating commands so test results less cluttered.
@@ -2317,7 +2328,7 @@ BREAKING: Changing classes for UI. Any user html customisations will be broken.
   - Add `getElementMJS()` so error is thrown when selector fails to find element. This should make it clearer when a selector breaks.
   - Add `trycatch()` to standardise error handling so that errors are reported to console in production (will also be easier to add logging), but break the app more obviously in dev environment.
     - An additional benefit is that constants can be used in combination with try catch.
-  
+
 ## argmap 9.5.1
 
 - `mapjs/public/mapjs-default-styles.css`: Hide linkEditWidget by default in case the selector which configures it breaks.
@@ -2511,7 +2522,7 @@ BREAKING: All env variable changes can potentially be breaking. Use new variable
     - `.vscode/launch.json`: Use new env variable instead of previous hardcoded path.
 
 BREAKING: All env variable changes can potentially be breaking. Updating new variables in argmap.env should fix this.
-  
+
 ## argmap 6.0.1
 
 - Rename controls widget partial to `src/layouts/includes/mapjs-widget-controls.html` and update element ID:
@@ -2868,7 +2879,7 @@ BREAKING
       - Update `a2m()` to pass extra arguments (2nd onwards) to output in case piped into `j2hf()`.
       - Remove calls to `__check_server_on` if open-debug is called, since this also runs the same check.
   - Fix bug in `a2t()` so it can create folder in correct path.
-  
+
 ## argmap 4.21.10
 
 - `pandoc-templates/mapjs/mapjs-main-html5.html`: Move `argmap-input` partial to before body so it works better with markdown input.
@@ -2906,7 +2917,7 @@ BREAKING
   - `pandoc-templates/mapjs/mapjs-map.html`: Update comments.
 - Add another conditional for optionally adding the `argmap-input` functionality.
   - Update `j2hf()` and `md2hf()` to use new env variable `FILE_TEMPLATE_HTML_ARGMAP`.
-  
+
 ## argmap 4.21.4
 
 - `mapjs/site/mapjs-default-styles.css`:
@@ -3006,7 +3017,7 @@ ISSUE with zooming in two maps present, though focus doesn't leave element when 
     - Other functions to use new functions above.
 - `scripts/bash_aliases_argmap.sh`: Update all commands which open a browser to call `__check_server_on()` first.
 - `scripts/` and `test/test_scripts`: Update to use new functions above, comments, minor formatting improvements.
-  
+
 ## argmap 4.18.15
 
 - `mapjs/webpack.config.js`: Update config so live reloading works (filename has to be `[name].js`), and remove watch mode options to avoid annoying warning when serving.
@@ -3338,7 +3349,7 @@ NEW ISSUE: Sometimes getting mapjs error `Uncaught TypeError: Cannot read proper
     - `scripts/install.sh`: Add symlink command.
   - `src/js/fengari-web.js`: Add reference comment to it.
 - `.gitignore`: Remove obsolete entries.
-  
+
 ## argmap 4.15.1
 
 - Fix `selectLink()`, which from v4.13.5 was using deprecated window.event object to identify which container a link was in (because links are not guaranteed to have unique element IDs). Hence this function was not working consistently, and breaking regression test.
@@ -3655,7 +3666,7 @@ ISSUE: Fix used deprecated `window.event` object, which resulted in inconsistent
   - `mapjs/src/core/map-model.js`: Update `selectLink()` to add `selected-link` class to links when selected (and remove from old link).
     - Also node IDs can contain dots ('.')
       e.g. `test/input/html/example2-clearly-false-white-swan-v3.html`
-    so rewrite ID . with _, consistent with how they appear in HTML.  
+    so rewrite ID . with _, consistent with how they appear in HTML.
   - `mapjs/site/mapjs-default-styles.css`: Add outline styling to .map-js element child of `.selected-link`.
   - To simplify testing links, add:
     - `test/input/mapjs-json/example1-clearly-false-white-swan-simplified-with-links.json`
@@ -3769,7 +3780,7 @@ ISSUE: Fix used deprecated `window.event` object, which resulted in inconsistent
 ## argmap 4.9.11
 
 - `docs/`:
-  - Add screenshots using argmap theme:  
+  - Add screenshots using argmap theme:
     - `mapjs-example-brunellus-argmap-theme.png`, `docs/mapjs-in-html-example.png`: Brunellus example, updated in [README.md](../README.md).
       - Add `test/input/html/example-updated.html` for example screenshots to link to.
     - `example2-white-swan-complex-argmapjs-argmap-theme.png`: better screenshot of mapjs argument, using argument map theme.
@@ -4129,7 +4140,7 @@ Files created from argmap2mup now work with MindMup. Fix #11.
     - Add more messages for feedback.
   - `scripts/bash_aliases_mapjs.sh`: Minor changes so legacy mapjs can use aliases more easily.
   - `mapjs/.vscode/settings.json`: Add `scripts/bash_aliases_mapjs.sh` as terminal init file.
-  
+
 ## argmap 4.7.3
 
 - `test/test_scripts/mapjs_bisect_testcafe.sh`:
@@ -4450,7 +4461,7 @@ Supports multiple mapjs on page:
   - Update references to both above scripts.
   - Add mentions that test files are not public api.
 - `.vscode/launch.json`: Fix broken path to example file due to 3.8.3 bug.
-  
+
 ## argmap 3.8.3
 
 - `Input`:
@@ -4471,7 +4482,7 @@ BUG:
   - `bash_aliases_argmap.sh`:
     `__pack_mapjs()`: Remove env variable argument since specific `.json` files no longer requested during webpack build process.
 - `mapjs-example/webpack.config.js`: Remove env variable functionality.
-  
+
 ## argmap 3.8.1
 
 - `scripts`:
@@ -4571,7 +4582,7 @@ BUG:
       - `install.sh`: Add symbolic link from pandoc data folder to `pandoc-templates`.
     - Add `examples/example.json` (generated from example.yml) to repo as an example for mapjs.
     - Remove commands to delete MJS_WP_MAP which is now `examples/example.json`
-  
+
     - See [CHANGELOG-mapjs.md](../mapjs/docs/CHANGELOG-mapjs.md) for more details.
     - [README.md](../README.md):
       - Add mapjs and troubleshooting sections.
@@ -4591,10 +4602,10 @@ BUG:
   - Add comments re available pandoc variable to `src/pandoc-argmap.lua`
   - Update `scripts/install.sh` to link to new pandoc data directory location (`$HOME/.local/share/pandoc`).
   - Update rockspec for release.
-  
+
 ## argmap 3.5.3
 
-- `.vscode`:  
+- `.vscode`:
   - `launch.json`: Update argmap2mup gdrive upload debug profile to use correct lua install.
   - `settings.json`: Update lua extension settings.
 - `scripts/install.sh`:
