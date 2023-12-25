@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.0.15
+
+- `netlify.toml`: Add redirect from `schemas/` to `mapjs-schemas.netlify.app/*` so separate netlify project is used for schema publishing.
+
 ## argmap 27.0.14
 
 - `mapjs/src/core/util/mapjs-utilities.js`:
