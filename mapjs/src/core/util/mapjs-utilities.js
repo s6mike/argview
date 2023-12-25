@@ -186,14 +186,41 @@ module.exports = {
     }
     return false; // Should never be called
   },
-  saveFile: (map_data) => {
+  updateDataPreSave: function (map_data) {
+    'use strict';
+    const save_timestamp = new Date().toISOString();
+
+    // Remove superfluous data
+    map_data.theme = undefined;
+    map_data.attr.theme = undefined;
+    map_data.title = undefined;
+    Logger.info('Custom theme removed from saved map');
+
+    // TODO: Should first check json is compatible with $schema, then, if necessary, update it.
+    if (!map_data.$schema) {
+      map_data.$schema = CONFIG.mapjs_schema_uri_current; // Saves current $schema reference to map
+    }
+
+    if (!map_data.original_root_node_title) {
+      map_data.original_root_node_title = (map_data.ideas[1] && map_data.ideas[1].title) || 'default title'; // Adds original_root_node_title to map
+    }
+
+    if (!map_data.original_save_time) {
+      map_data.original_save_time = map_data.original_upload_time || save_timestamp;
+    }
+    map_data.original_upload_time = undefined;
+    map_data.last_save_time = save_timestamp;
+
+    return map_data;
+  },
+  saveFile: function (map_data) {
     'use strict';
 
-    const body = JSON.stringify(map_data),
+    const updated_map_data = this.updateDataPreSave(map_data),
+      body = JSON.stringify(updated_map_data),
       target_url = '/sm';
-    Logger.log('body: ' + body);
+    Logger.log('mapjs json: ' + body);
 
-    // Logger.log('target_url: ' + target_url);
     fetch(target_url, {
       method: 'POST',
       headers: {
@@ -204,7 +231,7 @@ module.exports = {
       .then(response => response.json())
       .then(data => console.log(data))
       .catch((error) => {
-        console.error('E rror: ' + error + ' with content: ' + JSON.stringify(map_data));
+        console.error('Error: ' + error + ' with content: ' + JSON.stringify(map_data));
       });
     // TODO: Store the map_id so it's used for future updates, regardless of title updates.
   },
