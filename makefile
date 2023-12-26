@@ -123,7 +123,7 @@ ifneq (${ENV}, netlify)
 all: | docs public --conda $(LUA_MODULES_LOCAL)
 endif
 
-config: ${LIST_FILES_CONFIG_PROCESSED}
+config: ${PATH_FILE_ARGMAP_DOT_ENV} ${LIST_FILES_CONFIG_PROCESSED}
 --conda: | $(LINK_TARGETS_CONDA)
 public: | $(LINK_TARGETS_PUBLIC)
 
