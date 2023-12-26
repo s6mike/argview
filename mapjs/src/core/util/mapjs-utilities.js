@@ -3,7 +3,7 @@
 /* mapjs utility functions */
 
 /*eslint strict: ["error", "function"]*/
-/*global PATH_FILE_CONFIG_MAPJS*/
+/*global PATH_FILE_CONFIG_MAPJS,PATH_FILE_CONFIG_MAPJS_PROCESSED*/
 // TODO: switch to lodash and test
 
 // function getvar(varname, config_file) {
@@ -37,14 +37,14 @@ function MyLogger(console_original, environment = process.env.NODE_ENV) {
 }
 /* eslint-enable strict */
 
+let { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS);
 const _ = require('underscore'),
-  // TODO: need to add PATH_FILE_CONFIG_MAPJS_PROCESSED see start.js
-  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
-  CONTAINER_CLASS = CONFIG.mapjs_map.class,
-
+  { default: CONFIG_P } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS_PROCESSED),
   // Setting this up here so it's ready for idea_pp
   //  TODO: If I move idea_pp to MyLogger then I can be more flexible with where I initialise it
-  Logger = new MyLogger(console);
+  Logger = new MyLogger(console),
+  CONTAINER_CLASS = CONFIG.mapjs_map.class;
+CONFIG = Object.assign(CONFIG, CONFIG_P); // Assigning processed file second means it overwrites unprocessed values.
 
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
