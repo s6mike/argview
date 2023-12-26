@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.3
+
+- `mapjs/netlify/edge-functions/`:
+  - `shared_functions.ts`:
+    - Update to use built-in deno crypto library rather than deprecated external one. New crypto function is asynchronous so need to update calling functions too.
+    - `get_mapjs.ts`: Update `map_id` generation now hash generated asynchronously.
+- `package.json`, `package-lock.json`: Remove `crypto` npm dependency.
+- `mapjs/netlify/edge-functions/set_mapjs.ts`: Fix missing await
+for mapHash.
+
 ## argmap 27.1.2
 
 - `mapjs/src/core/util/mapjs-utilities.js`:

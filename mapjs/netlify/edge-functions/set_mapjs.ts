@@ -46,7 +46,7 @@ export default async (_req: Request, _context: Context) => {
           map_data.original_root_node_title = map_title; // Adds original_root_node_title to map
         }
 
-        map_id = generateMapHash(map_title);
+        map_id = await generateMapHash(map_title);
         map_data.map_id = map_id;
       }
     }
