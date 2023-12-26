@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.4
+
+- `package.json`, `package-lock.json`: Move some dev dependencies needed for build to being proper dependencies.
+
 ## argmap 27.1.3
 
 - `mapjs/netlify/edge-functions/`:
