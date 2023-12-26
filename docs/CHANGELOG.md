@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.2
+
+- `mapjs/src/core/util/mapjs-utilities.js`:
+  - Improve fetch error messages (for loading and saving maps online).
+  - Check response from saving map more carefully, only parsing json if response isn't already text.
+
 ## argmap 27.1.1
 
 - `mapjs/schemas/netlify.toml`: Add redirects from:
