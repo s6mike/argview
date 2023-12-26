@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.7
+
+- `src/layouts/includes/argmap-head-element.html`: Remove json file preload until solution found for checking whether it's needed.
+  - Update example doc outputs to match too.
+
 ## argmap 27.1.6
 
 - `mapjs/package.json`, `mapjs/package-lock.json`: Fix vulnerability.
