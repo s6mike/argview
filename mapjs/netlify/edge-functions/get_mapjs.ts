@@ -8,10 +8,13 @@ export default async (_req: Request, _context: Context) => {
   // QUESTION: can I standardise this across functions?
   const store_mapjs = getStore({
     name: "mapjs",
-  }); 
+  });
   const params = new URL(_req.url).searchParams,
-    original_root_node_title = params.get("ornt"),
-    map_id = params.get("map_id") || (original_root_node_title && generateMapHash(original_root_node_title));
+    original_root_node_title = params.get("ornt");
+  let map_id = params.get("map_id");
+  if (!map_id) {
+    map_id = original_root_node_title && await generateMapHash(original_root_node_title);
+  };
   let blob;
 
   if (map_id) {
