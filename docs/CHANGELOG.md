@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.5
+
+- `makefile`: Improve npm install:
+  - Don't install dev dependencies when in production mode or netlify environment. This should speed up prodcution install.
+  - Update npm install target to be `package-lock.json` as well as `node_modules` folder so changes to `package.json` lead to `package-lock.json` being out of date, triggering rebuild.
+    - Add `node_modules` as order only dependency so that when no `node_modules` folder the build is also triggered.
+
 ## argmap 27.1.4
 
 - `package.json`, `package-lock.json`: Move some dev dependencies needed for build to being proper dependencies.
