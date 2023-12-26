@@ -4,6 +4,7 @@
 !*sample.yaml
 !*defaults.yaml
 config/argmap.env
+config/exclude
 argmap.code-workspace
 .vscode/*
 !.vscode/launch.json

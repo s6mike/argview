@@ -8,6 +8,10 @@
 
 ## argmap 27.1.12
 
+- `.gitignore`: Add `config/exclude` which is used by separate repo.
+
+## argmap 27.1.12
+
 - `netlify.toml`: Move env vars to start of file for clarity.
 
 ## argmap 27.1.11
