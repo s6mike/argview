@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.9
+
+- `mapjs/src/core/util/mapjs-utilities.js`: Update to read mapjs config processed file too.
+  - `mapjs/src/start.js`: Update comments to include above solution.
+
 ## argmap 27.1.8
 
 - `mapjs/schemas/v3-2/mapjs-json.json`: Remove top level `title` from `required`.
