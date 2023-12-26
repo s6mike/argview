@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.10
+
+- `mapjs/config/config-mapjs.yaml`: Add new mapjs_schema var `mapjs_schema.version_current`.
+  - Rename `mapjs_schema_uri_current` to `mapjs_schema.uri_current` and use `version_current` as variable in value.
+- `mapjs/src/core/util/mapjs-utilities.js`: Update to use new `mapjs_schema.uri_current` var name.
+
 ## argmap 27.1.9
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Update to read mapjs config processed file too.
