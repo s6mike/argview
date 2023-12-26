@@ -1,37 +1,7 @@
-[[redirects]]
-  from = "/"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
-  status = 302
-  force = false
-
-[[redirects]]
-  from = "/index.html"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
-  status = 302
-  force = false
-
-[[redirects]]
-  from = "/schemas/*"
-  to = "https://mapjs-schemas.netlify.app/schemas/:splat"
-  status = 200 # QUESTION: Or 301 instead?
-  force = true
-
 [build]
   publish = "mapjs/public/" # The path to your static content folder
   command = "./scripts/argmap_init_script.sh" # Command to start your dev server
   edge_functions = "mapjs/netlify/edge-functions"
-
-[[edge_functions]]
-  path = "/sm"
-  function = "set_mapjs"
-
-[[edge_functions]]
-  path = "/gm"
-  function = "get_mapjs"
-
-[[edge_functions]]
-  path = "/gmh"
-  function = "shared_functions"
 
 [build.environment]
   ENV = "netlify"
@@ -67,6 +37,36 @@
   MODE = "dev"
   DIR_PROJECTS = "./mapjs/public" # So debug logs visible
   # NETLIFY_BUILD_DEBUG = "true"
+
+[[redirects]]
+  from = "/"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  status = 302
+  force = false
+
+[[redirects]]
+  from = "/index.html"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  status = 302
+  force = false
+
+[[redirects]]
+  from = "/schemas/*"
+  to = "https://mapjs-schemas.netlify.app/schemas/:splat"
+  status = 200 # QUESTION: Or 301 instead?
+  force = true
+
+[[edge_functions]]
+  path = "/sm"
+  function = "set_mapjs"
+
+[[edge_functions]]
+  path = "/gm"
+  function = "get_mapjs"
+
+[[edge_functions]]
+  path = "/gmh"
+  function = "shared_functions"
 
 # sample dev block in the toml
 # note: each of these fields are OPTIONAL and should only be used if you need an override

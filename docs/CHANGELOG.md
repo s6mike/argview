@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.12
+
+- `netlify.toml`: Move env vars to start of file for clarity.
+
 ## argmap 27.1.11
 
 - `config/`: Add comments to files.
