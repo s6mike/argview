@@ -88,7 +88,7 @@ module.exports = {
     try { // QUESTION: Use trycatch here?
       const response = await fetch(script_src);
       if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+        throw new Error('`Load map` server HTTP error: ' + response.status);
       }
       return await response.json();
     } catch (error) {
@@ -227,13 +227,23 @@ module.exports = {
         'Content-Type': 'application/json',
       },
       body: body
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch((error) => {
-        console.error('Error: ' + error + ' with content: ' + JSON.stringify(map_data));
-      });
-    // TODO: Store the map_id so it's used for future updates, regardless of title updates.
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('`Save Map` server HTTP error: ' + response.status);
+      }
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {  // Check if content-type is JSON
+        if (typeof response === 'object') {
+          return response.json();
+        } else {
+          const response_text = response.text();
+          throw new Error('`Save map` server response not in JSON format: ' + response_text);
+        };
+      }
+    }).catch(error => {
+      Logger.error('Server response error: ' + error);
+      // Handle network errors or other exceptions
+    });
   },
 
   // May not be compatible with all modern browsers
