@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.8
+
+- `mapjs/schemas/v3-2/mapjs-json.json`: Remove top level `title` from `required`.
+
 ## argmap 27.1.7
 
 - `src/layouts/includes/argmap-head-element.html`: Remove json file preload until solution found for checking whether it's needed.
