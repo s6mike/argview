@@ -127,8 +127,6 @@ config: ${PATH_FILE_ARGMAP_DOT_ENV} ${LIST_FILES_CONFIG_PROCESSED}
 --conda: | $(LINK_TARGETS_CONDA)
 public: | $(LINK_TARGETS_PUBLIC)
 
-docs: $(FILES_HTML_DOCS)
-
 # TODO Just run conda env script?
 # if in folder with config/environment-conda-argmap.yaml
 # conda env create
@@ -180,6 +178,8 @@ clean: site_clean
 # Delete these last since it will stop config var lookups working
 	rm -f ${LIST_FILES_CONFIG_PROCESSED}
 # rm ${PATH_FILE_GDRIVE_LOCAL}
+
+docs: $(FILES_HTML_DOCS)
 
 # Clean up Lua Rocks from global library
 luarocks_clean:
