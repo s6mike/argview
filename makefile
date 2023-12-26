@@ -29,7 +29,7 @@ SHELL := /bin/bash
 
 # Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
 # Using .SECONDARY: without arguments breaks things though
-# .SECONDARY: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
+.SECONDARY: ${PATH_DIR_CONFIG_ARGMAP}/argmap.env ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yaml ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yaml
 
 # .NOTINTERMEDIATE only supported in make 4.4
 .NOTINTERMEDIATE: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
