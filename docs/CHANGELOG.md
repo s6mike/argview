@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.11
+
+- `config/`: Add comments to files.
+
 ## argmap 27.1.10
 
 - `mapjs/config/config-mapjs.yaml`: Add new mapjs_schema var `mapjs_schema.version_current`.
