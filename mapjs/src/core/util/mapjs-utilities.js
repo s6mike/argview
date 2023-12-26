@@ -198,7 +198,7 @@ module.exports = {
 
     // TODO: Should first check json is compatible with $schema, then, if necessary, update it.
     if (!map_data.$schema) {
-      map_data.$schema = CONFIG.mapjs_schema_uri_current; // Saves current $schema reference to map
+      map_data.$schema = CONFIG.mapjs_schema.uri_current; // Saves current $schema reference to map
     }
 
     if (!map_data.original_root_node_title) {

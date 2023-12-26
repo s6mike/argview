@@ -12,7 +12,9 @@
 # Values representing html classes, ids etc should be kebab case
 #   MAP_INSTANCE_ID and ${path-json-source} are populated dynamically by pandoc.
 
-mapjs_schema_uri_current: https://argview.org/schemas/v3-1/mapjs-json.json
+mapjs_schema:
+  version_current: v3-2
+  uri_current: https://argview.org/schemas/${mapjs_schema.version_current}/mapjs-json.json
 
 argmap_collection:
   tag: article
