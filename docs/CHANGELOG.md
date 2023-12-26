@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.6
+
+- `mapjs/package.json`, `mapjs/package-lock.json`: Fix vulnerability.
+
 ## argmap 27.1.5
 
 - `makefile`: Improve npm install:
