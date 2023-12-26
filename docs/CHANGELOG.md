@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.14
+
+- `makefile`: Add `.env` as `make config` dependency.
+
 ## argmap 27.1.13
 
 - `makefile`: Add env files which can be copied as `.SECONDARY`, to try to stop them being deleted. They are all absolute paths, not sure that works with relative path rules.
