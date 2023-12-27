@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.18
+
+- `.gitignore`: Add `mapjs/config/exclude` which is used by separate repo.
+
 ## argmap 27.1.17
 
 - `makefile`:
