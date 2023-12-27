@@ -233,7 +233,7 @@ like_netlify_init: config/argmap.env
 # 	npm install -g netlify-cli
 
 
-npm: ${PATH_DIR_MAPJS_ROOT}/package-lock.json | ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+npm: ${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
 npm_audit: | npm npm_audit_output.txt
 
 prints:
@@ -373,7 +373,7 @@ $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/ma
 
 # QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC?
 # QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml | ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
 	$(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 # -echo "NODE_PATH: ${NODE_PATH}"
@@ -512,7 +512,7 @@ endif
 # # -ln -s "${MAPJS_NODE_MODULES_PREFIX}/node_modules" "${PATH_DIR_MAPJS_ROOT}/node_modules"
 # 	-ln -s $@ "${PATH_DIR_MAPJS_ROOT}/node_modules"
 
-${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json
+${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json: ${PATH_DIR_MAPJS_ROOT}/package.json
 	@if [ "${ENV}" = "netlify" ] || [ "${MODE}" = "prod" ]; then \
 		printf "mapjs: npm clean install, omit dev\n"; \
 		npm ci --prefix "${MAPJS_NODE_MODULES_PREFIX}" --omit=dev; \
