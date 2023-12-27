@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.22
+
+- `src/layouts/includes/mapjs-widget-controls.html`: Remove `role="menubar"` from `mapjs_control` <div>.
+  - Update doc examples.
+
 ## argmap 27.1.21
 
 - `makefile`: Replace `mapjs/node_modules` references with `mapjs/node_modules/.package-lock.json` since this should represent the whole folder and its timestamp should be more accurate reflection of relative updates.
