@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.19
+
+- Update version number: `mapjs/package.json, mapjs/package-lock.json`
+
 ## argmap 27.1.18
 
 - `.gitignore`: Add `mapjs/config/exclude` which is used by separate repo.

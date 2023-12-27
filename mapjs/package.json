@@ -1,6 +1,6 @@
 {
   "name": "@s6mike/mapjs",
-  "version": "5.0.17",
+  "version": "27.1.19",
   "homepage": "https://github.com/s6mike/mapjs/",
   "license": "MIT",
   "description": "JavaScript Mind Map visualisation and management library using SVG. Developed for MindMup, with additional bugfixes and customisations.",
