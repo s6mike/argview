@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.20
+
+- `makefile`: Update `npm install` rule to use `npm ci` instead of `npm install` for netlify/prod builds, for consistency and speed.
+
 ## argmap 27.1.19
 
 - Update version number: `mapjs/package.json, mapjs/package-lock.json`
