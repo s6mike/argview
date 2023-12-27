@@ -21,7 +21,7 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean docs install luarocks_clean npm npm_audit pandoc prints site test # dev
+.PHONY: all config public --conda output_clean site_clean clean docs install like_netlify like_netlify_pre_init like_netlify_init luarocks_clean npm npm_audit pandoc prints site test # dev netlify-cli
 # .LOW_RESOLUTION_TIME: $(FILES_HTML_DOCS) ${PATH_OUTPUT_PUBLIC}/%.json %.yaml
 
 # Define variables
@@ -199,27 +199,40 @@ luarocks_clean:
 	@echo "Remaining luarocks:"
 	@luarocks --tree ${PATH_LUA_MODULES} list
 
-dev: netlify-cli
-#	QUESTION: How to connect to correct netlify site?
-#  QUESTION: How to check this has been done?
-	netlify link
-# netlify build
-#  QUESTION: What to add as dependencies?
-# make all
-	netlify dev
-
-#  QUESTION: How to check this has been done?
-netlify-cli:
-	npm install -g netlify-cli
-
 # TODO: Continue moving these dependencies to the targets they are needed for
 install: | ${PATH_FILE_YQ} $(PANDOC) npm $(LUA_MODULES_LOCAL) # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
   install: | ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
 endif
 
-npm: ${PATH_DIR_MAPJS_ROOT}/package-lock.json | ${MAPJS_NODE_MODULES_PREFIX}/node_modules
+like_netlify: like_netlify_pre_init clean like_netlify_init
 
+# TODO: Add call to undo netlify_pre_init (remove any of the created .env and restore the .bak)
+like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/config/environment-mapjs.yaml
+	mv --no-clobber config/argmap.env config/argmap.env.bak
+	mv --no-clobber config/environment-argmap.yaml config/environment-argmap.yaml.bak
+	mv --no-clobber mapjs/config/environment-mapjs.yaml mapjs/config/environment-mapjs.yaml.bak
+	printf "Attempting to halt webpack dev server...\n"
+	-webpack_server_halt
+
+like_netlify_init: site
+	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
+
+# dev: netlify-cli
+# #	QUESTION: How to connect to correct netlify site?
+# #  QUESTION: How to check this has been done?
+# 	netlify link
+# # netlify build
+# #  QUESTION: What to add as dependencies?
+# # make all
+# 	netlify dev
+
+# #  QUESTION: How to check this has been done?
+# netlify-cli:
+# 	npm install -g netlify-cli
+
+
+npm: ${PATH_DIR_MAPJS_ROOT}/package-lock.json | ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 npm_audit: | npm npm_audit_output.txt
 
 prints:
@@ -263,13 +276,6 @@ site: $(FILES_SITE)
 
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
-
-# test_netlify: init_test_netlify test
-
-# init_test_netlify:
-# 	ENV=netlify
-# 	webpack_server_halt
-# 	netlify dev &
 
 test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
