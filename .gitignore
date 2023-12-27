@@ -20,6 +20,7 @@ includes/webpack-dist-tags.html
 
 node_modules*
 
+mapjs/config/exclude
 mapjs/node_modules
 mapjs/public/output
 mapjs/public/input
