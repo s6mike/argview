@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.17
+
+- `makefile`:
+  - Add both processed path config files as dependencies for all pandoc argmap calls.
+  - Move `clean` to be called before `pre_init`.
+  - Add `config/argmap.env` to be dependency for `like_netlify_init` so it's replaced after being moved.
+  - Move `site` to be final dependency of `like_netlify` from `like_netlify_init`, so it's called after `init_script`.
+
 ## argmap 27.1.16
 
 - `makefile`: Add `make like_netlify` to simulate netlify init process.
