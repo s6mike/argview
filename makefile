@@ -514,9 +514,13 @@ endif
 
 ${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules: ${PATH_DIR_MAPJS_ROOT}/package.json
 	@if [ "${ENV}" = "netlify" ] || [ "${MODE}" = "prod" ]; then \
-		npm_mode="--omit=dev"; \
-	fi; \
-	npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}" "$$npm_mode"
+		printf "mapjs: npm clean install, omit dev\n"; \
+		npm ci --prefix "${MAPJS_NODE_MODULES_PREFIX}" --omit=dev; \
+	else \
+		printf "mapjs: npm install\n"; \
+		npm install --prefix "${MAPJS_NODE_MODULES_PREFIX}"; \
+	fi;
+
 # QUESTION: Is touch necessary when node_modules always order only (|) dependency?
 # touch ${MAPJS_NODE_MODULES_PREFIX}/node_modules
 
