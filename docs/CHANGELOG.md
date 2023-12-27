@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.16
+
+- `makefile`: Add `make like_netlify` to simulate netlify init process.
+
 ## argmap 27.1.15
 
 - `makefile`: Tidy rule order.
