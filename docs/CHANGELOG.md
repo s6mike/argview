@@ -6,6 +6,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.28
+
+- `mapjs/config/config-mapjs-paths.yaml`:
+  - Make `PATH_REPLAY_SCRIPT_` vars nested so they are `PATH_REPLAY_SCRIPT.` instead.
+  - Add test: `MAP_RENDERS`
+  - Rewrite `PATH_REPLAY_SCRIPT` to `PATH_REPLAY_SCRIPT.DEFAULT` and set to simplest test - `MAP_RENDERS`.
+  - Use new var names:
+   - `scripts/bash_aliases_mapjs.sh`: `testcafe_run()`
+    - `test/test_scripts/tests.sh`
+      - Add `MAP_RENDERS` test.
+
 ## argmap 27.1.27
 
 - `mapjs/scripts/mapjs.env`: Comment out all `REPLAY_SCRIPT` vars since they are all covered by `mapjs/config/config-mapjs-paths.yaml`.
