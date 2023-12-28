@@ -5,7 +5,7 @@ echo "Running ${BASH_SOURCE[0]}"
 # mapjs functions and aliases
 
 # Functions beginning with __ are for other scripts. They are not considered part of a public API, and therefore updates may change them without warning.
-
+# shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
 case $ENV in
 
 netlify) ;;
@@ -13,7 +13,6 @@ netlify) ;;
   # shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
   source "$HOME/scripts/default_vscode_init_script.sh"
 
-  # shellcheck source=/home/s6mike/git_projects/mapjs-git-bisect/scripts/git-bisect.env # Stops shellcheck lint error
   # source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
   ;;
 esac
@@ -89,20 +88,24 @@ diff_staged_file() { # dfs package.json package.diff
   code "$OUTPUT_FILE"
 }
 
-testcafe_run() { # tcr
-  DEFAULT_SCRIPT="$PATH_REPLAY_SCRIPT"
-  if [ "$1" == head ]; then
+testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
+  default_url="http://localhost:$PORT_DEV_SERVER/"
+  default_script="$PATH_REPLAY_SCRIPT"
+  head=${1:-""}
+  if [ "$head" == head ]; then
     # TODO: Add option to use --speed 0.1
-    BROWSER_TESTCAFE='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
-    PATH_REPLAY_SCRIPT=$(realpath --relative-to="$PATH_DIR_MAPJS_ROOT" "${2:-$DEFAULT_SCRIPT}")
+    browser_testcafe='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
+    path_replay_script="${2:-$default_script}"
+    target_url="${3:-$default_url}"
   else
     # Try timing speed and then compare with using: --experimental-proxyless
-    BROWSER_TESTCAFE='chrome:headless --no-default-browser-check --disable-extensions'
-    PATH_REPLAY_SCRIPT=$(realpath --relative-to="$PATH_DIR_MAPJS_ROOT" "${1:-$DEFAULT_SCRIPT}")
+    browser_testcafe='chrome:headless --no-default-browser-check --disable-extensions'
+    path_replay_script="${1:-$default_script}"
+    target_url="${2:-$default_url}"
   fi
   # __bisect_init
-  echo "PATH_REPLAY_SCRIPT: $PATH_REPLAY_SCRIPT"
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run testcafe:command "$BROWSER_TESTCAFE" "$PATH_REPLAY_SCRIPT"
+  # echo testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
+  testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
 }
 
 # __test_mapjs_renders() {
