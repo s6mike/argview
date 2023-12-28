@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.31
+
+- `test/devtools-recordings/`: Remove initial navigation step from 2 tests and add the relevant page urls as parameters to the `__test` calls.
+
 ## argmap 27.1.30
 
 - `test/devtools-recordings/`: Update 2 tests to run locally, rename `add-child` to `add-idea`.
