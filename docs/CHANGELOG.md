@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.29
+
+- `scripts/config_read_functions.lib.sh` :
+  - `__check_exit_status()`: Add error result `-1`.Update
+    - `scripts/bash_aliases_mapjs.sh`: Catch `-1` result and abort test, print error.
+  - `test/test_scripts/bash_aliases_argmap_test.sh`: Update to expect `-1` for unknown values.
+
 ## argmap 27.1.28
 
 - `mapjs/config/config-mapjs-paths.yaml`:

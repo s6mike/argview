@@ -22,6 +22,7 @@ __check_exit_status() {
     echo "$result"
   else
     log "$3"
+    echo "-1"
   fi
   return "$exit_status"
 }
