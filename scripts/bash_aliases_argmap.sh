@@ -73,7 +73,7 @@ __find_rockspec() {
 }
 
 __check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
-  expected_echoes=8
+  expected_echoes=9
   printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting $expected_echoes only:\n"
   echo_count=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
   printf "Actual count: $echo_count\n"
