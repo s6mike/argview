@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.27
+
+- `mapjs/scripts/mapjs.env`: Comment out all `REPLAY_SCRIPT` vars since they are all covered by `mapjs/config/config-mapjs-paths.yaml`.
+
 ## argmap 27.1.26
 
 - `test/devtools-recordings/`:
