@@ -1,9 +1,9 @@
 {
-  "devDependencies": {
-    "netlify-plugin-cache": "^1.0.3"
-  },
   "dependencies": {
     "@netlify/blobs": "^6.3.1",
+    "netlify-plugin-cache": "^1.0.3"
+  },
+  "devDependencies": {
     "netlify-cli": "^17.10.1"
   }
 }
