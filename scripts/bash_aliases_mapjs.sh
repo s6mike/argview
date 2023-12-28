@@ -89,17 +89,19 @@ diff_staged_file() { # dfs package.json package.diff
 }
 
 testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
+  default_url="http://localhost:$PORT_DEV_SERVER/"
   default_script="$PATH_REPLAY_SCRIPT"
-  if [ "$1" == head ]; then
+  head=${1:-""}
+  if [ "$head" == head ]; then
     # TODO: Add option to use --speed 0.1
     browser_testcafe='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
     path_replay_script="${2:-$default_script}"
-    target_url="${3:-http://localhost:9001/}"
+    target_url="${3:-$default_url}"
   else
     # Try timing speed and then compare with using: --experimental-proxyless
     browser_testcafe='chrome:headless --no-default-browser-check --disable-extensions'
     path_replay_script="${1:-$default_script}"
-    target_url="${2:-http://localhost:9001/}"
+    target_url="${2:-$default_url}"
   fi
   # __bisect_init
   # echo testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
