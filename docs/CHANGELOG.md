@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.33
+
+- `scripts/bash_aliases_argmap.sh`: Update `__check_config_read_echoes()` now 9 echoes in `scripts/config_read_functions.lib.sh`.
+
 ## argmap 27.1.32
 
 - `mapjs/package.json`: Remove `undefined` dependency and update `testcafe` to version 3.5.0.
