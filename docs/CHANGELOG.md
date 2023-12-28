@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.23
+
+- `makefile`: Add rules for running `npm install` on `argmap/node_modules` as dependency of `make dev` which runs `netlify dev`.
+
 ## argmap 27.1.22
 
 - `src/layouts/includes/mapjs-widget-controls.html`: Remove `role="menubar"` from `mapjs_control` <div>.

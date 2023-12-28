@@ -219,6 +219,9 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
+dev: package-lock.json node_modules/.package-lock.json
+	netlify dev
+
 # dev: netlify-cli
 # #	QUESTION: How to connect to correct netlify site?
 # #  QUESTION: How to check this has been done?
@@ -511,6 +514,11 @@ endif
 # # -ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
 # # -ln -s "${MAPJS_NODE_MODULES_PREFIX}/node_modules" "${PATH_DIR_MAPJS_ROOT}/node_modules"
 # 	-ln -s $@ "${PATH_DIR_MAPJS_ROOT}/node_modules"
+
+#TODO: Combine this rule with mapjs install below
+package-lock.json node_modules/.package-lock.json: package.json
+	npm install
+
 
 ${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json: ${PATH_DIR_MAPJS_ROOT}/package.json
 	@if [ "${ENV}" = "netlify" ] || [ "${MODE}" = "prod" ]; then \
