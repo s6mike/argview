@@ -2,17 +2,6 @@
   "title": "argmap-keys-undo-redo",
   "steps": [
     {
-      "type": "navigate",
-      "url": "http://localhost:9001/",
-      "assertedEvents": [
-        {
-          "type": "navigation",
-          "url": "http://localhost:9001/",
-          "title": "Example 1.1 - All swans are white."
-        }
-      ]
-    },
-    {
       "type": "waitForExpression",
       "expression": "document.getElementsByClassName('mapjs-node').length==6"
     },

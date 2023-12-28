@@ -2,17 +2,6 @@
   "title": "argmap-edit-first-child",
   "steps": [
     {
-      "type": "navigate",
-      "assertedEvents": [
-        {
-          "type": "navigation",
-          "url": "http://localhost:9001/",
-          "title": "Example 1.1 - All swans are white."
-        }
-      ],
-      "url": "http://localhost:9001/"
-    },
-    {
       "type": "waitForExpression",
       "expression": "document.getElementsByClassName('mapjs-node').length==6"
     },

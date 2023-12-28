@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.26
+
+- `test/devtools-recordings/`:
+  - Remove initial navigation step from recordings which test simple argmap (home page).
+
 ## argmap 27.1.25
 
 - `scripts/bash_aliases_mapjs.sh`:

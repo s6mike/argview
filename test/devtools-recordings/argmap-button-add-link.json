@@ -2,17 +2,6 @@
   "title": "argmap-button-add-link",
   "steps": [
     {
-      "type": "navigate",
-      "url": "http://localhost:9001/",
-      "assertedEvents": [
-        {
-          "type": "navigation",
-          "url": "http://localhost:9001/",
-          "title": "Example 1.1 - All swans are white."
-        }
-      ]
-    },
-    {
       "type": "click",
       "target": "main",
       "selectors": [
