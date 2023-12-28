@@ -112,15 +112,15 @@ case $(getvar ENV) in
 netlify) ;;
 *)
   # To make browser test visible, add 'head' as first arg
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"         #12
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"          #13 left click
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"     #14
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"      #15
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" #16
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"     #17
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)"  #18
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"            #19 add child button
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"    #20 undo/redo button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"                                                                                                       #12
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"                                                                                                        #13 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"                                                                                                   #14
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"                                                                                                    #15
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" http://localhost:9001/output/html/example2-clearly-false-white-swan-v3.html                   #16
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"                                                                                                   #17
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html #18
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"                                                                                                          #19 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"                                                                                                  #20 undo/redo button
 
   # These don't work
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
