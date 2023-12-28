@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.24
+
+- `package.json`: Re-categorise packages as dev dependencies.
+  - `package-lock.json`: Update.
+
 ## argmap 27.1.23
 
 - `makefile`: Add rules for running `npm install` on `argmap/node_modules` as dependency of `make dev` which runs `netlify dev`.
