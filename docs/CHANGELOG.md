@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.25
+
+- `scripts/bash_aliases_mapjs.sh`:
+  - `testcafe_run()`:
+   - Update to work with recordings without initial navigation command, by passing `--base-url` parameter to testcafe.
+    - Override default `base url` with final argument.
+    - Call `testcafe` directly rather than through `npm`.
+      - `mapjs/package.json`: Remove testcafe script commands.
+  - Move shellcheck source to correct place.
+
 ## argmap 27.1.24
 
 - `package.json`: Re-categorise packages as dev dependencies.
