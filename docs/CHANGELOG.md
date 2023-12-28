@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.32
+
+- `mapjs/package.json`: Remove `undefined` dependency and update `testcafe` to version 3.5.0.
+  - `mapjs/package-lock.json`: Update.
+
 ## argmap 27.1.31
 
 - `test/devtools-recordings/`: Remove initial navigation step from 2 tests and add the relevant page urls as parameters to the `__test` calls.
