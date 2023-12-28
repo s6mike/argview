@@ -101,6 +101,10 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
     # Try timing speed and then compare with using: --experimental-proxyless
     browser_testcafe='chrome:headless --no-default-browser-check --disable-extensions'
     path_replay_script="${1:-$default_script}"
+    if [ "$path_replay_script" == -1 ]; then
+      log "Replay script not found: $1"
+      return -1
+    fi
     target_url="${2:-$default_url}"
   fi
   # __bisect_init

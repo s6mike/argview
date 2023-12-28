@@ -89,8 +89,8 @@ test_getvar() {
   __init_tests
   func=getvar
   set +o nounset
-  test_function "$func" bla "$([[ $? -eq 1 ]])"                                                         #1
-  test_function "$func" bla.bla "$([[ $? -eq 1 ]])"                                                     #2
+  test_function "$func" bla -1                                                                          #1
+  test_function "$func" bla.bla -1                                                                      #2
   test_function "$func" DIR_CONFIG config                                                               #3
   test_function "$func" PATH_FILE_CONFIG_ARGMAP_PROCESSED config/processed/config-argmap-processed.yaml #4
   test_function "$func" PORT_DEV_SERVER 9001                                                            #5
