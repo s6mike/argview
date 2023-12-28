@@ -6,10 +6,7 @@
       "target": "main",
       "selectors": [
         [
-          "aria/No file chosen, Choose File"
-        ],
-        [
-          "#file_picker_argmap1"
+          "aria/Upload a mapjs json file (JSON, MUP)"
         ]
       ],
       "offsetX": 52,

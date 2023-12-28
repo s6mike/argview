@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.30
+
+- `test/devtools-recordings/`: Update 2 tests to run locally, rename `add-child` to `add-idea`.
+
 ## argmap 27.1.29
 
 - `scripts/config_read_functions.lib.sh` :
