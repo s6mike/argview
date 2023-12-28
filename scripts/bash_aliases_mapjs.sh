@@ -90,7 +90,7 @@ diff_staged_file() { # dfs package.json package.diff
 
 testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
   default_url="http://localhost:$PORT_DEV_SERVER/"
-  default_script="$PATH_REPLAY_SCRIPT"
+  default_script="$(getvar PATH_REPLAY_SCRIPT.DEFAULT)"
   head=${1:-""}
   if [ "$head" == head ]; then
     # TODO: Add option to use --speed 0.1

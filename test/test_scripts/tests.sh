@@ -112,26 +112,27 @@ case $(getvar ENV) in
 netlify) ;;
 *)
   # To make browser test visible, add 'head' as first arg
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_NODE_CLICK)"          #12 left click
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_ROOT_PARENT)"     #13
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING)"      #14
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_SUPPORTING_E2V3)" #15
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ADD_LINK)"     #16
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING)"  #17
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_ADD_IDEA)"            #18 add child button
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_UNDO_REDO)"    #19 undo/redo button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"         #12
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"          #13 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"     #14
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"      #15
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" #16
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"     #17
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)"  #18
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"            #19 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"    #20 undo/redo button
 
   # These don't work
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_FIRST_CHILD)"    # edit first child node
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_BUTTON_ZOOM)"
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_KEYS_ZOOM)"
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_DELETE_GRANDCHILD)"
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_NEW)"
-  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT_EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_FIRST_CHILD)"    # edit first child node
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ZOOM)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_ZOOM)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.DELETE_GRANDCHILD)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_NEW)"
+  # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
 
   if [ "$1" != html ]; then
-    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 20
+    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 21
   fi
   ;;
 esac
