@@ -1,92 +1,106 @@
 {
-  "title": "argmap-delete-grandchild",
-  "steps": [
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==6"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "#node_5 > span"
-        ]
-      ],
-      "offsetY": 13.3450927734375,
-      "offsetX": 102.5,
-      "deviceType": "pen"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "aria/Add"
+    "title": "argmap-delete-grandchild",
+    "steps": [
+      {
+        "type": "waitForExpression",
+        "expression": "document.getElementsByClassName('mapjs-node').length==6"
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          [
+            "#node_5 > span"
+          ]
         ],
-        [
-          "#menubar-mapjs-1 input.addSubIdea"
+            "offsetX": 102.5,
+            "offsetY": 13.3450927734375,
+            "deviceType": "pen"
+          },
+          {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+              [
+                "aria/Add"
+              ],
+              [
+                "#menubar-mapjs-1 input.addSubIdea"
+              ]
+            ],
+            "offsetX": 26.34313201904297,
+            "offsetY": 6.745094299316406,
+            "deviceType": "pen"
+          },
+          {
+            "type": "keyDown",
+            "key": "b"
+          },
+          {
+            "type": "keyUp",
+            "key": "b"
+          },
+          {
+            "type": "keyDown",
+            "key": "Enter"
+          },
+          {
+            "type": "keyUp",
+            "key": "Enter"
+          },
+          {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+              [
+                "aria/Add"
+              ],
+              [
+                "#menubar-mapjs-1 input.addSubIdea"
+              ]
+            ],
+            "offsetX": 28.34313201904297,
+            "offsetY": 9.745094299316406,
+            "deviceType": "pen"
+          },
+          {
+            "type": "keyDown",
+            "key": "c"
+          },
+          {
+            "type": "keyUp",
+            "key": "c"
+          },
+          {
+            "type": "keyDown",
+            "key": "Enter"
+          },
+          {
+            "type": "keyUp",
+            "key": "Enter"
+          },
+          {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==8"
+          },
+          {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+              [
+                "aria/Delete"
+              ],
+              [
+                "#menubar-mapjs-1 input.removeSubIdea"
+              ]
+            ],
+            "offsetX": 24.67645263671875,
+            "offsetY": 9.745094299316406,
+            "deviceType": "pen"
+          },
+          {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==7"
+          }
         ]
-      ],
-      "offsetY": 6.745094299316406,
-      "offsetX": 26.34313201904297,
-      "deviceType": "pen"
-    },
-    {
-      "type": "keyDown",
-      "key": "b"
-    },
-    {
-      "type": "keyUp",
-      "key": "b"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "aria/Add"
-        ],
-        [
-          "#menubar-mapjs-1 input.addSubIdea"
-        ]
-      ],
-      "offsetY": 9.745094299316406,
-      "offsetX": 28.34313201904297,
-      "deviceType": "pen"
-    },
-    {
-      "type": "change",
-      "value": "c",
-      "selectors": [
-        [
-          "#node_8 > span"
-        ]
-      ],
-      "target": "main"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==8"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "aria/Delete"
-        ],
-        [
-          "#menubar-mapjs-1 input.removeSubIdea"
-        ]
-      ],
-      "offsetY": 9.745094299316406,
-      "offsetX": 24.67645263671875,
-      "deviceType": "pen"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==7"
-    }
-  ]
 }
