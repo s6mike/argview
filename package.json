@@ -4,6 +4,6 @@
     "netlify-plugin-cache": "^1.0.3"
   },
   "devDependencies": {
-    "netlify-cli": "^17.10.1"
+    "netlify-cli": "^17.10.2"
   }
 }
