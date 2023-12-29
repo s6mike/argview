@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.35
+
+- `package.json`, `mapjs/package.json`: Update `netlify-cli`.
+  - `package-lock.json`, `mapjs/package-lock.json`: Update.
+
 ## argmap 27.1.34
 
 - `mapjs/docs/README-argview.md`: Fix link to main schema file.
