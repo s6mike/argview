@@ -2,6 +2,8 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
+target_domain=${1:-"http://localhost:$PORT_DEV_SERVER/"}
+
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 # make test
 
@@ -18,15 +20,24 @@ netlify)
   make public
   rm "$(getvar PATH_OUTPUT_PUBLIC)"
   test_open_html=false
+  PORT_DEV_SERVER=9002
   ;;
 *)
+  case "$DEV_SERVER" in
+  netlify)
+    PORT_DEV_SERVER=9002
+    ;;
+  esac
+
+  echo "Dev server port: $PORT_DEV_SERVER"
+
   test_open_html=true
   __check_config_read_echoes
   # Ensure everything built
   make site_clean
   make public
-  # make all MODE:=dev
-  webpack_server_start
+  # make all MODE := dev
+  # webpack_server_start
   ;;
 esac
 
@@ -105,22 +116,22 @@ esac
 __test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html" mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.json "$test_open_html" #9/1
 # __test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html" mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-2mapjs_argmap1.json "$test_open_html" #10/2
 
-__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/2
-__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #11/3
+__test make HTML_OPEN="$test_open_html" TARGET_DOMAIN="$target_domain" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/2
+__test make HTML_OPEN="$test_open_html" TARGET_DOMAIN="$target_domain" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #11/3
 
 case $(getvar ENV) in
 netlify) ;;
 *)
   # To make browser test visible, add 'head' as first arg
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"                                                                                                       #12
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"                                                                                                        #13 left click
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"                                                                                                   #14
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"                                                                                                    #15
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" http://localhost:9001/output/html/example2-clearly-false-white-swan-v3.html                   #16
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"                                                                                                   #17
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html #18
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"                                                                                                          #19 add child button
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"                                                                                                  #20 undo/redo button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"                                                                                                                     #12
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"                                                                                                                      #13 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"                                                                                                                 #14
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"                                                                                                                  #15
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" "http://localhost:$PORT_DEV_SERVER/output/html/example2-clearly-false-white-swan-v3.html"                   #16
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"                                                                                                                 #17
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" "http://localhost:$PORT_DEV_SERVER/output/html/example1-clearly-false-white-swan-simplified-with-links.html" #18
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"                                                                                                                        #19 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"                                                                                                                #20 undo/redo button
 
   # These don't work
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.

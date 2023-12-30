@@ -217,10 +217,14 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 	-webpack_server_halt
 
 like_netlify_init: config/argmap.env
-	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
+	env ENV=netlify MODE=prod PORT_DEV_SERVER=9002 bash -c ./scripts/argmap_init_script.sh
 
 dev: package-lock.json node_modules/.package-lock.json
-	netlify dev
+	export PORT_DEV_SERVER=9002
+	netlify dev &
+	export DEV_SERVER=netlify
+
+netlify_test: dev test
 
 # dev: netlify-cli
 # #	QUESTION: How to connect to correct netlify site?
@@ -283,9 +287,20 @@ site: $(FILES_SITE)
 
 test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
+	echo "DEV_SERVER: $$DEV_SERVER"
 ifeq (${ENV}, netlify)
 	-./test/test_scripts/tests.sh html
+else ifeq (${DEV_SERVER}, netlify)
+	echo "DEV_SERVER: ${DEV_SERVER}"
+	PORT_DEV_SERVER=9002
+	echo "Right branch1?"
+	netlify dev &
+	echo "Right branch2?"
+	PORT_DEV_SERVER=9002 DEV_SERVER=netlify bash -c ./test/test_scripts/tests.sh
+	echo "Right branch3?"
 else
+	echo "Wrong branch?"
+	webpack_server_start
 	./test/test_scripts/tests.sh
 endif
 
