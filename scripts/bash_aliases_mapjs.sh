@@ -179,20 +179,20 @@ webpack_server_start() { # wss
     fi
     echo ""
   else
-    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run start:"$mode"
+    npm --prefix "$(getvar PATH_MAPJS_ROOT)" run start:"$mode"
     export SERVER_MODE=$mode
   fi
 }
 
 __check_npm_updates() {
-  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
   printf "\nChecking for out of date npm modules. Expecting 2 only (npm and jquery-hammerjs):\n"
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" outdated
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" audit
+  npm --prefix "$(getvar PATH_MAPJS_ROOT)" outdated
+  npm --prefix "$(getvar PATH_MAPJS_ROOT)" audit
 }
 
 __npm_update() {
-  npx npm-check-updates -u --packageFile "$(getvar PATH_DIR_MAPJS_ROOT)/package.json"
+  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
+  npx npm-check-updates --packageFile "$(getvar PATH_MAPJS_ROOT)/package.json"
 }
 
 ## Mark functions for export to use in other scripts:
