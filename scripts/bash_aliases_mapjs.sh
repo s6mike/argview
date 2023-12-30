@@ -108,7 +108,6 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
     target_url="${2:-$default_url}"
   fi
   # __bisect_init
-  # echo testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
   testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
 }
 
@@ -132,14 +131,14 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
 # Start webpack after git checkout
 webpack_install() { # wpb
   # Should only install new stuff. Should install in local folder if its set
-  npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" # --force
+  npm install --prefix "$(getvar PATH_MAPJS)" # --force
   # TODO: But can also monitor package.json for changes and install automatically instead: https://workflowy.com/#/f666070d7b23
   # wait &&
   # npm exec webpack # Shouldn't be needed if webpack server does it automatically
 }
 
 webpack_pack() { #pmj
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run pack
+  npm --prefix "$(getvar PATH_MAPJS)" run pack
 }
 
 __is_server_live() {
@@ -157,7 +156,7 @@ webpack_server_halt() { #wsh
     # Else:
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
-    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run stop
+    npm --prefix "$(getvar PATH_MAPJS)" run stop
     export SERVER_ON=false
     export SERVER_MODE=false
   else
@@ -179,20 +178,20 @@ webpack_server_start() { # wss
     fi
     echo ""
   else
-    npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" run start:"$mode"
+    npm --prefix "$(getvar PATH_MAPJS)" run start:"$mode"
     export SERVER_MODE=$mode
   fi
 }
 
 __check_npm_updates() {
-  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
   printf "\nChecking for out of date npm modules. Expecting 2 only (npm and jquery-hammerjs):\n"
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" outdated
-  npm --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" audit
+  npm --prefix "$(getvar PATH_MAPJS)" outdated
+  npm --prefix "$(getvar PATH_MAPJS)" audit
 }
 
 __npm_update() {
-  npx npm-check-updates -u --packageFile "$(getvar PATH_DIR_MAPJS_ROOT)/package.json"
+  # npm install --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" npm@latest
+  npx npm-check-updates --packageFile "$(getvar PATH_MAPJS)/package.json"
 }
 
 ## Mark functions for export to use in other scripts:

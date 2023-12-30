@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.37
+
+- `scripts/bash_aliases_mapjs.sh`: Update npm calls to use `PATH_MAPJS_ROOT` instead of `MAPJS_NODE_MODULES_PREFIX`.
+
 ## argmap 27.1.36
 
 - `makefile`: Add `$(FILES_HTML_DOCS)` to `FILES_SITE` so `make site` rebuilds docs too.
@@ -49,10 +53,8 @@
   - Make `PATH_REPLAY_SCRIPT_` vars nested so they are `PATH_REPLAY_SCRIPT.` instead.
   - Add test: `MAP_RENDERS`
   - Rewrite `PATH_REPLAY_SCRIPT` to `PATH_REPLAY_SCRIPT.DEFAULT` and set to simplest test - `MAP_RENDERS`.
-  - Use new var names:
-   - `scripts/bash_aliases_mapjs.sh`: `testcafe_run()`
-    - `test/test_scripts/tests.sh`
-      - Add `MAP_RENDERS` test.
+  - Use new var names: `scripts/bash_aliases_mapjs.sh`: `testcafe_run()`
+  - `test/test_scripts/tests.sh`: Add `MAP_RENDERS` test.
 
 ## argmap 27.1.27
 
@@ -67,10 +69,10 @@
 
 - `scripts/bash_aliases_mapjs.sh`:
   - `testcafe_run()`:
-   - Update to work with recordings without initial navigation command, by passing `--base-url` parameter to testcafe.
-    - Override default `base url` with final argument.
-    - Call `testcafe` directly rather than through `npm`.
-      - `mapjs/package.json`: Remove testcafe script commands.
+  - Update to work with recordings without initial navigation command, by passing `--base-url` parameter to testcafe:
+  - Override default `base url` with final argument.
+  - Call `testcafe` directly rather than through `npm`:
+    - `mapjs/package.json`: Remove testcafe script commands.
   - Move shellcheck source to correct place.
 
 ## argmap 27.1.24
@@ -130,9 +132,6 @@
 ## argmap 27.1.12
 
 - `.gitignore`: Add `config/exclude` which is used by separate repo.
-
-## argmap 27.1.12
-
 - `netlify.toml`: Move env vars to start of file for clarity.
 
 ## argmap 27.1.11
