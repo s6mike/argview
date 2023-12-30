@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.36
+
+- `makefile`: Add `$(FILES_HTML_DOCS)` to `FILES_SITE` so `make site` rebuilds docs too.
+
 ## argmap 27.1.35
 
 - `package.json`, `mapjs/package.json`: Update `netlify-cli`.
