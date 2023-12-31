@@ -65,6 +65,12 @@ check_var_value() {
 
 # This function is not considered part of a public API, and therefore updates may change them without warning.
 __test() {
+  TESTNUM=${TESTNUM:-0}
+  COL_PASS=${COL_PASS:-""}
+  COL_FAIL=${COL_FAIL:-"<< "}
+  COL_RESET=${COL_RESET:-""}
+
+  COL_FAIL=${COL_FAIL:-0}
   PRE="Test $TESTNUM:"
   echo -en "$PRE "
 
