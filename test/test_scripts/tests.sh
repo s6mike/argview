@@ -64,13 +64,14 @@ __init_tests
 case $(getvar ENV) in
 netlify) ;;
 *)
+  __test node -v "$(getvar NODE_VERSION)" #1
   if [ "$1" != html ]; then
-    __test luarocks lint "$(__find_rockspec)"   #1 # Gets absolute path
-    __test m2a "$(getvar INPUT_FILE_JSON)"      #2
-    __test a2t "$(getvar INPUT_FILE_YML)"       #3
-    __test a2mu "$(getvar INPUT_FILE_YML)"      #4
-    __test a2m "$(getvar INPUT_FILE_YML)"       #5
-    __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #6
+    __test luarocks lint "$(__find_rockspec)"   #2 # Gets absolute path
+    __test m2a "$(getvar INPUT_FILE_JSON)"      #3
+    __test a2t "$(getvar INPUT_FILE_YML)"       #4
+    __test a2mu "$(getvar INPUT_FILE_YML)"      #5
+    __test a2m "$(getvar INPUT_FILE_YML)"       #6
+    __test a2m "$(getvar INPUT_FILE_YML_NOTES)" #7
   fi
   ;;
 esac
@@ -95,8 +96,8 @@ make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simpli
 case $(getvar ENV) in
 netlify) ;;
 *)
-  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7
-  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #8
+  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #8
+  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #9
   ;;
 esac
 
