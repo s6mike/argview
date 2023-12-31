@@ -45,19 +45,15 @@
     "report": "webpack --mode=production --profile --json > stats.json; webpack-bundle-analyzer ./stats.json"
   },
   "engines": {
-    "node": "~18.18.2",
+    "node": "~18.19.0",
     "npm": "~10.2.5"
   },
   "overrides": {
-    "find-babel-config@1.2.0": {
-      "json5": "2.2.2"
-    },
     "@honeycombio/opentelemetry-node@0.5.0": {
-      "axios": "1.6.0"
+      "axios": "1.6.2"
     },
     "optionator@0.8.3": {
-      "@aashutoshrathi/word-wrap": "1.2.6",
-      "word-wrap": "1.2.3"
+      "word-wrap": "1.2.4"
     }
   },
   "dependencies": {
@@ -80,7 +76,6 @@
     "yaml-loader": "^0.8.0"
   },
   "devDependencies": {
-    "axios": ">=1.6.0",
     "eslint": "^8.56.0",
     "eslint-config-crockford": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",

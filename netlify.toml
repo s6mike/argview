@@ -24,7 +24,7 @@
   PATH_DIR_CONFIG_ARGMAP_PROCESSED = "config/processed"
   # NODE_PATH = "/opt/build/cache/node_modules:./mapjs/node_modules"
   # NPM_FLAGS = "--prefix /opt/build/cache/node_modules"
-  NODE_VERSION = "18.18.2"
+  NODE_VERSION = "18.19.0"
   NPM_VERSION = "10.2.5"
   GO_VERSION = "1.20"
 

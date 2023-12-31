@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.39
+
+- Update node version to `18.19.0`:
+  - `netlify.toml`
+  - `mapjs/package.json`, `mapjs/package.json`
+    - Update netlify-cli version, tidy overrides.
+  - `config/argmap-defaults.env`
+
 ## argmap 27.1.38
 
 - `scripts/argmap_init_script.sh`: Fix nvm's node_version not being used, by ensuring nvm's node path set ahead of conda's:
