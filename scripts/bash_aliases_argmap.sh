@@ -43,11 +43,14 @@ __get_site_path() {
 open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
+  target_domain=${1:-"http://localhost:$(getvar PORT_DEV_SERVER)/"}
+  echo "DEV_SERVER: $(getvar DEV_SERVER)"
+  echo "TARGET_DOMAIN: $(getvar TARGET_DOMAIN)"
   webpack_server_start
   input_path="${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}"
   site_path=$(__get_site_path "$input_path")
   if [ "$site_path" != "" ]; then
-    google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$(getvar PORT_DEV_SERVER)/$site_path" 2>/dev/null &
+    google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "$target_domain/$site_path" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
   fi
 }
@@ -195,6 +198,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 #   Though lua solution might be even better than bash one
 2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
   default_template=""
+  pipe=""
+  quiet=""
   path_output=PATH_OUTPUT_LOCAL
 
   #TODO set quite and pipe to false so test can be == false
@@ -260,9 +265,9 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
   set +o noglob
 
-  if [ "$pipe" != true ]; then
-    open_debug "$output"
-  fi
+  # if [ "$pipe" != true ]; then
+  #   open_debug "$output"
+  # fi
   if [ "$quiet" != true ]; then
     echo "$output"
   fi
