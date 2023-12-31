@@ -28,7 +28,6 @@ init_config() {
   # Needed to access envsubst from config_read_functions.lib.sh
   #   TODO: Add envsubst install to makefile
   #   QUESTION: install envsubst somewhere more convenient?
-  PATH="/opt/miniconda3/envs/argmap/bin:$PATH"
   PATH_FILE_ARGMAP_DOT_ENV=config/argmap.env
   PATH_FILE_ARGMAP_DOT_ENV_DEFAULT=config/argmap-defaults.env
   make "$PATH_FILE_ARGMAP_DOT_ENV"
@@ -75,6 +74,12 @@ init_config() {
     source "$HOME/.bashrc"
     # source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
     # source "$HOME/scripts/default_vscode_init_script.sh"
+    export CONDA_ENV_ARGMAP=argmap
+
+    # Order of setting variables then activating important?
+    #   create a (version-controlled) activate.cmd file in the root of the project directory that sets the environemnt variable(s) and then calls conda's own activate.bat script.
+    conda activate "$CONDA_ENV_ARGMAP"
+    # export ENV_FILE="$WORKSPACE/environment.yml"
     ;;
   esac
 
@@ -107,9 +112,11 @@ init_apps() {
   # PATH_DIR_ARGMAP_SRC="$(getvar PATH_DIR_ARGMAP_SRC)"
   # PATH_LUA_ARGMAP="$PATH_DIR_ARGMAP_SRC/lua"
 
-  # echo "Updating PATH"
   # QUESTION: add this to .env / netlify env instead?
-  PATH="$(getvar PATH_ADD_PATH):$PATH"
+  path_add_path=$(getvar PATH_ADD_PATH)
+  if [ "$path_add_path" != "-1" ]; then
+    PATH="$path_add_path:$PATH"
+  fi
 
   # PANDOC - needed for pandoc-argamp.lua until lua reads config directly
   PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT=$(getvar PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT || getvar PATH_INCLUDES_ARGMAP_CONTAINER)
@@ -165,7 +172,13 @@ init_apps() {
     # find . -type f -name yaml.so
     # find . -name libyaml.so
     ;;
-  *) ;;
+  *)
+    # This loads nvm, gives warning, so diverting that to null:
+    #   nvm is not compatible with the npm config "prefix" option: currently set to "/opt/miniconda3/envs/argmap"
+    #   Run `npm config delete prefix` or `nvm use --delete-prefix v18.19.0 --silent` to unset it.
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 2>/dev/null
+    nvm use --delete-prefix v$NODE_VERSION --silent
+    ;;
   esac
 }
 

@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.38
+
+- `scripts/argmap_init_script.sh`: Fix nvm's node_version not being used, by ensuring nvm's node path set ahead of conda's:
+  - Move argmap activation here from separate script.
+  - Add check that `PATH_ADD_PATH` actually has value.
+  - Run `nvm.sh` again after `PATH_ADD_PATH` update so that desired node bin is front of path rather than conda.
+
 ## argmap 27.1.37
 
 - `scripts/bash_aliases_mapjs.sh`: Update npm calls to use `PATH_MAPJS_ROOT` instead of `MAPJS_NODE_MODULES_PREFIX`.
