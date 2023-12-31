@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.40
+
+- `test/test_scripts/tests.sh`: Test node version.
+
 ## argmap 27.1.39
 
 - Update node version to `18.19.0`:

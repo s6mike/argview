@@ -95,6 +95,7 @@ make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simpli
 case $(getvar ENV) in
 netlify) ;;
 *)
+  __test node -v "$(getvar NODE_VERSION)"
   __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #7
   __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #8
   ;;
