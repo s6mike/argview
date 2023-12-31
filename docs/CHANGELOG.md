@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.41
+
+- `makefile`: Add testcafe install as a dependency of `make test`:
+  - `scripts/argmap_init_script.sh`: Export `PATH_BIN_GLOBAL_NVM` for make.
+  - `config/argmap-defaults.env`: Add `HOME` definition so it's interpolated in yaml config files including `PATH_BIN_GLOBAL_NVM` path.
+
 ## argmap 27.1.40
 
 - `test/test_scripts/tests.sh`: Test node version.

@@ -281,7 +281,10 @@ site: $(FILES_SITE)
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
 
-test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
+${PATH_BIN_GLOBAL_NVM}:
+	npm install -g testcafe
+
+test: ${PATH_BIN_GLOBAL_NVM} mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
 ifeq (${ENV}, netlify)
 	-./test/test_scripts/tests.sh html
