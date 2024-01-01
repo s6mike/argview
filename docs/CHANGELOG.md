@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.5
+
+- `scripts/bash_aliases_argmap.sh`: `open_debug()`: Only start webpack dev server if port set to 9001.
+
 ## argmap 28.0.4
 
 - `test/devtools-recordings/argmap-add-root-parent.json`: Fix to work on live site - by replacing 'change value' with keydown, key up etc.
