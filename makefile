@@ -13,11 +13,12 @@
 # Variables
 
 # Turns off implicit rules etc
-MAKEFLAGS += -rR
+MAKEFLAGS += -rR --warn-undefined-variables
 .SUFFIXES:
 
 # Needed for substitutions to work when calling bash function
 SHELL := /bin/bash
+# .SHELLFLAGS := -o nounset -c
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
@@ -26,14 +27,6 @@ SHELL := /bin/bash
 
 # Define variables
 # := simple, assigned once
-
-# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
-# Using .SECONDARY: without arguments breaks things though
-.SECONDARY: ${PATH_DIR_CONFIG_ARGMAP}/argmap.env ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yaml ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yaml
-
-# .NOTINTERMEDIATE only supported in make 4.4
-.NOTINTERMEDIATE: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
-
 # If PATH_PUBLIC is empty, its rule will match anything, so this ensure it always has a value:
 # Sets variable if not already defined
 PATH_PUBLIC ?= NULL1
@@ -45,6 +38,25 @@ PATH_FILE_CONVERT_GLOBAL ?= NULL6
 PATH_FILE_GDRIVE_LOCAL ?= NULL7
 PATH_INPUT_LOCAL ?= NULL8
 MAPJS_NODE_MODULES_PREFIX ?= NULL9
+
+# TODO: Use var for ${PATH_INPUT_LOCAL}/markdown etc
+ifneq (${PATH_INPUT_LOCAL}, NULL8) # Ensures searches only made once PATH_INPUT_LOCAL instantiated.
+FILES_MD = $(shell find ${PATH_INPUT_LOCAL}/markdown -type f -iname "*.md")
+FILES_MAPJS_MUP = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.mup" )
+FILES_MAPJS_JSON = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.json" )
+# FILES_MAPJS_ALL = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
+endif
+
+FILES_MAPJS_JSON ?= NULL10
+FILES_MAPJS_MUP ?= NULL11
+TARGET_DOMAIN ?= NULL12
+
+# Stops intermediate files being deleted (e.g. environment-mapjs.yaml)
+# Using .SECONDARY: without arguments breaks things though
+.SECONDARY: ${PATH_DIR_CONFIG_ARGMAP}/argmap.env ${PATH_DIR_CONFIG_ARGMAP}/environment-argmap.yaml ${PATH_DIR_CONFIG_MAPJS}/environment-mapjs.yaml
+
+# .NOTINTERMEDIATE only supported in make 4.4
+.NOTINTERMEDIATE: $(FILES_MAPJS_JSON) $(FILES_MAPJS_MUP)
 
 # 	Need to export required variables at end of argmap_init_script.sh:
 
@@ -88,22 +100,16 @@ ifneq (${PATH_DIR_MAPJS_ROOT}, NULL3) # Ensures searches only made once PATH_DIR
 FILES_JS_SRC := $(shell find "${PATH_DIR_MAPJS_ROOT}/src" -type f)
 endif
 
-# TODO: Use var for ${PATH_INPUT_LOCAL}/markdown etc
-ifneq (${PATH_INPUT_LOCAL}, NULL8) # Ensures searches only made once PATH_INPUT_LOCAL instantiated.
-FILES_MD = $(shell find ${PATH_INPUT_LOCAL}/markdown -type f -iname "*.md")
-FILES_MAPJS_MUP = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.mup" )
-FILES_MAPJS_JSON = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f -iname "*.json" )
-# FILES_MAPJS_ALL = $(shell find ${PATH_INPUT_LOCAL}/mapjs-json -type f \( -iname "*.json" -o -iname "*.mup" \) )
-endif
-
+ifneq ($(FILES_MAPJS_MUP), NULL11)
 FILES_MAPJS_FROM_MUP = $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.mup,${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json,${FILES_MAPJS_MUP})
+FILES_HTML_FROM_JSON += $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
+endif
 
 # FILES_HTML_FROM_MD := $(foreach file,$(FILES_MD),$(patsubst mapjs/public/input/markdown/%.md,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(file)))
 FILES_HTML_FROM_MD := ${FILES_MD:test/input/markdown/%.md=${PATH_OUTPUT_HTML_PUBLIC}/%.html}
 
 # Can't use above pattern because it includes files which don't match the pattern
-FILES_HTML_FROM_JSON := $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
-FILES_HTML_FROM_JSON += $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.mup,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.mup,${FILES_MAPJS_MUP}))
+FILES_HTML_FROM_JSON += $(patsubst ${PATH_INPUT_LOCAL}/mapjs-json/%.json,${PATH_OUTPUT_HTML_PUBLIC}/%.html,$(filter %.json,${FILES_MAPJS_JSON}))
 FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JSON})
 
 FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
@@ -146,13 +152,13 @@ public: | $(LINK_TARGETS_PUBLIC)
 output_clean:
 	$(warning Attempting to delete old test outputs:)
 # QUESTION Create bash function for this?
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE}
-	rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
-	rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
-	rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
+	@rm -f ${PATH_FILE_OUTPUT_EXAMPLE}
+	@rm -f ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX}
+	@rm -rf ${PATH_OUTPUT_HTML_PUBLIC}
+	@rm -rf ${PATH_OUTPUT_MAPJS_PUBLIC}
 #		TODO: Replace with vars:
-	rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/html/example1-clearly-false-white-swan-simplified-2mapjs.html
-	rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
+	@rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/html/example1-clearly-false-white-swan-simplified-2mapjs.html
+	@rm -f ${PATH_ARGMAP_ROOT}/${PATH_OUTPUT_MAPJS_PUBLIC}/mapjs-json/example2-clearly-false-white-swan-v3.mup
 # rm -rf ${PATH_ARGMAP_ROOT}/mapjs/public/output/png
 # argmap cleans
 	__clean_repo
@@ -164,36 +170,37 @@ site_clean: output_clean
 # Ignores error if public/output is a dir rather than a link:
 #		TODO run based on current MODE, plus what's currently present
 #			QUESTION: Check whether symlink is present?
-	-rm -f $(LINK_TARGETS_PUBLIC)
-	rm -rf $(LINK_TARGETS_PUBLIC_FOLDERS)
-	rm -rf ${PATH_OUTPUT_JS}
-	rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
+	-@rm -f $(LINK_TARGETS_PUBLIC)
+	@rm -rf $(LINK_TARGETS_PUBLIC_FOLDERS)
+	@rm -rf ${PATH_OUTPUT_JS}
+	@rm -f ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
 
 clean: site_clean
 	$(warning Attempting to delete everything generated by repo:)
-	rm -f $(LINK_TARGETS_CONDA)
+	@rm -f $(LINK_TARGETS_CONDA)
 # Takes too long to build and breaks things so best not to delete
 # delete public/js, lua_modules, node_modules,
 # luarocks remove
 # Delete these last since it will stop config var lookups working
-	rm -f ${LIST_FILES_CONFIG_PROCESSED}
+	-@rm -f ${LIST_FILES_CONFIG_PROCESSED}
 # rm ${PATH_FILE_GDRIVE_LOCAL}
 
 docs: $(FILES_HTML_DOCS)
 
 # Clean up Lua Rocks from global library
 luarocks_clean:
+	$(warning Attempting to delete lua dependencies:)
 # This might only be necessary if rockspec installed globally:
 # 	luarocks remove --global "$(rockspec_file)"
 # luarocks --tree ${PATH_LUA_MODULES} remove argmap
-	-luarocks --tree ${PATH_LUA_MODULES} remove lualogging
-	-luarocks --tree ${PATH_LUA_MODULES} remove lyaml
-	-luarocks --tree ${PATH_LUA_MODULES} remove api7-lua-tinyyaml
-	-luarocks --tree ${PATH_LUA_MODULES} remove penlight
-	-luarocks --tree ${PATH_LUA_MODULES} remove rxi-json-lua
-	-luarocks --tree ${PATH_LUA_MODULES} remove luasocket
-	-luarocks --tree ${PATH_LUA_MODULES} remove luafilesystem
-	-rm $(LUA_MODULES_LOCAL)
+	-@luarocks --tree ${PATH_LUA_MODULES} remove lualogging
+	-@luarocks --tree ${PATH_LUA_MODULES} remove lyaml
+	-@luarocks --tree ${PATH_LUA_MODULES} remove api7-lua-tinyyaml
+	-@luarocks --tree ${PATH_LUA_MODULES} remove penlight
+	-@luarocks --tree ${PATH_LUA_MODULES} remove rxi-json-lua
+	-@luarocks --tree ${PATH_LUA_MODULES} remove luasocket
+	-@luarocks --tree ${PATH_LUA_MODULES} remove luafilesystem
+	-@rm $(LUA_MODULES_LOCAL)
 
 	@echo ""
 	@echo "Remaining luarocks:"
@@ -202,7 +209,7 @@ luarocks_clean:
 # TODO: Continue moving these dependencies to the targets they are needed for
 install: | ${PATH_FILE_YQ} $(PANDOC) npm $(LUA_MODULES_LOCAL) # TODO: replace npm with npm_audit based on ENV
 ifneq (${ENV}, netlify)
-  install: | ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
+install: | ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
 endif
 
 like_netlify: clean like_netlify_pre_init like_netlify_init site
@@ -220,7 +227,11 @@ like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
 dev: package-lock.json node_modules/.package-lock.json
-	netlify dev
+	-webpack_server_halt
+	netlify dev &
+
+netlify_test: dev
+	$(call test_recipe,netlify,9002)
 
 # dev: netlify-cli
 # #	QUESTION: How to connect to correct netlify site?
@@ -284,13 +295,20 @@ site: $(FILES_SITE)
 ${PATH_BIN_GLOBAL_NVM}:
 	npm install -g testcafe
 
-test: ${PATH_BIN_GLOBAL_NVM} mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 # TODO remove output dir and add symlink instead
-ifeq (${ENV}, netlify)
-	-./test/test_scripts/tests.sh html
-else
-	./test/test_scripts/tests.sh
-endif
+define test_recipe =
+@if [ "$$ENV" = "netlify" ]; then \
+	./test/test_scripts/tests.sh html; \
+elif [ "$(1)" = "netlify" ]; then \
+	env PORT_DEV_SERVER=$(2) bash -c ./test/test_scripts/tests.sh html; \
+else \
+	webpack_server_start; \
+	./test/test_scripts/tests.sh; \
+fi;
+endef
+
+test: ${PATH_BIN_GLOBAL_NVM} mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
+	$(call test_recipe,webpack_server,9001)
 
 # Instead of calling webpack_X in tests.sh:
 # ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:
@@ -323,14 +341,13 @@ docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
 	cp -- "$<" "$@"
 
 define build_html_recipe = 
-	@-mkdir --parent "$(@D)"
-# wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
-# make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
-	@if [ "$$HTML_OPEN" = "true" ]; then \
-		flags_2hf="-s"; \
-	else \
-		2hf $$flags_2hf "$<"; \
-	fi;
+@-mkdir --parent "$(@D)"
+@flags_2hf="-s"; \
+if [ "$$HTML_OPEN" = "true" ]; then \
+	2hf $$flags_2hf "$<" | open_debug "" $$TARGET_DOMAIN; \
+else \
+	2hf $$flags_2hf "$<"; \
+fi;
 endef
 
 # TOOD: Use vars
@@ -473,7 +490,7 @@ endif
 
 # ${PATH_BIN_GLOBAL}/lua-5.3.5.tar.gz:
 # 	app_install ${PATH_BIN_GLOBAL} https://www.lua.org/ftp/lua-5.3.5.tar.gz
-$(LUAROCKS): # ${PATH_BIN_GLOBAL}/lua5.3
+$(LUAROCKS_GLOBAL): # ${PATH_BIN_GLOBAL}/lua5.3
 ifeq (${ENV}, netlify)
 # # app_install ${PATH_BIN_GLOBAL} https://www.lua.org/ftp/lua-5.3.5.tar.gz
 # 	app_install ${PATH_BIN_GLOBAL} https://luarocks.github.io/luarocks/releases/luarocks-3.7.0-linux-x86_64.zip
@@ -539,7 +556,7 @@ ${PATH_FILE_YQ}:
 
 # Install lua dependencies
 #		TODO: Ensure I'm in correct directory e.g. ~/git_projects/argmap/
-$(LUA_MODULES_LOCAL): $(rockspec_file) | $(LUAROCKS) config/processed/environment-argmap-processed.yaml
+$(LUA_MODULES_LOCAL): $(rockspec_file) | $(LUAROCKS_GLOBAL) config/processed/environment-argmap-processed.yaml
 ifeq (${ENV}, netlify)
 	$(info ************)
 # YAML_LIBDIR=${PATH_LIB_GLOBAL}

@@ -6,9 +6,23 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.2
+
+- `makefile`:
+  - Add canned `test_recipe` which accepts `DEV_SERVER` and `PORT_DEV_SERVER`, and call it from `test` and `netlify_test`.
+    - This recipe passes `PORT_DEV_SERVER` to test script as env variable.
+  - Add canned `build_html_recipe` and use for building `FILES_HTML_FROM_JSON` and `FILES_HTML_FROM_MD`
+  - Fix: `LUAROCKS` to `LUAROCKS_GLOBAL`.
+  - `MAKEFLAGS`: Add `--warn-undefined-variables`
+    - Add checks for unset variables: `PATH_INPUT_LOCAL`, `FILES_MAPJS_MUP`
+  - Remove echoing of `rm` commands in `clean` recipes.
+
 ## argmap 28.0.1
 
-- `scripts/bash_aliases_argmap.sh`: Use `local` for local variables.
+Use `local` for local variables:
+
+- `scripts/bash_aliases_argmap.sh`
+- `test/test_scripts/bash_aliases_argmap_test.sh`
 
 ## argmap 28.0.0 BREAKING
 
