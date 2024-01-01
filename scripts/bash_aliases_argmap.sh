@@ -4,7 +4,7 @@ echo "Running ${BASH_SOURCE[0]}"
 
 # argmap aliases
 alias odb='open_debug' # odb /home/s6mike/git_projects/argmap/mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-1mapjs_argmap2.json
-alias j2hfa='2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true'
+alias j2hfa='2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplified.json example1-clearly-false-white-swan-simplified --metadata=argmap-input:true | open_debug'
 
 # argmap functions
 
@@ -43,11 +43,16 @@ __get_site_path() {
 open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
+  if ! [ -t 0 ]; then # Checks for piped input
+    local piped_input=$(cat -)
+  fi
+  local input_path="${piped_input:-${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}}"
+  local target_domain=${2:-"http://localhost:$(getvar PORT_DEV_SERVER)/"}
   webpack_server_start
-  input_path="${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}"
-  site_path=$(__get_site_path "$input_path")
+  local site_path=$(__get_site_path "$input_path")
+  local output_url="$target_domain$site_path"
   if [ "$site_path" != "" ]; then
-    google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "http://localhost:$(getvar PORT_DEV_SERVER)/$site_path" 2>/dev/null &
+    google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "$output_url" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
   fi
 }
@@ -194,23 +199,19 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 #  TODO: Create md2x() which gives choice of output - html, fragment, pdf, native format etc
 #   Though lua solution might be even better than bash one
 2hf() { # 2hf test/input/example.md (output filename) (optional pandoc arguments)
-  default_template=""
-  path_output=PATH_OUTPUT_LOCAL
+  local default_template=""
+  # TODO set quiet to false so test can be == false
+  local quiet=""
+  local path_output=PATH_OUTPUT_LOCAL
 
-  #TODO set quite and pipe to false so test can be == false
-
-  # doesn't open browser if -p used for Pipe mode
   OPTIND=1
   while getopts ":qps" option; do # Leading ':' in ":p" removes error message if no recognised options
     case $option in
     q) # quiet mode - doesn't print output path at end
-      local quiet=true
-      ;;
-    p) # pipe mode - doesn't open browser, so only side effect is outputting filename, so can be piped to next command.
-      local pipe=true
+      quiet=true
       ;;
     s) # site mode - always sends output to public folder
-      local path_output=PATH_OUTPUT_PUBLIC
+      path_output=PATH_OUTPUT_PUBLIC
       ;;
     *) ;;
     esac
@@ -218,27 +219,25 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   shift "$((OPTIND - 1))"
 
-  input="${1:-$(getvar INPUT_FILE_MD2)}"
-  output_name=$(basename "$input")
-  ext=${output_name#*.}
+  local input="${1:-$(getvar INPUT_FILE_MD2)}"
+  local output_name=$(basename "$input")
+  local ext=${output_name#*.}
 
-  # Prev way:
-  # name=$(basename --suffix=".$ext" "$input")
-  name=${output_name%%.*}
+  local name=${output_name%%.*}
+  local args=""
 
-  # echo "Input: $ext"
   case $ext in
   yml | yaml) # Converts argmap yaml into mindmup json then runs this command again on the output.
     # QUESTION: Is there a way I can pass data straight into json/mup step instead?
-    2hf "$(a2m "$input")"
+    2hf "$(a2m "$input")" | open_debug
     return 0
     ;;
   json | mup) # Injects mindmup json into template
     # TODO If input defaults to cat, write to a file in input folder and then pass path onto pandoc.
-    # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input)
+    # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input, see open_debug for example).
 
     #  TODO: Check and copy to input folder?
-    path_output_json=/$(__get_site_path "$input")
+    local path_output_json=/$(__get_site_path "$input")
     input=/dev/null # JSON input feeds into template not body
     args="--metadata=quick-container:true --metadata=MAP_INSTANCE_ID:1 --metadata title=$name --metadata=path-json-source:$path_output_json"
     ;;
@@ -252,7 +251,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
   #   TODO ideally would be more flexible with output location e.g. default to standard location but pick either filename or whole directory
-  output=$(getvar "$path_output")/html/${2:-$name}.html
+  local output=$(getvar "$path_output")/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
   set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting
@@ -260,9 +259,6 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   pandoc_argmap "$input" "$output" "$default_template" $args "${@:3}"
   set +o noglob
 
-  if [ "$pipe" != true ]; then
-    open_debug "$output"
-  fi
   if [ "$quiet" != true ]; then
     echo "$output"
   fi

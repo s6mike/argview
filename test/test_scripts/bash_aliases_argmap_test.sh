@@ -22,8 +22,8 @@ alias argmup='__chrome-attach https://drive.mindmup.com/map/1FY98eeanu9vAhIqBG1r
 alias argmo='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.mup; a2mo $INPUT_FILE_YML'
 alias argmh0='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-0mapjs.html; rm $PATH_OUTPUT_LOCAL/png/12ff0311ebc308e94fe0359b761fa405b605f126.png; 2hf $INPUT_FILE_MD0'
 alias argmh='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-1mapjs.html; rm $PATH_OUTPUT_LOCAL/png/920713d1a74abe16c16b3fb103f893e64c5fb3ca.png; 2hf $INPUT_FILE_MD'
-alias argmh2='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-2mapjs.html; 2hf $INPUT_FILE_MD2'
-alias argmhmeta='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html; 2hf $INPUT_FILE_MD_META'
+alias argmh2='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-2mapjs.html; 2hf $INPUT_FILE_MD2 | open_debug'
+alias argmhmeta='rm $PATH_OUTPUT_LOCAL/html/example1-clearly-false-white-swan-simplified-meta-mapjs.html; 2hf $INPUT_FILE_MD_META | open_debug'
 alias argmp='rm $PATH_OUTPUT_LOCAL/example1-clearly-false-white-swan-simplified.pdf; md2pdf $INPUT_FILE_MD'
 # TODO: simplify argmph call
 alias argmph='rm $PATH_OUTPUT_LOCAL/example.pdf; rm $PATH_OUTPUT_LOCAL/header.tex; $PATH_LUA_ARGMAP/argmap2tikz.lua -i > $PATH_OUTPUT_LOCAL/header.tex; pandoc $INPUT_FILE_MD -o $PATH_OUTPUT_LOCAL/example.pdf --lua-filter pandoc-argmap.lua --pdf-engine lualatex --include-in-header $PATH_OUTPUT_LOCAL/header.tex --data-dir=$PATH_ENVIRONMENT_GLOBAL/share/pandoc; echo "Generated: $PATH_OUTPUT_LOCAL/example.pdf"'

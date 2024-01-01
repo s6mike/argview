@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.0 BREAKING
+
+- `scripts/bash_aliases_argmap.sh`: `2hf()`: Remove call to open browser, instead always piping output url, for greater flexibility. No longer a pipe `-p` option to not open the browser. BREAKING
+- Update `open_debug()` to read piped input and use that to identify the input file instead of the first argument.
+- Pipe `2hf()` calls into `open_debug()` where appropriate, also:
+  - `test/test_scripts/bash_aliases_argmap_test.sh`
+
 ## argmap 27.1.43
 
 - `makefile`: Create canned `build_html_recipe` and use with rules for generating html from `json` and `markdown`.
