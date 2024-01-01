@@ -1,38 +1,44 @@
 {
-  "title": "argmap-add-root-parent",
-  "steps": [
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==6"
-    },
-    {
-      "type": "click",
-      "target": "main",
-      "selectors": [
-        [
-          "aria/Insert parent"
-        ],
-        [
-          "#menubar-mapjs-1 input.insertIntermediate"
-        ]
-      ],
-      "offsetY": 9.745094299316406,
-      "offsetX": 61.12744140625,
-      "deviceType": "pen"
-    },
-    {
-      "type": "change",
-      "value": "a",
-      "selectors": [
-        [
-          "#node_7 > span"
-        ]
-      ],
-      "target": "main"
-    },
-    {
-      "type": "waitForExpression",
-      "expression": "document.getElementsByClassName('mapjs-node').length==7"
-    }
-  ]
+    "title": "argmap-add-root-parent",
+    "steps": [
+        {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==6"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Insert parent"
+                ],
+                [
+                    "#menubar-mapjs-1 input.insertIntermediate"
+                ]
+            ],
+            "offsetX": 61.12744140625,
+            "offsetY": 9.745094299316406,
+            "deviceType": "pen"
+        },
+        {
+            "type": "keyDown",
+            "key": "a"
+        },
+        {
+            "type": "keyUp",
+            "key": "a"
+        },
+        {
+            "type": "keyDown",
+            "key": "Enter"
+        },
+        {
+            "type": "keyUp",
+            "key": "Enter"
+        },
+        {
+            "type": "waitForExpression",
+            "expression": "document.getElementsByClassName('mapjs-node').length==7"
+        }
+    ]
 }

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.4
+
+- `test/devtools-recordings/argmap-add-root-parent.json`: Fix to work on live site - by replacing 'change value' with keydown, key up etc.
+
 ## argmap 28.0.3
 
 - `test/test_scripts/tests.sh`:
