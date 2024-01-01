@@ -322,19 +322,20 @@ ${PATH_DIR_MAPJS_ROOT}/docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
 docs/%.html: ${PATH_OUTPUT_HTML_PUBLIC}/%.html
 	cp -- "$<" "$@"
 
-# QUESTION: de-duplicate 2hf calls? https://workflowy.com/#/efcfc1a0943d
-# 	TOOD: Use vars
-$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json $(FILES_TEMPLATE_HTML) config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/config-argmap-paths-processed.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml
-# $(info Building $@ from JSON)
+define build_html_recipe = 
 	@-mkdir --parent "$(@D)"
 # wait for ${PATH_FILE_MAPJS_HTML_DIST_TAGS} to be present before running next line
 # make ${PATH_FILE_MAPJS_HTML_DIST_TAGS} && 2hf -ps "$<"
 	@if [ "$$HTML_OPEN" = "true" ]; then \
 		flags_2hf="-s"; \
 	else \
-		flags_2hf="-ps"; \
-	fi; \
-	2hf $$flags_2hf "$<"
+		2hf $$flags_2hf "$<"; \
+	fi;
+endef
+
+# TOOD: Use vars
+$(FILES_HTML_FROM_JSON): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json $(FILES_TEMPLATE_HTML) config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/config-argmap-paths-processed.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml
+	$(build_html_recipe)
 
 # Generate .json from .yaml
 # 	TOOD: Use vars
@@ -365,15 +366,7 @@ $(FILES_MAPJS_FROM_MUP): ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_L
 #		QUESTION: remove ${PATH_INPUT_LOCAL}/markdown/%.md as dependency (since this is called via mapjs-json files) and use pattern instead of "$<"?
 # TOOD: Use vars
 $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml config/processed/config-argmap-paths-processed.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL)
-# $(info Building $@ from MD)
-# Might be able to run pandoc_argmap instead
-	@-mkdir --parent "$(@D)"
-	@if [ "$$HTML_OPEN" = "true" ]; then \
-		flags_2hf="-s"; \
-	else \
-		flags_2hf="-ps"; \
-	fi; \
-	2hf $$flags_2hf "$<"
+	$(build_html_recipe)
 
 # Create js dependencies for html files:
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd

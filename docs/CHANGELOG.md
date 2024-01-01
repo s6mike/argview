@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 27.1.43
+
+- `makefile`: Create canned `build_html_recipe` and use with rules for generating html from `json` and `markdown`.
+
 ## argmap 27.1.42
 
 - `test/test_scripts/bash_aliases_argmap_test.sh`: `__test()`: Add empty var defs to avoid unbound var warning when called directly.
