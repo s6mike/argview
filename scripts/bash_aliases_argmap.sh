@@ -19,7 +19,8 @@ alias j2hfa='2hf test/input/mapjs-json/example1-clearly-false-white-swan-simplif
 
 # TEST: test_get_site_path()
 __get_site_path() {
-  input_path="$1"
+  local input_path="$1"
+  local full_path=""
   case $input_path in
   /*)
     full_path=$input_path
@@ -29,8 +30,8 @@ __get_site_path() {
     ;;
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
-  site_path="${full_path/test/$(getvar DIR_MAPJS)/$(getvar DIR_PUBLIC)}"
-  output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$site_path")
+  local site_path="${full_path/test/$(getvar DIR_MAPJS)/$(getvar DIR_PUBLIC)}"
+  local output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$site_path")
   echo "$output_path"
 }
 
@@ -58,7 +59,6 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 }
 
 ## version control functions
-
 __update_repo() { # Running at end of test script
   echo "Updating repo..."
   # Update doc examples
@@ -78,9 +78,9 @@ __find_rockspec() {
 }
 
 __check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
-  expected_echoes=9
+  local expected_echoes=9
   printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting $expected_echoes only:\n"
-  echo_count=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
+  local echo_count=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
   printf "Actual count: $echo_count\n"
   if (("$echo_count" > "$expected_echoes")); then
     printf "Aborting\n" >&2
@@ -140,9 +140,9 @@ __save_env() {
 # Convert to map.json, writes it to test/output/mapjs-json/
 # lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yaml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                     # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
-  name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
-    output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
+a2m() {                                           # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
+  local name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
+    local output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" "$1" >"$output" &&
     echo "$output" "${@:2}" # Output path can be piped, along with any extra arguments
@@ -151,7 +151,7 @@ a2m() {                                     # a2m test/input/example1-clearly-fa
 # Convert to map.js and upload
 # Declare function inside () to open it in subshell, to stop file_id being remembered, in case variable removed from config file
 a2mu() ( # a2mu test/output/example1-simple.yaml
-  name=$(basename --suffix=".yaml" "$1")
+  local name=$(basename --suffix=".yaml" "$1")
   local folder_id
   folder_id=$(getvar GDRIVE_FOLDER_ID_MAPJS_DEFAULT)
   local file_id=""
@@ -169,8 +169,8 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
 # Convert map.js to argmap yaml format
 # TODO add option for .mup vs .json output
 m2a() { # m2a test/output/example1-simple.mup (output path)
-  name=$(basename --suffix=".json" "$1")
-  output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
+  local name=$(basename --suffix=".json" "$1")
+  local output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   lua "$(getvar PATH_LUA_ARGMAP)/mup2argmap.lua" "$1" >"$output" &&
     echo "$output" # Output path can be piped
@@ -178,16 +178,16 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 
 # Convert to tikz
 a2t() { # a2t test/output/example1-simple.yaml (output path)
-  name=$(basename --suffix=".yaml" "$1") &&
+  local name=$(basename --suffix=".yaml" "$1") &&
     mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")" && # Ensures output folder exists
     lua "$(getvar PATH_LUA_ARGMAP)/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
     echo "${2:-$PATH_OUTPUT_LOCAL/$name.tex}"
 }
 
 pandoc_argmap() { # pandoc_argmap input output template extra_variables
-  input=${1:-""}
-  output=${2:-$(getvar PATH_OUTPUT_LOCAL)/html/pandoc_argmap-test.html}
-  template=${3:-$(getvar FILE_TEMPLATE_HTML_DEFAULT)}
+  local input=${1:-""}
+  local output=${2:-$(getvar PATH_OUTPUT_LOCAL)/html/pandoc_argmap-test.html}
+  local template=${3:-$(getvar FILE_TEMPLATE_HTML_DEFAULT)}
   # TODO: Could replace this with pandoc_defaults_argmap.yaml file, might be easier to selectively override. Should be able to interpolate path variables so it should fit in with yaml config approach.
   #   Plus could set up to override default defaults file with variations, which should make various combinations more portable
   #   Also could potentially generate using pre-processor if desired
@@ -266,8 +266,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
-  name=$(basename --suffix=".md" "$1")
-  output=$(getvar PATH_OUTPUT_LOCAL)/${2:-$name}.pdf
+  local name=$(basename --suffix=".md" "$1")
+  local output=$(getvar PATH_OUTPUT_LOCAL)/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
@@ -278,9 +278,9 @@ md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arg
 
 # Convert markdown to native pandoc output
 md2np() {
-  input="${1:-$INPUT_FILE_MD2}"
-  name=$(basename --suffix=".md" "$input")
-  output=$PATH_OUTPUT_LOCAL/${2:-$name}.ast
+  local input="${1:-$INPUT_FILE_MD2}"
+  local name=$(basename --suffix=".md" "$input")
+  local output=$PATH_OUTPUT_LOCAL/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?
   pandoc "$input" --to=native --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --metadata-file="$(getvar PATH_FILE_CONFIG_MAPJS_PROCESSED)" --template "$FILE_TEMPLATE_HTML_DEFAULT" --metadata=toolbar_main:toolbar-mapjs-main -o "$output" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --data-dir="$PANDOC_DATA_DIR" >/dev/null

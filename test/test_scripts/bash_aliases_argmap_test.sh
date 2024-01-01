@@ -86,14 +86,14 @@ __test() {
 }
 
 test_function() {
-  func="$1"
+  local func="$1"
   __test check_var_value "$func $4 $2" "$3"
 }
 
 # TODO add function to loop through pairs
 test_getvar() {
   __init_tests
-  func=getvar
+  local func=getvar
   set +o nounset
   test_function "$func" bla -1                                                                          #1
   test_function "$func" bla.bla -1                                                                      #2
@@ -108,7 +108,7 @@ test_getvar() {
   test_function "$func" PATH_MAPJS_JSON_LOCAL test/output/mapjs-json                                    #11
   test_function "$func" node "class: mapjs-node"                                                        #12
   test_function "$func" node.class mapjs-node                                                           #13
-  remember=$LIST_FILES_CONFIG_INPUT
+  local remember=$LIST_FILES_CONFIG_INPUT
   unset LIST_FILES_CONFIG_INPUT
   test_function "$func" LIST_FILES_CONFIG_INPUT \
     $'config/environment-argmap.yaml\nconfig/config-argmap-paths.yaml\nconfig/config-argmap.yaml\nmapjs/config/environment-mapjs.yaml\nmapjs/config/config-mapjs-paths.yaml\nmapjs/config/config-mapjs.yaml' #10-14 -l is (de)list mode for __getvar_from_yaml(), but it doesn't seem to work now
@@ -127,9 +127,9 @@ test_get_site_path() {
 }
 
 test_make_mapjs_dependencies() {
-  file_html="$1"
-  file_json="$2"
-  html_open="$3"
+  local file_html="$1"
+  local file_json="$2"
+  local html_open="$3"
   make HTML_OPEN="false" "$file_html"
   rm "$file_json"
   make HTML_OPEN="$html_open" "$file_html"

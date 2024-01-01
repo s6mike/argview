@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.1
+
+- `scripts/bash_aliases_argmap.sh`: Use `local` for local variables.
+
 ## argmap 28.0.0 BREAKING
 
 - `scripts/bash_aliases_argmap.sh`: `2hf()`: Remove call to open browser, instead always piping output url, for greater flexibility. No longer a pipe `-p` option to not open the browser. BREAKING
