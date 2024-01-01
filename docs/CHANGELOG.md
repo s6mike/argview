@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.3
+
+- `test/test_scripts/tests.sh`:
+  - Read in second parameter as `TARGET_DOMAIN`.
+    - Use `TARGET_DOMAIN` in all testcafe calls.
+  - Renumber test comments.
+
 ## argmap 28.0.2
 
 - `makefile`:

@@ -2,6 +2,9 @@
 
 echo "Running ${BASH_SOURCE[0]}"
 
+is_html="$1"
+test_open_html=""
+
 # Functions beginning with __ are not considered part of a public API, and therefore updates may change them without warning.
 # make test
 
@@ -18,6 +21,7 @@ netlify)
   make public
   rm "$(getvar PATH_OUTPUT_PUBLIC)"
   test_open_html=false
+  PORT_DEV_SERVER=9002
   ;;
 *)
   test_open_html=true
@@ -25,10 +29,11 @@ netlify)
   # Ensure everything built
   make site_clean
   make public
-  # make all MODE:=dev
-  webpack_server_start
+  # make all MODE := dev
   ;;
 esac
+
+export TARGET_DOMAIN=${2:-"http://localhost:$PORT_DEV_SERVER/"}
 
 # Have switched rendering to be second test.
 # Before moving to first, need to fix race condition with web server
@@ -65,7 +70,7 @@ case $(getvar ENV) in
 netlify) ;;
 *)
   __test node -v "$(getvar NODE_VERSION)" #1
-  if [ "$1" != html ]; then
+  if [ "$is_html" != html ]; then
     __test luarocks lint "$(__find_rockspec)"   #2 # Gets absolute path
     __test m2a "$(getvar INPUT_FILE_JSON)"      #3
     __test a2t "$(getvar INPUT_FILE_YML)"       #4
@@ -96,32 +101,35 @@ make "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simpli
 case $(getvar ENV) in
 netlify) ;;
 *)
-  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #8
-  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #9
+  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-1mapjs.html" #8 / 1
+  __test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.html" #9 / 2
   ;;
 esac
 
 # Checks make dependency logic
 #   TODO: Use vars
-__test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html" mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.json "$test_open_html" #9/1
-# __test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html" mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-2mapjs_argmap1.json "$test_open_html" #10/2
+__test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example2-clearly-false-white-swan-v3.html" mapjs/public/output/mapjs-json/example2-clearly-false-white-swan-v3.json "$test_open_html" #9 / 3 / 1
+# __test test_make_mapjs_dependencies "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html" mapjs/public/output/mapjs-json/example1-clearly-false-white-swan-simplified-2mapjs_argmap1.json "$test_open_html" #10 / 4 / 2
 
-__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10/2
-__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #11/3
+# For some reason test_make_mapjs_dependencies() seems to reset TARGET_DOMAIN, so re-exporting
+TARGET_DOMAIN=${2:-"http://localhost:$PORT_DEV_SERVER/"}
+
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #10 / 4 / 2
+__test make HTML_OPEN="$test_open_html" "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #11 / 5 / 3
 
 case $(getvar ENV) in
 netlify) ;;
 *)
   # To make browser test visible, add 'head' as first arg
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)"                                                                                                       #12
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)"                                                                                                        #13 left click
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)"                                                                                                   #14
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)"                                                                                                    #15
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" http://localhost:9001/output/html/example2-clearly-false-white-swan-v3.html                   #16
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)"                                                                                                   #17
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" http://localhost:9001/output/html/example1-clearly-false-white-swan-simplified-with-links.html #18
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)"                                                                                                          #19 add child button
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)"                                                                                                  #20 undo/redo button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)" "$TARGET_DOMAIN"                                                                                #12 / 6
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)" "$TARGET_DOMAIN"                                                                                 #13 / 7 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)" "$TARGET_DOMAIN"                                                                            #14 / 8
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)" "$TARGET_DOMAIN"                                                                             #15 / 9
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" "$TARGET_DOMAIN"output/html/example2-clearly-false-white-swan-v3.html                   #16 / 10
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)" "$TARGET_DOMAIN"                                                                            #17 / 11
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" "$TARGET_DOMAIN"output/html/example1-clearly-false-white-swan-simplified-with-links.html #18 / 12
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)" "$TARGET_DOMAIN"                                                                                   #19 / 13 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)" "$TARGET_DOMAIN"                                                                           #20 / 14 undo/redo button
 
   # These don't work
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
@@ -132,8 +140,8 @@ netlify) ;;
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_NEW)"
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
 
-  if [ "$1" != html ]; then
-    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 21
+  if [ "$is_html" != html ]; then
+    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 21 / 15
   fi
   ;;
 esac
@@ -144,17 +152,13 @@ echo "If all testcafe test failed, check that $(getvar INPUT_FILE_JSON) exists."
 echo "Test log location: $(getvar PATH_TEST_LOG)"
 
 case $(getvar ENV) in
-netlify)
-  # echo "PATH_TEST_LOG: $(getvar PATH_TEST_LOG)"
-  ;;
+netlify) ;;
 *)
-  if [ "$1" != html ]; then
+  if [ "$is_html" != html ]; then
     # Check/update config
     __update_repo
   fi
   ;;
 esac
-
-# make clean
 
 exit "$FAILCOUNT"
