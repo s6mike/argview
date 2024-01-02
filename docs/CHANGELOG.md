@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.1.2
+
+- `config/environment-conda-argmap.yaml`: Uninstall nodejs from conda config.
+
 ## argmap 28.1.1
 
 - `package.json`: Remove `netlify-cli` and use mapjs install.
