@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.1.3
+
+- `mapjs/config/config-mapjs-paths.yaml`: Add `PATH_MAPJS_NODE_BIN`.
+  - `scripts/argmap_init_script.sh`: Export for use in `makefile`.
+
 ## argmap 28.1.2
 
 - `config/environment-conda-argmap.yaml`: Uninstall nodejs from conda config.

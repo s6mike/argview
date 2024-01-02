@@ -31,6 +31,7 @@ PATH_FILE_CONFIG_MAPJS_PROCESSED: ${PATH_CONFIG_MAPJS_PROCESSED}/config-mapjs-${
 
 ## For html links, use relative paths (to test/output folder) - more portable
 DIR_MAPJS_JSON: mapjs-json
+PATH_MAPJS_NODE_BIN: ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.bin
 PATH_DIR_MAPJS_SRC_JS: ${PATH_MAPJS_ROOT}/src
 PATH_FILE_MAPJS_HTML_DIST_TAGS: ${PATH_DIR_INCLUDES}/webpack-dist-tags.html
 PATH_MAPJS_JSON_LOCAL: ${PATH_OUTPUT_LOCAL}/${DIR_MAPJS_JSON}

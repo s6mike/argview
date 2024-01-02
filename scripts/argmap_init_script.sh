@@ -227,6 +227,7 @@ export_vars() {
   PATH_OUTPUT_MAPJS_PUBLIC=$(getvar PATH_OUTPUT_MAPJS_PUBLIC)
   PATH_INPUT_LOCAL=$(getvar PATH_INPUT_LOCAL)
   PATH_OUTPUT_LOCAL=$(getvar PATH_OUTPUT_LOCAL)
+  PATH_MAPJS_NODE_BIN=$(getvar PATH_MAPJS_NODE_BIN)
   set +o allexport
 } # end export_vars
 
