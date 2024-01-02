@@ -92,6 +92,8 @@ LINK_TARGETS_CONDA += ${PATH_PANDOC_GLOBAL}/templates/examples/example-template.
 LUAROCKS_GLOBAL := ${PATH_ENVIRONMENT_GLOBAL}/lib/luarocks/rocks-5.3/manifest
 LUA_MODULES_LOCAL := ${PATH_LUA_MODULES}/lib/luarocks/rocks-5.3/manifest
 
+NPM_INSTALLS := ${PATH_MAPJS_NODE_BIN}/testcafe ${PATH_MAPJS_NODE_BIN}/netlify-cli
+
 ifneq (${PATH_BIN_GLOBAL}, NULL5) # Ensures pandoc install only attempted once PATH_DIR_MAPJS_ROOT instantiated.
 PANDOC := ${PATH_BIN_GLOBAL}/pandoc
 endif
@@ -226,11 +228,11 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
-dev: package-lock.json node_modules/.package-lock.json
+dev: package-lock.json node_modules/.package-lock.json | ${PATH_MAPJS_NODE_BIN}/netlify
 	-webpack_server_halt
-	netlify dev &
+	npx --prefix ${PATH_DIR_MAPJS_ROOT} --no-install netlify dev &
 
-netlify_test: dev
+netlify_test: dev | ${PATH_MAPJS_NODE_BIN}/netlify ${PATH_MAPJS_NODE_BIN}/testcafe
 	$(call test_recipe,netlify,9002)
 
 # dev: netlify-cli
@@ -239,13 +241,6 @@ netlify_test: dev
 # 	netlify link
 # # netlify build
 # #  QUESTION: What to add as dependencies?
-# # make all
-# 	netlify dev
-
-# #  QUESTION: How to check this has been done?
-# netlify-cli:
-# 	npm install -g netlify-cli
-
 
 npm: ${PATH_DIR_MAPJS_ROOT}/package-lock.json ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
 npm_audit: | npm npm_audit_output.txt
@@ -292,8 +287,6 @@ site: $(FILES_SITE)
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
 
-${PATH_BIN_GLOBAL_NVM}:
-	npm install -g testcafe
 
 # TODO remove output dir and add symlink instead
 define test_recipe =
@@ -309,10 +302,10 @@ else \
 fi;
 endef
 
-test: ${PATH_BIN_GLOBAL_NVM} mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
+test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml | ${PATH_MAPJS_NODE_BIN}/testcafe # public site_clean all
 	$(call test_recipe,webpack_server,9001)
 
-test_live: 
+test_live: | ${PATH_MAPJS_NODE_BIN}/testcafe
 	$(call test_recipe,live,"")
 
 # Instead of calling webpack_X in tests.sh:
@@ -446,7 +439,14 @@ ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 	@-mkdir --parent "$(@D)"
 	-ln -s $(realpath --no-symlinks --relative-to=$$(dirname $@) $|) $@
 
+# TODO add dev parameter to set params = --save-dev (and --prefix?)
+define npm_install_dev = # app,location
+	npm install --prefix "$(2)" "$(1)" --save-dev
+endef
+
 ### Other install:
+$(NPM_INSTALLS):
+	$(call npm_install_dev,$(@F),${MAPJS_NODE_MODULES_PREFIX})
 
 # netlify version 2.1.3
 #	 User data directory: /opt/buildhome/.local/share/pandoc

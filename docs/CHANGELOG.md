@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.0
+
+- `makefile`: Add canned recipe for installing node packages locally, and use for testcafe and netlify-cli, as dependencies of test rules.
+
+
 ## argmap 28.1.3
 
 - `mapjs/config/config-mapjs-paths.yaml`: Add `PATH_MAPJS_NODE_BIN`.
