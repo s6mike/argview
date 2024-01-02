@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.1.0
+
+- `config/environment-argmap-defaults.yaml`:
+  - Add var `PATH_BIN_GLOBAL_NVM`, to match my custom file.
+  - Refine var definition `PATH_FILE_CONVERT_LOCAL`.
+
 ## argmap 28.0.7
 
 - `makefile`: Add `make test_live` to test live site (imperfectly).
