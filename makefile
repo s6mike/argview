@@ -301,6 +301,8 @@ define test_recipe =
 	./test/test_scripts/tests.sh html; \
 elif [ "$(1)" = "netlify" ]; then \
 	env PORT_DEV_SERVER=$(2) bash -c ./test/test_scripts/tests.sh html; \
+elif [ "$(1)" = "live" ]; then \
+	./test/test_scripts/tests.sh html "https://argview.org/"; \
 else \
 	webpack_server_start; \
 	./test/test_scripts/tests.sh; \
@@ -309,6 +311,9 @@ endef
 
 test: ${PATH_BIN_GLOBAL_NVM} mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml # public site_clean all
 	$(call test_recipe,webpack_server,9001)
+
+test_live: 
+	$(call test_recipe,live,"")
 
 # Instead of calling webpack_X in tests.sh:
 # ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js:

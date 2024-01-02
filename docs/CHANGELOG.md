@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.7
+
+- `makefile`: Add `make test_live` to test live site (imperfectly).
+
 ## argmap 28.0.6
 
 - `makefile`: Fix bug in var expansion for symlink creation recipes.
