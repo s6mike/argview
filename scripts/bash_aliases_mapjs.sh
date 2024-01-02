@@ -108,7 +108,7 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
     target_url="${2:-$default_url}"
   fi
   # __bisect_init
-  testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
+  npx --prefix $(getvar MAPJS_NODE_MODULES_PREFIX) testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
 }
 
 # __test_mapjs_renders() {
