@@ -434,12 +434,12 @@ ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PAT
 $(LINK_TARGETS_PUBLIC_FOLDERS): ${PATH_PUBLIC}/%: | ${PATH_TEST}/%
 	@-mkdir --parent "$(@D)"
 # realpath generates path relative to path_public
-	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
+	-ln -s $(realpath --no-symlinks --relative-to=$$(dirname $@) $|) $@
 
 # Add index.html (should be called locally only)
 ${PATH_PUBLIC}/index.html: | ${PATH_FILE_OUTPUT_EXAMPLE}
 	@-mkdir --parent "$(@D)"
-	-ln -s $(realpath --no-symlinks --relative-to=$(dirname $@) $|) $@
+	-ln -s $(realpath --no-symlinks --relative-to=$$(dirname $@) $|) $@
 
 ### Other install:
 

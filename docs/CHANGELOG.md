@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.0.6
+
+- `makefile`: Fix bug in var expansion for symlink creation recipes.
+
 ## argmap 28.0.5
 
 - `scripts/bash_aliases_argmap.sh`: `open_debug()`: Only start webpack dev server if port set to 9001.
