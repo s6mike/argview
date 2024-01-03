@@ -82,7 +82,7 @@
     "fs-readdir-recursive": "^1.1.0",
     "jasmine": "^5.1.0",
     "jasmine-spec-reporter": "^7.0.0",
-    "netlify-cli": "^17.10.2",
+    "netlify-cli": "^17.11.0",
     "node-fetch": "^3.3.2",
     "npm-check-updates": "^16.14.12",
     "sourcemap-lookup": "^0.0.5",

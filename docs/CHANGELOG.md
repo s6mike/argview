@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.6
+
+- `mapjs/package.json`: Update `netlify-cli` to `17.11.0`.
+  - `mapjs/package-lock.json`: Update.
+
 ## argmap 28.2.5
 
 - `makefile`: Add config dependencies to `make dev`.
