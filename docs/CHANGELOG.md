@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.5
+
+- `makefile`: Add config dependencies to `make dev`.
+
 ## argmap 28.2.4
 
 - `makefile`: Add `--test init` rule to combine all test dependencies for re-use across all test rules.

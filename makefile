@@ -228,7 +228,7 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
-dev: package-lock.json node_modules/.package-lock.json | ${PATH_MAPJS_NODE_BIN}/netlify
+dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json | ${PATH_MAPJS_NODE_BIN}/netlify
 	-webpack_server_halt
 	npx --prefix ${PATH_DIR_MAPJS_ROOT} --no-install netlify dev &
 
