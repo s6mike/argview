@@ -6,13 +6,18 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.4
+
+- `makefile`: Add `--test init` rule to combine all test dependencies for re-use across all test rules.
+  - Add additional config dependencies to `--test init`.
+
 ## argmap 28.2.3
 
-`makefile`: Add config file dependencies so they are processed in correct order.
+- `makefile`: Add config file dependencies so they are processed in correct order.
 
 ## argmap 28.2.2
 
-`makefile`: Use canned recipe to DRY config processing rules.
+- `makefile`: Use canned recipe to DRY config processing rules.
 
 ## argmap 28.2.1
 

@@ -22,7 +22,7 @@ SHELL := /bin/bash
 
 # Avoids collisions with filenames
 #		-- is convention for private targets
-.PHONY: all config public --conda output_clean site_clean clean docs install like_netlify like_netlify_pre_init like_netlify_init luarocks_clean npm npm_audit pandoc prints site test # dev netlify-cli
+.PHONY: all config public --conda output_clean site_clean clean docs install like_netlify like_netlify_pre_init like_netlify_init netlify_test luarocks_clean npm npm_audit pandoc prints site --test_init test test_live # dev netlify-cli
 # .LOW_RESOLUTION_TIME: $(FILES_HTML_DOCS) ${PATH_OUTPUT_PUBLIC}/%.json %.yaml
 
 # Define variables
@@ -232,7 +232,7 @@ dev: package-lock.json node_modules/.package-lock.json | ${PATH_MAPJS_NODE_BIN}/
 	-webpack_server_halt
 	npx --prefix ${PATH_DIR_MAPJS_ROOT} --no-install netlify dev &
 
-netlify_test: dev | ${PATH_MAPJS_NODE_BIN}/netlify ${PATH_MAPJS_NODE_BIN}/testcafe
+netlify_test: dev --test_init | ${PATH_MAPJS_NODE_BIN}/netlify
 	$(call test_recipe,netlify,9002)
 
 # dev: netlify-cli
@@ -289,7 +289,7 @@ site: $(FILES_SITE)
 
 
 # TODO remove output dir and add symlink instead
-define test_recipe =
+define test_recipe = # server,PORT
 @if [ "$$ENV" = "netlify" ]; then \
 	./test/test_scripts/tests.sh html; \
 elif [ "$(1)" = "netlify" ]; then \
@@ -302,10 +302,12 @@ else \
 fi;
 endef
 
-test: mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml | ${PATH_MAPJS_NODE_BIN}/testcafe # public site_clean all
+--test_init: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml | ${PATH_MAPJS_NODE_BIN}/testcafe # public site_clean all
+
+test: --test_init
 	$(call test_recipe,webpack_server,9001)
 
-test_live: | ${PATH_MAPJS_NODE_BIN}/testcafe
+test_live: --test_init
 	$(call test_recipe,live,"")
 
 # Instead of calling webpack_X in tests.sh:
