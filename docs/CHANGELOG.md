@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.2
+
+`makefile`: Use canned recipe to DRY config processing rules.
+
 ## argmap 28.2.1
 
 - `scripts/bash_aliases_mapjs.sh`: Update testcafe call to use npx so that local version can be used witout updating PATH.

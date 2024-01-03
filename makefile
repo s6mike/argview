@@ -414,15 +414,18 @@ ${PATH_FILE_ARGMAP_DOT_ENV}: | ${PATH_FILE_ARGMAP_DOT_ENV_DEFAULT}
 
 # Process config and environment files
 
-# 	TODO: De-duplicate with mapjs call
-${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV} | ${PATH_FILE_YQ} # $(PANDOC)
+# Config file dependencies:
+define process_config_file =
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"
+endef
+
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP}/%.yaml ${PATH_FILE_ARGMAP_DOT_ENV} | ${PATH_FILE_YQ} # $(PANDOC)
+	$(process_config_file)
 
 # QUESTION add mapjs.env as dependency?
 ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/%-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_MAPJS}/%.yaml config/processed/environment-argmap-processed.yaml | ${PATH_FILE_YQ} $(PANDOC)
-	@-mkdir --parent "$(@D)"
-	@preprocess_config "$<" "$@"
+	$(process_config_file)
 
 ### Site output vs test output
 
