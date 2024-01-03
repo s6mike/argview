@@ -415,6 +415,12 @@ ${PATH_FILE_ARGMAP_DOT_ENV}: | ${PATH_FILE_ARGMAP_DOT_ENV_DEFAULT}
 # Process config and environment files
 
 # Config file dependencies:
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-paths-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/environment-argmap-${KEYWORD_PROCESSED}.yaml
+${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-paths-${KEYWORD_PROCESSED}.yaml
+mapjs/${KEYWORD_PROCESSED}/config-mapjs-paths-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/environment-argmap-${KEYWORD_PROCESSED}.yaml
+mapjs/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/environment-argmap-${KEYWORD_PROCESSED}.yaml
+mapjs/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml: mapjs/${KEYWORD_PROCESSED}/config-mapjs-paths-${KEYWORD_PROCESSED}.yaml
+
 define process_config_file =
 	@-mkdir --parent "$(@D)"
 	@preprocess_config "$<" "$@"

@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.3
+
+`makefile`: Add config file dependencies so they are processed in correct order.
+
 ## argmap 28.2.2
 
 `makefile`: Use canned recipe to DRY config processing rules.
