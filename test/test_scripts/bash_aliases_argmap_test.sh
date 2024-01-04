@@ -132,7 +132,7 @@ test_make_mapjs_dependencies() {
   local html_open="$3"
   make HTML_OPEN="false" "$file_html"
   rm "$file_json"
-  make HTML_OPEN="$html_open" "$file_html"
+  make HTML_OPEN="$html_open" KEEP_ORIGINAL=true "$file_html"
   ls "$file_json"
 }
 

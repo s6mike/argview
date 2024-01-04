@@ -6,6 +6,22 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.3.0
+
+- Add `keep_original=true` url parameter support to stop maps loading more recent online versions, primarily so that tests are consistent:
+  - `mapjs/src/start.js`: `init()`: Check url for `keep_original` parameter and pass value to `getMap()` call.
+  - `mapjs/src/core/util/mapjs-utilities.js`: `getMap()`: Accept `keep_original` parameter, which when present blocks the check for a more recent map.
+    - Also remove obsolete `getParameterByName()` function.
+  - `scripts/bash_aliases_argmap.sh`: Update `open_debug()` to accept 3rd argument for url parameters, which it adds to the output url.
+  - `makefile`: Update `build_html_recipe` to check for environment variable `KEEP_ORIGINAL` and then pass `keep_original=true` as an `open_debug()` params argument.
+  - `test/test_scripts/tests.sh`:
+    - Add `KEEP_ORIGINAL=true` env var to all `make html` calls.
+    - Add `?keep_original=true` url parameter to all `test_cafe` target URLs.
+    - Re-number all test number comments to be correct.
+  - `test/test_scripts/bash_aliases_argmap_test.sh`: `test_make_mapjs_dependencies()`: Add `KEEP_ORIGINAL=true` env var to `make html` call.
+  - [README-argview.md](../mapjs/docs/README-argview.md): Add note about `keep_original` url parameter.
+    - [README.md](../mapjs/README.md): Copy key details from [README-argview.md](../mapjs/docs/README-argview.md) to `argview` section.
+
 ## argmap 28.2.8
 
 - `makefile`: Fix how `test_recipe` passes `target_domain` to test script.

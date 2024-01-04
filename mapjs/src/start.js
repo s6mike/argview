@@ -211,6 +211,7 @@ const jQuery = require('jquery'),
 
     const instanceElements = Utilities.getElementMJS(INSTANCE_CLASS, document, true),
       params = new URL(document.location).searchParams,
+      keep_original = params.get('keep_original'),
       map_id_all = params.getAll('map_id'),
       original_root_node_title_all = params.getAll('ornt');
     let index = 1;
@@ -225,7 +226,7 @@ const jQuery = require('jquery'),
           original_root_node_title = original_root_node_title_all.shift();
 
         //  QUESTION: Can I use trycatch here? Possibly not in async function.
-        Utilities.getMap(index, instanceElement, map_id, original_root_node_title)
+        Utilities.getMap(index, instanceElement, map_id, original_root_node_title, undefined, undefined, keep_original)
           .then(mapJson => {
             if (mapJson) {
               // Utilities.Logger.log('start.js mapJson: ' + mapJson);

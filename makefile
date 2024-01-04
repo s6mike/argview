@@ -344,7 +344,10 @@ define build_html_recipe =
 @-mkdir --parent "$(@D)"
 @flags_2hf="-s"; \
 if [ "$$HTML_OPEN" = "true" ]; then \
-	2hf $$flags_2hf "$<" | open_debug "" $$TARGET_DOMAIN; \
+	if [ "$$KEEP_ORIGINAL" = "true" ]; then \
+		params=?keep_original=true; \
+	fi; \
+	2hf $$flags_2hf "$<" | open_debug "" "$$TARGET_DOMAIN" "$$params"; \
 else \
 	2hf $$flags_2hf "$<"; \
 fi;

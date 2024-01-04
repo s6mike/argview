@@ -41,7 +41,7 @@ __get_site_path() {
 # export PATH_OUTPUT_FILE_HTML
 
 # For opening html pages with debug port open
-open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html
+open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html https://argview.org/ ?keep_original=true
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   if ! [ -t 0 ]; then # Checks for piped input
@@ -49,8 +49,9 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   fi
   local input_path="${piped_input:-${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}}"
   local target_domain=${2:-"http://localhost:$(getvar PORT_DEV_SERVER)/"}
+  local params="$3"
   local site_path=$(__get_site_path "$input_path")
-  local output_url="$target_domain$site_path"
+  local output_url="$target_domain$site_path$params"
   if [ "$site_path" != "" ]; then
     if [ "$PORT_DEV_SERVER" == 9001 ]; then
       webpack_server_start

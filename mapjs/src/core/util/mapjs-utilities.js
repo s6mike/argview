@@ -49,20 +49,6 @@ CONFIG = Object.assign(CONFIG, CONFIG_P); // Assigning processed file second mea
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
   Logger,
-  getParameterByName: (name, url) => {
-    'use strict';
-    const name_clean = name.replace(/[\[\]]/g, '\\$&'),
-      regex = new RegExp('[?&]' + name_clean + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) {
-      return null;
-    };
-    if (!results[2]) {
-      return '';
-    }
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  },
-
   // Parameterized try catch function
   //  Simplifies environment based catching
   //  Allows use of constants with try-catch
@@ -109,9 +95,8 @@ module.exports = {
   },
   //  ISSUE: instanceElement is whole container section, just need to ensure right part of doc
   //    Simpler solution?
-  getMap: async function (index, instanceElement, map_id, original_root_node_title, script_src, final) {
+  getMap: async function (index, instanceElement, map_id, original_root_node_title, script_src, final, keep_original) {
     'use strict';
-    // Logger.log(original_root_node_title, map_id, script_src, instanceElement);
     let request_url, originalMap, mapJson;
     if (map_id) {
       request_url = '/gm?map_id=' + map_id;
@@ -129,7 +114,7 @@ module.exports = {
     Logger.log('Attempting to retrieve map ' + index + ' from ' + request_url);
     try {
       mapJson = await this.loadJson(request_url);
-      if (originalMap) {
+      if (originalMap && keep_original !== '' && (keep_original === 'false' || !keep_original)) {
         const originalMapTitle = this.setOriginalMapTitle(mapJson);
         Logger.log('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
         try {
