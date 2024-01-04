@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.2.8
+
+- `makefile`: Fix how `test_recipe` passes `target_domain` to test script.
+
+## argmap 28.2.7
+
+- `mapjs/netlify/edge-functions/set_mapjs.ts`: Fix missing await for mapHash.
+
 ## argmap 28.2.6
 
 - `mapjs/package.json`: Update `netlify-cli` to `17.11.0`.

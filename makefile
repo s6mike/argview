@@ -293,9 +293,9 @@ define test_recipe = # server,PORT
 @if [ "$$ENV" = "netlify" ]; then \
 	./test/test_scripts/tests.sh html; \
 elif [ "$(1)" = "netlify" ]; then \
-	env PORT_DEV_SERVER=$(2) bash -c ./test/test_scripts/tests.sh html; \
+	./test/test_scripts/tests.sh html http://localhost:9002/; \
 elif [ "$(1)" = "live" ]; then \
-	./test/test_scripts/tests.sh html "https://argview.org/"; \
+	./test/test_scripts/tests.sh html https://argview.org/; \
 else \
 	webpack_server_start; \
 	./test/test_scripts/tests.sh; \
