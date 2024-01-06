@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.4.0
+
+- `makefile`: Add `make pdf` from markdown rule which calls `md2pdf()`.
+  - `test/test_scripts/tests.sh`: Call make pdf instead of `md2pdf()`.
+
 ## argmap 28.3.1
 
 - Fix shellcheck errors:

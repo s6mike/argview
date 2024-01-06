@@ -388,6 +388,9 @@ $(FILES_MAPJS_FROM_MUP): ${PATH_OUTPUT_PUBLIC}/mapjs-json/%.json: ${PATH_INPUT_L
 $(FILES_HTML_FROM_MD): ${PATH_OUTPUT_HTML_PUBLIC}/%.html: ${PATH_INPUT_LOCAL}/markdown/%.md ${FILES_TEMPLATE_HTML} config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml config/processed/config-argmap-paths-processed.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml | $(PANDOC) $(LUA_MODULES_LOCAL)
 	$(build_html_recipe)
 
+${PATH_OUTPUT_PUBLIC}/%.pdf: ${PATH_INPUT_LOCAL}/markdown/%.md | $(PANDOC) $(LUA_MODULES_LOCAL) # config/processed/config-argmap-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml config/processed/environment-argmap-processed.yaml config/processed/config-argmap-paths-processed.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml
+	md2pdf "$<" | open_debug "" "$$TARGET_DOMAIN"
+
 # Create js dependencies for html files:
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC? Using hidden node_modules/.packagelock instead

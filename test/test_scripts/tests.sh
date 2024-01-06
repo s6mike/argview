@@ -141,7 +141,7 @@ netlify) ;;
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING_ALL_ATTRIBUTES)"
 
   if [ "$is_html" != html ]; then
-    __test md2pdf "$(getvar INPUT_FILE_MD0)" # 22
+    __test make TARGET_DOMAIN="$TARGET_DOMAIN" $(getvar PATH_OUTPUT_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.pdf #22
   fi
   ;;
 esac
