@@ -230,7 +230,7 @@ like_netlify_init: config/argmap.env
 
 dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json | ${PATH_MAPJS_NODE_BIN}/netlify
 	-webpack_server_halt
-	npx --prefix ${PATH_DIR_MAPJS_ROOT} --no-install netlify dev &
+	webserver_start 9002 dev
 
 netlify_test: dev --test_init | ${PATH_MAPJS_NODE_BIN}/netlify
 	$(call test_recipe,netlify,9002)

@@ -57,8 +57,8 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   local output_url="$target_domain$site_path$params"
 
   if [ "$site_path" != "" ]; then
-    if [ "$PORT_DEV_SERVER" == 9001 ]; then
-      webpack_server_start
+    if [[ "$target_domain" == "http://localhost:"* ]]; then
+      webserver_start $(getvar PORT_DEV_SERVER) dev
     fi
     google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "$output_url" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.

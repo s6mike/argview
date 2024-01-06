@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.5.0 DEPRECATE
+
+- Deprecate `webpack_server_start()` in favour of new `webserver_start()`, which:
+  - Runs either netlify or webpack dev server based on `PORT_DEV_SERVER`.
+  - Improves logic for tracking whether SERVER is already on, to reduce netlify dev errors.
+- `open_debug`: Update to call `webserver_start()`, and do so whenever target domain is localhost, regardless of port used.
+- `makefile`: `make dev` calls `webserver_start()` rather than `netlify dev` directly.
+
 ## argmap 28.4.0
 
 - `makefile`: Add `make pdf` from markdown rule which calls `md2pdf()`.

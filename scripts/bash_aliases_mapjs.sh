@@ -25,7 +25,7 @@ alias bmj='__build_mapjs'
 alias rml='__run_mapjs_legacy'
 alias wpi='webpack_install'
 alias pmj='webpack_pack'
-alias wss='webpack_server_start' # Simply runs server
+alias wss='webserver_start' # Simply runs server
 alias wsh='webpack_server_halt'
 
 # mapjs functions
@@ -150,6 +150,7 @@ __is_server_live() {
 # TODO: Add force option to this function
 webpack_server_halt() { #wsh
   port=${1:-$(getvar PORT_DEV_SERVER)}
+  export SERVER_ON=false
   if __is_server_live "$port"; then
     # If kill doesn't work, then use `npm run stop:force`
     # This does: `fuser -k $PORT_DEV_SERVER/tcp`
@@ -157,7 +158,6 @@ webpack_server_halt() { #wsh
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
     npm --prefix "$(getvar PATH_MAPJS)" run stop
-    export SERVER_ON=false
     export SERVER_MODE=false
   else
     # echo "Server already off" >&2
@@ -166,9 +166,7 @@ webpack_server_halt() { #wsh
 }
 
 # Starts server
-#  QUESTION: If mode wrong, restart in desired mode?
-# shellcheck disable=SC2120
-webpack_server_start() { # wss
+webserver_start() { # wss 9001 dev
   port=${1:-$(getvar PORT_DEV_SERVER)}
   mode=${2:-dev}
   if __is_server_live "$port"; then
@@ -176,10 +174,25 @@ webpack_server_start() { # wss
     if [[ $mode != "$SERVER_MODE" ]]; then
       printf " but is currently in %s mode." "$SERVER_MODE"
     fi
-    echo ""
+    printf "\n"
+    export SERVER_ON=false
   else
-    npm --prefix "$(getvar PATH_MAPJS)" run start:"$mode"
-    export SERVER_MODE=$mode
+    if [ "$SERVER_ON" != "true" ]; then
+      case $port in
+      9001)
+        npm --prefix "$(getvar PATH_MAPJS)" run start:"$mode"
+        export SERVER_ON=true
+        ;;
+      9002)
+        npx --prefix ${PATH_DIR_MAPJS_ROOT} --no-install netlify dev &
+        export SERVER_ON=true
+        ;;
+      *)
+        printf "Not sure which web server to start for port %s." "$port"
+        ;;
+      esac
+      export SERVER_MODE=$mode
+    fi
   fi
 }
 
@@ -194,8 +207,13 @@ __npm_update() {
   npx npm-check-updates --packageFile "$(getvar PATH_MAPJS)/package.json"
 }
 
+# DEPRECATED in favour of webserver_start:
+webpack_server_start() { # wss
+  webserver_start "$1" "$2"
+}
+
 ## Mark functions for export to use in other scripts:
 export -f __build_mapjs __run_mapjs_legacy
-export -f __is_server_live webpack_server_halt webpack_server_start
+export -f __is_server_live webpack_server_halt webserver_start webpack_server_start
 export -f webpack_install webpack_pack __check_npm_updates __npm_update
 export -f testcafe_run
