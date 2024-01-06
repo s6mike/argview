@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.5.1
+
+- `makefile`: `test_recipe`: Set `SERVER_ON` and `PORT_DEV_SERVER` before calling test script.
+
 ## argmap 28.5.0 DEPRECATE
 
 - Deprecate `webpack_server_start()` in favour of new `webserver_start()`, which:
@@ -42,13 +46,9 @@
   - [README-argview.md](../mapjs/docs/README-argview.md): Add note about `keep_original` url parameter.
     - [README.md](../mapjs/README.md): Copy key details from [README-argview.md](../mapjs/docs/README-argview.md) to `argview` section.
 
-## argmap 28.2.8
-
-- `makefile`: Fix how `test_recipe` passes `target_domain` to test script.
-
 ## argmap 28.2.7
 
-- `mapjs/netlify/edge-functions/set_mapjs.ts`: Fix missing await for mapHash.
+- `makefile`: Fix how `test_recipe` passes `target_domain` to test script.
 
 ## argmap 28.2.6
 
@@ -79,7 +79,6 @@
 ## argmap 28.2.0
 
 - `makefile`: Add canned recipe for installing node packages locally, and use for testcafe and netlify-cli, as dependencies of test rules.
-
 
 ## argmap 28.1.3
 

@@ -293,12 +293,15 @@ define test_recipe = # server,PORT
 @if [ "$$ENV" = "netlify" ]; then \
 	./test/test_scripts/tests.sh html; \
 elif [ "$(1)" = "netlify" ]; then \
-	./test/test_scripts/tests.sh html http://localhost:9002/; \
+	export SERVER_ON=true; \
+	PORT_DEV_SERVER=$(2) ; \
+	PORT_DEV_SERVER=$$PORT_DEV_SERVER ./test/test_scripts/tests.sh html http://localhost:$$PORT_DEV_SERVER/; \
 elif [ "$(1)" = "live" ]; then \
 	./test/test_scripts/tests.sh html https://argview.org/; \
 else \
-	webpack_server_start; \
-	./test/test_scripts/tests.sh; \
+	PORT_DEV_SERVER=$(2); \
+	webserver_start $$PORT_DEV_SERVER; \
+	PORT_DEV_SERVER=$$PORT_DEV_SERVER ./test/test_scripts/tests.sh; \
 fi;
 endef
 
