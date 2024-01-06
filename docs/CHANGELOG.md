@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.5.3
+
+- `mapjs/config/config-mapjs.yaml`: Add (currently unused) vars for edge functions.
+
 ## argmap 28.5.2
 
 - `mapjs/netlify/edge-functions/shared_functions.ts`: Fix typo.
