@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.5.2
+
+- `mapjs/netlify/edge-functions/shared_functions.ts`: Fix typo.
+
 ## argmap 28.5.1
 
 - `makefile`: `test_recipe`: Set `SERVER_ON` and `PORT_DEV_SERVER` before calling test script.

@@ -17,7 +17,7 @@ export async function generateMapHash(map_title: string): Promise<string> {
   // TODO: Use env var for mapjson_
   const hash = await generateHash(map_title);
 
-  return 'mapjson_' + hash.substring(0, 10);;
+  return 'mapjson_' + hash.substring(0, 10);
 }
 
 export default async function gmh_online(map_title: string): Promise<string> {
