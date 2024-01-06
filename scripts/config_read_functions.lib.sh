@@ -134,10 +134,11 @@ preprocess_config() { # pc /home/s6mike/git_projects/argmap/config/config-argmap
   #  'with_entries(select(.value.[] == "*$*"))'
   # Think this solves it (but won't go deeper than 1 list level)
   yq_query='explode(.) | ...comments="" | with_entries(select(.value == "*$*" or .value.[] == "*$*"))'
-  use_env_vars="$(cat "$PATH_FILE_ARGMAP_DOT_ENV" | sed 's/#.*//' | fgrep = | sed 's/=.*//' | sed 's/^/\$/' | tr '\n' ' ')"
+  use_env_vars="$(sed 's/#.*//' "$PATH_FILE_ARGMAP_DOT_ENV" | grep -F = | sed 's/=.*//' | sed 's/^/\$/' | tr '\n' ' ')"
 
   if [ -z "$PATH_FILE_CONFIG_ARGMAP_PATHS" ]; then # only sources if necessary
-    source "$PATH_FILE_ARGMAP_DOT_ENV"             # Might not be necessary but just to ensure it's always used
+    # shellcheck source=config/argmap.env
+    source "$PATH_FILE_ARGMAP_DOT_ENV" # Might not be necessary but just to ensure it's always used
   fi
   # Substitutes only specific env variables, found in argmap.env, to ensure no empty variables are substituted
   "$PATH_FILE_YQ" -r --exit-status "$yq_query" "$input_config_file" | envsubst "$use_env_vars" >"$output_file"

@@ -31,7 +31,8 @@ __get_site_path() {
   esac
   # Substitutes mapjs/public for test so it's using public folder, then removes leading part of path so its relative to public/:
   local site_path="${full_path/test/$(getvar DIR_MAPJS)/$(getvar DIR_PUBLIC)}"
-  local output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$site_path")
+  local output_path
+  output_path=$(realpath --no-symlinks --relative-to="$(getvar PATH_PUBLIC)" "$site_path")
   echo "$output_path"
 }
 
@@ -45,13 +46,16 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
   if ! [ -t 0 ]; then # Checks for piped input
-    local piped_input=$(cat -)
+    local piped_input
+    piped_input=$(cat -)
   fi
   local input_path="${piped_input:-${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}}"
   local target_domain=${2:-"http://localhost:$(getvar PORT_DEV_SERVER)/"}
-  local params="$3"
-  local site_path=$(__get_site_path "$input_path")
+  local params=${3:-""}
+  local site_path
+  site_path=$(__get_site_path "$input_path")
   local output_url="$target_domain$site_path$params"
+
   if [ "$site_path" != "" ]; then
     if [ "$PORT_DEV_SERVER" == 9001 ]; then
       webpack_server_start
@@ -82,9 +86,10 @@ __find_rockspec() {
 
 __check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
   local expected_echoes=9
-  printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting $expected_echoes only:\n"
-  local echo_count=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
-  printf "Actual count: $echo_count\n"
+  printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting %s only:\n" "$expected_echoes"
+  local echo_count
+  echo_count=$(grep -o '\<echo\>' scripts/config_read_functions.lib.sh | wc -l)
+  printf "Actual count: %s\n" "$echo_count"
   if (("$echo_count" > "$expected_echoes")); then
     printf "Aborting\n" >&2
     exit # "$echo_count"
@@ -143,8 +148,9 @@ __save_env() {
 # Convert to map.json, writes it to test/output/mapjs-json/
 # lua argmap2mup test/input/example1-clearly-false-white-swan-simplified.yaml > test/output/mapjs-json/example1-clearly-false-white-swan-simplified.json
 # TODO add option for .mup vs .json output
-a2m() {                                           # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
-  local name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
+a2m() { # a2m test/input/example1-clearly-false-white-swan-simplified.yaml (output path)
+  local name
+  name=$(basename --suffix=".yaml" "$1") && # && ensures error failure stops remaining commands.
     local output=${2:-$(getvar PATH_DIR_PUBLIC_MAPJS_JSON)/$name.json} &&
     mkdir --parent "$(dirname "$output")" && # Ensures output folder exists
     lua "$(getvar PATH_LUA_ARGMAP)/argmap2mup.lua" "$1" >"$output" &&
@@ -154,7 +160,8 @@ a2m() {                                           # a2m test/input/example1-clea
 # Convert to map.js and upload
 # Declare function inside () to open it in subshell, to stop file_id being remembered, in case variable removed from config file
 a2mu() ( # a2mu test/output/example1-simple.yaml
-  local name=$(basename --suffix=".yaml" "$1")
+  local name
+  name=$(basename --suffix=".yaml" "$1")
   local folder_id
   folder_id=$(getvar GDRIVE_FOLDER_ID_MAPJS_DEFAULT)
   local file_id=""
@@ -172,7 +179,8 @@ a2mu() ( # a2mu test/output/example1-simple.yaml
 # Convert map.js to argmap yaml format
 # TODO add option for .mup vs .json output
 m2a() { # m2a test/output/example1-simple.mup (output path)
-  local name=$(basename --suffix=".json" "$1")
+  local name
+  name=$(basename --suffix=".json" "$1")
   local output=${2:-$PATH_OUTPUT_LOCAL/$name.yaml}
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   lua "$(getvar PATH_LUA_ARGMAP)/mup2argmap.lua" "$1" >"$output" &&
@@ -181,7 +189,8 @@ m2a() { # m2a test/output/example1-simple.mup (output path)
 
 # Convert to tikz
 a2t() { # a2t test/output/example1-simple.yaml (output path)
-  local name=$(basename --suffix=".yaml" "$1") &&
+  local name
+  name=$(basename --suffix=".yaml" "$1") &&
     mkdir --parent "$(dirname "$PATH_OUTPUT_LOCAL")" && # Ensures output folder exists
     lua "$(getvar PATH_LUA_ARGMAP)/argmap2tikz.lua" "$1" >"${2:-$PATH_OUTPUT_LOCAL/$name.tex}" &&
     echo "${2:-$PATH_OUTPUT_LOCAL/$name.tex}"
@@ -223,7 +232,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   shift "$((OPTIND - 1))"
 
   local input="${1:-$(getvar INPUT_FILE_MD2)}"
-  local output_name=$(basename "$input")
+  local output_name
+  output_name=$(basename "$input")
   local ext=${output_name#*.}
 
   local name=${output_name%%.*}
@@ -240,7 +250,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
     # input=${1:-$(cat)} # If there is an argument, use it as input file, else use stdin (expecting piped input, see open_debug for example).
 
     #  TODO: Check and copy to input folder?
-    local path_output_json=/$(__get_site_path "$input")
+    local path_output_json
+    path_output_json=/$(__get_site_path "$input")
     input=/dev/null # JSON input feeds into template not body
     args="--metadata=quick-container:true --metadata=MAP_INSTANCE_ID:1 --metadata title=$name --metadata=path-json-source:$path_output_json"
     ;;
@@ -254,7 +265,8 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
   # Substitutes mapjs/public for test so its using public folder, then removes leading part of path:
   #   TODO ideally would be more flexible with output location e.g. default to standard location but pick either filename or whole directory
-  local output=$(getvar "$path_output")/html/${2:-$name}.html
+  local output
+  output=$(getvar "$path_output")/html/${2:-$name}.html
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
 
   set -o noglob # I don't want globbing, but I don't want to quote $args because I do want word splitting
@@ -269,20 +281,21 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
 
 # Convert markdown to pdf
 md2pdf() { # md2pdf test/input/example.md (output filename) (optional pandoc arguments)
-  local name=$(basename --suffix=".md" "$1")
-  local output=$(getvar PATH_OUTPUT_LOCAL)/${2:-$name}.pdf
+  local name output
+  name=$(basename --suffix=".md" "$1")
+  output=$(getvar PATH_OUTPUT_PUBLIC)/${2:-$name}.pdf
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # Using "${@:3}" to allow 3rd argument onwards to be passed directly to pandoc.
   # QUESTION: Update to use pandoc_argmap?
-  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$PATH_ARGMAP_ROOT/examples/example-template.latex" --data-dir="$PANDOC_DATA_DIR" >/dev/null &&
+  pandoc "$1" -o "$output" "${@:3}" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP)" --metadata-file="$(getvar PATH_FILE_CONFIG_ARGMAP_PROCESSED)" --lua-filter="$(getvar PANDOC_FILTER_LUA_DEFAULT)" --pdf-engine lualatex --template="$PATH_ARGMAP_ROOT/examples/example-template.latex" --data-dir="$(getvar PANDOC_DATA_DIR)" >/dev/null &&
     echo "$output"
-  open_debug "$output"
 }
 
 # Convert markdown to native pandoc output
 md2np() {
   local input="${1:-$INPUT_FILE_MD2}"
-  local name=$(basename --suffix=".md" "$input")
+  local name
+  name=$(basename --suffix=".md" "$input")
   local output=$PATH_OUTPUT_LOCAL/${2:-$name}.ast
   mkdir --parent "$(dirname "$output")" # Ensures output folder exists
   # QUESTION: Update to use pandoc_argmap?

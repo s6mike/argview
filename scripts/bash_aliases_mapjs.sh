@@ -12,7 +12,6 @@ netlify) ;;
 *)
   # shellcheck source=/home/s6mike/scripts/default_vscode_init_script.sh # Stops shellcheck lint error
   source "$HOME/scripts/default_vscode_init_script.sh"
-
   # source "$DIR_PROJECTS/mapjs-git-bisect/scripts/git-bisect.env"
   ;;
 esac
@@ -103,12 +102,13 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
     path_replay_script="${1:-$default_script}"
     if [ "$path_replay_script" == -1 ]; then
       log "Replay script not found: $1"
-      return -1
+      echo "-1"
+      return 1
     fi
     target_url="${2:-$default_url}"
   fi
   # __bisect_init
-  npx --prefix $(getvar MAPJS_NODE_MODULES_PREFIX) testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
+  npx --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
 }
 
 # __test_mapjs_renders() {

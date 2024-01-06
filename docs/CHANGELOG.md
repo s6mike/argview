@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.3.1
+
+- Fix shellcheck errors:
+  - `scripts/config_read_functions.lib.sh`
+  - `scripts/bash_aliases_argmap.sh`
+  - `scripts/bash_aliases_mapjs.sh`
+
 ## argmap 28.3.0
 
 - Add `keep_original=true` url parameter support to stop maps loading more recent online versions, primarily so that tests are consistent:
