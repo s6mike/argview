@@ -85,6 +85,17 @@
 package = "@netlify/plugin-sitemap"
 
 [[plugins]]
+  package = "@netlify/plugin-csp-nonce"
+  [plugins.inputs]
+    reportOnly = true # TODO once verified, make false
+    # excludedPath = [
+    #   "/api/*",
+    #   "**/*.bespoke.extension"
+    # ]
+    # TODO
+    #   unsafeEval = false
+
+[[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
   # "/home/linuxbrew/.linuxbrew/lib/", "mapjs/node_modules/"
