@@ -7,7 +7,7 @@
     # TODO: Harden further: require-trusted-types-for 'script';
     # REVIEW: Don't think I need script-src 'unsafe-eval'; for remote, it's just for local testing - somehow add just locally?
     # TODO: Add script-src-elem 'self' 'unsafe-eval' once I can remove unsafe-eval from script-src
-    Content-Security-Policy = "style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src-elem 'self'; form-action 'self'; connect-src 'self'; img-src 'self' data:; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;" # This should be enough when combined with dynamic script-src
+    Content-Security-Policy = "style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src 'self'; form-action 'self'; connect-src 'self'; img-src 'self' data:; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;" # This should be enough when combined with dynamic script-src
     HTTP-Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Resource-Policy = "same-site"
