@@ -3,6 +3,7 @@ const path = require('path'),
   webpack = require('webpack'), // to access built-in plugins
   // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   HtmlWebpackPlugin = require('html-webpack-plugin');
+// CspHtmlWebpackPlugin = require('@melloware/csp-webpack-plugin');
 
 module.exports = (env, argv) => {
   'use strict';
@@ -66,6 +67,25 @@ module.exports = (env, argv) => {
         // 	Couldn't get this to work:
         // 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
       }),
+      // new CspHtmlWebpackPlugin({
+      //   'script-src': '',
+      //   'style-src': '',
+      // }, {
+      //   enabled: true,
+      //   integrityEnabled: true,
+      //   'require-trusted-types-for': ["'script'"],
+      //   trustedTypesEnabled: true,
+      //   hashingMethod: 'sha512',
+      //   hashEnabled: {
+      //     'script-src': true,
+      //     'style-src': true,
+      //   },
+      //   // nonceEnabled: {
+      //   //   'script-src': false,
+      //   //   'style-src': false,
+      //   // },
+      //   // processFn: defaultProcessFn  // defined in the plugin itself
+      // }),
     ],
     performance: {
       hints: false

@@ -27,6 +27,12 @@
     #   "**/*.bespoke.extension"
     ]
 
+[[plugins]]
+  package = "netlify-plugin-csp-generator"
+  
+  [plugins.inputs]
+  buildDir = "mapjs/public/js"
+
 [build]
   publish = "mapjs/public/" # The path to your static content folder
   command = "./scripts/argmap_init_script.sh" # Command to start your dev server
