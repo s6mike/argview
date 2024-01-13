@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.1
+
+- `netlify.toml`: CSP plugin: `reportOnly = false`
+
 ## argmap 28.6.0
 
 - Add netlify CSP plugin.

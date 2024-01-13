@@ -1,3 +1,15 @@
+[[plugins]]
+  package = "@netlify/plugin-csp-nonce"
+  [plugins.inputs]
+    reportOnly = false
+    # QUESTION: Try on production?
+    unsafeEval = true
+    excludedPath = [
+      "/"
+    #   "/api/*",
+    #   "**/*.bespoke.extension"
+    ]
+
 [build]
   publish = "mapjs/public/" # The path to your static content folder
   command = "./scripts/argmap_init_script.sh" # Command to start your dev server
@@ -83,17 +95,6 @@
 
 [[plugins]]
 package = "@netlify/plugin-sitemap"
-
-[[plugins]]
-  package = "@netlify/plugin-csp-nonce"
-  [plugins.inputs]
-    reportOnly = true # TODO once verified, make false
-    # excludedPath = [
-    #   "/api/*",
-    #   "**/*.bespoke.extension"
-    # ]
-    # TODO
-    #   unsafeEval = false
 
 [[plugins]]
 package = "netlify-plugin-cache"
