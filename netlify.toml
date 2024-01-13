@@ -5,7 +5,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     # TODO: Harden further: require-trusted-types-for 'script';
-    Content-Security-Policy = "style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src-elem 'self'; form-action 'self'; connect-src 'self'; img-src 'self' data:; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;" # This should be enough when combined with dynamic script-src
+    Content-Security-Policy = "style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src-elem 'sha512-iqJMjNzOxB0lCBP030kMG+dtb+6BML5BBDi6T2S5+8rwv1YgOTvd+9vtaqXbP5pQnbpXys4yqTBAThfMlGAdZw==' 'sha512-5Y9caFW4mQCuy5WnOqy73snl/O0FbyltYXsuDJMEcBRGkD+pVE56ufxbolwmdZcoV0DVjriERRT94FtK1M8BHg==' ; form-action 'self'; connect-src 'self'; img-src 'self' data:; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;" # This should be enough when combined with dynamic script-src
     HTTP-Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Resource-Policy = "same-site"
@@ -31,7 +31,11 @@
   package = "netlify-plugin-csp-generator"
   
   [plugins.inputs]
-  buildDir = "mapjs/src"
+  buildDir = "mapjs/public"
+
+  [plugins.inputs.policies]
+    defaultSrc = "'self'"
+    # styleSrc = "'unsafe-hashes'"
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder

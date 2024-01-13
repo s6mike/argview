@@ -2,7 +2,9 @@
 const path = require('path'),
   webpack = require('webpack'), // to access built-in plugins
   // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
+  HtmlWebpackPlugin = require('html-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin');
+  { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 module.exports = (env, argv) => {
   'use strict';
@@ -25,6 +27,7 @@ module.exports = (env, argv) => {
     devtool: 'cheap-source-map',
     devtool: (argv.mode === 'production') ? 'source-map' : 'cheap-source-map',
     output: {
+      crossOriginLoading: 'anonymous',
       path: path.resolve(__dirname, 'public/js/'),
       // TODO: use more robust publicPath
       //	 publicPath: path.resolve(__dirname, 'public/js/'),
@@ -50,6 +53,12 @@ module.exports = (env, argv) => {
     },
     plugins: [
       // new BundleAnalyzerPlugin(),
+      new SubresourceIntegrityPlugin({
+        // The hash functions used (e.g.
+        // <script integrity="sha256- ... sha384- ..." ...
+        hashFuncNames: ['sha512'],
+        enabled: true,
+      }),
       new HtmlWebpackPlugin({
         filename: path.resolve(__dirname, '../' + process.env.PATH_FILE_MAPJS_HTML_DIST_TAGS),
         // Outputs script tags only:
