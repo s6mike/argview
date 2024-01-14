@@ -53,8 +53,7 @@ module.exports = (env, argv) => {
     plugins: [
       // new BundleAnalyzerPlugin(),
       new SubresourceIntegrityPlugin({
-        // The hash functions used (e.g.
-        // <script integrity="sha256- ... sha384- ..." ...
+        // The hash functions used (e.g. <script integrity="sha256- ... sha384- ...")
         hashFuncNames: ['sha512'],
         enabled: true,
       }),
