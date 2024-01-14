@@ -1,39 +1,20 @@
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    # TODO: Harden further: require-trusted-types-for 'script';
-    # REVIEW: Don't think I need script-src 'unsafe-eval'; for remote, it's just for local testing - somehow add just locally?
-    # TODO: Add script-src-elem 'self' 'unsafe-eval' once I can remove unsafe-eval from script-src
-    Content-Security-Policy = "style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src 'self'; form-action 'self'; connect-src 'self'; img-src 'self' data:; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;" # This should be enough when combined with dynamic script-src
-    HTTP-Cross-Origin-Opener-Policy = "same-origin"
-    Cross-Origin-Embedder-Policy = "require-corp"
-    Cross-Origin-Resource-Policy = "same-site"
-    Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
-    # TODO: check this first, including certificate expiry: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
-    #   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-    # TODO: If you do not control links on your website, you might want to set off as a value to disable DNS prefetch to avoid leaking information to those domains.
-    #   X-DNS-Prefetch-Control = "off"
+# [[plugins]]
+#   package = "@netlify/plugin-csp-nonce"
+#   [plugins.inputs]
+#     reportOnly = false
+#     # QUESTION: Try on production?
+#     unsafeEval = false
+#     excludedPath = [
+#       "/"
+#     #   "/api/*",
+#     #   "**/*.bespoke.extension"
+#     ]
 
-[[plugins]]
-  package = "@netlify/plugin-csp-nonce"
-  [plugins.inputs]
-    reportOnly = false
-    # QUESTION: Try on production?
-    unsafeEval = false
-    excludedPath = [
-      "/"
-    #   "/api/*",
-    #   "**/*.bespoke.extension"
-    ]
-
-[[plugins]]
-  package = "netlify-plugin-csp-generator"
+# [[plugins]]
+#   package = "netlify-plugin-csp-generator"
   
-  [plugins.inputs]
-  buildDir = "mapjs/src"
+#   [plugins.inputs]
+#   buildDir = "mapjs/src"
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder
