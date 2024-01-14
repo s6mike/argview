@@ -57,6 +57,7 @@
     }
   },
   "dependencies": {
+    "@melloware/csp-webpack-plugin": "^6.0.4",
     "@netlify/blobs": "^6.3.1",
     "@netlify/edge-functions": "^2.2.0",
     "exports-loader": "^4.0.0",
@@ -73,6 +74,7 @@
     "wait-on": "^7.2.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
+    "webpack-subresource-integrity": "^5.2.0-rc.1",
     "yaml-loader": "^0.8.0"
   },
   "devDependencies": {
