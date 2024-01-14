@@ -190,7 +190,7 @@ clean: site_clean
 docs: $(FILES_HTML_DOCS)
 
 # TODO: Use vars
-mapjs/public/_headers: src/headers/_headers_template src/layouts/includes/webpack-dist-tags.html
+mapjs/public/_headers: src/headers/_headers_template src/layouts/includes/webpack-dist-tags.html src/js/build_headers.js
 	node src/js/build_headers.js
 
 # Clean up Lua Rocks from global library
@@ -218,7 +218,7 @@ ifneq (${ENV}, netlify)
 install: | ${PATH_FILE_CONVERT_GLOBAL} npm_audit ${PATH_FILE_GDRIVE_LOCAL}
 endif
 
-like_netlify: clean like_netlify_pre_init like_netlify_init site mapjs/public/_headers
+like_netlify: clean like_netlify_pre_init like_netlify_init site
 
 # TODO: Add call to undo netlify_pre_init (remove any of the created .env and restore the originals)
 #		Also need to clean and rebuild processed files since they use env variables
@@ -275,7 +275,7 @@ ifneq (${ENV}, netlify)
 site: site_clean $(FILES_SITE) mapjs/public/_headers
 endif
 endif
-site: $(FILES_SITE)
+site: $(FILES_SITE) mapjs/public/_headers
 
 # start: site
 # start:
