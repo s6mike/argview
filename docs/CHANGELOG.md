@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.5
+
+- `mapjs/webpack.config.js`: Generate `integrity` hash attribute to output script elements:
+  - `mapjs/package.json`: Add `webpack-subresource-integrity`.
+
 ## argmap 28.6.4
 
 - `mapjs/.eslintrc.json`: Add `"one-var": "consecutive",` so var declarations don't always have to be combined.
