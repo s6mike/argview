@@ -1,0 +1,16 @@
+/*
+  Content-Security-Policy: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests;
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-site
+  HTTP-Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  # TODO: check this first, including certificate expiry: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
+  #   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  # TODO: If you do not control links on your website, you might want to set off as a value to disable DNS prefetch to avoid leaking information to those domains.
+  #   X-DNS-Prefetch-Control: off
+/*.html
+  # TODO: Harden further: require-trusted-types-for 'script';
+  Content-Security-Policy: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; ${script-src-elem}

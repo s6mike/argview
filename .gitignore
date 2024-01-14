@@ -26,6 +26,7 @@ mapjs/public/output
 mapjs/public/input
 mapjs/public/js
 mapjs/public/index.html
+mapjs/public/_headers
 examples/*
 src/layouts/includes/webpack-dist-tags.html
 scripts/experiments.sh
