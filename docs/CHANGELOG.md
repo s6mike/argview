@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.4
+
+- `mapjs/.eslintrc.json`: Add `"one-var": "consecutive",` so var declarations don't always have to be combined.
+
 ## argmap 28.6.3
 
 - `mapjs/webpack.config.js`: Stop dev sourcemap using eval, so CSP doesn't block it.
