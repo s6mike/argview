@@ -30,8 +30,6 @@ if (integrityHashes) {
   output_string_policy += ';';
 }
 
-console.log(output_string_policy);
-
 // Read template_headers
 try {
   template_headers_content = fs.readFileSync(resolved_template_headers, 'utf-8');
@@ -41,9 +39,8 @@ try {
 
 // Replace ${script-src-elem} in template_headers with the generated output_string_policy
 const re_string_template = '\\${' + integrity_element + '}', // matches e.g. ${script-src-elem}
-  re_template_update = new RegExp(re_string_template),
+  re_template_update = new RegExp(re_string_template, "g"),
   // output_headers_content = template_headers_content.replace(/\${${integrity_element}}/, output_string_policy);
   output_headers_content = template_headers_content.replace(re_template_update, output_string_policy);
 
-console.log(output_headers_content);
 fs.writeFileSync(headersPath, output_headers_content);
