@@ -14,7 +14,11 @@
   package = "netlify-plugin-csp-generator"
   
   [plugins.inputs]
-  buildDir = "mapjs/src"
+  buildDir = "mapjs/public"
+
+  [plugins.inputs.policies]
+    defaultSrc = "'self'"
+    # styleSrc = "'unsafe-hashes'"
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder

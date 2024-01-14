@@ -189,6 +189,10 @@ clean: site_clean
 
 docs: $(FILES_HTML_DOCS)
 
+# TODO: Use vars
+mapjs/public/_headers: src/headers/_headers_template src/layouts/includes/webpack-dist-tags.html
+	node src/js/build_headers.js
+
 # Clean up Lua Rocks from global library
 luarocks_clean:
 	$(warning Attempting to delete lua dependencies:)
@@ -268,7 +272,7 @@ prints:
 # Ensures site_clean only run locally in prod mode (to clean up any dev files)
 ifeq (${MODE}, prod)
 ifneq (${ENV}, netlify)
-site: site_clean $(FILES_SITE)
+site: site_clean $(FILES_SITE) mapjs/public/_headers
 endif
 endif
 site: $(FILES_SITE)
