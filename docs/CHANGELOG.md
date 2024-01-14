@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.7
+
+- `makefile`: Add rule to build `mapjs/public/_headers`.
+
 ## argmap 28.6.6
 
 - `src/js/build_headers.js`: Generate `mapjs/public/_headers` for netlify dynamically to include script hashes from `src/layouts/includes/webpack-dist-tags.html`:
