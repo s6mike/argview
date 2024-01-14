@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.8
+
+- Update doc example html files.
+
 ## argmap 28.6.7
 
 - `makefile`: Add rule to build `mapjs/public/_headers`.
