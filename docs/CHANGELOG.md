@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.13
+
+- `scripts/bash_aliases_mapjs.sh`: `testcafe_run()`: Print `target_url` so test log clearer.
+
 ## argmap 28.6.12
 
 - `scripts/argmap_init_script.sh`: Improve comments for `shopt` globbing settings.

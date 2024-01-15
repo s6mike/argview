@@ -92,7 +92,6 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
   default_script="$(getvar PATH_REPLAY_SCRIPT.DEFAULT)"
   head=${1:-""}
   if [ "$head" == head ]; then
-    # TODO: Add option to use --speed 0.1
     browser_testcafe='chrome --speed 0.1 --no-default-browser-check --disable-extensions'
     path_replay_script="${2:-$default_script}"
     target_url="${3:-$default_url}"
@@ -108,6 +107,7 @@ testcafe_run() { # tcr (head) REPLAY_SCRIPT_PATH TARGET_URL
     target_url="${2:-$default_url}"
   fi
   # __bisect_init
+  printf "target_url: %s\n" "$target_url"
   npx --prefix "$(getvar MAPJS_NODE_MODULES_PREFIX)" testcafe "$browser_testcafe" "$path_replay_script" --base-url "$target_url"
 }
 
