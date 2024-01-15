@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.9
+
+- `test/test_scripts/bash_aliases_argmap_test.sh`: Fix `test_make_mapjs_dependencies()` to use correct `target_domain`.
+
 ## argmap 28.6.8
 
 - Update doc example html files.
