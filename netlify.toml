@@ -1,20 +1,20 @@
-[[plugins]]
-  package = "@netlify/plugin-csp-nonce"
-  [plugins.inputs]
-    reportOnly = false
-    # QUESTION: Try on production?
-    unsafeEval = false
-    excludedPath = [
-      "/"
-    #   "/api/*",
-    #   "**/*.bespoke.extension"
-    ]
+# [[plugins]]
+#   package = "@netlify/plugin-csp-nonce"
+#   [plugins.inputs]
+#     reportOnly = false
+#     # QUESTION: Try on production?
+#     unsafeEval = false
+#     excludedPath = [
+#       "/"
+#     #   "/api/*",
+#     #   "**/*.bespoke.extension"
+#     ]
 
-[[plugins]]
-  package = "netlify-plugin-csp-generator"
+# [[plugins]]
+#   package = "netlify-plugin-csp-generator"
   
-  [plugins.inputs]
-  buildDir = "mapjs/src"
+#   [plugins.inputs]
+#   buildDir = "mapjs/src"
 
 [build]
   publish = "mapjs/public/" # The path to your static content folder
