@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.10
+
+- `test/test_scripts/tests.sh`:
+  - Escape all test arguments properly to avoid `?` in url argument nullglobbing to empty.
+  - Skip `test_make_mapjs_dependencies()` for netlify dev server since it crashes when file deleted, and just build `e2v3.html` instead.
+  - Update `test_make_mapjs_dependencies()` call to pass on `TARGET_DOMAIN`.
+  - Re-number comments.
+
 ## argmap 28.6.9
 
 - `test/test_scripts/bash_aliases_argmap_test.sh`: Fix `test_make_mapjs_dependencies()` to use correct `target_domain`.
