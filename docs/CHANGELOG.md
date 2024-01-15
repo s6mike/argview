@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.12
+
+- `scripts/argmap_init_script.sh`: Improve comments for `shopt` globbing settings.
+
 ## argmap 28.6.11
 
 - `test/devtools-recordings/`:
