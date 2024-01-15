@@ -42,7 +42,7 @@ PATH_LOG_FILE_EXPECT: /home/s6mike/git_projects/mapjs-git-bisect/expect_log.txt
 PATH_BISECT_PATCH_FILE: ${DIR_PROJECTS}/mapjs-git-bisect/diffs/all_mapjs_fixes_latest.diff
 PATH_REPLAY_SCRIPT:
   DEFAULT: ${PATH_REPLAY_SCRIPT.MAP_RENDERS}
-  MAP_RENDERS: ${PATH_ARGMAP_ROOT}/test/devtools-recordings/map_renders.json
+  MAP_RENDERS: ${PATH_ARGMAP_ROOT}/test/devtools-recordings/argmap-map-renders.json
   ADD_IDEA: ${PATH_ARGMAP_ROOT}/test/devtools-recordings/argmap-add-idea.json
   NODE_CLICK: ${PATH_ARGMAP_ROOT}/test/devtools-recordings/argmap-node-click.json
   BUTTON_UNDO_REDO: ${PATH_ARGMAP_ROOT}/test/devtools-recordings/argmap-button-undo-redo.json

@@ -1,0 +1,19 @@
+{
+  "title": "argmap-button-editlink-menu-error",
+  "steps": [
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Delete"
+        ],
+        [
+          "#linkEditWidget > input"
+        ]
+      ],
+      "offsetY": 7.421875,
+      "offsetX": 31
+    }
+  ]
+}

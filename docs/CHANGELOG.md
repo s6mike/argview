@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.11
+
+- `test/devtools-recordings/`:
+  - Delete duplicate mapjs recordings now not using navigation on argmap tests.
+  - Remove navigation step for remaining mapjs recordings and rename tests to argmap.
+  - Rename `argmap-map-renders.json` for consistency.
+    - `mapjs/config/config-mapjs-paths.yaml`: Update var for path.
+
 ## argmap 28.6.10
 
 - `test/test_scripts/tests.sh`:
