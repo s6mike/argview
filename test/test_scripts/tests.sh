@@ -123,22 +123,22 @@ http://localhost:9002/)
   ;;
 esac
 
-__test make HTML_OPEN="$test_open_html" KEEP_ORIGINAL=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #12 / 5 / 3
-__test make HTML_OPEN="$test_open_html" KEEP_ORIGINAL=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #13 / 6 / 4
+__test make HTML_OPEN="$test_open_html" KEEP_ORIGINAL=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-meta-mapjs.html" #11 / 5 / 3
+__test make HTML_OPEN="$test_open_html" KEEP_ORIGINAL=true "$(getvar PATH_OUTPUT_HTML_PUBLIC)/example1-clearly-false-white-swan-simplified-2mapjs.html"     #12 / 6 / 4
 
 case $(getvar ENV) in
 netlify) ;;
 *)
   # To make browser test visible, add 'head' as first arg
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)" "$TARGET_DOMAIN?keep_original=true"                                                                                 #14 / 7
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)" "$TARGET_DOMAIN?keep_original=true"                                                                                  #15 / 8 left click
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)" "$TARGET_DOMAIN?keep_original=true"                                                                             #16 / 9
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)" "$TARGET_DOMAIN?keep_original=true"                                                                              #17 / 10
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" "$TARGET_DOMAIN/output/html/example2-clearly-false-white-swan-v3.html?keep_original=true"                   #18 / 11
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)" "$TARGET_DOMAIN?keep_original=true"                                                                             #19 / 12
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" "$TARGET_DOMAIN/output/html/example1-clearly-false-white-swan-simplified-with-links.html?keep_original=true" #20 / 13
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)" "$TARGET_DOMAIN?keep_original=true"                                                                                    #21 / 14 add child button
-  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)" "$TARGET_DOMAIN?keep_original=true"                                                                            #22 / 15 undo/redo button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.MAP_RENDERS)" "$TARGET_DOMAIN?keep_original=true"                                                                                 #13 / 7
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.NODE_CLICK)" "$TARGET_DOMAIN?keep_original=true"                                                                                  #14 / 8 left click
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_ROOT_PARENT)" "$TARGET_DOMAIN?keep_original=true"                                                                             #15 / 9
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING)" "$TARGET_DOMAIN?keep_original=true"                                                                              #16 / 10
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_SUPPORTING_E2V3)" "$TARGET_DOMAIN/output/html/example2-clearly-false-white-swan-v3.html?keep_original=true"                   #17 / 11
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_ADD_LINK)" "$TARGET_DOMAIN?keep_original=true"                                                                             #18 / 12
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.EDIT_LINK_EXISTING)" "$TARGET_DOMAIN/output/html/example1-clearly-false-white-swan-simplified-with-links.html?keep_original=true" #19 / 13
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.ADD_IDEA)" "$TARGET_DOMAIN?keep_original=true"                                                                                    #20 / 14 add child button
+  __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.BUTTON_UNDO_REDO)" "$TARGET_DOMAIN?keep_original=true"                                                                            #21 / 15 undo/redo button
 
   # These don't work
   # __test testcafe_run "$(getvar PATH_REPLAY_SCRIPT.KEYS_UNDO_REDO)"      # undo/redo keys fails in testcafe, first ctrl-z step didn't work.
@@ -152,7 +152,7 @@ netlify) ;;
   # __test testcafe_run test/devtools-recordings/argmap-mouse-past-linkEditWidget-after-link-click.json "$TARGET_DOMAIN?keep_original=true" # The specified selector does not match any element in the DOM tree. > | Selector('#link_22_5 > path.mapjs-link-hit.noTransition')
 
   if [ "$is_html" != html ]; then
-    __test make TARGET_DOMAIN="$TARGET_DOMAIN" "$(getvar PATH_OUTPUT_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.pdf" #23
+    __test make TARGET_DOMAIN="$TARGET_DOMAIN" "$(getvar PATH_OUTPUT_PUBLIC)/example1-clearly-false-white-swan-simplified-0mapjs.pdf" #22
   fi
   ;;
 esac
