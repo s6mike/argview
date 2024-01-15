@@ -1,17 +1,6 @@
 {
-  "title": "mapjs-mouse-past-linkEditWidget-after-link-click",
+  "title": "argmap-mouse-past-linkEditWidget-after-link-click",
   "steps": [
-    {
-      "type": "navigate",
-      "url": "http://localhost:9000/",
-      "assertedEvents": [
-        {
-          "type": "navigation",
-          "url": "http://localhost:9000/",
-          "title": ""
-        }
-      ]
-    },
     {
       "type": "click",
       "selectors": [
