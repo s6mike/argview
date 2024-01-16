@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.14
+
+- `mapjs/webpack.config.js`: Use SRI for netlify server, and for webpack dev server in prod mode only, since webpack dev server hot module replacement breaks hashes.
+
 ## argmap 28.6.13
 
 - `scripts/bash_aliases_mapjs.sh`: `testcafe_run()`: Print `target_url` so test log clearer.

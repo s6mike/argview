@@ -53,9 +53,9 @@ module.exports = (env, argv) => {
     plugins: [
       // new BundleAnalyzerPlugin(),
       new SubresourceIntegrityPlugin({
-        // The hash functions used (e.g. <script integrity="sha256- ... sha384- ...")
-        hashFuncNames: ['sha512'],
-        enabled: true,
+        hashFuncNames: ['sha512'], // The hash functions used (e.g. <script integrity="sha256- ... sha384- ...")
+        // Always uses SRI for netlify (so CSP in _headers doesn't break scripts), but otherwise use auto, which only uses it in prod mode because HMR breaks SRI:
+        enabled: (process.env.DEV_SERVER === 'netlify') ? true : 'auto',
       }),
       new HtmlWebpackPlugin({
         filename: path.resolve(__dirname, '../' + process.env.PATH_FILE_MAPJS_HTML_DIST_TAGS),
