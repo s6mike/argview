@@ -43,7 +43,7 @@ module.exports = (env, argv) => {
     stats: 'errors-warnings',
     devServer: {
       static: path.join(__dirname, 'public'),
-      port: process.env.PORT_DEV_SERVER,
+      port: process.env.DEV_SERVER_PORT,
       client: {
         overlay: false,
         progress: false,
@@ -55,7 +55,7 @@ module.exports = (env, argv) => {
       new SubresourceIntegrityPlugin({
         hashFuncNames: ['sha512'], // The hash functions used (e.g. <script integrity="sha256- ... sha384- ...")
         // Always uses SRI for netlify (so CSP in _headers doesn't break scripts), but otherwise use auto, which only uses it in prod mode because HMR breaks SRI:
-        enabled: (process.env.DEV_SERVER === 'netlify') ? true : 'auto',
+        enabled: (process.env.DEV_SERVER_NAME === 'netlify_dev_server') ? true : 'auto',
       }),
       new HtmlWebpackPlugin({
         filename: path.resolve(__dirname, '../' + process.env.PATH_FILE_MAPJS_HTML_DIST_TAGS),
