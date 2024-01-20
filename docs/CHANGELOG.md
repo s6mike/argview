@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.17
+
+- `.vscode/settings.json`: Update `files.watcherExclude` in attempt to fix VSCode CPU issues.
+
 ## argmap 28.6.16
 
 - Add bash debug related comments.

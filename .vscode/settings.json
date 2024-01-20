@@ -177,5 +177,9 @@
   "deno.importMap": ".netlify/edge-functions-import-map.json",
   "deno.path": "/home/s6mike/.config/netlify/deno-cli/deno",
   "git.ignoreLimitWarning": true,
-  "deno.lint": true
+  "deno.lint": true,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/node_modules/**": true
+  }
 }
