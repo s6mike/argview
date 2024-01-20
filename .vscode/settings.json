@@ -23,6 +23,7 @@
       "icon": "terminal-bash",
       "args": [
         "--init-file",
+        // "TRACE=1",
         "${workspaceFolder}/scripts/argmap_init_script.sh"
       ]
     }
