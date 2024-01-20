@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.2
+
+- `makefile`:
+  - Use `PATH_PUBLIC` var for _headers path
+  - Add `_headers` dependency:
+    - `make site`: for `ENV` `netlify` only.
+    - `make dev`
+
 ## argmap 30.0.1
 
 - `test/test_scripts/tests.sh`:

@@ -232,7 +232,7 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
-dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json site | ${PATH_MAPJS_NODE_BIN}/netlify
+dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json ${PATH_PUBLIC}/_headers | ${PATH_MAPJS_NODE_BIN}/netlify
 	-webserver_halt
 	webserver_start 9002 dev netlify_dev_server
 
@@ -270,12 +270,13 @@ prints:
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
 # Ensures site_clean only run locally in prod mode (to clean up any dev files)
-ifeq (${MODE}, prod)
 ifneq (${ENV}, netlify)
-site: site_clean $(FILES_SITE) mapjs/public/_headers
+ifeq (${MODE}, prod)
+site: site_clean $(FILES_SITE) # local prod
 endif
+site: $(FILES_SITE) # local dev
 endif
-site: $(FILES_SITE) mapjs/public/_headers
+site: $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
 
 # start: site
 # start:
