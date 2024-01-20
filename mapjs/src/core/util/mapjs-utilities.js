@@ -127,6 +127,8 @@ module.exports = {
         } catch (error) {
           Logger.error('Failed to update map ' + index + ': ' + originalMapTitle + '. Keeping original data.');
         }
+      } else {
+        Logger.info('Have loaded original version of ' + request_url + ' as map ' + index);
       }
       return mapJson;
       // this.addMap(instanceElement, mapJson);
