@@ -16,13 +16,18 @@ log() {
 }
 
 __check_exit_status() {
-  exit_status=$1
-  result=$2
+  local exit_status="$1"
+  local result="$2"
+  local echo_result="${4:-true}"
+  local output_text
   if [[ $exit_status == 0 ]] && [[ $result != "" ]]; then
-    echo "$result"
+    output_text="$result"
   else
     log "$3"
-    echo "-1"
+    output_text="-1"
+  fi
+  if [ "$echo_result" != false ]; then
+    echo "$output_text"
   fi
   return "$exit_status"
 }
@@ -73,6 +78,8 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
   set -o noglob
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   result=$("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}" | sed 's/^- //')
+  local result_status=$?
+
   # shellcheck disable=SC2068 # Quoting ${files[@]} stops it expanding
   # echo >&2 "query: $("$PATH_FILE_YQ" "${yq_flags[@]}" ".$variable_name $query_main $query_opts" ${yaml_source[@]} | "$PATH_FILE_YQ" "${query_extra[@]}")"
 
@@ -86,20 +93,32 @@ __getvar_from_yaml() { # __getvar_from_yaml (-el) PATH_FILE_CONFIG_MAPJS $PATH_F
 
   # Only returns multiple results if in list mode, otherwise just first result (so unprocessed results are ignored)
   # __check_exit_status $? "${result[0]}" "$variable_name not found in ${yaml_source[*]} using .$variable_name $query_rest $query_list"
-  __check_exit_status $? "$result" "$variable_name not found while running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
+  __check_exit_status "$result_status" "$result" "$variable_name not found while running yq '.$variable_name $query_main $query_opts' ${yaml_source[*]} ${yaml_source[*]} | yq '${query_extra[*]}'"
+
   set +o noglob
+  return "$result_status"
+}
+
+__replace_dots() { # Used so YAML var DEV_SERVER.PORT caches as DEV_SERVER_PORT
+  local input_string="$1"
+  local no_dots_result="${input_string//./_}"
+  local status=$?
+  echo "$no_dots_result"
+  return "$status"
 }
 
 # Looks up each argument in yaml and exports it as env variable
-__yaml2env() { # __yaml2env PATH_FILE_CONFIG_MAPJS
+__yaml2env() { # __yaml2env -l PATH_FILE_CONFIG_MAPJS
   # yaml_file=${1:-PATH_FILE_ENV_ARGMAP}
-  yaml_file=${1:-PATH_FILE_ENV_ARGMAP_PATHS}
+  local status=0
+  local yaml_file=${1:-PATH_FILE_ENV_ARGMAP_PATHS}
   shift
   for env_var_name in "$@"; do
     env_var_value=$(__getvar_from_yaml -e "$env_var_name" "$yaml_file")
-    # log "$env_var_name=$env_var_value"
-    export "$env_var_name"="$env_var_value"
+    local status=$(("$status" + $?))
+    export "$(__replace_dots "$env_var_name")"="$env_var_value"
   done
+  return "$status"
 }
 
 count_characters() {
@@ -193,7 +212,9 @@ __getvar_yaml_any() { # gvy
   set -o noglob       # I don't want globbing, but I don't want to quote it because I do want word splitting
   # shellcheck disable=SC2068 # Quoting ${LIST_FILES_CONFIG_PROCESSED[@]} stops it expanding
   __getvar_from_yaml "$@" ${LIST_FILES_CONFIG_PROCESSED[@]} ${LIST_FILES_CONFIG_INPUT[@]} # $list_files_config_processed
+  local status=$?
   set +o noglob
+  return "$status"
 }
 
 __normalise_if_path() {
@@ -215,20 +236,35 @@ __normalise_if_path() {
 # This looks up variables.
 #   It can pass on -opts to __getvar_yaml_any, but this doesn't happen if value stored in an env variable
 #   So results can be unpredictable.
-#   TEST: test_getvar()
-getvar() { # gq PATH_FILE_CONFIG_MAPJS
-  variable_name="$1"
-  # First checks whether env variable exists
-  if checkvar_exists "$variable_name"; then
-    result=${!variable_name}
+#   TEST: test_getvar
+getvar() { # gv PATH_FILE_CONFIG_MAPJS false "$@"
+  local variable_name="$1"
+  local echo_result
+  if [ $# -gt 1 ]; then
+    echo_result="$2"
+    shift
   else
-    result=$(__getvar_yaml_any "$@")
-    # TODO cache with env variable?
-    #   export "$variable_name"="$result"
+    echo_result=true
   fi
-  result=$(__normalise_if_path "$result")
-  __check_exit_status $? "$result" "$variable_name not found"
+  # First checks whether env variable exists
+  local variable_name_no_dots result
+  variable_name_no_dots=$(__replace_dots "$variable_name")
+
+  if checkvar_exists "$variable_name_no_dots"; then
+    status=$?
+    result=${!variable_name_no_dots}
+  else
+    shift # Removes echo_result from the __getvar_yaml_any call
+    result=$(__getvar_yaml_any "$variable_name" "$@")
+    status=$?
+    # log "status2: $status"
+    result=$(__normalise_if_path "$result")
+  fi
+  if __check_exit_status "$status" "$result" "$variable_name not found" "$echo_result"; then
+    export "$variable_name_no_dots"="$result"
+  fi
+  return "$status"
 }
 
-export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env getvar process_all_config_inputs
+export -f __check_exit_status checkvar_exists __getvar_from_yaml __getvar_yaml_any __yaml2env __replace_dots getvar process_all_config_inputs
 export -f log preprocess_config count_characters __normalise_if_path

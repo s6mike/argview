@@ -6,6 +6,17 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 29.1.0
+
+- `scripts/config_read_functions.lib.sh`:
+  - `getvar()`: 
+    - Add boolean argument for whether to echo var value after getting it.
+      - Whcih is passed onto updated `__check_exit_status()`.
+    - Export env var after getting var from yaml:
+      - Update to create env vars from dotted yaml vars:
+      - Add `__replace_dots()` to support this.
+  - Ensure functions return status properly.
+
 ## argmap 29.0.0 BREAKING
 
 - `netlify.toml`:
