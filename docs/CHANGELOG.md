@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.1
+
+- `test/test_scripts/tests.sh`:
+  - Update to use DEV_SERVER.NAME env var to inform test logic instead of port.
+  - Re-order to simplify server test logic.
+
 ## argmap 30.0.0 BREAKING
 
 - `scripts/argmap_init_script.sh`: Export `DEV_SERVER.PORT` using new `getvar()` which rewrites to `DEV_SERVER_PORT`.
