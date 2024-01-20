@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.7.0 DEPRECATE
+
+- `config/environment-argmap-defaults.yaml`:
+  - Add `webpack_dev_server` with name and default port.
+  - Add `DEV_SERVER` as alias of default server (`webpack_dev_server`).
+  - Deprecate `PORT_DEV_SERVER` in favour of `DEV_SERVER.PORT`, which for continuity takes on `PORT_DEV_SERVER`'s value.
+
 ## argmap 28.6.17
 
 - `.vscode/settings.json`: Update `files.watcherExclude` in attempt to fix VSCode CPU issues.
