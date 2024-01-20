@@ -19,6 +19,14 @@ TEST_SITE_DEPLOY: false
 DIR_PUBLIC: public
 PATH_PUBLIC: ${PATH_DIR_MAPJS_ROOT}/${DIR_PUBLIC}
 PORT_DEBUG: 9221
+
+webpack_dev_server: &webpack_dev_server
+  NAME: webpack_dev_server
+  PORT: ${PORT_DEV_SERVER} # Until deprecated, then  9001
+
+DEV_SERVER: *webpack_dev_server  # This sets default DEV_SERVER
+
+# Deprecate:
 PORT_DEV_SERVER: 9001
 
 ## External to project
