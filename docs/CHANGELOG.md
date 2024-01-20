@@ -6,6 +6,30 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.0 BREAKING
+
+- `scripts/argmap_init_script.sh`: Export `DEV_SERVER.PORT` using new `getvar()` which rewrites to `DEV_SERVER_PORT`.
+  - Use `DEV_SERVER_PORT`:
+    - `mapjs/webpack.config.js`: Use `DEV_SERVER_NAME` instead of `DEV_SERVER`. BREAKING
+    - `scripts/bash_aliases_argmap.sh`:
+      - Call `webserver_start()` with `DEV_SERVER.NAME`.
+      - Rename `__count_config_read_echoes`
+    - `mapjs/package.json`
+    - `test/test_scripts/bash_aliases_argmap_test.sh`
+- `scripts/bash_aliases_mapjs.sh`:
+  - Deprecate `webpack_server_halt` in favour of `webserver_halt()`. DEPRECATE
+  - `webserver_start()`: Add 3rd argument `server_name` to override env var value.
+  - Update functions to:
+    - Use `DEV_SERVER.NAME` for server logic instead of port.
+    - Use `getvar DEV_SERVER.PORT` instead of `PORT_DEV_SERVER`.
+    - Declare `local` vars.
+- `makefile`:
+  - Call new `webserver_halt()`
+  - Call `webserver_start` with `web_server_name` override.
+  - Use new server names.
+  - `test_recipe`: Pass `DEV_SERVER_NAME` env var to test script.
+- `scripts/init_read_config.sh`: Remove `__yaml2env` export of `PORT_DEV_SERVER`.
+
 ## argmap 29.1.0
 
 - `scripts/config_read_functions.lib.sh`:

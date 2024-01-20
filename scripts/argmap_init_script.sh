@@ -183,6 +183,7 @@ init_apps() {
   esac
 }
 
+# TODO Use "getvar X false" instead
 export_vars() {
   set -o allexport
 
@@ -230,6 +231,8 @@ export_vars() {
   PATH_OUTPUT_LOCAL=$(getvar PATH_OUTPUT_LOCAL)
   PATH_MAPJS_NODE_BIN=$(getvar PATH_MAPJS_NODE_BIN)
   set +o allexport
+
+  getvar DEV_SERVER.PORT false # Exported as DEV_SERVER_PORT
 } # end export_vars
 
 make_rest() {

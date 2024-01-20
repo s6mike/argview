@@ -99,7 +99,7 @@ test_getvar() {
   test_function "$func" bla.bla -1                                                                      #2
   test_function "$func" DIR_CONFIG config                                                               #3
   test_function "$func" PATH_FILE_CONFIG_ARGMAP_PROCESSED config/processed/config-argmap-processed.yaml #4
-  test_function "$func" PORT_DEV_SERVER 9001                                                            #5
+  test_function "$func" DEV_SERVER.PORT 9001                                                            #5
   test_function "$func" PATH_DIR_MAPJS_ROOT mapjs                                                       #6
   test_function "$func" DEFAULT_LANGUAGE en                                                             #7
   test_function "$func" DIR_OUTPUT output                                                               #8

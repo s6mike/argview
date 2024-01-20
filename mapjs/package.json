@@ -34,7 +34,7 @@
   "scripts": {
     "env": "env",
     "stop": "killall node",
-    "stop:force": "fuser -k $PORT_DEV_SERVER/tcp",
+    "stop:force": "fuser -k $DEV_SERVER_PORT/tcp",
     "start": "npm run start:dev",
     "start:dev": "webpack serve --mode=development &",
     "start:prod": "webpack serve --mode=production &",
