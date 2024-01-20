@@ -42,6 +42,7 @@ __get_site_path() {
 # export PATH_OUTPUT_FILE_HTML
 
 # For opening html pages with debug port open
+# shellcheck disable=SC2120
 open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/example2-clearly-false-white-swan-v3.html https://argview.org/ ?keep_original=true
   # TODO: try chrome headless: https://workflowy.com/#/8aac548986a4
   # TODO: user data dir doesn't seem to work, showing normal linux browser
@@ -50,7 +51,7 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
     piped_input=$(cat -)
   fi
   local input_path="${piped_input:-${1:-$(getvar PATH_FILE_OUTPUT_EXAMPLE)}}"
-  local target_domain=${2:-"http://localhost:$(getvar PORT_DEV_SERVER)/"}
+  local target_domain=${2:-"http://localhost:$(getvar DEV_SERVER.PORT)/"}
   local params=${3:-""}
   local site_path
   site_path=$(__get_site_path "$input_path")
@@ -58,7 +59,8 @@ open_debug() { # odb /home/s6mike/git_projects/argmap/mapjs/public/output/html/e
 
   if [ "$site_path" != "" ]; then
     if [[ "$target_domain" == "http://localhost:"* ]]; then
-      webserver_start $(getvar PORT_DEV_SERVER) dev
+      # QUESTION: Add target_domain check to determine 3rd arg (netlify vs webpack)?
+      webserver_start "$(getvar DEV_SERVER.PORT)" dev "$(getvar DEV_SERVER.NAME)"
     fi
     google-chrome --remote-debugging-port="$(getvar PORT_DEBUG)" --user-data-dir="$(getvar PATH_CHROME_PROFILE_DEBUG)" --disable-extensions --hide-crash-restore-bubble --no-default-browser-check "$output_url" 2>/dev/null &
     disown # stops browser blocking terminal and allows all tabs to open in single window.
@@ -84,7 +86,7 @@ __find_rockspec() {
   find "$PATH_ARGMAP_ROOT" -type f -name "argmap-*.rockspec"
 }
 
-__check_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
+__count_config_read_echoes() { # Because it these functions return values, adding echoes for debugging can wreck output
   local expected_echoes=9
   printf "\nChecking scripts/config_read_functions.lib.sh for extra echoes. Expecting %s only:\n" "$expected_echoes"
   local echo_count
@@ -242,6 +244,7 @@ pandoc_argmap() { # pandoc_argmap input output template extra_variables
   case $ext in
   yml | yaml) # Converts argmap yaml into mindmup json then runs this command again on the output.
     # QUESTION: Is there a way I can pass data straight into json/mup step instead?
+    # shellcheck disable=SC2119
     2hf "$(a2m "$input")" | open_debug
     return 0
     ;;
@@ -305,5 +308,5 @@ md2np() {
 
 # Mark functions for export to use in other scripts:
 export -f open_debug __find_rockspec
-export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec __check_config_read_echoes
+export -f __reset_repo __clean_repo __check_lua_debug __check_js_debug __save_env __update_repo __find_rockspec __count_config_read_echoes
 export -f __get_site_path a2m m2a a2t a2mu pandoc_argmap 2hf md2pdf md2np

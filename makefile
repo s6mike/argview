@@ -189,8 +189,8 @@ clean: site_clean
 
 docs: $(FILES_HTML_DOCS)
 
-# TODO: Use vars
-mapjs/public/_headers: src/headers/_headers_template src/layouts/includes/webpack-dist-tags.html src/js/build_headers.js
+# TODO: Use more vars
+${PATH_PUBLIC}/_headers: src/headers/_headers_template ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/js/build_headers.js
 	node src/js/build_headers.js
 
 # Clean up Lua Rocks from global library
@@ -227,17 +227,17 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 	mv --no-clobber config/environment-argmap.yaml config/environment-argmap.yaml.bak
 	mv --no-clobber mapjs/config/environment-mapjs.yaml mapjs/config/environment-mapjs.yaml.bak
 	printf "Attempting to halt webpack dev server...\n"
-	-webpack_server_halt
+	-webserver_halt
 
 like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
 
-dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json mapjs/public/_headers | ${PATH_MAPJS_NODE_BIN}/netlify
-	-webpack_server_halt
-	webserver_start 9002 dev
+dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json site | ${PATH_MAPJS_NODE_BIN}/netlify
+	-webserver_halt
+	webserver_start 9002 dev netlify_dev_server
 
 netlify_test: dev --test_init | ${PATH_MAPJS_NODE_BIN}/netlify
-	$(call test_recipe,netlify,9002)
+	$(call test_recipe,netlify_dev_server,9002)
 
 # dev: netlify-cli
 # #	QUESTION: How to connect to correct netlify site?
@@ -291,28 +291,31 @@ site: $(FILES_SITE) mapjs/public/_headers
 # Instead of: make all,  __clean_repo, and also to remove symlnks
 # test: MODE := dev
 
-
-# TODO remove output dir and add symlink instead
+# TODO: remove output dir and add symlink instead
+# QUESTION: Combine some branches? 
 define test_recipe = # server,PORT
 @if [ "$$ENV" = "netlify" ]; then \
 	./test/test_scripts/tests.sh html; \
-elif [ "$(1)" = "netlify" ]; then \
+elif [ "$(1)" = "netlify_dev_server" ]; then \
 	export SERVER_ON=true; \
-	PORT_DEV_SERVER=$(2) ; \
-	PORT_DEV_SERVER=$$PORT_DEV_SERVER ./test/test_scripts/tests.sh html http://localhost:$$PORT_DEV_SERVER/; \
+	DEV_SERVER_NAME=$(1); \
+	DEV_SERVER_PORT=$(2) ; \
+	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh html http://localhost:$$DEV_SERVER_PORT/ netlify_dev_server; \
 elif [ "$(1)" = "live" ]; then \
-	./test/test_scripts/tests.sh html https://argview.org/; \
+	DEV_SERVER_NAME=$(1); \
+	DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh html https://argview.org/; \
 else \
-	PORT_DEV_SERVER=$(2); \
-	webserver_start $$PORT_DEV_SERVER; \
-	PORT_DEV_SERVER=$$PORT_DEV_SERVER ./test/test_scripts/tests.sh; \
+	DEV_SERVER_NAME=$(1); \
+	DEV_SERVER_PORT=$(2); \
+	webserver_start $$DEV_SERVER_PORT dev $$DEV_SERVER_NAME; \
+	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh; \
 fi;
 endef
 
 --test_init: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml mapjs/config/processed/config-mapjs-paths-processed.yaml mapjs/config/processed/environment-mapjs-processed.yaml | ${PATH_MAPJS_NODE_BIN}/testcafe # public site_clean all
 
 test: --test_init
-	$(call test_recipe,webpack_server,9001)
+	$(call test_recipe,webpack_dev_server,9001)
 
 test_live: --test_init
 	$(call test_recipe,live,"")
