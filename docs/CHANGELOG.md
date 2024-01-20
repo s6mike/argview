@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 29.0.0 BREAKING
+
+- `netlify.toml`:
+  - Update redirects so `?keep_original=true` (and other url parameters) is passed on from home page. BREAKING
+    - This means the home page will redirect destination won't add map_id url parameter for speed.
+  - Update lighthouse settings to:
+    - Audit example page rather than home page.
+    - Audit desktop version of page.
+
 ## argmap 28.7.0 DEPRECATE
 
 - `config/environment-argmap-defaults.yaml`:

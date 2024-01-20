@@ -58,15 +58,17 @@
 
 [[redirects]]
   from = "/"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  to = "/index.html"
   status = 302
-  force = false
+  force = true
 
 [[redirects]]
   from = "/index.html"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  to = "/output/html/example1-clearly-false-white-swan-simplified.html"
+  # Can't redirect to a url parameter without blocking all other url parameters from being passed on:
+  # to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
   status = 302
-  force = false
+  force = true
 
 [[redirects]]
   from = "/schemas/*"
@@ -113,6 +115,12 @@ package = "netlify-plugin-debug-cache"
 
 [[context.production.plugins]]
 package = "@netlify/plugin-lighthouse"
-# optional, deploy the lighthouse report to a path under your site
-  # [plugins.inputs.audits]
+
+  [context.production.plugins.inputs.settings]
+  preset = "desktop" # Optionally run Lighthouse using a desktop configuration
+
+  [context.production.plugins.inputs.audits]
+  path = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+
+  # optional, deploy the lighthouse report to a path under your site
   #   output_path = "reports/lighthouse.html"
