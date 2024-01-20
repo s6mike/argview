@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 28.6.16
+
+- Add bash debug related comments.
+
 ## argmap 28.6.15
 
 - `mapjs/src/core/util/mapjs-utilities.js`: Add original map loaded info message.
