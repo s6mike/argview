@@ -21,6 +21,8 @@ netlify)
   #   Should fix netlify output folder but might mean tests fail
   make public
   rm "$(getvar PATH_OUTPUT_PUBLIC)"
+  # QUESTION: Needed for testing on netlify server?
+  #   make "${PATH_PUBLIC}/_headers"
   test_open_html=false
   ;;
 *)
