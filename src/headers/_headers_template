@@ -11,6 +11,6 @@
   #   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   # TODO: If you do not control links on your website, you might want to set off as a value to disable DNS prefetch to avoid leaking information to those domains.
   #   X-DNS-Prefetch-Control: off
-/*.html
+/output/html/*
   # TODO: Harden further: require-trusted-types-for 'script';
   Content-Security-Policy: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; ${script-src-elem}
