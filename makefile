@@ -230,7 +230,7 @@ like_netlify_pre_init: config/argmap.env config/environment-argmap.yaml mapjs/co
 	-webserver_halt
 
 like_netlify_init: config/argmap.env
-	env ENV=netlify MODE=prod bash -c ./scripts/argmap_init_script.sh
+	env ENV=netlify MODE=prod bash -c "./scripts/argmap_init_script.sh"
 
 dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json ${PATH_PUBLIC}/_headers | ${PATH_MAPJS_NODE_BIN}/netlify
 	-webserver_halt
@@ -296,20 +296,20 @@ site: $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
 # QUESTION: Combine some branches? 
 define test_recipe = # server,PORT
 @if [ "$$ENV" = "netlify" ]; then \
-	./test/test_scripts/tests.sh html; \
+	bash -c "./test/test_scripts/tests.sh html"; \
 elif [ "$(1)" = "netlify_dev_server" ]; then \
 	export SERVER_ON=true; \
 	DEV_SERVER_NAME=$(1); \
 	DEV_SERVER_PORT=$(2) ; \
-	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh html http://localhost:$$DEV_SERVER_PORT/ netlify_dev_server; \
+	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME bash -c "./test/test_scripts/tests.sh html http://localhost:$$DEV_SERVER_PORT/ netlify_dev_server"; \
 elif [ "$(1)" = "live" ]; then \
 	DEV_SERVER_NAME=$(1); \
-	DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh html https://argview.org/; \
+	DEV_SERVER_NAME=$$DEV_SERVER_NAME bash -c "./test/test_scripts/tests.sh html https://argview.org/"; \
 else \
 	DEV_SERVER_NAME=$(1); \
 	DEV_SERVER_PORT=$(2); \
 	webserver_start $$DEV_SERVER_PORT dev $$DEV_SERVER_NAME; \
-	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME ./test/test_scripts/tests.sh; \
+	DEV_SERVER_PORT=$$DEV_SERVER_PORT DEV_SERVER_NAME=$$DEV_SERVER_NAME bash -c "./test/test_scripts/tests.sh"; \
 fi;
 endef
 
