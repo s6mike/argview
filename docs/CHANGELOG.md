@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.7
+
+- `netlify.toml`:
+  - Redirect directly from `/` to example, rather than to `/index.html`
+  - Remove `.html` extension from redirect targets.
+
 ## argmap 30.0.6
 
 - `src/headers/_headers_template`:
