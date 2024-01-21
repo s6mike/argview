@@ -57,15 +57,15 @@
 
 [[redirects]]
   from = "/"
-  to = "/index.html"
+  to = "/output/html/example1-clearly-false-white-swan-simplified"
+  # Can't redirect to a url parameter without blocking all other url parameters from being passed on:
+  # to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
   status = 302
   force = true
 
 [[redirects]]
   from = "/index.html"
-  to = "/output/html/example1-clearly-false-white-swan-simplified.html"
-  # Can't redirect to a url parameter without blocking all other url parameters from being passed on:
-  # to = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  to = "/output/html/example1-clearly-false-white-swan-simplified"
   status = 302
   force = true
 
