@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.3
+
+- `makefile`: Add `.bash -c` to test script calls.
+
 ## argmap 30.0.2
 
 - `makefile`:
