@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.6
+
+- `src/headers/_headers_template`:
+  - Harden `Permissions-Policy`, restricting all chrome recognized permissions.
+  - `X-Permitted-Cross-Domain-Policies: none`
+
 ## argmap 30.0.5
 
 - `src/headers/_headers_template`: Update CSP script whitelist to apply to path `/output/html/*` rather than .html, so removing extension (as shown in sitemap) doesn't break CSP.
