@@ -115,11 +115,11 @@ package = "netlify-plugin-debug-cache"
 [[context.production.plugins]]
 package = "@netlify/plugin-lighthouse"
 
-  [context.production.plugins.inputs.settings]
-  preset = "desktop" # Optionally run Lighthouse using a desktop configuration
+  [[context.production.plugins.inputs.audits]]
+  path = "output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
 
-  [context.production.plugins.inputs.audits]
-  path = "/output/html/example1-clearly-false-white-swan-simplified.html?map_id=mapjson_a55601d14d"
+  # [context.production.plugins.inputs.settings]
+  # preset = "desktop" # Optionally run Lighthouse using a desktop configuration
 
   # optional, deploy the lighthouse report to a path under your site
   #   output_path = "reports/lighthouse.html"
