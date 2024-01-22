@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.0
+
+- `src/headers/_headers_template`: Add `report-uri.com` reporting endpoint:
+  - Add `Report-To:` to send errors to report-uri.com:
+    - Add to `CSP`: `report-uri`, `report-to` to report CSP errors.
+    - Add `NEL:` to report client network errors.
+
 ## argmap 30.0.9
 
 - `src/headers/_headers_template`: Harden headers:
