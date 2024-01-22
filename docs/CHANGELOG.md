@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.0
+
+- `src/headers/_headers_template`: Add reporting endpoint `/.netlify/functions/__csp-violations`, borrowing `plugin-csp-nonce`'s endpoint:
+  - Add to `CSP`: `report-uri`, `report-to`;
+  - Add `Reporting-Endpoints`
+  - `mapjs/netlify/functions/__csp-violations.ts`: Add function to handle CSP reports, copied from `plugin-csp-nonce`.
+    - `netlify.toml`: Add functions directory.
+    - `package.json`, `package-lock.json`: Install `@netlify/functions`.
+      - `mapjs/package.json`, `mapjs/package-lock.json`: Ditto.
+
 ## argmap 30.0.8
 
 - `netlify.toml`: Fix typo in lighthouse plugin settings so example page (in production only) is tested without any redirections.

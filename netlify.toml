@@ -55,6 +55,9 @@
   MODE = "dev"
   DIR_PROJECTS = "./mapjs/public" # So debug logs visible
 
+[functions]
+  directory = "mapjs/netlify/functions"
+
 [[redirects]]
   from = "/"
   to = "/output/html/example1-clearly-false-white-swan-simplified"
