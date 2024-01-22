@@ -6,6 +6,15 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.2
+
+- `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add site logo to main template.
+  - `mapjs/public/mapjs-default-styles.css`: Make header container into flexbox, and set values for `h1` and `.site-logo` (both logo and wrapping anchor) so they wrap nicely.
+  - Update doc example pages.
+- [README.md](../README.md), [README-argview.md](../mapjs/docs/README-argview.md):
+  - Add logo to title and move status bar there.
+  - Update map images to link to live site version.
+
 ## argmap 30.1.1
 
 - `mapjs/public/`:

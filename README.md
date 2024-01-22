@@ -1,11 +1,9 @@
-# ArgView: Argument Maps in YAML
+# ![ArgView logo](mapjs/public/favicons/favicon.ico) ArgView: Argument Maps in YAML [![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/mapjs-argview/deploys)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/mapjs-argview/deploys)
-
-|[![Argument Map Example 1 in MindMup format](examples/2cc90b7c54f340b9e4589f2c1b5a26589a5f2653.png)](https://atlas.mindmup.com/2022/07/aae05340f9f311eca4149f3188cae501/example_mup/index.html "Argument Map Example 1")|
+|[![Argument Map Example 1 in MindMup format](examples/2cc90b7c54f340b9e4589f2c1b5a26589a5f2653.png)](https://argview.org/output/html/example-updated "Argument Map Example 1")|
 |----------------------------|
 
-<https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. Currently these can only be loaded and saved locally. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
+<https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
 See [README-argview.md](mapjs/docs/README-argview.md) for how to use the website itself.
 
