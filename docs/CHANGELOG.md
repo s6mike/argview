@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.8
+
+- `netlify.toml`: Fix typo in lighthouse plugin settings so example page (in production only) is tested without any redirections.
+
 ## argmap 30.0.7
 
 - `netlify.toml`:
