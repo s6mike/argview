@@ -4,9 +4,11 @@
 #   X-DNS-Prefetch-Control: off
 
 /*
+	Access-Control-Allow-Origin: https://argview.org
+	Vary: Origin
   Content-Security-Policy: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri /.netlify/functions/__csp-violations; report-to csp-endpoint;
   Cross-Origin-Embedder-Policy: require-corp
-  Cross-Origin-Resource-Policy: same-site
+  Cross-Origin-Resource-Policy: same-origin
   HTTP-Cross-Origin-Opener-Policy: same-origin
   # Unrecognized by chrome (all experimental): ambient-light-sensor=(), battery=(), document-domain=(), layout-animations=(), legacy-image-formats=(), oversized-images=(), unoptimized-images=(), speaker-selection=(), unsized-media=(), 
   Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(),  usb=(), web-share=(), xr-spatial-tracking=()
