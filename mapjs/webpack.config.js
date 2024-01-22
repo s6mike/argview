@@ -3,6 +3,7 @@ const path = require('path'),
   webpack = require('webpack'), // to access built-in plugins
   // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   HtmlWebpackPlugin = require('html-webpack-plugin'),
+  // CspHtmlWebpackPlugin = require('@melloware/csp-webpack-plugin'),
   { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 module.exports = (env, argv) => {
@@ -62,6 +63,19 @@ module.exports = (env, argv) => {
         // Outputs script tags only:
         inject: 'body',
         templateContent: '',
+        // cspPlugin: {
+        //   enabled: true,
+        //   integrityEnabled: true,
+        //   hashingMethod: 'sha512',
+        //   hashEnabled: {
+        //     'script-src': true,
+        //     'style-src': true,
+        //   },
+        //   nonceEnabled: {
+        //     'script-src': false,
+        //     'style-src': false,
+        //   },
+        // }
       }),
       new webpack.DefinePlugin({
         // 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
@@ -73,6 +87,25 @@ module.exports = (env, argv) => {
         // 	Couldn't get this to work:
         // 		PRODUCTION: JSON.stringify(argv.mode === 'production'),
       }),
+      // new CspHtmlWebpackPlugin({
+      //   'script-src': '',
+      //   'style-src': '',
+      // }, {
+      //   enabled: true,
+      //   integrityEnabled: true,
+      //   'require-trusted-types-for': ["'script'"],
+      //   trustedTypesEnabled: true,
+      //   hashingMethod: 'sha512',
+      //   hashEnabled: {
+      //     'script-src': true,
+      //     'style-src': true,
+      //   },
+      //   nonceEnabled: {
+      //     'script-src': false,
+      //     'style-src': false,
+      //   },
+      //   // processFn: defaultProcessFn  // defined in the plugin itself
+      // }),
     ],
     performance: {
       hints: false
