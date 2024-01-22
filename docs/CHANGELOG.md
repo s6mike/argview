@@ -6,6 +6,16 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.1
+
+- `mapjs/public/`:
+  - `svg/argview-logo.svg`: Add site logo.
+  - `favicons`: Add favicons and site.webmanifest:
+    - `src/layouts/includes/favicon-links.html`: Create html code linking to favicons.
+      - `src/layouts/includes/argmap-head-element.html`: Add `favicon-links.html` as include.
+      - `makefile`: Add `favicon-links.html` to `FILES_TEMPLATE_HTML` variable so updates are propagated to build pages.
+      - `netlify.toml`: Add redirects from `/` to `/favicons/` for `favicon*` and `apple-touch-icon.png` so non-html assets can access favicons.
+
 ## argmap 30.1.0
 
 - `src/headers/_headers_template`: Add `report-uri.com` reporting endpoint:

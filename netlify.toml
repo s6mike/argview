@@ -75,6 +75,18 @@
   status = 200 # QUESTION: Or 301 instead?
   force = true
 
+[[redirects]]
+  from = "/favicon*"
+  to = "favicons/favicon:splat"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "favicons/apple-touch-icon.png"
+  status = 200
+  force = false
+
 [[edge_functions]]
   path = "/sm"
   function = "set_mapjs"
