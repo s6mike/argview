@@ -1,8 +1,9 @@
-# MapJs Argview
+# MapJs Argview [![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/argview/deploys)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/0cc8f19e-a2a6-423b-a105-69b283851eac/deploy-status)](https://app.netlify.com/sites/argview/deploys)
+|||
+|----------------------------|----------------------------|
+[![ArgView logo](../public/svg/argview-logo.svg)](https://argview.org/)| <https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.|
 
-<https://argview.org/> is a simple site generated using this repo for the purpose of viewing example argument maps, editing them and creating your own. It's an adaption of the [mapjs](https://github.com/mindmup/mapjs) mind map app.
 
 |[![Example Map](argview-example-screenshot.png)](https://argview.org/ "Example Map")|
 |----------------------------|

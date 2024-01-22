@@ -1,3 +1,24 @@
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+h1 {
+  margin-top: 11px;
+  margin-left: 6px;
+  min-width: 75px;
+  max-width: 64%;
+  /* max-width: calc(100% - 120px); */
+  text-wrap: balance;
+}
+
+.site-logo {
+  max-width: 96px;
+}
+
 /* Below styles added from html file (maps-inline-styles.css) */
 
 body {
