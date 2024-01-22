@@ -6,7 +6,7 @@
 /*
 	Access-Control-Allow-Origin: https://argview.org
 	Vary: Origin
-  Content-Security-Policy-Report-Only: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://89d4948d900d4c14df17ed15f36744db.report-uri.com/r/d/csp/reportOnly; report-to csp-endpoint;
+  Content-Security-Policy-Report-Only: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://argview.org/.netlify/functions/__csp-violations;
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: same-origin
   HTTP-Cross-Origin-Opener-Policy: same-origin
@@ -14,8 +14,8 @@
   # Unrecognized by chrome (all experimental): ambient-light-sensor=(), battery=(), document-domain=(), layout-animations=(), legacy-image-formats=(), oversized-images=(), unoptimized-images=(), speaker-selection=(), unsized-media=(), 
   Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(),  usb=(), web-share=(), xr-spatial-tracking=()
 # Reporting-Endpoints: csp-endpoint="https://argview.org/.netlify/functions/__csp-violations"
-	Reporting-Endpoints: csp-endpoint="https://89d4948d900d4c14df17ed15f36744db.report-uri.com/r/d/csp/reportOnly"
-	Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://89d4948d900d4c14df17ed15f36744db.report-uri.com/a/d/g"}],"include_subdomains":true}
+# Reporting-Endpoints: default="https://argview.report-uri.com/r/d/csp/reportOnly"
+	Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://argview.report-uri.com/a/d/g"}],"include_subdomains":true}
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
@@ -24,4 +24,4 @@
 
 /output/html/*
   # TODO: Harden further: require-trusted-types-for 'script';
-  Content-Security-Policy-Report-Only: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://89d4948d900d4c14df17ed15f36744db.report-uri.com/r/d/csp/reportOnlys; report-to csp-endpoint;
+  Content-Security-Policy-Report-Only: style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://argview.report-uri.com/r/d/csp/reportOnly; report-to default;
