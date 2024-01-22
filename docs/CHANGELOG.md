@@ -6,6 +6,11 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.1
+
+- `mapjs/public/`: Add favicon.ico icons and site.webmanifest.
+  - `svg/argview-logo.svg`: Add site logo.
+
 ## argmap 30.1.0
 
 - `src/headers/_headers_template`: Add `report-uri.com` reporting endpoint:
