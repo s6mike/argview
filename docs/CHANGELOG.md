@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.0.9
+
+- `src/headers/_headers_template`: Harden headers:
+  - Add `Access-Control-Allow-Origin`, `Vary`.
+  - Update `Cross-Origin-Resource-Policy` to `same-origin`.
+
 ## argmap 30.0.8
 
 - `netlify.toml`: Fix typo in lighthouse plugin settings so example page (in production only) is tested without any redirections.
