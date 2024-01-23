@@ -1,14 +1,19 @@
-# [[plugins]]
-#   package = "@netlify/plugin-csp-nonce"
-#   [plugins.inputs]
-#     reportOnly = false
-#     # QUESTION: Try on production?
-#     unsafeEval = false
-#     excludedPath = [
-#       "/"
-#     #   "/api/*",
-#     #   "**/*.bespoke.extension"
-#     ]
+[[headers]]
+  for = "/*"
+  [headers.values]
+  Content-Security-Policy = "script-src-elem 'self'; script-src 'self' 'unsafe-eval'; style-src-elem 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src 'self'; default-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types; upgrade-insecure-requests;"
+
+[[plugins]]
+  package = "@netlify/plugin-csp-nonce"
+  [plugins.inputs]
+    reportOnly = false
+    # QUESTION: Try on production?
+    unsafeEval = true
+    excludedPath = [
+      "/"
+    #   "/api/*",
+    #   "**/*.bespoke.extension"
+    ]
 
 # [[plugins]]
 #   package = "netlify-plugin-csp-generator"
