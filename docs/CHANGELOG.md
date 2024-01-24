@@ -6,6 +6,12 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.5
+
+- `src/headers/_headers_template`:
+  - Rewrite as `Cross-Origin-Opener-Policy` from `HTTP-Cross-Origin-Opener-Policy`.
+  - Add `manifest-src 'self'` for `mapjs/public/favicons/site.webmanifest`.
+
 ## argmap 30.1.4
 
 - Update npm packages.
