@@ -6,6 +6,10 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.3
+
+- `scripts/bash_aliases_mapjs.sh`: `webserver_start()`: Fix unbound variable.
+
 ## argmap 30.1.2
 
 - `src/layouts/templates/pandoc-mapjs-main-html5.html`: Add site logo to main template.

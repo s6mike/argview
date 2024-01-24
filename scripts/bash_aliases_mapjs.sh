@@ -180,7 +180,7 @@ webserver_start() { # wss 9001 dev netlify_dev_server
     printf "\n"
     export SERVER_ON=false
   else
-    if [ "$SERVER_ON" != "true" ]; then
+    if [ "${SERVER_ON:-false}" != "true" ]; then
       case $server_name in
       webpack_dev_server)
         npm --prefix "$(getvar PATH_MAPJS)" run start:"$mode"
