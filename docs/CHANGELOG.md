@@ -6,6 +6,13 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.7
+
+- `mapjs/public/favicons/site.webmanifest`: Add PWA related features:
+  - maskable icons
+  - minimal browser UI
+  - display override on windows
+
 ## argmap 30.1.6
 
 - `mapjs/public/mapjs-default-styles.css`: Fix:

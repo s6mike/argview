@@ -3,15 +3,33 @@
     "short_name": "argview",
     "icons": [
         {
-            "src": "/favicons/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
+          "src": "/favicons/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "purpose": "any",
+          "type": "image/png"
         },
         {
-            "src": "/favicons/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
+          "src": "/favicons/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "purpose": "maskable",
+          "type": "image/png"
+        },
+        {
+          "src": "/favicons/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "purpose": "any",
+          "type": "image/png"
+        },
+        {
+          "src": "/favicons/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "purpose": "maskable",
+          "type": "image/png"
         }
+    ],
+    "display": "minimal-ui",
+    "display_override": [
+      "window-controls-overlay"
     ],
     "theme_color": "#6a6a6a",
     "background_color": "#6a6a6a"
