@@ -1,4 +1,12 @@
+/* Identify scrolling issues: */
+/* {
+  outline: 1px solid #f00 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+/* } */
+
 header {
+  margin-top: calc(16px - 1vh);
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -7,7 +15,7 @@ header {
 }
 
 .site-logo {
-  max-width: 96px;
+  margin-top: 0;
   width: calc(38px + 3%);
 }
 
@@ -17,7 +25,7 @@ img.site-logo {
 }
 
 h1 {
-  margin-top: 11px;
+  margin-top: 0;
   margin-left: 6px;
   min-width: 86%;
   max-width: 0;
@@ -31,9 +39,13 @@ body {
   margin: 0;
 }
 
-/* Default visibility - widget will show when a link is selected. */
-.toolbar-mapjs-edit-links {
-  display: none;
+div.menubar-mapjs {
+  position: sticky;
+  z-index: 10;
+  min-height: 66px;
+  /* !important */
+  overflow-y: scroll;
+  padding: 5px;
 }
 
 /*  See https://zellwk.com/blog/hide-content-accessibly/ */
@@ -42,6 +54,8 @@ body {
   /* Like opacity:0 but supports hardware acceleration */
   filter: opacity(0);
   position: absolute;
+  height: 0;
+  width: 0;
 }
 
 /* TODO: When changing input button style, add this to all of them so loadFile label is treated the same way. */
@@ -74,12 +88,9 @@ body {
   background-color: #e5e5e5;
 }
 
-.menubar-mapjs {
-  position: sticky;
-  z-index: 10;
-  min-height: 66px !important;
-  overflow-y: scroll;
-  padding: 5px;
+/* Default visibility - widget will show when a link is selected. */
+.toolbar-mapjs-edit-links {
+  display: none;
 }
 
 .mapjs-container {
@@ -88,7 +99,6 @@ body {
   overflow: auto;
   background-color: transparent;
   /* height: calc(100% - 60px) !important; */
-  width: 100%;
   border: 1px dashed black;
   box-sizing: border box;
   min-height: 250px !important;
@@ -262,7 +272,6 @@ div.stage:focus {
 
 .mapjs-attachment:hover {
   background-image: url(svg/icon-paperclip-active.svg);
-
 }
 
 .mapjs-link-hit:hover {

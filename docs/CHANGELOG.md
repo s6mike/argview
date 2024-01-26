@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.6
+
+- `mapjs/public/mapjs-default-styles.css`: Fix:
+  - Screen overflow caused by `.mapjs-container` border, so removed `width: 100%`.
+  - Toolbar overflow caused by hidden file picker input, by adding `width: 0` to `.hide-accessibly`.
+  - Move `margin-top` to `header` from its child elements, and make it dynamic. This moves header higher on smaller displays.
+  - Re-arranged rules into order of screen appearance.
+
 ## argmap 30.1.5
 
 - `src/headers/_headers_template`:
