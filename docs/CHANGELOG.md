@@ -6,6 +6,14 @@
   - Add note about linking/using templates (html and latex) with pandoc.
   - Add references to argmap specs spreadsheet?
 
+## argmap 30.1.8
+
+- `mapjs/public/mapjs-default-styles.css`:
+  - Make map responsively by making container div flex.
+  - Horizontally centre it using `transform: translate3d()`.
+  - Move some styling to css from `mapjs/src/browser/update-stage.js`, particularly `transform: translate3d()`.
+  - Comment out `visibility` and `transform-origin`, which don't seem to matter.
+
 ## argmap 30.1.7
 
 - `mapjs/public/favicons/site.webmanifest`: Add PWA related features:

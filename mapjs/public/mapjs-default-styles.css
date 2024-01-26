@@ -1,9 +1,9 @@
 /* Identify scrolling issues: */
-/* {
+/* * {
   outline: 1px solid #f00 !important;
   opacity: 1 !important;
   visibility: visible !important;
-/* } */
+} */
 
 header {
   margin-top: calc(16px - 1vh);
@@ -99,6 +99,8 @@ div.menubar-mapjs {
   overflow: auto;
   background-color: transparent;
   /* height: calc(100% - 60px) !important; */
+  display: flex;
+  justify-content: center;
   border: 1px dashed black;
   box-sizing: border box;
   min-height: 250px !important;
@@ -106,13 +108,19 @@ div.menubar-mapjs {
 }
 
 div.stage {
+  /* outline: 1px solid #f00 !important;
+opacity: 1 !important; */
+  width: 100%;
   /* Have changed update-stage.js to get y value of 30% instead of overriding here*/
   /* transform: translate(100%, calc(30% - 30px)) !important; */
   /* transform: translate3d(100%, 30%) !important; */
-  width: 100%;
   /* transform: translate(960px, 0) !important; */
   /* translate(960px, calc(100% - 350px)) !important */
   /* transform: translate(calc(75% - 140px), 110%) !important; */
+  transform: translate3d(50%, 30%, 0) !important;
+  /* Not sure these makes any difference: */
+  /*  visibility: visible !important;
+transform-origin: top left; */
 }
 
 /* Above styles added from html file (maps-inline-styles.css) */
