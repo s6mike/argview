@@ -12,9 +12,12 @@ mapjs-override;
     --color-border-container: black;
     /* use container query? #question */
     --width-container-mid: 50vw;
+    --width-stage-offsetx-fallback: calc(var(--width-container-mid) + 200px);
+    /* Default value, gets overriden by js */
+    /* --width-stage-offsetx: calc(var(--width-container-mid) + var()); */
     /* left: max(260px, 49vw); */
-    --style-stage-left: min(var(--width-stage-offsetx), var(--width-container-mid));
-    /* --style-stage-left: max(var(--width-stage-offsetx), var(--width-container-mid)); */
+    /* --style-stage-left: min(var(--width-stage-offsetx), var(--width-container-mid)); */
+    --style-stage-left: max(var(--width-stage-offsetx, var(--width-stage-offsetx-fallback)), var(--width-container-mid));
 
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 300 !important;
@@ -22,8 +25,8 @@ mapjs-override;
     line-height: 1.2;
   }
 
-/* Identify scrolling issues: */
-/* * {
+  /* Identify scrolling issues: */
+  /* * {
   outline: 1px solid #f00 !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -33,329 +36,342 @@ mapjs-override;
   }
 */
 
-header {
-  margin-top: calc(16px - 1vh);
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
+  header {
+    margin-top: calc(16px - 1vh);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
 
-.site-logo {
-  margin-top: 0;
-  width: calc(38px + 3%);
-}
+  .site-logo {
+    margin-top: 0;
+    width: calc(38px + 3%);
+  }
 
-img.site-logo {
-  width: 100%;
-  height: auto;
-}
+  img.site-logo {
+    width: 100%;
+    height: auto;
+  }
 
-h1 {
-  margin-top: 0;
-  margin-left: 6px;
-  min-width: 86%;
-  max-width: 0;
-  text-wrap: balance;
-}
+  h1 {
+    margin-top: 0;
+    margin-left: 6px;
+    min-width: 86%;
+    max-width: 0;
+    text-wrap: balance;
+  }
 
   h2 {
     margin-block: 0.3em;
   }
 
-/* Below styles added from html file (maps-inline-styles.css) */
+  /* Below styles added from html file (maps-inline-styles.css) */
 
-body {
-  /* margin: 0 bit extreme when there is other content, perhaps apply this to the mapjs container only */
-  margin: 0;
-}
+  body {
+    /* margin: 0 bit extreme when there is other content, perhaps apply this to the mapjs container only */
+    margin: 0;
+  }
 
-div.menubar-mapjs {
-  position: sticky;
-  z-index: 10;
-  min-height: 66px;
-  /* !important */
-  overflow-y: scroll;
-  padding: 5px;
-}
+  div.menubar-mapjs {
+    position: sticky;
+    z-index: 10;
+    min-height: 66px;
+    /* !important */
+    overflow: auto;
+    padding: 5px;
+  }
 
-/*  See https://zellwk.com/blog/hide-content-accessibly/ */
-.hide-accessibly {
-  pointer-events: none;
-  /* Like opacity:0 but supports hardware acceleration */
-  filter: opacity(0);
-  position: absolute;
-  height: 0;
-  width: 0;
-}
+  /*  See https://zellwk.com/blog/hide-content-accessibly/ */
+  .hide-accessibly {
+    pointer-events: none;
+    /* Like opacity:0 but supports hardware acceleration */
+    filter: opacity(0);
+    position: absolute;
+    height: 0;
+    width: 0;
+  }
 
-/* TODO: When changing input button style, add this to all of them so loadFile label is treated the same way. */
-.button-style {
-  appearance: auto;
-  user-select: none;
-  white-space: pre;
-  align-items: flex-start;
-  text-align: center;
-  cursor: default;
-  box-sizing: border-box;
-  background-color: buttonface;
-  color: buttontext;
-  padding: 2px 6px;
+  /* TODO: When changing input button style, add this to all of them so loadFile label is treated the same way. */
+  .button-style {
+    appearance: auto;
+    user-select: none;
+    white-space: pre;
+    align-items: flex-start;
+    text-align: center;
+    cursor: default;
+    box-sizing: border-box;
+    background-color: buttonface;
+    color: buttontext;
+    padding: 2px 6px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 13.33px;
-  font-weight: 400;
-  border-radius: 2px;
-  border-width: 1px;
-  border-style: outset;
-  border-color: buttonborder;
-  border-image: initial;
-}
+    font-size: 13.33px;
+    font-weight: 400;
+    border-radius: 2px;
+    border-width: 1px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+  }
 
-.button-style:focus-within {
-  outline: auto;
-}
+  .button-style:focus-within {
+    outline: auto;
+  }
 
-.button-style:hover {
-  background-color: #e5e5e5;
-}
+  .button-style:hover {
+    background-color: #e5e5e5;
+  }
 
-/* Default visibility - widget will show when a link is selected. */
-.toolbar-mapjs-edit-links {
-  display: none;
-}
+  /* Default visibility - widget will show when a link is selected. */
+  .toolbar-mapjs-edit-links {
+    display: none;
+  }
 
-.mapjs-container {
+  .mapjs-container {
     /* outline: 1px solid #f00 !important;
 opacity: 1 !important; */
-  /* overflow from theme.css: */
-  /* Testing with visible instead for convenience: */
-  overflow: auto;
-  background-color: transparent;
-  /* height: calc(100% - 60px) !important; */
+    /* overflow from theme.css: */
+    /* Testing with visible instead for convenience: */
+    overflow: auto;
+    background-color: transparent;
+    /* height: calc(100% - 60px) !important; */
     /* display: flow; */
     /* justify-content: center; */
     border: 1px dashed var(--color-border-container);
     box-sizing: border-box;
     /* padding-left: 48%; */
-  min-height: 250px !important;
-  outline: none;
-}
+    min-height: 250px !important;
+    padding-top: calc(20vh - 30px);
+  }
 
-div.stage {
-  /* outline: 1px solid #f00 !important;
+  div.stage {
+    /* outline: 1px solid #f00 !important;
 opacity: 1 !important; */
-  width: 100%;
-  /* Have changed update-stage.js to get y value of 30% instead of overriding here*/
-  /* transform: translate(100%, calc(30% - 30px)) !important; */
-  /* transform: translate3d(100%, 30%) !important; */
-  /* transform: translate(960px, 0) !important; */
-  /* translate(960px, calc(100% - 350px)) !important */
-  /* transform: translate(calc(75% - 140px), 110%) !important; */
+    width: 0;
+    /* left: min(var(--width-stage-offsetx), 1424); */
+    /* margin-left: var(--width-container); */
+    /* min(var(--width-stage-offset), 1424px) */
+    /* left: max(260px, 49vw); */
+    /* left: min(var(--width-container), 1424); */
+    left: var(--style-stage-left);
+    /* left: max(1424px, 211vw); */
+    /* float: inline-start; */
+    min-height: 163px;
+    max-height: 500px;
+    /* Have changed update-stage.js to get y value of 30% instead of overriding here*/
+    /* transform: translate(100%, calc(30% - 30px)) !important; */
+    /* transform: translate3d(100%, 30%) !important; */
+    /* transform: translate(960px, 0) !important; */
+    /* translate(960px, calc(100% - 350px)) !important */
+    /* transform: translate(calc(75% - 140px), 110%) !important; */
     /* transform: translate3d(50%, 30%, 0) !important; */
-  /* Not sure these makes any difference: */
-  /*  visibility: visible !important;
+    /* Not sure these makes any difference: */
+    /*  visibility: visible !important;
 transform-origin: top left; */
-}
+  }
 
-/* Above styles added from html file (maps-inline-styles.css) */
+  /* Above styles added from html file (maps-inline-styles.css) */
 
-.mapjs-draw-container {
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  /* z-index: 1; */
-}
+  .mapjs-draw-container {
+    /* outline: 1px solid var(--color-highlight) !important;
+    /* left: -1132px !important; */
+    /* opacity: 1 !important; */
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    /* z-index: 1; */
+  }
 
-.mapjs-node.selected {
-  border-style: solid !important;
-  border-width: 1.5px !important;
-}
+  .mapjs-node.selected {
+    border-style: solid !important;
+    border-width: 1.5px !important;
+  }
 
-.wrapper {
-  white-space: nowrap;
-}
+  .wrapper {
+    white-space: nowrap;
+  }
 
-.mapjs-node {
-  margin: 0;
-  z-index: 2;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  .mapjs-node {
+    margin: 0;
+    z-index: 2;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
     /* line-height: 15px; */
     /* line-height: 1.3; */
-  cursor: grab;
-}
+    cursor: grab;
+  }
 
-.mapjs-node:not(.attr_group) {
-  color: #4F4F4F;
-  background-color: #f9f7f7 !important;
+  .mapjs-node:not(.attr_group) {
+    color: #4F4F4F;
+    background-color: #f9f7f7 !important;
     /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
-}
+  }
 
-.mapjs-node .resize-node {
-  position: absolute;
-  height: 100%;
-  width: 20px;
-  right: -10px;
-  top: 0;
-  border-radius: 10px;
-  background-color: transparent;
-  cursor: ew-resize;
-}
+  .mapjs-node .resize-node {
+    position: absolute;
+    height: 100%;
+    width: 20px;
+    right: -10px;
+    top: 0;
+    border-radius: 10px;
+    background-color: transparent;
+    cursor: ew-resize;
+  }
 
-.mapjs-connector-text {
+  .mapjs-connector-text {
     /* font-family: NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif; */
-  font-size: 14px;
-}
+    font-size: 14px;
+  }
 
-.resize-node:hover {
-  background-color: black;
-  opacity: 0.3;
-}
+  .resize-node:hover {
+    background-color: black;
+    opacity: 0.3;
+  }
 
-div.stage:focus {
-  outline: 0;
-}
+  div.stage:focus {
+    outline: 0;
+  }
 
-.mapjs-node:focus {
-  outline: none;
-}
+  .mapjs-node:focus {
+    outline: none;
+  }
 
-.mapjs-add-link {
-  cursor: crosshair;
-}
+  .mapjs-add-link {
+    cursor: crosshair;
+  }
 
-.mapjs-add-link .mapjs-node {
-  cursor: alias;
-}
+  .mapjs-add-link .mapjs-node {
+    cursor: alias;
+  }
 
-.mapjs-node.attr_group {
-  background-color: transparent !important;
-}
+  .mapjs-node.attr_group {
+    background-color: transparent !important;
+  }
 
-.mapjs-node span[contenteditable=true] {
-  user-select: text;
-  -moz-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  cursor: text;
-}
+  .mapjs-node span[contenteditable=true] {
+    user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    cursor: text;
+  }
 
-.mapjs-node span {
-  white-space: pre-wrap;
-  display: block;
-  max-width: 146px;
-  min-height: 1em;
-  min-width: 1em;
-  outline: none;
-}
+  .mapjs-node span {
+    white-space: pre-wrap;
+    display: block;
+    max-width: 146px;
+    min-height: 1em;
+    min-width: 1em;
+    outline: none;
+  }
 
-.mapjs-node.attr_group span {
-  min-height: 1.5em;
-}
+  .mapjs-node.attr_group span {
+    min-height: 1.5em;
+  }
 
-.mapjs-node.dragging {
-  opacity: 0.6 !important;
-  cursor: grabbing;
-}
+  .mapjs-node.dragging {
+    opacity: 0.6 !important;
+    cursor: grabbing;
+  }
 
-.mapjs-node.droppable {
+  .mapjs-node.droppable {
     border: 2.5px dashed var(--color-highlight) !important;
-  /* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
-  cursor: copy !important;
-}
+    /* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
+    cursor: copy !important;
+  }
 
-.mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
-  font-size: 16px;
-  font-weight: 400 !important;
-  text-align: center !important;
-  background-color: #cbf0ff !important;
+  .mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
+    font-size: 16px;
+    font-weight: 400 !important;
+    text-align: center !important;
+    background-color: #cbf0ff !important;
     border-color: var(--color-node-top);
-  border-style: groove;
-  border-radius: 16px;
-}
+    border-style: groove;
+    border-radius: 16px;
+  }
 
-.mapjs-decorations {
-  position: absolute;
-  display: block;
-  white-space: nowrap;
-}
+  .mapjs-decorations {
+    position: absolute;
+    display: block;
+    white-space: nowrap;
+  }
 
-.mapjs-label {
-  background: black;
-  opacity: 0.5;
-  color: white;
-  display: inline-block;
-}
+  .mapjs-label {
+    background: black;
+    opacity: 0.5;
+    color: white;
+    display: inline-block;
+  }
 
-.mapjs-hyperlink {
-  background-image: url(svg/icon-link-inactive.svg);
-  width: 32px;
-  height: 32px;
-  background-size: 32px 32px;
-  background-repeat: no-repeat no-repeat;
-  display: inline-block;
-}
+  .mapjs-hyperlink {
+    background-image: url(svg/icon-link-inactive.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 32px 32px;
+    background-repeat: no-repeat no-repeat;
+    display: inline-block;
+  }
 
-.mapjs-hyperlink:hover {
-  background-image: url(svg/icon-link-active.svg);
-}
+  .mapjs-hyperlink:hover {
+    background-image: url(svg/icon-link-active.svg);
+  }
 
-.mapjs-attachment {
-  background-image: url(svg/icon-paperclip-inactive.svg);
-  width: 16px;
-  height: 32px;
-  background-size: 16px 32px;
-  background-repeat: no-repeat no-repeat;
-  display: inline-block;
-}
+  .mapjs-attachment {
+    background-image: url(svg/icon-paperclip-inactive.svg);
+    width: 16px;
+    height: 32px;
+    background-size: 16px 32px;
+    background-repeat: no-repeat no-repeat;
+    display: inline-block;
+  }
 
-.mapjs-attachment:hover {
-  background-image: url(svg/icon-paperclip-active.svg);
-}
+  .mapjs-attachment:hover {
+    background-image: url(svg/icon-paperclip-active.svg);
+  }
 
-.mapjs-link-hit:hover {
-  opacity: .1;
-}
+  .mapjs-link-hit:hover {
+    opacity: .1;
+  }
 
-.mapjs-link-hit {
-  opacity: 0;
-  fill: transparent;
-  cursor: crosshair;
-  transition: opacity .2s;
-}
+  .mapjs-link-hit {
+    opacity: 0;
+    fill: transparent;
+    cursor: crosshair;
+    transition: opacity .2s;
+  }
 
-.selected-link .mapjs-link {
-  /* 1px outline doesn't always show up in chrome. */
+  .selected-link .mapjs-link {
+    /* 1px outline doesn't always show up in chrome. */
     outline: 1.5px dashed var(--color-mapjs-link);
-}
+  }
 
-.drag-shadow {
-  opacity: 0.5;
-}
+  .drag-shadow {
+    opacity: 0.5;
+  }
 
-.mapjs-reorder-bounds {
-  stroke-width: 5px;
-  fill: none;
-  stroke: #000;
-}
+  .mapjs-reorder-bounds {
+    stroke-width: 5px;
+    fill: none;
+    stroke: #000;
+  }
 
-.mapjs-reorder-bounds {
-  z-index: 999;
-  background-image: url(svg/chevron-left.svg);
-  width: 11px;
-  background-size: 100% 100%;
-  height: 20px;
-  background-repeat: no-repeat;
-}
+  .mapjs-reorder-bounds {
+    z-index: 999;
+    background-image: url(svg/chevron-left.svg);
+    width: 11px;
+    background-size: 100% 100%;
+    height: 20px;
+    background-repeat: no-repeat;
+  }
 
-.mapjs-reorder-bounds[mapjs-edge="left"] {
-  background-image: url(svg/chevron-right.svg);
-}
+  .mapjs-reorder-bounds[mapjs-edge="left"] {
+    background-image: url(svg/chevron-right.svg);
+  }
 
-.mapjs-reorder-bounds[mapjs-edge="top"] {
-  transform: rotate(-90deg);
+  .mapjs-reorder-bounds[mapjs-edge="top"] {
+    transform: rotate(-90deg);
   }
 }
