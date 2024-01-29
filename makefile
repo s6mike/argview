@@ -187,12 +187,6 @@ clean: site_clean
 	-@rm -f ${LIST_FILES_CONFIG_PROCESSED}
 # rm ${PATH_FILE_GDRIVE_LOCAL}
 
-docs: $(FILES_HTML_DOCS)
-
-# TODO: Use more vars
-${PATH_PUBLIC}/_headers: src/headers/_headers_template ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/js/build_headers.js
-	node src/js/build_headers.js
-
 # Clean up Lua Rocks from global library
 luarocks_clean:
 	$(warning Attempting to delete lua dependencies:)
@@ -211,6 +205,8 @@ luarocks_clean:
 	@echo ""
 	@echo "Remaining luarocks:"
 	@luarocks --tree ${PATH_LUA_MODULES} list
+
+docs: $(FILES_HTML_DOCS)
 
 # TODO: Continue moving these dependencies to the targets they are needed for
 install: | ${PATH_FILE_YQ} $(PANDOC) npm $(LUA_MODULES_LOCAL) # TODO: replace npm with npm_audit based on ENV
@@ -339,6 +335,10 @@ npm_audit_output.txt:
 
 ${PATH_DIR_MAPJS_ROOT}/package.json:
 ${PATH_DIR_MAPJS_ROOT}/webpack.config.js:
+
+# TODO: Use more vars
+${PATH_PUBLIC}/_headers: src/headers/_headers_template ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/js/build_headers.js
+	node src/js/build_headers.js
 
 # Generate html from json
 # 	QUESTION Can I combine this with first v3.html rule?
