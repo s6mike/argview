@@ -524,7 +524,6 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
     centerViewOn(currentCenter.x, currentCenter.y);
   });
 
-
   mapModel.addEventListener('nodeVisibilityRequested', function (ideaId) {
     const id = ideaId || mapModel.getCurrentlySelectedIdeaId(),
       node = stageElement.nodeWithId(id);
@@ -606,4 +605,3 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
   // QUESTION: More elegant way?
   self.stagePositionForPointEvent = stagePositionForPointEvent;
 };
-
