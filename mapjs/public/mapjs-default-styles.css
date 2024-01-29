@@ -1,9 +1,37 @@
+/* Only argview layer is currently defined. */
+@layer pandoc,
+argview,
+mapjs-theme,
+mapjs-override;
+
+@layer argview {
+  :root {
+    --color-mapjs-link: #c67bff;
+    --color-highlight: red;
+    --color-node-top: #0e96cb;
+    --color-border-container: black;
+    /* use container query? #question */
+    --width-container-mid: 50vw;
+    /* left: max(260px, 49vw); */
+    --style-stage-left: min(var(--width-stage-offsetx), var(--width-container-mid));
+    /* --style-stage-left: max(var(--width-stage-offsetx), var(--width-container-mid)); */
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 300 !important;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
 /* Identify scrolling issues: */
 /* * {
   outline: 1px solid #f00 !important;
   opacity: 1 !important;
   visibility: visible !important;
-} */
+  } 
+  * {
+    background-color: red;
+  }
+*/
 
 header {
   margin-top: calc(16px - 1vh);
@@ -31,6 +59,10 @@ h1 {
   max-width: 0;
   text-wrap: balance;
 }
+
+  h2 {
+    margin-block: 0.3em;
+  }
 
 /* Below styles added from html file (maps-inline-styles.css) */
 
@@ -70,7 +102,7 @@ div.menubar-mapjs {
   background-color: buttonface;
   color: buttontext;
   padding: 2px 6px;
-  font-family: Arial;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 13.33px;
   font-weight: 400;
   border-radius: 2px;
@@ -94,15 +126,18 @@ div.menubar-mapjs {
 }
 
 .mapjs-container {
+    /* outline: 1px solid #f00 !important;
+opacity: 1 !important; */
   /* overflow from theme.css: */
   /* Testing with visible instead for convenience: */
   overflow: auto;
   background-color: transparent;
   /* height: calc(100% - 60px) !important; */
-  display: flex;
-  justify-content: center;
-  border: 1px dashed black;
-  box-sizing: border box;
+    /* display: flow; */
+    /* justify-content: center; */
+    border: 1px dashed var(--color-border-container);
+    box-sizing: border-box;
+    /* padding-left: 48%; */
   min-height: 250px !important;
   outline: none;
 }
@@ -117,7 +152,7 @@ opacity: 1 !important; */
   /* transform: translate(960px, 0) !important; */
   /* translate(960px, calc(100% - 350px)) !important */
   /* transform: translate(calc(75% - 140px), 110%) !important; */
-  transform: translate3d(50%, 30%, 0) !important;
+    /* transform: translate3d(50%, 30%, 0) !important; */
   /* Not sure these makes any difference: */
   /*  visibility: visible !important;
 transform-origin: top left; */
@@ -148,16 +183,15 @@ transform-origin: top left; */
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  line-height: 15px;
+    /* line-height: 15px; */
+    /* line-height: 1.3; */
   cursor: grab;
 }
 
 .mapjs-node:not(.attr_group) {
   color: #4F4F4F;
   background-color: #f9f7f7 !important;
-  font-family: -apple-system, NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 300 !important;
-  font-size: 14px;
+    /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
 }
 
 .mapjs-node .resize-node {
@@ -172,7 +206,7 @@ transform-origin: top left; */
 }
 
 .mapjs-connector-text {
-  font-family: NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
+    /* font-family: NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif; */
   font-size: 14px;
 }
 
@@ -228,7 +262,7 @@ div.stage:focus {
 }
 
 .mapjs-node.droppable {
-  border: 2.5px dashed red !important;
+    border: 2.5px dashed var(--color-highlight) !important;
   /* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
   cursor: copy !important;
 }
@@ -238,7 +272,7 @@ div.stage:focus {
   font-weight: 400 !important;
   text-align: center !important;
   background-color: #cbf0ff !important;
-  border-color: #0e96cb;
+    border-color: var(--color-node-top);
   border-style: groove;
   border-radius: 16px;
 }
@@ -295,7 +329,7 @@ div.stage:focus {
 
 .selected-link .mapjs-link {
   /* 1px outline doesn't always show up in chrome. */
-  outline: 1.5px dashed #c67bff;
+    outline: 1.5px dashed var(--color-mapjs-link);
 }
 
 .drag-shadow {
@@ -323,4 +357,5 @@ div.stage:focus {
 
 .mapjs-reorder-bounds[mapjs-edge="top"] {
   transform: rotate(-90deg);
+  }
 }
