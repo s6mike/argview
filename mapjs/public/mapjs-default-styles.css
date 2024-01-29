@@ -6,13 +6,20 @@ mapjs-override;
 
 @layer argview {
   :root {
+    --color-node-top-border: #0e96cb;
+    --color-node-top-border-background: #cbf0ff;
+    --color-button-hover-background: #e5e5e5;
     --color-mapjs-link: #c67bff;
+    --color-node-neutral: #4F4F4F;
+    --color-node-neutral-background: #f9f7f7;
     --color-highlight: red;
-    --color-node-top: #0e96cb;
+    --color-mapjs-label: white;
+    --color-mapjs-label-background: black;
     --color-border-container: black;
+
     /* use container query? #question */
     --width-container-mid: 50vw;
-    --width-stage-offsetx-fallback: calc(var(--width-container-mid) + 200px);
+    --width-stage-offsetx-fallback: max(var(--width-container-mid, 50vw), 25% + 200px);
     /* Default value, gets overriden by js */
     /* --width-stage-offsetx: calc(var(--width-container-mid) + var()); */
     /* left: max(260px, 49vw); */
@@ -120,7 +127,7 @@ mapjs-override;
   }
 
   .button-style:hover {
-    background-color: #e5e5e5;
+    background-color: var(--color-button-hover-background, #e5e5e5);
   }
 
   /* Default visibility - widget will show when a link is selected. */
@@ -138,7 +145,7 @@ opacity: 1 !important; */
     /* height: calc(100% - 60px) !important; */
     /* display: flow; */
     /* justify-content: center; */
-    border: 1px dashed var(--color-border-container);
+    border: 1px dashed var(--color-border-container, black);
     box-sizing: border-box;
     /* padding-left: 48%; */
     min-height: 250px !important;
@@ -205,8 +212,8 @@ transform-origin: top left; */
   }
 
   .mapjs-node:not(.attr_group) {
-    color: #4F4F4F;
-    background-color: #f9f7f7 !important;
+    color: var(--color-node-neutral, #4F4F4F);
+    background-color: var(--color-node-neutral-background, #f9f7f7) !important;
     /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
   }
 
@@ -227,7 +234,7 @@ transform-origin: top left; */
   }
 
   .resize-node:hover {
-    background-color: black;
+    background-color: var(--color-border-container, black);
     opacity: 0.3;
   }
 
@@ -278,7 +285,7 @@ transform-origin: top left; */
   }
 
   .mapjs-node.droppable {
-    border: 2.5px dashed var(--color-highlight) !important;
+    border: 2.5px dashed var(--color-highlight, red) !important;
     /* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
     cursor: copy !important;
   }
@@ -287,8 +294,8 @@ transform-origin: top left; */
     font-size: 16px;
     font-weight: 400 !important;
     text-align: center !important;
-    background-color: #cbf0ff !important;
-    border-color: var(--color-node-top);
+    background-color: var(--color-node-top-border-background, #cbf0ff) !important;
+    border-color: var(--color-node-top-border, #0e96cb);
     border-style: groove;
     border-radius: 16px;
   }
@@ -300,9 +307,9 @@ transform-origin: top left; */
   }
 
   .mapjs-label {
-    background: black;
+    color: var(--color-mapjs-label, white);
+    background: var(--color-mapjs-label-background, black);
     opacity: 0.5;
-    color: white;
     display: inline-block;
   }
 
@@ -345,7 +352,7 @@ transform-origin: top left; */
 
   .selected-link .mapjs-link {
     /* 1px outline doesn't always show up in chrome. */
-    outline: 1.5px dashed var(--color-mapjs-link);
+    outline: 1.5px dashed var(--color-mapjs-link, #c67bff);
   }
 
   .drag-shadow {

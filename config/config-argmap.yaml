@@ -17,7 +17,7 @@ DEFAULT_MAPJS_CSS: /mapjs-default-styles.css
 # All CSS files used by html output.
 #   However, pandoc templates won't expand the variables
 #   , so need to reference anchor earlier in same doc instead.
-css: # Default pandoc template value
-  - ${DEFAULT_MAPJS_CSS}
+# css: # Default pandoc template value
+  # - ${DEFAULT_MAPJS_CSS}
 
 ...

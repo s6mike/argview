@@ -232,7 +232,9 @@ export_vars() {
   PATH_MAPJS_NODE_BIN=$(getvar PATH_MAPJS_NODE_BIN)
   set +o allexport
 
+  # False means no echo 
   getvar DEV_SERVER.PORT false # Exported as DEV_SERVER_PORT
+  getvar DEFAULT_MAPJS_CSS false
 } # end export_vars
 
 make_rest() {

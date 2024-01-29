@@ -3,6 +3,7 @@ const path = require('path'),
   webpack = require('webpack'), // to access built-in plugins
   // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   HtmlWebpackPlugin = require('html-webpack-plugin'),
+  HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin'),
   { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 module.exports = (env, argv) => {
@@ -49,7 +50,7 @@ module.exports = (env, argv) => {
         progress: false,
       },
       // watchFiles: ['src/**.js'],
-    },
+    }, 
     plugins: [
       // new BundleAnalyzerPlugin(),
       new SubresourceIntegrityPlugin({
@@ -57,11 +58,15 @@ module.exports = (env, argv) => {
         // Always uses SRI for netlify (so CSP in _headers doesn't break scripts), but otherwise use auto, which only uses it in prod mode because HMR breaks SRI:
         enabled: (process.env.DEV_SERVER_NAME === 'netlify_dev_server' || process.env.NETLIFY) ? true : 'auto',
       }),
+      new HtmlWebpackTagsPlugin({ // Ensures css passed to HTMLWebpackPlugin too
+        tags: [`${process.env.DEFAULT_MAPJS_CSS}`], usePublicPath: false, append: true
+      }),
       new HtmlWebpackPlugin({
         filename: path.resolve(__dirname, '../' + process.env.PATH_FILE_MAPJS_HTML_DIST_TAGS),
         // Outputs script tags only:
-        inject: 'body',
-        templateContent: '',
+        inject: false,
+        // collapseWhitespace: false,
+        templateContent: ({ htmlWebpackPlugin }) => `${htmlWebpackPlugin.tags.headTags}${htmlWebpackPlugin.tags.bodyTags}`,
       }),
       new webpack.DefinePlugin({
         // 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
