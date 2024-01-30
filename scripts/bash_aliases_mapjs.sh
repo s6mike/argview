@@ -168,7 +168,7 @@ webserver_halt() { #wsh
 }
 
 # Starts server
-webserver_start() { # wss 9001 dev netlify_dev_server
+webserver_start() { # wss 9002 dev netlify_dev_server
   local port=${1:-$(getvar DEV_SERVER.PORT)}
   local mode=${2:-dev}
   local server_name=${3:-$(getvar DEV_SERVER.NAME)}

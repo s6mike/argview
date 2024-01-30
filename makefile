@@ -229,7 +229,10 @@ like_netlify_init: config/argmap.env
 	env ENV=netlify MODE=prod bash -c "./scripts/argmap_init_script.sh"
 
 dev: ${PATH_DIR_CONFIG_ARGMAP_PROCESSED}/config-argmap-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/environment-mapjs-${KEYWORD_PROCESSED}.yaml ${PATH_DIR_CONFIG_MAPJS}/${KEYWORD_PROCESSED}/config-mapjs-${KEYWORD_PROCESSED}.yaml package-lock.json node_modules/.package-lock.json ${PATH_PUBLIC}/_headers | ${PATH_MAPJS_NODE_BIN}/netlify
+# TODO should check whether correct server is already started
 	-webserver_halt
+	$(call webpack_recipe,netlify_dev_server)
+	make ${PATH_PUBLIC}/_headers
 	webserver_start 9002 dev netlify_dev_server
 
 netlify_test: dev --test_init | ${PATH_MAPJS_NODE_BIN}/netlify
@@ -290,7 +293,7 @@ site: $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
 
 # TODO: remove output dir and add symlink instead
 # QUESTION: Combine some branches? 
-define test_recipe = # server,PORT
+define test_recipe = # server, PORT
 @if [ "$$ENV" = "netlify" ]; then \
 	bash -c "./test/test_scripts/tests.sh html"; \
 elif [ "$(1)" = "netlify_dev_server" ]; then \
@@ -403,22 +406,31 @@ ${PATH_OUTPUT_PUBLIC}/%.pdf: ${PATH_INPUT_LOCAL}/markdown/%.md | $(PANDOC) $(LUA
 	md2pdf "$<" | open_debug "" "$$TARGET_DOMAIN"
 
 # Create js dependencies for html files:
+define webpack_recipe = # DEV_SERVER_NAME
+$(info make site MODE: ${MODE})
+	-mkdir --parent "${@D}"
+	DEV_SERVER_NAME=$(1) bash -c "npm run pack:$(MODE) --prefix ${MAPJS_NODE_MODULES_PREFIX}"
+	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
+endef
+
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC? Using hidden node_modules/.packagelock instead
 # QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
 ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
-	$(info make site MODE: ${MODE})
-	-mkdir --parent "${@D}"
-# -echo "NODE_PATH: ${NODE_PATH}"
-# -$(info PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS_ROOT})
-# -$(info PATH_FILE_MAPJS_HTML_DIST_TAGS: ${PATH_FILE_MAPJS_HTML_DIST_TAGS})
-# -ls "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
-# -ls "$(dirname "${PATH_FILE_MAPJS_HTML_DIST_TAGS}")"
-# -ls mapjs/node_modules/.bin/wait-on
-# -ls mapjs/node_modules/wait-on
-	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
-	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
+# 	$(info make site MODE: ${MODE})
+# 	-mkdir --parent "${@D}"
+# # -echo "NODE_PATH: ${NODE_PATH}"
+# # -$(info PATH_DIR_MAPJS_ROOT: ${PATH_DIR_MAPJS_ROOT})
+# # -$(info PATH_FILE_MAPJS_HTML_DIST_TAGS: ${PATH_FILE_MAPJS_HTML_DIST_TAGS})
+# # -ls "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+# 	npm run pack:$(MODE) --prefix "${MAPJS_NODE_MODULES_PREFIX}"
+# # -ls "$(dirname "${PATH_FILE_MAPJS_HTML_DIST_TAGS}")"
+# # -ls mapjs/node_modules/.bin/wait-on
+# # -ls mapjs/node_modules/wait-on
+# 	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+# 	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
+	$(call webpack_recipe,webpack_dev_server)
 
 ## Installation:
 

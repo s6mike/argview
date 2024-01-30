@@ -4,6 +4,7 @@ const path = require('path'),
   // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin'),
+  WebpackAssetsManifest = require('webpack-assets-manifest'),
   { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 module.exports = (env, argv) => {
@@ -35,7 +36,7 @@ module.exports = (env, argv) => {
       // Setting filename as anything except '[name].js' breaks one of HMR/watch mode/live reloading
       //  Think watch mode may have fixed this but then get warning when running server
       //  TODO: either solve this or set this name in production only:
-      // filename: '[name].[contenthash].bundle.js',
+      filename: '[name].[contenthash].bundle.js',
       chunkFilename: '[name].[contenthash].bundle.js', // This is used for on-demand-loaded chunk files.
       clean: true,
     },
@@ -53,21 +54,31 @@ module.exports = (env, argv) => {
     }, 
     plugins: [
       // new BundleAnalyzerPlugin(),
+      new WebpackAssetsManifest({
+        // writeToDisk: true,
+        integrity: true,
+        integrityHashes: ['sha512'],
+      }),
       new SubresourceIntegrityPlugin({
         hashFuncNames: ['sha512'], // The hash functions used (e.g. <script integrity="sha256- ... sha384- ...")
         // Always uses SRI for netlify (so CSP in _headers doesn't break scripts), but otherwise use auto, which only uses it in prod mode because HMR breaks SRI:
         enabled: (process.env.DEV_SERVER_NAME === 'netlify_dev_server' || process.env.NETLIFY) ? true : 'auto',
       }),
-      new HtmlWebpackTagsPlugin({ // Ensures css passed to HTMLWebpackPlugin too
-        tags: [`${process.env.DEFAULT_MAPJS_CSS}`], usePublicPath: false, append: true
-      }),
       new HtmlWebpackPlugin({
         filename: path.resolve(__dirname, '../' + process.env.PATH_FILE_MAPJS_HTML_DIST_TAGS),
         // Outputs script tags only:
         inject: false,
+        // hash: true,
         // collapseWhitespace: false,
         templateContent: ({ htmlWebpackPlugin }) => `${htmlWebpackPlugin.tags.headTags}${htmlWebpackPlugin.tags.bodyTags}`,
       }),
+      // new HtmlWebpackTagsPlugin({ // Ensures css passed to HTMLWebpackPlugin too
+      //   // hash: true,
+      //   usePublicPath: false,
+      //   append: true,
+      //   tags: [`${process.env.DEFAULT_MAPJS_CSS}`],
+      //   sourcePath: `mapjs/public/${process.env.DEFAULT_MAPJS_CSS}`,
+      // }),
       new webpack.DefinePlugin({
         // 	'process.env.NODE_ENV' only gets set when server starts, however it is set automatically to argv.mode so no need to define it here.
         // 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
@@ -84,6 +95,7 @@ module.exports = (env, argv) => {
     },
     optimization: {
       moduleIds: 'deterministic',
+      realContentHash: (process.env.DEV_SERVER_NAME === 'netlify_dev_server' || process.env.NETLIFY),
       splitChunks: {
         chunks: 'all',
         name: 'vendor',

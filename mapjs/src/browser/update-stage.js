@@ -1,5 +1,6 @@
 /*global require */
 const jQuery = require('jquery');
+// TODO: Could replace with HTMLElement.prototype.updateStage, but since only stage object needs it, better to add it to that instead
 jQuery.fn.updateStage = function () {
   'use strict';
   const data = this.data(),

@@ -24,4 +24,4 @@
 
 /output/html/*
   # TODO: Harden further: require-trusted-types-for 'script';
-  Content-Security-Policy: style-src 'self'; style-src-elem 'self' 'sha256-lQKZXzd/ePWeAqO09S+QvSb0iDsRYNUBXpcJdPt4Fi4='; style-src-attr 'self'; form-action 'self'; connect-src 'self'; img-src data: 'self'; manifest-src 'self'; script-src 'none'; script-src-attr 'none'; default-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://argview.report-uri.com/r/d/csp/enforce; report-to default; ${script-src-elem}
+  Content-Security-Policy: style-src 'self'; style-src-elem 'self' 'unsafe-inline'; style-src-attr 'unsafe-inline'; form-action 'self'; connect-src 'self'; img-src data: 'self'; manifest-src 'self'; script-src 'none'; script-src-attr 'none'; default-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; trusted-types 'none'; upgrade-insecure-requests; report-uri https://argview.report-uri.com/r/d/csp/enforce; report-to default; ${script-src-elem}

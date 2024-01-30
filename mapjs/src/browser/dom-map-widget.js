@@ -96,24 +96,25 @@ jQuery.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageIns
     const element = jQuery(mapjsUtilities.getElementMJS(MAPJS_MAP_CLASS, this)),
       // const element = jQuery(this),
       svgContainer = createSVG()
-        .css({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        })
+        //  Moved to mapjs/public/mapjs-default-styles.css
+        // .css({
+        //   position: 'absolute',
+        //   top: 0,
+        //   left: 0,
+        // })
         .attr({
           'data-mapjs-role': 'svg-container',
           'class': 'mapjs-draw-container',
           'role': 'img',
           'aria-label': 'Argument Map showing supporting and opposing relationships between text nodes.',
-          // 'tabindex': 0,
         }),
       stage = jQuery('<' + CONFIG.mapjs_stage.tag + '>') // Sets stage attributes
         .attr('class', CONFIG.mapjs_stage.class)
-        .css(
-          {
-            position: 'relative'
-          })
+        //  Moved to mapjs/public/mapjs-default-styles.css
+        // .css(
+        //   {
+        //     position: 'relative'
+        //   })
         .attr('data-mapjs-role', CONFIG.mapjs_stage.data_mapjs_role)
         .appendTo(element)
         .data({
@@ -130,10 +131,7 @@ jQuery.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageIns
         .append(svgContainer)
         .updateStage();
     let previousPinchScale = false;
-    // Moved this css overflow:auto setting to mapjs-default-styles.css file, so it's easier to override mapjs-container setting.
-    // element.css('overflow', 'auto').attr('tabindex', 0);
-    // Set index to 0 rather than 1 because 1 is considered bad practice for accessibility.
-    // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#sect2
+
     if (mapModel.getInputEnabled()) {
       (dragContainer || element).simpleDraggableContainer();
     }
