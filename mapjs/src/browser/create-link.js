@@ -9,12 +9,12 @@ require('./get-data-box');
 jQuery.fn.createLink = function (l, optional) {
   'use strict';
   const stage = this.parent('.stage'),
-    theme = (optional && optional.theme),
-    linkBuilder = (optional && optional.linkBuilder) || themeLink,
+    theme = (optional?.theme),
+    linkBuilder = optional?.linkBuilder ?? themeLink,
     elementData = {
       'nodeFrom': stage.nodeWithId(l.ideaIdFrom),
       'nodeTo': stage.nodeWithId(l.ideaIdTo),
-      attr: (l.attr && l.attr.style) || {}
+      attr: l.attr?.style ?? {}
     },
     element = createSVG('g').attr({
       'id': linkKey(l),

@@ -11,10 +11,10 @@ require('./set-theme-class-list');
 
 jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
   'use strict';
-  const resourceTranslator = optional && optional.resourceTranslator,
-    forcedLevel = optional && optional.level,
-    nodeTextPadding = (optional && optional.nodeTextPadding) || 11,
-    fixedLayout = (optional && optional.fixedLayout),
+  const resourceTranslator = optional?.resourceTranslator,
+    forcedLevel = optional?.level,
+    nodeTextPadding = optional?.nodeTextPadding ?? 11,
+    fixedLayout = optional?.fixedLayout,
     // theme = (optional && optional.theme),
     self = jQuery(this),
     textSpan = function () {
@@ -76,7 +76,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
     //   element.show();
     // },
     applyNote = function () {
-      const note = nodeContent.attr && nodeContent.attr.note;
+      const note = nodeContent.attr?.note;
       let element = self.find('a.mapjs-note');
       if (!note) {
         element.hide();
@@ -89,11 +89,11 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       }
       element.show();
     },
-    level = forcedLevel || 1,
-    styles = nodeContent.styles || (theme && theme.nodeStyles(level, nodeContent.attr)) || [],
-    nodeTheme = theme && theme.nodeTheme && applyIdeaAttributesToNodeTheme(nodeContent, theme.nodeTheme(styles)),
+    level = forcedLevel ?? 1,
+    styles = nodeContent.styles || theme?.nodeStyles(level, nodeContent.attr) || [],
+    nodeTheme = theme?.nodeTheme && applyIdeaAttributesToNodeTheme(nodeContent, theme.nodeTheme(styles)),
     updateTextStyle = function () {
-      if (nodeTheme && nodeTheme.hasFontMultiplier) {
+      if (nodeTheme?.hasFontMultiplier) {
         self.css({
           'font-size': nodeTheme.font.size + 'pt'
         });
@@ -164,7 +164,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
           'margin-top': '',
           'margin-left': ''
         },
-        padding = (nodeTheme && nodeTheme.margin) || 10;
+        padding = nodeTheme?.margin ?? 10;
       self.css({ padding: '' });
       if (icon) {
         textHeight = textBox.outerHeight();
@@ -225,14 +225,14 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
     styleDefault = function () {
       return ['default'];
     },
-    attrValue = (theme && theme.attributeValue) || themeDefault,
-    nodeStyles = (theme && theme.nodeStyles) || styleDefault,
+    attrValue = theme?.attributeValue ?? themeDefault,
+    nodeStyles = theme?.nodeStyles ?? styleDefault,
     effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
     borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
     decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),
     decorationOverlap = attrValue(['node'], effectiveStyles, ['decorations', 'overlap'], ''),
     colorText = (borderType !== 'surround'),
-    isGroup = nodeContent.attr && nodeContent.attr.group,
+    isGroup = nodeContent.attr?.group,
     nodeCacheData = {
       x: Math.round(nodeContent.x),
       y: Math.round(nodeContent.y),
@@ -241,14 +241,10 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       height: Math.round(nodeContent.height),
       nodeId: nodeContent.id,
       styles: effectiveStyles,
-      parentConnector: nodeContent && nodeContent.attr && nodeContent.attr.parentConnector
+      parentConnector: nodeContent?.attr?.parentConnector
     };
 
-
   let offset;
-
-
-
 
   nodeCacheData.innerRect = _.pick(nodeCacheData, ['width', 'height']);
   nodeCacheData.innerRect.dx = 0;
@@ -260,7 +256,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
     updateText('');
   } else {
     updateText(nodeContent.title);
-    if (optional && optional.decorations && !optional.decorations.includes(decorationEdge)) {
+    if (optional?.decorations && !optional.decorations.includes(decorationEdge)) {
       decorations().empty();
     } else {
       applyLinkUrl(nodeContent.title);
@@ -287,9 +283,9 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
   self.setThemeClassList(effectiveStyles).attr('mapjs-level', nodeLevel);
 
   self.data(nodeCacheData);
-  self.data('nodeCacheMark', nodeCacheMark(nodeContent, Object.assign({ theme: theme }, optional)));
+  self.data('nodeCacheMark', nodeCacheMark(nodeContent, { theme: theme, ...optional }));
   setColors(colorText);
-  setIcon(nodeContent.attr && nodeContent.attr.icon);
+  setIcon(nodeContent.attr?.icon);
   setCollapseClass();
   self.trigger('mapjs:resize');
   return self;

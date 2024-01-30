@@ -18,7 +18,7 @@ let integrityHashes_scripts = '', template_headers_content = '', output_string_p
 
 // Read the generated integrity hashes from the webpack output file
 try {
-  const webpackOutput = fs.readFileSync(resolved_path_webpack_dist_tags, 'utf-8');
+  // const webpackOutput = fs.readFileSync(resolved_path_webpack_dist_tags, 'utf-8');
   // integrityHashes_scripts = webpackOutput.matchAll(re_integrity_attribute);
   integrityHashes_scripts = ` '${manifest_data["main.js"].integrity}' '${manifest_data["vendor.js"].integrity}';`
 } catch (error) {

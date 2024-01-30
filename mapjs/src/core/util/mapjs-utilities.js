@@ -137,13 +137,9 @@ module.exports = {
       if (!originalMap && !final) { // Final check stops infinite loop
         Logger.log('Attempting to retrieve original map ' + index + ' instead.');
         // QUESTION: Better to go id > title > element?
-        try {
           mapJson = await this.getMap(index, instanceElement);
           Logger.info('Retrieved original map ' + index);
-          return mapJson;
-        } catch (error) {
-          throw error;
-        }
+        return mapJson;
       }
       throw error;
     }
@@ -158,7 +154,7 @@ module.exports = {
         return false;
       case 1:
         return containers[0].id;
-      default: // If more than 1 container, then see if it's an event with a currentTarget
+      default: { // If more than 1 container, then see if it's an event with a currentTarget
         const currentTarget = elementOrEvent.currentTarget;
         if (currentTarget) { // If elementOrEvent is an event
           // if current target is container then get id, else set the element to the target.
@@ -171,7 +167,7 @@ module.exports = {
         // elementOrEvent is an element:
         return (elementOrEvent.closest) ? elementOrEvent.closest('.' + CONTAINER_CLASS).id : false;
     }
-    return false; // Should never be called
+    }
   },
   updateDataPreSave: function (map_data) {
     'use strict';
@@ -189,7 +185,7 @@ module.exports = {
     }
 
     if (!map_data.original_root_node_title) {
-      map_data.original_root_node_title = (map_data.ideas[1] && map_data.ideas[1].title) || 'default title'; // Adds original_root_node_title to map
+      map_data.original_root_node_title = map_data.ideas[1]?.title || 'default title'; // Adds original_root_node_title to map
     }
 
     if (!map_data.original_save_time) {
@@ -219,7 +215,7 @@ module.exports = {
         throw new Error('`Save Map` server HTTP error: ' + response.status);
       }
       const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {  // Check if content-type is JSON
+      if (contentType?.includes('application/json')) {  // Check if content-type is JSON
         if (typeof response === 'object') {
           return response.json();
         } else {
@@ -284,9 +280,8 @@ module.exports = {
           module.exports.ideas_pp(idea.ideas, level, Object.keys(idea.ideas));
         }
       }
-      level -= 1;
+      // level -= 1;
     }
-    return;
   },
 
   // Call with ideas_pp(idea);
@@ -308,7 +303,6 @@ module.exports = {
       module.exports.ideas_pp(Object.values(ideas), level, Object.keys(ideas));
     }
     level -= 1;
-    return;
   }
 
   /* eslint-enable strict */

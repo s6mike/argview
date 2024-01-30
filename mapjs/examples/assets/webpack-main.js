@@ -29,7 +29,7 @@ const MAPJS = require('../../src/npm-main'),
     mapModel.setThemeSource(getTheme);
     container.domMapWidget(console, mapModel, touchEnabled);
 
-    new MAPJS.DomMapController(
+    _ = new MAPJS.DomMapController(
       mapModel,
       container.find('.stage'),
       touchEnabled,

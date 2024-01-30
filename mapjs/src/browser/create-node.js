@@ -13,8 +13,8 @@ jQuery.fn.createNode = function (node) {
       display: 'block',
       opacity: 0,
       position: 'absolute',
-      top: Math.round(node.y || 0) + 'px',
-      left: Math.round(node.x || 0) + 'px',
+      top: Math.round(node.y ?? 0) + 'px',
+      left: Math.round(node.x ?? 0) + 'px',
     })
     .addClass('mapjs-node')
     .appendTo(this);
