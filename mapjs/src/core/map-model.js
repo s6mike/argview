@@ -24,16 +24,16 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   // TODO: Apparently `const self = this` is now bad practice, so try removing and updating references if necessary
   //   Or can just rename self to something else
   const self = this,
-    autoThemedIdeaUtils = (optional && optional.autoThemedIdeaUtils) || require('./content/auto-themed-idea-utils'),
+    autoThemedIdeaUtils = (optional?.autoThemedIdeaUtils) || require('./content/auto-themed-idea-utils'),
     clipboard = clipboardProvider || new MemoryClipboard(),
-    reorderMargin = (optional && optional.reorderMargin) || 20,
-    layoutModel = (optional && optional.layoutModel) || new LayoutModel({ nodes: {}, connectors: {} }),
+    reorderMargin = (optional?.reorderMargin) || 20,
+    layoutModel = (optional?.layoutModel) || new LayoutModel({ nodes: {}, connectors: {} }),
     setRootNodePositionsForPrecalculatedLayout = function (contextNode, specificLayout) {
       const rootIdeas = Object.keys(idea.ideas).map(rank => idea.ideas[rank]),
         layout = specificLayout || layoutCalculator(idea, contextNode);
       rootIdeas.forEach(rootIdea => {
-        const existingPosition = rootIdea.attr && rootIdea.attr.position,
-          rootNodeInLayout = layout.nodes && layout.nodes[rootIdea.id],
+        const existingPosition = rootIdea.attr?.position,
+          rootNodeInLayout = layout.nodes?.[rootIdea.id],
           shouldUpdatePosition = rootNodeInLayout && (!existingPosition || existingPosition[0] !== rootNodeInLayout.x || existingPosition[1] !== rootNodeInLayout.y);
         if (shouldUpdatePosition) {
           idea.updateAttr(rootIdea.id, 'position', [rootNodeInLayout.x, rootNodeInLayout.y, 1]);
@@ -41,15 +41,15 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       });
     },
     addSubIdea = (parentId, ideaTitle, optionalNewId, optionalIdeaAttr) => {
-      const themeObj = themeSource && themeSource();
+      const themeObj = themeSource?.();
       return autoThemedIdeaUtils.addSubIdea(idea, themeObj, parentId, ideaTitle, optionalNewId, optionalIdeaAttr);
     },
     insertIntermediateMultiple = (inFrontOfIdeaIds, ideaOptions) => {
-      const themeObj = themeSource && themeSource();
+      const themeObj = themeSource?.();
       return autoThemedIdeaUtils.insertIntermediateMultiple(idea, themeObj, inFrontOfIdeaIds, ideaOptions);
     },
     changeParent = (ideaId, newParentId) => {
-      const themeObj = themeSource && themeSource();
+      const themeObj = themeSource?.();
       return autoThemedIdeaUtils.changeParent(idea, themeObj, ideaId, newParentId);
     },
     setActiveNodes = function (activated) {
@@ -62,7 +62,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       self.dispatchEvent('activatedNodesChanged', _.difference(activatedNodes, wasActivated), _.difference(wasActivated, activatedNodes));
     },
     applyLabels = function (newLayout) {
-      const labelMap = currentLabelGenerator && currentLabelGenerator(idea);
+      const labelMap = currentLabelGenerator?.(idea);
       if (!labelMap) {
         return;
       }
@@ -77,7 +77,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
         return Math.pow(node.x + node.width / 2 - referenceNode.x - referenceNode.width / 2, 2)
           + Math.pow(node.y + node.height / 2 - referenceNode.y - referenceNode.height / 2, 2);
       });
-      return closestNode && closestNode.id;
+      return closestNode?.id;
     },
     updateCurrentLayout = function (newLayout, sessionId, themeChanged) {
       let layoutCompleteOptions;
@@ -102,13 +102,13 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       self.dispatchEvent('layoutChangeStarting', _.size(newLayout.nodes) - _.size(currentLayout.nodes));
       applyLabels(newLayout);
       _.each(currentLayout.connectors, function (oldConnector, connectorId) {
-        const newConnector = newLayout.connectors && newLayout.connectors[connectorId];
+        const newConnector = newLayout.connectors?.[connectorId];
         if (!newConnector || newConnector.from !== oldConnector.from || newConnector.to !== oldConnector.to) {
           self.dispatchEvent('connectorRemoved', oldConnector);
         }
       });
       _.each(currentLayout.links, function (oldLink, linkId) {
-        const newLink = newLayout.links && newLayout.links[linkId];
+        const newLink = newLayout.links?.[linkId];
         if (!newLink) {
           self.dispatchEvent('linkRemoved', oldLink);
         }
@@ -165,9 +165,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
         }
       });
       _.each(newLayout.links, function (newLink, linkId) {
-        const oldLink = currentLayout.links && currentLayout.links[linkId];
+        const oldLink = currentLayout.links?.[linkId];
         if (oldLink) {
-          if (!_.isEqual(newLink.attr || {}, (oldLink && oldLink.attr) || {})) {
+          if (!_.isEqual(newLink.attr || {}, oldLink?.attr || {})) {
             self.dispatchEvent('linkAttrChanged', newLink, sessionId);
           }
         } else {
@@ -272,13 +272,13 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       return;
     }
     const currentLayout = layoutModel.getLayout(),
-      themeHasChanged = currentLayout.theme !== (idea.attr && idea.attr.theme),
-      ideaThemeOverrides = idea.attr && idea.attr.themeOverrides,
-      layoutThemeOverrides = currentLayout && currentLayout.themeOverrides,
+      themeHasChanged = currentLayout.theme !== (idea.attr?.theme),
+      ideaThemeOverrides = idea.attr?.themeOverrides,
+      layoutThemeOverrides = currentLayout?.themeOverrides,
       themeOverridesHaveChanged = !_.isEqual(ideaThemeOverrides || {}, layoutThemeOverrides || {}),
       themeChanged = themeHasChanged || themeOverridesHaveChanged;
     if (themeChanged) {
-      self.dispatchEvent('themeChanged', idea.attr && idea.attr.theme, idea.attr && idea.attr.themeOverrides);
+      self.dispatchEvent('themeChanged', idea.attr?.theme, idea.attr?.themeOverrides);
     }
     updateCurrentLayout(self.reactivate(layoutCalculator(idea)), sessionId, themeChanged);
   };
@@ -338,12 +338,12 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   };
   // This seems to be triggered by mouseup not mousedown
   this.clickNode = function (id, event) {
-    const button = event && event.button && event.button !== -1,
+    const button = event?.button && event.button !== -1,
       // 'which', unlike button, seems to get populated on mouse up.
       which = event.which;
-    if (event && event.altKey) {
+    if (event?.altKey) {
       self.toggleLink('mouse', id);
-    } else if (event && event.shiftKey) {
+    } else if (event?.shiftKey) {
       /*don't stop propagation, this is needed for drop targets*/
       self.toggleActivationOnNode('mouse', id);
     } else if (isAddLinkMode && !button) { // Removed in commit 354071624edb6c257441fcdfcb3f11ab92ad395e, restored to enable add link button. Using which instead of button stops it working.
@@ -369,7 +369,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   };
   this.getStyleForId = function (id, prop) {
     const node = layoutModel.getNode(id);
-    return node && node.attr && node.attr.style && node.attr.style[prop];
+    return node?.attr?.style?.[prop];
   };
   this.toggleCollapse = function (source) {
     const selectedIdea = currentlySelectedIdea();
@@ -483,8 +483,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
 
   };
   self.addGroupSubidea = function (source, options) {
-    const parentId = options && options.parentId,
-      group = (options && options.group) || true,
+    const parentId = options?.parentId,
+      group = (options?.group) || true,
       target = parentId || currentlySelectedIdeaId;
     let newGroupId, newId;
     if (!isEditingEnabled) {
@@ -683,7 +683,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       return false;
     }
 
-    if (currentIdea.attr && currentIdea.attr.contentLocked) {
+    if (currentIdea.attr?.contentLocked) {
       return false;
     }
 
@@ -724,7 +724,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   };
   this.resetView = function (source) {
     const selectedNode = layoutModel.getNode(currentlySelectedIdeaId),
-      localRoot = (selectedNode && selectedNode.rootId) || (idea && idea.getDefaultRootId());
+      localRoot = selectedNode?.rootId || idea?.getDefaultRootId();
     if (!localRoot) {
       return;
     }
@@ -788,8 +788,6 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
         mapM.removeSubIdea('root', 'loadMap');
       }
     });
-
-    return true;
   };
   this.saveMap = function (source) {
     analytic('saveMap', source);
@@ -800,7 +798,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     analytic('downloadMap', source);
     const mapJson = this.getIdea(),
       mapOutput = JSON.stringify(mapJson),
-      title = mapJson.ideas[1] && mapJson.ideas[1].title || mapJson.original_root_node_title || 'default title';
+      title = mapJson.ideas[1]?.title || mapJson.original_root_node_title || 'default title';
     Utilities.downloadToFile(mapOutput, title + '.json', 'application/json');
   };
 
@@ -951,7 +949,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     }
   };
   self.cut = function (source) {
-    const activeNodeIds = [], parents = [];
+    const activeNodeIds = []; // , parents = [];
     if (!isEditingEnabled) {
       return false;
     }
@@ -959,7 +957,8 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     if (isInputEnabled) {
       self.applyToActivated(function (nodeId) {
         activeNodeIds.push(nodeId);
-        parents.push(idea.findParent(nodeId).id);
+        // Removed since wasn't used
+        // parents = push(idea.findParent(nodeId).id);
       });
       clipboard.put(idea.cloneMultiple(activeNodeIds));
       idea.removeMultiple(activeNodeIds);
@@ -967,12 +966,12 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
   };
   self.contextForNode = function (nodeId) {
     const node = self.findIdeaById(nodeId),
-      hasChildren = node && node.ideas && _.size(node.ideas) > 0,
+      hasChildren = node?.ideas && _.size(node.ideas) > 0,
       rootCount = _.size(idea.ideas),
       hasSiblings = idea.hasSiblings(nodeId),
-      hasPreferredWidth = node && node.attr && node.attr.style && node.attr.style.width,
-      hasPosition = node && node.attr && node.attr.position,
-      isCollapsed = node && node.getAttr('collapsed'),
+      hasPreferredWidth = node?.attr?.style?.width,
+      hasPosition = node?.attr?.position,
+      isCollapsed = node?.getAttr('collapsed'),
       canPaste = node && isEditingEnabled && clipboard && clipboard.get(),
       isRoot = idea.isRootNode(nodeId);
     if (node) {
@@ -1013,7 +1012,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     analytic('paste', source);
     if (isInputEnabled) {
       result = idea.pasteMultiple(currentlySelectedIdeaId, clipboard.get());
-      if (result && result[0]) {
+      if (result?.[0]) {
         self.selectNode(result[0]);
       }
     }
@@ -1027,7 +1026,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     }
     analytic('pasteStyle', source);
     if (isInputEnabled && clipContents && clipContents[0]) {
-      pastingStyle = clipContents[0].attr && clipContents[0].attr.style;
+      pastingStyle = clipContents[0].attr?.style;
       self.applyToActivated(function (id) {
         idea.updateAttr(id, 'style', pastingStyle);
       });
@@ -1038,7 +1037,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     if (!node) {
       return false;
     }
-    return node.attr && node.attr.icon;
+    return node.attr?.icon;
   };
   self.setIcon = function (source, url, imgWidth, imgHeight, position, nodeId, metaData) {
     let nodeIdea = false, iconObject;
@@ -1169,7 +1168,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     };
     self.activateSiblingNodes = function (source) {
       const parent = idea.findParent(currentlySelectedIdeaId),
-        siblingIds = parent && parent.ideas && _.map(parent.ideas, function (child) {
+        siblingIds = parent?.ideas && _.map(parent.ideas, function (child) {
           return child.id;
         });
 
@@ -1274,7 +1273,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       },
       node = _.find(layoutModel.getLayout().nodes, isPointOverNode);
     // QUESTION: Returns node.id, why not whole node?
-    return node && node.id;
+    return node?.id;
   };
   self.autoPosition = function (nodeId) {
     return idea.updateAttr(nodeId, 'position', false);
@@ -1408,14 +1407,14 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       }
     });
     idea.batch(function () {
-      const useLeftNode = !!(closestNodeToRight && closestNodeToRight.id && idea.findChildRankById(closestNodeToRight.id) < 0),
+      const useLeftNode = !!(closestNodeToRight?.id && idea.findChildRankById(closestNodeToRight.id) < 0),
         closestNode = useLeftNode ? closestNodeToLeft : closestNodeToRight,
         shouldFlip = (useLeftNode && (idea.findChildRankById(nodeId) > 0));
       self.autoPosition(nodeId);
       if (shouldFlip) {
         idea.flip(nodeId);
       }
-      result = idea.positionBefore(nodeId, closestNode && closestNode.id);
+      result = idea.positionBefore(nodeId, closestNode?.id);
     });
     return result;
   };
@@ -1457,7 +1456,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
           scaleY = Math.min(imgHeight, 300) / imgHeight,
           scale = Math.min(scaleX, scaleY),
           existing = idea.getAttrById(ideaId, 'icon');
-        self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), (existing && existing.position) || position, ideaId, metaData);
+      self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), existing?.position || position, ideaId, metaData);
       },
       addNew = function () {
         idea.startBatch();
@@ -1483,7 +1482,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
         let opposite;
         const boundaries = [],
           node = layoutModel.getNode(nodeId),
-          rootNode = layoutModel.getNode(node && node.rootId),
+          rootNode = layoutModel.getNode(node?.rootId),
           isRightHalf = function (node, rootNode) {
             return node && rootNode && node.x >= rootNode.x;
           },

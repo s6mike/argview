@@ -244,7 +244,7 @@ jQuery.fn.domMapWidget = function (activityLog, mapModel, touchEnabled, imageIns
       if (!actOnKeys) {
         return;
       }
-      if (/INPUT|TEXTAREA/.test(evt && evt.target && evt.target.tagName)) {
+      if (/INPUT|TEXTAREA/.test(evt?.target?.tagName)) {
         return;
       }
       const unicode = evt.charCode || evt.keyCode,

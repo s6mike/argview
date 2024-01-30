@@ -65,7 +65,7 @@ const jQuery = require('jquery'),
     //   This is run at start of init(), so why is it undefined on first run?
     //     let domMapController = false;
     // Could check for whether mapModel has a layoutCalculator function instead
-    if (map && typeof map.domMapController !== 'undefined') {
+    if (typeof map?.domMapController !== 'undefined') {
       // ISSUE: This call breaks on second map, I guess since layout calculator wasn't set for new domMapController
       // So really need to check for layout calculator
       map.mapModel.setIdea(idea);
@@ -175,7 +175,7 @@ const jQuery = require('jquery'),
       e.preventDefault();
 
       if (current_mapModel.getInputEnabled()) {
-        if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
+        if (dataTransfer?.files?.length > 0) {
           const fileInfo = dataTransfer.files[0];
           if (/\.(json|mup)$/.test(fileInfo.name)) {
             const oFReader = new window.FileReader();

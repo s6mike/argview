@@ -25,7 +25,7 @@ module.exports = (env, argv) => {
     entry: [path.resolve(__dirname, 'src/start.js')],
     // Use for development:
     // 	configuration.devtool should match pattern "^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$".
-    devtool: 'cheap-source-map',
+    // devtool: 'cheap-source-map',
     devtool: (argv.mode === 'production') ? 'source-map' : 'cheap-source-map',
     output: {
       crossOriginLoading: 'anonymous',

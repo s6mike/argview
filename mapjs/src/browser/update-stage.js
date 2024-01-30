@@ -4,7 +4,7 @@ const jQuery = require('jquery');
 jQuery.fn.updateStage = function () {
   'use strict';
   const data = this.data(),
-    stage = this[0],
+  // stage = this[0],
     size = {
       // Looks like mins don't matter
       // 'min-width': Math.round(data.width - data.offsetX),
