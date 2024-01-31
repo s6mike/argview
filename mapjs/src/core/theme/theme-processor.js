@@ -5,6 +5,8 @@ module.exports = function ThemeProcessor() {
   'use strict';
   // TODO: Check against theme schema
   const self = this,
+    { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+    CSS_LAYER_MAPJS_JS = CONFIG.css_layer_mapjs_js,
     addPx = function (val) {
       return val + 'px';
     },
@@ -155,7 +157,7 @@ module.exports = function ThemeProcessor() {
       nodeStyles = processThemeStyles(theme).concat(processNodeStyles(theme.node)).join('');
     }
     return {
-      css: ` @layer pandoc, mapjs-default, argview-custom, mapjs-theme, mapjs-js, override; @layer mapjs-js { ${nodeStyles} }`
+      css: `@layer ${CSS_LAYER_MAPJS_JS} { ${nodeStyles} }`
     };
   };
   self.cssFont = parsers['text.font'];

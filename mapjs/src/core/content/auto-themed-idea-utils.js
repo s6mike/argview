@@ -9,14 +9,14 @@ const calcIdeaLevel = require('./calc-idea-level'),
     }
     const parentLevel = calcIdeaLevel(activeContent, parentId),
       parentIdea = parentId && activeContent.findSubIdeaById(parentId),
-      numberOfSiblings = (parentIdea && parentIdea.ideas && Object.keys(parentIdea.ideas).length) || 0,
+      numberOfSiblings = Object.keys?.(parentIdea?.ideas).length || 0,
       attrs = themeObj.getPersistedAttributes(optionalIdeaAttr, parentLevel + 1, numberOfSiblings).attr,
       attrsToSave = (!_.isEmpty(attrs) && attrs) || undefined;
     return activeContent.addSubIdea(parentId, ideaTitle, optionalNewId, attrsToSave);
   },
   recalcAutoNodeAttrs = (activeContent, themeObj, idea, level, numberOfSiblings) => {
     'use strict';
-    const updatedAttr = (idea && themeObj.getPersistedAttributes(idea.attr, level, numberOfSiblings)) || {};
+    const updatedAttr = themeObj.getPersistedAttributes(idea?.attr, level, numberOfSiblings) || {};
 
     updatedAttr.removed.forEach((key) => activeContent.updateAttr(idea.id, key, false));
     Object.keys(updatedAttr.attr).forEach((key) => {
@@ -25,7 +25,7 @@ const calcIdeaLevel = require('./calc-idea-level'),
   },
   recalcIdeasAutoNodeAttrs = (activeContent, themeObj, idea, level, numberOfSiblings) => {
     'use strict';
-    Logger.debug('recalcIdeasAutoNodeAttrs idea.id', idea.id, 'level', level, 'numberOfSiblings', numberOfSiblings); //eslint-disable-line
+    mjsLogger.debug('recalcIdeasAutoNodeAttrs idea.id', idea.id, 'level', level, 'numberOfSiblings', numberOfSiblings); //eslint-disable-line
     if (level > 0) {
       recalcAutoNodeAttrs(activeContent, themeObj, idea, level, numberOfSiblings);
     }
@@ -44,7 +44,7 @@ const calcIdeaLevel = require('./calc-idea-level'),
     }
     let result;
     const newParent = activeContent.findSubIdeaById(newParentId),
-      numberOfSiblings = (newParent && newParent.ideas && Object.keys(newParent.ideas).length) || 0,
+      numberOfSiblings = Object.keys(newParent?.ideas).length || 0,
       parentLevel = calcIdeaLevel(activeContent, newParentId);
 
     activeContent.batch(() => {
@@ -68,7 +68,7 @@ const calcIdeaLevel = require('./calc-idea-level'),
     }
     const level = calcIdeaLevel(activeContent, parentId),
       parent = (parentId && activeContent.findSubIdeaById(parentId)) || activeContent,
-      existingSiblings = (parent.ideas && Object.keys(parent.ideas).length) || 0;
+      existingSiblings = Object.keys(parent?.ideas).length || 0;
 
     contents.forEach((idea) => {
       traverse(idea, (subIdea) => themeObj.cleanPersistedAttributes(subIdea.attr));
@@ -76,7 +76,7 @@ const calcIdeaLevel = require('./calc-idea-level'),
     let pastedIds = false, siblings = existingSiblings;
     activeContent.batch(() => {
       pastedIds = activeContent.pasteMultiple(parentId, contents);
-      if (pastedIds && pastedIds.length) {
+      if (pastedIds?.length) {
         pastedIds.forEach((pastedId) => {
           const idea = activeContent.findSubIdeaById(pastedId);
           recalcIdeasAutoNodeAttrs(activeContent, themeObj, idea, level + 1, siblings);
@@ -95,12 +95,12 @@ const calcIdeaLevel = require('./calc-idea-level'),
     }
 
     const ideaOptionsSafe = _.extend({}, ideaOptions),
-      inFrontOfIdeaId = themeObj && inFrontOfIdeaIds && inFrontOfIdeaIds[0],
+      inFrontOfIdeaId = themeObj && inFrontOfIdeaIds?.[0],
       inFrontOfIdea = inFrontOfIdeaId && activeContent.findSubIdeaById(inFrontOfIdeaId),
       level = inFrontOfIdeaId && calcIdeaLevel(activeContent, inFrontOfIdeaId),
-      insertAttr = (inFrontOfIdea && inFrontOfIdea.attr) || {},
+      insertAttr = inFrontOfIdea?.attr || {},
       siblingIds = activeContent.sameSideSiblingIds(inFrontOfIdeaId),
-      numberOfSiblings = (siblingIds && siblingIds.length) || 0,
+      numberOfSiblings = siblingIds?.length || 0,
       attrs = themeObj.getPersistedAttributes(insertAttr, level, numberOfSiblings).attr;
 
     ideaOptionsSafe.attr = _.extend({}, ideaOptionsSafe.attr, attrs);

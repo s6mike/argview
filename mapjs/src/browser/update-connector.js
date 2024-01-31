@@ -21,7 +21,7 @@ require('./get-data-box');
 
 jQuery.fn.updateConnector = function (optional) {
   'use strict';
-  const theme = optional && optional.theme;
+  const theme = optional?.theme;
   return jQuery.each(this, function () {
     let pathElement, hitElement;
     const element = jQuery(this),

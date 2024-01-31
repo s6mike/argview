@@ -13,7 +13,8 @@ const Utilities = require('./core/util/mapjs-utilities'),
   INSTANCE_CLASS = CONFIG.mapjs_instance.class,
   trycatch = Utilities.trycatch;
 
-Utilities.Logger.log(process.env.NODE_ENV + ' mode');
+// Utilities.mjsLogger = console;
+Utilities.mjsLogger.log(process.env.NODE_ENV + ' mode');
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 //   new MAPJS.Theme[x] ?
@@ -82,7 +83,7 @@ const jQuery = require('jquery'),
   // Add a (ideally) separate map to each container div on the page.
   addMap = function (instanceElement, mapJson) {
     'use strict';
-    // Utilities.Logger.log('Add map mapJson: ' + JSON.stringify(mapJson));
+    // Utilities.mjsLogger.log('Add map mapJson: ' + JSON.stringify(mapJson));
     const containerElement = Utilities.getElementMJS(CONTAINER_CLASS, instanceElement),
       // QUESTION: Do we need a separate mapModel for each map?
       //   Or are there generic methods I can separate out from object ones?
@@ -95,7 +96,7 @@ const jQuery = require('jquery'),
     // Hacky solution so that I can call content from map-model.js: loadMap
     map.mapModel.content = content;
 
-    // Utilities.Logger.log('mapJson.original_root_node_title: ' + mapJson.original_root_node_title);
+    // Utilities.mjsLogger.log('mapJson.original_root_node_title: ' + mapJson.original_root_node_title);
 
     // eslint-disable-next-line one-var
     const jQcontainer = jQuery(containerElement),
@@ -120,7 +121,7 @@ const jQuery = require('jquery'),
       );
     ;
 
-    // Utilities.Logger.log('idea should include title_original: ' + JSON.stringify(idea));
+    // Utilities.mjsLogger.log('idea should include title_original: ' + JSON.stringify(idea));
 
     // Obsolete now // Obsolete now attachmentEditorWidget UI disabled
     // TODO: Might only need one of these for the whole page, rather than for each container:
@@ -162,12 +163,14 @@ const jQuery = require('jquery'),
     // Draw map
     map.mapModel.setIdea(idea);
 
+    // QUESTION: Split all functionality before this point into separate bundle?
+
     jQuery('.arrow').click(function () {
       jQuery(this).toggleClass('active');
     });
 
     imageInsertController.addEventListener('imageInsertError', function (reason) {
-      Utilities.Logger.error('image insert error', reason);
+      Utilities.mjsLogger.error('image insert error', reason);
     });
 
     jQcontainer.on('drop', function (e) {
@@ -235,24 +238,25 @@ const jQuery = require('jquery'),
         Utilities.getMap(index, instanceElement, map_id, original_root_node_title, undefined, undefined, keep_original)
           .then(mapJson => {
             if (mapJson) {
-              // Utilities.Logger.log('start.js mapJson: ' + mapJson);
+              // Utilities.mjsLogger.log('start.js mapJson: ' + mapJson);
               addMap(instanceElement, mapJson);
             } else {
-              Utilities.Logger.error('Error updating map ' + index + ' with more recent data.');
+              Utilities.mjsLogger.error('Error updating map ' + index + ' with more recent data.');
             };
           })
-          .catch(error => Utilities.Logger.error(error)); //then(newMapJson => {;
+          // QUESTION: Why did I get this error
+          .catch(error => Utilities.mjsLogger.error(error)); //then(newMapJson => {;
 
         // QUESTION: How does drag and drop solution (window.FileReader()) compare to this one?
         //  Or do I have to use fetch here because source is not necessarily local?
         // TODO: Call function loadMap(script_src) instead (see checkMap())
         index = index + 1;
       }
-      window.onerror = Utilities.Logger.error;
+      window.onerror = Utilities.mjsLogger.error;
       window.jQuery = jQuery;
       window.mapInstance = mapInstance;
     } else { // If no mapjs requests:
-      Utilities.Logger.warn("No mapjs containers found in web page's source html.");
+      Utilities.mjsLogger.warn("No mapjs containers found in web page's source html.");
     };
   };
 

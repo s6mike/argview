@@ -15,7 +15,7 @@ PANDOC_FILTER_LUA_DEFAULT: ${PATH_FILE_PANDOC_FILTER_LUA_ARGMAP}
 
 # TODO: Update ${DEFAULT_MAPJS_CSS} > ${PATH_CSS_MAPJS_DEFAULT}
 PATH_CSS_MAPJS_DEFAULT: /css/mapjs-default-styles.css
-PATH_CSS_MAPJS_THEME_ARGMAP: /css/argmap-theme-v1.css
+PATH_CSS_MAPJS_THEME_ARGMAP: /css/argmap-theme-v2.css
 
 # All CSS files used by html output.
 #   However, pandoc templates won't expand the variables

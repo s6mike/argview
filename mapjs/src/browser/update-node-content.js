@@ -100,7 +100,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       } else {
         self.css({ 'font-size': '' });
       }
-      if (nodeTheme && nodeTheme.text && nodeTheme.text.alignment) {
+      if (nodeTheme?.text?.alignment) {
         self.css('text-align', nodeTheme.text.alignment);
       } else {
         self.css('text-align', '');
@@ -110,7 +110,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       const text = formattedNodeTitle(title, 25),
         element = textSpan(),
         domElement = element[0],
-        preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width;
+        preferredWidth = nodeContent.attr?.style?.width;
       let height;
 
       element.text(text.trim());
@@ -130,7 +130,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       }
     },
     setCollapseClass = function () {
-      if (nodeContent.attr && nodeContent.attr.collapsed) {
+      if (nodeContent.attr?.collapsed) {
         self.addClass('collapsed');
       } else {
         self.removeClass('collapsed');
@@ -143,7 +143,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       if (colorText) {
         self.addClass('mapjs-node-colortext');
       }
-      if (!nodeTheme || !nodeTheme.backgroundColor || nodeTheme.backgroundColor === 'transparent') {
+      if (!nodeTheme?.backgroundColor || nodeTheme.backgroundColor === 'transparent') {
         self.addClass('mapjs-node-transparent');
       }
     },

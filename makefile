@@ -268,14 +268,25 @@ prints:
 # 	$(info PATH_DIR_CONFIG_MAPJS_PROCESSED:)
 # 	$(info ${PATH_DIR_CONFIG_MAPJS_PROCESSED})
 
+site_deps:
+	@if __is_server_live 9002 netlify_dev_server; then \
+		echo "netlify_dev_server on, calling webpack for netlify."; \
+		DEV_SERVER_NAME=netlify_dev_server bash -c "make site_files"; \
+	fi;
+
+site_files:
+	$(call webpack_recipe,$$DEV_SERVER_NAME)
+
 # Ensures site_clean only run locally in prod mode (to clean up any dev files)
+# define site_recipe = # server, PORT
 ifneq (${ENV}, netlify)
 ifeq (${MODE}, prod)
-site: site_clean $(FILES_SITE) # local prod
+site: site_clean site_deps $(FILES_SITE) # local prod
 endif
-site: $(FILES_SITE) # local dev
+site: site_deps $(FILES_SITE) # local dev
 endif
-site: $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
+site: site_deps $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
+# endef
 
 # start: site
 # start:
@@ -288,7 +299,7 @@ site: $(FILES_SITE) ${PATH_PUBLIC}/_headers # netlify online
 #		i.e. make site should write to public, make test should write to test output
 # 	Can I do that with a flag or something?
 
-# Instead of: make all,  __clean_repo, and also to remove symlnks
+# Instead of: make all, __clean_repo, and also to remove symlnks
 # test: MODE := dev
 
 # TODO: remove output dir and add symlink instead

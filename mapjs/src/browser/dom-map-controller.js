@@ -1,6 +1,8 @@
 /*global require, module*/
 const jQuery = require('jquery'),
   _ = require('underscore'),
+// { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+// CSS_LAYER_MAPJS_JS = CONFIG.css_layer_mapjs_js,
   calculateLayout = require('../core/layout/calculate-layout'),
   nodeCacheMark = require('./node-cache-mark');
 

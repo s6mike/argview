@@ -103,4 +103,12 @@
     margin: -3px;
     background-color: rgba(255, 0, 0, 0.6);
   }
+
+  g.mapjs-connector-supporting {
+    stroke: rgb(9, 95, 17);
+  }
+
+  g.mapjs-connector-opposing {
+    stroke: rgb(255, 175, 175);
+  }
 }
