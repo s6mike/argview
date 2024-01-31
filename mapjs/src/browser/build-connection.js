@@ -12,14 +12,14 @@ module.exports = function buildConnection(element, optional) {
         box.height = innerRect.height;
       }
     },
-    connectorBuilder = optional && optional.connectorBuilder || themeConnector,
+    connectorBuilder = optional?.connectorBuilder || themeConnector,
     shapeFrom = element.data('nodeFrom'),
     shapeTo = element.data('nodeTo'),
-    theme = optional && optional.theme,
+    theme = optional?.theme,
     connectorAttr = element.data('attr'),
-    fromBox = shapeFrom && shapeFrom.getDataBox(),
-    toBox = shapeTo && shapeTo.getDataBox();
-  if (!shapeFrom || !shapeTo || shapeFrom.length === 0 || shapeTo.length === 0) {
+    fromBox = shapeFrom?.getDataBox(),
+    toBox = shapeTo?.getDataBox();
+  if (shapeFrom?.length === 0 || shapeTo?.length === 0) {
     return;
   }
 
@@ -28,5 +28,5 @@ module.exports = function buildConnection(element, optional) {
   fromBox.styles = shapeFrom.data('styles');
   toBox.styles = shapeTo.data('styles');
 
-  return  Object.assign(connectorBuilder(fromBox, toBox, theme), connectorAttr);
+  return Object.assign(connectorBuilder(fromBox, toBox, theme), connectorAttr);
 };

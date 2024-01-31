@@ -17,15 +17,15 @@ const contentUpgrade = require('../content/content-upgrade'),
       nodes: result,
       connectors: extractConnectors(idea, result, theme),
       links: extractLinks(idea, result),
-      theme: idea.attr && idea.attr.theme,
-      themeOverrides: Object.assign({}, idea.attr && idea.attr.themeOverrides)
+      theme: idea.attr?.theme,
+      themeOverrides: Object.assign({}, idea.attr?.themeOverrides)
     };
   };
 
 module.exports = function calculateLayout(idea, dimensionProvider, optional) {
   'use strict';
-  const layouts = (optional && optional.layouts) || defaultLayouts,
-    theme = (optional && optional.theme) || new Theme({}),
+  const layouts = optional?.layouts || defaultLayouts,
+    theme = optional?.theme || new Theme({}),
     multiRootLayout = new MultiRootLayout(),
     margin = theme.attributeValue(['layout'], [], ['spacing'], { h: 20, v: 20 }),
     orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard'),

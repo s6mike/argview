@@ -9,7 +9,7 @@
 // function getvar(varname, config_file) {
 //   const { default: CONFIG } = require(path_file_config),
 //     result = CONFIG.varname;
-//   Logger.log("Result: " + result);
+//   mjsLogger.log("Result: " + result);
 
 //   return result;
 // }
@@ -17,23 +17,23 @@
 /* eslint-disable strict */
 
 function MyLogger(console_original, environment = process.env.NODE_ENV) {
-  const new_logger = Object.create(console_original);
+  const mjsLogger = Object.create(console_original);
 
   // Override some console functions based on environment
   if (environment === 'production') {
     // Disables console.log and console.debug in production mode.
     //   QUESTION: change so that it logs the data elsewhere?
-    new_logger.debug = () => { };
-    new_logger.log = () => { };
+    mjsLogger.debug = () => { };
+    mjsLogger.log = () => { };
   } else {
     // QUESTION: Add a min level so that the logging level can be easily changed
     //  See https://www.npmjs.com/package/picolog for ideas
-    new_logger.log = (message, level = 'log') => {
+    mjsLogger.log = (message, level = 'log') => {
       console[level](message);
     };
   }
 
-  return new_logger;
+  return mjsLogger;
 }
 /* eslint-enable strict */
 
@@ -41,14 +41,14 @@ let { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS);
 const _ = require('underscore'),
   { default: CONFIG_P } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS_PROCESSED),
   // Setting this up here so it's ready for idea_pp
-  //  TODO: If I move idea_pp to MyLogger then I can be more flexible with where I initialise it
-  Logger = new MyLogger(console),
+  //  TODO: If I move idea_pp to MymjsLogger then I can be more flexible with where I initialise it
+  mjsLogger = new MyLogger(console),
   CONTAINER_CLASS = CONFIG.mapjs_map.class;
 CONFIG = Object.assign(CONFIG, CONFIG_P); // Assigning processed file second means it overwrites unprocessed values.
 
 module.exports = {
   // QUESTION: How to move above constructor definition into module.exports object?
-  Logger,
+  mjsLogger,
   // Parameterized try catch function
   //  Simplifies environment based catching
   //  Allows use of constants with try-catch
@@ -57,7 +57,7 @@ module.exports = {
     // Set default exception here:
     c = (exception) => {
       if (process.env.NODE_ENV === 'production') {
-        Logger.error('Caught: ' + exception);
+        mjsLogger.error('Caught: ' + exception);
       } else {
         throw exception;
       }
@@ -78,7 +78,7 @@ module.exports = {
       }
       return await response.json();
     } catch (error) {
-      Logger.error(error);
+      mjsLogger.error(error);
       throw error;
     };
   },
@@ -111,34 +111,34 @@ module.exports = {
     }
 
     // QUESTION: Can I simplify all try/catches here?
-    Logger.log('Attempting to retrieve map ' + index + ' from ' + request_url);
+    mjsLogger.log('Attempting to retrieve map ' + index + ' from ' + request_url);
     try {
       mapJson = await this.loadJson(request_url);
       if (originalMap && keep_original !== '' && (keep_original === 'false' || !keep_original)) {
         const originalMapTitle = this.setOriginalMapTitle(mapJson);
-        Logger.log('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
+        mjsLogger.log('Checking for more recent version of map ' + index + ': ' + originalMapTitle);
         try {
           const newMapJson = await this.getMap(index, instanceElement, undefined, originalMapTitle, undefined, 'final'); // Final stops infinite checks for newer version if this call fails
           // Not necessarily different. TODO: Check?
           //   Can I check metadata timestamp? or content hash? #QUESTION
           map_id = newMapJson.map_id;
-          Logger.info('Have loaded latest version of ' + request_url + ' (map_id: ' + map_id + ') as map ' + index);
+          mjsLogger.info('Have loaded latest version of ' + request_url + ' (map_id: ' + map_id + ') as map ' + index);
           mapJson = newMapJson; // Use the updated map data
         } catch (error) {
-          Logger.error('Failed to update map ' + index + ': ' + originalMapTitle + '. Keeping original data.');
+          mjsLogger.error('Failed to update map ' + index + ': ' + originalMapTitle + '. Keeping original data.');
         }
       } else {
-        Logger.info('Have loaded original version of ' + request_url + ' as map ' + index);
+        mjsLogger.info('Have loaded original version of ' + request_url + ' as map ' + index);
       }
       return mapJson;
       // this.addMap(instanceElement, mapJson);
     } catch (error) {
-      Logger.error('Attempt to load remote map ' + index + ' failed, using url: ' + request_url);
+      mjsLogger.error('Attempt to load remote map ' + index + ' failed, using url: ' + request_url);
       if (!originalMap && !final) { // Final check stops infinite loop
-        Logger.log('Attempting to retrieve original map ' + index + ' instead.');
+        mjsLogger.log('Attempting to retrieve original map ' + index + ' instead.');
         // QUESTION: Better to go id > title > element?
           mapJson = await this.getMap(index, instanceElement);
-          Logger.info('Retrieved original map ' + index);
+        mjsLogger.info('Retrieved original map ' + index);
         return mapJson;
       }
       throw error;
@@ -177,7 +177,7 @@ module.exports = {
     map_data.theme = undefined;
     map_data.attr.theme = undefined;
     map_data.title = undefined;
-    Logger.info('Custom theme removed from saved map');
+    mjsLogger.info('Custom theme removed from saved map');
 
     // TODO: Should first check json is compatible with $schema, then, if necessary, update it.
     if (!map_data.$schema) {
@@ -202,7 +202,7 @@ module.exports = {
     const updated_map_data = this.updateDataPreSave(map_data),
       body = JSON.stringify(updated_map_data),
       target_url = '/sm';
-    Logger.log('mapjs json: ' + body);
+    mjsLogger.log('mapjs json: ' + body);
 
     fetch(target_url, {
       method: 'POST',
@@ -224,7 +224,7 @@ module.exports = {
         };
       }
     }).catch(error => {
-      Logger.error('Server response error: ' + error);
+      mjsLogger.error('Server response error: ' + error);
       // Handle network errors or other exceptions
     });
   },
@@ -257,13 +257,13 @@ module.exports = {
       }
       return elements[0];
     } else {
-      Logger.warn('getElementMJS(): Element of class ' + className + ' not found on page.');
+      mjsLogger.warn('getElementMJS(): Element of class ' + className + ' not found on page.');
     }
   },
 
   // TODO: Only run all this if logging is enabled.
   //  QUESTION: What's best way to check?
-  // IDEA: Could add this and ideas_pp() to MyLogger instead. Or possibly override existing console pretty print
+  // IDEA: Could add this and ideas_pp() to MymjsLogger instead. Or possibly override existing console pretty print
   idea_pp: (idea, level = -1, key = []) => {
     // Quick fix to avoid wasting time doing this in production mode.
     //  TODO: Add this to Logging object and set it to {} in production mode.
@@ -274,7 +274,7 @@ module.exports = {
         let indent = level > 0 ? '  '.repeat(level) : '';
         parseInt(key) > 0 ? indent += ' ' : null; // So ranks with minus sign align
         // TODO FIX: when running as script, _.pick causes an issue if underscore.js not available
-        Logger.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
+        mjsLogger.debug(`${indent}${rank}`, _.pick(idea, 'id', 'title', 'ideas'), `${type}`);
         if (idea.ideas) {
           // eslint-disable-next-line no-use-before-define
           module.exports.ideas_pp(idea.ideas, level, Object.keys(idea.ideas));
@@ -287,7 +287,7 @@ module.exports = {
   // Call with ideas_pp(idea);
   ideas_pp: (ideas, level = -1, keys = []) => {
     // Want to start with extra line break, but it doesn't appear where I expect.
-    // level == -1 ? Logger.debug('') : null;
+    // level == -1 ? mjsLogger.debug('') : null;
     level += 1;
     if (!ideas) {
       level -= 1;

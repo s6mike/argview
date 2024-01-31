@@ -1,5 +1,5 @@
 /*jshint loopfunc:true */
-/*global module, require, logMyErrors, Logger */
+/*global module, require, logMyErrors, mjsLogger */
 const _ = require('underscore'),
   observable = require('../util/observable'),
   contentUpgrade = require('./content-upgrade');
@@ -13,10 +13,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
   // New function to handle max call stack size exceeded errors
   const handleRangeError = function (e, calling_function_name) {
       if (e instanceof RangeError) { // Uncaught RangeError RangeError: Maximum call stack size exceeded
-        Logger.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
+        mjsLogger.dir(`Caught RangeError in ${calling_function_name}, returning false: ${e}`);
         return false;
       } else {
-        Logger.error(e); // Can't find logMyErrors(), so putting this in too.
+        mjsLogger.error(e); // Can't find logMyErrors(), so putting this in too.
         logMyErrors(e); // pass exception object to error handler
         return true;
       }
@@ -115,7 +115,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
         }, current);
       };
       contentIdea.getAttr = function (name) {
-        if (contentIdea.attr && contentIdea.attr[name]) {
+        if (contentIdea.attr?.[name]) {
           return _.clone(contentIdea.attr[name]);
         }
         return false;

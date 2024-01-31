@@ -90,17 +90,17 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       element.show();
     },
     level = forcedLevel || 1,
-    styles = nodeContent.styles || (theme && theme.nodeStyles(level, nodeContent.attr)) || [],
-    nodeTheme = theme && theme.nodeTheme && applyIdeaAttributesToNodeTheme(nodeContent, theme.nodeTheme(styles)),
+    styles = nodeContent.styles || theme?.nodeStyles(level, nodeContent.attr) || [],
+    nodeTheme = theme?.nodeTheme && applyIdeaAttributesToNodeTheme(nodeContent, theme.nodeTheme(styles)),
     updateTextStyle = function () {
-      if (nodeTheme && nodeTheme.hasFontMultiplier) {
+      if (nodeTheme && nodeTheme?.hasFontMultiplier) {
         self.css({
           'font-size': nodeTheme.font.size + 'pt'
         });
       } else {
         self.css({ 'font-size': '' });
       }
-      if (nodeTheme && nodeTheme.text && nodeTheme.text.alignment) {
+      if (nodeTheme?.text?.alignment) {
         self.css('text-align', nodeTheme.text.alignment);
       } else {
         self.css('text-align', '');
@@ -110,7 +110,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       const text = formattedNodeTitle(title, 25),
         element = textSpan(),
         domElement = element[0],
-        preferredWidth = nodeContent.attr && nodeContent.attr.style && nodeContent.attr.style.width;
+        preferredWidth = nodeContent.attr?.style?.width;
       let height;
 
       element.text(text.trim());
@@ -130,7 +130,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       }
     },
     setCollapseClass = function () {
-      if (nodeContent.attr && nodeContent.attr.collapsed) {
+      if (nodeContent.attr?.collapsed) {
         self.addClass('collapsed');
       } else {
         self.removeClass('collapsed');
@@ -143,7 +143,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       if (colorText) {
         self.addClass('mapjs-node-colortext');
       }
-      if (!nodeTheme || !nodeTheme.backgroundColor || nodeTheme.backgroundColor === 'transparent') {
+      if (!nodeTheme?.backgroundColor || nodeTheme.backgroundColor === 'transparent') {
         self.addClass('mapjs-node-transparent');
       }
     },
@@ -225,8 +225,8 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
     styleDefault = function () {
       return ['default'];
     },
-    attrValue = (theme && theme.attributeValue) || themeDefault,
-    nodeStyles = (theme && theme.nodeStyles) || styleDefault,
+    attrValue = theme?.attributeValue || themeDefault,
+    nodeStyles = theme?.nodeStyles || styleDefault,
     effectiveStyles = nodeStyles(nodeLevel, nodeContent.attr),
     borderType = attrValue(['node'], effectiveStyles, ['border', 'type'], 'surround'),
     decorationEdge = attrValue(['node'], effectiveStyles, ['decorations', 'edge'], ''),

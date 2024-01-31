@@ -303,7 +303,6 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       self.selectNode(idea.getDefaultRootId(), true);
       self.dispatchEvent('mapViewResetRequested');
     }
-
   };
   this.setEditingEnabled = function (value) {
     isEditingEnabled = value;
@@ -414,6 +413,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     if (isInputEnabled) {
       self.applyToActivated(function (id) {
         const node = self.findIdeaById(id);
+        // Replace with this: if (!doCollapse || (node?.ideas && _.size(node?.ideas) > 0)) {
         if (node && (!doCollapse || (node.ideas && _.size(node.ideas) > 0))) {
           idea.updateAttr(id, 'collapsed', doCollapse);
         }

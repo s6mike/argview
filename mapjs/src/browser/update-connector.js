@@ -21,7 +21,7 @@ require('./get-data-box');
 
 jQuery.fn.updateConnector = function (optional) {
   'use strict';
-  const theme = optional && optional.theme;
+  const theme = optional?.theme;
   return jQuery.each(this, function () {
     let pathElement, hitElement;
     const element = jQuery(this),
@@ -30,10 +30,10 @@ jQuery.fn.updateConnector = function (optional) {
       allowParentConnectorOverride = !theme || !(theme.connectorEditingContext || theme.blockParentConnectorOverride) || (theme.connectorEditingContext && theme.connectorEditingContext.allowed && theme.connectorEditingContext.allowed.length),
       connection = buildConnection(element, optional),
       applyLabel = function () {
-        const labelText = (connectorAttr && connectorAttr.label) || '',
+        const labelText = connectorAttr?.label || '',
           shapeTo = labelText && element.data('nodeTo'),
           shapeFrom = labelText && element.data('nodeFrom'),
-          labelTheme = (connection.theme && connection.theme.label) || defaultTheme.connector.default.label,
+          labelTheme = connection.theme?.label || defaultTheme.connector.default.label,
           labelCenterPoint = labelText && calcLabelCenterPont(connection.position, shapeFrom.getDataBox(), shapeTo.getDataBox(), connection.d, labelTheme);
         updateConnectorText(
           element,

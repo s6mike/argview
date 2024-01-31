@@ -1,6 +1,8 @@
 /*global require, module*/
 const jQuery = require('jquery'),
   _ = require('underscore'),
+// { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+// CSS_LAYER_MAPJS_JS = CONFIG.css_layer_mapjs_js,
   calculateLayout = require('../core/layout/calculate-layout'),
   nodeCacheMark = require('./node-cache-mark');
 
@@ -65,8 +67,10 @@ module.exports = function DomMapController(mapModel, stageElement, touchEnabled,
     updateScreenCoordinates = function () {
       const element = jQuery(this);
       element.css({
+        '@layer mapjs-js': {
         'left': element.data('x'),
         'top': element.data('y')
+        }
       }).trigger('mapjs:move');
     },
     ensureSpaceForPoint = function (x, y) {/* in stage coordinates */
