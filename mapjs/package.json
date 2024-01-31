@@ -79,6 +79,7 @@
     "eslint": "^8.56.0",
     "eslint-config-crockford": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",
+    "eslint-plugin-no-unsanitized": "^4.0.2",
     "fs-readdir-recursive": "^1.1.0",
     "jasmine": "^5.1.0",
     "jasmine-spec-reporter": "^7.0.0",
