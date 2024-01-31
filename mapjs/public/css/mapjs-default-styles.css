@@ -1,15 +1,32 @@
-/* Only argview layer is currently defined. */
+/* Currently, only argview and mapjs-theme layers are defined. */
+
 @layer pandoc,
 argview,
 mapjs-theme,
+mapjs-js,
 mapjs-override;
 
 @layer argview {
+
+  /* Identify issues: */
+
+  /* * {
+  outline: 1px solid #f00 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+} */
+
+  /* * {
+    background-color: red;
+  }
+*/
+
   :root {
     --color-node-top-border: #0e96cb;
     --color-node-top-border-background: #cbf0ff;
     --color-button-hover-background: #e5e5e5;
     --color-mapjs-link: #c67bff;
+    /*Higher contrast: #4A4A4A*/
     --color-node-neutral: #4F4F4F;
     --color-node-neutral-background: #f9f7f7;
     --color-highlight: red;
@@ -20,28 +37,21 @@ mapjs-override;
     /* use container query? #question */
     --width-container-mid: 50vw;
     --width-stage-offsetx-fallback: max(var(--width-container-mid, 50vw), 25% + 200px);
-    /* Default value, gets overriden by js */
-    /* --width-stage-offsetx: calc(var(--width-container-mid) + var()); */
-    /* left: max(260px, 49vw); */
     /* --style-stage-left: min(var(--width-stage-offsetx), var(--width-container-mid)); */
     --style-stage-left: max(var(--width-stage-offsetx, var(--width-stage-offsetx-fallback)), var(--width-container-mid));
+
+    --height-container-min: min(var(--height-stage-offsety, var(--height-stage-offsety-fallback)) / 2, 160px);
+    /* --height-container-min: max(var(--height-stage-offsety, 310px) / 2, 9vh); */
+    --height-stage-offsety-fallback: max(23%, 213px);
+    /* --style-stage-top: max(var(--height-stage-offsety, var(--height-stage-offsety-fallback)), var(--height-container-min)); */
+
+    --style-stage-top: max(var(--height-container-min), 9vh);
 
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 300 !important;
     font-size: 15px;
     line-height: 1.2;
   }
-
-  /* Identify scrolling issues: */
-  /* * {
-  outline: 1px solid #f00 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  } 
-  * {
-    background-color: red;
-  }
-*/
 
   header {
     margin-top: calc(16px - 1vh);
@@ -84,10 +94,14 @@ mapjs-override;
   div.menubar-mapjs {
     position: sticky;
     z-index: 10;
-    min-height: 66px;
+    min-height: 58px;
     /* !important */
     overflow: auto;
     padding: 5px;
+  }
+
+  div.toolbar-mapjs-main {
+    min-width: max-content;
   }
 
   /*  See https://zellwk.com/blog/hide-content-accessibly/ */
@@ -140,40 +154,45 @@ mapjs-override;
 opacity: 1 !important; */
     /* overflow from theme.css: */
     /* Testing with visible instead for convenience: */
+    display: grid;
+    align-content: space-evenly;
+    /* QUESTION: This is sometimes better - when? */
+    /* place-content: center; */
     overflow: auto;
     background-color: transparent;
     /* height: calc(100% - 60px) !important; */
-    /* display: flow; */
-    /* justify-content: center; */
     border: 1px dashed var(--color-border-container, black);
     box-sizing: border-box;
-    /* padding-left: 48%; */
     min-height: 250px !important;
-    padding-top: calc(20vh - 30px);
+    /* padding-top: calc(20vh - 30px); */
+    width: -webkit-fill-available;
   }
 
   div.stage {
     /* outline: 1px solid #f00 !important;
 opacity: 1 !important; */
-    position: 'relative';
+    position: relative;
     width: 0;
     /* left: min(var(--width-stage-offsetx), 1424); */
     /* margin-left: var(--width-container); */
     /* min(var(--width-stage-offset), 1424px) */
     /* left: max(260px, 49vw); */
     /* left: min(var(--width-container), 1424); */
-    left: var(--style-stage-left);
     /* left: max(1424px, 211vw); */
     /* float: inline-start; */
+    margin-top: var(--style-stage-top);
+    margin-bottom: 4vh;
+    margin-left: var(--style-stage-left);
     min-height: 163px;
     max-height: 500px;
+    transform-origin: top left;
+    /* transform: translate3d(50%, 30%, 0) !important; */
     /* Have changed update-stage.js to get y value of 30% instead of overriding here*/
     /* transform: translate(100%, calc(30% - 30px)) !important; */
     /* transform: translate3d(100%, 30%) !important; */
     /* transform: translate(960px, 0) !important; */
     /* translate(960px, calc(100% - 350px)) !important */
     /* transform: translate(calc(75% - 140px), 110%) !important; */
-    /* transform: translate3d(50%, 30%, 0) !important; */
     /* Not sure these makes any difference: */
     /*  visibility: visible !important;
 transform-origin: top left; */
@@ -183,10 +202,11 @@ transform-origin: top left; */
 
   .mapjs-draw-container {
     position: absolute;
-    top: 0;
-    left: 0;
+    /* top: 0;
+    left: 0; */
     margin: 0;
     padding: 0;
+    width: 0;
     /* outline: 1px solid var(--color-highlight) !important;
     /* left: -1132px !important; */
     /* opacity: 1 !important; */
@@ -366,9 +386,6 @@ transform-origin: top left; */
     stroke-width: 5px;
     fill: none;
     stroke: #000;
-  }
-
-  .mapjs-reorder-bounds {
     z-index: 999;
     background-image: url(svg/chevron-left.svg);
     width: 11px;

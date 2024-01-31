@@ -3,6 +3,7 @@ const _ = require('underscore'),
   colorParser = require('./color-parser');
 module.exports = function ThemeProcessor() {
   'use strict';
+  // TODO: Check against theme schema
   const self = this,
     addPx = function (val) {
       return val + 'px';
@@ -154,7 +155,7 @@ module.exports = function ThemeProcessor() {
       nodeStyles = processThemeStyles(theme).concat(processNodeStyles(theme.node)).join('');
     }
     return {
-      css: nodeStyles
+      css: `@layer mapjs-theme { ${nodeStyles} }`
     };
   };
   self.cssFont = parsers['text.font'];

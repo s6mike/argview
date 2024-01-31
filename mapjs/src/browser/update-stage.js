@@ -11,7 +11,7 @@ jQuery.fn.updateStage = function () {
       // 'min-height': Math.round(data.height - data.offsetY),
       // 'width': Math.round(data.width - data.offsetX),
       'height': Math.round(data.height - data.offsetY),
-      // 'left': 'min(' + Math.round(-data.offsetX) + 'px, ' + 1424 + 'px)',
+      // 'left': 'min(' + Math.round(-data.offsetX) + 'px, ' + 1424 + 'px)', 
       // 'margin-left': Math.round(-data.offsetX),
       // 'transform-origin': 'top left',
       // Now using style.css with simple 50% to keep it centered
@@ -23,7 +23,9 @@ jQuery.fn.updateStage = function () {
     svgContainer = this.find('[data-mapjs-role=svg-container]')[0];
 
   // QUESTION: Move this to mapjs/src/browser/dom-map-widget.js after offsetX defined?
+  //  QUESTION: Is there a way to include `@layer argview-js` here?
   root.style.setProperty('--width-stage-offsetx', `${Math.round(data.offsetX)}px`);
+  root.style.setProperty('--height-stage-offsety', `${Math.round(data.offsetY)}px`);
   // if (data.scale && data.scale !== 1) {
   //   // size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, ' + Math.round(data.offsetY) + 'px)';
   //   // size.transform = 'scale(' + data.scale + ') translate(' + Math.round(data.offsetX) + 'px, 30%)';

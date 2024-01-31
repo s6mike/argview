@@ -116,9 +116,9 @@ FILES_HTML_FROM_JSON := $(filter-out ${FILES_HTML_FROM_MD}, ${FILES_HTML_FROM_JS
 
 FILES_HTML = $(FILES_SITE) $(FILES_HTML_FROM_JSON) $(FILES_HTML_FROM_MD)
 FILES_TEMPLATE_HTML := src/layouts/templates/pandoc-mapjs-main-html5.html ${PATH_FILE_MAPJS_HTML_DIST_TAGS} src/layouts/includes/argmap-head-element.html src/layouts/includes/argmap-input-widget.html src/layouts/includes/mapjs-map-container.html src/layouts/includes/mapjs-widget-controls.html src/layouts/includes/favicon-links.html
-FILES_JS := ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map
+FILES_JS := ${PATH_OUTPUT_JS}/assets-manifest.json
 FILES_HTML_DOCS = docs/example-updated.html ${PATH_DIR_MAPJS_ROOT}/docs/legacy-mapjs-example-map.html
-FILES_SITE = ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX} $(FILES_HTML_DOCS)
+FILES_SITE = $(FILES_JS) ${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_FILE_OUTPUT_EXAMPLE} ${PATH_FILE_OUTPUT_EXAMPLE2_COMPLEX} $(FILES_HTML_DOCS)
 
 rockspec_file := $(shell find . -type f -name "argmap-*.rockspec")
 
@@ -410,6 +410,7 @@ define webpack_recipe = # DEV_SERVER_NAME
 $(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	DEV_SERVER_NAME=$(1) bash -c "npm run pack:$(MODE) --prefix ${MAPJS_NODE_MODULES_PREFIX}"
+	-rm ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
 	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
 endef
@@ -417,7 +418,7 @@ endef
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC? Using hidden node_modules/.packagelock instead
 # QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} ${PATH_OUTPUT_JS}/main.js ${PATH_OUTPUT_JS}/main.js.map: ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} $(FILES_JS): ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
 # 	$(info make site MODE: ${MODE})
 # 	-mkdir --parent "${@D}"
 # # -echo "NODE_PATH: ${NODE_PATH}"

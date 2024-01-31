@@ -30,7 +30,10 @@ const jQuery = require('jquery'),
   mapInstance = {}, // New object for keeping data for keeping various mapjs objects separate
 
   // Injects Theme CSS into page
-  // So can't easily make themes independent for each container without making css directives container independent
+//  So can't easily make themes independent for each container without making css directives container independent
+//  Though if I inject it into container itself rather than head, then should be able to set scope property to limit impact
+//    https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style
+//  QUESTION: Is there a way to include `@layer argview-js` here?
   layoutThemeStyle = function (themeJson) {
     'use strict';
     const themeCSS = themeJson && new MAPJS.ThemeProcessor().process(themeJson).css;
@@ -59,7 +62,10 @@ const jQuery = require('jquery'),
     const theme = new MAPJS.Theme(themeJson),
       getTheme = () => theme;
     map.mapModel.setThemeSource(getTheme);
-    layoutThemeStyle(themeJson);
+
+    // Using css file generated from theme
+    //  TODO: Replace this selection with a set of css files instead
+    // layoutThemeStyle(themeJson);
 
     // Can't reset map with setIdea if domMapController hasn't been defined yet
     //   This is run at start of init(), so why is it undefined on first run?
