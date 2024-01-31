@@ -4,7 +4,7 @@
 
 - [README.md](../README.md):
   - Add note about linking/using templates (html and latex) with pandoc.
-  - Add references to argmap specs spreadsheet?
+  - Add refereences to argmap specs spreadsheet?
 
 ## argmap 30.1.8
 

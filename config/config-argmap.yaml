@@ -12,12 +12,16 @@ DEFAULT_LANGUAGE: en
 FILE_TEMPLATE_HTML_DEFAULT: ${FILE_TEMPLATE_HTML_ARGMAP_MAIN}
 PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT: ${PATH_INCLUDES_MAPJS_CONTAINER_STANDARD}
 PANDOC_FILTER_LUA_DEFAULT: ${PATH_FILE_PANDOC_FILTER_LUA_ARGMAP}
-DEFAULT_MAPJS_CSS: /mapjs-default-styles.css
+
+# TODO: Update ${DEFAULT_MAPJS_CSS} > ${PATH_CSS_MAPJS_DEFAULT}
+PATH_CSS_MAPJS_DEFAULT: /css/mapjs-default-styles.css
+PATH_CSS_MAPJS_THEME_ARGMAP: /css/argmap-theme-v1.css
 
 # All CSS files used by html output.
 #   However, pandoc templates won't expand the variables
 #   , so need to reference anchor earlier in same doc instead.
 css: # Default pandoc template value
-  - ${DEFAULT_MAPJS_CSS}
+  - ${PATH_CSS_MAPJS_DEFAULT}
+  - ${PATH_CSS_MAPJS_THEME_ARGMAP}
 
 ...
