@@ -29,8 +29,8 @@ module.exports = function ThemeProcessor() {
       return weightMap[fontObj.weight] || fontObj.weight;
     },
     fontSizeParser = function (fontObj) {
-      const fontSize = (fontObj && fontObj.size) || 12,
-        lineSpacing = (fontObj && fontObj.lineSpacing) || 3,
+      const fontSize = fontObj?.size || 12,
+        lineSpacing = fontObj?.lineSpacing || 3,
         lineHeight = (fontSize + lineSpacing) / fontSize;
 
       return fontSize + 'pt/' + lineHeight.toFixed(2);
@@ -80,7 +80,7 @@ module.exports = function ThemeProcessor() {
           });
         },
         appendSpanStyles = function (styleSelector, nodeStyle) {
-          const maxWidth = nodeStyle.text && nodeStyle.text.maxWidth;
+          const maxWidth = nodeStyle.text?.maxWidth;
           if (!maxWidth) {
             return;
           }
@@ -92,8 +92,8 @@ module.exports = function ThemeProcessor() {
         },
         appendDecorationStyles = function (styleSelector, nodeStyle) {
           const style = nodeStyle.decorations,
-            margin = nodeStyle.text && nodeStyle.text.margin || 0,
-            fontSize = (nodeStyle && nodeStyle.text && nodeStyle.text.font && nodeStyle.text.font.size) || 9;
+            margin = nodeStyle.text?.margin || 0,
+            fontSize = nodeStyle?.text?.font?.size || 9;
           if (!style) {
             return;
           }
