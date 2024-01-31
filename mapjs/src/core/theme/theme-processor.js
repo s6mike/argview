@@ -155,7 +155,7 @@ module.exports = function ThemeProcessor() {
       nodeStyles = processThemeStyles(theme).concat(processNodeStyles(theme.node)).join('');
     }
     return {
-      css: `@layer mapjs-theme { ${nodeStyles} }`
+      css: ` @layer pandoc, mapjs-default, argview-custom, mapjs-theme, mapjs-js, override; @layer mapjs-js { ${nodeStyles} }`
     };
   };
   self.cssFont = parsers['text.font'];

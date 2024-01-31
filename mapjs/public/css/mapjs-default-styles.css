@@ -1,12 +1,13 @@
 /* Currently, only argview and mapjs-theme layers are defined. */
 
 @layer pandoc,
-argview,
+mapjs-default,
+argview-custom,
 mapjs-theme,
 mapjs-js,
-mapjs-override;
+override;
 
-@layer argview {
+@layer argview-custom {
 
   /* Identify issues: */
 
@@ -38,7 +39,7 @@ mapjs-override;
     --width-container-mid: 50vw;
     --width-stage-offsetx-fallback: max(var(--width-container-mid, 50vw), 25% + 200px);
     /* --style-stage-left: min(var(--width-stage-offsetx), var(--width-container-mid)); */
-    --style-stage-left: max(var(--width-stage-offsetx, var(--width-stage-offsetx-fallback)), var(--width-container-mid));
+    --style-stage-left: max(var(--width-stage-offsetx, var(--width-stage-offsetx-fallback)) + 7px, var(--width-container-mid));
 
     --height-container-min: min(var(--height-stage-offsety, var(--height-stage-offsety-fallback)) / 2, 160px);
     /* --height-container-min: max(var(--height-stage-offsety, 310px) / 2, 9vh); */
@@ -337,7 +338,7 @@ transform-origin: top left; */
   }
 
   .mapjs-hyperlink {
-    background-image: url(svg/icon-link-inactive.svg);
+    background-image: url(../svg/icon-link-inactive.svg);
     width: 32px;
     height: 32px;
     background-size: 32px 32px;
@@ -346,11 +347,11 @@ transform-origin: top left; */
   }
 
   .mapjs-hyperlink:hover {
-    background-image: url(svg/icon-link-active.svg);
+    background-image: url(../svg/icon-link-active.svg);
   }
 
   .mapjs-attachment {
-    background-image: url(svg/icon-paperclip-inactive.svg);
+    background-image: url(../svg/icon-paperclip-inactive.svg);
     width: 16px;
     height: 32px;
     background-size: 16px 32px;
@@ -359,7 +360,7 @@ transform-origin: top left; */
   }
 
   .mapjs-attachment:hover {
-    background-image: url(svg/icon-paperclip-active.svg);
+    background-image: url(../svg/icon-paperclip-active.svg);
   }
 
   .mapjs-link-hit:hover {
@@ -387,7 +388,7 @@ transform-origin: top left; */
     fill: none;
     stroke: #000;
     z-index: 999;
-    background-image: url(svg/chevron-left.svg);
+    background-image: url(../svg/chevron-left.svg);
     width: 11px;
     background-size: 100% 100%;
     height: 20px;
@@ -395,7 +396,7 @@ transform-origin: top left; */
   }
 
   .mapjs-reorder-bounds[mapjs-edge="left"] {
-    background-image: url(svg/chevron-right.svg);
+    background-image: url(../svg/chevron-right.svg);
   }
 
   .mapjs-reorder-bounds[mapjs-edge="top"] {
