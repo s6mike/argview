@@ -51,16 +51,26 @@ const _ = require('underscore'),
   calculateConnector = function (parent, child, theme) {
     'use strict';
     const childPosition = calcChildPosition(parent, child, 10),
+    // Either parent.styles[0] or child.styles[0] will contain attr_group_opposing or attr_group_supporting
+    //  So can check this then apply class
       fromStyles = parent.styles,
       toStyles = child.styles,
       connectionPositionDefaultFrom = theme.attributeValue(['node'], fromStyles, ['connections', 'default'], { h: 'center', v: 'center' }),
       connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], { h: 'nearest-inset', v: 'center' }),
       connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
       connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
+    // TODO: Add class instead of assigning line.color (and line-width?)
       connectorTheme = theme.connectorTheme(childPosition, toStyles, fromStyles),
       fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
       toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
       borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], '');
+
+    // QUESTION: Use regex extract and/or switch instead?
+    if (parent.styles[0] === 'attr_group_supporting' || child.styles[0] === 'attr_group_supporting') {
+      connectorTheme.class = 'mapjs-connector-supporting';
+    } else if (parent.styles[0] === 'attr_group_opposing' || child.styles[0] === 'attr_group_opposing') {
+      connectorTheme.class = 'mapjs-connector-opposing';
+    };
     let nodeUnderline = false, nodeOverline = false;
     if (borderType === 'underline' || borderType === 'under-overline') {
       nodeUnderline = {
@@ -117,6 +127,7 @@ const _ = require('underscore'),
     result.color = calculatedConnector.connectorTheme.line.color;
     result.width = calculatedConnector.connectorTheme.line.width;
     result.theme = calculatedConnector.connectorTheme;
+    result.class = result.theme.class;
     return result;
   };
 

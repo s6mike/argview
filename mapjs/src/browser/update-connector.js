@@ -55,6 +55,8 @@ jQuery.fn.updateConnector = function (optional) {
     element.data('position', { ...connection.position });
     pathElement = element.find('path.mapjs-connector');
     hitElement = element.find('path.mapjs-link-hit');
+    // TODO: Instead, use element.style = ""
+    //  https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
     element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }));
     if (pathElement.length === 0) {
       pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
@@ -63,6 +65,7 @@ jQuery.fn.updateConnector = function (optional) {
     pathElement.attr({
       'd': connection.d,
       'stroke-width': connection.width,
+      'class': connection.class,
       'stroke-dasharray': lineStrokes[connection.lineStyle || 'solid'],
       fill: 'transparent'
     });
