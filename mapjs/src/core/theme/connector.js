@@ -66,11 +66,11 @@ const _ = require('underscore'),
       borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], '');
 
     // QUESTION: Use regex extract and/or switch instead?
-    if (parent.styles[0] === 'attr_group_supporting' || child.styles[0] === 'attr_group_supporting') {
+    if (parent?.styles?.[0] === 'attr_group_supporting' || child?.styles?.[0] === 'attr_group_supporting') {
       connectorTheme.class = 'mapjs-connector-supporting';
-    } else if (parent.styles[0] === 'attr_group_opposing' || child.styles[0] === 'attr_group_opposing') {
+    } else if (parent?.styles?.[0] === 'attr_group_opposing' || child?.styles?.[0] === 'attr_group_opposing') {
       connectorTheme.class = 'mapjs-connector-opposing';
-    };
+    }
     let nodeUnderline = false, nodeOverline = false;
     if (borderType === 'underline' || borderType === 'under-overline') {
       nodeUnderline = {
@@ -127,7 +127,7 @@ const _ = require('underscore'),
     result.color = calculatedConnector.connectorTheme.line.color;
     result.width = calculatedConnector.connectorTheme.line.width;
     result.theme = calculatedConnector.connectorTheme;
-    result.class = result.theme.class;
+    // result.class = result.theme?.class;
     return result;
   };
 
