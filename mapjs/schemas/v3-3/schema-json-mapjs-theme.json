@@ -240,6 +240,40 @@
         }
       ]
     },
+    "controlPoint-offset": {
+      "description": "Reference for controlPoint-offset object (used by controlPoint for properties: above, below, horizontal",
+      "$ref": "#/$defs/controlPoint-offset",
+      "$comment": "QUESTION: Adapt controlPoint-offset schema to define shadow offset too?",
+      "title": "The offset Schema",
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "height": {
+          "type": "number",
+          "title": "The height Schema",
+          "examples": [
+            0.75,
+            0
+          ]
+        },
+        "width": {
+          "description": "Reference for width object",
+          "$ref": "#/$defs/width"
+        }
+      },
+      "examples": [
+        {
+          "width": 0,
+          "height": 0.75
+        },
+        {
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
     "connector-type": {
       "type": "object",
       "additionalProperties": false,
@@ -296,6 +330,47 @@
         "label": {
           "description": "Reference for label object",
           "$ref": "#/$defs/label"
+        },
+        "controlPoint": {
+          "description": "Reference for controlPoint object",
+          "title": "The controlPoint Schema",
+          "required": [
+            "above",
+            "below",
+            "horizontal"
+          ],
+          "properties": {
+            "above": {
+              "description": "Reference for above object",
+              "$ref": "#/$defs/controlPoint-offset"
+            },
+            "below": {
+              "description": "Reference for below object",
+              "$ref": "#/$defs/controlPoint-offset"
+            },
+            "horizontal": {
+              "description": "Reference for horizontal object",
+              "$ref": "#/$defs/controlPoint-offset"
+            }
+          },
+          "examples": [
+            {
+              "controlPoint": {
+                "above": {
+                  "width": 0,
+                  "height": 0.75
+                },
+                "below": {
+                  "width": 0,
+                  "height": 0.75
+                },
+                "horizontal": {
+                  "width": 0,
+                  "height": 0
+                }
+              }
+            }
+          ]
         }
       },
       "examples": [
@@ -342,6 +417,31 @@
               "color": "#4F4F4F"
             },
             "backgroundColor": "transparent"
+          }
+        },
+        {
+          "connector": {
+            "default": {
+              "type": "quadratic",
+              "controlPoint": {
+                "above": {
+                  "width": 0,
+                  "height": 0.75
+                },
+                "below": {
+                  "width": 0,
+                  "height": 0.75
+                },
+                "horizontal": {
+                  "width": 0,
+                  "height": 0
+                }
+              },
+              "line": {
+                "color": "#707070",
+                "width": 1.0
+              }
+            }
           }
         }
       ]
@@ -1066,6 +1166,7 @@
                   ]
                 },
                 "offset": {
+                  "$comment": "QUESTION: Adapt controlPoint-offset schema to define shadow offset too?",
                   "type": "object",
                   "additionalProperties": false,
                   "title": "The offset Schema",
