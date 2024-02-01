@@ -105,10 +105,14 @@
   }
 
   g.mapjs-connector-supporting {
+    /* #095f11 */
     stroke: rgb(9, 95, 17);
+    stroke-width: 3;
   }
 
   g.mapjs-connector-opposing {
+    /* #ffafaf*/
     stroke: rgb(255, 175, 175);
+    stroke-width: 3;
   }
 }

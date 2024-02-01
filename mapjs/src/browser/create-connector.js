@@ -10,6 +10,8 @@ jQuery.fn.createConnector = function (connector, optional) {
   const stage = this.parent('.stage'),
     element = createSVG('g').data({ 'nodeFrom': stage.nodeWithId(connector.from), 'nodeTo': stage.nodeWithId(connector.to), attr: connector.attr }).attr({ 'id': connectorKey(connector), 'data-mapjs-role': 'connector' }),
     connection = buildConnection(element, optional);
+  element.addClass(connection.class);
+
   return element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }))
     .appendTo(this);
 };
