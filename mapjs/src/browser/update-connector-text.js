@@ -24,14 +24,14 @@ const createSVG = require('./create-svg'),
     const g = getTextElement(parentElement, labelText, 'g', centrePoint),
       rectElement = g && getTextElement(g, labelText, 'rect'),
       textElement = g && getTextElement(g, labelText),
-      textDOM = textElement && textElement[0];
+      textDOM = textElement?.[0];
 
     if (!textDOM) { // This has to be checked before trying to get linkDimensions.
       return false;
     };
     let textDimensions = false;
     // eslint-disable-next-line one-var
-    const rectDOM = rectElement && rectElement[0],
+    const rectDOM = rectElement?.[0],
       translate = {},
       CONNECTOR_CLASS = CONFIG.connector.class,
       linkDimensions = parentElement[0].getElementsByClassName(CONNECTOR_CLASS)[0].getClientRects()[0],

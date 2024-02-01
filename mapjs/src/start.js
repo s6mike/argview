@@ -2,15 +2,22 @@
    SPDX - License - Identifier: MIT */
 /* mapjs entry point: Initialises mapjs obections, loads JSON and embeds visualisation into a container. */
 
-/*global idea, PATH_FILE_CONFIG_MAPJS */
+/*global idea, PATH_FILE_CONFIG_MAPJS, PATH_FILE_ENV_MAPJS */
+console.debug('PATH_FILE_CONFIG_MAPJS: ' + (PATH_FILE_CONFIG_MAPJS ?? ' not found.'));
+console.debug('PATH_FILE_ENV_MAPJS: ' + (PATH_FILE_ENV_MAPJS ?? ' not found.'));
+
+let { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+  { default: CONFIG_E } = require('Mapjs/' + PATH_FILE_ENV_MAPJS);
+CONFIG = Object.assign(CONFIG, CONFIG_E);
+// TODO: Enable and merge this once mapjs_map.id needed
+//  { default: CONFIG_P } = require(PATH_FILE_CONFIG_MAPJS_PROCESSED);
+//  CONFIG = Object.assign(CONFIG, CONFIG_P);
+
 const Utilities = require('./core/util/mapjs-utilities'),
   MAPJS = require('./npm-main'),
-  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
-  // TODO: Enable and merge this once mapjs_map.id needed
-  //  { default: CONFIG_P } = require(PATH_FILE_CONFIG_MAPJS_PROCESSED);
-  //  CONFIG = Object.assign(CONFIG, CONFIG_P);
   CONTAINER_CLASS = CONFIG.mapjs_map.class,
   INSTANCE_CLASS = CONFIG.mapjs_instance.class,
+  MAPJS_FILE_THEME_OVERRIDE = CONFIG.MAPJS_FILE_THEME_OVERRIDE,
   trycatch = Utilities.trycatch;
 
 // Utilities.mjsLogger = console;
@@ -18,12 +25,15 @@ Utilities.mjsLogger.log(process.env.NODE_ENV + ' mode');
 
 // QUESTION: Can I loop through these somehow instead without having to know the name of each one?
 //   new MAPJS.Theme[x] ?
-// To change, call e.g. changeTheme(map, MAPJS.v1)
-MAPJS.arg = require('../src/themes/argmap-theme-v1.json');
-MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
-MAPJS.topdown = require('../src/themes/top-down-simple.json');
-MAPJS.compact = require('../src/themes/compact.json');
-MAPJS.v1 = require('../src/themes/v1.json');
+// To change, call e.g. changeTheme(map, MAPJS.v1) = require('../src/themes/argmap-theme-v2.json');
+MAPJS.arg_v2 = require('../src/themes/argmap-theme-v2.json');
+// MAPJS.arg_v1 = require('../src/themes/argmap-theme-v1.json');
+// MAPJS.argumentMapping = require('../src/themes/mapjs-argument-mapping.json');
+// MAPJS.topdown = require('../src/themes/top-down-simple.json');
+// MAPJS.compact = require('../src/themes/compact.json');
+// MAPJS.v1 = require('../src/themes/v1.json');
+
+MAPJS.arg = MAPJS.arg_v2;
 
 const jQuery = require('jquery'),
   themeProvider = require('../src/theme'),
@@ -106,8 +116,8 @@ const jQuery = require('jquery'),
       idea = content(mapJson),
       touchEnabled = false,
 
-      // Now I'm removing theme data from files saved on online store, I am defaulting to the built in theme
-      themeJson = idea.theme || MAPJS.arg || themeProvider.default || MAPJS.defaultTheme,
+      // Now I'm removing theme data from files saved on online store, I am defaulting to the built in theme, unless override is true
+      themeJson = (!MAPJS_FILE_THEME_OVERRIDE && idea.theme) || (MAPJS.arg ?? themeProvider.default ?? MAPJS.defaultTheme),
       getTheme = changeTheme(map, themeJson),
 
       // Set up Widgets
@@ -119,6 +129,7 @@ const jQuery = require('jquery'),
       linkEditWidgetElement = trycatch(
         () => Utilities.getElementMJS(CONFIG.toolbar_edit_links.class, containerInstance),
       );
+    // Utilities.mjsLogger.debug(`themeJson: ${JSON.stringify(themeJson)}`);
     ;
 
     // Utilities.mjsLogger.log('idea should include title_original: ' + JSON.stringify(idea));

@@ -4,6 +4,8 @@ const _ = require('underscore'),
   calcChildPosition = require('./calc-child-position'),
   lineTypes = require('./line-types'),
   nodeConnectionPointX = require('./node-connection-point-x'),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+  CONNECTOR_CLASS = CONFIG.connector.class,
   appendUnderLine = function (connectorCurve, calculatedConnector, position) {
     'use strict';
     if (calculatedConnector.nodeUnderline) {
@@ -65,12 +67,19 @@ const _ = require('underscore'),
       toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
       borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], '');
 
-    // QUESTION: Use regex extract and/or switch instead?
-    if (parent?.styles?.[0] === 'attr_group_supporting' || child?.styles?.[0] === 'attr_group_supporting') {
-      connectorTheme.class = 'mapjs-connector-supporting';
-    } else if (parent?.styles?.[0] === 'attr_group_opposing' || child?.styles?.[0] === 'attr_group_opposing') {
-      connectorTheme.class = 'mapjs-connector-opposing';
+    // QUESTION: Use regex extract instead?
+    const child_style = child?.styles?.[0];
+    switch (child_style) {
+      case 'attr_group_supporting':
+        connectorTheme.class = `${CONNECTOR_CLASS}-supporting`;
+        break;
+      case 'attr_group_opposing':
+        connectorTheme.class = `${CONNECTOR_CLASS}-opposing`;
+        break;
+      // default:
+      //   ;
     }
+
     let nodeUnderline = false, nodeOverline = false;
     if (borderType === 'underline' || borderType === 'under-overline') {
       nodeUnderline = {
@@ -127,7 +136,8 @@ const _ = require('underscore'),
     result.color = calculatedConnector.connectorTheme.line.color;
     result.width = calculatedConnector.connectorTheme.line.width;
     result.theme = calculatedConnector.connectorTheme;
-    // result.class = result.theme?.class;
+    result.class = result.theme?.class;
+
     return result;
   };
 

@@ -8,6 +8,8 @@ const jQuery = require('jquery'),
   updateConnectorText = require('./update-connector-text'),
   calcLabelCenterPont = require('./calc-label-center-point'),
   buildConnection = require('../browser/build-connection'),
+  { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
+  CONNECTOR_CLASS = CONFIG.connector.class,
   connectionIsUpdated = (element, connection, theme) => {
     'use strict';
     const connectionPropCheck = JSON.stringify(connection) + theme?.name;
@@ -59,13 +61,12 @@ jQuery.fn.updateConnector = function (optional) {
     //  https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
     element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }));
     if (pathElement.length === 0) {
-      pathElement = createSVG('path').attr('class', 'mapjs-connector').appendTo(element);
+      pathElement = createSVG('path').attr('class', CONNECTOR_CLASS).appendTo(element);
     }
     // TODO: if the map was translated (so only the relative position changed), do not re-update the curve!
     pathElement.attr({
       'd': connection.d,
       'stroke-width': connection.width,
-      'class': connection.class ?? undefined,
       'stroke-dasharray': lineStrokes[connection.lineStyle ?? 'solid'],
       fill: 'transparent'
     });

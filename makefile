@@ -422,7 +422,7 @@ $(info make site MODE: ${MODE})
 	-mkdir --parent "${@D}"
 	DEV_SERVER_NAME=$(1) bash -c "npm run pack:$(MODE) --prefix ${MAPJS_NODE_MODULES_PREFIX}"
 	-rm ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
-	-npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
+	npx --prefix "${MAPJS_NODE_MODULES_PREFIX}" wait-on --timeout 10000 "${PATH_FILE_MAPJS_HTML_DIST_TAGS}"
 	-touch ${PATH_FILE_MAPJS_HTML_DIST_TAGS}
 endef
 

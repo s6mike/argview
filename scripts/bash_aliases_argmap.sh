@@ -111,7 +111,7 @@ __check_lua_debug() {
 # Checks `mapjs/src` for lua files with uncommented debug code.
 # Used by __update_repo() (called from test script) and pre-commit hook (duplication)
 __check_js_debug() {
-  printf "\nChecking js files for uncommented console.debug commands. Expecting 0.\n"
+  printf "\nChecking js files for uncommented console.debug commands. Expecting 2 only.\n"
   # 1st grep: Recursive search through directory, exclude lines starting with comments, show line numbers. Need to this filter first - because second grep will have line numbers etc to deal with.
   # 2nd grep: Fixed text, case insensitive
   grep -rnv '^\s*//' "$PATH_DIR_MAPJS_SRC_JS" | grep -Fie 'console.debug'

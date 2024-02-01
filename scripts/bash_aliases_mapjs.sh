@@ -150,8 +150,9 @@ __is_server_live() { # __is_server_live 9001 netlify_dev_server
 
 # TODO: Add force option to this function
 # shellcheck disable=SC2120
-webserver_halt() { #wsh
+webserver_halt() { #wsh 9001 force
   local port=${1:-$(getvar DEV_SERVER.PORT)}
+  local mode=${2:-normal}
   export SERVER_ON=false
   if __is_server_live "$port"; then
     # If kill doesn't work, then use `npm run stop:force`
@@ -159,7 +160,7 @@ webserver_halt() { #wsh
     # Else:
     #   `killall -9 node` will.
     #   `PID=fuser 9001/tcp; kill -9 $PID`;
-    npm --prefix "$(getvar PATH_MAPJS)" run stop
+    npm --prefix "$(getvar PATH_MAPJS)" run stop:$mode
     export SERVER_MODE=false
   else
     # echo "Server already off" >&2

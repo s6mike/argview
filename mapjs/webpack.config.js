@@ -84,6 +84,7 @@ module.exports = (env, argv) => {
         // 	'process.env.NODE_ENV': JSON.stringify(argv.mode || process.env.NODE_ENV || 'development'), // Taken from stack exchange but not convinced it's useful
         // PATH_FILE_CONFIG_MAPJS_RELATIVE_SRC: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS_RELATIVE_SRC),
         PATH_FILE_CONFIG_MAPJS: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS),
+        PATH_FILE_ENV_MAPJS: JSON.stringify(process.env.PATH_FILE_ENV_MAPJS),
         PATH_FILE_CONFIG_MAPJS_PROCESSED: JSON.stringify(process.env.PATH_FILE_CONFIG_MAPJS_PROCESSED),
         // 'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
         // 	Couldn't get this to work:

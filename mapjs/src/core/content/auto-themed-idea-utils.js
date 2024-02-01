@@ -9,9 +9,9 @@ const calcIdeaLevel = require('./calc-idea-level'),
     }
     const parentLevel = calcIdeaLevel(activeContent, parentId),
       parentIdea = parentId && activeContent.findSubIdeaById(parentId),
-      numberOfSiblings = Object.keys?.(parentIdea?.ideas).length || 0,
+      numberOfSiblings = (parentIdea?.ideas && Object.keys(parentIdea.ideas).length) ?? 0,
       attrs = themeObj.getPersistedAttributes(optionalIdeaAttr, parentLevel + 1, numberOfSiblings).attr,
-      attrsToSave = (!_.isEmpty(attrs) && attrs) || undefined;
+      attrsToSave = (!_.isEmpty(attrs) && attrs) ?? undefined;
     return activeContent.addSubIdea(parentId, ideaTitle, optionalNewId, attrsToSave);
   },
   recalcAutoNodeAttrs = (activeContent, themeObj, idea, level, numberOfSiblings) => {
