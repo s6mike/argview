@@ -1,5 +1,5 @@
 {
-  "$schema": "https://argview.org/schemas/v3-1/mapjs-theme.json",
+  "$schema": "https://argview.org/schemas/v3-3/schema-json-mapjs-theme.json",
   "node": [
     {
       "border": {
