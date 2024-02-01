@@ -65,8 +65,8 @@ jQuery.fn.updateConnector = function (optional) {
     pathElement.attr({
       'd': connection.d,
       'stroke-width': connection.width,
-      'class': connection.class,
-      'stroke-dasharray': lineStrokes[connection.lineStyle || 'solid'],
+      'class': connection.class ?? undefined,
+      'stroke-dasharray': lineStrokes[connection.lineStyle ?? 'solid'],
       fill: 'transparent'
     });
     if (allowParentConnectorOverride) {
