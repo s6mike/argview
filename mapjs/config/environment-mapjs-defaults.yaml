@@ -9,6 +9,7 @@
 ########
 
 # Use ${variable} for referencing other yaml variables
+MAPJS_FILE_THEME_OVERRIDE: true
 
 # NODE_PATH: . node start.js
 

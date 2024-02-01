@@ -3,7 +3,7 @@
 [[redirects]]
   from = "/schemas/latest"
   # TODO: Update to always be latest
-  to = "/schemas/v3-2/mapjs-json.json"
+  to = "/schemas/v3-3/schema-json-mapjs.json"
   status = 302
   force = false
 

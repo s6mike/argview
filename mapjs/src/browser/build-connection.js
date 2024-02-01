@@ -12,7 +12,7 @@ module.exports = function buildConnection(element, optional) {
         box.height = innerRect.height;
       }
     },
-    connectorBuilder = optional?.connectorBuilder || themeConnector,
+    connectorBuilder = optional?.connectorBuilder ?? themeConnector,
     shapeFrom = element.data('nodeFrom'),
     shapeTo = element.data('nodeTo'),
     theme = optional?.theme,

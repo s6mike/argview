@@ -1,7 +1,7 @@
 {
-  "$schema": "https://argview.org/schemas/v3-1/mapjs-theme.json",
-  "id": "mapjs/src/themes/argmap-theme-v1.json",
-  "name": "Earlier version of customised argmap theme for MindMup Top Down Argument Mapping",
+  "$schema": "https://argview.org/schemas/v3-3/schema-json-mapjs-theme.json",
+  "id": "mapjs/src/themes/argmap-theme-v2.json",
+  "name": "Default argview theme: Customised argmap theme for MindMup Top Down Argument Mapping",
   "description": "argmap theme for displaying Argument Maps, adapted from theme used in original argmap github repo.",
   "node": [
     {
@@ -414,8 +414,7 @@
     "no-connector.opposing-group": {
       "type": "no-connector",
       "line": {
-        "width": 4,
-        "color": "#FFAFAF"
+        "width": 4
       },
       "label": {
         "position": {
@@ -436,8 +435,7 @@
     "opposing-group": {
       "type": "vertical-quadratic-s-curve",
       "line": {
-        "width": 3,
-        "color": "#FFAFAF"
+        "width": 3
       },
       "label": {
         "position": {
@@ -459,8 +457,7 @@
     "no-connector.supporting-group": {
       "type": "no-connector",
       "line": {
-        "width": 4,
-        "color": "#095F11"
+        "width": 4
       },
       "label": {
         "position": {
@@ -481,8 +478,7 @@
     "supporting-group": {
       "type": "vertical-quadratic-s-curve",
       "line": {
-        "width": 3,
-        "color": "#095F11"
+        "width": 3
       },
       "label": {
         "position": {

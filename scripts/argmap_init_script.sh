@@ -235,6 +235,7 @@ export_vars() {
   # False means no echo 
   getvar DEV_SERVER.PORT false # Exported as DEV_SERVER_PORT
   getvar DEFAULT_MAPJS_CSS false
+  getvar PATH_FILE_ENV_MAPJS false
 } # end export_vars
 
 make_rest() {
