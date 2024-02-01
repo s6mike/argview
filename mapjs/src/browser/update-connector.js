@@ -10,7 +10,7 @@ const jQuery = require('jquery'),
   buildConnection = require('../browser/build-connection'),
   connectionIsUpdated = (element, connection, theme) => {
     'use strict';
-    const connectionPropCheck = JSON.stringify(connection) + (theme && theme.name);
+    const connectionPropCheck = JSON.stringify(connection) + theme?.name;
     if (!connection || connectionPropCheck === element.data('changeCheck')) {
       return false;
     }
@@ -27,13 +27,13 @@ jQuery.fn.updateConnector = function (optional) {
     const element = jQuery(this),
       connectorAttr = element.data('attr'),
       // TODO: Remove blockParentConnectorOverride once site has been live for a while
-      allowParentConnectorOverride = !theme || !(theme.connectorEditingContext || theme.blockParentConnectorOverride) || (theme.connectorEditingContext && theme.connectorEditingContext.allowed && theme.connectorEditingContext.allowed.length),
+      allowParentConnectorOverride = (theme?.connectorEditingContext || theme?.blockParentConnectorOverride) ?? theme.connectorEditingContext?.allowed?.length,
       connection = buildConnection(element, optional),
       applyLabel = function () {
-        const labelText = connectorAttr?.label || '',
+        const labelTheme = connection.theme?.label ?? defaultTheme.connector.default.label,
+          labelText = connectorAttr?.label ?? '', // QUESTION: Can I simpplify logic so following lines only defined if labelText isn't ''?
           shapeTo = labelText && element.data('nodeTo'),
           shapeFrom = labelText && element.data('nodeFrom'),
-          labelTheme = connection.theme?.label || defaultTheme.connector.default.label,
           labelCenterPoint = labelText && calcLabelCenterPont(connection.position, shapeFrom.getDataBox(), shapeTo.getDataBox(), connection.d, labelTheme);
         updateConnectorText(
           element,
@@ -52,7 +52,7 @@ jQuery.fn.updateConnector = function (optional) {
       return;
     }
     element.data('theme', connection.theme);
-    element.data('position', Object.assign({}, connection.position));
+    element.data('position', { ...connection.position });
     pathElement = element.find('path.mapjs-connector');
     hitElement = element.find('path.mapjs-link-hit');
     element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }));
@@ -74,10 +74,8 @@ jQuery.fn.updateConnector = function (optional) {
         'd': connection.d,
         'stroke-width': connection.width + 12
       });
-    } else {
-      if (hitElement.length > 0) {
-        hitElement.remove();
-      }
+    } else if (hitElement.length > 0) {
+      hitElement.remove();
     }
     applyLabel();
   });
