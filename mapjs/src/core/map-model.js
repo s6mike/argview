@@ -311,7 +311,9 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     return isEditingEnabled;
   };
   this.setInputEnabled = function (source, dataset, value, holdFocus) {
-    (typeof value === 'undefined') ? value = dataset.setInputEnabled === 'true' : undefined;
+    // if (typeof value === 'undefined') {
+    value = value ?? dataset.setInputEnabled === 'true'
+    // }
     if (isInputEnabled !== value) {
       isInputEnabled = value;
       self.dispatchEvent('inputEnabledChanged', value, !!holdFocus);
@@ -860,7 +862,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     if (link_element && !link_element.classList.contains('selected-link')) {
       // TODO: Would be more efficient to remember the selected link and then remove the class from it without having to find it again.
       const old_selected_link = this.containerElement.getElementsByClassName('selected-link')[0];
-      (old_selected_link ? old_selected_link.classList.remove('selected-link') : undefined);
+      old_selected_link?.classList.remove('selected-link');
       link_element.classList.add('selected-link');
     };
     self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));

@@ -287,7 +287,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
   self.setThemeClassList(effectiveStyles).attr('mapjs-level', nodeLevel);
 
   self.data(nodeCacheData);
-  self.data('nodeCacheMark', nodeCacheMark(nodeContent, Object.assign({ theme: theme }, optional)));
+  self.data('nodeCacheMark', nodeCacheMark(nodeContent, { theme: theme, ...optional }));
   setColors(colorText);
   setIcon(nodeContent.attr && nodeContent.attr.icon);
   setCollapseClass();
