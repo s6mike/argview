@@ -429,7 +429,7 @@ endef
 #		dependent on whole mapjs/src folder, using: https://stackoverflow.com/questions/14289513/makefile-rule-that-depends-on-all-files-under-a-directory-including-within-subd
 # QUESTION: Use var and find for node_modules dependency, like FILE_JS_SRC? Using hidden node_modules/.packagelock instead
 # QUESTION: Does including ${PATH_OUTPUT_JS}/main.js.map force rebuild in dev mode?
-${PATH_FILE_MAPJS_HTML_DIST_TAGS} $(FILES_JS): ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
+${PATH_FILE_MAPJS_HTML_DIST_TAGS} $(FILES_JS): ${PATH_DIR_MAPJS_ROOT}/webpack.config.js $(FILES_JS_SRC) ${PATH_DIR_MAPJS_ROOT}/package-lock.json mapjs/config/processed/config-mapjs-processed.yaml mapjs/config/environment-mapjs.yaml ${MAPJS_NODE_MODULES_PREFIX}/node_modules/.package-lock.json
 # 	$(info make site MODE: ${MODE})
 # 	-mkdir --parent "${@D}"
 # # -echo "NODE_PATH: ${NODE_PATH}"

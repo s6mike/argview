@@ -1,8 +1,18 @@
-@layer mapjs-theme {
+@layer mapjs-theme-css {
 
-  body:not(.noTransition) .mapjs-node:not(.noTransition):not(.dragging),
-  body:not(.noTransition) [data-mapjs-role="svg-container"] :not(.noTransition),
-  body:not(.noTransition) [data-mapjs-role="svg-container"] :not(.noTransition) :not(.noTransition) {
+  :root {
+    --color-stroke-connector-supporting: rgb(9, 95, 17);
+    --color-stroke-connector-opposing: rgb(255, 175, 175);
+    --color-border-node-mapjs-droppable: #22AAE0;
+    --color-background-alpha: 0.6;
+    --color-background-node-mapjs-opposing-droppable: rgba(255, 0, 0, var(--color-background-alpha, 0.6));
+    --color-background-node-mapjs-supporting-droppable: rgba(0, 255, 0, var(--color-background-alpha, 0.6));
+    --width-stroke-connector-supporting: 3;
+    --width-stroke-connector-opposing: 3;
+  }
+
+  body:not(.noTransition) .mapjs-node:not(.dragging),
+  body:not(.noTransition) [data-mapjs-role="svg-container"] :not(.dragging) {
     transition-property: transform, left, d, top, opacity;
     transition-duration: 400ms;
   }
@@ -36,12 +46,12 @@
   }
 
   .mapjs-node.activated {
-    border: 3px dotted #22AAE0;
+    border: 3px dotted var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
   }
 
   .mapjs-node.activated.attr_implicit_claim {
-    border: 3px dashed #22AAE0;
+    border: 3px dashed var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
   }
 
@@ -68,39 +78,43 @@
     border: 0;
   }
 
-  .mapjs-node.attr_group_supporting {
-    border: 2px solid transparent;
-    margin: -2px;
-    background-color: rgba(0, 255, 0, 0.2);
-  }
-
   .mapjs-node.attr_group_supporting.activated {
-    border: 3px dotted #22AAE0;
+    border: 3px dotted var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
-    background-color: rgba(0, 255, 0, 0.2);
-  }
-
-  .mapjs-node.attr_group_opposing {
-    border: 2px solid transparent;
-    margin: -2px;
-    background-color: rgba(255, 0, 0, 0.2);
+    --color-background-alpha: 0.2;
+    background-color: var(--color-background-node-mapjs-supporting-droppable, rgba(0, 255, 0, var(--color-background-alpha, 0.2)));
   }
 
   .mapjs-node.attr_group_opposing.activated {
-    border: 3px dotted #22AAE0;
+    border: 3px dashed var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
-    background-color: rgba(255, 0, 0, 0.2);
+    --color-background-alpha: 0.2;
+    background-color: var(--color-background-node-mapjs-opposing-droppable, rgba(255, 0, 0, var(--color-background-alpha, 0.2)));
   }
 
   .mapjs-node.attr_group_supporting.droppable {
-    border: 3px dashed #22AAE0;
+    border: 3px dashed var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
-    background-color: rgba(0, 255, 0, 0.6);
+    --color-background-alpha: 0.6;
+    background-color: var(--color-background-node-mapjs-supporting-droppable, rgba(0, 255, 0, var(--color-background-alpha, 0.6)));
   }
 
   .mapjs-node.attr_group_opposing.droppable {
-    border: 3px dashed #22AAE0;
+    border: 3px dashed var(--color-border-node-mapjs-droppable, #22AAE0);
     margin: -3px;
-    background-color: rgba(255, 0, 0, 0.6);
+    --color-background-alpha: 0.6;
+    background-color: var(--color-background-node-mapjs-opposing-droppable, rgba(255, 0, 0, var(--color-background-alpha, 0.6)));
+  }
+
+  g.mapjs-connector-supporting {
+    /* #095f11 */
+    stroke: var(--color-connector-supporting-stroke, rgb(9, 95, 17));
+    stroke-width: var(--width-stroke-connector-supporting, 3);
+  }
+
+  g.mapjs-connector-opposing {
+    /* #ffafaf*/
+    stroke: var(--color-connector-opposing-stroke, rgb(255, 175, 175));
+    stroke-width: var(--width-stroke-connector-opposing, 3);
   }
 }

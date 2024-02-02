@@ -14,10 +14,11 @@ PATH_INCLUDES_ARGMAP_CONTAINER_DEFAULT: ${PATH_INCLUDES_MAPJS_CONTAINER_STANDARD
 PANDOC_FILTER_LUA_DEFAULT: ${PATH_FILE_PANDOC_FILTER_LUA_ARGMAP}
 
 PATH_CSS_MAPJS_DEFAULT: /css/mapjs-default-styles.css
-PATH_CSS_MAPJS_THEME_ARGMAP: /css/argmap-theme-v2.css
+PATH_CSS_ARGVIEW_CUSTOM: /css/mapjs-default-styles.css
+PATH_CSS_MAPJS_THEME_ARGMAP: /css/argmap-theme-v1.css
 
-# TODO: Update ${DEFAULT_MAPJS_CSS} > ${PATH_CSS_MAPJS_DEFAULT}, then remove this:
-DEFAULT_MAPJS_CSS: ${PATH_CSS_MAPJS_DEFAULT}
+# TODO: Update ${DEFAULT_MAPJS_CSS} > ${PATH_CSS_ARGVIEW_CUSTOM}, then remove these:
+DEFAULT_MAPJS_CSS: ${PATH_CSS_ARGVIEW_CUSTOM}
 
 # All CSS files used by html output.
 #   However, pandoc templates won't expand the variables

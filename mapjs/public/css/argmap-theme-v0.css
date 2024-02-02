@@ -1,10 +1,4 @@
-@layer pandoc,
-argview,
-mapjs-theme,
-mapjs-js,
-mapjs-override;
-
-@layer mapjs-theme {
+@layer mapjs-theme-css {
 
   body:not(.noTransition) .mapjs-node:not(.noTransition):not(.dragging),
   body:not(.noTransition) [data-mapjs-role="svg-container"] :not(.noTransition),

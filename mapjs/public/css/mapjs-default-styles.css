@@ -3,7 +3,7 @@
 @layer pandoc,
 mapjs-default,
 argview-custom,
-mapjs-theme,
+mapjs-theme-css,
 mapjs-js,
 override;
 
@@ -226,10 +226,10 @@ transform-origin: top left; */
   .mapjs-node {
     margin: 0;
     z-index: 2;
-    user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    user-select: none;
     /* line-height: 15px; */
     /* line-height: 1.3; */
     cursor: grab;
@@ -282,11 +282,11 @@ transform-origin: top left; */
     background-color: transparent !important;
   }
 
-  .mapjs-node span[contenteditable=true] {
-    user-select: text;
+        .mapjs-node span[contenteditable=true] {
     -moz-user-select: text;
     -webkit-user-select: text;
     -ms-user-select: text;
+    user-select: text;
     cursor: text;
   }
 
@@ -313,7 +313,11 @@ transform-origin: top left; */
     /* Want cursor to change but even with important won't take precedence over. Think it's because cursor isn't hovering over the target node */
     cursor: copy !important;
   }
+}
 
+/* End layer argview-custom*/
+
+@layer mapjs-default {
   .mapjs-node.level_1[mapjs-level="1"]:not(.attr_group) {
     font-size: 16px;
     font-weight: 400 !important;
