@@ -1,4 +1,3 @@
-/*global module, require */
 const _ = require('underscore'),
   formattedNodeTitle = require('../content/formatted-node-title'),
   applyIdeaAttributesToNodeTheme = require('../content/apply-idea-attributes-to-node-theme'),

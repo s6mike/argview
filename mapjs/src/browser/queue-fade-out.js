@@ -1,4 +1,3 @@
-/*global require, setTimeout */
 const jQuery = require('jquery');
 jQuery.fn.queueFadeOut = function (theme) {
   'use strict';
@@ -15,6 +14,6 @@ jQuery.fn.queueFadeOut = function (theme) {
   return element
     .on('transitionend', removeElement)
     .css('opacity', 0);
-  setTimeout(removeElement, 500);
+  // setTimeout(removeElement, 500);
 };
 

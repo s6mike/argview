@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global require, mapInstance */
+/*global mapInstance */
 const jQuery = require('jquery');
 jQuery.fn.imageDropWidget = function (imageInsertController) {
   'use strict';

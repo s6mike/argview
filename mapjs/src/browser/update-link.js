@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   createSVG = require('./create-svg'),
   convertPositionToTransform = require('../core/util/convert-position-to-transform'),

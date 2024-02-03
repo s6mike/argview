@@ -1,4 +1,3 @@
-/*global module, require */
 const _ = require('underscore');
 module.exports = function convertPositionToTransform(cssPosition) {
   'use strict';

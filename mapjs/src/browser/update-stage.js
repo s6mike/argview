@@ -1,17 +1,16 @@
-/*global require */
 const jQuery = require('jquery');
 // TODO: Could replace with HTMLElement.prototype.updateStage, but since only stage object needs it, better to add it to that instead
 jQuery.fn.updateStage = function () {
   'use strict';
   const data = this.data(),
-  // stage = this[0],
+    // stage = this[0],
     size = {
       // Looks like mins don't matter
       // 'min-width': Math.round(data.width - data.offsetX),
       // 'min-height': Math.round(data.height - data.offsetY),
       // 'width': Math.round(data.width - data.offsetX),
       'height': Math.round(data.height - data.offsetY),
-      // 'left': 'min(' + Math.round(-data.offsetX) + 'px, ' + 1424 + 'px)', 
+      // 'left': 'min(' + Math.round(-data.offsetX) + 'px, ' + 1424 + 'px)',
       // 'margin-left': Math.round(-data.offsetX),
       // 'transform-origin': 'top left',
       // Now using style.css with simple 50% to keep it centered

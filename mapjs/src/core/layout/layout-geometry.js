@@ -1,4 +1,3 @@
-/*global module, require */
 const _ = require('underscore'),
   PolyBool = require('polybooljs'),
   convexHull = require('monotone-convex-hull-2d'),

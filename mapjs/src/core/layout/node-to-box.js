@@ -1,4 +1,3 @@
-/*global module*/
 module.exports = function nodeToBox(node) {
   'use strict';
   if (!node) {

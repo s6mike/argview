@@ -1,4 +1,3 @@
-/*global module, require*/
 const convertToRGB = require('./color-to-rgb');
 module.exports = function colorParser(colorObj) {
   'use strict';

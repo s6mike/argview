@@ -1,5 +1,3 @@
-/*global module, require*/
-
 const foregroundStyle = require('../theme/foreground-style');
 module.exports = function applyIdeaAttributesToNodeTheme(idea, nodeTheme) {
   'use strict';
@@ -29,7 +27,7 @@ module.exports = function applyIdeaAttributesToNodeTheme(idea, nodeTheme) {
   }
 
   if (textAlign) {
-    nodeTheme.text = Object.assign({}, nodeTheme.text, { alignment: textAlign });
+    nodeTheme.text = { ...nodeTheme.text, alignment: textAlign };
   }
 
   if ((nodeTheme && nodeTheme.hasFontMultiplier)) {

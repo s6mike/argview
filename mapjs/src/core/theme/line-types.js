@@ -1,5 +1,3 @@
-/*global module*/
-
 const straight = function (calculatedConnector, position) {
   'use strict';
   return {

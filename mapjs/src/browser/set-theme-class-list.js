@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   _ = require('underscore');
 jQuery.fn.setThemeClassList = function (classList) {

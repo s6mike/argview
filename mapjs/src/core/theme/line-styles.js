@@ -1,5 +1,3 @@
-/*global module*/
-
 module.exports = {
   strokes: (name, width) => {
     'use strict';

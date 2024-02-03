@@ -1,4 +1,3 @@
-/*global module, require*/
 const _ = require('underscore'),
   nodeToBox = require('./node-to-box');
 

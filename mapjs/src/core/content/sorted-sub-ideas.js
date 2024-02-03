@@ -1,4 +1,3 @@
-/*global module */
 const positive = function positive(key) {
     'use strict';
     return key >= 0;

@@ -1,4 +1,3 @@
-/*global require, module*/
 const _ = require('underscore'),
   borderLength = function (border) {
     'use strict';
@@ -73,7 +72,7 @@ const _ = require('underscore'),
 
       if (!horizontalIndent) {
         return this;
-      };
+      }
 
       top.unshift({ h: Math.round(vertCenter - margin / 2), l: horizontalIndent });
       bottom.unshift({ h: Math.round(vertCenter + margin / 2), l: horizontalIndent });

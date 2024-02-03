@@ -1,4 +1,3 @@
-/*global module*/
 const getValue = (hashmap, attributeNameComponents) => {
     'use strict';
     if (!hashmap || !attributeNameComponents || !attributeNameComponents.length || typeof hashmap !== 'object' || !Array.isArray(attributeNameComponents)) {
@@ -38,7 +37,7 @@ const getValue = (hashmap, attributeNameComponents) => {
   keyComponentsWithValue = (hashmap, searchingFor) => {
     'use strict';
     if (typeof searchingFor === 'object' || Array.isArray(searchingFor)) {
-      throw 'search-type-not-supported';
+      throw new Error('search-type-not-supported');
     }
     const result = [];
     if (!hashmap || typeof hashmap !== 'object') {

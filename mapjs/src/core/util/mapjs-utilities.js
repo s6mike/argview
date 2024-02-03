@@ -55,18 +55,20 @@ module.exports = {
   trycatch: (t, c) => {
     'use strict';
     // Set default exception here:
-    c = (exception) => {
-      if (process.env.NODE_ENV === 'production') {
-        mjsLogger.error('Caught: ' + exception);
-      } else {
-        throw exception;
-      }
-    };
+    if (typeof c !== 'function') {
+      c = (exception) => {
+        if (process.env.NODE_ENV === 'production') {
+          mjsLogger.error('Caught: ' + exception);
+        } else {
+          throw exception;
+        }
+      };
+    }
     try {
       return t();
     } catch (exception) {
       return c(exception);
-    };
+    }
   },
   loadJson: async function (script_src) {
     'use strict';
@@ -80,7 +82,7 @@ module.exports = {
     } catch (error) {
       mjsLogger.error(error);
       throw error;
-    };
+    }
   },
   getMapTitle: function (mapJson) {
     'use strict';
@@ -137,7 +139,7 @@ module.exports = {
       if (!originalMap && !final) { // Final check stops infinite loop
         mjsLogger.log('Attempting to retrieve original map ' + index + ' instead.');
         // QUESTION: Better to go id > title > element?
-          mapJson = await this.getMap(index, instanceElement);
+        mapJson = await this.getMap(index, instanceElement);
         mjsLogger.info('Retrieved original map ' + index);
         return mapJson;
       }
@@ -166,7 +168,7 @@ module.exports = {
         }
         // elementOrEvent is an element:
         return (elementOrEvent.closest) ? elementOrEvent.closest('.' + CONTAINER_CLASS).id : false;
-    }
+      }
     }
   },
   updateDataPreSave: function (map_data) {
@@ -221,7 +223,7 @@ module.exports = {
         } else {
           const response_text = response.text();
           throw new Error('`Save map` server response not in JSON format: ' + response_text);
-        };
+        }
       }
     }).catch(error => {
       mjsLogger.error('Server response error: ' + error);

@@ -1,5 +1,3 @@
-/*global module*/
-
 module.exports = function themeToDictionary(themeJson) {
   'use strict';
   const themeDictionary = Object.assign({}, themeJson),

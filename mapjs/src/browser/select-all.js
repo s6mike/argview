@@ -1,4 +1,3 @@
-/*global require, window, document */
 const jQuery = require('jquery');
 jQuery.fn.selectAll = function () {
   'use strict';

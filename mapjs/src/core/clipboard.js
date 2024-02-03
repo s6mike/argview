@@ -1,4 +1,3 @@
-/*global module */
 module.exports = function MemoryClipboard() {
   'use strict';
   const self = this,

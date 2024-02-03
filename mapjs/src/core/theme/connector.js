@@ -1,4 +1,4 @@
-/*global require, module */
+/* global PATH_FILE_CONFIG_MAPJS */
 const _ = require('underscore'),
   Theme = require('./theme'),
   calcChildPosition = require('./calc-child-position'),
@@ -53,23 +53,22 @@ const _ = require('underscore'),
   calculateConnector = function (parent, child, theme) {
     'use strict';
     const childPosition = calcChildPosition(parent, child, 10),
-    // Either parent.styles[0] or child.styles[0] will contain attr_group_opposing or attr_group_supporting
-    //  So can check this then apply class
+      // Either parent.styles[0] or child.styles[0] will contain attr_group_opposing or attr_group_supporting
+      //  So can check this then apply class
       fromStyles = parent.styles,
       toStyles = child.styles,
       connectionPositionDefaultFrom = theme.attributeValue(['node'], fromStyles, ['connections', 'default'], { h: 'center', v: 'center' }),
       connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], { h: 'nearest-inset', v: 'center' }),
       connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
       connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
-    // TODO: Add class instead of assigning line.color (and line-width?)
+      // TODO: Add class instead of assigning line.color (and line-width?)
       connectorTheme = theme.connectorTheme(childPosition, toStyles, fromStyles),
       fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
       toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
       borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], '');
 
     // QUESTION: Use regex extract instead?
-    const child_style = child?.styles?.[0];
-    switch (child_style) {
+    switch (child?.styles?.[0]) {
       case 'attr_group_supporting':
         connectorTheme.class = `${CONNECTOR_CLASS}-supporting`;
         break;
@@ -128,7 +127,7 @@ const _ = require('underscore'),
         width: Math.max(parent.left + parent.width, child.left + child.width, left + 1) - left,
         height: Math.max(parent.top + parent.height, child.top + child.height, top + 1) - top + 2
       },
-      theme = themeArg || new Theme({}),
+      theme = themeArg ?? new Theme({}),
       calculatedConnector = calculateConnector(parent, child, theme),
       result = appendBorderLines(lineTypes[calculatedConnector.connectorTheme.type](calculatedConnector, position, parent, child), calculatedConnector, position);
     result.color = calculatedConnector.connectorTheme.line.color;

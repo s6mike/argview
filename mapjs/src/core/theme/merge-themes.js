@@ -1,4 +1,3 @@
-/*global module, require*/
 const deepAssign = require('../deep-assign'),
   isObjectObject = require('../is-object-object');
 module.exports = function mergeThemes(theme, themeOverride) {

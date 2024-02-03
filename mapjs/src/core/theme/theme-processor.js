@@ -1,4 +1,4 @@
-/*global module, require*/
+/* global PATH_FILE_CONFIG_MAPJS */
 const _ = require('underscore'),
   colorParser = require('./color-parser');
 module.exports = function ThemeProcessor() {

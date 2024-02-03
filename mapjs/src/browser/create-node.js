@@ -1,4 +1,3 @@
-/*global require*/
 const jQuery = require('jquery'),
   nodeKey = require('../core/util/node-key');
 jQuery.fn.createNode = function (node) {

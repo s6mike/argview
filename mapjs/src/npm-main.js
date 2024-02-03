@@ -1,5 +1,3 @@
-/*global module, require */
-
 require('./browser/dom-map-widget');
 require('./browser/map-toolbar-widget');
 require('./browser/link-edit-widget');

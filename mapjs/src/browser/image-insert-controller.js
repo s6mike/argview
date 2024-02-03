@@ -1,4 +1,4 @@
-/*global module, require, FileReader, mapInstance */
+/*global mapInstance */
 const jQuery = require('jquery'),
   _ = require('underscore'),
   observable = require('../core/util/observable'),
@@ -43,7 +43,7 @@ module.exports = function ImageInsertController(corsProxyUrl, resourceConverter)
           });
         }
       });
-    };
+    }
   };
   self.insertHtmlContent = function (htmlContent, evt) {
     const images = htmlContent.match(/img[^>]*src="([^"]*)"/);

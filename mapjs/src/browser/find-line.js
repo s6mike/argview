@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   connectorKey = require('../core/util/connector-key'),
   linkKey = require('../core/util/link-key');

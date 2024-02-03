@@ -1,4 +1,3 @@
-/*global module */
 module.exports = function compactedGroupWidth(nodeGroup, margin) {
   'use strict';
   if (!nodeGroup || !nodeGroup.length) {

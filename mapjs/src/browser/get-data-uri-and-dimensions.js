@@ -1,4 +1,3 @@
-/*global module, document, Image, require */
 const jQuery = require('jquery');
 module.exports = function getDataURIAndDimensions(src, corsProxyUrl) {
   'use strict';

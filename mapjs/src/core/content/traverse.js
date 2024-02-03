@@ -1,4 +1,3 @@
-/*global module, require */
 const sortedSubIdeas = require('./sorted-sub-ideas');
 module.exports = function traverse(contentIdea, iterator, postOrder, level) {
   'use strict';

@@ -1,4 +1,3 @@
-/*global module, require*/
 const isObjectObject = require('./is-object-object'),
   isNotRecursableObject = value => {
     'use strict';

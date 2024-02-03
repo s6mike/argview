@@ -1,4 +1,3 @@
-/*global module, require*/
 const _ = require('underscore'),
   isEmptyGroup = require('../../content/is-empty-group'),
   alignGroup = require('./align-group'),

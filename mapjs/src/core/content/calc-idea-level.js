@@ -1,10 +1,9 @@
-/*global module, require*/
 const _ = require('underscore');
 
 module.exports = function calcIdeaLevel(contentIdea, nodeId, currentLevel) {
   'use strict';
   if (!contentIdea) {
-    throw 'invalid-args';
+    throw new Error('invalid-args');
   }
   if (contentIdea.id == nodeId) { //eslint-disable-line eqeqeq
     return currentLevel || 0;

@@ -1,4 +1,3 @@
-/* global module, require */
 const URLHelper = require('../util/url-helper'),
   _ = require('underscore');
 module.exports = function formatNoteToHtml(noteText) {

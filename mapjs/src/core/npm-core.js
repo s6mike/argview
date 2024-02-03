@@ -1,4 +1,3 @@
-/*global module, require */
 module.exports = {
   MapModel: require('./map-model'),
   content: require('./content/content'),

@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   _ = require('underscore'),
   URLHelper = require('../core/util/url-helper'),
@@ -264,7 +263,7 @@ jQuery.fn.updateNodeContent = function (nodeContent, theme, optional) {
       applyNote();
       // Removed since attachment code disabled.
       // applyAttachment();
-    };
+    }
     this.css({ margin: '', width: '', height: '', opacity: 1 });
     if (decorationEdge === 'left') {
       nodeCacheData.innerRect.dx = decorations().outerWidth();

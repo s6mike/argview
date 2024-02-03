@@ -1,5 +1,4 @@
-/*global require */
-
+/* global PATH_FILE_CONFIG_MAPJS */
 const jQuery = require('jquery'),
   createSVG = require('./create-svg'),
   defaultTheme = require('../core/theme/default-theme'),

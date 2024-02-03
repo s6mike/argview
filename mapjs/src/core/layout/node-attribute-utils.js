@@ -1,4 +1,3 @@
-/*global module, require*/
 const objectUtils = require('../util/object-utils'),
   _ = require('underscore'),
   INHERIT_MARKER = 'theme_inherit',

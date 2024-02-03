@@ -1,4 +1,3 @@
-/* global require, module */
 const _ = require('underscore');
 module.exports = function isEmptyGroup(contentIdea) {
   'use strict';

@@ -1,4 +1,3 @@
-/*global module, Logger*/
 module.exports = function observable(base) {
   'use strict';
   let listeners = [];

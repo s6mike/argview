@@ -1,4 +1,3 @@
-/*global module, require*/
 const calcIdeaLevel = require('./calc-idea-level'),
   _ = require('underscore'),
   traverse = require('./traverse'),

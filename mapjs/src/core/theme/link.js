@@ -1,4 +1,3 @@
-/*global require, module */
 const Theme = require ('./theme'),
   arrowPath = function (lineFrom, lineTo, offset) {
     'use strict';

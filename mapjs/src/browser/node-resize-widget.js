@@ -1,4 +1,3 @@
-/*global require*/
 const jQuery = require('jquery');
 require('./hammer-draggable');
 jQuery.fn.nodeResizeWidget = function (nodeId, mapModel, stagePositionForPointEvent) {

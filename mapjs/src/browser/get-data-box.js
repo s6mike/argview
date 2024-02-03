@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 require('./get-box');
 jQuery.fn.getDataBox = function () {

@@ -1,4 +1,3 @@
-/*global module */
 module.exports = {};
 module.exports.default =  {
   'name': 'MindMup V1',

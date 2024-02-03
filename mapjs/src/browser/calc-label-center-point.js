@@ -1,4 +1,3 @@
-/*global module, require */
 const defaultTheme = require('../core/theme/default-theme'),
   createSVG = require('./create-svg'),
   pathElement = createSVG('path');

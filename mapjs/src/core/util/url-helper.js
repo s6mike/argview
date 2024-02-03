@@ -1,8 +1,7 @@
-/*global module*/
 const URLHelper = function () {
   'use strict';
   const self = this,
-    urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w\(\)\u0080-\u00FF.,!@?^=%&amp;:\/~+#-]*[\w\(\)\u0080-\u00FF!@?^=%&amp;\/~+#-])?/i,
+    urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w()\u0080-\u00FF.,!@?^=%&amp;:/~+#-]*[\w()\u0080-\u00FF!@?^=%&amp;/~+#-])?/i,
     hrefUrl = function (url) {
       if (!url) {
         return '';
@@ -24,8 +23,8 @@ const URLHelper = function () {
     return urlPattern.test(text);
   };
   self.getLink = function (text) {
-    const url = text && text.match(urlPattern);
-    if (url && url[0]) {
+    const url = text?.match(urlPattern);
+    if (url?.[0]) {
       return hrefUrl(url[0]);
     }
     return url;

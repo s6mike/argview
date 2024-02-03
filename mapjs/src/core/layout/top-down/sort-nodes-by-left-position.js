@@ -1,4 +1,3 @@
-/*global module */
 module.exports = function sortNodesByLeftPosition(nodes) {
   'use strict';
   if (!nodes || !nodes.length) {

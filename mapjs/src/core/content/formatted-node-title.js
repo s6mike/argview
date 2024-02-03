@@ -1,4 +1,3 @@
-/*global module, require*/
 const urlHelper = require('../util/url-helper'),
   removeLinks = function (nodeTitle, maxUrlLength) {
     'use strict';

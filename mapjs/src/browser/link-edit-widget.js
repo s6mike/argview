@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 
 // TODO: Remove jQuery

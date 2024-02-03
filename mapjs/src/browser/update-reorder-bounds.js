@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 jQuery.fn.updateReorderBounds = function (border, box, dropCoords) {
   'use strict';

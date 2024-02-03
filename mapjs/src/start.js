@@ -6,8 +6,8 @@
 console.debug('PATH_FILE_CONFIG_MAPJS: ' + (PATH_FILE_CONFIG_MAPJS ?? ' not found.'));
 console.debug('PATH_FILE_ENV_MAPJS: ' + (PATH_FILE_ENV_MAPJS ?? ' not found.'));
 
-let { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS),
-  { default: CONFIG_E } = require('Mapjs/' + PATH_FILE_ENV_MAPJS);
+let { default: CONFIG } = require('Mapjs/' + PATH_FILE_CONFIG_MAPJS);
+const { default: CONFIG_E } = require('Mapjs/' + PATH_FILE_ENV_MAPJS);
 CONFIG = Object.assign(CONFIG, CONFIG_E);
 // TODO: Enable and merge this once mapjs_map.id needed
 //  { default: CONFIG_P } = require(PATH_FILE_CONFIG_MAPJS_PROCESSED);
@@ -41,10 +41,10 @@ const jQuery = require('jquery'),
   mapInstance = {}, // New object for keeping data for keeping various mapjs objects separate
 
   // Injects Theme CSS into page
-//  So can't easily make themes independent for each container without making css directives container independent
-//  Though if I inject it into container itself rather than head, then should be able to set scope property to limit impact
-//    https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style
-//  QUESTION: Is there a way to include `@layer argview-js` here?
+  //  So can't easily make themes independent for each container without making css directives container independent
+  //  Though if I inject it into container itself rather than head, then should be able to set scope property to limit impact
+  //    https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style
+  //  QUESTION: Is there a way to include `@layer argview-js` here?
   layoutThemeStyle = function (themeJson) {
     'use strict';
     const themeCSS = themeJson && new MAPJS.ThemeProcessor().process(themeJson).css;
@@ -130,8 +130,6 @@ const jQuery = require('jquery'),
         () => Utilities.getElementMJS(CONFIG.toolbar_edit_links.class, containerInstance),
       );
     // Utilities.mjsLogger.debug(`themeJson: ${JSON.stringify(themeJson)}`);
-    ;
-
     // Utilities.mjsLogger.log('idea should include title_original: ' + JSON.stringify(idea));
 
     // Obsolete now // Obsolete now attachmentEditorWidget UI disabled
@@ -222,7 +220,7 @@ const jQuery = require('jquery'),
             oFReader.target_container_id = e.delegateTarget.id;
             oFReader.readAsText(fileInfo, 'UTF-8');
           }
-        };
+        }
       }
     });
   },
@@ -253,7 +251,7 @@ const jQuery = require('jquery'),
               addMap(instanceElement, mapJson);
             } else {
               Utilities.mjsLogger.error('Error updating map ' + index + ' with more recent data.');
-            };
+            }
           })
           // QUESTION: Why did I get this error
           .catch(error => Utilities.mjsLogger.error(error)); //then(newMapJson => {;
@@ -268,7 +266,7 @@ const jQuery = require('jquery'),
       window.mapInstance = mapInstance;
     } else { // If no mapjs requests:
       Utilities.mjsLogger.warn("No mapjs containers found in web page's source html.");
-    };
+    }
   };
 
 document.addEventListener('DOMContentLoaded', init);

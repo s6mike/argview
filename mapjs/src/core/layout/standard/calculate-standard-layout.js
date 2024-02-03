@@ -1,4 +1,3 @@
-/*global module, require */
 const _ = require('underscore'),
   treeUtils = require('./tree');
 module.exports  = function calculateStandardLayout(idea, dimensionProvider, margin) {

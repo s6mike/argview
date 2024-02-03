@@ -1,5 +1,5 @@
 /*jshint loopfunc:true */
-/*global module, require, logMyErrors, mjsLogger */
+/*global logMyErrors, mjsLogger */
 const _ = require('underscore'),
   observable = require('../util/observable'),
   contentUpgrade = require('./content-upgrade');
@@ -57,7 +57,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
       }
       if (contentIdea.ideas) {
         _.each(contentIdea.ideas, function (value, key) {
-          if (!initOfRoot && value.attr && value.attr.group && _.isEmpty(value.ideas)) {
+          if (!initOfRoot && value.attr?.group && _.isEmpty(value.ideas)) {
             delete contentIdea.ideas[key];
           } else {
             contentIdea.ideas[parseFloat(key)] = init(value, originSession);
@@ -76,7 +76,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
               contentIdea.ideas,
               function (res, value, key) {
                 // In case value is undefined:
-                return value && value.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
+                return value?.id == childIdeaId ? key : res; //eslint-disable-line eqeqeq
               },
               undefined
             )
@@ -88,23 +88,23 @@ module.exports = function content(contentAggregate, initialSessionId) {
       contentIdea.findSubIdeaById = function (childIdeaId) {
         const myChild = _.find(contentIdea.ideas, function (idea) {
           // return idea.id == childIdeaId; //eslint-disable-line eqeqeq
-          return idea && idea.id == childIdeaId; //eslint-disable-line eqeqeq
+          return idea?.id == childIdeaId; //eslint-disable-line eqeqeq
         });
-        return myChild || _.reduce(contentIdea.ideas, function (result, idea) {
+        return myChild ?? _.reduce(contentIdea.ideas, function (result, idea) {
           // If idea is undefined, returns undefined
-          return result || (idea ? idea.findSubIdeaById(childIdeaId) : undefined);
+          return result ?? (idea ? idea.findSubIdeaById(childIdeaId) : undefined);
         }, undefined);
       };
       contentIdea.isEmptyGroup = function () {
-        return !contentAggregate.isRootNode(contentIdea.id) && contentIdea.attr && contentIdea.attr.group && _.isEmpty(contentIdea.ideas);
+        return !contentAggregate.isRootNode(contentIdea.id) && contentIdea.attr?.group && _.isEmpty(contentIdea.ideas);
       };
 
       // Deletes empty group without breaking undo/redo
       contentIdea.deleteIfEmptyGroup = function (originSession) {
-        // eslint-disable-next-line no-use-before-define
         if (contentIdea.isEmptyGroup()) {
+          // eslint-disable-next-line no-use-before-define
           commandProcessors.removeSubIdea(originSession, contentIdea.id);
-        } 
+        }
       };
 
       contentIdea.find = function (predicate) {
@@ -153,7 +153,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     },
     maxKey = function (kvMap, sign) {
       let currentKeys = [];
-      sign = sign || 1;
+      sign = sign ?? 1;
       if (_.size(kvMap) === 0) {
         return 0;
       }
@@ -269,7 +269,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
         }
       };
 
-      if (method === 'batch' || batches[originSession] || !eventStacks || !eventStacks[originSession] || eventStacks[originSession].length === 0) {
+      if (method === 'batch' || batches[originSession] || !eventStacks?.[originSession] || eventStacks[originSession].length === 0) {
         logChange(method, args, undofunc, originSession);
         // return;
       } else {
@@ -370,7 +370,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   contentAggregate.setSessionKey = function (newSessionKey) {
     if (contentAggregate.isBatchActive()) {
-      throw 'batch-is-active';
+      throw new Error('batch-is-active');
     }
     sessionKey = newSessionKey;
   };
@@ -439,7 +439,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     if (contentAggregate.isRootNode(ideaId)) {
       return [];
     }
-    currentPath = currentPath || [contentAggregate];
+    currentPath = currentPath ?? [contentAggregate];
     potentialParent = potentialParent || contentAggregate;
     if (potentialParent.containsDirectChild(ideaId)) {
       return currentPath;
@@ -447,7 +447,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     return _.reduce(
       potentialParent.ideas,
       function (result, child) {
-        return result || contentAggregate.calculatePath(ideaId, [child].concat(currentPath), child);
+        return result ?? contentAggregate.calculatePath(ideaId, [child].concat(currentPath), child);
       },
       false
     );
@@ -468,7 +468,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   // TODO: ISSUE: findParent can throw RangeError: Maximum call stack size exceeded if subIdeaId not found
   contentAggregate.findParent = function (subIdeaId, parentIdea) {
-    parentIdea = parentIdea || contentAggregate;
+    parentIdea = parentIdea ?? contentAggregate;
     if (contentAggregate.isRootNode(subIdeaId)) {
       return false;
     }
@@ -481,7 +481,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     return _.reduce(
       parentIdea.ideas,
       function (result, child) {
-        return result || contentAggregate.findParent(subIdeaId, child);
+        return result ?? contentAggregate.findParent(subIdeaId, child);
       },
       false
     );
@@ -489,20 +489,20 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
   /**** aggregate command processing methods ****/
   contentAggregate.isBatchActive = function (originSession) {
-    const activeSession = originSession || sessionKey;
+    const activeSession = originSession ?? sessionKey;
     return !!batches[activeSession];
   };
   contentAggregate.startBatch = function (originSession) {
-    const activeSession = originSession || sessionKey;
+    const activeSession = originSession ?? sessionKey;
     contentAggregate.endBatch(originSession);
     batches[activeSession] = [];
   };
   contentAggregate.discardBatch = function (originSession) {
-    const activeSession = originSession || sessionKey;
+    const activeSession = originSession ?? sessionKey;
     batches[activeSession] = undefined;
   };
   contentAggregate.endBatch = function (originSession) {
-    const activeSession = originSession || sessionKey,
+    const activeSession = originSession ?? sessionKey,
       inBatch = batches[activeSession],
       performBatchOperations = function () {
         const batchArgs = _.map(inBatch, function (event) {
@@ -602,14 +602,14 @@ module.exports = function content(contentAggregate, initialSessionId) {
           });
         }
         return result;
-      };
+      },
+      newIdea = (jsonToPaste?.title || jsonToPaste?.attr) && init(cleanUp(jsonToPaste), sessionFromId(initialId));
 
-    let newIdea, newRank = 0;
-
+    let newRank = 0;
     if (initialId) {
       cachedId = parseInt(initialId, 10) - 1;
     }
-    newIdea = jsonToPaste && (jsonToPaste.title || jsonToPaste.attr) && init(cleanUp(jsonToPaste), sessionFromId(initialId));
+
     if (!pasteParent || !newIdea) {
       return false;
     }
@@ -646,7 +646,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   commandProcessors.initialiseTitle = function (originSession, ideaId, title) {
     const idea = findIdeaById(ideaId),
-      originalTitle = idea && idea.title;
+      originalTitle = idea?.title;
 
     if (!idea) {
       return false;
@@ -666,7 +666,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   commandProcessors.updateTitle = function (originSession, ideaId, title) {
     const idea = findIdeaById(ideaId),
-      originalTitle = idea && idea.title;
+      originalTitle = idea?.title;
     if (!idea) {
       return false;
     }
@@ -740,8 +740,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
       performRemove = function () {
         // No longer needs to be looked up since it was created earlier:
         // const parent = contentAggregate.findParent(subIdeaId) || contentAggregate,
-        const oldRank = parent && parent.findChildRankById(subIdeaId),
-          oldIdea = parent && parent.ideas[oldRank],
+        const oldRank = parent?.findChildRankById(subIdeaId),
+          oldIdea = parent?.ideas[oldRank],
           oldLinks = contentAggregate.links,
           removedNodeIds = {};
 
@@ -759,7 +759,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
         parent.deleteIfEmptyGroup(originSession);
 
         contentAggregate.links = _.reject(contentAggregate.links, function (link) {
-          return removedNodeIds[link.ideaIdFrom] || removedNodeIds[link.ideaIdTo];
+          return removedNodeIds[link.ideaIdFrom] ?? removedNodeIds[link.ideaIdTo];
         });
         logChange('removeSubIdea', [subIdeaId], function () {
           parent.ideas[oldRank] = oldIdea;
@@ -775,8 +775,8 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   contentAggregate.insertIntermediateMultiple = function (idArray, ideaOptions) {
     return contentAggregate.batch(function () {
-      const newId = contentAggregate.insertIntermediate(idArray[0], ideaOptions && ideaOptions.title);
-      if (ideaOptions && ideaOptions.attr) {
+      const newId = contentAggregate.insertIntermediate(idArray[0], ideaOptions?.title);
+      if (ideaOptions?.attr) {
         Object.keys(ideaOptions.attr).forEach(function (key) {
           contentAggregate.updateAttr(newId, key, ideaOptions.attr[key]);
         });
@@ -792,7 +792,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   commandProcessors.insertIntermediate = function (originSession, inFrontOfIdeaId, title, optionalNewId, optionalAttr) {
     const parentIdea = contentAggregate.isRootNode(inFrontOfIdeaId) ? contentAggregate : contentAggregate.findParent(inFrontOfIdeaId),
-      childRank = parentIdea && parentIdea.findChildRankById(inFrontOfIdeaId),
+      childRank = parentIdea?.findChildRankById(inFrontOfIdeaId),
       canInsert = function () {
         if (contentAggregate.id == inFrontOfIdeaId) { //eslint-disable-line eqeqeq
           return false;
@@ -886,7 +886,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     return true;
   };
   contentAggregate.mergeAttrProperty = function (ideaId, attrName, attrPropertyName, attrPropertyValue) {
-    let val = contentAggregate.getAttrById(ideaId, attrName) || {};
+    let val = contentAggregate.getAttrById(ideaId, attrName) ?? {};
     if (attrPropertyValue) {
       val[attrPropertyName] = attrPropertyValue;
     } else {
@@ -970,9 +970,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
     return contentAggregate.execCommand('positionBefore', arguments);
   };
   commandProcessors.positionBefore = function (originSession, ideaId, positionBeforeIdeaId, parentIdeaArg) {
-    let newRank, afterRank, siblingRanks, candidateSiblings, beforeRank, maxRank, undoFunction;
-    const parentIdea = parentIdeaArg || contentAggregate.findParent(ideaId),
-      currentRank = parentIdea && parentIdea.findChildRankById(ideaId);
+    let newRank, afterRank, siblingRanks, candidateSiblings, beforeRank, maxRank;
+    const parentIdea = parentIdeaArg ?? contentAggregate.findParent(ideaId),
+      currentRank = parentIdea?.findChildRankById(ideaId),
+      undoFunction = reorderChild(parentIdea, newRank, currentRank);
 
     if (!parentIdea) {
       return false;
@@ -981,7 +982,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     if (ideaId == positionBeforeIdeaId) { //eslint-disable-line eqeqeq
       return false;
     }
-    newRank = 0;
+    // newRank = 0;
     if (positionBeforeIdeaId) {
       afterRank = parentIdea.findChildRankById(positionBeforeIdeaId);
       if (!afterRank) {
@@ -1006,7 +1007,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     if (newRank == currentRank) { //eslint-disable-line eqeqeq
       return false;
     }
-    undoFunction = reorderChild(parentIdea, newRank, currentRank);
+
     logChange('positionBefore', [ideaId, positionBeforeIdeaId], undoFunction, originSession);
     return true;
   };
@@ -1033,7 +1034,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
     if (findLinkBetween(ideaIdFrom, ideaIdTo)) {
       return false;
     }
-    contentAggregate.links = contentAggregate.links || [];
+    contentAggregate.links = contentAggregate.links ?? [];
     contentAggregate.links.push(link);
     logChange('addLink', [ideaIdFrom, ideaIdTo], function () {
       contentAggregate.links.pop();
@@ -1063,10 +1064,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   contentAggregate.getLinkAttr = function (ideaIdFrom, ideaIdTo, name) {
     const link = findLinkDirectional(ideaIdFrom, ideaIdTo);
-    if (link && link.attr && link.attr[name]) {
-      return link.attr[name];
-    }
-    return false;
+    return link.attr[name] ?? false;
   };
   contentAggregate.updateLinkAttr = function (/*ideaIdFrom, ideaIdTo, attrName, attrValue*/) {
     return contentAggregate.execCommand('updateLinkAttr', arguments);
@@ -1082,10 +1080,10 @@ module.exports = function content(contentAggregate, initialSessionId) {
 
   /* undo/redo */
   contentAggregate.canUndo = function () {
-    return !!(eventStacks[sessionKey] && eventStacks[sessionKey].length > 0);
+    return !!(eventStacks[sessionKey]?.length > 0);
   };
   contentAggregate.canRedo = function () {
-    return !!(redoStacks[sessionKey] && redoStacks[sessionKey].length > 0);
+    return !!(redoStacks[sessionKey]?.length > 0);
   };
   contentAggregate.undo = function () {
     return contentAggregate.execCommand('undo', arguments);
@@ -1093,7 +1091,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   commandProcessors.undo = function (originSession) {
     let topEvent = false;
     contentAggregate.endBatch();
-    topEvent = eventStacks[originSession] && eventStacks[originSession].pop();
+    topEvent = eventStacks[originSession]?.pop();
     if (topEvent && topEvent.undoFunction) {
       topEvent.undoFunction();
       if (!redoStacks[originSession]) {
@@ -1111,7 +1109,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   commandProcessors.redo = function (originSession) {
     let topEvent = false;
     contentAggregate.endBatch();
-    topEvent = redoStacks[originSession] && redoStacks[originSession].pop();
+    topEvent = redoStacks[originSession]?.pop();
     if (topEvent) {
       isRedoInProgress = true;
       contentAggregate.execCommand(topEvent.eventMethod, topEvent.eventArgs, originSession);
@@ -1145,16 +1143,16 @@ module.exports = function content(contentAggregate, initialSessionId) {
       },
       storeNewResource = function () {
         const id = optionalKey || nextResourceId();
-        contentAggregate.resources = contentAggregate.resources || {};
+        contentAggregate.resources = contentAggregate.resources ?? {};
         contentAggregate.resources[id] = resourceBody;
         contentAggregate.dispatchEvent('resourceStored', resourceBody, id, originSession);
         return id;
       };
 
-    return getExistingResourceId() || storeNewResource();
+    return getExistingResourceId() ?? storeNewResource();
   };
   contentAggregate.getResource = function (id) {
-    return contentAggregate.resources && contentAggregate.resources[id];
+    return contentAggregate.resources?.[id];
   };
   contentAggregate.hasSiblings = function (id) {
     const parent = contentAggregate.findParent(id);
@@ -1170,7 +1168,7 @@ module.exports = function content(contentAggregate, initialSessionId) {
   };
   contentAggregate.getDefaultRootId = function () {
     const rootNodes = contentAggregate && _.values(contentAggregate.ideas);
-    return rootNodes && rootNodes.length && rootNodes[0].id;
+    return rootNodes?.length && rootNodes[0].id;
   };
 
   contentUpgrade(contentAggregate);

@@ -1,4 +1,3 @@
-/*global module, require */
 const _ = require('underscore');
 module.exports = function VerticalSubtreeCollection(subtreeMap, marginArg) {
   'use strict';

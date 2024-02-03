@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 jQuery.fn.innerText = function () {
   'use strict';

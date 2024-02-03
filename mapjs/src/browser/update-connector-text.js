@@ -28,7 +28,7 @@ const createSVG = require('./create-svg'),
 
     if (!textDOM) { // This has to be checked before trying to get linkDimensions.
       return false;
-    };
+    }
     let textDimensions = false;
     // eslint-disable-next-line one-var
     const rectDOM = rectElement?.[0],

@@ -1,4 +1,3 @@
-/*global module, require*/
 const contentUpgrade = require('../content/content-upgrade'),
   Theme = require('../theme/theme'),
   extractConnectors = require('./extract-connectors'),
@@ -18,7 +17,7 @@ const contentUpgrade = require('../content/content-upgrade'),
       connectors: extractConnectors(idea, result, theme),
       links: extractLinks(idea, result),
       theme: idea.attr?.theme,
-      themeOverrides: Object.assign({}, idea.attr?.themeOverrides)
+      themeOverrides: { ...idea.attr?.themeOverrides }
     };
   };
 

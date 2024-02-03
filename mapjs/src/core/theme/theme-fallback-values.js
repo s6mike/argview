@@ -1,4 +1,3 @@
-/*global module, require*/
 const defaultTheme = require('./default-theme'),
   deepFreeze = require('../util/deep-freeze'),
   firstNode = defaultTheme.node[0],

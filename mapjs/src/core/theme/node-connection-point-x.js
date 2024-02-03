@@ -1,4 +1,3 @@
-/*global module*/
 const nearestInset = function (node, relatedNode, inset) {
   'use strict';
   if (node.left + node.width < relatedNode.left) {

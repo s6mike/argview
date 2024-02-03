@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   createSVG = require('./create-svg'),
   connectorKey = require('../core/util/connector-key'),
@@ -12,7 +11,7 @@ jQuery.fn.createConnector = function (connector, optional) {
     connection = buildConnection(element, optional);
   if (connection.class) {
     element.addClass(connection.class);
-  } 
+  }
   return element.css(Object.assign(convertPositionToTransform(connection.position), { stroke: connection.color }))
     .appendTo(this);
 };

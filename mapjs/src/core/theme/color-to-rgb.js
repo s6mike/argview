@@ -1,6 +1,5 @@
-/*global module, require*/
 const _ = require('underscore'),
-  regCSSRGB = new RegExp(/^rgba?\(([^,\s]+)[,\s]*([^,\s]+)[,\s]*([^,\s\()]+).*$/),
+  regCSSRGB = new RegExp(/^rgba?\(([^,\s]+)[,\s]*([^,\s]+)[,\s]*([^,\s()]+).*$/),
   fromCSSRGB = function (colorString) {
     'use strict';
     let matched;

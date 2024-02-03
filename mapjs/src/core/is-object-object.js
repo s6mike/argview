@@ -1,4 +1,3 @@
-/*global module*/
 module.exports = function isObjectObject(value) {
   'use strict';
   if (!value) {

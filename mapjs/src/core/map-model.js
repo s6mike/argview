@@ -286,7 +286,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     const oldSelectedIdea = currentlySelectedIdeaId;
     if (!layoutCalculator) {
       throw new Error('layout calculator not set');
-    };
+    }
     if (idea) {
       idea.removeEventListener('changed', onIdeaChanged);
       paused = false;
@@ -311,9 +311,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
     return isEditingEnabled;
   };
   this.setInputEnabled = function (source, dataset, value, holdFocus) {
-    // if (typeof value === 'undefined') {
-    value = value ?? dataset.setInputEnabled === 'true'
-    // }
+    value = value ?? dataset.setInputEnabled === 'true';
     if (isInputEnabled !== value) {
       isInputEnabled = value;
       self.dispatchEvent('inputEnabledChanged', value, !!holdFocus);
@@ -864,7 +862,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
       const old_selected_link = this.containerElement.getElementsByClassName('selected-link')[0];
       old_selected_link?.classList.remove('selected-link');
       link_element.classList.add('selected-link');
-    };
+    }
     self.dispatchEvent('linkSelected', link, selectionPoint, idea.getLinkAttr(link.ideaIdFrom, link.ideaIdTo, 'style'));
   };
 
@@ -1458,7 +1456,7 @@ module.exports = function MapModel(selectAllTitles, clipboardProvider, defaultRe
           scaleY = Math.min(imgHeight, 300) / imgHeight,
           scale = Math.min(scaleX, scaleY),
           existing = idea.getAttrById(ideaId, 'icon');
-      self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), existing?.position || position, ideaId, metaData);
+        self.setIcon('drag and drop', dataUrl, Math.round(imgWidth * scale), Math.round(imgHeight * scale), existing?.position || position, ideaId, metaData);
       },
       addNew = function () {
         idea.startBatch();

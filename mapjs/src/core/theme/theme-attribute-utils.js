@@ -1,4 +1,3 @@
-/*global module, require*/
 const deepAssign = require('../deep-assign'),
   colorParser = require('./color-parser'),
   isObjectObject = require('../is-object-object'),

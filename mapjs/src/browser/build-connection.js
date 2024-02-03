@@ -1,4 +1,3 @@
-/*global module, require*/
 const themeConnector = require('../core/theme/connector');
 require('./get-data-box');
 module.exports = function buildConnection(element, optional) {

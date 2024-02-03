@@ -1,5 +1,3 @@
-/*global module*/
-
 module.exports = function calcChildPosition(parent, child, tolerance) {
   'use strict';
   const childMid = child.top + child.height * 0.5;

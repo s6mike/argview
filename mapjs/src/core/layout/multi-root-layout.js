@@ -1,4 +1,3 @@
-/*global module, require*/
 const _ = require('underscore'),
   layoutGeometry = require('./layout-geometry');
 

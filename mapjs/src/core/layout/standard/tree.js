@@ -1,4 +1,3 @@
-/*global module, require*/
 const _ = require('underscore'),
   isEmptyGroup = require('../../content/is-empty-group'),
   outlineUtils = require('./outline'),
@@ -87,8 +86,8 @@ const _ = require('underscore'),
           referenceTree = buildReferenceTree(treeArray, dy, oldPositions),
           alignment = referenceTree && (treeArray[referenceTree].attr.position[1] - treeArray[referenceTree].deltaY);
         if (alignment) {
-          for (let i = 0; i < treeArray.length; i += 1) {
-            treeArray[i].deltaY += alignment;
+          for (const element of treeArray) {
+            element.deltaY += alignment;
           }
         }
       },

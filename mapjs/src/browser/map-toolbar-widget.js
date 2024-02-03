@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 
 module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
@@ -42,7 +41,7 @@ module.exports = function mapToolbarWidget(mapModel, toolbarElement) {
           mapModel[methodName]('toolbar', button_data);
         }
       });
-    };
+    }
   });
 
   changeMethodNames.forEach(function (methodName) {

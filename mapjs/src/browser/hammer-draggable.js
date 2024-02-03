@@ -1,4 +1,4 @@
-/*global require, mapInstance*/
+/*global mapInstance*/
 const $ = require('jquery'),
   Hammer = require('jquery-hammerjs/jquery.hammer-full.js'),
   Utilities = require('../core/util/mapjs-utilities'),

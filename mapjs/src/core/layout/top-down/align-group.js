@@ -1,11 +1,10 @@
-/*global module, require */
 const _ = require('underscore'),
   compactedGroupWidth = require('./compacted-group-width'),
   sortNodesByLeftPosition = require('./sort-nodes-by-left-position');
 module.exports = function alignGroup(result, rootIdea, margin) {
   'use strict';
   if (!margin) {
-    throw 'invalid-args';
+    throw new Error('invalid-args');
   }
   const nodes = result.nodes,
     rootNode = nodes[rootIdea.id],

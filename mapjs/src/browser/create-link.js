@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery'),
   createSVG = require('./create-svg'),
   linkKey = require('../core/util/link-key'),

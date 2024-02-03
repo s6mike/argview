@@ -1,4 +1,3 @@
-/*global require */
 const jQuery = require('jquery');
 
 require('./inner-text');

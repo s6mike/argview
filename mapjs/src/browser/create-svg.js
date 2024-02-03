@@ -1,4 +1,3 @@
-/*global module, require, document */
 const jQuery = require('jquery');
 module.exports = function createSVG(tag) {
   'use strict';
