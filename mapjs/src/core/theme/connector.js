@@ -15,7 +15,7 @@ const _ = require('underscore'),
   },
   appendOverLine = function (connectorCurve, calculatedConnector) {
     'use strict';
-    const initialRadius = connectorCurve.initialRadius || 0,
+    const initialRadius = connectorCurve.initialRadius ?? 0,
       halfWidth = calculatedConnector.nodeOverline && (Math.floor(0.5 * Math.abs(calculatedConnector.nodeOverline.to.x - calculatedConnector.nodeOverline.from.x)) - 1);
 
     if (calculatedConnector.nodeOverline) {
@@ -76,8 +76,6 @@ const _ = require('underscore'),
       case 'attr_group_opposing':
         connectorTheme.class = `${CONNECTOR_CLASS}-opposing`;
         break;
-      // default:
-      //   ;
     }
 
     let nodeUnderline = false, nodeOverline = false;

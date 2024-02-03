@@ -24,10 +24,7 @@ module.exports = function LayoutModel(emptyLayout) {
         if (node.id === referenceNode.id || node.y <= Math.round(referenceNode.y + referenceNode.height * 0.5)) {
           return false;
         }
-        if (coneRatio !== undefined && (node.x > x2 || (node.x + node.width) < x1)) {
-          return false;
-        }
-        return true;
+        return !(coneRatio !== undefined && (node.x > x2 || (node.x + node.width) < x1));
       };
       return getNodesForPredicate(predicate);
     },
@@ -40,10 +37,7 @@ module.exports = function LayoutModel(emptyLayout) {
         if (node.id === referenceNode.id || node.x <= Math.round(referenceNode.x + referenceNode.width * 0.5)) {
           return false;
         }
-        if (coneRatio !== undefined && (node.y > y2 || (node.y + node.height) < y1)) {
-          return false;
-        }
-        return true;
+        return !(coneRatio !== undefined && (node.y > y2 || (node.y + node.height) < y1));
       };
       return getNodesForPredicate(predicate);
     },
@@ -56,10 +50,7 @@ module.exports = function LayoutModel(emptyLayout) {
         if (node.id === referenceNode.id || (node.y + node.height) >= Math.round(referenceNode.y + referenceNode.height * 0.5)) {
           return false;
         }
-        if (coneRatio !== undefined && (node.x > x2 || (node.x + node.width) < x1)) {
-          return false;
-        }
-        return true;
+        return !(coneRatio !== undefined && (node.x > x2 || (node.x + node.width) < x1));
       };
       return getNodesForPredicate(predicate);
     },
@@ -72,10 +63,7 @@ module.exports = function LayoutModel(emptyLayout) {
         if (node.id === referenceNode.id || (node.x + node.width) >= Math.round(referenceNode.x + referenceNode.width * 0.5)) {
           return false;
         }
-        if (coneRatio !== undefined && (node.y > y2 || (node.y + node.height) < y1)) {
-          return false;
-        }
-        return true;
+        return !(coneRatio !== undefined && (node.y > y2 || (node.y + node.height) < y1));
       };
       return getNodesForPredicate(predicate);
     },
