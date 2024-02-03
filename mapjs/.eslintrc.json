@@ -21,10 +21,10 @@
     "process": "readonly"
   },
   "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2020
   },
-  "one-var": "consecutive",
   "rules": {
+    "one-var": "warn",
     "strict": [
       "error",
       "function"
